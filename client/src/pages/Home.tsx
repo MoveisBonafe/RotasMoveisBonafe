@@ -65,15 +65,29 @@ export default function Home() {
     }
   }, [originData]);
   
-  // Set the vehicle type object when the selected type changes
+  // Set the vehicle type object when the selected type changes or when vehicle types are loaded
   useEffect(() => {
     // Verifica se vehicleTypes é um array válido
     if (vehicleTypes && Array.isArray(vehicleTypes) && vehicleTypes.length > 0) {
+      // Busca pelo veículo selecionado atualmente
       const selectedVehicle = vehicleTypes.find(
         (vt: VehicleType) => vt.type === selectedVehicleType
       );
+      
       if (selectedVehicle) {
+        // Se encontrou o veículo, atualiza o objeto
         setVehicleTypeObj(selectedVehicle);
+      } else {
+        // Se não encontrou (por exemplo, na primeira carga), procura o caminhão 1 eixo
+        const defaultTruck = vehicleTypes.find(
+          (vt: VehicleType) => vt.type === "truck-1-axle"
+        );
+        
+        if (defaultTruck) {
+          // Atualiza o tipo selecionado e o objeto
+          setSelectedVehicleType(defaultTruck.type);
+          setVehicleTypeObj(defaultTruck);
+        }
       }
     }
   }, [selectedVehicleType, vehicleTypes]);

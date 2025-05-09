@@ -14,24 +14,31 @@ export default function DateRangeSelector({
   onEndDateChange 
 }: DateRangeSelectorProps) {
   return (
-    <div className="flex items-center space-x-4">
-      <div className="flex items-center">
-        <label className="text-sm mr-2">Data início:</label>
-        <input 
-          type="date" 
-          className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
-          value={startDate || ""}
-          onChange={(e) => onStartDateChange(e.target.value || null)}
-        />
+    <div className="w-full">
+      <div className="mb-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Período da viagem</label>
+        <p className="text-xs text-gray-500 mb-2">Selecione para ver eventos nas cidades</p>
       </div>
-      <div className="flex items-center">
-        <label className="text-sm mr-2">Data fim:</label>
-        <input 
-          type="date" 
-          className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
-          value={endDate || ""}
-          onChange={(e) => onEndDateChange(e.target.value || null)}
-        />
+      
+      <div className="grid grid-cols-2 gap-2">
+        <div className="flex flex-col">
+          <label className="text-xs text-gray-600 mb-1">Data início:</label>
+          <input 
+            type="date" 
+            className="border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary w-full"
+            value={startDate || ""}
+            onChange={(e) => onStartDateChange(e.target.value || null)}
+          />
+        </div>
+        <div className="flex flex-col">
+          <label className="text-xs text-gray-600 mb-1">Data fim:</label>
+          <input 
+            type="date" 
+            className="border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary w-full"
+            value={endDate || ""}
+            onChange={(e) => onEndDateChange(e.target.value || null)}
+          />
+        </div>
       </div>
     </div>
   );
