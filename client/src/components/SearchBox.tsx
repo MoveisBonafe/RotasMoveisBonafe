@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { GeocodingResult } from "@/lib/types";
 
 interface SearchBoxProps {
-  onSelectLocation: (location: GeocodingResult) => void;
+  onSelectLocation: (location: GeocodingResult | GeocodingResult[]) => void;
 }
 
 export default function SearchBox({ onSelectLocation }: SearchBoxProps) {

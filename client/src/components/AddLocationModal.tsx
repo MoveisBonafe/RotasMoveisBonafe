@@ -5,7 +5,7 @@ import { apiRequest } from "@/lib/queryClient";
 interface AddLocationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddLocation: (location: GeocodingResult) => void;
+  onAddLocation: (location: GeocodingResult | GeocodingResult[]) => void;
 }
 
 export default function AddLocationModal({

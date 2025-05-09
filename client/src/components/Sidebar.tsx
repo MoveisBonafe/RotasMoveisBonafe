@@ -80,10 +80,11 @@ export default function Sidebar({
         }
       }
       
-      // Agora adicionamos cada location com um pequeno delay entre elas
-      for (const result of allGeocodingResults) {
-        onSelectLocation(result);
-        await new Promise(resolve => setTimeout(resolve, 100));
+      // Passamos todos os resultados de uma vez, em vez de adicionar um a um
+      if (allGeocodingResults.length > 0) {
+        // Notificamos que estamos processando múltiplos CEPs
+        console.log(`Processando ${allGeocodingResults.length} CEPs de uma vez`);
+        onSelectLocation(allGeocodingResults);
       }
     }
   };
