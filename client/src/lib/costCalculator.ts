@@ -72,7 +72,8 @@ export function calculateRouteCosts(
   const fuelCost = calculateFuelCost(route.totalDistance, vehicleType);
   
   return {
-    waypoints: [],  // This should be filled by the caller
+    waypoints: [],      // This should be filled by the caller
+    destinations: [],   // This should be filled by the caller
     totalDistance: route.totalDistance,
     totalDuration: route.totalDuration,
     tollCost,

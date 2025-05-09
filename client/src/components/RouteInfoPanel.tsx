@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RouteInfo, VehicleType, CityEvent, TruckRestriction, PointOfInterest, TabType } from "@/lib/types";
+import { RouteInfo, VehicleType, CityEvent, TruckRestriction, PointOfInterest, TabType, Location as LocationType } from "@/lib/types";
 import { formatDistance, formatDuration, formatCurrency, formatRouteSequence } from "@/lib/mapUtils";
 import { calculateFuelConsumption, getFuelEfficiency } from "@/lib/costCalculator";
 import { useQuery } from "@tanstack/react-query";
@@ -24,28 +24,32 @@ export default function RouteInfoPanel({
   // Extrair apenas os nomes das cidades dos destinos escolhidos (não do percurso)
   // Isso atende ao requisito de mostrar eventos apenas das cidades selecionadas como destino
   const destinationCities = routeInfo?.destinations
-    .map(dest => {
-      // Tenta extrair o nome da cidade da última parte após a vírgula (formato típico: Nome, Cidade)
-      const parts = dest.name.split(",");
-      return parts.length > 1 ? parts[parts.length - 1].trim() : dest.name.trim();
-    })
-    .filter(Boolean)
-    .join(",");
+    ? routeInfo.destinations
+        .map((dest: LocationType) => {
+          // Tenta extrair o nome da cidade da última parte após a vírgula (formato típico: Nome, Cidade)
+          const parts = dest.name.split(",");
+          return parts.length > 1 ? parts[parts.length - 1].trim() : dest.name.trim();
+        })
+        .filter(Boolean)
+        .join(",")
+    : "";
 
   // Get city names from route for restrictions (todas as cidades incluindo as do percurso)
-  const routeCityNames = routeInfo?.waypoints
-    .map(wp => wp.name.split(",").pop()?.trim())
-    .filter(Boolean)
-    .join(",");
+  const routeCityNames = routeInfo?.waypoints 
+    ? routeInfo.waypoints
+        .map(wp => wp.name.split(",").pop()?.trim())
+        .filter(Boolean)
+        .join(",")
+    : "";
 
   // Fetch city events if dates are provided - APENAS para cidades de destino
-  const { data: cityEvents } = useQuery({
+  const { data: cityEvents = [] } = useQuery({
     queryKey: ['/api/city-events', startDate, endDate, destinationCities],
     enabled: !!(startDate && endDate && destinationCities),
   });
 
   // Fetch truck restrictions if using a truck vehicle type - para todas as cidades da rota
-  const { data: truckRestrictions } = useQuery({
+  const { data: truckRestrictions = [] } = useQuery({
     queryKey: ['/api/truck-restrictions', routeCityNames],
     enabled: !!(vehicleType?.type.includes("truck") && routeCityNames),
   });
@@ -213,7 +217,7 @@ export default function RouteInfoPanel({
                   </div>
                 )}
                 
-                {truckRestrictions && truckRestrictions.length > 0 && (
+                {(truckRestrictions && Array.isArray(truckRestrictions) && truckRestrictions.length > 0) && (
                   <div className="flex items-start">
                     <svg className="h-4 w-4 text-primary mr-1 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
@@ -221,7 +225,7 @@ export default function RouteInfoPanel({
                     <div>
                       <div className="text-sm font-medium">Restrições para caminhões</div>
                       <div className="text-xs text-gray-600">
-                        {truckRestrictions.length > 0 
+                        {truckRestrictions.length > 0 && truckRestrictions[0] 
                           ? `Em ${truckRestrictions[0].cityName}, das ${truckRestrictions[0].startTime} às ${truckRestrictions[0].endTime}`
                           : "Sem restrições"}
                       </div>
@@ -229,7 +233,7 @@ export default function RouteInfoPanel({
                   </div>
                 )}
 
-                {(!tollsOnRoute.length && !balancesOnRoute.length && (!truckRestrictions || !truckRestrictions.length)) && (
+                {(!tollsOnRoute.length && !balancesOnRoute.length && (!truckRestrictions || !Array.isArray(truckRestrictions) || !truckRestrictions.length)) && (
                   <div className="text-sm text-gray-500">
                     Nenhum ponto de atenção identificado
                   </div>
@@ -247,7 +251,7 @@ export default function RouteInfoPanel({
             <div className="bg-blue-50 text-blue-700 p-4 rounded-md">
               Selecione as datas de início e fim para ver os eventos nas cidades do trajeto.
             </div>
-          ) : cityEvents && cityEvents.length > 0 ? (
+          ) : cityEvents && Array.isArray(cityEvents) && cityEvents.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {cityEvents.map((event: CityEvent) => (
                 <div key={event.id} className="bg-white rounded-lg shadow-md p-4">
@@ -294,7 +298,7 @@ export default function RouteInfoPanel({
       {activeTab === "restrictions" && (
         <div className="p-4">
           {vehicleType?.type.includes("truck") ? (
-            truckRestrictions && truckRestrictions.length > 0 ? (
+            truckRestrictions && Array.isArray(truckRestrictions) && truckRestrictions.length > 0 ? (
               <div className="bg-white rounded-lg shadow-md p-4 mb-4">
                 <h3 className="font-medium mb-2">Restrições para caminhões</h3>
                 <div className="overflow-x-auto">
