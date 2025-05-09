@@ -54,5 +54,30 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    touch-action: manipulation;
   }
+}
+
+/* Suporte a zoom do mapa e estilos específicos para Google Maps */
+.touch-manipulation {
+  touch-action: manipulation !important;
+}
+
+/* Garantir que o mapa do Google Maps não exija Ctrl para zoom */
+div[style*="z-index: 1000001"] {
+  touch-action: manipulation !important;
+}
+
+iframe {
+  touch-action: manipulation !important;
+}
+
+/* Desabilitar requisito de ctrl para zoom em todo Google Maps */
+.gm-style {
+  touch-action: manipulation !important;
+}
+
+/* Estilos para mapa dentro de iframe */
+[data-gesture-handling="greedy"] {
+  touch-action: manipulation !important;
 }

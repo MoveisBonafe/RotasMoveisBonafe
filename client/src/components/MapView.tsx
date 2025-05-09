@@ -83,7 +83,11 @@ export default function MapView({
         key: GOOGLE_MAPS_API_KEY,
         origin: originParam,
         destination: destinationParam,
-        mode: "driving"
+        mode: "driving",
+        // Permitir zoom sem Ctrl também no iframe
+        zoom: "10",
+        // Garantir que podemos fazer zoom sem Ctrl
+        gestureHandling: "greedy"
       });
       
       // Adicionar os waypoints intermediários
@@ -188,7 +192,9 @@ export default function MapView({
     let baseUrl;
     const params = new URLSearchParams({
       key: GOOGLE_MAPS_API_KEY,
-      maptype: mapType
+      maptype: mapType,
+      // Configuração para permitir zoom sem Ctrl
+      gestureHandling: "greedy"
     });
     
     // Se temos uma rota calculada, mostramos ela usando o modo directions
@@ -565,8 +571,13 @@ export default function MapView({
           {/* Container para mapa direto do Google Maps JavaScript API */}
           <div 
             ref={mapContainerRef} 
-            className="h-full w-full"
-            style={{ display: directMapRef.current ? 'block' : 'none', minHeight: '500px' }} 
+            className="h-full w-full touch-manipulation"
+            style={{ 
+              display: directMapRef.current ? 'block' : 'none', 
+              minHeight: '500px',
+              touchAction: 'manipulation' 
+            }}
+            data-gesture-handling="greedy"
           />
           
           {/* Fallback para iframe caso a API JavaScript não esteja disponível */}
@@ -574,12 +585,18 @@ export default function MapView({
             <iframe
               width="100%"
               height="100%"
-              style={{ border: 0, minHeight: '500px' }}
+              style={{ 
+                border: 0, 
+                minHeight: '500px',
+                touchAction: 'manipulation'
+              }}
+              className="touch-manipulation"
               loading="lazy"
               allowFullScreen
               referrerPolicy="no-referrer-when-downgrade"
               src={mapSrc}
               title="Google Maps"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             ></iframe>
           )}
           
