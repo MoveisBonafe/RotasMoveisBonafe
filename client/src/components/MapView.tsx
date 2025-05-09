@@ -440,11 +440,11 @@ export default function MapView({
   
   // Atualizar marcadores quando waypoints mudarem
   useEffect(() => {
-    if (directMapRef.current && waypoints && waypoints.length > 0) {
+    if (directMapRef.current && waypoints) {
       console.log(`Atualizando ${waypoints.length} waypoints no mapa`);
       updateMarkersOnMap();
     }
-  }, [waypoints, directMapRef.current]);
+  }, [waypoints]);
   
   // Inicializar o mapa quando o componente montar
   useEffect(() => {

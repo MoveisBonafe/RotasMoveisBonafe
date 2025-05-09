@@ -108,6 +108,12 @@ export default function Home() {
           return;
         }
         
+        // Mostrar toast de carregamento para feedback imediato
+        toast({
+          title: "Processando localizações",
+          description: "Adicionando pontos ao mapa...",
+        });
+        
         // Cria um timestamp base para usar nos IDs, garantindo que sejam únicos e sequenciais
         const baseTimestamp = Date.now();
         
@@ -122,18 +128,20 @@ export default function Home() {
           isOrigin: false
         }));
         
-        // Adiciona todas à lista de localizações atual
-        const updatedLocations = [...locations, ...newLocations];
-        setLocations(updatedLocations);
-        setCalculatedRoute(null); // Reset da rota calculada ao adicionar novas localizações
-        
-        console.log(`Adicionadas ${newLocations.length} localizações. Total: ${updatedLocations.length}`);
-        
-        // Notifica o usuário do sucesso
-        toast({
-          title: "Localizações adicionadas",
-          description: `${newLocations.length} CEPs importados com sucesso`,
-        });
+        // Adiciona todas à lista de localizações atual - forçando re-renderização imediata
+        setTimeout(() => {
+          const updatedLocations = [...locations, ...newLocations];
+          setLocations(updatedLocations);
+          setCalculatedRoute(null); // Reset da rota calculada ao adicionar novas localizações
+          
+          console.log(`Adicionadas ${newLocations.length} localizações. Total: ${updatedLocations.length}`, newLocations);
+          
+          // Notifica o usuário do sucesso
+          toast({
+            title: "Localizações adicionadas",
+            description: `${newLocations.length} CEPs importados com sucesso`,
+          });
+        }, 100); // Pequeno delay para garantir que o DOM seja atualizado
       } else {
         // Processamento de uma única localização (busca individual)
         console.log("Adicionando localização individual:", locationOrLocations);
@@ -227,10 +235,9 @@ export default function Home() {
     }
     
     // Mostrar toast de carregamento para feedback imediato
-    const loadingToast = toast({
+    toast({
       title: "Calculando rota otimizada",
       description: "Por favor, aguarde enquanto calculamos a melhor rota...",
-      variant: "default",
     });
     
     // Garante que pointsOfInterest seja um array válido
@@ -238,20 +245,29 @@ export default function Home() {
     
     // Adicionar um pequeno atraso para simular o processamento e mostrar o efeito visual
     setTimeout(() => {
-      // Optimize the route locally
-      const routeResult = optimizeRouteLocally(origin, locations, vehicleTypeObj, pois);
-      setCalculatedRoute(routeResult.waypoints);
-      setPoisOnRoute(poisAlongRoute);
-      
-      // Remover toast de carregamento
-      toast.dismiss(loadingToast);
-      
-      // Mostrar toast de sucesso
-      toast({
-        title: "Rota calculada com sucesso",
-        description: `${routeResult.waypoints.length - 2} paradas otimizadas`,
-        variant: "success",
-      });
+      try {
+        // Optimize the route locally
+        const routeResult = optimizeRouteLocally(origin, locations, vehicleTypeObj, pois);
+        setCalculatedRoute(routeResult.waypoints);
+        setPoisOnRoute(poisAlongRoute);
+        
+        // Mostrar toast de sucesso
+        toast({
+          title: "Rota calculada com sucesso",
+          description: `${routeResult.waypoints.length - 2} paradas otimizadas`,
+        });
+        
+        console.log(`Rota calculada com sucesso: ${routeResult.waypoints.length} pontos totais`);
+      } catch (error) {
+        console.error("Erro ao calcular rota:", error);
+        
+        // Exibir mensagem de erro
+        toast({
+          title: "Erro ao calcular rota",
+          description: "Ocorreu um erro ao calcular a rota otimizada",
+          variant: "destructive",
+        });
+      }
     }, 800); // Delay para um efeito visual melhor
   };
   
