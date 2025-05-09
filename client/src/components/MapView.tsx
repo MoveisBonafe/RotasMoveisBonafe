@@ -669,114 +669,90 @@ export default function MapView({
 
   return (
     <div className="flex-1 relative h-full">
-      {!isMapReady ? (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-80 z-50">
-          <div className="text-center p-4 rounded-lg shadow-md bg-white">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
-            <p className="mt-4 text-gray-600 font-medium">Carregando Google Maps...</p>
-            <p className="text-xs text-gray-500 mt-2">Aguarde enquanto o mapa é carregado</p>
-          </div>
-        </div>
-      ) : (
-        // Contêiner para o mapa - usando iframe como fallback temporário
-        <div className="h-full w-full relative rounded-xl overflow-hidden shadow-lg" style={{ minHeight: '500px' }}>
-          {/* Mapa nativo via JavaScript API */}
-          <div 
-            id="map-container"
-            ref={mapContainerRef} 
-            className="h-full w-full touch-manipulation rounded-xl"
-            style={{ 
-              display: 'none',  // Escondido temporariamente
-              minHeight: '500px',
-              touchAction: 'manipulation',
-              backgroundColor: '#f0f0f0',
-              border: '1px solid #e2e8f0',
-            }}
-            data-gesture-handling="greedy"
-          ></div>
+      {/* Interface simplificada apenas com iframe */}
+      <div className="h-full w-full relative rounded-xl overflow-hidden shadow-xl border border-blue-100" style={{ minHeight: '500px' }}>
+        {/* Usando apenas iframe para garantir compatibilidade */}
+        <iframe
+          className="w-full h-full border-0 rounded-xl"
+          style={{ 
+            minHeight: '500px',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+          }}
+          loading="lazy"
+          allowFullScreen
+          referrerPolicy="no-referrer-when-downgrade"
+          src={mapSrc || createMapUrl("roadmap")}
+          title="Google Maps"
+        ></iframe>
           
-          {/* Fallback para o iframe */}
-          <iframe
-            className="w-full h-full border-0 rounded-xl"
-            style={{ 
-              minHeight: '500px',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
-            }}
-            loading="lazy"
-            allowFullScreen
-            src={mapSrc || createMapUrl("roadmap")}
-            title="Google Maps"
-          ></iframe>
-          
-          {/* Legenda para os pontos no mapa */}
-          {(waypoints && waypoints.length > 0 && !showStreetView) && (
-            <div className="absolute bottom-4 left-4 bg-white rounded-md shadow-md p-2 z-10 max-w-xs">
-              <h3 className="text-sm font-semibold mb-2">Pontos no mapa:</h3>
-              <div className="flex flex-col space-y-1 text-xs">
-                <div className="flex items-center">
-                  <span className="inline-flex items-center justify-center bg-blue-500 text-white rounded-full w-5 h-5 mr-2">A</span>
-                  <span>Origem: {origin?.name || 'Dois Córregos'}</span>
-                </div>
-                {waypoints.map((waypoint, index) => (
-                  <div key={index} className="flex items-center">
-                    <span className="inline-flex items-center justify-center bg-red-500 text-white rounded-full w-5 h-5 mr-2">{index + 1}</span>
-                    <span>{waypoint.name || `Destino ${index + 1}`}</span>
-                  </div>
-                ))}
+        {/* Legenda para os pontos no mapa */}
+        {(waypoints && waypoints.length > 0 && !showStreetView) && (
+          <div className="absolute bottom-4 left-4 bg-white rounded-md shadow-md p-2 z-10 max-w-xs">
+            <h3 className="text-sm font-semibold mb-2">Pontos no mapa:</h3>
+            <div className="flex flex-col space-y-1 text-xs">
+              <div className="flex items-center">
+                <span className="inline-flex items-center justify-center bg-blue-500 text-white rounded-full w-5 h-5 mr-2">A</span>
+                <span>Origem: {origin?.name || 'Dois Córregos'}</span>
               </div>
+              {waypoints.map((waypoint, index) => (
+                <div key={index} className="flex items-center">
+                  <span className="inline-flex items-center justify-center bg-red-500 text-white rounded-full w-5 h-5 mr-2">{index + 1}</span>
+                  <span>{waypoint.name || `Destino ${index + 1}`}</span>
+                </div>
+              ))}
             </div>
-          )}
-          
-          {/* Controles do mapa */}
-          <div className="absolute top-4 right-4 bg-white rounded-md shadow-md p-2 flex flex-col space-y-2 z-10">
-            {/* Botão de Street View */}
-            <button 
-              onClick={toggleStreetView} 
-              className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
-              title={showStreetView ? "Sair do Street View" : "Ver Street View"}
-            >
-              <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-              </svg>
-            </button>
-            
-            {/* Botão de visualização de satélite */}
-            <button 
-              onClick={() => {
-                if (directMapRef.current) {
-                  directMapRef.current.setMapTypeId(window.google.maps.MapTypeId.SATELLITE);
-                } else {
-                  setMapSrc(createMapUrl("satellite"));
-                }
-              }} 
-              className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
-              title="Visualização de satélite"
-            >
-              <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clipRule="evenodd" />
-              </svg>
-            </button>
-            
-            {/* Botão de visualização de mapa */}
-            <button 
-              onClick={() => {
-                if (directMapRef.current) {
-                  directMapRef.current.setMapTypeId(window.google.maps.MapTypeId.ROADMAP);
-                } else {
-                  setMapSrc(createMapUrl("roadmap"));
-                }
-              }} 
-              className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
-              title="Visualização de mapa"
-            >
-              <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clipRule="evenodd" />
-              </svg>
-            </button>
           </div>
+        )}
+          
+        {/* Controles do mapa */}
+        <div className="absolute top-4 right-4 bg-white rounded-md shadow-md p-2 flex flex-col space-y-2 z-10">
+          {/* Botão de Street View */}
+          <button 
+            onClick={toggleStreetView} 
+            className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
+            title={showStreetView ? "Sair do Street View" : "Ver Street View"}
+          >
+            <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+              <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+            </svg>
+          </button>
+          
+          {/* Botão de visualização de satélite */}
+          <button 
+            onClick={() => {
+              if (directMapRef.current) {
+                directMapRef.current.setMapTypeId(window.google.maps.MapTypeId.SATELLITE);
+              } else {
+                setMapSrc(createMapUrl("satellite"));
+              }
+            }} 
+            className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
+            title="Visualização de satélite"
+          >
+            <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clipRule="evenodd" />
+            </svg>
+          </button>
+          
+          {/* Botão de visualização de mapa */}
+          <button 
+            onClick={() => {
+              if (directMapRef.current) {
+                directMapRef.current.setMapTypeId(window.google.maps.MapTypeId.ROADMAP);
+              } else {
+                setMapSrc(createMapUrl("roadmap"));
+              }
+            }} 
+            className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
+            title="Visualização de mapa"
+          >
+            <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fillRule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clipRule="evenodd" />
+            </svg>
+          </button>
         </div>
-      )}
+      </div>
       
       {/* Legenda do mapa removida conforme solicitado */}
     </div>
