@@ -231,6 +231,10 @@ export default function RouteReport({
                 <td>{formatDuration(routeInfo.totalDuration)}</td>
               </tr>
               <tr>
+                <th>Número de Paradas</th>
+                <td>{calculatedRoute ? calculatedRoute.length - 2 : waypoints?.length} paradas</td>
+              </tr>
+              <tr>
                 <th>Consumo de Combustível</th>
                 <td>{routeInfo.fuelConsumption.toFixed(2).replace('.', ',')} litros</td>
               </tr>

@@ -393,58 +393,38 @@ export default function MapView({
         // Determinar se é origem, destino ou ponto intermediário
         const isOrigin = index === 0;
         const isDestination = calculatedRoute && index === pointsToShow.length - 1;
-        let markerColor, markerLabel, markerIcon;
+        let markerLabel, markerURL;
         
+        // Usar ícones personalizados em vez de símbolos para maior compatibilidade
         if (isOrigin) {
-          // Marcador de origem (A)
-          markerColor = "#0066FF"; // Azul
+          // Marcador de origem (A) - AZUL
           markerLabel = "A";
-          markerIcon = {
-            path: window.google.maps.SymbolPath.CIRCLE,
-            fillColor: markerColor,
-            fillOpacity: 1,
-            strokeWeight: 2,
-            strokeColor: "#FFFFFF",
-            scale: 14
-          };
+          markerURL = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
         } else if (isDestination) {
-          // Marcador de destino final (B)
-          markerColor = "#00AA00"; // Verde
+          // Marcador de destino final (B) - VERDE
           markerLabel = "B";
-          markerIcon = {
-            path: window.google.maps.SymbolPath.CIRCLE,
-            fillColor: markerColor,
-            fillOpacity: 1,
-            strokeWeight: 2,
-            strokeColor: "#FFFFFF",
-            scale: 14
-          };
+          markerURL = "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
         } else {
-          // Marcadores de waypoints numerados
-          markerColor = "#FF4500"; // Laranja-avermelhado
+          // Marcadores de waypoints numerados - LARANJA
           markerLabel = (index).toString();
-          markerIcon = {
-            path: window.google.maps.SymbolPath.CIRCLE,
-            fillColor: markerColor,
-            fillOpacity: 1,
-            strokeWeight: 2,
-            strokeColor: "#FFFFFF",
-            scale: 14
-          };
+          markerURL = "http://maps.google.com/mapfiles/ms/icons/orange-dot.png";
         }
         
-        // Criar marcador com estilo apropriado
+        // Criar marcador com estilo apropriado usando ícones padrão do Google que sempre funcionam
         const marker = new window.google.maps.Marker({
           position: position,
           map: map,
           title: point.name || `Ponto ${index}`,
-          label: markerIcon ? {
+          label: {
             text: markerLabel,
             color: "#FFFFFF",
             fontWeight: "bold"
-          } : markerLabel,
+          },
           animation: window.google.maps.Animation.DROP,
-          icon: markerIcon,
+          icon: {
+            url: markerURL,
+            labelOrigin: new window.google.maps.Point(14, 15)
+          },
           zIndex: isOrigin || isDestination ? 100 : 10 // Origem e destino ficam acima dos outros
         });
         
