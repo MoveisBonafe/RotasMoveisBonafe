@@ -78,6 +78,21 @@ export default function Home() {
   
   // Handle location select from search or file upload
   const handleSelectLocation = (location: GeocodingResult) => {
+    console.log("Adicionando localização:", location);
+    
+    // Verificar se recebemos dados válidos
+    if (!location.name || !location.lat || !location.lng) {
+      console.error("Dados de localização inválidos:", location);
+      
+      toast({
+        title: "Erro ao adicionar localização",
+        description: "Os dados da localização são inválidos ou incompletos",
+        variant: "destructive",
+      });
+      
+      return;
+    }
+    
     const newLocation: Location = {
       id: Date.now(), // Temporary ID for client-side
       name: location.name,
@@ -88,8 +103,12 @@ export default function Home() {
       isOrigin: false
     };
     
-    setLocations([...locations, newLocation]);
+    // Adicionar à lista de localizações
+    const updatedLocations = [...locations, newLocation];
+    setLocations(updatedLocations);
     setCalculatedRoute(null); // Reset calculated route when adding a new location
+    
+    console.log("Localizações atuais:", updatedLocations);
     
     toast({
       title: "Localização adicionada",
