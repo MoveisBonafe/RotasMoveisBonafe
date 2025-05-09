@@ -156,13 +156,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Processa cada linha do arquivo
       for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
+        const line: string = lines[i].trim();
         
         // Verifica se a linha tem o formato CEP,Nome
         if (line.includes(',')) {
           try {
             // Extrai CEP e nome
-            const [rawCep, ...nameParts] = line.split(",").map(part => part.trim());
+            const [rawCep, ...nameParts] = line.split(",").map((part: string) => part.trim());
             const name = nameParts.join(", ");
             
             // Formata e valida o CEP

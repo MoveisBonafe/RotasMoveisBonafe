@@ -41,7 +41,7 @@ export function useFileUpload() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ content }),
+        body: JSON.stringify({ fileContent: content }),
       });
 
       // Verifica se a resposta é válida
