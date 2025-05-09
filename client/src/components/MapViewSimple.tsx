@@ -26,7 +26,8 @@ export default function MapViewSimple({
     const params = new URLSearchParams({
       key: GOOGLE_MAPS_API_KEY,
       maptype: mapType,
-      gestureHandling: "greedy"
+      // Habilitar rolagem do mouse para zoom (específico para Embed API)
+      scrollwheel: "1"
     });
     
     // Se temos uma rota calculada, mostramos ela usando o modo directions
