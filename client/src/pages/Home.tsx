@@ -92,71 +92,95 @@ export default function Home() {
     }
   }, [selectedVehicleType, vehicleTypes]);
   
-  // Handle location select from search or file upload
+  // Handler para adicionar localizações (de busca ou importação de arquivo)
   const handleSelectLocation = (locationOrLocations: GeocodingResult | GeocodingResult[]) => {
-    // Verificar se estamos recebendo um array de localizações (importação de arquivo)
-    if (Array.isArray(locationOrLocations)) {
-      console.log(`Recebido um array com ${locationOrLocations.length} localizações para adicionar`);
-      
-      // Processar todas as localizações recebidas
-      const newLocations: Location[] = locationOrLocations.map(location => ({
-        id: Date.now() + Math.floor(Math.random() * 1000), // ID único para cada localização
-        name: location.name,
-        address: location.address,
-        cep: location.cep,
-        lat: location.lat,
-        lng: location.lng,
-        isOrigin: false
-      }));
-      
-      // Adicionar todas à lista de localizações
-      const updatedLocations = [...locations, ...newLocations];
-      setLocations(updatedLocations);
-      setCalculatedRoute(null); // Reset calculated route when adding new locations
-      
-      console.log(`Adicionadas ${newLocations.length} localizações. Total: ${updatedLocations.length}`);
-      
-      toast({
-        title: "Localizações adicionadas",
-        description: `${newLocations.length} CEPs importados com sucesso`,
-      });
-    } else {
-      // Processamento de uma única localização (pesquisa individual)
-      console.log("Adicionando localização individual:", locationOrLocations);
-      
-      // Verificar se recebemos dados válidos
-      if (!locationOrLocations.name || !locationOrLocations.lat || !locationOrLocations.lng) {
-        console.error("Dados de localização inválidos:", locationOrLocations);
+    try {
+      // Verifica se recebemos um array de localizações (importação de arquivo)
+      if (Array.isArray(locationOrLocations)) {
+        console.log(`Recebido um array com ${locationOrLocations.length} localizações para adicionar`);
         
+        if (locationOrLocations.length === 0) {
+          toast({
+            title: "Nenhuma localização encontrada",
+            description: "O arquivo não contém localizações válidas",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        // Cria um timestamp base para usar nos IDs, garantindo que sejam únicos e sequenciais
+        const baseTimestamp = Date.now();
+        
+        // Processa todas as localizações recebidas
+        const newLocations: Location[] = locationOrLocations.map((location, index) => ({
+          id: baseTimestamp + index, // Cada localização ganha um ID único e sequencial
+          name: location.name,
+          address: location.address,
+          cep: location.cep,
+          lat: location.lat,
+          lng: location.lng,
+          isOrigin: false
+        }));
+        
+        // Adiciona todas à lista de localizações atual
+        const updatedLocations = [...locations, ...newLocations];
+        setLocations(updatedLocations);
+        setCalculatedRoute(null); // Reset da rota calculada ao adicionar novas localizações
+        
+        console.log(`Adicionadas ${newLocations.length} localizações. Total: ${updatedLocations.length}`);
+        
+        // Notifica o usuário do sucesso
         toast({
-          title: "Erro ao adicionar localização",
-          description: "Os dados da localização são inválidos ou incompletos",
-          variant: "destructive",
+          title: "Localizações adicionadas",
+          description: `${newLocations.length} CEPs importados com sucesso`,
         });
+      } else {
+        // Processamento de uma única localização (busca individual)
+        console.log("Adicionando localização individual:", locationOrLocations);
         
-        return;
+        // Verifica se recebemos dados válidos
+        if (!locationOrLocations.name || !locationOrLocations.lat || !locationOrLocations.lng) {
+          console.error("Dados de localização inválidos:", locationOrLocations);
+          
+          toast({
+            title: "Erro ao adicionar localização",
+            description: "Os dados da localização são inválidos ou incompletos",
+            variant: "destructive",
+          });
+          
+          return;
+        }
+        
+        // Cria um novo objeto de localização
+        const newLocation: Location = {
+          id: Date.now(), // ID com timestamp atual
+          name: locationOrLocations.name,
+          address: locationOrLocations.address,
+          cep: locationOrLocations.cep,
+          lat: locationOrLocations.lat,
+          lng: locationOrLocations.lng,
+          isOrigin: false
+        };
+        
+        // Adiciona à lista de localizações
+        const updatedLocations = [...locations, newLocation];
+        setLocations(updatedLocations);
+        setCalculatedRoute(null); // Reset calculated route when adding a new location
+        
+        console.log("Localização adicionada:", newLocation);
+        
+        // Notifica o usuário
+        toast({
+          title: "Localização adicionada",
+          description: locationOrLocations.name,
+        });
       }
-      
-      const newLocation: Location = {
-        id: Date.now(), // Temporary ID for client-side
-        name: locationOrLocations.name,
-        address: locationOrLocations.address,
-        cep: locationOrLocations.cep,
-        lat: locationOrLocations.lat,
-        lng: locationOrLocations.lng,
-        isOrigin: false
-      };
-      
-      // Adicionar à lista de localizações
-      const updatedLocations = [...locations, newLocation];
-      setLocations(updatedLocations);
-      setCalculatedRoute(null); // Reset calculated route when adding a new location
-      
-      console.log("Localizações atuais:", updatedLocations);
-      
+    } catch (error) {
+      console.error("Erro ao adicionar localização(ões):", error);
       toast({
-        title: "Localização adicionada",
-        description: locationOrLocations.name,
+        title: "Erro ao adicionar localização",
+        description: "Ocorreu um erro inesperado. Por favor, tente novamente.",
+        variant: "destructive",
       });
     }
   };

@@ -5,6 +5,7 @@ import LocationsList from "./LocationsList";
 import DateRangeSelector from "./DateRangeSelector";
 import { Location, VehicleType, GeocodingResult } from "@/lib/types";
 import { useFileUpload } from "@/hooks/useFileUpload";
+import { useToast } from "@/hooks/use-toast";
 
 interface SidebarProps {
   origin: Location | null;
@@ -43,6 +44,7 @@ export default function Sidebar({
   onStartDateChange,
   onEndDateChange
 }: SidebarProps) {
+  // Hook para uploads de arquivo
   const { 
     fileInputRef, 
     triggerFileInput, 
@@ -50,6 +52,9 @@ export default function Sidebar({
     isLoading: isFileLoading,
     error: fileError
   } = useFileUpload();
+  
+  // Hook para notificações toast
+  const { toast } = useToast();
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     // Log e limpa mensagens de erro anteriores
