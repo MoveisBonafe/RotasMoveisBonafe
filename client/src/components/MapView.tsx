@@ -4,6 +4,15 @@ import { useGoogleMaps } from "@/hooks/useGoogleMaps";
 import MapControls from "./MapControls";
 import MapLegend from "./MapLegend";
 import { useQuery } from "@tanstack/react-query";
+import { withGoogleMaps } from "@/main";
+
+// Map type constants
+const MAP_TYPES = {
+  ROADMAP: "roadmap",
+  SATELLITE: "satellite", 
+  HYBRID: "hybrid",
+  TERRAIN: "terrain"
+};
 
 interface MapViewProps {
   origin: Location | null;
@@ -19,12 +28,21 @@ export default function MapView({
   onRouteCalculated
 }: MapViewProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const [isMapReady, setIsMapReady] = useState(false);
 
   // Fetch points of interest from the server
   const { data: pointsOfInterest } = useQuery({
     queryKey: ['/api/points-of-interest'],
     staleTime: Infinity,
   });
+
+  // Initialize Google Maps
+  useEffect(() => {
+    // Check if Google Maps is already loaded
+    withGoogleMaps(() => {
+      setIsMapReady(true);
+    });
+  }, []);
 
   const { 
     map,
@@ -52,12 +70,15 @@ export default function MapView({
     // The waypoints are all locations between first and last
     const routeWaypoints = calculatedRoute.slice(1, calculatedRoute.length - 1);
 
+    // Ensure we have a valid array of POIs or an empty array as fallback
+    const poisArray = Array.isArray(pointsOfInterest) ? pointsOfInterest : [];
+
     // Display the route on the map
     displayRoute(
       firstLocation,
       routeWaypoints,
       lastLocation,
-      pointsOfInterest || []
+      poisArray
     ).then(result => {
       if (result && onRouteCalculated) {
         onRouteCalculated(result);
@@ -83,17 +104,30 @@ export default function MapView({
 
   return (
     <div className="flex-1 relative">
-      <div ref={mapContainerRef} className="h-full w-full bg-gray-200"></div>
+      <div ref={mapContainerRef} className="h-full w-full bg-gray-200">
+        {!isMapReady && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto"></div>
+              <p className="mt-4 text-gray-600">Carregando mapa...</p>
+            </div>
+          </div>
+        )}
+      </div>
       
-      <MapControls
-        onZoomIn={zoomIn}
-        onZoomOut={zoomOut}
-        onToggleStreetView={toggleStreetView}
-        onChangeMapType={changeMapType}
-        mapType={mapType}
-      />
-      
-      <MapLegend />
+      {isMapReady && (
+        <>
+          <MapControls
+            onZoomIn={zoomIn}
+            onZoomOut={zoomOut}
+            onToggleStreetView={toggleStreetView}
+            onChangeMapType={changeMapType}
+            mapType={mapType}
+          />
+          
+          <MapLegend />
+        </>
+      )}
     </div>
   );
 }

@@ -2,15 +2,25 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
-// Since we're using Vite, we need to use import.meta.env instead of process.env
+// Get the Google Maps API key from environment variables
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 
-// Create a loader for Google Maps
+if (!GOOGLE_MAPS_API_KEY) {
+  console.warn("No Google Maps API key found. Maps functionality will be limited.");
+}
+
+// Status tracking for Google Maps loading
 let googleMapsLoaded = false;
 let googleMapsCallbacks: (() => void)[] = [];
+let loadAttempted = false;
 
 // Initialize Google Maps API
 const loadGoogleMaps = () => {
+  // Prevent multiple loading attempts
+  if (loadAttempted) return;
+  loadAttempted = true;
+
+  // Check if Google Maps is already loaded
   if (window.google && window.google.maps) {
     googleMapsLoaded = true;
     executeCallbacks();
@@ -21,6 +31,12 @@ const loadGoogleMaps = () => {
   script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places,geometry&callback=initMap`;
   script.async = true;
   script.defer = true;
+  
+  // Add error handling for the script load
+  script.onerror = () => {
+    console.error("Failed to load Google Maps API");
+  };
+  
   document.head.appendChild(script);
 };
 
@@ -45,6 +61,10 @@ export function withGoogleMaps(callback: () => void) {
     callback();
   } else {
     googleMapsCallbacks.push(callback);
+    // Ensure we've attempted to load the API
+    if (!loadAttempted) {
+      loadGoogleMaps();
+    }
   }
 }
 

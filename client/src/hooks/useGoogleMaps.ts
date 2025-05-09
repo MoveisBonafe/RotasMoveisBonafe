@@ -3,11 +3,29 @@ import { Location, PointOfInterest, MapOptions } from "@/lib/types";
 import { getMarkerIcon, filterPointsOfInterestAlongRoute, locationToLatLng } from "@/lib/mapUtils";
 import { withGoogleMaps } from "@/main";
 
+// Map type constants
+const MAP_TYPES = {
+  ROADMAP: "roadmap",
+  SATELLITE: "satellite", 
+  HYBRID: "hybrid",
+  TERRAIN: "terrain"
+};
+
+// Define types to avoid direct Google Maps references
+type MapType = typeof MAP_TYPES[keyof typeof MAP_TYPES];
+type LatLngLiteral = { lat: number; lng: number };
+type GoogleMap = any;
+type DirectionsRenderer = any;
+type StreetViewService = any;
+type StreetViewPanorama = any;
+type Marker = any;
+type LatLng = any;
+
 // Default map options centered on Dois Córregos
 const defaultMapOptions: MapOptions = {
   center: { lat: -22.3673, lng: -48.3823 }, // Dois Córregos-SP
   zoom: 13,
-  mapTypeId: "roadmap" as google.maps.MapTypeId
+  mapTypeId: MAP_TYPES.ROADMAP
 };
 
 interface UseGoogleMapsProps {
@@ -16,14 +34,14 @@ interface UseGoogleMapsProps {
 }
 
 export function useGoogleMaps({ mapContainerRef, initialOptions = {} }: UseGoogleMapsProps) {
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [directionsRenderer, setDirectionsRenderer] = useState<google.maps.DirectionsRenderer | null>(null);
-  const [streetViewService, setStreetViewService] = useState<google.maps.StreetViewService | null>(null);
-  const [streetViewPanorama, setStreetViewPanorama] = useState<google.maps.StreetViewPanorama | null>(null);
+  const [map, setMap] = useState<GoogleMap | null>(null);
+  const [directionsRenderer, setDirectionsRenderer] = useState<DirectionsRenderer | null>(null);
+  const [streetViewService, setStreetViewService] = useState<StreetViewService | null>(null);
+  const [streetViewPanorama, setStreetViewPanorama] = useState<StreetViewPanorama | null>(null);
   const [isStreetViewActive, setIsStreetViewActive] = useState(false);
-  const [mapType, setMapType] = useState<google.maps.MapTypeId>(defaultMapOptions.mapTypeId);
-  const markersRef = useRef<google.maps.Marker[]>([]);
-  const routePathRef = useRef<google.maps.LatLng[]>([]);
+  const [mapType, setMapType] = useState<MapType>(defaultMapOptions.mapTypeId as MapType);
+  const markersRef = useRef<Marker[]>([]);
+  const routePathRef = useRef<LatLng[]>([]);
 
   // Initialize the map
   useEffect(() => {
@@ -32,6 +50,7 @@ export function useGoogleMaps({ mapContainerRef, initialOptions = {} }: UseGoogl
     // Wait for Google Maps to load
     withGoogleMaps(() => {
       if (!mapContainerRef.current) return; // Check again in case component unmounted
+      if (!window.google || !window.google.maps) return; // Make sure Google Maps is loaded
 
       const options = {
         ...defaultMapOptions,
@@ -87,14 +106,14 @@ export function useGoogleMaps({ mapContainerRef, initialOptions = {} }: UseGoogl
 
   // Add a marker to the map
   const addMarker = useCallback((location: Location | PointOfInterest, type: 'origin' | 'destination' | 'waypoint' | 'toll' | 'weighing_station') => {
-    if (!map) return null;
+    if (!map || !window.google) return null;
 
-    const position = new google.maps.LatLng(
-      parseFloat(location.lat),
-      parseFloat(location.lng)
-    );
+    const position = {
+      lat: parseFloat(location.lat),
+      lng: parseFloat(location.lng)
+    };
 
-    const marker = new google.maps.Marker({
+    const marker = new window.google.maps.Marker({
       position,
       map,
       icon: getMarkerIcon(type),
@@ -112,23 +131,33 @@ export function useGoogleMaps({ mapContainerRef, initialOptions = {} }: UseGoogl
     destination: Location,
     pois: PointOfInterest[]
   ) => {
-    if (!map || !directionsRenderer) return null;
+    if (!map || !directionsRenderer || !window.google) return null;
 
     clearMarkers();
 
-    const originLatLng = locationToLatLng(origin);
-    const destinationLatLng = locationToLatLng(destination);
+    const originLatLng = { 
+      lat: parseFloat(origin.lat), 
+      lng: parseFloat(origin.lng) 
+    };
+    
+    const destinationLatLng = { 
+      lat: parseFloat(destination.lat), 
+      lng: parseFloat(destination.lng) 
+    };
 
-    const directionsService = new google.maps.DirectionsService();
-    const request: google.maps.DirectionsRequest = {
+    const directionsService = new window.google.maps.DirectionsService();
+    const request = {
       origin: originLatLng,
       destination: destinationLatLng,
       waypoints: waypoints.map(wp => ({
-        location: locationToLatLng(wp),
+        location: { 
+          lat: parseFloat(wp.lat), 
+          lng: parseFloat(wp.lng) 
+        },
         stopover: true
       })),
       optimizeWaypoints: false, // We're already optimizing with our TSP algorithm
-      travelMode: google.maps.TravelMode.DRIVING,
+      travelMode: 'DRIVING', // Use string instead of enum
     };
 
     try {
@@ -136,7 +165,7 @@ export function useGoogleMaps({ mapContainerRef, initialOptions = {} }: UseGoogl
       directionsRenderer.setDirections(result);
 
       // Extract the route path for filtering POIs
-      const routePath: google.maps.LatLng[] = [];
+      const routePath: any[] = [];
       const routes = result.routes[0];
       const legs = routes.legs;
 
@@ -158,7 +187,8 @@ export function useGoogleMaps({ mapContainerRef, initialOptions = {} }: UseGoogl
       // Add markers for POIs along the route
       const poisAlongRoute = filterPointsOfInterestAlongRoute(pois, routePath);
       poisAlongRoute.forEach(poi => {
-        addMarker(poi, poi.type as 'toll' | 'weighing_station');
+        const poiType = poi.type as 'toll' | 'weighing_station';
+        addMarker(poi, poiType);
       });
 
       return {
@@ -169,11 +199,11 @@ export function useGoogleMaps({ mapContainerRef, initialOptions = {} }: UseGoogl
       console.error("Error displaying route:", error);
       return null;
     }
-  }, [map, directionsRenderer, addMarker]);
+  }, [map, directionsRenderer, addMarker, clearMarkers]);
 
   // Change map type
-  const changeMapType = useCallback((type: google.maps.MapTypeId) => {
-    setMapType(type);
+  const changeMapType = useCallback((type: string) => {
+    setMapType(type as MapType);
   }, []);
 
   // Zoom in
@@ -193,7 +223,7 @@ export function useGoogleMaps({ mapContainerRef, initialOptions = {} }: UseGoogl
   }, [map]);
 
   // Toggle street view
-  const toggleStreetView = useCallback(async (position?: google.maps.LatLng) => {
+  const toggleStreetView = useCallback(async (position?: any) => {
     if (!map || !streetViewService || !streetViewPanorama) return;
 
     if (isStreetViewActive) {
@@ -210,7 +240,7 @@ export function useGoogleMaps({ mapContainerRef, initialOptions = {} }: UseGoogl
       const result = await streetViewService.getPanorama({
         location: targetPos,
         radius: 50,
-        source: google.maps.StreetViewSource.OUTDOOR
+        source: 'OUTDOOR' // Using string instead of enum
       });
       
       const panoLocation = result.location?.latLng;
