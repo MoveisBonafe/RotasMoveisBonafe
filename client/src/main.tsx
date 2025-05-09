@@ -57,6 +57,16 @@ window.initMap = () => {
   console.log("Google Maps API loaded");
   googleMapsLoaded = true;
   executeCallbacks();
+  
+  // Forçar carregamento das bibliotecas Places API
+  if (window.google && window.google.maps) {
+    try {
+      new window.google.maps.places.AutocompleteService();
+      console.log("Google Places API loaded");
+    } catch (e) {
+      console.error("Erro ao carregar Places API:", e);
+    }
+  }
 };
 
 // Execute callbacks when Google Maps is loaded

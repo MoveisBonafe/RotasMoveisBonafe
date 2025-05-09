@@ -1,27 +1,210 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { GeocodingResult } from "@/lib/types";
+import { withGoogleMaps } from "@/main";
 
 interface SearchBoxProps {
   onSelectLocation: (location: GeocodingResult) => void;
 }
 
+// Interface para previsões de autocompletar
+interface AutocompletePrediction {
+  description: string;
+  place_id: string;
+  structured_formatting: {
+    main_text: string;
+    secondary_text: string;
+  };
+}
+
 export default function SearchBox({ onSelectLocation }: SearchBoxProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
+  const [predictions, setPredictions] = useState<AutocompletePrediction[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const searchBoxRef = useRef<HTMLDivElement>(null);
   
-  // Função para buscar endereço usando a API do Google Geocoding
-  const handleSearch = async (event: React.FormEvent) => {
-    event.preventDefault();
+  // Referências para serviços Google Maps
+  const autocompleteService = useRef<any>(null);
+  const placesService = useRef<any>(null);
+  const sessionToken = useRef<any>(null);
+  
+  // Inicializar serviços do Google Maps
+  useEffect(() => {
+    withGoogleMaps(() => {
+      try {
+        // Criar token de sessão para otimizar billing
+        sessionToken.current = new window.google.maps.places.AutocompleteSessionToken();
+        
+        // Serviço de autocompletar
+        autocompleteService.current = new window.google.maps.places.AutocompleteService();
+        
+        // Serviço de detalhes de locais
+        // Criamos um div oculto para o Places Service
+        const placesDiv = document.createElement('div');
+        document.body.appendChild(placesDiv);
+        placesService.current = new window.google.maps.places.PlacesService(placesDiv);
+        
+        console.log("Serviços de busca inicializados");
+      } catch (error) {
+        console.error("Erro ao inicializar serviços Google Maps:", error);
+      }
+    });
+    
+    // Limpeza
+    return () => {
+      document.querySelectorAll('div[style="display: none;"]').forEach(el => {
+        if (!el.hasChildNodes()) el.remove();
+      });
+    };
+  }, []);
+  
+  // Configurar ouvinte de cliques fora da caixa de sugestões
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (searchBoxRef.current && !searchBoxRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  
+  // Buscar sugestões quando o usuário digita
+  useEffect(() => {
+    if (!searchQuery || searchQuery.length < 3 || !autocompleteService.current) {
+      setPredictions([]);
+      return;
+    }
+    
+    // Timer para debounce
+    const timer = setTimeout(() => {
+      setIsLoading(true);
+      
+      // Verificar se precisamos de um novo token
+      if (!sessionToken.current) {
+        sessionToken.current = new window.google.maps.places.AutocompleteSessionToken();
+      }
+      
+      autocompleteService.current.getPlacePredictions(
+        {
+          input: searchQuery,
+          sessionToken: sessionToken.current,
+          componentRestrictions: { country: "br" },
+          types: ["address", "geocode", "establishment"]
+        },
+        (predictions: AutocompletePrediction[] | null, status: string) => {
+          setIsLoading(false);
+          
+          if (status !== window.google.maps.places.PlacesServiceStatus.OK || !predictions) {
+            console.warn("Erro ou nenhum resultado de autocompletar:", status);
+            setPredictions([]);
+            return;
+          }
+          
+          setPredictions(predictions);
+          setShowSuggestions(predictions.length > 0);
+        }
+      );
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+  
+  // Buscar detalhes do local selecionado
+  const getPlaceDetails = async (placeId: string, description: string) => {
+    if (!placesService.current || !sessionToken.current) {
+      console.error("Serviços não inicializados");
+      return null;
+    }
+    
+    return new Promise<GeocodingResult>((resolve, reject) => {
+      placesService.current.getDetails(
+        {
+          placeId: placeId,
+          fields: ["name", "formatted_address", "geometry", "address_component"],
+          sessionToken: sessionToken.current
+        },
+        (place: any, status: string) => {
+          if (status !== window.google.maps.places.PlacesServiceStatus.OK || !place) {
+            console.error("Erro ao obter detalhes do lugar:", status);
+            reject(new Error("Falha ao obter detalhes"));
+            return;
+          }
+          
+          // Extrair CEP se disponível
+          let postalCode = "";
+          if (place.address_components) {
+            for (const component of place.address_components) {
+              if (component.types.includes("postal_code")) {
+                postalCode = component.long_name;
+                break;
+              }
+            }
+          }
+          
+          // Criar resultado
+          const result: GeocodingResult = {
+            name: place.name || place.formatted_address.split(',')[0],
+            address: place.formatted_address,
+            lat: place.geometry.location.lat().toString(),
+            lng: place.geometry.location.lng().toString(),
+            placeId: placeId
+          };
+          
+          if (postalCode) {
+            result.cep = postalCode;
+          }
+          
+          resolve(result);
+          
+          // Criar um novo token depois de usar este
+          sessionToken.current = new window.google.maps.places.AutocompleteSessionToken();
+        }
+      );
+    });
+  };
+  
+  // Função para selecionar uma sugestão
+  const handleSelectPrediction = async (prediction: AutocompletePrediction) => {
+    setIsLoading(true);
+    
+    try {
+      const placeDetails = await getPlaceDetails(prediction.place_id, prediction.description);
+      
+      if (placeDetails) {
+        onSelectLocation(placeDetails);
+        setSearchQuery("");
+        setPredictions([]);
+        setShowSuggestions(false);
+      }
+    } catch (error) {
+      console.error("Erro ao selecionar local:", error);
+      alert("Não foi possível obter detalhes do endereço selecionado.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  // Manipular a busca manual (sem sugestões)
+  const handleManualSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
     
     if (!searchQuery.trim()) return;
     
-    setIsSearching(true);
+    // Se temos sugestões, use a primeira
+    if (predictions.length > 0) {
+      await handleSelectPrediction(predictions[0]);
+      return;
+    }
+    
+    setIsLoading(true);
     
     try {
-      // Obter a chave API do Google Maps
+      // Usar a API Geocoding para buscar o endereço
       const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
-      
-      // Fazer uma requisição direta para a API de Geocoding do Google
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(searchQuery)}&key=${apiKey}&components=country:br`
       );
@@ -31,7 +214,7 @@ export default function SearchBox({ onSelectLocation }: SearchBoxProps) {
       if (data.status === "OK" && data.results && data.results.length > 0) {
         const result = data.results[0];
         
-        // Extrair informações do resultado
+        // Extrair informações
         const { lat, lng } = result.geometry.location;
         
         // Verificar CEP
@@ -43,7 +226,7 @@ export default function SearchBox({ onSelectLocation }: SearchBoxProps) {
           }
         }
         
-        // Criar objeto de resultado
+        // Criar resultado
         const geocodingResult: GeocodingResult = {
           name: result.formatted_address.split(',')[0] || result.formatted_address,
           address: result.formatted_address,
@@ -56,10 +239,7 @@ export default function SearchBox({ onSelectLocation }: SearchBoxProps) {
           geocodingResult.cep = postalCode;
         }
         
-        // Passar o resultado para o componente pai
         onSelectLocation(geocodingResult);
-        
-        // Limpar o campo de busca
         setSearchQuery("");
       } else {
         console.error("Geocoding error:", data.status);
@@ -69,15 +249,15 @@ export default function SearchBox({ onSelectLocation }: SearchBoxProps) {
       console.error("Error searching for location:", error);
       alert("Erro ao buscar endereço. Verifique sua conexão e tente novamente.");
     } finally {
-      setIsSearching(false);
+      setIsLoading(false);
     }
   };
   
   return (
-    <div className="p-4 border-b border-gray-200">
-      <form onSubmit={handleSearch} className="relative">
+    <div className="p-4 border-b border-gray-200" ref={searchBoxRef}>
+      <form onSubmit={handleManualSearch} className="relative">
         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-          {isSearching ? (
+          {isLoading ? (
             <div className="animate-spin h-5 w-5 text-gray-400">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -96,15 +276,37 @@ export default function SearchBox({ onSelectLocation }: SearchBoxProps) {
           className="w-full py-3 pl-10 pr-20 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          onFocus={() => setShowSuggestions(predictions.length > 0)}
           autoComplete="off"
         />
         <button
           type="submit"
           className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          disabled={isSearching}
+          disabled={isLoading}
         >
           Buscar
         </button>
+        
+        {/* Sugestões de autocompletar */}
+        {showSuggestions && (
+          <div className="absolute z-50 mt-1 w-full bg-white rounded-md shadow-lg max-h-60 overflow-auto border border-gray-200">
+            {predictions.map((prediction) => (
+              <div
+                key={prediction.place_id}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                onClick={() => handleSelectPrediction(prediction)}
+              >
+                <svg className="h-5 w-5 text-gray-400 mr-2 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                </svg>
+                <div>
+                  <div className="text-sm font-medium">{prediction.structured_formatting.main_text}</div>
+                  <div className="text-xs text-gray-500">{prediction.structured_formatting.secondary_text}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </form>
     </div>
   );
