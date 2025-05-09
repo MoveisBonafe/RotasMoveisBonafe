@@ -67,7 +67,7 @@ export interface MapOptions {
   mapTypeId: string;
 }
 
-export type TabType = 'summary' | 'events' | 'restrictions';
+export type TabType = 'summary' | 'events' | 'restrictions' | 'report';
 
 export type IconType = 'toll' | 'weighing_station' | 'origin' | 'destination' | 'waypoint';
 

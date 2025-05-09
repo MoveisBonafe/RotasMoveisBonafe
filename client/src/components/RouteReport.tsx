@@ -15,11 +15,12 @@ interface RouteReportProps {
     fuelConsumption: number;
   } | null;
   vehicleType: {
+    id?: number;
     name: string;
     type: string;
     fuelEfficiency: number;
-    fuelCostPerLiter: number;
     tollMultiplier: number;
+    fuelCostPerLiter?: number;
   } | null;
   startDate: string | null;
   endDate: string | null;

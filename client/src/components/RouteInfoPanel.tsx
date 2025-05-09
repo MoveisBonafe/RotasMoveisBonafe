@@ -96,6 +96,14 @@ export default function RouteInfoPanel({
         >
           Restrições de Veículos
         </button>
+        <button 
+          className={`flex-1 px-4 py-3 font-medium ${
+            activeTab === "report" ? "text-primary border-b-2 border-primary" : "text-gray-500 hover:bg-gray-50"
+          }`}
+          onClick={() => setActiveTab("report")}
+        >
+          Relatório Detalhado
+        </button>
       </div>
 
       {/* Route Summary Tab */}
@@ -230,8 +238,9 @@ export default function RouteInfoPanel({
                     <div>
                       <div className="text-sm font-medium">Restrições para caminhões</div>
                       <div className="text-xs text-gray-600">
-                        {truckRestrictions.length > 0 && truckRestrictions[0] 
-                          ? `Em ${truckRestrictions[0].cityName}, das ${truckRestrictions[0].startTime} às ${truckRestrictions[0].endTime}`
+                        {truckRestrictions.length > 0 && truckRestrictions[0] && 
+                          (truckRestrictions[0] as TruckRestriction).cityName
+                          ? `Em ${(truckRestrictions[0] as TruckRestriction).cityName}, das ${(truckRestrictions[0] as TruckRestriction).startTime || '00:00'} às ${(truckRestrictions[0] as TruckRestriction).endTime || '23:59'}`
                           : "Sem restrições"}
                       </div>
                     </div>
@@ -339,6 +348,33 @@ export default function RouteInfoPanel({
           ) : (
             <div className="bg-blue-50 text-blue-700 p-4 rounded-md">
               Restrições de veículos são aplicáveis apenas para caminhões. Selecione um tipo de caminhão para ver as restrições.
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Detailed Report Tab */}
+      {activeTab === "report" && (
+        <div className="p-4">
+          {routeInfo && calculatedRoute ? (
+            <RouteReport 
+              origin={origin}
+              calculatedRoute={calculatedRoute}
+              routeInfo={{
+                totalDistance: routeInfo.totalDistance,
+                totalDuration: routeInfo.totalDuration,
+                tollCost: routeInfo.tollCost,
+                fuelCost: routeInfo.fuelCost,
+                totalCost: routeInfo.tollCost + routeInfo.fuelCost,
+                fuelConsumption: fuelConsumption
+              }}
+              vehicleType={vehicleType}
+              startDate={startDate}
+              endDate={endDate}
+            />
+          ) : (
+            <div className="bg-yellow-50 text-yellow-700 p-4 rounded-md">
+              Calcule uma rota primeiro para gerar o relatório detalhado.
             </div>
           )}
         </div>
