@@ -407,16 +407,14 @@ export default function MapView({
           // Marcadores de waypoints numerados (sequenciais) - LARANJA
           // Para os pontos intermediários, a numeração deve começar em 1 (não em 0)
           
-          // Corrigir a numeração dos pontos intermediários para iniciar em 1 em vez de 0
-          if (!isOrigin && !isDestination) {
-            // Se não é origem nem destino, é um ponto intermediário, numere de 1 a N
-            // Calculamos o número sequencial para os waypoints (índice - 1, pois índice 0 é a origem)
-            const waypointIndex = index - 1;
-            markerLabel = (waypointIndex + 1).toString(); // +1 para começar em 1, não em 0
-          }
+          // Se não é origem nem destino, é um ponto intermediário, numere de 1 a N
+          const waypointIndex = index - 1; // índice - 1, pois índice 0 é a origem
+          markerLabel = (waypointIndex + 1).toString(); // +1 para começar em 1, não em 0
           
           // Usar ícone laranja para os pontos intermediários
           markerURL = "http://maps.google.com/mapfiles/ms/icons/orange-dot.png";
+          
+          console.log(`Criando marcador intermediário #${markerLabel} para ponto ${point.name}`);
         }
         
         // Criar marcador com estilo apropriado usando ícones padrão do Google que sempre funcionam

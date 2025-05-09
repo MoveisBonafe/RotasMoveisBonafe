@@ -321,13 +321,13 @@ export default function RouteReport({
         {/* Cards de resumo da rota - mais visuais */}
         <div className="route-summary-card">
           <div className="summary-item">
-            <div className="summary-item-title text-blue-700 font-medium">
-              <svg className="w-4 h-4 inline-block mr-1 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <div className="summary-item-title text-blue-700 font-medium text-lg">
+              <svg className="w-6 h-6 inline-block mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
               </svg>
               Distância Total
             </div>
-            <div className="summary-item-value text-blue-700">{totalDistanceKm.toFixed(1).replace('.', ',')} km</div>
+            <div className="summary-item-value text-blue-700 text-2xl font-bold">{totalDistanceKm.toFixed(1).replace('.', ',')} km</div>
             <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
               <div className="bg-blue-600 h-2 rounded-full" style={{ width: '100%' }}></div>
             </div>
