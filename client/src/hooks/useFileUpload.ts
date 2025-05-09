@@ -7,67 +7,98 @@ export function useFileUpload() {
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Função simplificada para importar CEP de um arquivo
   const parseFile = useCallback(async (file: File): Promise<ParsedCepFile | null> => {
+    // Marca como carregando
     setIsLoading(true);
     setError(null);
 
     try {
+      // Validações básicas
       if (!file) {
         throw new Error("Nenhum arquivo selecionado");
       }
 
-      // Aceitar qualquer tipo de arquivo de texto, não apenas text/plain
-      if (!file.name.endsWith('.txt') && file.type !== "text/plain" && file.type !== "text/csv") {
-        throw new Error("Por favor, envie um arquivo de texto (.txt)");
+      // Aceitar arquivos .txt e .csv
+      if (!file.name.endsWith('.txt') && !file.name.endsWith('.csv') && 
+          file.type !== "text/plain" && file.type !== "text/csv") {
+        throw new Error("Por favor, envie um arquivo de texto (.txt ou .csv)");
       }
 
-      // Read the file content
-      const content = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const result = e.target?.result as string;
-          console.log("Conteúdo do arquivo lido:", result.length, "caracteres");
-          resolve(result);
-        };
-        reader.onerror = (e) => reject(new Error("Falha ao ler o arquivo"));
-        reader.readAsText(file);
-      });
-
+      // Lê o conteúdo do arquivo
+      const content = await readFileAsText(file);
+      
+      // Verifica se o arquivo está vazio
       if (!content || content.trim() === "") {
         throw new Error("O arquivo está vazio");
       }
 
-      console.log("Enviando conteúdo para processamento no servidor:", content);
-      try {
-        // Send the content to the server for parsing
-        const response = await apiRequest("POST", "/api/parse-cep-file", { content });
-        const data = await response.json();
-        console.log("Resposta do servidor:", data);
-  
-        if (!data.locations || data.locations.length === 0) {
-          throw new Error("Nenhum CEP válido encontrado no arquivo");
-        }
-  
-        return data;
-      } catch (error) {
-        console.error("Erro na requisição ao servidor:", error);
-        throw new Error("Falha ao processar o arquivo no servidor");
+      console.log("Enviando arquivo para o servidor. Tamanho:", content.length);
+
+      // Envia para o servidor usando fetch diretamente
+      const response = await fetch("/api/parse-cep-file", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content }),
+      });
+
+      // Verifica se a resposta é válida
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Erro do servidor: ${response.status} ${errorText}`);
       }
+
+      // Processa a resposta
+      const data = await response.json();
+      console.log("Resposta do servidor:", data);
+
+      // Verifica se recebemos localizações
+      if (!data.locations || data.locations.length === 0) {
+        throw new Error("Nenhum CEP válido foi encontrado no arquivo");
+      }
+
+      // Retorna os dados processados
+      return data;
     } catch (err) {
-      console.error("Erro ao processar arquivo:", err);
-      setError(err instanceof Error ? err.message : "Ocorreu um erro ao processar o arquivo");
+      // Trata e exibe o erro
+      const errorMessage = err instanceof Error ? err.message : "Ocorreu um erro ao processar o arquivo";
+      console.error("Erro ao processar arquivo:", errorMessage);
+      setError(errorMessage);
       return null;
     } finally {
+      // Desativa o estado de carregamento
       setIsLoading(false);
     }
   }, []);
 
+  // Função auxiliar para ler o arquivo como texto
+  const readFileAsText = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        resolve(result);
+      };
+      
+      reader.onerror = () => {
+        reject(new Error("Falha ao ler o arquivo"));
+      };
+      
+      reader.readAsText(file);
+    });
+  };
+
+  // Abre o seletor de arquivo
   const triggerFileInput = useCallback(() => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   }, []);
 
+  // Processa o evento de mudança do input de arquivo
   const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {

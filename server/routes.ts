@@ -68,88 +68,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Parse CEP file
   app.post("/api/parse-cep-file", async (req: Request, res: Response) => {
     try {
+      console.log("Recebendo requisição para processar arquivo CEP");
       const { content } = parseCepFileSchema.parse(req.body);
       
-      // Parse the file content (format: cep,name)
-      // Normalize line breaks para lidar com arquivos de diferentes sistemas operacionais
+      // Log do início do conteúdo para debug
+      const contentPreview = content.length > 100 ? content.substring(0, 100) + "..." : content;
+      console.log(`Conteúdo recebido (preview): ${contentPreview}`);
+      console.log(`Tamanho total do conteúdo: ${content.length} caracteres`);
+      
+      // Normaliza quebras de linha para diferentes sistemas operacionais
       const normalizedContent = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
       const lines = normalizedContent.split('\n').filter(line => line.trim() !== "");
       console.log(`Processando ${lines.length} linhas do arquivo`);
-      console.log(`Conteúdo do arquivo: ${normalizedContent}`);
       
+      // Array para armazenar as localizações encontradas
       const locations = [];
       
-      // Processar linha por linha
+      // Mapeia CEPs para regiões com pequenas variações nas coordenadas para visualização
+      const getCoordinatesForCep = (cep: string, name: string) => {
+        let lat: string, lng: string, address: string;
+        
+        // Adiciona pequena variação aleatória para evitar pontos sobrepostos no mapa
+        const randomVariation = () => ((Math.random() - 0.5) * 0.02).toFixed(4);
+        
+        // Mapeamento de CEPs por região
+        if (cep.startsWith("17")) { // Região de Jaú / Dois Córregos
+          lat = (-22.367 + parseFloat(randomVariation())).toString();
+          lng = (-48.382 + parseFloat(randomVariation())).toString();
+          address = `${name} - Região de Jaú/Dois Córregos, SP`;
+        } 
+        else if (cep.startsWith("14")) { // Região de Ribeirão Preto
+          lat = (-21.177 + parseFloat(randomVariation())).toString();
+          lng = (-47.810 + parseFloat(randomVariation())).toString();
+          address = `${name} - Região de Ribeirão Preto, SP`;
+        }
+        else if (cep.startsWith("13")) { // Região de Campinas
+          lat = (-22.906 + parseFloat(randomVariation())).toString();
+          lng = (-47.061 + parseFloat(randomVariation())).toString();
+          address = `${name} - Região de Campinas, SP`;
+        }
+        else if (cep.startsWith("01")) { // São Paulo - Centro
+          lat = (-23.550 + parseFloat(randomVariation())).toString();
+          lng = (-46.630 + parseFloat(randomVariation())).toString();
+          address = `${name} - São Paulo (Centro), SP`;
+        }
+        else { // Outras regiões
+          // Valores default para o interior de SP
+          lat = (-22.000 + parseFloat(randomVariation()) * 3).toString();
+          lng = (-48.000 + parseFloat(randomVariation()) * 3).toString();
+          address = `${name} - Interior de SP`;
+        }
+        
+        return { lat, lng, address };
+      };
+      
+      // Processa cada linha do arquivo
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
         
-        // Verificar se a linha contém vírgula (formato: cep,nome)
+        // Verifica se a linha tem o formato CEP,Nome
         if (line.includes(',')) {
-          // Separamos por vírgula e removemos espaços extras
-          const [cep, ...nameParts] = line.split(",").map(part => part.trim());
-          // Juntamos todas as partes do nome caso haja vírgulas no nome
-          const name = nameParts.join(", ");
-          
-          if (cep && name && cepRegex.test(cep)) {
-            // Adicionar dados geográficos básicos para os CEPs brasileiros mais comuns
-            // Isso é uma solução temporária que garante que os CEPs são exibidos no mapa
-            // Em uma implementação de produção, usaríamos um serviço de geocodificação real
+          try {
+            // Extrai CEP e nome
+            const [rawCep, ...nameParts] = line.split(",").map(part => part.trim());
+            const name = nameParts.join(", ");
             
-            let lat = "", lng = "", address = "";
+            // Formata e valida o CEP
+            const cep = rawCep.replace(/[^0-9]/g, '');
+            const formattedCep = cep.length === 8 ? `${cep.substring(0, 5)}-${cep.substring(5)}` : rawCep;
             
-            // Mapeamento básico de CEPs para coordenadas aproximadas
-            // Apenas como exemplo - em produção usaríamos API de geocodificação
-            if (cep.startsWith("17")) { // Região de Dois Córregos/Jaú
-              if (cep === "17302122") { // Dois Córregos
-                lat = "-22.3673";
-                lng = "-48.3823";
-                address = "Dois Córregos, SP, Brasil";
-              } else if (cep === "17201010") { // Jaú
-                lat = "-22.2936";
-                lng = "-48.5591";
-                address = "Jaú, SP, Brasil";
-              } else {
-                lat = "-22.3000";
-                lng = "-48.4000";
-                address = "Região de Jaú, SP, Brasil";
-              }
-            } else if (cep.startsWith("14")) { // Região de Ribeirão Preto
-              if (cep === "14091530") { // Ribeirão Preto
-                lat = "-21.1775";
-                lng = "-47.8103";
-                address = "Ribeirão Preto, SP, Brasil";
-              } else if (cep === "14800022") { // Araraquara
-                lat = "-21.7845";
-                lng = "-48.1752";
-                address = "Araraquara, SP, Brasil";
-              } else {
-                lat = "-21.2000";
-                lng = "-47.8000";
-                address = "Região de Ribeirão Preto, SP, Brasil";
-              }
-            } else if (cep.startsWith("13")) { // Região de Campinas
-              if (cep === "13010002") { // Campinas
-                lat = "-22.9064";
-                lng = "-47.0616";
-                address = "Campinas, SP, Brasil";
-              } else {
-                lat = "-22.9000";
-                lng = "-47.0000";
-                address = "Região de Campinas, SP, Brasil";
-              }
+            if (cep && cep.length === 8 && name) {
+              // Obtém coordenadas para este CEP
+              const { lat, lng, address } = getCoordinatesForCep(cep, name);
+              
+              // Adiciona à lista de localizações
+              locations.push({ 
+                cep: formattedCep, 
+                name, 
+                lat, 
+                lng, 
+                address 
+              });
+              
+              console.log(`Processado CEP ${i+1}/${lines.length}: ${formattedCep}, Nome: ${name}`);
             } else {
-              // Um ponto padrão em São Paulo para CEPs desconhecidos
-              lat = "-23.5500";
-              lng = "-46.6300";
-              address = "São Paulo, SP, Brasil";
+              console.warn(`Linha ${i+1}: CEP inválido ou nome ausente - ${line}`);
             }
-            
-            locations.push({ cep, name, lat, lng, address });
-            console.log(`Adicionado CEP: ${cep}, Nome: ${name}, Coord: ${lat},${lng}`);
+          } catch (err) {
+            console.error(`Erro ao processar linha ${i+1}: ${line}`, err);
           }
+        } else {
+          console.warn(`Linha ${i+1}: Formato inválido (sem vírgula) - ${line}`);
         }
       }
       
+      console.log(`Processamento concluído. ${locations.length} localizações válidas encontradas.`);
       res.json({ locations });
     } catch (error) {
       console.error("Erro ao processar arquivo:", error);

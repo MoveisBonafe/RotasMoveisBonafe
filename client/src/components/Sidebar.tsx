@@ -52,46 +52,79 @@ export default function Sidebar({
   } = useFileUpload();
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Log e limpa mensagens de erro anteriores
     console.log("Iniciando upload de arquivo:", e.target.files?.[0]?.name);
-    const result = await handleFileChange(e);
-    console.log("Resultado do processamento de arquivo:", result);
     
-    if (result && result.locations && result.locations.length > 0) {
-      console.log(`Recebidos ${result.locations.length} CEPs para importar:`, result.locations);
+    try {
+      // Processa o arquivo
+      const result = await handleFileChange(e);
+      console.log("Resultado do processamento de arquivo:", result);
       
-      // Array para armazenar todos os resultados do geocoding
-      const allGeocodingResults: GeocodingResult[] = [];
-      
-      // Primeiro, preparamos todos os resultados usando as coordenadas retornadas pelo servidor
-      for (const loc of result.locations) {
-        try {
-          if (loc.lat && loc.lng) {
-            // Usamos as coordenadas e o endereço já fornecidos pelo servidor
-            const geocodingResult: GeocodingResult = {
-              name: loc.name,
-              address: loc.address || `${loc.name} - CEP: ${loc.cep}`,
-              cep: loc.cep,
-              lat: loc.lat,
-              lng: loc.lng
-            };
-            
-            // Adicionamos ao array em vez de chamar onSelectLocation diretamente
-            allGeocodingResults.push(geocodingResult);
-            console.log(`Preparado resultado para CEP: ${loc.cep}, Nome: ${loc.name}, Coords: ${loc.lat},${loc.lng}`);
-          } else {
-            console.warn(`CEP ${loc.cep} sem coordenadas geográficas.`);
+      // Verifica se temos localizações válidas
+      if (result && result.locations && result.locations.length > 0) {
+        console.log(`Recebidos ${result.locations.length} CEPs para importar`);
+        
+        // Array para armazenar localizações processadas
+        const allGeocodingResults: GeocodingResult[] = [];
+        
+        // Processa cada localização retornada pelo servidor
+        for (const loc of result.locations) {
+          try {
+            // Verifica se temos coordenadas válidas
+            if (loc.lat && loc.lng) {
+              // Cria um objeto de resultado geocodificado
+              const geocodingResult: GeocodingResult = {
+                name: loc.name,
+                address: loc.address || `${loc.name} - CEP: ${loc.cep}`,
+                cep: loc.cep,
+                lat: loc.lat,
+                lng: loc.lng
+              };
+              
+              // Adiciona ao array de resultados
+              allGeocodingResults.push(geocodingResult);
+              console.log(`Processado CEP: ${loc.cep}, Nome: ${loc.name}`);
+            } else {
+              console.warn(`CEP ${loc.cep} sem coordenadas geográficas.`);
+            }
+          } catch (err) {
+            console.error(`Erro ao processar o CEP ${loc.cep}:`, err);
           }
-        } catch (err) {
-          console.error(`Erro ao processar o CEP ${loc.cep}:`, err);
         }
+        
+        // Verifica se temos resultados para adicionar
+        if (allGeocodingResults.length > 0) {
+          console.log(`Adicionando ${allGeocodingResults.length} localizações ao mapa`);
+          
+          // Envia todos os resultados para serem adicionados
+          onSelectLocation(allGeocodingResults);
+          
+          // Notifica o usuário
+          toast({
+            title: "Importação concluída",
+            description: `${allGeocodingResults.length} localizações importadas com sucesso`,
+          });
+        } else {
+          toast({
+            title: "Importação falhou",
+            description: "Não foi possível importar nenhuma localização válida",
+            variant: "destructive"
+          });
+        }
+      } else {
+        toast({
+          title: "Arquivo vazio",
+          description: "Nenhuma localização válida encontrada no arquivo",
+          variant: "destructive"
+        });
       }
-      
-      // Passamos todos os resultados de uma vez, em vez de adicionar um a um
-      if (allGeocodingResults.length > 0) {
-        // Notificamos que estamos processando múltiplos CEPs
-        console.log(`Processando ${allGeocodingResults.length} CEPs de uma vez`);
-        onSelectLocation(allGeocodingResults);
-      }
+    } catch (err) {
+      console.error("Erro ao processar o arquivo:", err);
+      toast({
+        title: "Erro ao importar CEPs",
+        description: err instanceof Error ? err.message : "Ocorreu um erro desconhecido",
+        variant: "destructive"
+      });
     }
   };
 
