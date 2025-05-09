@@ -172,16 +172,49 @@ export default function MapView({
     // Se já está mostrando Street View e clica no botão, volta para o mapa normal
     if (showStreetView) {
       setShowStreetView(false);
-      // Retorna para o modo de mapa normal usando a função que criamos
-      setMapSrc(createMapUrl("roadmap"));
+      
+      // Retorna para o modo de mapa normal
+      if (directMapRef.current) {
+        directMapRef.current.setMapTypeId(window.google.maps.MapTypeId.ROADMAP);
+      }
       return;
     }
     
-    // Se temos uma origem válida, mostrar Street View dessa localização
-    if (origin) {
-      const streetViewUrl = `https://www.google.com/maps/embed/v1/streetview?key=${GOOGLE_MAPS_API_KEY}&location=${origin.lat},${origin.lng}&heading=210&pitch=10&fov=90`;
-      setMapSrc(streetViewUrl);
-      setShowStreetView(true);
+    // Usar street view do Google Maps JavaScript API
+    if (origin && directMapRef.current) {
+      try {
+        // Posição para o Street View
+        const position = {
+          lat: parseFloat(origin.lat),
+          lng: parseFloat(origin.lng)
+        };
+        
+        // Criar o panorama do Street View diretamente no mapa
+        const panorama = new window.google.maps.StreetViewPanorama(
+          mapContainerRef.current!,
+          {
+            position: position,
+            pov: {
+              heading: 210, // Orientação inicial (ângulo horizontal)
+              pitch: 10     // Inclinação inicial (ângulo vertical)
+            },
+            zoom: 1,
+            // Configurações para permitir zoom sem Ctrl
+            gestureHandling: 'greedy',
+            scrollwheel: true,
+            // StreetView precisa desse controle
+            enableCloseButton: true
+          }
+        );
+        
+        // Aplicar o panorama ao mapa
+        directMapRef.current.setStreetView(panorama);
+        setShowStreetView(true);
+        
+        console.log("Street View ativado via API JavaScript");
+      } catch (e) {
+        console.error("Erro ao ativar Street View:", e);
+      }
     }
   };
   
@@ -270,8 +303,21 @@ export default function MapView({
 
   // Efeito para carregar o mapa diretamente usando a Google Maps JavaScript API
   useEffect(() => {
-    // Só inicializa se tivermos origem e o contêiner estiver pronto
-    if (origin && mapContainerRef.current && !directMapRef.current) {
+    // Sempre inicializar o mapa quando tivermos origem e container, mesmo que já exista um mapa anterior
+    if (origin && mapContainerRef.current) {
+      // Limpar mapa anterior se existir
+      if (directMapRef.current) {
+        // Remover todos os marcadores
+        if (markersRef.current.length > 0) {
+          for (let i = 0; i < markersRef.current.length; i++) {
+            markersRef.current[i].setMap(null);
+          }
+          markersRef.current = [];
+        }
+        // Limpar referência para forçar recriação
+        directMapRef.current = null;
+      }
+      
       // Inicializar o mapa diretamente usando a função withGoogleMaps para garantir que a API esteja carregada
       withGoogleMaps(() => {
         try {
@@ -582,39 +628,19 @@ export default function MapView({
           </div>
         </div>
       ) : (
-        // Container do mapa (agora com ambas opções: direto ou iframe)
+        // Container do mapa - sempre usando o mapa JavaScript diretamente
         <div className="h-full w-full relative" style={{ minHeight: '500px' }}>
           {/* Container para mapa direto do Google Maps JavaScript API */}
           <div 
             ref={mapContainerRef} 
             className="h-full w-full touch-manipulation"
             style={{ 
-              display: directMapRef.current ? 'block' : 'none', 
+              display: 'block', // Sempre mostrar o container
               minHeight: '500px',
               touchAction: 'manipulation' 
             }}
             data-gesture-handling="greedy"
           />
-          
-          {/* Fallback para iframe caso a API JavaScript não esteja disponível */}
-          {!directMapRef.current && (
-            <iframe
-              width="100%"
-              height="100%"
-              style={{ 
-                border: 0, 
-                minHeight: '500px',
-                touchAction: 'manipulation'
-              }}
-              className="touch-manipulation"
-              loading="lazy"
-              allowFullScreen
-              referrerPolicy="no-referrer-when-downgrade"
-              src={mapSrc}
-              title="Google Maps"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            ></iframe>
-          )}
           
           {/* Legenda para os pontos no mapa */}
           {(waypoints && waypoints.length > 0 && !showStreetView) && (
