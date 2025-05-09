@@ -16,7 +16,7 @@ export default function DateRangeSelector({
   return (
     <div className="w-full">
       <div className="mb-2">
-        <label className="block text-sm font-medium text-gray-700 mb-1">Período da viagem</label>
+        <label className="block text-xs font-medium text-gray-700 mb-1">Período da viagem</label>
         <p className="text-xs text-gray-500 mb-2">Selecione para ver eventos nas cidades</p>
       </div>
       

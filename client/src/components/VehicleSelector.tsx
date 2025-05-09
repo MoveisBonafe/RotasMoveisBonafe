@@ -65,7 +65,7 @@ export default function VehicleSelector({ selectedVehicleType, onVehicleSelect }
   return (
     <div className="mb-4">
       <div className="mb-2 flex justify-between items-center">
-        <label className="block text-sm font-medium text-gray-700">Tipo de veículo</label>
+        <label className="block text-xs font-medium text-gray-700">Tipo de veículo</label>
         <div className="text-xs text-gray-500">
           {selectedVehicle?.name || 'Selecione um veículo'}
         </div>
@@ -100,11 +100,11 @@ export default function VehicleSelector({ selectedVehicleType, onVehicleSelect }
         
         {/* Dropdown */}
         {isOpen && (
-          <ul className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none">
+          <ul className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-96 rounded-md ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none">
             {vehicleTypes.map((vehicle) => (
               <li
                 key={vehicle.id}
-                className={`cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-blue-50 ${
+                className={`cursor-pointer select-none relative py-1 pl-3 pr-9 hover:bg-blue-50 ${
                   vehicle.type === selectedVehicleType ? 'bg-blue-100' : ''
                 }`}
                 onClick={() => handleSelectVehicle(vehicle)}
@@ -114,7 +114,7 @@ export default function VehicleSelector({ selectedVehicleType, onVehicleSelect }
                     {getVehicleIcon(vehicle.type)}
                   </span>
                   <div className="flex flex-col">
-                    <span className="font-medium">{vehicle.name}</span>
+                    <span className="text-sm font-medium">{vehicle.name}</span>
                     <span className="text-xs text-gray-500">
                       {vehicle.type === 'car' && 'Automóvel comum'}
                       {vehicle.type === 'motorcycle' && 'Motocicleta'}
