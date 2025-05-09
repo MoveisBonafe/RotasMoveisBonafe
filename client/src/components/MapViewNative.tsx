@@ -278,13 +278,42 @@ export default function MapViewNative({
     });
   }, [map, directionsRenderer, origin, calculatedRoute]);
 
+  const [error, setError] = useState<string | null>(null);
+
+  // Verificar se o mapa foi carregado
+  useEffect(() => {
+    // Adicionar um timer para verificar se o mapa foi inicializado
+    const timer = setTimeout(() => {
+      if (!map && mapRef.current) {
+        console.error("Mapa não inicializado após 5 segundos");
+        setError("Não foi possível carregar o mapa. Verifique a conexão com a internet e as restrições da API Key.");
+      }
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [map]);
+
   return (
     <div className="flex-1 relative h-full">
       <div 
         ref={mapRef} 
         className="h-full w-full rounded-xl overflow-hidden shadow-xl border border-blue-100" 
         style={{ minHeight: '500px' }}
-      ></div>
+      >
+        {/* Mostrar mensagem de erro se o mapa não carregar */}
+        {error && (
+          <div className="absolute inset-0 flex items-center justify-center flex-col bg-white bg-opacity-90 p-4 z-50">
+            <div className="text-red-600 font-bold mb-2">Erro ao carregar o mapa</div>
+            <div className="text-center text-sm mb-4">{error}</div>
+            <button 
+              onClick={() => window.location.reload()}
+              className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
+            >
+              Tentar novamente
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
