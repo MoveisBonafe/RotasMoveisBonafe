@@ -53,7 +53,7 @@ function createDistanceMatrix(locations: Location[]): number[][] {
  * @param startIndex Index of the starting location (origin)
  * @returns Array of indices representing the optimized route
  */
-export function nearestNeighborTSP(locations: Location[], startIndex: number = 0): number[] {
+export function nearestNeighborTSP(locations: Location[], startIndex: number = 0, returnToOrigin: boolean = false): number[] {
   const numLocations = locations.length;
   const distanceMatrix = createDistanceMatrix(locations);
   
@@ -78,8 +78,10 @@ export function nearestNeighborTSP(locations: Location[], startIndex: number = 0
     visited.add(nearestLocation);
   }
   
-  // Return to the starting location to complete the circuit
-  route.push(startIndex);
+  // Opcionalmente, retorna ao ponto de origem (não necessário para nossa aplicação)
+  if (returnToOrigin) {
+    route.push(startIndex);
+  }
   
   return route;
 }
@@ -148,14 +150,19 @@ function calculateRouteTotalDistance(route: number[], distanceMatrix: number[][]
 
 /**
  * Solve the TSP using a combination of nearest neighbor and two-opt algorithms
+ * 
+ * @param locations Array of locations
+ * @param startIndex Index of the starting location (origin)
+ * @param returnToOrigin Whether to return to the origin point (default: false)
+ * @returns Optimized route indices
  */
-export function solveTSP(locations: Location[], startIndex: number = 0): number[] {
+export function solveTSP(locations: Location[], startIndex: number = 0, returnToOrigin: boolean = false): number[] {
   if (locations.length <= 2) {
-    return locations.length === 1 ? [0] : [0, 1, 0];
+    return locations.length === 1 ? [0] : returnToOrigin ? [0, 1, 0] : [0, 1];
   }
   
-  // Get an initial route using the nearest neighbor algorithm
-  const initialRoute = nearestNeighborTSP(locations, startIndex);
+  // Get an initial route using the nearest neighbor algorithm, sem retornar ao ponto de origem
+  const initialRoute = nearestNeighborTSP(locations, startIndex, returnToOrigin);
   
   // Improve the route using the two-opt algorithm
   return twoOptTSP(locations, initialRoute);
@@ -165,15 +172,16 @@ export function solveTSP(locations: Location[], startIndex: number = 0): number[
  * Create an optimized route from a list of locations
  * 
  * @param locations Array of locations
+ * @param returnToOrigin Whether to return to the origin point (default: false)
  * @returns Optimized route as an array of locations
  */
-export function createOptimizedRoute(locations: Location[]): Location[] {
+export function createOptimizedRoute(locations: Location[], returnToOrigin: boolean = false): Location[] {
   // Find the origin index (should be 0, but let's be safe)
   const originIndex = locations.findIndex(loc => loc.isOrigin);
   const startIndex = originIndex >= 0 ? originIndex : 0;
   
-  // Solve the TSP
-  const optimalIndices = solveTSP(locations, startIndex);
+  // Solve the TSP sem retornar ao ponto de origem
+  const optimalIndices = solveTSP(locations, startIndex, returnToOrigin);
   
   // Map indices back to locations
   return optimalIndices.map(index => locations[index]);

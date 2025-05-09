@@ -32,8 +32,8 @@ export function useRouteOptimization() {
     // Add origin to locations for optimization
     const allLocations = [origin, ...locations];
     
-    // Run TSP algorithm to optimize the route
-    const optimizedLocations = createOptimizedRoute(allLocations);
+    // Run TSP algorithm to optimize the route (não retorna ao ponto de origem)
+    const optimizedLocations = createOptimizedRoute(allLocations, false); // false = não voltar ao ponto de origem
     setOptimizedRoute(optimizedLocations);
     
     // For this demo, we'll use a simplified approach for route metrics
