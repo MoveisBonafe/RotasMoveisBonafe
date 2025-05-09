@@ -25,10 +25,10 @@ export default function RouteInfoPanel({
   // Isso atende ao requisito de mostrar eventos apenas das cidades selecionadas como destino
   const destinationCities = routeInfo?.destinations
     ? routeInfo.destinations
-        .map((dest: LocationType) => {
+        .map((dest: any) => {
           // Tenta extrair o nome da cidade da última parte após a vírgula (formato típico: Nome, Cidade)
-          const parts = dest.name.split(",");
-          return parts.length > 1 ? parts[parts.length - 1].trim() : dest.name.trim();
+          const parts = dest.name ? dest.name.split(",") : [];
+          return parts.length > 1 ? parts[parts.length - 1].trim() : dest.name?.trim() || "";
         })
         .filter(Boolean)
         .join(",")
@@ -37,7 +37,7 @@ export default function RouteInfoPanel({
   // Get city names from route for restrictions (todas as cidades incluindo as do percurso)
   const routeCityNames = routeInfo?.waypoints 
     ? routeInfo.waypoints
-        .map(wp => wp.name.split(",").pop()?.trim())
+        .map(wp => wp.name?.split(",").pop()?.trim() || "")
         .filter(Boolean)
         .join(",")
     : "";

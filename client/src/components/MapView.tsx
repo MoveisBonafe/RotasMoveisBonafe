@@ -123,10 +123,10 @@ export default function MapView({
       // Adicionar o marcador de origem (azul)
       markerUrls.push(`https://maps.google.com/mapfiles/ms/icons/blue-dot.png|${origin.lat},${origin.lng}|Origem`);
       
-      // Adicionar marcadores numerados para cada waypoint
+      // Adicionar marcadores em formato de balão para cada waypoint
       waypoints.forEach((waypoint, index) => {
-        // Usamos o índice + 1 como rótulo para os marcadores
-        markerUrls.push(`https://maps.google.com/mapfiles/kml/paddle/${index + 1}.png|${waypoint.lat},${waypoint.lng}|${waypoint.name || 'Destino ' + (index + 1)}`);
+        // Usamos marcadores em formato de balão com números
+        markerUrls.push(`https://maps.google.com/mapfiles/kml/pal3/icon20.png|${waypoint.lat},${waypoint.lng}|${index + 1}: ${waypoint.name || 'Destino ' + (index + 1)}`);
       });
       
       // Construir a URL completa

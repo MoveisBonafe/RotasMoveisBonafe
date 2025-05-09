@@ -17,6 +17,7 @@ export default function Home() {
   const [selectedVehicleType, setSelectedVehicleType] = useState<string>("truck-1-axle");
   const [vehicleTypeObj, setVehicleTypeObj] = useState<VehicleType | null>(null);
   const [isAddLocationModalOpen, setIsAddLocationModalOpen] = useState(false);
+  // Dados para filtragem por data
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
   const [calculatedRoute, setCalculatedRoute] = useState<Location[] | null>(null);
@@ -211,6 +212,10 @@ export default function Home() {
           onCalculateRoute={handleCalculateRoute}
           isCalculating={isCalculating}
           calculatedRoute={calculatedRoute}
+          startDate={startDate}
+          endDate={endDate}
+          onStartDateChange={setStartDate}
+          onEndDateChange={setEndDate}
         />
         
         {/* Área principal com o mapa */}
