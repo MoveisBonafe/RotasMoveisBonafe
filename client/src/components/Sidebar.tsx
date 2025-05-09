@@ -56,7 +56,10 @@ export default function Sidebar({
     if (result && result.locations && result.locations.length > 0) {
       console.log(`Recebidos ${result.locations.length} CEPs para importar`);
       
-      // Usar uma abordagem sequencial para evitar sobrecarga na API
+      // Array para armazenar todos os resultados do geocoding
+      const allGeocodingResults: GeocodingResult[] = [];
+      
+      // Primeiro, preparamos todos os resultados
       for (const loc of result.locations) {
         try {
           // Use the CEP for geocoding (in a real app)
@@ -69,13 +72,18 @@ export default function Sidebar({
             lng: (-48.3823 + (Math.random() * 0.05)).toString()
           };
           
-          onSelectLocation(geocodingResult);
-          
-          // Pequeno delay para permitir que a UI atualize entre cada adição
-          await new Promise(resolve => setTimeout(resolve, 100));
+          // Adicionamos ao array em vez de chamar onSelectLocation diretamente
+          allGeocodingResults.push(geocodingResult);
+          console.log(`Preparado resultado para CEP: ${loc.cep}, Nome: ${loc.name}`);
         } catch (err) {
           console.error(`Erro ao processar o CEP ${loc.cep}:`, err);
         }
+      }
+      
+      // Agora adicionamos cada location com um pequeno delay entre elas
+      for (const result of allGeocodingResults) {
+        onSelectLocation(result);
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
     }
   };
