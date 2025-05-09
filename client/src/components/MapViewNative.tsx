@@ -163,120 +163,114 @@ export default function MapViewNative({
     }
   }, [map, origin, waypoints]);
 
-  // Quando uma rota for calculada, mostrar no mapa
+  // Quando uma rota for calculada, mostrar no mapa (implementação simples sem DirectionsService)
   useEffect(() => {
-    if (!map || !directionsRenderer || !origin || !calculatedRoute || calculatedRoute.length === 0) return;
+    if (!map || !origin || !calculatedRoute || calculatedRoute.length === 0) return;
 
-    // Limpar marcadores quando mostrar a rota
-    markers.forEach(marker => marker.setMap(null));
-    setMarkers([]);
-
-    // Configurar o serviço de direções
-    const directionsService = new google.maps.DirectionsService();
-
-    // Preparar origem e destino
-    const originLocation = {
-      lat: parseFloat(origin.lat),
-      lng: parseFloat(origin.lng)
-    };
-
-    const destination = calculatedRoute[calculatedRoute.length - 1];
-    const destinationLocation = {
-      lat: parseFloat(destination.lat),
-      lng: parseFloat(destination.lng)
-    };
-
-    // Preparar waypoints
-    const waypointsArr = calculatedRoute
-      .slice(1, calculatedRoute.length - 1)
-      .map(point => ({
-        location: new google.maps.LatLng(
-          parseFloat(point.lat),
-          parseFloat(point.lng)
-        ),
-        stopover: true
+    try {
+      // Limpar marcadores anteriores
+      markers.forEach(marker => marker.setMap(null));
+      setMarkers([]);
+      
+      // Limpar direções anteriores se existirem
+      if (directionsRenderer) {
+        directionsRenderer.setMap(null);
+      }
+      
+      const google = window.google;
+      const newMarkers: any[] = [];
+      
+      // Criar bounds para ajustar o zoom
+      const bounds = new google.maps.LatLngBounds();
+      
+      // Preparar origem
+      const originLocation = {
+        lat: parseFloat(origin.lat),
+        lng: parseFloat(origin.lng)
+      };
+      
+      // Adicionar origem ao bounds
+      bounds.extend(originLocation);
+      
+      // Criar marcador para a origem
+      const originMarker = new google.maps.Marker({
+        position: originLocation,
+        map,
+        title: origin.name,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          fillColor: "#4285F4",
+          fillOpacity: 1,
+          strokeWeight: 1,
+          strokeColor: "#FFFFFF",
+          scale: 10
+        },
+        label: {
+          text: "A",
+          color: "#FFFFFF",
+          fontWeight: "bold"
+        }
+      });
+      newMarkers.push(originMarker);
+      
+      // Criar um array de coordenadas para a polyline
+      const routeCoordinates = calculatedRoute.map(point => ({
+        lat: parseFloat(point.lat),
+        lng: parseFloat(point.lng)
       }));
-
-    // Configurar a requisição de direções
-    const request = {
-      origin: originLocation,
-      destination: destinationLocation,
-      waypoints: waypointsArr,
-      optimizeWaypoints: false,
-      travelMode: 'DRIVING' // Modo de viagem: carro
-    };
-
-    // Fazer a requisição
-    directionsService.route(request, (result: any, status: any) => {
-      if (status === 'OK' && result) {
-        directionsRenderer.setDirections(result);
-      } else {
-        console.error('Erro ao calcular rota:', status);
-        // Se falhar, mostrar os marcadores
-        const newMarkers: any[] = [];
+      
+      // Adicionar cada ponto ao bounds
+      routeCoordinates.forEach(latLng => bounds.extend(latLng));
+      
+      // Criar polyline para mostrar a rota
+      const routePath = new google.maps.Polyline({
+        path: routeCoordinates,
+        geodesic: true,
+        strokeColor: "#4285F4",
+        strokeOpacity: 1.0,
+        strokeWeight: 5,
+        map
+      });
+      
+      // Adicionar marcadores para cada ponto da rota (exceto origem)
+      calculatedRoute.slice(1).forEach((point, index) => {
+        const pointLocation = {
+          lat: parseFloat(point.lat),
+          lng: parseFloat(point.lng)
+        };
         
-        // Origem
-        const originMarker = new google.maps.Marker({
-          position: originLocation,
+        const marker = new google.maps.Marker({
+          position: pointLocation,
           map,
-          title: origin.name,
+          title: point.name,
           icon: {
             path: google.maps.SymbolPath.CIRCLE,
-            fillColor: "#4285F4",
+            fillColor: "#DB4437",
             fillOpacity: 1,
             strokeWeight: 1,
             strokeColor: "#FFFFFF",
             scale: 10
           },
           label: {
-            text: "A",
+            text: `${index + 1}`,
             color: "#FFFFFF",
             fontWeight: "bold"
           }
         });
-        newMarkers.push(originMarker);
         
-        // Pontos da rota calculada
-        calculatedRoute.slice(1).forEach((point, index) => {
-          const marker = new google.maps.Marker({
-            position: {
-              lat: parseFloat(point.lat),
-              lng: parseFloat(point.lng)
-            },
-            map,
-            title: point.name,
-            icon: {
-              path: google.maps.SymbolPath.CIRCLE,
-              fillColor: "#DB4437",
-              fillOpacity: 1,
-              strokeWeight: 1,
-              strokeColor: "#FFFFFF",
-              scale: 10
-            },
-            label: {
-              text: `${index + 1}`,
-              color: "#FFFFFF",
-              fontWeight: "bold"
-            }
-          });
-          newMarkers.push(marker);
-        });
-        
-        setMarkers(newMarkers);
-        
-        // Ajustar o mapa para mostrar todos os pontos
-        const bounds = new google.maps.LatLngBounds();
-        bounds.extend(originLocation);
-        calculatedRoute.forEach(point => {
-          bounds.extend({
-            lat: parseFloat(point.lat),
-            lng: parseFloat(point.lng)
-          });
-        });
-        map.fitBounds(bounds);
-      }
-    });
-  }, [map, directionsRenderer, origin, calculatedRoute]);
+        newMarkers.push(marker);
+      });
+      
+      // Guardar os marcadores para remover depois
+      setMarkers(newMarkers);
+      
+      // Ajustar o mapa para mostrar todos os pontos
+      map.fitBounds(bounds);
+    } catch (e) {
+      console.error('Erro ao mostrar rota calculada:', e);
+      setError("Não foi possível renderizar o mapa com a rota calculada. Tente novamente.");
+    }
+  }, [map, origin, calculatedRoute]);
 
   const [error, setError] = useState<string | null>(null);
 
