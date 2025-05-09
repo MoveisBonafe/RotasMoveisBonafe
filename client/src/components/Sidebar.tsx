@@ -2,6 +2,7 @@ import { useState } from "react";
 import SearchBox from "./SearchBox";
 import VehicleSelector from "./VehicleSelector";
 import LocationsList from "./LocationsList";
+import QuickAddForm from "./QuickAddForm";
 import { Location, VehicleType, GeocodingResult } from "@/lib/types";
 import { useFileUpload } from "@/hooks/useFileUpload";
 
@@ -60,6 +61,35 @@ export default function Sidebar({
     }
   };
 
+  // Estado para mostrar destinos sugeridos
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  
+  // Lista de destinos populares/sugeridos
+  const suggestedDestinations = [
+    { name: "Jaú", cep: "17201-970" },
+    { name: "Bauru", cep: "17010-130" },
+    { name: "Bariri", cep: "17250-970" },
+    { name: "Barra Bonita", cep: "17340-970" },
+    { name: "Ribeirão Preto", cep: "14010-000" },
+    { name: "São Paulo", cep: "01001-000" }
+  ];
+  
+  // Função para adicionar destino rápido
+  const handleQuickAdd = (name: string, cep: string) => {
+    // Criar um resultado simulado de geocodificação
+    const geocodingResult: GeocodingResult = {
+      name: name,
+      address: `${name}, SP - CEP: ${cep}`,
+      cep: cep,
+      // Coordenadas simuladas (seria substituído por geocodificação real)
+      lat: (-22.3673 + (Math.random() * 0.5)).toString(),
+      lng: (-48.3823 + (Math.random() * 0.5)).toString()
+    };
+    
+    // Usar a função de callback para adicionar o local
+    onSelectLocation(geocodingResult);
+  };
+
   return (
     <div className="w-96 bg-white shadow-md z-10 flex flex-col">
       {/* Search Box */}
@@ -101,18 +131,47 @@ export default function Sidebar({
             />
             <button 
               className="flex-1 py-2 px-4 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
-              onClick={onAddLocationClick}
+              onClick={() => setShowSuggestions(!showSuggestions)}
             >
               <svg className="h-4 w-4 mr-1 inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
               </svg>
-              Adicionar
+              Destinos rápidos
             </button>
           </div>
           
           {fileError && (
             <div className="mt-2 text-sm text-red-600">
               {fileError}
+            </div>
+          )}
+          
+          {/* Lista de destinos sugeridos e formulário rápido */}
+          {showSuggestions && (
+            <div className="mt-3">
+              <div className="mb-3">
+                <h3 className="text-sm font-medium text-gray-700 mb-2">Destinos populares</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {suggestedDestinations.map((destination) => (
+                    <button
+                      key={destination.cep}
+                      className="py-2 px-3 text-sm text-left text-gray-700 bg-gray-100 hover:bg-gray-200 rounded flex items-center"
+                      onClick={() => handleQuickAdd(destination.name, destination.cep)}
+                    >
+                      <svg className="h-4 w-4 mr-1 text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                      </svg>
+                      {destination.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Formulário de adição rápida */}
+              <div className="bg-gray-50 p-3 rounded-md border border-gray-200">
+                <h3 className="text-sm font-medium text-gray-700 mb-2">Adicionar manualmente</h3>
+                <QuickAddForm onAddLocation={handleQuickAdd} />
+              </div>
             </div>
           )}
         </div>
