@@ -53,11 +53,12 @@ export interface RouteWaypoint {
 }
 
 export interface RouteInfo {
-  waypoints: Location[];
-  totalDistance: number; // in meters
-  totalDuration: number; // in seconds
-  tollCost: number; // in cents
-  fuelCost: number; // in cents
+  waypoints: Location[];     // Todos os pontos da rota, incluindo origem, destinos e pontos de passagem
+  destinations: Location[];  // Apenas os destinos selecionados pelo usuário
+  totalDistance: number;     // in meters
+  totalDuration: number;     // in seconds
+  tollCost: number;          // in cents
+  fuelCost: number;          // in cents
 }
 
 export interface MapOptions {

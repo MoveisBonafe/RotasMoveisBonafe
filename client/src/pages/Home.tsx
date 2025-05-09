@@ -13,7 +13,8 @@ export default function Home() {
   // State for the application
   const [origin, setOrigin] = useState<Location | null>(null);
   const [locations, setLocations] = useState<Location[]>([]);
-  const [selectedVehicleType, setSelectedVehicleType] = useState<string>("car");
+  // Definindo caminhão 1 eixo como padrão (truck-1-axle)
+  const [selectedVehicleType, setSelectedVehicleType] = useState<string>("truck-1-axle");
   const [vehicleTypeObj, setVehicleTypeObj] = useState<VehicleType | null>(null);
   const [isAddLocationModalOpen, setIsAddLocationModalOpen] = useState(false);
   const [startDate, setStartDate] = useState<string | null>(null);

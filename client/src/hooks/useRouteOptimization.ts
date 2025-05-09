@@ -51,8 +51,12 @@ export function useRouteOptimization() {
       vehicleType
     );
     
-    // Set the waypoints in the route info
+    // Set the waypoints in the route info (inclui todos os pontos)
     routeInfoData.waypoints = optimizedLocations;
+    
+    // Armazenar apenas os destinos originais (sem origem)
+    // Isso permite identificar quais são as cidades de destino reais vs. pontos de passagem
+    routeInfoData.destinations = locations;
     
     setRouteInfo(routeInfoData);
     return routeInfoData;

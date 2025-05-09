@@ -21,22 +21,33 @@ export default function RouteInfoPanel({
 }: RouteInfoPanelProps) {
   const [activeTab, setActiveTab] = useState<TabType>("summary");
 
-  // Get city names from route for events and restrictions
-  const cityNames = routeInfo?.waypoints
+  // Extrair apenas os nomes das cidades dos destinos escolhidos (não do percurso)
+  // Isso atende ao requisito de mostrar eventos apenas das cidades selecionadas como destino
+  const destinationCities = routeInfo?.destinations
+    .map(dest => {
+      // Tenta extrair o nome da cidade da última parte após a vírgula (formato típico: Nome, Cidade)
+      const parts = dest.name.split(",");
+      return parts.length > 1 ? parts[parts.length - 1].trim() : dest.name.trim();
+    })
+    .filter(Boolean)
+    .join(",");
+
+  // Get city names from route for restrictions (todas as cidades incluindo as do percurso)
+  const routeCityNames = routeInfo?.waypoints
     .map(wp => wp.name.split(",").pop()?.trim())
     .filter(Boolean)
     .join(",");
 
-  // Fetch city events if dates are provided
+  // Fetch city events if dates are provided - APENAS para cidades de destino
   const { data: cityEvents } = useQuery({
-    queryKey: ['/api/city-events', startDate, endDate, cityNames],
-    enabled: !!(startDate && endDate && cityNames),
+    queryKey: ['/api/city-events', startDate, endDate, destinationCities],
+    enabled: !!(startDate && endDate && destinationCities),
   });
 
-  // Fetch truck restrictions if using a truck vehicle type
+  // Fetch truck restrictions if using a truck vehicle type - para todas as cidades da rota
   const { data: truckRestrictions } = useQuery({
-    queryKey: ['/api/truck-restrictions', cityNames],
-    enabled: !!(vehicleType?.type.includes("truck") && cityNames),
+    queryKey: ['/api/truck-restrictions', routeCityNames],
+    enabled: !!(vehicleType?.type.includes("truck") && routeCityNames),
   });
 
   const tollsOnRoute = poisAlongRoute.filter(poi => poi.type === 'toll');
