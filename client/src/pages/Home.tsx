@@ -346,6 +346,8 @@ export default function Home() {
         startDate={startDate}
         endDate={endDate}
         poisAlongRoute={poisOnRoute}
+        origin={origin}
+        calculatedRoute={calculatedRoute}
       />
       
       {/* Add Location Modal */}
