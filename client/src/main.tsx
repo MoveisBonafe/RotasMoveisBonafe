@@ -19,6 +19,8 @@ const loadGoogleMaps = () => {
   // Prevent multiple loading attempts
   if (loadAttempted) return;
   loadAttempted = true;
+  
+  console.log("Iniciando carregamento da Google Maps API...");
 
   // Check if Google Maps is already loaded
   if (window.google && window.google.maps) {

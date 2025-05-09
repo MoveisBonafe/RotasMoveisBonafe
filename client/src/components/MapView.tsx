@@ -33,10 +33,15 @@ export default function MapView({
   // Obter a chave API do Google Maps
   const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
   
-  // Quando a origem for carregada, construir o iframe URL
+  // Quando a origem for carregada, inicializar o mapa
   useEffect(() => {
     if (origin) {
-      // Construir o iframe URL com a origem (coordenadas exatas)
+      // Iniciar carregamento da API do Google Maps
+      withGoogleMaps(() => {
+        console.log("Google Maps API está pronta para uso");
+      });
+      
+      // Configurar fallback para iframe se necessário
       const baseUrl = `https://www.google.com/maps/embed/v1/place`;
       const params = new URLSearchParams({
         key: GOOGLE_MAPS_API_KEY,
@@ -47,7 +52,7 @@ export default function MapView({
       
       setMapSrc(`${baseUrl}?${params.toString()}`);
       setIsMapReady(true);
-      console.log("Mapa inicial carregado com coordenadas exatas");
+      console.log("Fallback para iframe configurado se necessário");
     }
   }, [origin, GOOGLE_MAPS_API_KEY]);
   
@@ -436,9 +441,18 @@ export default function MapView({
   // Atualizar marcadores quando waypoints mudarem
   useEffect(() => {
     if (directMapRef.current && waypoints && waypoints.length > 0) {
+      console.log(`Atualizando ${waypoints.length} waypoints no mapa`);
       updateMarkersOnMap();
     }
-  }, [waypoints]);
+  }, [waypoints, directMapRef.current]);
+  
+  // Inicializar o mapa quando o componente montar
+  useEffect(() => {
+    // Iniciar carregamento da API do Google Maps no mount do componente
+    withGoogleMaps(() => {
+      console.log("API do Google Maps carregada automaticamente durante montagem do componente");
+    });
+  }, []);
 
   return (
     <div className="flex-1 relative h-full">
