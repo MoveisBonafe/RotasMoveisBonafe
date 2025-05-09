@@ -248,14 +248,12 @@ export default function Home() {
         poisAlongRoute={poisOnRoute}
       />
       
-      {/* Mantemos o modal para compatibilidade, mas não é mais necessário */}
-      {isAddLocationModalOpen && (
-        <AddLocationModal
-          isOpen={isAddLocationModalOpen}
-          onClose={() => setIsAddLocationModalOpen(false)}
-          onAddLocation={handleSelectLocation}
-        />
-      )}
+      {/* Add Location Modal */}
+      <AddLocationModal
+        isOpen={isAddLocationModalOpen}
+        onClose={() => setIsAddLocationModalOpen(false)}
+        onAddLocation={handleSelectLocation}
+      />
     </div>
   );
 }
