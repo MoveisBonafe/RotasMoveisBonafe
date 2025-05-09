@@ -109,6 +109,16 @@ export default function Sidebar({
             title: "Importação concluída",
             description: `${allGeocodingResults.length} localizações importadas com sucesso`,
           });
+          
+          // Calcular automaticamente a rota após importação
+          // Verifica se temos localizações suficientes (pelo menos uma além da origem)
+          // e não estamos já calculando uma rota
+          setTimeout(() => {
+            if (locations.length > 0 && !isCalculating) {
+              console.log("Calculando rota automaticamente após importação de CEPs");
+              onCalculateRoute();
+            }
+          }, 1000); // Pequeno delay para garantir que as localizações foram adicionadas
         } else {
           toast({
             title: "Importação falhou",
