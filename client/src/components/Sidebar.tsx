@@ -59,22 +59,25 @@ export default function Sidebar({
       // Array para armazenar todos os resultados do geocoding
       const allGeocodingResults: GeocodingResult[] = [];
       
-      // Primeiro, preparamos todos os resultados
+      // Primeiro, preparamos todos os resultados usando as coordenadas retornadas pelo servidor
       for (const loc of result.locations) {
         try {
-          // Use the CEP for geocoding (in a real app)
-          const geocodingResult: GeocodingResult = {
-            name: loc.name,
-            address: `${loc.name} - CEP: ${loc.cep}`,
-            cep: loc.cep,
-            // Random coordinates around Dois Córregos-SP for demo
-            lat: (-22.3673 + (Math.random() * 0.05)).toString(),
-            lng: (-48.3823 + (Math.random() * 0.05)).toString()
-          };
-          
-          // Adicionamos ao array em vez de chamar onSelectLocation diretamente
-          allGeocodingResults.push(geocodingResult);
-          console.log(`Preparado resultado para CEP: ${loc.cep}, Nome: ${loc.name}`);
+          if (loc.lat && loc.lng) {
+            // Usamos as coordenadas e o endereço já fornecidos pelo servidor
+            const geocodingResult: GeocodingResult = {
+              name: loc.name,
+              address: loc.address || `${loc.name} - CEP: ${loc.cep}`,
+              cep: loc.cep,
+              lat: loc.lat,
+              lng: loc.lng
+            };
+            
+            // Adicionamos ao array em vez de chamar onSelectLocation diretamente
+            allGeocodingResults.push(geocodingResult);
+            console.log(`Preparado resultado para CEP: ${loc.cep}, Nome: ${loc.name}, Coords: ${loc.lat},${loc.lng}`);
+          } else {
+            console.warn(`CEP ${loc.cep} sem coordenadas geográficas.`);
+          }
         } catch (err) {
           console.error(`Erro ao processar o CEP ${loc.cep}:`, err);
         }
