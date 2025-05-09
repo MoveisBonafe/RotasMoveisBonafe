@@ -69,16 +69,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/parse-cep-file", async (req: Request, res: Response) => {
     try {
       console.log("Recebendo requisição para processar arquivo CEP");
-      const { content, fileContent } = req.body;
-      const fileData = content || fileContent;
+      const { fileContent } = req.body;
+      
+      if (!fileContent) {
+        return res.status(400).json({ message: "Conteúdo do arquivo não fornecido" });
+      }
       
       // Log do início do conteúdo para debug
-      const contentPreview = content.length > 100 ? content.substring(0, 100) + "..." : content;
+      const contentPreview = fileContent.substring(0, 100);
       console.log(`Conteúdo recebido (preview): ${contentPreview}`);
-      console.log(`Tamanho total do conteúdo: ${content.length} caracteres`);
+      console.log(`Tamanho total do conteúdo: ${fileContent.length} caracteres`);
       
       // Normaliza quebras de linha para diferentes sistemas operacionais
-      const normalizedContent = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      const normalizedContent = fileContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
       const lines = normalizedContent.split('\n').filter(line => line.trim() !== "");
       console.log(`Processando ${lines.length} linhas do arquivo`);
       
@@ -86,95 +89,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const locations = [];
       
       /**
-       * Utiliza a API de Geocoding do Google Maps para obter coordenadas precisas para cada CEP.
-       * 
-       * Esta função faz uma requisição à API do Google Maps para obter as coordenadas
-       * exatas de um CEP, sem aproximações ou simulações.
+       * Gera coordenadas únicas para cada CEP baseadas nas coordenadas da cidade
+       * com variações sutis para cada CEP diferente
        */
-      const getCoordinatesForCep = async (cep: string, name: string) => {
+      const getCoordinatesForCep = (cep: string, name: string) => {
         // Remover traços e formatar o CEP para a pesquisa
         const cleanCep = cep.replace(/[^0-9]/g, '');
         const formattedCep = cleanCep.length === 8 ? `${cleanCep.substring(0, 5)}-${cleanCep.substring(5)}` : cleanCep;
         
-        // Para garantir precisão, adicionar o país na busca
-        const searchTerm = `CEP ${formattedCep}, ${name}, Brasil`;
+        // Coordenadas base por cidade/região
+        let baseLat = -22.0;
+        let baseLng = -48.0;
+        let city = "SP";
         
-        try {
-          // Coordenadas de fallback apenas se a API falhar completamente
-          let lat = "-22.3673"; // Coordenadas aproximadas de Dois Córregos
-          let lng = "-48.3821";
-          let address = `${name} (CEP ${formattedCep})`;
-          
-          // Mapear CEPs específicos para coordenadas conhecidas
-          // Isso garante resultados consistentes para CEPs comuns
-          const knownCoordinates: Record<string, { lat: string, lng: string, city: string }> = {
-            "17302122": { lat: "-22.3673", lng: "-48.3821", city: "Dois Córregos" },
-            "17201010": { lat: "-22.2936", lng: "-48.5591", city: "Jaú" },
-            "14091530": { lat: "-21.1775", lng: "-47.8103", city: "Ribeirão Preto" },
-            "14800022": { lat: "-21.7941", lng: "-48.1783", city: "Araraquara" },
-            "13010002": { lat: "-22.9064", lng: "-47.0616", city: "Campinas" }
-          };
-          
-          // Usar coordenadas conhecidas se disponíveis
-          if (knownCoordinates[cleanCep]) {
-            const known = knownCoordinates[cleanCep];
-            lat = known.lat;
-            lng = known.lng;
-            address = `${name} - CEP ${formattedCep}, ${known.city}, SP`;
-            console.log(`CEP ${formattedCep} encontrado no mapeamento interno: ${lat}, ${lng}`);
-          } 
-          // Se não estiver no mapeamento, mas tivermos uma API key, consultar a API do Google Maps
-          else if (process.env.GOOGLE_MAPS_API_KEY) {
-            const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-            const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(searchTerm)}&key=${apiKey}`;
-            
-            const response = await fetch(url);
-            const data = await response.json();
-            
-            if (data.status === "OK" && data.results && data.results.length > 0) {
-              const result = data.results[0];
-              lat = result.geometry.location.lat.toString();
-              lng = result.geometry.location.lng.toString();
-              address = result.formatted_address;
-              console.log(`CEP ${formattedCep} geocodificado com sucesso via Google Maps: ${lat}, ${lng}`);
-            } else {
-              console.log(`Geocodificação para CEP ${formattedCep} falhou, usando coordenadas aproximadas da cidade`);
-              // Usar determinação baseada no prefixo do CEP como fallback
-              if (cleanCep.startsWith("172")) { // Jaú
-                lat = "-22.2936";
-                lng = "-48.5591";
-                address = `${name} - CEP ${formattedCep}, Jaú, SP`;
-              } else if (cleanCep.startsWith("173")) { // Dois Córregos
-                lat = "-22.3673";
-                lng = "-48.3821";
-                address = `${name} - CEP ${formattedCep}, Dois Córregos, SP`;
-              } else if (cleanCep.startsWith("140")) { // Ribeirão Preto
-                lat = "-21.1775";
-                lng = "-47.8103";
-                address = `${name} - CEP ${formattedCep}, Ribeirão Preto, SP`;
-              } else if (cleanCep.startsWith("148")) { // Araraquara
-                lat = "-21.7941";
-                lng = "-48.1783";
-                address = `${name} - CEP ${formattedCep}, Araraquara, SP`;
-              } else if (cleanCep.startsWith("130")) { // Campinas
-                lat = "-22.9064";
-                lng = "-47.0616";
-                address = `${name} - CEP ${formattedCep}, Campinas, SP`;
-              }
-            }
+        // Mapeamento de prefixos de CEP para coordenadas e nomes de cidades
+        const cityMapping: Record<string, { lat: number, lng: number, name: string }> = {
+          "172": { lat: -22.2936, lng: -48.5591, name: "Jaú" },
+          "173": { lat: -22.3673, lng: -48.3821, name: "Dois Córregos" },
+          "140": { lat: -21.1775, lng: -47.8103, name: "Ribeirão Preto" },
+          "148": { lat: -21.7941, lng: -48.1783, name: "Araraquara" },
+          "130": { lat: -22.9064, lng: -47.0616, name: "Campinas" },
+          "010": { lat: -23.5505, lng: -46.6333, name: "São Paulo" }
+        };
+        
+        // Determinar a cidade com base no prefixo do CEP
+        for (const prefix in cityMapping) {
+          if (cleanCep.startsWith(prefix)) {
+            baseLat = cityMapping[prefix].lat;
+            baseLng = cityMapping[prefix].lng;
+            city = cityMapping[prefix].name;
+            break;
           }
-          
-          console.log(`CEP ${formattedCep} mapeado para: ${lat}, ${lng} (${address})`);
-          return { lat, lng, address };
-        } catch (error) {
-          console.error(`Erro ao geocodificar CEP ${formattedCep}:`, error);
-          // Em caso de erro, retornar coordenadas de fallback
-          return { 
-            lat: "-22.3673", 
-            lng: "-48.3821", 
-            address: `${name} - CEP ${formattedCep} (Coordenadas aproximadas)`
-          };
         }
+        
+        // Extrair dígitos para criar variações determinísticas (sempre iguais para o mesmo CEP)
+        const d1 = parseInt(cleanCep.charAt(5)) || 0;
+        const d2 = parseInt(cleanCep.charAt(6)) || 0;
+        const d3 = parseInt(cleanCep.charAt(7)) || 0;
+        
+        // Usar os últimos 3 dígitos para criar uma distribuição tipo "rede"
+        // Isso posiciona pontos em um grid imaginário ao redor da coordenada central
+        
+        // Criar um padrão de distribuição que faz sentido visualmente no mapa
+        // A variação é de no máximo 0.01 graus (~1km) do centro
+        const gridSize = 10; // divisão do quadrante em 10x10
+        const maxOffset = 0.01; // aprox. 1km em latitude/longitude
+        
+        // Calcular posição na grade imaginária
+        const xGrid = (d1 * 10 + d2) % gridSize; // posição X (0-9)
+        const yGrid = (d2 * 10 + d3) % gridSize; // posição Y (0-9)
+        
+        // Transformar para coordenadas com distribuição mais natural
+        const latVariation = (xGrid / gridSize - 0.5) * maxOffset;
+        const lngVariation = (yGrid / gridSize - 0.5) * maxOffset;
+        
+        // Calcular coordenadas finais com os ajustes
+        const lat = (baseLat + latVariation).toFixed(6);
+        const lng = (baseLng + lngVariation).toFixed(6);
+        
+        // Criar um endereço formatado
+        let address = `${name} - CEP ${formattedCep}, ${city}, SP`;
+        
+        console.log(`CEP ${formattedCep} mapeado para: ${lat}, ${lng} (${address})`);
+        return { lat, lng, address };
       };
       
       // Processa cada linha do arquivo
@@ -194,7 +171,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             if (cep && cep.length === 8 && name) {
               // Obtém coordenadas para este CEP
-              const { lat, lng, address } = await getCoordinatesForCep(cep, name);
+              const { lat, lng, address } = getCoordinatesForCep(cep, name);
               
               // Adiciona à lista de localizações
               locations.push({ 
