@@ -329,7 +329,7 @@ export default function MapView({
             lng: parseFloat(origin.lng) 
           };
           
-          // Criar nova instância do mapa
+          // Criar nova instância do mapa com estilo personalizado
           const map = new window.google.maps.Map(mapContainerRef.current!, {
             center: originCoords,
             zoom: 10,
@@ -340,13 +340,81 @@ export default function MapView({
             zoomControl: true,
             // Configurações para o zoom
             gestureHandling: 'greedy',
-            scrollwheel: true
+            scrollwheel: true,
+            // Estilo visual personalizado para o mapa
+            styles: [
+              {
+                "featureType": "water",
+                "elementType": "geometry",
+                "stylers": [
+                  { "color": "#e9e9e9" },
+                  { "lightness": 17 }
+                ]
+              },
+              {
+                "featureType": "landscape",
+                "elementType": "geometry",
+                "stylers": [
+                  { "color": "#f5f5f5" },
+                  { "lightness": 20 }
+                ]
+              },
+              {
+                "featureType": "road.highway",
+                "elementType": "geometry.fill",
+                "stylers": [
+                  { "color": "#ffffff" },
+                  { "lightness": 17 }
+                ]
+              },
+              {
+                "featureType": "road.highway",
+                "elementType": "geometry.stroke",
+                "stylers": [
+                  { "color": "#ffffff" },
+                  { "lightness": 29 },
+                  { "weight": 0.2 }
+                ]
+              },
+              {
+                "featureType": "road.arterial",
+                "elementType": "geometry",
+                "stylers": [
+                  { "color": "#ffffff" },
+                  { "lightness": 18 }
+                ]
+              },
+              {
+                "featureType": "road.local",
+                "elementType": "geometry",
+                "stylers": [
+                  { "color": "#ffffff" },
+                  { "lightness": 16 }
+                ]
+              },
+              {
+                "featureType": "poi",
+                "elementType": "geometry",
+                "stylers": [
+                  { "color": "#f5f5f5" },
+                  { "lightness": 21 }
+                ]
+              },
+              {
+                "featureType": "transit",
+                "elementType": "geometry",
+                "stylers": [
+                  { "color": "#f2f2f2" },
+                  { "lightness": 19 }
+                ]
+              }
+            ]
           });
           
           // Armazenar referência para uso futuro
           directMapRef.current = map;
           
-          // Criar marcador da origem
+          // Criar marcador da origem com estilo moderno
           const originMarker = new window.google.maps.Marker({
             position: originCoords,
             map: map,
@@ -357,12 +425,10 @@ export default function MapView({
               fontWeight: "bold"
             },
             icon: {
-              path: window.google.maps.SymbolPath.CIRCLE,
-              fillColor: "#0066FF", // Azul
-              fillOpacity: 1,
-              strokeWeight: 2,
-              strokeColor: "#FFFFFF",
-              scale: 14
+              url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+              labelOrigin: new window.google.maps.Point(14, 15),
+              size: new window.google.maps.Size(32, 32),
+              scaledSize: new window.google.maps.Size(32, 32)
             },
             animation: window.google.maps.Animation.DROP
           });
@@ -613,25 +679,29 @@ export default function MapView({
         </div>
       ) : (
         // Contêiner para o mapa - usando iframe como fallback temporário
-        <div className="h-full w-full relative" style={{ minHeight: '500px' }}>
+        <div className="h-full w-full relative rounded-xl overflow-hidden shadow-lg" style={{ minHeight: '500px' }}>
           {/* Mapa nativo via JavaScript API */}
           <div 
             id="map-container"
             ref={mapContainerRef} 
-            className="h-full w-full touch-manipulation"
+            className="h-full w-full touch-manipulation rounded-xl"
             style={{ 
               display: 'none',  // Escondido temporariamente
               minHeight: '500px',
               touchAction: 'manipulation',
-              backgroundColor: '#f0f0f0'
+              backgroundColor: '#f0f0f0',
+              border: '1px solid #e2e8f0',
             }}
             data-gesture-handling="greedy"
           ></div>
           
           {/* Fallback para o iframe */}
           <iframe
-            className="w-full h-full border-0"
-            style={{ minHeight: '500px' }}
+            className="w-full h-full border-0 rounded-xl"
+            style={{ 
+              minHeight: '500px',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+            }}
             loading="lazy"
             allowFullScreen
             src={mapSrc || createMapUrl("roadmap")}
