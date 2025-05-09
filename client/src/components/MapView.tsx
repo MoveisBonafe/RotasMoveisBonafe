@@ -405,7 +405,7 @@ export default function MapView({
           markerURL = "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
         } else {
           // Marcadores de waypoints numerados (sequenciais) - LARANJA
-          // Usamos o índice correto na sequência da rota
+          // Usamos o índice correto na sequência da rota (começando em 1)
           markerLabel = (index).toString();
           markerURL = "http://maps.google.com/mapfiles/ms/icons/orange-dot.png";
         }

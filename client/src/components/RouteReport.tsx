@@ -281,9 +281,10 @@ export default function RouteReport({
   // Calcular distância total em km
   const totalDistanceKm = routeInfo.totalDistance / 1000;
   
-  // Número correto de paradas (todos os waypoints, mesmo os com a mesma cidade)
+  // Número correto de paradas (todos os destinos, exceto a origem)
+  // Para 5 CEPs importados, teremos 1 origem e 4 destinos
   const numberOfStops = calculatedRoute 
-    ? (calculatedRoute.slice(1, -1).length > 0 ? calculatedRoute.slice(1, -1).length : 0) 
+    ? (calculatedRoute.length > 1 ? calculatedRoute.length - 1 : 0) 
     : 0;
 
   return (
@@ -318,8 +319,8 @@ export default function RouteReport({
         {/* Cards de resumo da rota - mais visuais */}
         <div className="route-summary-card">
           <div className="summary-item">
-            <div className="summary-item-title">
-              <svg className="w-5 h-5 inline-block mr-1 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <div className="summary-item-title text-blue-700 font-medium">
+              <svg className="w-4 h-4 inline-block mr-1 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
               </svg>
               Distância Total
@@ -330,8 +331,8 @@ export default function RouteReport({
             </div>
           </div>
           <div className="summary-item">
-            <div className="summary-item-title">
-              <svg className="w-5 h-5 inline-block mr-1 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <div className="summary-item-title text-green-700 font-medium">
+              <svg className="w-4 h-4 inline-block mr-1 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Tempo Estimado
