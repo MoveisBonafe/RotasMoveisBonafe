@@ -75,26 +75,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const normalizedContent = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
       const lines = normalizedContent.split('\n').filter(line => line.trim() !== "");
       console.log(`Processando ${lines.length} linhas do arquivo`);
+      console.log(`Conteúdo do arquivo: ${normalizedContent}`);
+      
       const locations = [];
       
-      for (const line of lines) {
-        // Separamos por vírgula e removemos espaços extras
-        const [cep, ...nameParts] = line.split(",").map(part => part.trim());
-        // Juntamos todas as partes do nome caso haja vírgulas no nome
-        const name = nameParts.join(", ");
+      // Processar linha por linha
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
         
-        if (!cep || !name) {
-          continue;
+        // Verificar se a linha contém vírgula (formato: cep,nome)
+        if (line.includes(',')) {
+          // Separamos por vírgula e removemos espaços extras
+          const [cep, ...nameParts] = line.split(",").map(part => part.trim());
+          // Juntamos todas as partes do nome caso haja vírgulas no nome
+          const name = nameParts.join(", ");
+          
+          if (cep && name && cepRegex.test(cep)) {
+            locations.push({ cep, name });
+            console.log(`Adicionado CEP: ${cep}, Nome: ${name}`);
+          }
         }
-        
-        if (!cepRegex.test(cep)) {
-          continue;
-        }
-        
-        locations.push({
-          cep,
-          name
-        });
       }
       
       res.json({ locations });

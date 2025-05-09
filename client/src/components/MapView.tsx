@@ -86,9 +86,12 @@ export default function MapView({
   // Quando waypoints mudam, mas não há rota calculada ainda
   useEffect(() => {
     if (origin && waypoints.length > 0 && !calculatedRoute) {
-      // Vamos usar o modo places do Google Maps para mostrar múltiplos locais
-      // Esta abordagem não usa "markers" diretamente, mas mostra pinos no mapa
-      const baseUrl = `https://www.google.com/maps/embed/v1/search`;
+      // Para marcadores personalizados sem usar a API directions, vamos criar
+      // uma URL para um mapa estático que simula a visualização dinâmica
+      
+      // Iniciar com URL base que usa o iframe embed de "place" 
+      // Isso permite centralizar e mostrar um ponto principal
+      const baseUrl = `https://www.google.com/maps/embed/v1/place`;
       
       // Calcular a média das coordenadas para centrar o mapa
       let sumLat = parseFloat(origin.lat);
@@ -102,26 +105,35 @@ export default function MapView({
       const centerLat = sumLat / (waypoints.length + 1);
       const centerLng = sumLng / (waypoints.length + 1);
       
-      // Construir uma string de consulta incluindo todos os pontos
-      // Formato: "coord:LAT,LNG|coord:LAT,LNG|..."
-      let searchQuery = `coord:${origin.lat},${origin.lng}`;
-      
-      // Adicionar cada waypoint à consulta
-      waypoints.forEach((waypoint, index) => {
-        searchQuery += `|coord:${waypoint.lat},${waypoint.lng}`;
-      });
+      // Primeiro, criar uma string de localização para o centro do mapa
+      const centerLocation = `${centerLat},${centerLng}`;
       
       // Parâmetros básicos do mapa
       const params = new URLSearchParams({
         key: GOOGLE_MAPS_API_KEY,
-        q: searchQuery,
-        center: `${centerLat},${centerLng}`,
+        q: centerLocation,
+        center: centerLocation,
         zoom: "10",
         maptype: "roadmap"
       });
       
-      setMapSrc(`${baseUrl}?${params.toString()}`);
-      console.log("Mostrando pontos de destino usando search mode");
+      // Construir URLs individuais para cada marcador
+      const markerUrls = [];
+      
+      // Adicionar o marcador de origem (azul)
+      markerUrls.push(`https://maps.google.com/mapfiles/ms/icons/blue-dot.png|${origin.lat},${origin.lng}|Origem`);
+      
+      // Adicionar marcadores numerados para cada waypoint
+      waypoints.forEach((waypoint, index) => {
+        // Usamos o índice + 1 como rótulo para os marcadores
+        markerUrls.push(`https://maps.google.com/mapfiles/kml/paddle/${index + 1}.png|${waypoint.lat},${waypoint.lng}|${waypoint.name || 'Destino ' + (index + 1)}`);
+      });
+      
+      // Construir a URL completa
+      const mapUrl = `${baseUrl}?${params.toString()}`;
+      
+      setMapSrc(mapUrl);
+      console.log("Mostrando pontos de destino usando place mode com centralização");
     }
   }, [waypoints, origin, calculatedRoute, GOOGLE_MAPS_API_KEY]);
 
@@ -184,15 +196,7 @@ export default function MapView({
     }
     // Se tivermos waypoints, mas não a rota calculada ainda
     else if (waypoints && waypoints.length > 0) {
-      baseUrl = `https://www.google.com/maps/embed/v1/search`;
-      
-      // Construir uma string de consulta para todos os pontos
-      let searchQuery = `coord:${origin.lat},${origin.lng}`;
-      
-      // Adicionar cada waypoint à consulta
-      waypoints.forEach(waypoint => {
-        searchQuery += `|coord:${waypoint.lat},${waypoint.lng}`;
-      });
+      baseUrl = `https://www.google.com/maps/embed/v1/place`;
       
       // Calcular centro do mapa
       let sumLat = parseFloat(origin.lat);
@@ -206,8 +210,11 @@ export default function MapView({
       const centerLat = sumLat / (waypoints.length + 1);
       const centerLng = sumLng / (waypoints.length + 1);
       
-      params.append("q", searchQuery);
-      params.append("center", `${centerLat},${centerLng}`);
+      // Usar o centro calculado como ponto central
+      const centerLocation = `${centerLat},${centerLng}`;
+      
+      params.append("q", centerLocation);
+      params.append("center", centerLocation);
       params.append("zoom", "10");
     } 
     // Se não tivermos waypoints, usamos place para mostrar apenas a origem
@@ -244,7 +251,7 @@ export default function MapView({
         </div>
       ) : (
         // Container do mapa com iframe do Google Maps Embed API
-        <div className="h-full w-full" style={{ minHeight: '500px' }}>
+        <div className="h-full w-full relative" style={{ minHeight: '500px' }}>
           <iframe
             width="100%"
             height="100%"
@@ -255,6 +262,25 @@ export default function MapView({
             src={mapSrc}
             title="Google Maps"
           ></iframe>
+          
+          {/* Pins de sobreposição para mostrar numeração personalizada */}
+          {(waypoints && waypoints.length > 0 && !showStreetView) && (
+            <div className="absolute bottom-4 left-4 bg-white rounded-md shadow-md p-2 z-10 max-w-xs">
+              <h3 className="text-sm font-semibold mb-2">Pontos no mapa:</h3>
+              <div className="flex flex-col space-y-1 text-xs">
+                <div className="flex items-center">
+                  <span className="inline-flex items-center justify-center bg-blue-500 text-white rounded-full w-5 h-5 mr-2">A</span>
+                  <span>Origem: {origin?.name || 'Dois Córregos'}</span>
+                </div>
+                {waypoints.map((waypoint, index) => (
+                  <div key={index} className="flex items-center">
+                    <span className="inline-flex items-center justify-center bg-red-500 text-white rounded-full w-5 h-5 mr-2">{index + 1}</span>
+                    <span>{waypoint.name || `Destino ${index + 1}`}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           
           {/* Controles do mapa */}
           <div className="absolute top-4 right-4 bg-white rounded-md shadow-md p-2 flex flex-col space-y-2 z-10">
