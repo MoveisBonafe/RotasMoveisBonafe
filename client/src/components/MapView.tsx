@@ -612,19 +612,31 @@ export default function MapView({
           </div>
         </div>
       ) : (
-        // Container do mapa - sempre usando o mapa JavaScript diretamente
+        // Contêiner para o mapa - usando iframe como fallback temporário
         <div className="h-full w-full relative" style={{ minHeight: '500px' }}>
-          {/* Container para mapa direto do Google Maps JavaScript API */}
+          {/* Mapa nativo via JavaScript API */}
           <div 
+            id="map-container"
             ref={mapContainerRef} 
             className="h-full w-full touch-manipulation"
             style={{ 
-              display: 'block', // Sempre mostrar o container
+              display: 'none',  // Escondido temporariamente
               minHeight: '500px',
-              touchAction: 'manipulation' 
+              touchAction: 'manipulation',
+              backgroundColor: '#f0f0f0'
             }}
             data-gesture-handling="greedy"
-          />
+          ></div>
+          
+          {/* Fallback para o iframe */}
+          <iframe
+            className="w-full h-full border-0"
+            style={{ minHeight: '500px' }}
+            loading="lazy"
+            allowFullScreen
+            src={mapSrc || createMapUrl("roadmap")}
+            title="Google Maps"
+          ></iframe>
           
           {/* Legenda para os pontos no mapa */}
           {(waypoints && waypoints.length > 0 && !showStreetView) && (
