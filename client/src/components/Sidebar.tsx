@@ -11,7 +11,7 @@ interface SidebarProps {
   locations: Location[];
   selectedVehicleType: string;
   onVehicleSelect: (vehicleType: VehicleType) => void;
-  onSelectLocation: (location: GeocodingResult) => void;
+  onSelectLocation: (location: GeocodingResult | GeocodingResult[]) => void;
   onRemoveLocation: (index: number) => void;
   onMoveLocationUp: (index: number) => void;
   onMoveLocationDown: (index: number) => void;
