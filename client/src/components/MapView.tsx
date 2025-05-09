@@ -404,7 +404,8 @@ export default function MapView({
           markerLabel = "B";
           markerURL = "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
         } else {
-          // Marcadores de waypoints numerados - LARANJA
+          // Marcadores de waypoints numerados (sequenciais) - LARANJA
+          // Usamos o índice correto na sequência da rota
           markerLabel = (index).toString();
           markerURL = "http://maps.google.com/mapfiles/ms/icons/orange-dot.png";
         }
@@ -596,7 +597,13 @@ export default function MapView({
             
             {/* Botão de visualização de satélite */}
             <button 
-              onClick={showSatelliteView} 
+              onClick={() => {
+                if (directMapRef.current) {
+                  directMapRef.current.setMapTypeId(window.google.maps.MapTypeId.SATELLITE);
+                } else {
+                  setMapSrc(createMapUrl("satellite"));
+                }
+              }} 
               className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
               title="Visualização de satélite"
             >
@@ -607,7 +614,13 @@ export default function MapView({
             
             {/* Botão de visualização de mapa */}
             <button 
-              onClick={showRoadmapView} 
+              onClick={() => {
+                if (directMapRef.current) {
+                  directMapRef.current.setMapTypeId(window.google.maps.MapTypeId.ROADMAP);
+                } else {
+                  setMapSrc(createMapUrl("roadmap"));
+                }
+              }} 
               className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
               title="Visualização de mapa"
             >

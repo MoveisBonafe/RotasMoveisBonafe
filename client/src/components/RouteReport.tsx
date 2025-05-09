@@ -281,8 +281,10 @@ export default function RouteReport({
   // Calcular distância total em km
   const totalDistanceKm = routeInfo.totalDistance / 1000;
   
-  // Número de paradas (excluindo origem e destino)
-  const numberOfStops = calculatedRoute ? (calculatedRoute.length - 2 > 0 ? calculatedRoute.length - 2 : 0) : 0;
+  // Número correto de paradas (todos os waypoints, mesmo os com a mesma cidade)
+  const numberOfStops = calculatedRoute 
+    ? (calculatedRoute.slice(1, -1).length > 0 ? calculatedRoute.slice(1, -1).length : 0) 
+    : 0;
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
@@ -313,23 +315,64 @@ export default function RouteReport({
           <p className="date-range">{dateRangeText}</p>
         </div>
         
-        {/* Cards de resumo da rota */}
+        {/* Cards de resumo da rota - mais visuais */}
         <div className="route-summary-card">
           <div className="summary-item">
-            <div className="summary-item-title">Distância Total</div>
-            <div className="summary-item-value">{totalDistanceKm.toFixed(1).replace('.', ',')} km</div>
+            <div className="summary-item-title">
+              <svg className="w-5 h-5 inline-block mr-1 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+              </svg>
+              Distância Total
+            </div>
+            <div className="summary-item-value text-blue-700">{totalDistanceKm.toFixed(1).replace('.', ',')} km</div>
+            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+              <div className="bg-blue-600 h-2 rounded-full" style={{ width: '100%' }}></div>
+            </div>
           </div>
           <div className="summary-item">
-            <div className="summary-item-title">Tempo Estimado</div>
-            <div className="summary-item-value">{formatDuration(routeInfo.totalDuration)}</div>
+            <div className="summary-item-title">
+              <svg className="w-5 h-5 inline-block mr-1 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Tempo Estimado
+            </div>
+            <div className="summary-item-value text-green-700">{formatDuration(routeInfo.totalDuration)}</div>
+            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+              <div className="bg-green-600 h-2 rounded-full" style={{ width: '100%' }}></div>
+            </div>
           </div>
           <div className="summary-item">
-            <div className="summary-item-title">Número de Paradas</div>
-            <div className="summary-item-value">{numberOfStops} paradas</div>
+            <div className="summary-item-title">
+              <svg className="w-5 h-5 inline-block mr-1 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Número de Paradas
+            </div>
+            <div className="summary-item-value text-orange-700">{numberOfStops} paradas</div>
+            <div className="flex mt-2">
+              {Array.from({ length: Math.min(numberOfStops, 10) }).map((_, i) => (
+                <div key={i} className="w-3 h-3 rounded-full bg-orange-500 mr-1 flex-shrink-0"></div>
+              ))}
+              {numberOfStops > 10 && <div className="text-xs text-gray-500 ml-1 self-center">+{numberOfStops - 10}</div>}
+            </div>
           </div>
           <div className="summary-item">
-            <div className="summary-item-title">Custo Total</div>
-            <div className="summary-item-value">{formatCurrency(routeInfo.totalCost)}</div>
+            <div className="summary-item-title">
+              <svg className="w-5 h-5 inline-block mr-1 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Custo Total
+            </div>
+            <div className="summary-item-value text-purple-700">{formatCurrency(routeInfo.totalCost)}</div>
+            <div className="flex justify-between text-xs text-gray-500 mt-1">
+              <span>Combustível: {Math.round(routeInfo.fuelCost / routeInfo.totalCost * 100)}%</span>
+              <span>Pedágios: {Math.round(routeInfo.tollCost / routeInfo.totalCost * 100)}%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2 mt-1 overflow-hidden">
+              <div className="bg-green-500 h-2 float-left" style={{ width: `${Math.round(routeInfo.fuelCost / routeInfo.totalCost * 100)}%` }}></div>
+              <div className="bg-yellow-500 h-2 float-left" style={{ width: `${Math.round(routeInfo.tollCost / routeInfo.totalCost * 100)}%` }}></div>
+            </div>
           </div>
         </div>
 
@@ -392,42 +435,86 @@ export default function RouteReport({
         </div>
 
         <div className="report-section">
-          <h2>Sequência de Pontos</h2>
-          <table>
-            <thead>
-              <tr>
-                <th style={{ width: '50px' }}>Seq.</th>
-                <th>Local</th>
-                <th>Endereço</th>
-                <th>CEP</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* Origem */}
-              <tr>
-                <td>
-                  <span className="point-label origin-label">A</span>
-                </td>
-                <td><strong>{origin.name || 'Origem'}</strong></td>
-                <td>{origin.address || '-'}</td>
-                <td>{origin.cep || '-'}</td>
-              </tr>
-              
-              {/* Waypoints (da rota calculada, sem incluir origem) */}
-              {calculatedRoute.slice(1).map((point, index) => (
-                <tr key={index}>
-                  <td>
-                    <span className={`point-label ${index === calculatedRoute.length - 2 ? 'destination-label' : ''}`}>
-                      {index === calculatedRoute.length - 2 ? 'B' : (index + 1)}
-                    </span>
-                  </td>
-                  <td>{point.name || `Ponto ${index + 1}`}</td>
-                  <td>{point.address || '-'}</td>
-                  <td>{point.cep || '-'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <h2>
+            <svg className="w-5 h-5 inline-block mr-2 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+            </svg>
+            Sequência de Pontos
+          </h2>
+          
+          <div className="flex flex-col space-y-3 my-4">
+            {/* Origem */}
+            <div className="flex items-start bg-blue-50 p-3 rounded-lg border-l-4 border-blue-600 shadow-sm">
+              <div className="flex-shrink-0 mr-3">
+                <span className="point-label origin-label w-8 h-8 flex items-center justify-center">A</span>
+              </div>
+              <div className="flex-grow">
+                <div className="font-bold text-blue-800">{origin.name || 'Origem'}</div>
+                <div className="text-sm text-gray-600">{origin.address || '-'}</div>
+                <div className="text-xs text-gray-500 mt-1">CEP: {origin.cep || '-'}</div>
+              </div>
+              <div className="flex-shrink-0 ml-2">
+                <svg className="w-5 h-5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              </div>
+            </div>
+            
+            {/* Seta de conexão */}
+            <div className="flex justify-center">
+              <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </div>
+            
+            {/* Waypoints (da rota calculada, sem incluir origem) */}
+            {calculatedRoute.slice(1, -1).map((point, index) => (
+              <React.Fragment key={index}>
+                <div className="flex items-start bg-orange-50 p-3 rounded-lg border-l-4 border-orange-400 shadow-sm">
+                  <div className="flex-shrink-0 mr-3">
+                    <span className="point-label w-8 h-8 flex items-center justify-center bg-orange-500">{index + 1}</span>
+                  </div>
+                  <div className="flex-grow">
+                    <div className="font-bold text-orange-800">{point.name || `Ponto ${index + 1}`}</div>
+                    <div className="text-sm text-gray-600">{point.address || '-'}</div>
+                    <div className="text-xs text-gray-500 mt-1">CEP: {point.cep || '-'}</div>
+                  </div>
+                  <div className="flex-shrink-0 ml-2">
+                    <svg className="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                </div>
+                
+                {/* Seta de conexão */}
+                <div className="flex justify-center">
+                  <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                  </svg>
+                </div>
+              </React.Fragment>
+            ))}
+            
+            {/* Destino final */}
+            {calculatedRoute.length > 1 && (
+              <div className="flex items-start bg-green-50 p-3 rounded-lg border-l-4 border-green-600 shadow-sm">
+                <div className="flex-shrink-0 mr-3">
+                  <span className="point-label destination-label w-8 h-8 flex items-center justify-center">B</span>
+                </div>
+                <div className="flex-grow">
+                  <div className="font-bold text-green-800">{calculatedRoute[calculatedRoute.length - 1]?.name || 'Destino Final'}</div>
+                  <div className="text-sm text-gray-600">{calculatedRoute[calculatedRoute.length - 1]?.address || '-'}</div>
+                  <div className="text-xs text-gray-500 mt-1">CEP: {calculatedRoute[calculatedRoute.length - 1]?.cep || '-'}</div>
+                </div>
+                <div className="flex-shrink-0 ml-2">
+                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="report-section">

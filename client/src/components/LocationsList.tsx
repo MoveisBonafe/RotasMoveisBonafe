@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Location } from "@/lib/types";
 
 interface LocationsListProps {
@@ -8,7 +8,7 @@ interface LocationsListProps {
   onMoveLocationUp: (index: number) => void;
   onMoveLocationDown: (index: number) => void;
   onAddLocationClick: () => void;
-  calculatedRoute?: Location[] | null; // Adicionando a propriedade da rota calculada
+  calculatedRoute?: Location[] | null; // Propriedade da rota calculada
 }
 
 export default function LocationsList({
@@ -29,6 +29,125 @@ export default function LocationsList({
     } else {
       setExpandedLocation(id);
     }
+  };
+
+  // Função auxiliar para renderizar cada localização
+  const renderLocationItem = (location: Location, index: number, sequenceNumber: number, isInRoute: boolean) => {
+    // Encontra o índice original (para botões de mover para cima/baixo)
+    const originalIndex = locations.findIndex(loc => loc.id === location.id);
+    
+    return (
+      <div 
+        key={location.id} 
+        className={`bg-white border ${isInRoute ? 'border-green-300' : 'border-gray-200'} rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200`}
+      >
+        {/* Cabeçalho do card */}
+        <div 
+          className="p-3 cursor-pointer flex items-start justify-between"
+          onClick={() => toggleLocation(location.id)}
+        >
+          <div className="flex items-start flex-1">
+            <div className={`flex items-center justify-center h-8 w-8 rounded-full ${isInRoute ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'} mr-3 flex-shrink-0`}>
+              <div className="font-bold text-sm">{sequenceNumber}</div>
+            </div>
+          
+            <div>
+              <h3 className="text-sm font-medium text-gray-900 truncate max-w-xs">
+                {location.name}
+              </h3>
+              <p className="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
+                {location.address}
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center">
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemoveLocation(originalIndex);
+              }}
+              className="text-gray-400 hover:text-red-600 p-1"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+            </button>
+            
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleLocation(location.id);
+              }}
+              className="ml-1 text-gray-400 hover:text-gray-600 p-1"
+            >
+              <svg 
+                className={`h-5 w-5 transform transition-transform duration-200 ${expandedLocation === location.id ? 'rotate-180' : ''}`} 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24" 
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        {/* Detalhes expandidos */}
+        {expandedLocation === location.id && (
+          <div className="border-t border-gray-200 px-3 py-2 bg-gray-50">
+            <div className="mb-2">
+              <div className="text-xs text-gray-500 mb-1">Coordenadas</div>
+              <div className="text-xs font-mono bg-gray-100 p-1 rounded">
+                {location.lat}, {location.lng}
+              </div>
+            </div>
+            
+            {location.cep && (
+              <div className="mb-2">
+                <div className="text-xs text-gray-500 mb-1">CEP</div>
+                <div className="text-xs font-mono bg-gray-100 p-1 rounded">
+                  {location.cep}
+                </div>
+              </div>
+            )}
+            
+            <div className="flex space-x-2 mt-3">
+              <button
+                onClick={() => onMoveLocationUp(originalIndex)}
+                disabled={originalIndex === 0}
+                className={`flex-1 py-1 px-2 text-xs rounded ${
+                  originalIndex === 0
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                <svg className="h-3 w-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7"></path>
+                </svg>
+                Mover acima
+              </button>
+              
+              <button
+                onClick={() => onMoveLocationDown(originalIndex)}
+                disabled={originalIndex === locations.length - 1}
+                className={`flex-1 py-1 px-2 text-xs rounded ${
+                  originalIndex === locations.length - 1
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                <svg className="h-3 w-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+                Mover abaixo
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
   };
   
   return (
@@ -91,133 +210,21 @@ export default function LocationsList({
         </div>
       ) : (
         <div className="space-y-3">
-          {locations.map((location, index) => {
-            // Se temos uma rota calculada, procuramos a posição deste local na sequência otimizada
-            let sequenceNumber = index + 1;
-            let isInRoute = false;
-            
-            if (calculatedRoute && calculatedRoute.length > 0) {
-              // A primeira posição (0) é a origem, então começamos a numeração a partir de 1
-              const foundIndex = calculatedRoute.findIndex(loc => loc.id === location.id);
-              if (foundIndex > 0) { // Se encontrado na rota (ignorando a origem)
-                sequenceNumber = foundIndex;
-                isInRoute = true;
-              }
-            }
-            
-            return (
-              <div 
-                key={location.id} 
-                className={`bg-white border ${isInRoute ? 'border-green-300' : 'border-gray-200'} rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200`}
-              >
-                {/* Cabeçalho do card */}
-                <div 
-                  className="p-3 cursor-pointer flex items-start justify-between"
-                  onClick={() => toggleLocation(location.id)}
-                >
-                  <div className="flex items-start flex-1">
-                    <div className={`flex items-center justify-center h-8 w-8 rounded-full ${isInRoute ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'} mr-3 flex-shrink-0`}>
-                      <div className="font-bold text-sm">{sequenceNumber}</div>
-                    </div>
-                  
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-900 truncate max-w-xs">
-                      {location.name}
-                    </h3>
-                    <p className="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
-                      {location.address}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center">
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onRemoveLocation(index);
-                    }}
-                    className="text-gray-400 hover:text-red-600 p-1"
-                  >
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                    </svg>
-                  </button>
-                  
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleLocation(location.id);
-                    }}
-                    className="ml-1 text-gray-400 hover:text-gray-600 p-1"
-                  >
-                    <svg 
-                      className={`h-5 w-5 transform transition-transform duration-200 ${expandedLocation === location.id ? 'rotate-180' : ''}`} 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24" 
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-              
-              {/* Detalhes expandidos */}
-              {expandedLocation === location.id && (
-                <div className="border-t border-gray-200 px-3 py-2 bg-gray-50">
-                  <div className="mb-2">
-                    <div className="text-xs text-gray-500 mb-1">Coordenadas</div>
-                    <div className="text-xs font-mono bg-gray-100 p-1 rounded">
-                      {location.lat}, {location.lng}
-                    </div>
-                  </div>
-                  
-                  {location.cep && (
-                    <div className="mb-2">
-                      <div className="text-xs text-gray-500 mb-1">CEP</div>
-                      <div className="text-xs font-mono bg-gray-100 p-1 rounded">
-                        {location.cep}
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div className="flex space-x-2 mt-3">
-                    <button
-                      onClick={() => onMoveLocationUp(index)}
-                      disabled={index === 0}
-                      className={`flex-1 py-1 px-2 text-xs rounded ${
-                        index === 0
-                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      }`}
-                    >
-                      <svg className="h-3 w-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7"></path>
-                      </svg>
-                      Mover acima
-                    </button>
-                    
-                    <button
-                      onClick={() => onMoveLocationDown(index)}
-                      disabled={index === locations.length - 1}
-                      className={`flex-1 py-1 px-2 text-xs rounded ${
-                        index === locations.length - 1
-                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      }`}
-                    >
-                      <svg className="h-3 w-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                      </svg>
-                      Mover abaixo
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-          })}
+          {/* Se temos uma rota calculada, exibimos os locais na ordem da rota otimizada */}
+          {calculatedRoute && calculatedRoute.length > 1 ? (
+            // Exibir locais na ordem da rota calculada (excluindo a origem)
+            calculatedRoute.slice(1).map((location, index) => {
+              // Numeração sequencial conforme a rota otimizada
+              const sequenceNumber = index + 1;
+              return renderLocationItem(location, index, sequenceNumber, true);
+            })
+          ) : (
+            // Exibir locais na ordem original
+            locations.map((location, index) => {
+              const sequenceNumber = index + 1;
+              return renderLocationItem(location, index, sequenceNumber, false);
+            })
+          )}
           
           {/* Botão adicionar mais */}
           <button
