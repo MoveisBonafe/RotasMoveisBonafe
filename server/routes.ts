@@ -71,11 +71,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { content } = parseCepFileSchema.parse(req.body);
       
       // Parse the file content (format: cep,name)
-      const lines = content.split("\n").filter(line => line.trim() !== "");
+      // Normalize line breaks para lidar com arquivos de diferentes sistemas operacionais
+      const normalizedContent = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      const lines = normalizedContent.split('\n').filter(line => line.trim() !== "");
+      console.log(`Processando ${lines.length} linhas do arquivo`);
       const locations = [];
       
       for (const line of lines) {
-        const [cep, name] = line.split(",").map(part => part.trim());
+        // Separamos por vírgula e removemos espaços extras
+        const [cep, ...nameParts] = line.split(",").map(part => part.trim());
+        // Juntamos todas as partes do nome caso haja vírgulas no nome
+        const name = nameParts.join(", ");
         
         if (!cep || !name) {
           continue;

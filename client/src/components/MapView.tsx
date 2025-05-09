@@ -44,9 +44,6 @@ export default function MapView({
       // URL base para direções
       const baseUrl = `https://www.google.com/maps/embed/v1/directions`;
       
-      // Vamos mostrar a origem e os pontos de parada com marcadores numerados
-      const originParams = `color:blue|label:A|${origin.lat},${origin.lng}`;
-      
       // Obter origem e destino com coordenadas exatas para a rota
       const originParam = `${origin.lat},${origin.lng}`;
       const destination = calculatedRoute[calculatedRoute.length - 1];
@@ -78,20 +75,11 @@ export default function MapView({
         params.append("waypoints", waypointsArray.join("|"));
       }
       
-      // Adicionar marcador de origem (A azul)
-      params.append("markers", originParams);
-      
-      // Adicionar marcadores numerados para cada destino na rota otimizada
-      calculatedRoute.forEach((location, index) => {
-        if (index > 0) { // Ignoramos o primeiro ponto (origem)
-          params.append("markers", `color:red|label:${index}|${location.lat},${location.lng}`);
-        }
-      });
-      
-      // Gerar a URL para o mapa
+      // Gerar a URL para o mapa - o Google Maps Embed API não suporta o parâmetro 'markers' 
+      // com 'directions', então removi esses parâmetros
       const routeUrl = `${baseUrl}?${params.toString()}`;
       setMapSrc(routeUrl);
-      console.log("Rota otimizada exibida com marcadores numerados");
+      console.log("Rota otimizada exibida usando a API de directions");
     }
   }, [calculatedRoute, origin, GOOGLE_MAPS_API_KEY]);
 

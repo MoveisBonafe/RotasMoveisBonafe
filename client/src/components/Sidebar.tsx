@@ -44,21 +44,30 @@ export default function Sidebar({
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const result = await handleFileChange(e);
-    if (result && result.locations) {
-      // Process the parsed locations from the file
-      result.locations.forEach(loc => {
-        // Use the CEP for geocoding (in a real app)
-        const geocodingResult: GeocodingResult = {
-          name: loc.name,
-          address: `${loc.name} - CEP: ${loc.cep}`,
-          cep: loc.cep,
-          // Random coordinates around Dois Córregos-SP for demo
-          lat: (-22.3673 + (Math.random() * 0.05)).toString(),
-          lng: (-48.3823 + (Math.random() * 0.05)).toString()
-        };
-        
-        onSelectLocation(geocodingResult);
-      });
+    if (result && result.locations && result.locations.length > 0) {
+      console.log(`Recebidos ${result.locations.length} CEPs para importar`);
+      
+      // Usar uma abordagem sequencial para evitar sobrecarga na API
+      for (const loc of result.locations) {
+        try {
+          // Use the CEP for geocoding (in a real app)
+          const geocodingResult: GeocodingResult = {
+            name: loc.name,
+            address: `${loc.name} - CEP: ${loc.cep}`,
+            cep: loc.cep,
+            // Random coordinates around Dois Córregos-SP for demo
+            lat: (-22.3673 + (Math.random() * 0.05)).toString(),
+            lng: (-48.3823 + (Math.random() * 0.05)).toString()
+          };
+          
+          onSelectLocation(geocodingResult);
+          
+          // Pequeno delay para permitir que a UI atualize entre cada adição
+          await new Promise(resolve => setTimeout(resolve, 100));
+        } catch (err) {
+          console.error(`Erro ao processar o CEP ${loc.cep}:`, err);
+        }
+      }
     }
   };
 
