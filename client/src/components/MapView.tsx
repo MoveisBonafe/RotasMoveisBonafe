@@ -80,33 +80,39 @@ export default function MapView({
   // Quando waypoints mudam, mas não há rota calculada ainda
   useEffect(() => {
     if (origin && waypoints.length > 0 && !calculatedRoute) {
-      // Usar o formato de search para exibir múltiplos pontos no mapa
-      const baseUrl = `https://www.google.com/maps/embed/v1/search`;
+      // Usaremos a API de directions para mostrar todos os pontos sem traçar rota
+      const baseUrl = `https://www.google.com/maps/embed/v1/directions`;
       
-      // Criar string de busca com coordenadas exatas
-      const searchList = [];
+      // Usar o primeiro waypoint como destino
+      const destination = waypoints[0];
       
-      // Adicionar origem
-      searchList.push(`${origin.lat},${origin.lng}`);
+      // Construir uma lista de waypoints intermediários (se houver mais de 1 waypoint)
+      let waypointsArray: string[] = [];
       
-      // Adicionar waypoints
-      waypoints.forEach(waypoint => {
-        if (waypoint && waypoint.lat && waypoint.lng) {
-          searchList.push(`${waypoint.lat},${waypoint.lng}`);
-        }
-      });
+      if (waypoints.length > 1) {
+        waypointsArray = waypoints.slice(1).map(wp => `${wp.lat},${wp.lng}`);
+      }
       
       // Centralizar no primeiro local (origem)
       const params = new URLSearchParams({
         key: GOOGLE_MAPS_API_KEY,
-        q: searchList.join(' | '), // Usar pipe para separar múltiplos locais
+        origin: `${origin.lat},${origin.lng}`,
+        destination: `${destination.lat},${destination.lng}`,
         zoom: "10",
         maptype: "roadmap",
-        center: `${origin.lat},${origin.lng}`
+        mode: "driving",
+        // Define avoidances para impedir o cálculo real de rota
+        // isso fará com que mostre apenas os pinos
+        avoid: "highways|tolls|ferries"
       });
       
+      // Adicionar waypoints se houver
+      if (waypointsArray.length > 0) {
+        params.append("waypoints", waypointsArray.join('|'));
+      }
+      
       setMapSrc(`${baseUrl}?${params.toString()}`);
-      console.log("Atualizando mapa com coordenadas exatas para waypoints");
+      console.log("Mostrando pontos de destino como pinos no mapa");
     }
   }, [waypoints, origin, calculatedRoute, GOOGLE_MAPS_API_KEY]);
 
@@ -137,19 +143,19 @@ export default function MapView({
     
     let baseUrl, params;
     
-    // Se tivermos waypoints, usamos search para mostrar todos os pontos
+    // Se tivermos waypoints, usamos directions para mostrar todos os pontos
     if (waypoints && waypoints.length > 0) {
-      baseUrl = `https://www.google.com/maps/embed/v1/search`;
+      baseUrl = `https://www.google.com/maps/embed/v1/directions`;
       
-      // Criar array com todos os pontos
-      const searchList = [];
-      searchList.push(`${origin.lat},${origin.lng}`);
+      // Usar o primeiro waypoint como destino
+      const destination = waypoints[0];
       
-      waypoints.forEach(waypoint => {
-        if (waypoint && waypoint.lat && waypoint.lng) {
-          searchList.push(`${waypoint.lat},${waypoint.lng}`);
-        }
-      });
+      // Construir uma lista de waypoints intermediários (se houver mais de 1 waypoint)
+      let waypointsArray: string[] = [];
+      
+      if (waypoints.length > 1) {
+        waypointsArray = waypoints.slice(1).map(wp => `${wp.lat},${wp.lng}`);
+      }
       
       // Calcular zoom baseado no número de pontos
       let zoom = "14";
@@ -161,11 +167,18 @@ export default function MapView({
       
       params = new URLSearchParams({
         key: GOOGLE_MAPS_API_KEY,
-        q: searchList.join(' | '),
+        origin: `${origin.lat},${origin.lng}`,
+        destination: `${destination.lat},${destination.lng}`,
         zoom,
         maptype: mapType,
-        center: `${origin.lat},${origin.lng}`
+        mode: "driving",
+        avoid: "highways|tolls|ferries" // Isso fará com que mostre apenas os pinos
       });
+      
+      // Adicionar waypoints se houver
+      if (waypointsArray.length > 0) {
+        params.append("waypoints", waypointsArray.join('|'));
+      }
     } 
     // Se não tivermos waypoints, usamos place para mostrar apenas a origem
     else {
