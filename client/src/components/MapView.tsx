@@ -96,6 +96,55 @@ export default function MapView({
     }
   }, [waypoints, origin, calculatedRoute, GOOGLE_MAPS_API_KEY]);
 
+  // Estado para controlar a visualização Street View
+  const [showStreetView, setShowStreetView] = useState(false);
+  
+  // Quando o usuário quer ver Street View
+  const toggleStreetView = () => {
+    // Se já está mostrando Street View e clica no botão, volta para o mapa normal
+    if (showStreetView) {
+      setShowStreetView(false);
+      return;
+    }
+    
+    // Se temos uma origem válida, mostrar Street View dessa localização
+    if (origin) {
+      const streetViewUrl = `https://www.google.com/maps/embed/v1/streetview?key=${GOOGLE_MAPS_API_KEY}&location=${origin.lat},${origin.lng}&heading=210&pitch=10&fov=90`;
+      setMapSrc(streetViewUrl);
+      setShowStreetView(true);
+    }
+  };
+  
+  // Mudar para visualização de satélite
+  const showSatelliteView = () => {
+    if (origin) {
+      const params = new URLSearchParams({
+        key: GOOGLE_MAPS_API_KEY,
+        q: `${origin.name}, ${origin.address}`,
+        zoom: "14",
+        maptype: "satellite"
+      });
+      
+      setMapSrc(`https://www.google.com/maps/embed/v1/place?${params.toString()}`);
+      setShowStreetView(false);
+    }
+  };
+  
+  // Voltar para visualização de mapa normal
+  const showRoadmapView = () => {
+    if (origin) {
+      const params = new URLSearchParams({
+        key: GOOGLE_MAPS_API_KEY,
+        q: `${origin.name}, ${origin.address}`,
+        zoom: "14",
+        maptype: "roadmap"
+      });
+      
+      setMapSrc(`https://www.google.com/maps/embed/v1/place?${params.toString()}`);
+      setShowStreetView(false);
+    }
+  };
+
   return (
     <div className="flex-1 relative h-full">
       {!isMapReady ? (
@@ -119,6 +168,43 @@ export default function MapView({
             src={mapSrc}
             title="Google Maps"
           ></iframe>
+          
+          {/* Controles do mapa */}
+          <div className="absolute top-4 right-4 bg-white rounded-md shadow-md p-2 flex flex-col space-y-2 z-10">
+            {/* Botão de Street View */}
+            <button 
+              onClick={toggleStreetView} 
+              className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
+              title={showStreetView ? "Sair do Street View" : "Ver Street View"}
+            >
+              <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+              </svg>
+            </button>
+            
+            {/* Botão de visualização de satélite */}
+            <button 
+              onClick={showSatelliteView} 
+              className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
+              title="Visualização de satélite"
+            >
+              <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clipRule="evenodd" />
+              </svg>
+            </button>
+            
+            {/* Botão de visualização de mapa */}
+            <button 
+              onClick={showRoadmapView} 
+              className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
+              title="Visualização de mapa"
+            >
+              <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clipRule="evenodd" />
+              </svg>
+            </button>
+          </div>
         </div>
       )}
       

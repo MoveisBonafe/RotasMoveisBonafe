@@ -72,42 +72,106 @@ export default function SearchBox({ onSelectLocation }: SearchBoxProps) {
     };
   }, []);
   
-  // Buscar sugestões quando o usuário digita
-  useEffect(() => {
-    if (!searchQuery || searchQuery.length < 3 || !autocompleteService.current) {
+  // Função para buscar sugestões diretamente
+  const fetchSuggestions = async (query: string) => {
+    if (!query || query.length < 3) {
       setPredictions([]);
+      setShowSuggestions(false);
       return;
     }
     
-    // Timer para debounce
-    const timer = setTimeout(() => {
+    // Tenta usar autocomplete service do Google se estiver disponível
+    if (autocompleteService.current) {
+      try {
+        setIsLoading(true);
+        
+        // Verificar se precisamos de um novo token
+        if (!sessionToken.current) {
+          sessionToken.current = new window.google.maps.places.AutocompleteSessionToken();
+        }
+        
+        autocompleteService.current.getPlacePredictions(
+          {
+            input: query,
+            sessionToken: sessionToken.current,
+            componentRestrictions: { country: "br" },
+            types: ["address", "geocode", "establishment"]
+          },
+          (predictions: AutocompletePrediction[] | null, status: string) => {
+            setIsLoading(false);
+            
+            if (status !== window.google.maps.places.PlacesServiceStatus.OK || !predictions) {
+              console.warn("Erro ou nenhum resultado de autocompletar:", status);
+              setPredictions([]);
+              setShowSuggestions(false);
+              return;
+            }
+            
+            setPredictions(predictions);
+            setShowSuggestions(predictions.length > 0);
+          }
+        );
+      } catch (error) {
+        console.error("Erro ao buscar sugestões via Places API:", error);
+        setIsLoading(false);
+        
+        // Fallback para API Geocoding direta
+        fetchSuggestionsViaGeocodingAPI(query);
+      }
+    } else {
+      // Fallback para API Geocoding se Places API não estiver disponível
+      fetchSuggestionsViaGeocodingAPI(query);
+    }
+  };
+  
+  // Fallback usando a API Geocoding para sugestões
+  const fetchSuggestionsViaGeocodingAPI = async (query: string) => {
+    try {
       setIsLoading(true);
       
-      // Verificar se precisamos de um novo token
-      if (!sessionToken.current) {
-        sessionToken.current = new window.google.maps.places.AutocompleteSessionToken();
-      }
-      
-      autocompleteService.current.getPlacePredictions(
-        {
-          input: searchQuery,
-          sessionToken: sessionToken.current,
-          componentRestrictions: { country: "br" },
-          types: ["address", "geocode", "establishment"]
-        },
-        (predictions: AutocompletePrediction[] | null, status: string) => {
-          setIsLoading(false);
-          
-          if (status !== window.google.maps.places.PlacesServiceStatus.OK || !predictions) {
-            console.warn("Erro ou nenhum resultado de autocompletar:", status);
-            setPredictions([]);
-            return;
-          }
-          
-          setPredictions(predictions);
-          setShowSuggestions(predictions.length > 0);
-        }
+      // Usar a API de Geocoding para autocompletar
+      const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${apiKey}&components=country:br`
       );
+      
+      const data = await response.json();
+      
+      if (data.status === "OK" && data.results && data.results.length > 0) {
+        // Converter resultados para o formato de sugestões
+        const suggestionsFromGeocode = data.results.map((result: any) => ({
+          place_id: result.place_id,
+          description: result.formatted_address,
+          structured_formatting: {
+            main_text: result.formatted_address.split(',')[0],
+            secondary_text: result.formatted_address.substring(result.formatted_address.indexOf(',') + 1).trim()
+          }
+        }));
+        
+        setPredictions(suggestionsFromGeocode);
+        setShowSuggestions(suggestionsFromGeocode.length > 0);
+      } else {
+        setPredictions([]);
+        setShowSuggestions(false);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar sugestões via Geocoding API:", error);
+      setPredictions([]);
+      setShowSuggestions(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  // Debounce para chamar a função de busca quando o usuário digita
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchQuery && searchQuery.length >= 3) {
+        fetchSuggestions(searchQuery);
+      } else {
+        setPredictions([]);
+        setShowSuggestions(false);
+      }
     }, 300);
     
     return () => clearTimeout(timer);
