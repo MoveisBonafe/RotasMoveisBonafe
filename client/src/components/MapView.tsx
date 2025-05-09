@@ -329,7 +329,7 @@ export default function MapView({
             lng: parseFloat(origin.lng) 
           };
           
-          // Criar nova instância do mapa com foco no zoom simplificado
+          // Criar nova instância do mapa
           const map = new window.google.maps.Map(mapContainerRef.current!, {
             center: originCoords,
             zoom: 10,
@@ -338,26 +338,10 @@ export default function MapView({
             mapTypeControl: true,
             streetViewControl: true,
             zoomControl: true,
-            // Greedy permite zoom sem Ctrl e sem gesto duplo
+            // Configurações para o zoom
             gestureHandling: 'greedy',
-            // Garantir que o scroll do mouse funcione para zoom
-            scrollwheel: true,
-            // Permitir zoom com mouse wheel mesmo sem Ctrl
-            disableDefaultUI: false,
-            // Importante: Remover restriction para permitir zoom simples
-            restriction: null,
-            // Importante: ativar todos os inputs possíveis
-            keyboardShortcuts: true
+            scrollwheel: true
           });
-          
-          // Forçar configuração de gestureHandling após criação do mapa
-          try {
-            // @ts-ignore - Forçar configuração mesmo se não estiver no tipo
-            map.setOptions({ gestureHandling: 'greedy', scrollwheel: true });
-            console.log("Configurações avançadas de zoom aplicadas ao mapa");
-          } catch (e) {
-            console.warn("Não foi possível aplicar configurações avançadas de zoom:", e);
-          }
           
           // Armazenar referência para uso futuro
           directMapRef.current = map;

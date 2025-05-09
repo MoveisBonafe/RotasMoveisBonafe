@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Melhorias para o mapa do Google */
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+/* Facilitar a manipulação do mapa */
+[class*='gm-style'] * {
+  touch-action: manipulation !important;
+}
+
+/* Garantir que o mapa ocupe todo o espaço disponível */
+#map-container {
+  height: 100%;
+  width: 100%;
+  min-height: 500px;
+}
+
 :root {
       --background: 0 0% 100%;
 --foreground: 20 14.3% 4.1%;
