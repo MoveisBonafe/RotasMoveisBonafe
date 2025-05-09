@@ -210,7 +210,9 @@ export default function RouteReport({
               </tr>
               <tr>
                 <th>Custo do Combustível</th>
-                <td>R$ {vehicleType?.fuelCostPerLiter.toFixed(2).replace('.', ',') || '-'}/litro</td>
+                <td>R$ {vehicleType?.fuelCostPerLiter ? 
+                  (vehicleType.fuelCostPerLiter as number).toFixed(2).replace('.', ',') : 
+                  '5,00'}/litro</td>
               </tr>
             </tbody>
           </table>

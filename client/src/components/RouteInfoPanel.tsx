@@ -230,7 +230,7 @@ export default function RouteInfoPanel({
                   </div>
                 )}
                 
-                {(truckRestrictions && Array.isArray(truckRestrictions) && truckRestrictions.length > 0) && (
+                {(truckRestrictions && Array.isArray(truckRestrictions) && truckRestrictions.length > 0) ? (
                   <div className="flex items-start">
                     <svg className="h-4 w-4 text-primary mr-1 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
@@ -238,14 +238,16 @@ export default function RouteInfoPanel({
                     <div>
                       <div className="text-sm font-medium">Restrições para caminhões</div>
                       <div className="text-xs text-gray-600">
-                        {truckRestrictions.length > 0 && truckRestrictions[0] && 
-                          (truckRestrictions[0] as TruckRestriction).cityName
-                          ? `Em ${(truckRestrictions[0] as TruckRestriction).cityName}, das ${(truckRestrictions[0] as TruckRestriction).startTime || '00:00'} às ${(truckRestrictions[0] as TruckRestriction).endTime || '23:59'}`
-                          : "Sem restrições"}
+                        {(() => {
+                          const restriction = truckRestrictions[0] as TruckRestriction;
+                          return restriction && restriction.cityName 
+                            ? `Em ${restriction.cityName}, das ${restriction.startTime || '00:00'} às ${restriction.endTime || '23:59'}`
+                            : "Sem restrições"
+                        })()}
                       </div>
                     </div>
                   </div>
-                )}
+                ) : null}
 
                 {(!tollsOnRoute.length && !balancesOnRoute.length && (!truckRestrictions || !Array.isArray(truckRestrictions) || !truckRestrictions.length)) && (
                   <div className="text-sm text-gray-500">
@@ -368,7 +370,10 @@ export default function RouteInfoPanel({
                 totalCost: routeInfo.tollCost + routeInfo.fuelCost,
                 fuelConsumption: fuelConsumption
               }}
-              vehicleType={vehicleType}
+              vehicleType={vehicleType ? {
+                ...vehicleType,
+                fuelCostPerLiter: 5.00 // Valor padrão para custo de combustível
+              } : null}
               startDate={startDate}
               endDate={endDate}
             />
