@@ -285,7 +285,10 @@ export default function MapView({
             fullscreenControl: true,
             mapTypeControl: true,
             streetViewControl: true,
-            zoomControl: true
+            zoomControl: true,
+            // Configurações adicionais para facilitar o zoom sem Ctrl
+            gestureHandling: 'greedy',
+            scrollwheel: true
           });
           
           // Armazenar referência para uso futuro

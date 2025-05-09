@@ -286,8 +286,8 @@ export default function RouteReport({
   // O usuário espera ver o número total de pontos, não apenas os destinos
   const totalPoints = calculatedRoute ? calculatedRoute.length : 0;
   
-  // Número de destinos (pontos - origem)
-  const numberOfStops = totalPoints > 0 ? totalPoints : 0;
+  // Para o relatório, contamos todos os pontos incluindo origem
+  const numberOfStops = totalPoints;
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
