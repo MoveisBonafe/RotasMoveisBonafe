@@ -321,53 +321,53 @@ export default function RouteReport({
         {/* Cards de resumo da rota - mais visuais */}
         <div className="route-summary-card">
           <div className="summary-item">
-            <div className="summary-item-title text-blue-700 font-medium text-lg">
-              <svg className="w-6 h-6 inline-block mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <div className="summary-item-title text-blue-700 font-medium">
+              <svg className="w-3 h-3 inline-block mr-1 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
               </svg>
               Distância Total
             </div>
-            <div className="summary-item-value text-blue-700 text-2xl font-bold">{totalDistanceKm.toFixed(1).replace('.', ',')} km</div>
+            <div className="summary-item-value text-blue-700">{totalDistanceKm.toFixed(1).replace('.', ',')} km</div>
             <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
               <div className="bg-blue-600 h-2 rounded-full" style={{ width: '100%' }}></div>
             </div>
           </div>
           <div className="summary-item">
-            <div className="summary-item-title text-green-700 font-medium text-lg">
-              <svg className="w-6 h-6 inline-block mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <div className="summary-item-title text-green-700 font-medium">
+              <svg className="w-3 h-3 inline-block mr-1 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Tempo Estimado
             </div>
-            <div className="summary-item-value text-green-700 text-2xl font-bold">{formatDuration(routeInfo.totalDuration)}</div>
+            <div className="summary-item-value text-green-700">{formatDuration(routeInfo.totalDuration)}</div>
             <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
               <div className="bg-green-600 h-2 rounded-full" style={{ width: '100%' }}></div>
             </div>
           </div>
           <div className="summary-item">
-            <div className="summary-item-title text-orange-700 font-medium text-lg">
-              <svg className="w-6 h-6 inline-block mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <div className="summary-item-title text-orange-700 font-medium">
+              <svg className="w-3 h-3 inline-block mr-1 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
               Total de Pontos
             </div>
-            <div className="summary-item-value text-orange-700 text-2xl font-bold">{numberOfStops} pontos</div>
+            <div className="summary-item-value text-orange-700">{numberOfStops} pontos</div>
             <div className="flex mt-2">
               {Array.from({ length: Math.min(numberOfStops, 10) }).map((_, i) => (
-                <div key={i} className="w-5 h-5 rounded-full bg-orange-500 mr-2 flex-shrink-0"></div>
+                <div key={i} className="w-2 h-2 rounded-full bg-orange-500 mr-1 flex-shrink-0"></div>
               ))}
-              {numberOfStops > 10 && <div className="text-sm text-gray-500 ml-1 self-center">+{numberOfStops - 10}</div>}
+              {numberOfStops > 10 && <div className="text-xs text-gray-500 ml-1 self-center">+{numberOfStops - 10}</div>}
             </div>
           </div>
           <div className="summary-item">
-            <div className="summary-item-title text-purple-700 font-medium text-lg">
-              <svg className="w-6 h-6 inline-block mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <div className="summary-item-title text-purple-700 font-medium">
+              <svg className="w-3 h-3 inline-block mr-1 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Custo Total
             </div>
-            <div className="summary-item-value text-purple-700 text-2xl font-bold">{formatCurrency(routeInfo.totalCost)}</div>
+            <div className="summary-item-value text-purple-700">{formatCurrency(routeInfo.totalCost)}</div>
             <div className="flex justify-between text-xs text-gray-500 mt-1">
               <span>Combustível: {Math.round(routeInfo.fuelCost / routeInfo.totalCost * 100)}%</span>
               <span>Pedágios: {Math.round(routeInfo.tollCost / routeInfo.totalCost * 100)}%</span>
@@ -465,7 +465,7 @@ export default function RouteReport({
             
             {/* Seta de conexão */}
             <div className="flex justify-center">
-              <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg className="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
               </svg>
             </div>
@@ -492,7 +492,7 @@ export default function RouteReport({
                 
                 {/* Seta de conexão */}
                 <div className="flex justify-center">
-                  <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <svg className="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                   </svg>
                 </div>
