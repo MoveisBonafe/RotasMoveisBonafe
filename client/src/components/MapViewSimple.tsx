@@ -25,9 +25,8 @@ export default function MapViewSimple({
     let baseUrl;
     const params = new URLSearchParams({
       key: GOOGLE_MAPS_API_KEY,
-      maptype: mapType,
-      // Habilitar rolagem do mouse para zoom (específico para Embed API)
-      scrollwheel: "1"
+      maptype: mapType
+      // O Google Maps Embed API não suporta parâmetros avançados de interatividade
     });
     
     // Se temos uma rota calculada, mostramos ela usando o modo directions
@@ -152,6 +151,11 @@ export default function MapViewSimple({
               <path fillRule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clipRule="evenodd" />
             </svg>
           </button>
+        </div>
+        
+        {/* Instruções para zoom */}
+        <div className="absolute top-4 left-4 bg-white bg-opacity-80 rounded-md shadow-md p-2 z-10 text-xs text-gray-600">
+          <p>Para zoom: use os botões <b>+</b> e <b>-</b> no mapa ou segure <b>Ctrl</b> + roda do mouse</p>
         </div>
         
         {/* Legenda para os pontos no mapa */}
