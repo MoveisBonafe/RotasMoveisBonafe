@@ -55,11 +55,24 @@ function createDistanceMatrix(locations: Location[]): number[][] {
  */
 export function nearestNeighborTSP(locations: Location[], startIndex: number = 0, returnToOrigin: boolean = false): number[] {
   const numLocations = locations.length;
+  
+  // Verificar casos especiais
+  if (numLocations <= 1) {
+    return [startIndex];
+  }
+  
+  // Criar a matriz de distâncias
   const distanceMatrix = createDistanceMatrix(locations);
+  
+  // Log para depuração
+  console.log(`Matriz de distâncias criada (${numLocations}x${numLocations})`);
   
   // Initialize the route with the start index
   const route: number[] = [startIndex];
   const visited = new Set<number>([startIndex]);
+  
+  // Log para depuração
+  console.log(`Iniciando em ${locations[startIndex].name} (índice ${startIndex})`);
   
   // Find the nearest unvisited location until all locations are visited
   while (route.length < numLocations) {
@@ -67,20 +80,39 @@ export function nearestNeighborTSP(locations: Location[], startIndex: number = 0
     let nearestLocation = -1;
     let minDistance = Infinity;
     
+    // Log para depuração
+    console.log(`Buscando o local mais próximo de ${locations[currentLocation].name}...`);
+    
     for (let i = 0; i < numLocations; i++) {
-      if (!visited.has(i) && distanceMatrix[currentLocation][i] < minDistance) {
-        nearestLocation = i;
-        minDistance = distanceMatrix[currentLocation][i];
+      if (!visited.has(i)) {
+        const distance = distanceMatrix[currentLocation][i];
+        console.log(`Distância para ${locations[i].name}: ${distance.toFixed(2)}m`);
+        
+        if (distance < minDistance) {
+          nearestLocation = i;
+          minDistance = distance;
+        }
       }
     }
+    
+    if (nearestLocation === -1) {
+      console.error("Não foi possível encontrar o próximo local - isso não deveria acontecer!");
+      break;
+    }
+    
+    // Log para depuração
+    console.log(`Próximo local: ${locations[nearestLocation].name} (distância: ${minDistance.toFixed(2)}m)`);
     
     route.push(nearestLocation);
     visited.add(nearestLocation);
   }
   
-  // Opcionalmente, retorna ao ponto de origem (não necessário para nossa aplicação)
+  // Opcionalmente, retorna ao ponto de origem
   if (returnToOrigin) {
     route.push(startIndex);
+    console.log(`Rota completa retornando à origem ${locations[startIndex].name}`);
+  } else {
+    console.log(`Rota completa sem retornar à origem`);
   }
   
   return route;
@@ -161,11 +193,38 @@ export function solveTSP(locations: Location[], startIndex: number = 0, returnTo
     return locations.length === 1 ? [0] : returnToOrigin ? [0, 1, 0] : [0, 1];
   }
   
-  // Get an initial route using the nearest neighbor algorithm, sem retornar ao ponto de origem
+  console.log(`Executando algoritmo TSP com ${locations.length} localizações, origem no índice ${startIndex}`);
+  
+  // Get an initial route using the nearest neighbor algorithm
   const initialRoute = nearestNeighborTSP(locations, startIndex, returnToOrigin);
   
+  console.log("Rota inicial:", initialRoute.map(idx => locations[idx].name).join(' -> '));
+  
   // Improve the route using the two-opt algorithm
-  return twoOptTSP(locations, initialRoute);
+  const optimizedRoute = twoOptTSP(locations, initialRoute);
+  
+  console.log("Rota após Two-Opt:", optimizedRoute.map(idx => locations[idx].name).join(' -> '));
+  
+  // Garantir que a rota sempre comece com a origem (startIndex)
+  if (optimizedRoute[0] !== startIndex) {
+    console.warn("A rota otimizada não começa com a origem! Ajustando...");
+    
+    // Encontre a posição da origem na rota otimizada
+    const originPosition = optimizedRoute.indexOf(startIndex);
+    
+    if (originPosition !== -1) {
+      // Reordenar a rota para começar com a origem
+      const reorderedRoute = [
+        ...optimizedRoute.slice(originPosition),
+        ...optimizedRoute.slice(0, originPosition)
+      ];
+      
+      console.log("Rota reordenada:", reorderedRoute.map(idx => locations[idx].name).join(' -> '));
+      return reorderedRoute;
+    }
+  }
+  
+  return optimizedRoute;
 }
 
 /**
@@ -176,13 +235,42 @@ export function solveTSP(locations: Location[], startIndex: number = 0, returnTo
  * @returns Optimized route as an array of locations
  */
 export function createOptimizedRoute(locations: Location[], returnToOrigin: boolean = false): Location[] {
+  if (!locations || locations.length === 0) {
+    console.error("Nenhuma localização fornecida para otimização de rota");
+    return [];
+  }
+  
+  // Verificamos se temos localizações suficientes para otimizar
+  if (locations.length <= 2) {
+    console.log("Apenas origem e um destino, não há necessidade de otimização");
+    return locations;
+  }
+  
+  // Log para depuração
+  console.log(`Otimizando rota com ${locations.length} pontos:`, 
+    locations.map(loc => ({ name: loc.name, isOrigin: loc.isOrigin })));
+  
   // Find the origin index (should be 0, but let's be safe)
   const originIndex = locations.findIndex(loc => loc.isOrigin);
-  const startIndex = originIndex >= 0 ? originIndex : 0;
   
-  // Solve the TSP sem retornar ao ponto de origem
-  const optimalIndices = solveTSP(locations, startIndex, returnToOrigin);
+  if (originIndex === -1) {
+    console.error("Nenhuma localização marcada como origem");
+    return locations;
+  }
+  
+  console.log(`Origem encontrada no índice ${originIndex}: ${locations[originIndex].name}`);
+  
+  // Solve the TSP
+  const optimalIndices = solveTSP(locations, originIndex, returnToOrigin);
+  
+  // Log para depuração
+  console.log("Índices otimizados:", optimalIndices);
   
   // Map indices back to locations
-  return optimalIndices.map(index => locations[index]);
+  const optimizedRoute = optimalIndices.map(index => locations[index]);
+  
+  // Adiciona informação ao log
+  console.log("Rota otimizada:", optimizedRoute.map(loc => loc.name).join(" -> "));
+  
+  return optimizedRoute;
 }
