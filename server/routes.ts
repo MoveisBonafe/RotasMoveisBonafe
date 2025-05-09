@@ -304,34 +304,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get truck restrictions
-  app.get("/api/truck-restrictions", async (req: Request, res: Response) => {
+  app.get("/api/truck-restrictions", async (_req: Request, res: Response) => {
     try {
-      let cityList: string[] = [];
-      
-      // Certifica-se de que cidades é um string ou array
-      if (req.query.cities) {
-        if (typeof req.query.cities === 'string') {
-          // Se é uma string separada por vírgulas, divide
-          cityList = req.query.cities.split(',');
-        } else if (Array.isArray(req.query.cities)) {
-          // Se já é um array, usa diretamente
-          cityList = req.query.cities as string[];
-        }
-      }
-      
-      // Certifica-se de que array existe e tem elementos válidos
-      if (!Array.isArray(cityList)) {
-        cityList = [];
-      }
-      
-      // Sempre chama seedTruckRestrictions antes para garantir dados
+      // Força execução das seeds 
       await storage.seedTruckRestrictions();
       
-      // Agora busca as restrições
-      const restrictions = await storage.getTruckRestrictionsByCities(cityList);
-      
-      // Retorna a resposta, mesmo que vazia
-      return res.json(restrictions || []);
+      // Retorna todas as restrições de caminhões (ignorando filtros por cidade)
+      const allRestrictions = await storage.seedTruckRestrictions();
+      return res.json(allRestrictions || []);
     } catch (error) {
       console.error("Erro ao buscar restrições de caminhões:", error);
       // Retorna um array vazio em vez de 500 para não bloquear o cliente

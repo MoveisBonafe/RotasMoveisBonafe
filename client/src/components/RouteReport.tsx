@@ -118,7 +118,7 @@ export default function RouteReport({
             <div>
               <span className="font-medium">{formatCurrency(routeInfo.fuelCost)}</span>
               <span className="text-xs text-gray-500 ml-1">
-                ({routeInfo.fuelConsumption.toFixed(1)} L)
+                ({routeInfo.fuelConsumption !== undefined ? routeInfo.fuelConsumption.toFixed(1) : '0.0'} L)
               </span>
             </div>
             
