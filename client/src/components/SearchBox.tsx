@@ -1,214 +1,83 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState } from "react";
 import { GeocodingResult } from "@/lib/types";
-import { withGoogleMaps } from "@/main";
 
 interface SearchBoxProps {
   onSelectLocation: (location: GeocodingResult) => void;
 }
 
-// Tipo para resultados do autocomplete do Google Maps Places
-interface PlacePrediction {
-  description: string;
-  place_id: string;
-  structured_formatting: {
-    main_text: string;
-    secondary_text: string;
-  };
-}
-
 export default function SearchBox({ onSelectLocation }: SearchBoxProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [predictions, setPredictions] = useState<PlacePrediction[]>([]);
-  const [showAutocomplete, setShowAutocomplete] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const autocompleteRef = useRef<HTMLDivElement>(null);
+  const [isSearching, setIsSearching] = useState(false);
   
-  // Serviços do Google Maps Places
-  const placesServiceRef = useRef<google.maps.places.PlacesService | null>(null);
-  const autocompleteServiceRef = useRef<google.maps.places.AutocompleteService | null>(null);
-  const sessionTokenRef = useRef<google.maps.places.AutocompleteSessionToken | null>(null);
-  
-  // Inicializar APIs do Google Maps
-  useEffect(() => {
-    withGoogleMaps(() => {
-      if (!window.google || !window.google.maps || !window.google.maps.places) {
-        console.error("Google Maps Places API não está disponível");
-        return;
-      }
-      
-      try {
-        // Criação do div necessário para o PlacesService
-        const placesDiv = document.createElement('div');
-        document.body.appendChild(placesDiv);
-        
-        // Inicializar serviços
-        placesServiceRef.current = new window.google.maps.places.PlacesService(placesDiv);
-        autocompleteServiceRef.current = new window.google.maps.places.AutocompleteService();
-        sessionTokenRef.current = new window.google.maps.places.AutocompleteSessionToken();
-        
-        console.log("✓ Google Maps Places API inicializada com sucesso");
-      } catch (error) {
-        console.error("Erro ao inicializar Google Maps Places API:", error);
-      }
-    });
+  // Função para buscar endereço usando a API do Google Geocoding
+  const handleSearch = async (event: React.FormEvent) => {
+    event.preventDefault();
     
-    // Cleanup
-    return () => {
-      const placesDiv = document.querySelector('div[style="display: none;"]');
-      if (placesDiv) placesDiv.remove();
-    };
-  }, []);
-
-  // Set up click outside handler to close the autocomplete
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        autocompleteRef.current && 
-        !autocompleteRef.current.contains(event.target as Node) &&
-        searchInputRef.current &&
-        !searchInputRef.current.contains(event.target as Node)
-      ) {
-        setShowAutocomplete(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  // Buscar detalhes do local a partir do place_id
-  const fetchPlaceDetails = useCallback(async (placeId: string): Promise<GeocodingResult | null> => {
-    if (!placesServiceRef.current || !sessionTokenRef.current) {
-      console.error("Places Service não inicializado");
-      return null;
-    }
+    if (!searchQuery.trim()) return;
     
-    return new Promise((resolve) => {
-      placesServiceRef.current!.getDetails(
-        {
-          placeId: placeId,
-          fields: ['name', 'formatted_address', 'geometry', 'address_component'],
-          sessionToken: sessionTokenRef.current
-        },
-        (place, status) => {
-          if (status !== window.google.maps.places.PlacesServiceStatus.OK || !place) {
-            console.error("Erro ao buscar detalhes do local:", status);
-            resolve(null);
-            return;
-          }
-          
-          // Extrair o CEP (se disponível)
-          let postalCode = '';
-          if (place.address_components) {
-            const postalCodeComponent = place.address_components.find(
-              component => component.types.includes('postal_code')
-            );
-            if (postalCodeComponent) {
-              postalCode = postalCodeComponent.long_name;
-            }
-          }
-          
-          const result: GeocodingResult = {
-            name: place.name || '',
-            address: place.formatted_address || '',
-            lat: place.geometry?.location?.lat().toString() || '',
-            lng: place.geometry?.location?.lng().toString() || '',
-            placeId: placeId
-          };
-          
-          if (postalCode) {
-            result.cep = postalCode;
-          }
-          
-          resolve(result);
-        }
-      );
-    });
-  }, []);
-
-  // Buscar sugestões de endereços usando Places API
-  const searchPlaces = useCallback(async (query: string) => {
-    if (!query || query.length < 3 || !autocompleteServiceRef.current) {
-      setPredictions([]);
-      setShowAutocomplete(false);
-      return;
-    }
+    setIsSearching(true);
     
-    if (!sessionTokenRef.current) {
-      sessionTokenRef.current = new window.google.maps.places.AutocompleteSessionToken();
-    }
-    
-    setIsLoading(true);
-    
-    autocompleteServiceRef.current.getPlacePredictions(
-      {
-        input: query,
-        componentRestrictions: { country: 'br' },
-        sessionToken: sessionTokenRef.current,
-        types: ['address', 'geocode', 'establishment']
-      },
-      (results, status) => {
-        setIsLoading(false);
-        
-        if (status !== window.google.maps.places.PlacesServiceStatus.OK || !results) {
-          console.error("Erro na pesquisa de lugares:", status);
-          setPredictions([]);
-          setShowAutocomplete(false);
-          return;
-        }
-        
-        setPredictions(results);
-        setShowAutocomplete(results.length > 0);
-      }
-    );
-  }, []);
-
-  // Debounce para a busca
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      searchPlaces(searchQuery);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery, searchPlaces]);
-
-  // Selecionar um local da lista de sugestões
-  const handleSelectLocation = async (prediction: PlacePrediction) => {
-    setIsLoading(true);
     try {
-      const placeDetails = await fetchPlaceDetails(prediction.place_id);
+      // Obter a chave API do Google Maps
+      const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
       
-      if (placeDetails) {
-        onSelectLocation(placeDetails);
-        setSearchQuery(prediction.description);
-        setShowAutocomplete(false);
+      // Fazer uma requisição direta para a API de Geocoding do Google
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(searchQuery)}&key=${apiKey}&components=country:br`
+      );
+      
+      const data = await response.json();
+      
+      if (data.status === "OK" && data.results && data.results.length > 0) {
+        const result = data.results[0];
         
-        // Novo token para próxima busca
-        sessionTokenRef.current = new window.google.maps.places.AutocompleteSessionToken();
+        // Extrair informações do resultado
+        const { lat, lng } = result.geometry.location;
+        
+        // Verificar CEP
+        let postalCode = "";
+        for (const component of result.address_components) {
+          if (component.types.includes("postal_code")) {
+            postalCode = component.long_name;
+            break;
+          }
+        }
+        
+        // Criar objeto de resultado
+        const geocodingResult: GeocodingResult = {
+          name: result.formatted_address.split(',')[0] || result.formatted_address,
+          address: result.formatted_address,
+          lat: lat.toString(),
+          lng: lng.toString(),
+          placeId: result.place_id
+        };
+        
+        if (postalCode) {
+          geocodingResult.cep = postalCode;
+        }
+        
+        // Passar o resultado para o componente pai
+        onSelectLocation(geocodingResult);
+        
+        // Limpar o campo de busca
+        setSearchQuery("");
+      } else {
+        console.error("Geocoding error:", data.status);
+        alert("Não foi possível encontrar o endereço. Tente novamente.");
       }
     } catch (error) {
-      console.error("Erro ao buscar detalhes do local:", error);
+      console.error("Error searching for location:", error);
+      alert("Erro ao buscar endereço. Verifique sua conexão e tente novamente.");
     } finally {
-      setIsLoading(false);
+      setIsSearching(false);
     }
   };
-
-  // Form submission
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (predictions.length > 0) {
-      handleSelectLocation(predictions[0]);
-    }
-  };
-
+  
   return (
     <div className="p-4 border-b border-gray-200">
-      <form onSubmit={handleSubmit} className="relative">
+      <form onSubmit={handleSearch} className="relative">
         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-          {isLoading ? (
+          {isSearching ? (
             <div className="animate-spin h-5 w-5 text-gray-400">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -222,45 +91,20 @@ export default function SearchBox({ onSelectLocation }: SearchBoxProps) {
           )}
         </div>
         <input
-          ref={searchInputRef}
           type="text"
           placeholder="Buscar endereço ou CEP..."
-          className="w-full py-3 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          className="w-full py-3 pl-10 pr-20 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          onFocus={() => {
-            if (predictions.length > 0) {
-              setShowAutocomplete(true);
-            }
-          }}
           autoComplete="off"
         />
-
-        {/* Autocomplete dropdown */}
-        {showAutocomplete && (
-          <div 
-            ref={autocompleteRef}
-            className="search-autocomplete absolute z-20 mt-1 w-full bg-white rounded-md shadow-lg max-h-60 overflow-auto"
-          >
-            {predictions.map((prediction) => (
-              <div 
-                key={prediction.place_id}
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
-                onClick={() => handleSelectLocation(prediction)}
-              >
-                <svg className="h-5 w-5 text-gray-400 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                </svg>
-                <div>
-                  <div className="text-sm font-medium">{prediction.structured_formatting.main_text}</div>
-                  <div className="text-xs text-gray-500">
-                    {prediction.structured_formatting.secondary_text}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <button
+          type="submit"
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          disabled={isSearching}
+        >
+          Buscar
+        </button>
       </form>
     </div>
   );

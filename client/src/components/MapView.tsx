@@ -1,18 +1,6 @@
-import { useRef, useEffect, useState, useCallback } from "react";
-import { Location, PointOfInterest } from "@/lib/types";
-import { useGoogleMaps } from "@/hooks/useGoogleMaps";
-import MapControls from "./MapControls";
-import MapLegend from "./MapLegend";
-import { useQuery } from "@tanstack/react-query";
-import { withGoogleMaps } from "@/main";
-
-// Map type constants
-const MAP_TYPES = {
-  ROADMAP: "roadmap",
-  SATELLITE: "satellite", 
-  HYBRID: "hybrid",
-  TERRAIN: "terrain"
-};
+import { useState, useEffect } from "react";
+import { Location } from "@/lib/types";
+import MapLegend from "@/components/MapLegend";
 
 interface MapViewProps {
   origin: Location | null;
@@ -23,138 +11,118 @@ interface MapViewProps {
 
 export default function MapView({ 
   origin, 
-  waypoints, 
-  calculatedRoute,
-  onRouteCalculated
+  waypoints,
+  calculatedRoute
 }: MapViewProps) {
-  const mapContainerRef = useRef<HTMLDivElement>(null);
   const [isMapReady, setIsMapReady] = useState(false);
-  const [googleMapsLoaded, setGoogleMapsLoaded] = useState(false);
-
-  // Fetch points of interest from the server
-  const { data: pointsOfInterest = [] } = useQuery({
-    queryKey: ['/api/points-of-interest'],
-    staleTime: Infinity,
-  });
-
-  // Initialize Google Maps
-  const initGoogleMaps = useCallback(() => {
-    if (googleMapsLoaded) return;
-    
-    withGoogleMaps(() => {
-      console.log("Google Maps API successfully loaded");
-      setGoogleMapsLoaded(true);
+  const [mapSrc, setMapSrc] = useState("");
+  
+  // Obter a chave API do Google Maps
+  const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
+  
+  // Quando a origem for carregada, construir o iframe URL
+  useEffect(() => {
+    if (origin) {
+      // Construir o iframe URL com a origem
+      const baseUrl = `https://www.google.com/maps/embed/v1/place`;
+      const params = new URLSearchParams({
+        key: GOOGLE_MAPS_API_KEY,
+        q: `${origin.name}, ${origin.address}`,
+        zoom: "12",
+        maptype: "roadmap"
+      });
+      
+      setMapSrc(`${baseUrl}?${params.toString()}`);
       setIsMapReady(true);
-    });
-  }, [googleMapsLoaded]);
-
+    }
+  }, [origin, GOOGLE_MAPS_API_KEY]);
+  
+  // Quando uma rota for calculada, atualizar o iframe para mostrar a rota
   useEffect(() => {
-    initGoogleMaps();
-    
-    // Add a fallback in case Google Maps doesn't load
-    const timeout = setTimeout(() => {
-      if (!googleMapsLoaded) {
-        console.warn("Google Maps loading timeout, retrying...");
-        initGoogleMaps();
+    if (origin && calculatedRoute && calculatedRoute.length > 0) {
+      // URL base para direções
+      const baseUrl = `https://www.google.com/maps/embed/v1/directions`;
+      
+      // Obter origem e destino
+      const originParam = `${origin.lat},${origin.lng}`;
+      const destination = calculatedRoute[calculatedRoute.length - 1];
+      const destinationParam = `${destination.lat},${destination.lng}`;
+      
+      // Construir waypoints string (máximo 10 pontos de parada)
+      let waypointsArray = [];
+      const maxWaypoints = Math.min(calculatedRoute.length - 2, 8); // -2 porque origem e destino já estão incluídos
+      
+      for (let i = 1; i < maxWaypoints + 1; i++) {
+        const waypoint = calculatedRoute[i];
+        waypointsArray.push(`${waypoint.lat},${waypoint.lng}`);
       }
-    }, 5000);
-    
-    return () => clearTimeout(timeout);
-  }, [initGoogleMaps, googleMapsLoaded]);
-
-  const { 
-    map,
-    mapType,
-    isStreetViewActive,
-    displayRoute,
-    addMarker,
-    clearMarkers,
-    changeMapType,
-    zoomIn,
-    zoomOut,
-    toggleStreetView
-  } = useGoogleMaps({
-    mapContainerRef
-  });
-
-  // Display route when calculatedRoute changes
-  useEffect(() => {
-    if (!map || !calculatedRoute || calculatedRoute.length < 2 || !origin) return;
-
-    // The first and last positions in the calculated route should be the origin
-    const firstLocation = calculatedRoute[0];
-    const lastLocation = calculatedRoute[calculatedRoute.length - 1];
-    
-    // The waypoints are all locations between first and last
-    const routeWaypoints = calculatedRoute.slice(1, calculatedRoute.length - 1);
-
-    // Ensure we have a valid array of POIs or an empty array as fallback
-    const poisArray = Array.isArray(pointsOfInterest) ? pointsOfInterest : [];
-
-    // Display the route on the map
-    displayRoute(
-      firstLocation,
-      routeWaypoints,
-      lastLocation,
-      poisArray
-    ).then(result => {
-      if (result && onRouteCalculated) {
-        onRouteCalculated(result);
+      
+      const params = new URLSearchParams({
+        key: GOOGLE_MAPS_API_KEY,
+        origin: originParam,
+        destination: destinationParam,
+        mode: "driving"
+      });
+      
+      if (waypointsArray.length > 0) {
+        params.append("waypoints", waypointsArray.join("|"));
       }
-    });
-  }, [map, calculatedRoute, origin, pointsOfInterest, displayRoute, onRouteCalculated]);
+      
+      setMapSrc(`${baseUrl}?${params.toString()}`);
+    }
+  }, [calculatedRoute, origin, GOOGLE_MAPS_API_KEY]);
 
-  // Add markers for waypoints when no route is calculated
+  // Quando waypoints mudam, mas não há rota calculada ainda
   useEffect(() => {
-    if (!map || calculatedRoute || !origin) return;
-
-    clearMarkers();
-    
-    // Add origin marker
-    addMarker(origin, 'origin');
-    
-    // Add waypoint markers
-    waypoints.forEach(waypoint => {
-      addMarker(waypoint, 'waypoint');
-    });
-    
-  }, [map, calculatedRoute, origin, waypoints, addMarker, clearMarkers]);
+    if (origin && waypoints.length > 0 && !calculatedRoute) {
+      // Mostrar o mapa com marcadores
+      const baseUrl = `https://www.google.com/maps/embed/v1/search`;
+      const searchParams = [`${origin.name}, ${origin.address}`];
+      
+      waypoints.forEach(waypoint => {
+        searchParams.push(`${waypoint.name}, ${waypoint.address}`);
+      });
+      
+      // Centralizar no primeiro local
+      const params = new URLSearchParams({
+        key: GOOGLE_MAPS_API_KEY,
+        q: searchParams.join(" | "),
+        zoom: "10",
+        maptype: "roadmap",
+        center: `${origin.lat},${origin.lng}`
+      });
+      
+      setMapSrc(`${baseUrl}?${params.toString()}`);
+    }
+  }, [waypoints, origin, calculatedRoute, GOOGLE_MAPS_API_KEY]);
 
   return (
     <div className="flex-1 relative h-full">
-      {/* Container do mapa - ocupa a altura completa */}
-      <div 
-        ref={mapContainerRef} 
-        className="h-full w-full bg-gray-200"
-        style={{ minHeight: '500px' }} // Garantir altura mínima para o mapa
-      >
-        {!isMapReady && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-80 z-50">
-            <div className="text-center p-4 rounded-lg shadow-md bg-white">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
-              <p className="mt-4 text-gray-600 font-medium">Carregando Google Maps...</p>
-              <p className="text-xs text-gray-500 mt-2">Aguarde enquanto o mapa é carregado</p>
-            </div>
+      {!isMapReady ? (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-80 z-50">
+          <div className="text-center p-4 rounded-lg shadow-md bg-white">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+            <p className="mt-4 text-gray-600 font-medium">Carregando Google Maps...</p>
+            <p className="text-xs text-gray-500 mt-2">Aguarde enquanto o mapa é carregado</p>
           </div>
-        )}
-      </div>
-      
-      {/* Controles adicionais que só aparecem quando o mapa estiver pronto */}
-      {isMapReady && isStreetViewActive && (
-        <div className="absolute top-4 left-4 z-50 bg-white p-2 rounded-md shadow-md">
-          <button 
-            onClick={() => toggleStreetView()}
-            className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
-          >
-            <svg className="h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-            </svg>
-            Sair do Street View
-          </button>
+        </div>
+      ) : (
+        // Container do mapa com iframe do Google Maps Embed API
+        <div className="h-full w-full" style={{ minHeight: '500px' }}>
+          <iframe
+            width="100%"
+            height="100%"
+            style={{ border: 0, minHeight: '500px' }}
+            loading="lazy"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+            src={mapSrc}
+            title="Google Maps"
+          ></iframe>
         </div>
       )}
       
-      {/* Legenda do mapa sempre visível */}
+      {/* Legenda do mapa */}
       <MapLegend />
     </div>
   );
