@@ -387,16 +387,30 @@ export default function MapView({
           // Marcador de origem (A)
           markerColor = "#0066FF"; // Azul
           markerLabel = "A";
-          markerIcon = null; // Usar ícone padrão para origem
+          markerIcon = {
+            path: window.google.maps.SymbolPath.CIRCLE,
+            fillColor: markerColor,
+            fillOpacity: 1,
+            strokeWeight: 2,
+            strokeColor: "#FFFFFF",
+            scale: 14
+          };
         } else if (isDestination) {
           // Marcador de destino final (B)
           markerColor = "#00AA00"; // Verde
           markerLabel = "B";
-          markerIcon = null; // Usar ícone padrão para destino
+          markerIcon = {
+            path: window.google.maps.SymbolPath.CIRCLE,
+            fillColor: markerColor,
+            fillOpacity: 1,
+            strokeWeight: 2,
+            strokeColor: "#FFFFFF",
+            scale: 14
+          };
         } else {
           // Marcadores de waypoints numerados
           markerColor = "#FF4500"; // Laranja-avermelhado
-          markerLabel = index.toString();
+          markerLabel = (index).toString();
           markerIcon = {
             path: window.google.maps.SymbolPath.CIRCLE,
             fillColor: markerColor,

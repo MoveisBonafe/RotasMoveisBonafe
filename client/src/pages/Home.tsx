@@ -80,7 +80,7 @@ export default function Home() {
       } else {
         // Se não encontrou (por exemplo, na primeira carga), procura o caminhão 1 eixo
         const defaultTruck = vehicleTypes.find(
-          (vt: VehicleType) => vt.type === "truck-1-axle"
+          (vt: VehicleType) => vt.type === "truck1"
         );
         
         if (defaultTruck) {
