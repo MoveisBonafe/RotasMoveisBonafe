@@ -23,17 +23,21 @@ export default function MapView({
   // Quando a origem for carregada, construir o iframe URL
   useEffect(() => {
     if (origin) {
-      // Construir o iframe URL com a origem
-      const baseUrl = `https://www.google.com/maps/embed/v1/place`;
+      // Construir o iframe URL com a origem (coordenadas exatas)
+      const baseUrl = `https://www.google.com/maps/embed/v1/view`;
       const params = new URLSearchParams({
         key: GOOGLE_MAPS_API_KEY,
-        q: `${origin.name}, ${origin.address}`,
+        center: `${origin.lat},${origin.lng}`,
         zoom: "12",
         maptype: "roadmap"
       });
       
-      setMapSrc(`${baseUrl}?${params.toString()}`);
+      // Adicionar marcador da origem
+      const markerParam = `markers=color:blue|label:A|${origin.lat},${origin.lng}`;
+      
+      setMapSrc(`${baseUrl}?${params.toString()}&${markerParam}`);
       setIsMapReady(true);
+      console.log("Mapa inicial carregado com coordenadas exatas");
     }
   }, [origin, GOOGLE_MAPS_API_KEY]);
   
@@ -43,18 +47,20 @@ export default function MapView({
       // URL base para direções
       const baseUrl = `https://www.google.com/maps/embed/v1/directions`;
       
-      // Obter origem e destino
+      // Obter origem e destino com coordenadas exatas
       const originParam = `${origin.lat},${origin.lng}`;
       const destination = calculatedRoute[calculatedRoute.length - 1];
       const destinationParam = `${destination.lat},${destination.lng}`;
       
-      // Construir waypoints string (máximo 10 pontos de parada)
+      // Construir waypoints string (máximo 8 pontos de parada devido a limitações da API)
       let waypointsArray = [];
       const maxWaypoints = Math.min(calculatedRoute.length - 2, 8); // -2 porque origem e destino já estão incluídos
       
       for (let i = 1; i < maxWaypoints + 1; i++) {
         const waypoint = calculatedRoute[i];
-        waypointsArray.push(`${waypoint.lat},${waypoint.lng}`);
+        if (waypoint && waypoint.lat && waypoint.lng) {
+          waypointsArray.push(`${waypoint.lat},${waypoint.lng}`);
+        }
       }
       
       const params = new URLSearchParams({
@@ -68,31 +74,42 @@ export default function MapView({
         params.append("waypoints", waypointsArray.join("|"));
       }
       
-      setMapSrc(`${baseUrl}?${params.toString()}`);
+      const routeUrl = `${baseUrl}?${params.toString()}`;
+      setMapSrc(routeUrl);
+      console.log("Rota calculada atualizada com coordenadas exatas");
     }
   }, [calculatedRoute, origin, GOOGLE_MAPS_API_KEY]);
 
   // Quando waypoints mudam, mas não há rota calculada ainda
   useEffect(() => {
     if (origin && waypoints.length > 0 && !calculatedRoute) {
-      // Mostrar o mapa com marcadores
-      const baseUrl = `https://www.google.com/maps/embed/v1/search`;
-      const searchParams = [`${origin.name}, ${origin.address}`];
+      // Usar view para apenas visualizar os pontos no mapa (não traçar rota)
+      const baseUrl = `https://www.google.com/maps/embed/v1/view`;
       
-      waypoints.forEach(waypoint => {
-        searchParams.push(`${waypoint.name}, ${waypoint.address}`);
+      // Criar marcadores com coordenadas precisas
+      const markers = [];
+      
+      // Adicionar origem como marker com label A
+      markers.push(`markers=color:blue|label:A|${origin.lat},${origin.lng}`);
+      
+      // Adicionar waypoints como markers com labels B, C, D...
+      waypoints.forEach((waypoint, index) => {
+        const label = String.fromCharCode(66 + index); // B, C, D...
+        markers.push(`markers=color:red|label:${label}|${waypoint.lat},${waypoint.lng}`);
       });
       
-      // Centralizar no primeiro local
+      // Centralizar no primeiro local (origem)
       const params = new URLSearchParams({
         key: GOOGLE_MAPS_API_KEY,
-        q: searchParams.join(" | "),
+        center: `${origin.lat},${origin.lng}`,
         zoom: "10",
-        maptype: "roadmap",
-        center: `${origin.lat},${origin.lng}`
+        maptype: "roadmap"
       });
       
-      setMapSrc(`${baseUrl}?${params.toString()}`);
+      const markersString = markers.join('&');
+      setMapSrc(`${baseUrl}?${params.toString()}&${markersString}`);
+      
+      console.log("Atualizando mapa com coordenadas exatas para marcadores");
     }
   }, [waypoints, origin, calculatedRoute, GOOGLE_MAPS_API_KEY]);
 
@@ -115,34 +132,57 @@ export default function MapView({
     }
   };
   
+  // Função auxiliar para criar a URL do mapa com marcadores
+  const createMapWithMarkers = (mapType = "roadmap") => {
+    if (!origin) return "";
+    
+    // Usar view para apenas visualizar os pontos no mapa
+    const baseUrl = `https://www.google.com/maps/embed/v1/view`;
+    
+    // Criar marcadores com coordenadas precisas
+    const markers = [];
+    
+    // Adicionar origem como marker com label A
+    markers.push(`markers=color:blue|label:A|${origin.lat},${origin.lng}`);
+    
+    // Adicionar waypoints como markers com labels B, C, D...
+    if (waypoints && waypoints.length > 0) {
+      waypoints.forEach((waypoint, index) => {
+        const label = String.fromCharCode(66 + index); // B, C, D...
+        markers.push(`markers=color:red|label:${label}|${waypoint.lat},${waypoint.lng}`);
+      });
+    }
+    
+    // Calcular zoom baseado no número de pontos
+    let zoom = "14";
+    if (waypoints && waypoints.length > 5) {
+      zoom = "10";
+    } else if (waypoints && waypoints.length > 0) {
+      zoom = "12";
+    }
+    
+    // Centralizar no primeiro local (origem)
+    const params = new URLSearchParams({
+      key: GOOGLE_MAPS_API_KEY,
+      center: `${origin.lat},${origin.lng}`,
+      zoom,
+      maptype: mapType
+    });
+    
+    const markersString = markers.join('&');
+    return `${baseUrl}?${params.toString()}&${markersString}`;
+  };
+  
   // Mudar para visualização de satélite
   const showSatelliteView = () => {
-    if (origin) {
-      const params = new URLSearchParams({
-        key: GOOGLE_MAPS_API_KEY,
-        q: `${origin.name}, ${origin.address}`,
-        zoom: "14",
-        maptype: "satellite"
-      });
-      
-      setMapSrc(`https://www.google.com/maps/embed/v1/place?${params.toString()}`);
-      setShowStreetView(false);
-    }
+    setMapSrc(createMapWithMarkers("satellite"));
+    setShowStreetView(false);
   };
   
   // Voltar para visualização de mapa normal
   const showRoadmapView = () => {
-    if (origin) {
-      const params = new URLSearchParams({
-        key: GOOGLE_MAPS_API_KEY,
-        q: `${origin.name}, ${origin.address}`,
-        zoom: "14",
-        maptype: "roadmap"
-      });
-      
-      setMapSrc(`https://www.google.com/maps/embed/v1/place?${params.toString()}`);
-      setShowStreetView(false);
-    }
+    setMapSrc(createMapWithMarkers("roadmap"));
+    setShowStreetView(false);
   };
 
   return (
