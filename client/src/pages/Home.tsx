@@ -201,7 +201,7 @@ export default function Home() {
       </header>
       
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
+        {/* Sidebar com lista de destinos e numeração sequencial */}
         <Sidebar
           origin={origin}
           locations={locations}
@@ -214,6 +214,7 @@ export default function Home() {
           onAddLocationClick={() => setIsAddLocationModalOpen(true)}
           onCalculateRoute={handleCalculateRoute}
           isCalculating={isCalculating}
+          calculatedRoute={calculatedRoute}
         />
         
         {/* Área principal com o mapa */}

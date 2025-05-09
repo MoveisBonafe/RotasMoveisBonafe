@@ -17,6 +17,7 @@ interface SidebarProps {
   onAddLocationClick: () => void;
   onCalculateRoute: () => void;
   isCalculating: boolean;
+  calculatedRoute?: Location[] | null; // Adicionando propriedade para rota calculada
 }
 
 export default function Sidebar({
@@ -30,7 +31,8 @@ export default function Sidebar({
   onMoveLocationDown,
   onAddLocationClick,
   onCalculateRoute,
-  isCalculating
+  isCalculating,
+  calculatedRoute
 }: SidebarProps) {
   const { 
     fileInputRef, 
@@ -143,7 +145,7 @@ export default function Sidebar({
         </button>
       </div>
 
-      {/* Locations List - agora com visual aprimorado */}
+      {/* Locations List - agora com visual aprimorado e numeração por sequência */}
       <LocationsList
         origin={origin}
         locations={locations}
@@ -151,6 +153,7 @@ export default function Sidebar({
         onMoveLocationUp={onMoveLocationUp}
         onMoveLocationDown={onMoveLocationDown}
         onAddLocationClick={onAddLocationClick}
+        calculatedRoute={calculatedRoute}
       />
     </div>
   );
