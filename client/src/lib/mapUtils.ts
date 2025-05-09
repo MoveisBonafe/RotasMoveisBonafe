@@ -1,49 +1,68 @@
 import { IconType, PointOfInterest, Location } from "./types";
 
+// Icon type for Google Maps markers
+interface Icon {
+  url: string;
+  scaledSize?: {
+    width: number;
+    height: number;
+  };
+  anchor?: {
+    x: number;
+    y: number;
+  };
+}
+
 /**
  * Returns a custom icon for different map markers
  */
-export function getMarkerIcon(type: IconType): google.maps.Icon {
+export function getMarkerIcon(type: IconType): Icon {
   const baseSize = 36;
   
   switch (type) {
     case 'toll':
       return {
         url: 'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/fonts/tabler-icons.svg#tabler-toll',
-        scaledSize: new google.maps.Size(baseSize, baseSize),
-        anchor: new google.maps.Point(baseSize/2, baseSize/2),
+        scaledSize: { width: baseSize, height: baseSize },
+        anchor: { x: baseSize/2, y: baseSize/2 },
       };
     case 'weighing_station':
       return {
         url: 'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/fonts/tabler-icons.svg#tabler-weight',
-        scaledSize: new google.maps.Size(baseSize, baseSize),
-        anchor: new google.maps.Point(baseSize/2, baseSize/2),
+        scaledSize: { width: baseSize, height: baseSize },
+        anchor: { x: baseSize/2, y: baseSize/2 },
       };
     case 'origin':
       return {
         url: 'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/fonts/tabler-icons.svg#tabler-home',
-        scaledSize: new google.maps.Size(baseSize, baseSize),
-        anchor: new google.maps.Point(baseSize/2, baseSize/2),
+        scaledSize: { width: baseSize, height: baseSize },
+        anchor: { x: baseSize/2, y: baseSize/2 },
       };
     case 'destination':
       return {
         url: 'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/fonts/tabler-icons.svg#tabler-flag',
-        scaledSize: new google.maps.Size(baseSize, baseSize),
-        anchor: new google.maps.Point(baseSize/2, baseSize/2),
+        scaledSize: { width: baseSize, height: baseSize },
+        anchor: { x: baseSize/2, y: baseSize/2 },
       };
     case 'waypoint':
       return {
         url: 'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/fonts/tabler-icons.svg#tabler-map-pin',
-        scaledSize: new google.maps.Size(baseSize, baseSize),
-        anchor: new google.maps.Point(baseSize/2, baseSize/2),
+        scaledSize: { width: baseSize, height: baseSize },
+        anchor: { x: baseSize/2, y: baseSize/2 },
       };
     default:
       return {
         url: 'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/fonts/tabler-icons.svg#tabler-map-pin',
-        scaledSize: new google.maps.Size(baseSize, baseSize),
-        anchor: new google.maps.Point(baseSize/2, baseSize/2),
+        scaledSize: { width: baseSize, height: baseSize },
+        anchor: { x: baseSize/2, y: baseSize/2 },
       };
   }
+}
+
+// Define a LatLng interface to avoid direct Google Maps references
+interface LatLng {
+  lat: number;
+  lng: number;
 }
 
 /**
@@ -56,33 +75,69 @@ export function getMarkerIcon(type: IconType): google.maps.Icon {
  */
 export function filterPointsOfInterestAlongRoute(
   pois: PointOfInterest[],
-  route: google.maps.LatLng[],
+  route: any[], // Accept any array type since we can't reference Google Maps types directly
   maxDistanceKm: number = 2
 ): PointOfInterest[] {
+  if (!pois || !route || !route.length || !window.google) {
+    return [];
+  }
+
   return pois.filter(poi => {
-    const poiLatLng = new google.maps.LatLng(
-      parseFloat(poi.lat),
-      parseFloat(poi.lng)
-    );
+    const poiLatLng = {
+      lat: parseFloat(poi.lat),
+      lng: parseFloat(poi.lng)
+    };
     
     // Find the minimum distance from the POI to any point on the route
     let minDistance = Infinity;
     
     for (const routePoint of route) {
-      const distance = google.maps.geometry.spherical.computeDistanceBetween(
-        poiLatLng,
-        routePoint
-      ) / 1000; // Convert to kilometers
-      
-      minDistance = Math.min(minDistance, distance);
-      
-      if (minDistance <= maxDistanceKm) {
-        return true;
+      // If Google Maps geometry library is available, use it to calculate distance
+      if (window.google && window.google.maps && window.google.maps.geometry) {
+        const poiGoogleLatLng = new window.google.maps.LatLng(poiLatLng.lat, poiLatLng.lng);
+        const distance = window.google.maps.geometry.spherical.computeDistanceBetween(
+          poiGoogleLatLng,
+          routePoint
+        ) / 1000; // Convert to kilometers
+        
+        minDistance = Math.min(minDistance, distance);
+        
+        if (minDistance <= maxDistanceKm) {
+          return true;
+        }
+      } else {
+        // Fallback to a simple distance calculation if Google Maps geometry is not available
+        const simpleDistance = calculateHaversineDistance(
+          poiLatLng.lat, poiLatLng.lng, 
+          routePoint.lat(), routePoint.lng()
+        );
+        
+        minDistance = Math.min(minDistance, simpleDistance);
+        
+        if (minDistance <= maxDistanceKm) {
+          return true;
+        }
       }
     }
     
     return false;
   });
+}
+
+/**
+ * Calculate distance between two points using the Haversine formula
+ * This is a fallback when Google Maps geometry library is not available
+ */
+function calculateHaversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371; // Earth's radius in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c; // Distance in km
 }
 
 /**
@@ -120,13 +175,13 @@ export function formatCurrency(cents: number): string {
 }
 
 /**
- * Creates a Google Maps LatLng object from a Location
+ * Creates a LatLng object from a Location
  */
-export function locationToLatLng(location: Location): google.maps.LatLng {
-  return new google.maps.LatLng(
-    parseFloat(location.lat),
-    parseFloat(location.lng)
-  );
+export function locationToLatLng(location: Location): LatLng {
+  return {
+    lat: parseFloat(location.lat),
+    lng: parseFloat(location.lng)
+  };
 }
 
 /**

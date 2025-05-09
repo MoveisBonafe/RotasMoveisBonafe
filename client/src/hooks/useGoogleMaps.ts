@@ -47,45 +47,52 @@ export function useGoogleMaps({ mapContainerRef, initialOptions = {} }: UseGoogl
   useEffect(() => {
     if (!mapContainerRef.current || map) return;
 
+    let isMounted = true;
+    
     // Wait for Google Maps to load
     withGoogleMaps(() => {
-      if (!mapContainerRef.current) return; // Check again in case component unmounted
+      if (!isMounted || !mapContainerRef.current) return; // Check if still mounted
       if (!window.google || !window.google.maps) return; // Make sure Google Maps is loaded
 
-      const options = {
-        ...defaultMapOptions,
-        ...initialOptions,
-        mapTypeId: mapType,
-        mapTypeControl: false,
-        fullscreenControl: false,
-        streetViewControl: false,
-        zoomControl: false,
-      };
+      try {
+        const options = {
+          ...defaultMapOptions,
+          ...initialOptions,
+          mapTypeId: mapType,
+          mapTypeControl: false,
+          fullscreenControl: false,
+          streetViewControl: false,
+          zoomControl: false,
+        };
 
-      const newMap = new google.maps.Map(mapContainerRef.current, options);
-      const newDirectionsRenderer = new google.maps.DirectionsRenderer({
-        suppressMarkers: true,
-        preserveViewport: false,
-      });
-      newDirectionsRenderer.setMap(newMap);
+        const newMap = new window.google.maps.Map(mapContainerRef.current, options);
+        const newDirectionsRenderer = new window.google.maps.DirectionsRenderer({
+          suppressMarkers: true,
+          preserveViewport: false,
+        });
+        newDirectionsRenderer.setMap(newMap);
 
-      const newStreetViewService = new google.maps.StreetViewService();
-      const newStreetViewPanorama = new google.maps.StreetViewPanorama(
-        document.createElement("div"),
-        {
-          enableCloseButton: true,
-          visible: false,
-        }
-      );
-      newMap.setStreetView(newStreetViewPanorama);
+        const newStreetViewService = new window.google.maps.StreetViewService();
+        const newStreetViewPanorama = new window.google.maps.StreetViewPanorama(
+          document.createElement("div"),
+          {
+            enableCloseButton: true,
+            visible: false,
+          }
+        );
+        newMap.setStreetView(newStreetViewPanorama);
 
-      setMap(newMap);
-      setDirectionsRenderer(newDirectionsRenderer);
-      setStreetViewService(newStreetViewService);
-      setStreetViewPanorama(newStreetViewPanorama);
+        setMap(newMap);
+        setDirectionsRenderer(newDirectionsRenderer);
+        setStreetViewService(newStreetViewService);
+        setStreetViewPanorama(newStreetViewPanorama);
+      } catch (error) {
+        console.error("Error initializing Google Maps:", error);
+      }
     });
 
     return () => {
+      isMounted = false;
       // Cleanup markers
       clearMarkers();
     };

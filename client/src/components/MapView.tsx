@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { Location, PointOfInterest } from "@/lib/types";
 import { useGoogleMaps } from "@/hooks/useGoogleMaps";
 import MapControls from "./MapControls";
@@ -29,20 +29,38 @@ export default function MapView({
 }: MapViewProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [isMapReady, setIsMapReady] = useState(false);
+  const [googleMapsLoaded, setGoogleMapsLoaded] = useState(false);
 
   // Fetch points of interest from the server
-  const { data: pointsOfInterest } = useQuery({
+  const { data: pointsOfInterest = [] } = useQuery({
     queryKey: ['/api/points-of-interest'],
     staleTime: Infinity,
   });
 
   // Initialize Google Maps
-  useEffect(() => {
-    // Check if Google Maps is already loaded
+  const initGoogleMaps = useCallback(() => {
+    if (googleMapsLoaded) return;
+    
     withGoogleMaps(() => {
+      console.log("Google Maps API successfully loaded");
+      setGoogleMapsLoaded(true);
       setIsMapReady(true);
     });
-  }, []);
+  }, [googleMapsLoaded]);
+
+  useEffect(() => {
+    initGoogleMaps();
+    
+    // Add a fallback in case Google Maps doesn't load
+    const timeout = setTimeout(() => {
+      if (!googleMapsLoaded) {
+        console.warn("Google Maps loading timeout, retrying...");
+        initGoogleMaps();
+      }
+    }, 5000);
+    
+    return () => clearTimeout(timeout);
+  }, [initGoogleMaps, googleMapsLoaded]);
 
   const { 
     map,

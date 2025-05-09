@@ -72,4 +72,9 @@ export function withGoogleMaps(callback: () => void) {
 loadGoogleMaps();
 
 // Render the app
-createRoot(document.getElementById("root")!).render(<App />);
+const rootElement = document.getElementById("root");
+
+// Check if root already has a React instance attached to avoid duplicate render
+if (!rootElement?.hasChildNodes()) {
+  createRoot(rootElement!).render(<App />);
+}
