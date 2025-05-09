@@ -254,7 +254,7 @@ export default function Home() {
         // Mostrar toast de sucesso
         toast({
           title: "Rota calculada com sucesso",
-          description: `${routeResult.waypoints.length - 2} paradas otimizadas`,
+          description: `${locations.length} paradas otimizadas`,
         });
         
         console.log(`Rota calculada com sucesso: ${routeResult.waypoints.length} pontos totais`);

@@ -250,7 +250,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/vehicle-types", async (req: Request, res: Response) => {
     try {
       const vehicleTypes = await storage.getAllVehicleTypes();
-      res.json(vehicleTypes);
+      
+      // Reorganiza a lista para que o caminhão 1 eixo apareça primeiro
+      const truck1 = vehicleTypes.find(vt => vt.type === "truck1");
+      const otherTypes = vehicleTypes.filter(vt => vt.type !== "truck1");
+      
+      if (truck1) {
+        // Coloca o caminhão 1 eixo no início do array
+        res.json([truck1, ...otherTypes]);
+      } else {
+        res.json(vehicleTypes);
+      }
     } catch (error) {
       res.status(500).json({ message: "Failed to retrieve vehicle types" });
     }

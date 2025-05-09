@@ -277,7 +277,7 @@ export default function RouteReport({
                 <tr key={index}>
                   <td>
                     <span className={`point-label ${index === calculatedRoute.length - 2 ? 'destination-label' : ''}`}>
-                      {index === calculatedRoute.length - 2 ? 'B' : (index + 1).toString()}
+                      {index === calculatedRoute.length - 2 ? 'B' : (index + 1)}
                     </span>
                   </td>
                   <td>{point.name || `Ponto ${index + 1}`}</td>
