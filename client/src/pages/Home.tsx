@@ -14,7 +14,7 @@ export default function Home() {
   const [origin, setOrigin] = useState<Location | null>(null);
   const [locations, setLocations] = useState<Location[]>([]);
   // Definindo caminhão 1 eixo como padrão (truck-1-axle)
-  const [selectedVehicleType, setSelectedVehicleType] = useState<string>("truck-1-axle");
+  const [selectedVehicleType, setSelectedVehicleType] = useState<string>("truck1");
   const [vehicleTypeObj, setVehicleTypeObj] = useState<VehicleType | null>(null);
   const [isAddLocationModalOpen, setIsAddLocationModalOpen] = useState(false);
   // Dados para filtragem por data
