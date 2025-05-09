@@ -1,6 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Location } from "@/lib/types";
 import MapLegend from "@/components/MapLegend";
+import { getMarkerIcon } from "@/lib/mapUtils";
+import { withGoogleMaps } from "@/main";
+
+// Declaração para o objeto global do Google Maps
+declare global {
+  interface Window {
+    google: any;
+    initMap: () => void;
+  }
+}
 
 interface MapViewProps {
   origin: Location | null;
@@ -16,6 +26,9 @@ export default function MapView({
 }: MapViewProps) {
   const [isMapReady, setIsMapReady] = useState(false);
   const [mapSrc, setMapSrc] = useState("");
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const directMapRef = useRef<any>(null);
+  const markersRef = useRef<any[]>([]);
   
   // Obter a chave API do Google Maps
   const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
@@ -245,6 +258,188 @@ export default function MapView({
     setShowStreetView(false);
   };
 
+  // Efeito para carregar o mapa diretamente usando a Google Maps JavaScript API
+  useEffect(() => {
+    // Só inicializa se tivermos origem e o contêiner estiver pronto
+    if (origin && mapContainerRef.current && !directMapRef.current) {
+      // Inicializar o mapa diretamente usando a função withGoogleMaps para garantir que a API esteja carregada
+      withGoogleMaps(() => {
+        try {
+          console.log("Inicializando mapa interativo com marcadores...");
+          
+          // Coordenadas da origem
+          const originCoords = { 
+            lat: parseFloat(origin.lat), 
+            lng: parseFloat(origin.lng) 
+          };
+          
+          // Criar nova instância do mapa
+          const map = new window.google.maps.Map(mapContainerRef.current!, {
+            center: originCoords,
+            zoom: 10,
+            mapTypeId: window.google.maps.MapTypeId.ROADMAP,
+            fullscreenControl: true,
+            mapTypeControl: true,
+            streetViewControl: true,
+            zoomControl: true
+          });
+          
+          // Armazenar referência para uso futuro
+          directMapRef.current = map;
+          
+          // Criar marcador da origem
+          const originMarker = new window.google.maps.Marker({
+            position: originCoords,
+            map: map,
+            title: origin.name || "Origem",
+            label: "A",
+            animation: window.google.maps.Animation.DROP
+          });
+          
+          // Adicionar janela de informações para origem
+          const originInfoWindow = new window.google.maps.InfoWindow({
+            content: `<div><strong>Origem: ${origin.name}</strong><br>${origin.address || ""}</div>`
+          });
+          
+          // Abrir ao clicar no marcador de origem
+          originMarker.addListener("click", () => {
+            originInfoWindow.open(map, originMarker);
+          });
+          
+          // Armazenar marcadores para limpeza futura
+          markersRef.current = [originMarker];
+          
+          // Adicionar marcadores para waypoints
+          if (waypoints && waypoints.length > 0) {
+            updateMarkersOnMap();
+          }
+          
+          // Marcar mapa como carregado
+          setIsMapReady(true);
+          console.log("Mapa interativo inicializado com marcadores visíveis");
+        } catch (error) {
+          console.error("Erro ao inicializar mapa interativo:", error);
+          // Em caso de erro, utilizar o iframe como fallback
+          setIsMapReady(true);
+        }
+      });
+    }
+  }, [origin, waypoints]);
+  
+  // Função para adicionar marcadores ao mapa
+  const updateMarkersOnMap = () => {
+    if (!directMapRef.current || !origin || !waypoints || waypoints.length === 0) return;
+    
+    try {
+      const map = directMapRef.current;
+      
+      // Limpar marcadores existentes (exceto origem)
+      if (markersRef.current.length > 1) {
+        for (let i = 1; i < markersRef.current.length; i++) {
+          markersRef.current[i].setMap(null);
+        }
+        markersRef.current = [markersRef.current[0]]; // Manter apenas o marcador de origem
+      }
+      
+      // Limites para ajustar zoom
+      const bounds = new window.google.maps.LatLngBounds();
+      
+      // Adicionar origem aos limites
+      bounds.extend({ 
+        lat: parseFloat(origin.lat), 
+        lng: parseFloat(origin.lng) 
+      });
+      
+      console.log(`Adicionando ${waypoints.length} marcadores no mapa...`);
+      
+      // Adicionar cada waypoint ao mapa
+      waypoints.forEach((waypoint, index) => {
+        // Garantir que temos coordenadas válidas
+        if (!waypoint.lat || !waypoint.lng) {
+          console.warn(`Waypoint ${index + 1} (${waypoint.name}) não tem coordenadas válidas`);
+          return; // Pular este waypoint
+        }
+        
+        // Converter para números e verificar
+        const lat = parseFloat(waypoint.lat);
+        const lng = parseFloat(waypoint.lng);
+        
+        if (isNaN(lat) || isNaN(lng)) {
+          console.warn(`Waypoint ${index + 1} tem coordenadas inválidas: lat=${waypoint.lat}, lng=${waypoint.lng}`);
+          return; // Pular este waypoint
+        }
+        
+        const position = { lat, lng };
+        console.log(`Marcador ${index + 1}: ${waypoint.name} em ${lat},${lng}`);
+        
+        // Adicionar marcador com número
+        const marker = new window.google.maps.Marker({
+          position: position,
+          map: map,
+          title: waypoint.name || `Destino ${index + 1}`,
+          label: {
+            text: (index + 1).toString(),
+            color: "white"
+          },
+          animation: window.google.maps.Animation.DROP,
+          icon: {
+            path: window.google.maps.SymbolPath.CIRCLE,
+            fillColor: "#FF0000",
+            fillOpacity: 1,
+            strokeWeight: 0,
+            scale: 12
+          }
+        });
+        
+        // Adicionar janela de informações
+        const infoWindow = new window.google.maps.InfoWindow({
+          content: `<div>
+                     <strong>${waypoint.name || `Destino ${index + 1}`}</strong>
+                     <br>${waypoint.address || ""}
+                     <br>Lat: ${lat}, Lng: ${lng}
+                    </div>`
+        });
+        
+        // Abrir ao clicar
+        marker.addListener("click", () => {
+          infoWindow.open(map, marker);
+        });
+        
+        // Salvar marcador na referência
+        markersRef.current.push(marker);
+        
+        // Adicionar ponto aos limites
+        bounds.extend(position);
+      });
+      
+      // Apenas ajustar zoom se tivermos pontos no mapa
+      if (markersRef.current.length > 1) {
+        // Ajustar zoom para mostrar todos os pontos
+        map.fitBounds(bounds);
+        
+        // Adicionar um padding para não ficar muito justo
+        const padding = { 
+          top: 50, 
+          right: 50, 
+          bottom: 50, 
+          left: 50 
+        };
+        map.fitBounds(bounds, padding);
+        
+        console.log("Mapa ajustado para mostrar todos os pontos");
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar marcadores:", error);
+    }
+  };
+  
+  // Atualizar marcadores quando waypoints mudarem
+  useEffect(() => {
+    if (directMapRef.current && waypoints && waypoints.length > 0) {
+      updateMarkersOnMap();
+    }
+  }, [waypoints]);
+
   return (
     <div className="flex-1 relative h-full">
       {!isMapReady ? (
@@ -256,20 +451,30 @@ export default function MapView({
           </div>
         </div>
       ) : (
-        // Container do mapa com iframe do Google Maps Embed API
+        // Container do mapa (agora com ambas opções: direto ou iframe)
         <div className="h-full w-full relative" style={{ minHeight: '500px' }}>
-          <iframe
-            width="100%"
-            height="100%"
-            style={{ border: 0, minHeight: '500px' }}
-            loading="lazy"
-            allowFullScreen
-            referrerPolicy="no-referrer-when-downgrade"
-            src={mapSrc}
-            title="Google Maps"
-          ></iframe>
+          {/* Container para mapa direto do Google Maps JavaScript API */}
+          <div 
+            ref={mapContainerRef} 
+            className="h-full w-full"
+            style={{ display: directMapRef.current ? 'block' : 'none', minHeight: '500px' }} 
+          />
           
-          {/* Pins de sobreposição para mostrar numeração personalizada */}
+          {/* Fallback para iframe caso a API JavaScript não esteja disponível */}
+          {!directMapRef.current && (
+            <iframe
+              width="100%"
+              height="100%"
+              style={{ border: 0, minHeight: '500px' }}
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+              src={mapSrc}
+              title="Google Maps"
+            ></iframe>
+          )}
+          
+          {/* Legenda para os pontos no mapa */}
           {(waypoints && waypoints.length > 0 && !showStreetView) && (
             <div className="absolute bottom-4 left-4 bg-white rounded-md shadow-md p-2 z-10 max-w-xs">
               <h3 className="text-sm font-semibold mb-2">Pontos no mapa:</h3>
