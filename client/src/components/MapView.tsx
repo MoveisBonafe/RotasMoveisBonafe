@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { Location } from "@/lib/types";
-import MapLegend from "@/components/MapLegend";
 import { getMarkerIcon } from "@/lib/mapUtils";
 import { withGoogleMaps } from "@/main";
 
@@ -435,10 +434,13 @@ export default function MapView({
           return `Parada ${index}`;
         };
         
+        // Definir cor baseada no tipo de marcador
+        const infoColor = isOrigin ? "#0066FF" : isDestination ? "#00AA00" : "#FF4500";
+        
         // Criar janela de informações mais detalhada
         const infoWindow = new window.google.maps.InfoWindow({
           content: `<div style="min-width: 220px; padding: 10px; font-family: Arial, sans-serif;">
-                     <h3 style="margin: 0 0 8px 0; color: ${markerColor};">${getPointTypeText()}</h3>
+                     <h3 style="margin: 0 0 8px 0; color: ${infoColor};">${getPointTypeText()}</h3>
                      <strong>${point.name || `Ponto ${index}`}</strong>
                      <p style="margin: 8px 0;">${point.address || ""}</p>
                      <div style="font-size: 12px; color: #666;">
@@ -617,8 +619,7 @@ export default function MapView({
         </div>
       )}
       
-      {/* Legenda do mapa */}
-      <MapLegend />
+      {/* Legenda do mapa removida conforme solicitado */}
     </div>
   );
 }
