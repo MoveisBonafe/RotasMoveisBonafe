@@ -43,17 +43,60 @@ const loadGoogleMaps = () => {
   document.head.appendChild(script);
 };
 
+// Configuração de zoom sem Ctrl - Executado após carregamento do mapa
+const enableScrollWheelZoom = () => {
+  try {
+    // Configuração para permitir zoom sem Ctrl (adiciona CSS e configurações)
+    setTimeout(() => {
+      // Tenta encontrar os containers do mapa
+      const gmStyleNodes = document.querySelectorAll('.gm-style');
+      
+      if (gmStyleNodes.length > 0) {
+        gmStyleNodes.forEach((node: Element) => {
+          // Adiciona atributos de manipulação para todos os containers
+          if (node instanceof HTMLElement) {
+            node.style.touchAction = 'manipulation';
+            
+            // Adiciona um atributo de dados para seleção via CSS
+            node.dataset.gestureHandling = 'greedy';
+          }
+          
+          // Tentar aplicar a todos os elementos filhos (camadas do mapa)
+          const allElements = node.querySelectorAll('*');
+          allElements.forEach((el) => {
+            if (el instanceof HTMLElement) {
+              el.style.touchAction = 'manipulation';
+            }
+          });
+        });
+        
+        console.log("Helper de zoom aplicado aos elementos do Google Maps");
+      } else {
+        console.log("Nenhum elemento .gm-style encontrado para aplicar helper de zoom");
+      }
+    }, 500);
+  } catch (e) {
+    console.error("Erro ao aplicar helper de zoom:", e);
+  }
+};
+
 // Global initialization function for Google Maps
 window.initMap = () => {
   console.log("Google Maps API loaded");
   googleMapsLoaded = true;
   executeCallbacks();
   
+  // Ativar o scroll de zoom sem precisar do Ctrl
+  enableScrollWheelZoom();
+  
   // Forçar carregamento das bibliotecas Places API
   if (window.google && window.google.maps) {
     try {
       new window.google.maps.places.AutocompleteService();
       console.log("Google Places API loaded");
+      
+      // Após carregar Places, aplicar novamente as configurações de zoom
+      enableScrollWheelZoom();
     } catch (e) {
       console.error("Erro ao carregar Places API:", e);
     }
