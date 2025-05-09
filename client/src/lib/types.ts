@@ -61,9 +61,9 @@ export interface RouteInfo {
 }
 
 export interface MapOptions {
-  center: google.maps.LatLngLiteral;
+  center: { lat: number; lng: number };
   zoom: number;
-  mapTypeId: google.maps.MapTypeId;
+  mapTypeId: string;
 }
 
 export type TabType = 'summary' | 'events' | 'restrictions';
@@ -83,4 +83,5 @@ export interface GeocodingResult {
   cep?: string;
   lat: string;
   lng: string;
+  placeId?: string;
 }

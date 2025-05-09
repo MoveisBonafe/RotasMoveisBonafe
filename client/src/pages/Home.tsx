@@ -51,14 +51,22 @@ export default function Home() {
   
   // Set the origin when data is loaded
   useEffect(() => {
-    if (originData) {
-      setOrigin(originData);
+    // Garante que originData seja um objeto válido com todas as propriedades necessárias
+    if (originData && 
+        typeof originData === 'object' && 
+        'id' in originData && 
+        'name' in originData && 
+        'address' in originData &&
+        'lat' in originData &&
+        'lng' in originData) {
+      setOrigin(originData as Location);
     }
   }, [originData]);
   
   // Set the vehicle type object when the selected type changes
   useEffect(() => {
-    if (vehicleTypes) {
+    // Verifica se vehicleTypes é um array válido
+    if (vehicleTypes && Array.isArray(vehicleTypes) && vehicleTypes.length > 0) {
       const selectedVehicle = vehicleTypes.find(
         (vt: VehicleType) => vt.type === selectedVehicleType
       );
@@ -130,8 +138,11 @@ export default function Home() {
       return;
     }
     
+    // Garante que pointsOfInterest seja um array válido
+    const pois = Array.isArray(pointsOfInterest) ? pointsOfInterest : [];
+    
     // Optimize the route locally
-    const routeResult = optimizeRouteLocally(origin, locations, vehicleTypeObj, pointsOfInterest || []);
+    const routeResult = optimizeRouteLocally(origin, locations, vehicleTypeObj, pois);
     setCalculatedRoute(routeResult.waypoints);
     setPoisOnRoute(poisAlongRoute);
     
