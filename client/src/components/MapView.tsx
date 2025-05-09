@@ -86,8 +86,9 @@ export default function MapView({
   // Quando waypoints mudam, mas não há rota calculada ainda
   useEffect(() => {
     if (origin && waypoints.length > 0 && !calculatedRoute) {
-      // Vamos usar a API de visualização estática com marcadores numerados
-      const baseUrl = `https://www.google.com/maps/embed/v1/view`;
+      // Vamos usar o modo places do Google Maps para mostrar múltiplos locais
+      // Esta abordagem não usa "markers" diretamente, mas mostra pinos no mapa
+      const baseUrl = `https://www.google.com/maps/embed/v1/search`;
       
       // Calcular a média das coordenadas para centrar o mapa
       let sumLat = parseFloat(origin.lat);
@@ -101,26 +102,26 @@ export default function MapView({
       const centerLat = sumLat / (waypoints.length + 1);
       const centerLng = sumLng / (waypoints.length + 1);
       
+      // Construir uma string de consulta incluindo todos os pontos
+      // Formato: "coord:LAT,LNG|coord:LAT,LNG|..."
+      let searchQuery = `coord:${origin.lat},${origin.lng}`;
+      
+      // Adicionar cada waypoint à consulta
+      waypoints.forEach((waypoint, index) => {
+        searchQuery += `|coord:${waypoint.lat},${waypoint.lng}`;
+      });
+      
       // Parâmetros básicos do mapa
       const params = new URLSearchParams({
         key: GOOGLE_MAPS_API_KEY,
+        q: searchQuery,
         center: `${centerLat},${centerLng}`,
         zoom: "10",
         maptype: "roadmap"
       });
       
-      // Adicionar o marcador de origem (letra A em azul)
-      params.append("markers", `color:blue|label:A|${origin.lat},${origin.lng}`);
-      
-      // Adicionar os marcadores numerados para cada destino
-      waypoints.forEach((waypoint, index) => {
-        // Os índices começam em 0, mas queremos mostrar números a partir de 1
-        const label = (index + 1).toString();
-        params.append("markers", `color:red|label:${label}|${waypoint.lat},${waypoint.lng}`);
-      });
-      
       setMapSrc(`${baseUrl}?${params.toString()}`);
-      console.log("Mostrando pontos de destino como pinos no mapa");
+      console.log("Mostrando pontos de destino usando search mode");
     }
   }, [waypoints, origin, calculatedRoute, GOOGLE_MAPS_API_KEY]);
 
@@ -145,48 +146,53 @@ export default function MapView({
     }
   };
   
-  // Função auxiliar para criar a URL do mapa com coordenadas exatas e marcadores coloridos
+  // Função auxiliar para criar a URL do mapa com coordenadas exatas
   const createMapUrl = (mapType = "roadmap") => {
     if (!origin) return "";
     
-    let baseUrl, params;
+    let baseUrl;
+    const params = new URLSearchParams({
+      key: GOOGLE_MAPS_API_KEY,
+      maptype: mapType
+    });
     
-    // Se temos uma rota calculada, mostramos ela
+    // Se temos uma rota calculada, mostramos ela usando o modo directions
     if (calculatedRoute && calculatedRoute.length > 0) {
-      baseUrl = `https://www.google.com/maps/embed/v1/view`;
+      baseUrl = `https://www.google.com/maps/embed/v1/directions`;
       
-      // Calcular centro do mapa
-      let sumLat = parseFloat(origin.lat);
-      let sumLng = parseFloat(origin.lng);
+      const originParam = `${origin.lat},${origin.lng}`;
+      // O último ponto da rota otimizada é o destino final
+      const destination = calculatedRoute[calculatedRoute.length - 1];
+      const destinationParam = `${destination.lat},${destination.lng}`;
       
-      calculatedRoute.forEach(loc => {
-        sumLat += parseFloat(loc.lat);
-        sumLng += parseFloat(loc.lng);
-      });
+      // Adicionar origem e destino
+      params.append("origin", originParam);
+      params.append("destination", destinationParam);
+      params.append("mode", "driving");
       
-      const centerLat = sumLat / (calculatedRoute.length + 1);
-      const centerLng = sumLng / (calculatedRoute.length + 1);
-      
-      params = new URLSearchParams({
-        key: GOOGLE_MAPS_API_KEY,
-        center: `${centerLat},${centerLng}`,
-        zoom: "10",
-        maptype: mapType
-      });
-      
-      // Adicionar o marcador de origem
-      params.append("markers", `color:blue|label:A|${origin.lat},${origin.lng}`);
-      
-      // Adicionar marcadores numerados para a rota calculada
-      calculatedRoute.forEach((location, index) => {
-        if (index > 0) { // Ignorar a origem
-          params.append("markers", `color:red|label:${index}|${location.lat},${location.lng}`);
+      // Extrair waypoints da rota (excluindo origem e destino)
+      if (calculatedRoute.length > 2) {
+        const waypointsParam = calculatedRoute
+          .slice(1, calculatedRoute.length - 1)
+          .map(wp => `${wp.lat},${wp.lng}`)
+          .join('|');
+        
+        if (waypointsParam) {
+          params.append("waypoints", waypointsParam);
         }
-      });
+      }
     }
     // Se tivermos waypoints, mas não a rota calculada ainda
     else if (waypoints && waypoints.length > 0) {
-      baseUrl = `https://www.google.com/maps/embed/v1/view`;
+      baseUrl = `https://www.google.com/maps/embed/v1/search`;
+      
+      // Construir uma string de consulta para todos os pontos
+      let searchQuery = `coord:${origin.lat},${origin.lng}`;
+      
+      // Adicionar cada waypoint à consulta
+      waypoints.forEach(waypoint => {
+        searchQuery += `|coord:${waypoint.lat},${waypoint.lng}`;
+      });
       
       // Calcular centro do mapa
       let sumLat = parseFloat(origin.lat);
@@ -200,31 +206,15 @@ export default function MapView({
       const centerLat = sumLat / (waypoints.length + 1);
       const centerLng = sumLng / (waypoints.length + 1);
       
-      params = new URLSearchParams({
-        key: GOOGLE_MAPS_API_KEY,
-        center: `${centerLat},${centerLng}`,
-        zoom: "10",
-        maptype: mapType
-      });
-      
-      // Adicionar o marcador de origem
-      params.append("markers", `color:blue|label:A|${origin.lat},${origin.lng}`);
-      
-      // Adicionar marcadores numerados para cada waypoint
-      waypoints.forEach((waypoint, index) => {
-        const label = (index + 1).toString();
-        params.append("markers", `color:red|label:${label}|${waypoint.lat},${waypoint.lng}`);
-      });
+      params.append("q", searchQuery);
+      params.append("center", `${centerLat},${centerLng}`);
+      params.append("zoom", "10");
     } 
     // Se não tivermos waypoints, usamos place para mostrar apenas a origem
     else {
       baseUrl = `https://www.google.com/maps/embed/v1/place`;
-      params = new URLSearchParams({
-        key: GOOGLE_MAPS_API_KEY,
-        q: `${origin.lat},${origin.lng}`,
-        zoom: "14",
-        maptype: mapType
-      });
+      params.append("q", `${origin.lat},${origin.lng}`);
+      params.append("zoom", "14");
     }
     
     return `${baseUrl}?${params.toString()}`;
