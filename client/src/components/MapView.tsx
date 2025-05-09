@@ -292,26 +292,13 @@ export default function MapView({
           // Armazenar referência para uso futuro
           directMapRef.current = map;
           
-          // Criar marcador destacado para a origem
+          // Criar marcador da origem
           const originMarker = new window.google.maps.Marker({
             position: originCoords,
             map: map,
             title: origin.name || "Origem",
-            label: {
-              text: "A",
-              color: "white",
-              fontWeight: "bold",
-              fontSize: "16px"
-            },
-            animation: window.google.maps.Animation.DROP,
-            icon: {
-              path: window.google.maps.SymbolPath.CIRCLE,
-              fillColor: "#2563EB", // Azul
-              fillOpacity: 1,
-              strokeWeight: 2,
-              strokeColor: "#FFFFFF",
-              scale: 16
-            }
+            label: "A",
+            animation: window.google.maps.Animation.DROP
           });
           
           // Adicionar janela de informações para origem
@@ -395,25 +382,22 @@ export default function MapView({
         const position = { lat, lng };
         console.log(`Marcador ${index + 1}: ${waypoint.name} em ${lat},${lng}`);
         
-        // Adicionar marcador com número destacado
+        // Adicionar marcador com número
         const marker = new window.google.maps.Marker({
           position: position,
           map: map,
           title: waypoint.name || `Destino ${index + 1}`,
           label: {
             text: (index + 1).toString(),
-            color: "white",
-            fontWeight: "bold",
-            fontSize: "14px"
+            color: "white"
           },
           animation: window.google.maps.Animation.DROP,
           icon: {
             path: window.google.maps.SymbolPath.CIRCLE,
             fillColor: "#FF0000",
             fillOpacity: 1,
-            strokeWeight: 1,
-            strokeColor: "#FFFFFF",
-            scale: 14
+            strokeWeight: 0,
+            scale: 12
           }
         });
         
