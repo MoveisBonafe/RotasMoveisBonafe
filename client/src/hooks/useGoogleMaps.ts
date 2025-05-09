@@ -59,35 +59,70 @@ export function useGoogleMaps({ mapContainerRef, initialOptions = {} }: UseGoogl
           ...defaultMapOptions,
           ...initialOptions,
           mapTypeId: mapType,
-          mapTypeControl: false,
-          fullscreenControl: false,
-          streetViewControl: false,
-          zoomControl: false,
+          mapTypeControl: true, // Habilitar controle de tipos de mapa (satélite, terreno, etc)
+          mapTypeControlOptions: {
+            style: window.google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+            position: window.google.maps.ControlPosition.TOP_RIGHT,
+          },
+          fullscreenControl: true, // Habilitar modo tela cheia
+          fullscreenControlOptions: {
+            position: window.google.maps.ControlPosition.RIGHT_BOTTOM,
+          },
+          streetViewControl: true, // Habilitar controle de Street View
+          streetViewControlOptions: {
+            position: window.google.maps.ControlPosition.RIGHT_CENTER,
+          },
+          zoomControl: true, // Usar controles de zoom padrão do Google Maps
+          zoomControlOptions: {
+            position: window.google.maps.ControlPosition.RIGHT_CENTER,
+          }
         };
 
         const newMap = new window.google.maps.Map(mapContainerRef.current, options);
+        
+        // Configurar o DirectionsRenderer para mostrar as rotas
         const newDirectionsRenderer = new window.google.maps.DirectionsRenderer({
-          suppressMarkers: true,
+          suppressMarkers: true, // Não mostrar marcadores padrão (usaremos os nossos personalizados)
           preserveViewport: false,
+          polylineOptions: {
+            strokeColor: '#4285F4', // Cor azul Google Maps para a rota
+            strokeWeight: 5,
+            strokeOpacity: 0.8
+          }
         });
         newDirectionsRenderer.setMap(newMap);
 
+        // Configurar StreetView com opções avançadas
         const newStreetViewService = new window.google.maps.StreetViewService();
+        const panoramaOptions = {
+          enableCloseButton: true,
+          addressControl: true,
+          fullscreenControl: true,
+          visible: false,
+          linksControl: true, // Mostrar setas de navegação no StreetView
+          panControl: true,   // Permitir movimento panorâmico
+          zoomControl: true,  // Permitir zoom no StreetView
+          motionTracking: false,
+          motionTrackingControl: true,
+        };
+        
+        // Adicionar StreetView diretamente no mapa para navegação integrada
         const newStreetViewPanorama = new window.google.maps.StreetViewPanorama(
-          document.createElement("div"),
-          {
-            enableCloseButton: true,
-            visible: false,
-          }
+          mapContainerRef.current,
+          panoramaOptions
         );
+        
         newMap.setStreetView(newStreetViewPanorama);
 
+        // Atualizar estados
         setMap(newMap);
         setDirectionsRenderer(newDirectionsRenderer);
         setStreetViewService(newStreetViewService);
         setStreetViewPanorama(newStreetViewPanorama);
+        
+        console.log("✓ Mapa Google inicializado com sucesso");
       } catch (error) {
-        console.error("Error initializing Google Maps:", error);
+        console.error("Erro ao inicializar Google Maps:", error);
       }
     });
 

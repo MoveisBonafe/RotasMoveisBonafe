@@ -6,7 +6,7 @@ import "./index.css";
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 
 if (!GOOGLE_MAPS_API_KEY) {
-  console.warn("No Google Maps API key found. Maps functionality will be limited.");
+  console.error("Google Maps API key não encontrada. Funcionalidade do mapa será limitada.");
 }
 
 // Status tracking for Google Maps loading
@@ -14,8 +14,19 @@ let googleMapsLoaded = false;
 let googleMapsCallbacks: (() => void)[] = [];
 let loadAttempted = false;
 
+// Limpa carregamentos anteriores do Google Maps API
+const clearPreviousGoogleMapsScripts = () => {
+  const existingScripts = document.querySelectorAll('script[src*="maps.googleapis.com"]');
+  existingScripts.forEach(script => {
+    script.parentNode?.removeChild(script);
+  });
+};
+
 // Initialize Google Maps API
 const loadGoogleMaps = () => {
+  // Limpa scripts anteriores para evitar carregamentos duplicados
+  clearPreviousGoogleMapsScripts();
+  
   // Prevent multiple loading attempts
   if (loadAttempted) return;
   loadAttempted = true;
@@ -28,13 +39,14 @@ const loadGoogleMaps = () => {
   }
 
   const script = document.createElement("script");
-  script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places,geometry&callback=initMap`;
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places,geometry&callback=initMap&v=weekly`;
   script.async = true;
   script.defer = true;
   
   // Add error handling for the script load
-  script.onerror = () => {
-    console.error("Failed to load Google Maps API");
+  script.onerror = (e) => {
+    console.error("Falha ao carregar Google Maps API:", e);
+    loadAttempted = false; // Reset para permitir outra tentativa
   };
   
   document.head.appendChild(script);

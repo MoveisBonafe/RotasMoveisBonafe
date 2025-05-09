@@ -121,31 +121,41 @@ export default function MapView({
   }, [map, calculatedRoute, origin, waypoints, addMarker, clearMarkers]);
 
   return (
-    <div className="flex-1 relative">
-      <div ref={mapContainerRef} className="h-full w-full bg-gray-200">
+    <div className="flex-1 relative h-full">
+      {/* Container do mapa - ocupa a altura completa */}
+      <div 
+        ref={mapContainerRef} 
+        className="h-full w-full bg-gray-200"
+        style={{ minHeight: '500px' }} // Garantir altura mínima para o mapa
+      >
         {!isMapReady && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto"></div>
-              <p className="mt-4 text-gray-600">Carregando mapa...</p>
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-80 z-50">
+            <div className="text-center p-4 rounded-lg shadow-md bg-white">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+              <p className="mt-4 text-gray-600 font-medium">Carregando Google Maps...</p>
+              <p className="text-xs text-gray-500 mt-2">Aguarde enquanto o mapa é carregado</p>
             </div>
           </div>
         )}
       </div>
       
-      {isMapReady && (
-        <>
-          <MapControls
-            onZoomIn={zoomIn}
-            onZoomOut={zoomOut}
-            onToggleStreetView={toggleStreetView}
-            onChangeMapType={changeMapType}
-            mapType={mapType}
-          />
-          
-          <MapLegend />
-        </>
+      {/* Controles adicionais que só aparecem quando o mapa estiver pronto */}
+      {isMapReady && isStreetViewActive && (
+        <div className="absolute top-4 left-4 z-50 bg-white p-2 rounded-md shadow-md">
+          <button 
+            onClick={() => toggleStreetView()}
+            className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
+          >
+            <svg className="h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+            Sair do Street View
+          </button>
+        </div>
       )}
+      
+      {/* Legenda do mapa sempre visível */}
+      <MapLegend />
     </div>
   );
 }
