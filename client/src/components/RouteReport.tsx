@@ -281,11 +281,13 @@ export default function RouteReport({
   // Calcular distância total em km
   const totalDistanceKm = routeInfo.totalDistance / 1000;
   
-  // Número correto de paradas (todos os destinos, exceto a origem)
-  // Para 5 CEPs importados, teremos 1 origem e 4 destinos
-  const numberOfStops = calculatedRoute 
-    ? (calculatedRoute.length > 1 ? calculatedRoute.length - 1 : 0) 
-    : 0;
+  // Total de pontos na rota: Origem + Destinos
+  // Para 5 CEPs importados (1 origem + 4 destinos), mostraremos 5 pontos
+  // O usuário espera ver o número total de pontos, não apenas os destinos
+  const totalPoints = calculatedRoute ? calculatedRoute.length : 0;
+  
+  // Número de destinos (pontos - origem)
+  const numberOfStops = totalPoints > 0 ? totalPoints : 0;
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
@@ -348,9 +350,9 @@ export default function RouteReport({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-              Número de Paradas
+              Total de Pontos
             </div>
-            <div className="summary-item-value text-orange-700">{numberOfStops} paradas</div>
+            <div className="summary-item-value text-orange-700">{numberOfStops} pontos</div>
             <div className="flex mt-2">
               {Array.from({ length: Math.min(numberOfStops, 10) }).map((_, i) => (
                 <div key={i} className="w-3 h-3 rounded-full bg-orange-500 mr-1 flex-shrink-0"></div>
@@ -412,8 +414,8 @@ export default function RouteReport({
                 <td>{formatDuration(routeInfo.totalDuration)}</td>
               </tr>
               <tr>
-                <th>Número de Paradas</th>
-                <td>{numberOfStops} paradas</td>
+                <th>Total de Pontos</th>
+                <td>{numberOfStops} pontos</td>
               </tr>
               <tr>
                 <th>Consumo de Combustível</th>
