@@ -28,274 +28,219 @@ export default function RouteInfoPanel({
 
   // Extrair apenas os nomes das cidades dos destinos escolhidos (não do percurso)
   // Isso atende ao requisito de mostrar eventos apenas das cidades selecionadas como destino
-  const destinationCities = routeInfo?.destinations
-    ? routeInfo.destinations
-        .map((dest: any) => {
-          // Tenta extrair o nome da cidade da última parte após a vírgula (formato típico: Nome, Cidade)
-          const parts = dest.name ? dest.name.split(",") : [];
-          return parts.length > 1 ? parts[parts.length - 1].trim() : dest.name?.trim() || "";
-        })
-        .filter(Boolean)
-        .join(",")
-    : "";
-
-  // Get city names from route for restrictions (todas as cidades incluindo as do percurso)
-  const routeCityNames = routeInfo?.waypoints 
-    ? routeInfo.waypoints
-        .map(wp => wp.name?.split(",").pop()?.trim() || "")
-        .filter(Boolean)
-        .join(",")
-    : "";
-
-  // Fetch city events if dates are provided - APENAS para cidades de destino
-  const { data: cityEvents = [] } = useQuery({
-    queryKey: ['/api/city-events', startDate, endDate, destinationCities],
-    enabled: !!(startDate && endDate && destinationCities),
-  });
-
-  // Fetch truck restrictions if using a truck vehicle type - para todas as cidades da rota
-  const { data: truckRestrictions = [] } = useQuery({
-    queryKey: ['/api/truck-restrictions', routeCityNames],
-    enabled: !!(vehicleType?.type.includes("truck") && routeCityNames),
-  });
-
-  const tollsOnRoute = poisAlongRoute.filter(poi => poi.type === 'toll');
-  const balancesOnRoute = poisAlongRoute.filter(poi => poi.type === 'weighing_station');
-
-  // Calculate fuel consumption
-  const fuelConsumption = routeInfo && vehicleType ? 
-    calculateFuelConsumption(routeInfo.totalDistance, vehicleType) : 0;
+  const destinationCityNames = calculatedRoute 
+    ? calculatedRoute.map(location => 
+        location.city || location.address?.split(',')[0].trim() || null
+      ).filter(Boolean)
+    : [];
   
-  const fuelEfficiency = vehicleType ? 
-    getFuelEfficiency(vehicleType) : 0;
+  // Consultar eventos para as cidades do trajeto
+  const { data: cityEvents } = useQuery({ 
+    queryKey: ['/api/city-events', startDate, endDate, destinationCityNames],
+    queryFn: async () => {
+      if (!startDate || !endDate || destinationCityNames.length === 0) return [];
+      
+      const queryParams = new URLSearchParams();
+      if (startDate) queryParams.append('startDate', startDate);
+      if (endDate) queryParams.append('endDate', endDate);
+      destinationCityNames.forEach(city => {
+        if (city) queryParams.append('cities', city);
+      });
+      
+      const response = await fetch(`/api/city-events?${queryParams.toString()}`);
+      return response.json();
+    },
+    enabled: !!startDate && !!endDate && destinationCityNames.length > 0
+  });
+  
+  // Consultar restrições de caminhões para as cidades do trajeto
+  const { data: truckRestrictions } = useQuery({
+    queryKey: ['/api/truck-restrictions', destinationCityNames],
+    queryFn: async () => {
+      if (destinationCityNames.length === 0) return [];
+      
+      const queryParams = new URLSearchParams();
+      destinationCityNames.forEach(city => {
+        if (city) queryParams.append('cities', city);
+      });
+      
+      const response = await fetch(`/api/truck-restrictions?${queryParams.toString()}`);
+      return response.json();
+    },
+    enabled: destinationCityNames.length > 0 
+      && vehicleType?.type.includes('truck') // Só buscar restrições para caminhões
+  });
+  
+  // Separar os pontos de interesse por tipo
+  const tollsOnRoute = poisAlongRoute.filter(poi => poi.type === 'toll');
+  const balancesOnRoute = poisAlongRoute.filter(poi => poi.type === 'weight_station');
+  const restAreasOnRoute = poisAlongRoute.filter(poi => poi.type === 'rest_area');
+  
+  // Calcular consumo de combustível
+  const fuelConsumption = routeInfo && vehicleType
+    ? calculateFuelConsumption(routeInfo.totalDistance, vehicleType)
+    : 0;
+    
+  // Obter eficiência de combustível
+  const fuelEfficiency = vehicleType ? getFuelEfficiency(vehicleType) : 0;
 
   return (
-    <div className="bg-white shadow-lg border-t border-gray-200 overflow-auto" style={{ maxHeight: "40vh" }}>
+    <div className="bg-white rounded-lg shadow-md">
+      {/* Tabs */}
       <div className="flex border-b border-gray-200">
-        <button 
-          className={`flex-1 px-4 py-3 font-medium ${
-            activeTab === "summary" ? "text-primary border-b-2 border-primary" : "text-gray-500 hover:bg-gray-50"
-          }`}
+        <button
           onClick={() => setActiveTab("summary")}
+          className={`px-4 py-2 text-xs font-medium ${
+            activeTab === "summary"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
         >
           Resumo da Rota
         </button>
-        <button 
-          className={`flex-1 px-4 py-3 font-medium ${
-            activeTab === "events" ? "text-primary border-b-2 border-primary" : "text-gray-500 hover:bg-gray-50"
-          }`}
+        <button
           onClick={() => setActiveTab("events")}
-        >
-          Eventos nas Cidades
-        </button>
-        <button 
-          className={`flex-1 px-4 py-3 font-medium ${
-            activeTab === "restrictions" ? "text-primary border-b-2 border-primary" : "text-gray-500 hover:bg-gray-50"
+          className={`px-4 py-2 text-xs font-medium ${
+            activeTab === "events"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500 hover:text-gray-700"
           }`}
+        >
+          Eventos
+        </button>
+        <button
           onClick={() => setActiveTab("restrictions")}
-        >
-          Restrições de Veículos
-        </button>
-        <button 
-          className={`flex-1 px-4 py-3 font-medium ${
-            activeTab === "report" ? "text-primary border-b-2 border-primary" : "text-gray-500 hover:bg-gray-50"
+          className={`px-4 py-2 text-xs font-medium ${
+            activeTab === "restrictions"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500 hover:text-gray-700"
           }`}
-          onClick={() => setActiveTab("report")}
         >
-          Relatório Detalhado
+          Restrições
+        </button>
+        <button
+          onClick={() => setActiveTab("report")}
+          className={`px-4 py-2 text-xs font-medium ${
+            activeTab === "report"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          Relatório
         </button>
       </div>
 
-      {/* Route Summary Tab */}
+      {/* Summary Tab */}
       {activeTab === "summary" && (
-        <div className="p-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Best Route Card */}
-            <div className="bg-white rounded-lg shadow-md p-4 transition-shadow hover:shadow-lg">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-medium">Melhor Rota</h3>
-                <span className="bg-green-600 text-white text-xs px-2 py-0.5 rounded-full">Otimizada</span>
-              </div>
-              <div className="mb-2">
-                <div className="flex items-center mb-1">
-                  <svg className="h-4 w-4 text-primary mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-sm">
-                    Tempo estimado: <strong>{routeInfo ? formatDuration(routeInfo.totalDuration) : "-"}</strong>
-                  </span>
+        <div className="p-2">
+          {!routeInfo ? (
+            <div className="text-center p-3 text-gray-500 text-xs">
+              Calcule uma rota para ver o resumo.
+            </div>
+          ) : (
+            <div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {/* Route Info Card - Version compacta */}
+                <div className="bg-white rounded p-2 border border-gray-100">
+                  <h3 className="text-xs font-medium mb-1 text-primary">{vehicleType?.name || "Veículo"}</h3>
+                  
+                  <div className="text-xs mb-1">
+                    <span className="text-gray-500">Distância:</span> {formatDistance(routeInfo.totalDistance)} • 
+                    <span className="text-gray-500 ml-1">Tempo:</span> {formatDuration(routeInfo.totalDuration)}
+                  </div>
+                  
+                  <div className="text-xs mb-1">
+                    <span className="text-gray-500">Consumo:</span> {fuelConsumption.toFixed(1)}L ({fuelEfficiency.toFixed(1)} km/L)
+                  </div>
+                  
+                  <div className="mt-2 grid grid-cols-2 text-xs border-t border-gray-100 pt-1">
+                    <div>
+                      <div>Pedágios: <span className="font-medium">{formatCurrency(routeInfo.tollCost)}</span></div>
+                      <div>Combustível: <span className="font-medium">{formatCurrency(routeInfo.fuelCost)}</span></div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-gray-500">Total:</div>
+                      <div className="font-bold text-primary">{formatCurrency(routeInfo.tollCost + routeInfo.fuelCost)}</div>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center mb-1">
-                  <svg className="h-4 w-4 text-primary mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-sm">
-                    Distância total: <strong>{routeInfo ? formatDistance(routeInfo.totalDistance) : "-"}</strong>
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  <svg className="h-4 w-4 text-primary mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-sm">
-                    Paradas: <strong>{routeInfo ? routeInfo.waypoints.length - 2 : 0}</strong>
-                  </span>
-                </div>
-              </div>
-              <div className="border-t border-gray-200 pt-2 mt-2">
-                <div className="text-xs text-gray-500">Sequência otimizada:</div>
-                <div className="text-sm">
-                  {routeInfo ? formatRouteSequence(routeInfo.waypoints) : "Nenhuma rota calculada"}
+
+                {/* Points of Attention - Versão compacta */}
+                <div className="bg-white rounded p-2 border border-gray-100">
+                  <h3 className="text-xs font-medium mb-1 text-primary">Pontos de Atenção</h3>
+                  
+                  {(tollsOnRoute.length > 0 || balancesOnRoute.length > 0 || (truckRestrictions && truckRestrictions.length > 0)) ? (
+                    <ul className="text-xs space-y-1">
+                      {tollsOnRoute.length > 0 && (
+                        <li className="flex items-center">
+                          <span className="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-1"></span>
+                          <span>
+                            {tollsOnRoute.length} {tollsOnRoute.length === 1 ? 'pedágio' : 'pedágios'}: 
+                            <span className="text-gray-500 ml-1">{tollsOnRoute.map(toll => toll.roadName).join(', ')}</span>
+                          </span>
+                        </li>
+                      )}
+                      
+                      {balancesOnRoute.length > 0 && (
+                        <li className="flex items-center">
+                          <span className="inline-block w-2 h-2 rounded-full bg-red-600 mr-1"></span>
+                          <span>
+                            {balancesOnRoute.length} {balancesOnRoute.length === 1 ? 'balança' : 'balanças'} em operação
+                          </span>
+                        </li>
+                      )}
+                      
+                      {(truckRestrictions && truckRestrictions.length > 0) && (
+                        <li className="flex items-center">
+                          <span className="inline-block w-2 h-2 rounded-full bg-primary mr-1"></span>
+                          <span>
+                            {(() => {
+                              const restriction = truckRestrictions[0] as TruckRestriction;
+                              return restriction && restriction.cityName 
+                                ? `Restrição em ${restriction.cityName}: ${restriction.startTime || '00:00'}-${restriction.endTime || '23:59'}`
+                                : "Restrições para caminhões"
+                            })()}
+                          </span>
+                        </li>
+                      )}
+                    </ul>
+                  ) : (
+                    <div className="text-xs text-gray-500">
+                      Nenhum ponto de atenção identificado
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-
-            {/* Estimated Costs Card */}
-            <div className="bg-white rounded-lg shadow-md p-4 transition-shadow hover:shadow-lg">
-              <h3 className="font-medium mb-3">Custos Estimados</h3>
-              <div className="mb-2">
-                <div className="flex items-center justify-between mb-1">
-                  <div className="flex items-center">
-                    <svg className="h-4 w-4 text-yellow-500 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-sm">Pedágios:</span>
-                  </div>
-                  <span className="font-medium">
-                    {routeInfo ? formatCurrency(routeInfo.tollCost) : "-"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between mb-1">
-                  <div className="flex items-center">
-                    <svg className="h-4 w-4 text-green-600 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-sm">Combustível:</span>
-                  </div>
-                  <span className="font-medium">
-                    {routeInfo ? formatCurrency(routeInfo.fuelCost) : "-"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between font-medium">
-                  <span>Total:</span>
-                  <span>
-                    {routeInfo 
-                      ? formatCurrency(routeInfo.tollCost + routeInfo.fuelCost) 
-                      : "-"
-                    }
-                  </span>
-                </div>
-              </div>
-              <div className="border-t border-gray-200 pt-2 mt-2">
-                <div className="text-xs text-gray-500">Consumo estimado de combustível:</div>
-                <div className="text-sm">
-                  {fuelConsumption.toFixed(1)} litros (média de {fuelEfficiency.toFixed(1)} km/l)
-                </div>
-              </div>
-            </div>
-
-            {/* Points of Attention Card */}
-            <div className="bg-white rounded-lg shadow-md p-4 transition-shadow hover:shadow-lg">
-              <h3 className="font-medium mb-3">Pontos de Atenção</h3>
-              <div className="mb-2">
-                {tollsOnRoute.length > 0 && (
-                  <div className="flex items-start mb-2">
-                    <svg className="h-4 w-4 text-yellow-500 mr-1 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    <div>
-                      <div className="text-sm font-medium">{tollsOnRoute.length} {tollsOnRoute.length === 1 ? 'pedágio' : 'pedágios'} no trajeto</div>
-                      <div className="text-xs text-gray-600">
-                        {tollsOnRoute.map(toll => toll.roadName).join(', ')}
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                {balancesOnRoute.length > 0 && (
-                  <div className="flex items-start mb-2">
-                    <svg className="h-4 w-4 text-red-600 mr-1 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    <div>
-                      <div className="text-sm font-medium">
-                        {balancesOnRoute.length} {balancesOnRoute.length === 1 ? 'balança' : 'balanças'} em operação
-                      </div>
-                      <div className="text-xs text-gray-600">
-                        {balancesOnRoute.map(balance => 
-                          `${balance.roadName || ''} ${balance.restrictions ? `(${balance.restrictions})` : ''}`
-                        ).join(', ')}
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                {(truckRestrictions && Array.isArray(truckRestrictions) && truckRestrictions.length > 0) ? (
-                  <div className="flex items-start">
-                    <svg className="h-4 w-4 text-primary mr-1 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                    </svg>
-                    <div>
-                      <div className="text-sm font-medium">Restrições para caminhões</div>
-                      <div className="text-xs text-gray-600">
-                        {(() => {
-                          const restriction = truckRestrictions[0] as TruckRestriction;
-                          return restriction && restriction.cityName 
-                            ? `Em ${restriction.cityName}, das ${restriction.startTime || '00:00'} às ${restriction.endTime || '23:59'}`
-                            : "Sem restrições"
-                        })()}
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
-
-                {(!tollsOnRoute.length && !balancesOnRoute.length && (!truckRestrictions || !Array.isArray(truckRestrictions) || !truckRestrictions.length)) && (
-                  <div className="text-sm text-gray-500">
-                    Nenhum ponto de atenção identificado
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       )}
 
       {/* City Events Tab */}
       {activeTab === "events" && (
-        <div className="p-4">
+        <div className="p-2">
           {!startDate || !endDate ? (
-            <div className="bg-blue-50 text-blue-700 p-4 rounded-md">
+            <div className="bg-blue-50 text-blue-700 p-2 rounded-md text-xs">
               Selecione as datas de início e fim para ver os eventos nas cidades do trajeto.
             </div>
           ) : cityEvents && Array.isArray(cityEvents) && cityEvents.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-2">
               {cityEvents.map((event: CityEvent) => (
-                <div key={event.id} className="bg-white rounded-lg shadow-md p-4">
-                  <div className="flex items-start mb-3">
-                    <svg 
-                      className={`h-5 w-5 ${
-                        event.eventType === 'holiday' ? 'text-red-600' : 
-                        event.eventType === 'festival' ? 'text-yellow-500' : 'text-green-600'
-                      } mr-2`} 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      viewBox="0 0 20 20" 
-                      fill="currentColor"
-                    >
-                      <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                    </svg>
+                <div key={event.id} className="bg-white rounded p-2 border border-gray-100 text-xs">
+                  <div className="flex items-start">
+                    <span className={`inline-block w-2 h-2 rounded-full mr-1 mt-1 
+                      ${event.eventType === 'holiday' ? 'bg-red-600' : 
+                        event.eventType === 'festival' ? 'bg-yellow-500' : 'bg-green-600'}`}>
+                    </span>
                     <div>
-                      <h3 className="font-medium">{event.eventName} - {event.cityName}</h3>
-                      <p className="text-sm text-gray-600">
-                        {event.startDate === event.endDate 
+                      <h3 className="font-medium text-xs">{event.eventName}</h3>
+                      <p className="text-xs text-gray-600">
+                        {event.cityName} | {event.startDate === event.endDate 
                           ? event.startDate 
-                          : `${event.startDate} - ${event.endDate}`
-                        } 
-                        {" - "}
-                        {event.eventType === 'holiday' ? 'Feriado' : 
-                         event.eventType === 'festival' ? 'Festival' : 'Aniversário da cidade'}
+                          : `${event.startDate} - ${event.endDate}`}
                       </p>
                       {event.description && (
-                        <p className="text-sm mt-1">{event.description}</p>
+                        <p className="text-xs mt-1 text-gray-500">{event.description}</p>
                       )}
                     </div>
                   </div>
@@ -303,7 +248,7 @@ export default function RouteInfoPanel({
               ))}
             </div>
           ) : (
-            <div className="text-center p-4 text-gray-500">
+            <div className="text-center p-2 text-gray-500 text-xs">
               Nenhum evento encontrado nas cidades do trajeto para o período selecionado.
             </div>
           )}
@@ -312,30 +257,28 @@ export default function RouteInfoPanel({
 
       {/* Vehicle Restrictions Tab */}
       {activeTab === "restrictions" && (
-        <div className="p-4">
+        <div className="p-2">
           {vehicleType?.type.includes("truck") ? (
             truckRestrictions && Array.isArray(truckRestrictions) && truckRestrictions.length > 0 ? (
-              <div className="bg-white rounded-lg shadow-md p-4 mb-4">
-                <h3 className="font-medium mb-2">Restrições para caminhões</h3>
+              <div className="bg-white rounded p-2 border border-gray-100">
+                <h3 className="text-xs font-medium mb-1 text-primary">Restrições para caminhões</h3>
                 <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
+                  <table className="min-w-full divide-y divide-gray-200 text-xs">
                     <thead>
-                      <tr>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cidade</th>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Restrição</th>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Horário</th>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Veículos</th>
+                      <tr className="bg-gray-50">
+                        <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Cidade</th>
+                        <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Restrição</th>
+                        <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Horário</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="divide-y divide-gray-200">
                       {truckRestrictions.map((restriction: TruckRestriction) => (
                         <tr key={restriction.id}>
-                          <td className="px-3 py-2 whitespace-nowrap text-sm">{restriction.cityName}</td>
-                          <td className="px-3 py-2 whitespace-nowrap text-sm">{restriction.restriction}</td>
-                          <td className="px-3 py-2 whitespace-nowrap text-sm">
+                          <td className="px-2 py-1 whitespace-nowrap">{restriction.cityName}</td>
+                          <td className="px-2 py-1">{restriction.restriction}</td>
+                          <td className="px-2 py-1 whitespace-nowrap">
                             {restriction.startTime} - {restriction.endTime}
                           </td>
-                          <td className="px-3 py-2 whitespace-nowrap text-sm">{restriction.applicableVehicles}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -343,13 +286,13 @@ export default function RouteInfoPanel({
                 </div>
               </div>
             ) : (
-              <div className="text-center p-4 text-gray-500">
+              <div className="text-center p-2 text-gray-500 text-xs">
                 Nenhuma restrição encontrada para caminhões nas cidades do trajeto.
               </div>
             )
           ) : (
-            <div className="bg-blue-50 text-blue-700 p-4 rounded-md">
-              Restrições de veículos são aplicáveis apenas para caminhões. Selecione um tipo de caminhão para ver as restrições.
+            <div className="bg-blue-50 text-blue-700 p-2 rounded-md text-xs">
+              Restrições aplicáveis apenas para caminhões. Selecione um tipo de caminhão para ver as restrições.
             </div>
           )}
         </div>
@@ -357,30 +300,20 @@ export default function RouteInfoPanel({
 
       {/* Detailed Report Tab */}
       {activeTab === "report" && (
-        <div className="p-4">
-          {routeInfo && calculatedRoute ? (
+        <div className="p-2">
+          {!routeInfo ? (
+            <div className="text-center p-3 text-gray-500 text-xs">
+              Calcule uma rota para gerar o relatório detalhado.
+            </div>
+          ) : (
             <RouteReport 
-              origin={origin}
+              origin={origin} 
               calculatedRoute={calculatedRoute}
-              routeInfo={{
-                totalDistance: routeInfo.totalDistance,
-                totalDuration: routeInfo.totalDuration,
-                tollCost: routeInfo.tollCost,
-                fuelCost: routeInfo.fuelCost,
-                totalCost: routeInfo.tollCost + routeInfo.fuelCost,
-                fuelConsumption: fuelConsumption
-              }}
-              vehicleType={vehicleType ? {
-                ...vehicleType,
-                fuelCostPerLiter: 5.00 // Valor padrão para custo de combustível
-              } : null}
+              routeInfo={routeInfo}
+              vehicleType={vehicleType}
               startDate={startDate}
               endDate={endDate}
             />
-          ) : (
-            <div className="bg-yellow-50 text-yellow-700 p-4 rounded-md">
-              Calcule uma rota primeiro para gerar o relatório detalhado.
-            </div>
           )}
         </div>
       )}
