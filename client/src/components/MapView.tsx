@@ -303,7 +303,7 @@ export default function MapView({
           
           // Adicionar janela de informações para origem
           const originInfoWindow = new window.google.maps.InfoWindow({
-            content: `<div><strong>Origem: ${origin.name}</strong><br>${origin.address || ""}</div>`
+            content: `<div><strong>Origem: ${origin.name}</strong><br>${origin.address || ""}<br>Lat: ${origin.lat}, Lng: ${origin.lng}</div>`
           });
           
           // Abrir ao clicar no marcador de origem
@@ -329,7 +329,7 @@ export default function MapView({
         }
       });
     }
-  }, [origin, waypoints]);
+  }, [origin]);
   
   // Função para adicionar marcadores ao mapa
   const updateMarkersOnMap = () => {

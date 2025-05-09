@@ -84,41 +84,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Array para armazenar as localizações encontradas
       const locations = [];
       
-      // Mapeia CEPs para regiões com pequenas variações nas coordenadas para visualização
+      // Mapeia CEPs para regiões com coordenadas mais precisas para visualização
       const getCoordinatesForCep = (cep: string, name: string) => {
         let lat: string, lng: string, address: string;
         
         // Adiciona pequena variação aleatória para evitar pontos sobrepostos no mapa
-        const randomVariation = () => ((Math.random() - 0.5) * 0.02).toFixed(4);
+        // Variação reduzida para maior precisão visual (0.01 grau ~ 1km)
+        const randomVariation = () => ((Math.random() - 0.5) * 0.01).toFixed(6);
         
-        // Mapeamento de CEPs por região
-        if (cep.startsWith("17")) { // Região de Jaú / Dois Córregos
-          lat = (-22.367 + parseFloat(randomVariation())).toString();
-          lng = (-48.382 + parseFloat(randomVariation())).toString();
-          address = `${name} - Região de Jaú/Dois Córregos, SP`;
-        } 
-        else if (cep.startsWith("14")) { // Região de Ribeirão Preto
-          lat = (-21.177 + parseFloat(randomVariation())).toString();
-          lng = (-47.810 + parseFloat(randomVariation())).toString();
-          address = `${name} - Região de Ribeirão Preto, SP`;
+        // Coordenadas mais precisas para cada região
+        if (cep.startsWith("17201")) { // Jaú
+          lat = (-22.2936 + parseFloat(randomVariation())).toString();
+          lng = (-48.5591 + parseFloat(randomVariation())).toString();
+          address = `${name} - Jaú, SP`;
         }
-        else if (cep.startsWith("13")) { // Região de Campinas
-          lat = (-22.906 + parseFloat(randomVariation())).toString();
-          lng = (-47.061 + parseFloat(randomVariation())).toString();
-          address = `${name} - Região de Campinas, SP`;
+        else if (cep.startsWith("17302")) { // Dois Córregos
+          lat = (-22.3673 + parseFloat(randomVariation())).toString();
+          lng = (-48.3821 + parseFloat(randomVariation())).toString();
+          address = `${name} - Dois Córregos, SP`;
+        }
+        else if (cep.startsWith("14091")) { // Ribeirão Preto
+          lat = (-21.1775 + parseFloat(randomVariation())).toString();
+          lng = (-47.8103 + parseFloat(randomVariation())).toString();
+          address = `${name} - Ribeirão Preto, SP`;
+        }
+        else if (cep.startsWith("14800")) { // Araraquara
+          lat = (-21.7941 + parseFloat(randomVariation())).toString();
+          lng = (-48.1783 + parseFloat(randomVariation())).toString();
+          address = `${name} - Araraquara, SP`;
+        }
+        else if (cep.startsWith("13010")) { // Campinas
+          lat = (-22.9064 + parseFloat(randomVariation())).toString();
+          lng = (-47.0616 + parseFloat(randomVariation())).toString();
+          address = `${name} - Campinas, SP`;
         }
         else if (cep.startsWith("01")) { // São Paulo - Centro
-          lat = (-23.550 + parseFloat(randomVariation())).toString();
-          lng = (-46.630 + parseFloat(randomVariation())).toString();
+          lat = (-23.5505 + parseFloat(randomVariation())).toString();
+          lng = (-46.6333 + parseFloat(randomVariation())).toString();
           address = `${name} - São Paulo (Centro), SP`;
         }
         else { // Outras regiões
-          // Valores default para o interior de SP
-          lat = (-22.000 + parseFloat(randomVariation()) * 3).toString();
-          lng = (-48.000 + parseFloat(randomVariation()) * 3).toString();
-          address = `${name} - Interior de SP`;
+          console.log(`CEP não mapeado específicamente: ${cep}, usando aproximação`);
+          // Valores mais precisos para o interior de SP
+          lat = (-22.0000 + parseFloat(randomVariation()) * 2).toString();
+          lng = (-48.0000 + parseFloat(randomVariation()) * 2).toString();
+          address = `${name} - Interior de SP (Localização aproximada)`;
         }
         
+        console.log(`CEP ${cep} mapeado para: ${lat}, ${lng} (${address})`);
         return { lat, lng, address };
       };
       

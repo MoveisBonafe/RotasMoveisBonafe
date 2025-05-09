@@ -226,18 +226,33 @@ export default function Home() {
       return;
     }
     
+    // Mostrar toast de carregamento para feedback imediato
+    const loadingToast = toast({
+      title: "Calculando rota otimizada",
+      description: "Por favor, aguarde enquanto calculamos a melhor rota...",
+      variant: "default",
+    });
+    
     // Garante que pointsOfInterest seja um array válido
     const pois = Array.isArray(pointsOfInterest) ? pointsOfInterest : [];
     
-    // Optimize the route locally
-    const routeResult = optimizeRouteLocally(origin, locations, vehicleTypeObj, pois);
-    setCalculatedRoute(routeResult.waypoints);
-    setPoisOnRoute(poisAlongRoute);
-    
-    toast({
-      title: "Rota calculada com sucesso",
-      description: `${routeResult.waypoints.length - 2} paradas otimizadas`,
-    });
+    // Adicionar um pequeno atraso para simular o processamento e mostrar o efeito visual
+    setTimeout(() => {
+      // Optimize the route locally
+      const routeResult = optimizeRouteLocally(origin, locations, vehicleTypeObj, pois);
+      setCalculatedRoute(routeResult.waypoints);
+      setPoisOnRoute(poisAlongRoute);
+      
+      // Remover toast de carregamento
+      toast.dismiss(loadingToast);
+      
+      // Mostrar toast de sucesso
+      toast({
+        title: "Rota calculada com sucesso",
+        description: `${routeResult.waypoints.length - 2} paradas otimizadas`,
+        variant: "success",
+      });
+    }, 800); // Delay para um efeito visual melhor
   };
   
   // Handle route calculated from the map component
