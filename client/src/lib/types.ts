@@ -75,6 +75,9 @@ export interface ParsedCepFile {
   locations: Array<{
     cep: string;
     name: string;
+    lat?: string;
+    lng?: string;
+    address?: string;
   }>;
 }
 
