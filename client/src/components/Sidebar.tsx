@@ -52,9 +52,12 @@ export default function Sidebar({
   } = useFileUpload();
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("Iniciando upload de arquivo:", e.target.files?.[0]?.name);
     const result = await handleFileChange(e);
+    console.log("Resultado do processamento de arquivo:", result);
+    
     if (result && result.locations && result.locations.length > 0) {
-      console.log(`Recebidos ${result.locations.length} CEPs para importar`);
+      console.log(`Recebidos ${result.locations.length} CEPs para importar:`, result.locations);
       
       // Array para armazenar todos os resultados do geocoding
       const allGeocodingResults: GeocodingResult[] = [];

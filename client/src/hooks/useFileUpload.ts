@@ -37,17 +37,22 @@ export function useFileUpload() {
         throw new Error("O arquivo está vazio");
       }
 
-      console.log("Enviando conteúdo para processamento no servidor");
-      // Send the content to the server for parsing
-      const response = await apiRequest("POST", "/api/parse-cep-file", { content });
-      const data = await response.json();
-      console.log("Resposta do servidor:", data);
-
-      if (!data.locations || data.locations.length === 0) {
-        throw new Error("Nenhum CEP válido encontrado no arquivo");
+      console.log("Enviando conteúdo para processamento no servidor:", content);
+      try {
+        // Send the content to the server for parsing
+        const response = await apiRequest("POST", "/api/parse-cep-file", { content });
+        const data = await response.json();
+        console.log("Resposta do servidor:", data);
+  
+        if (!data.locations || data.locations.length === 0) {
+          throw new Error("Nenhum CEP válido encontrado no arquivo");
+        }
+  
+        return data;
+      } catch (error) {
+        console.error("Erro na requisição ao servidor:", error);
+        throw new Error("Falha ao processar o arquivo no servidor");
       }
-
-      return data;
     } catch (err) {
       console.error("Erro ao processar arquivo:", err);
       setError(err instanceof Error ? err.message : "Ocorreu um erro ao processar o arquivo");
