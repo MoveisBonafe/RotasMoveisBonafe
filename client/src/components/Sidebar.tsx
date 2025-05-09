@@ -2,6 +2,7 @@ import { useState } from "react";
 import SearchBox from "./SearchBox";
 import VehicleSelector from "./VehicleSelector";
 import LocationsList from "./LocationsList";
+import DateRangeSelector from "./DateRangeSelector";
 import { Location, VehicleType, GeocodingResult } from "@/lib/types";
 import { useFileUpload } from "@/hooks/useFileUpload";
 
@@ -18,6 +19,10 @@ interface SidebarProps {
   onCalculateRoute: () => void;
   isCalculating: boolean;
   calculatedRoute?: Location[] | null; // Adicionando propriedade para rota calculada
+  startDate: string | null;
+  endDate: string | null;
+  onStartDateChange: (date: string | null) => void;
+  onEndDateChange: (date: string | null) => void;
 }
 
 export default function Sidebar({
@@ -32,7 +37,11 @@ export default function Sidebar({
   onAddLocationClick,
   onCalculateRoute,
   isCalculating,
-  calculatedRoute
+  calculatedRoute,
+  startDate,
+  endDate,
+  onStartDateChange,
+  onEndDateChange
 }: SidebarProps) {
   const { 
     fileInputRef, 
@@ -73,6 +82,16 @@ export default function Sidebar({
 
   return (
     <div className="w-96 bg-white shadow-md z-10 flex flex-col">
+      {/* Data Range Selector - Movido para cima do campo de busca */}
+      <div className="p-4 border-b border-gray-200">
+        <DateRangeSelector
+          startDate={startDate}
+          endDate={endDate}
+          onStartDateChange={onStartDateChange}
+          onEndDateChange={onEndDateChange}
+        />
+      </div>
+      
       {/* Search Box */}
       <SearchBox onSelectLocation={onSelectLocation} />
       
