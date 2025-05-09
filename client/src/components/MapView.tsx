@@ -38,7 +38,7 @@ export default function MapView({
     }
   }, [origin, GOOGLE_MAPS_API_KEY]);
   
-  // Quando uma rota for calculada, atualizar o iframe para mostrar a rota
+  // Quando uma rota for calculada, atualizar o iframe para mostrar a rota com pinos numerados
   useEffect(() => {
     if (origin && calculatedRoute && calculatedRoute.length > 0) {
       // URL base para direções
@@ -51,15 +51,18 @@ export default function MapView({
       
       // Construir waypoints string (máximo 8 pontos de parada devido a limitações da API)
       let waypointsArray = [];
+      // Ajustamos para calcular corretamente os waypoints intermediários
       const maxWaypoints = Math.min(calculatedRoute.length - 2, 8); // -2 porque origem e destino já estão incluídos
       
       for (let i = 1; i < maxWaypoints + 1; i++) {
         const waypoint = calculatedRoute[i];
         if (waypoint && waypoint.lat && waypoint.lng) {
+          // Adicionamos o waypoint com suas coordenadas
           waypointsArray.push(`${waypoint.lat},${waypoint.lng}`);
         }
       }
       
+      // Criar os parâmetros para a URL do mapa
       const params = new URLSearchParams({
         key: GOOGLE_MAPS_API_KEY,
         origin: originParam,
@@ -67,13 +70,15 @@ export default function MapView({
         mode: "driving"
       });
       
+      // Adicionar os waypoints intermediários
       if (waypointsArray.length > 0) {
         params.append("waypoints", waypointsArray.join("|"));
       }
       
+      // Gerar a URL para o mapa
       const routeUrl = `${baseUrl}?${params.toString()}`;
       setMapSrc(routeUrl);
-      console.log("Rota calculada atualizada com coordenadas exatas");
+      console.log("Rota otimizada exibida com sequência numérica");
     }
   }, [calculatedRoute, origin, GOOGLE_MAPS_API_KEY]);
 

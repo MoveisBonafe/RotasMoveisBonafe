@@ -8,6 +8,7 @@ interface LocationsListProps {
   onMoveLocationUp: (index: number) => void;
   onMoveLocationDown: (index: number) => void;
   onAddLocationClick: () => void;
+  calculatedRoute?: Location[] | null; // Adicionando a propriedade da rota calculada
 }
 
 export default function LocationsList({
@@ -16,7 +17,8 @@ export default function LocationsList({
   onRemoveLocation,
   onMoveLocationUp,
   onMoveLocationDown,
-  onAddLocationClick
+  onAddLocationClick,
+  calculatedRoute
 }: LocationsListProps) {
   const [expandedLocation, setExpandedLocation] = useState<number | null>(null);
   
@@ -89,20 +91,34 @@ export default function LocationsList({
         </div>
       ) : (
         <div className="space-y-3">
-          {locations.map((location, index) => (
-            <div 
-              key={location.id} 
-              className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
-            >
-              {/* Cabeçalho do card */}
+          {locations.map((location, index) => {
+            // Se temos uma rota calculada, procuramos a posição deste local na sequência otimizada
+            let sequenceNumber = index + 1;
+            let isInRoute = false;
+            
+            if (calculatedRoute && calculatedRoute.length > 0) {
+              // A primeira posição (0) é a origem, então começamos a numeração a partir de 1
+              const foundIndex = calculatedRoute.findIndex(loc => loc.id === location.id);
+              if (foundIndex > 0) { // Se encontrado na rota (ignorando a origem)
+                sequenceNumber = foundIndex;
+                isInRoute = true;
+              }
+            }
+            
+            return (
               <div 
-                className="p-3 cursor-pointer flex items-start justify-between"
-                onClick={() => toggleLocation(location.id)}
+                key={location.id} 
+                className={`bg-white border ${isInRoute ? 'border-green-300' : 'border-gray-200'} rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200`}
               >
-                <div className="flex items-start flex-1">
-                  <div className="flex items-center justify-center h-8 w-8 rounded-full bg-gray-100 text-gray-600 mr-3 flex-shrink-0">
-                    <div className="font-bold text-sm">{index + 1}</div>
-                  </div>
+                {/* Cabeçalho do card */}
+                <div 
+                  className="p-3 cursor-pointer flex items-start justify-between"
+                  onClick={() => toggleLocation(location.id)}
+                >
+                  <div className="flex items-start flex-1">
+                    <div className={`flex items-center justify-center h-8 w-8 rounded-full ${isInRoute ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'} mr-3 flex-shrink-0`}>
+                      <div className="font-bold text-sm">{sequenceNumber}</div>
+                    </div>
                   
                   <div>
                     <h3 className="text-sm font-medium text-gray-900 truncate max-w-xs">
@@ -200,7 +216,8 @@ export default function LocationsList({
                 </div>
               )}
             </div>
-          ))}
+          );
+          })}
           
           {/* Botão adicionar mais */}
           <button
