@@ -303,7 +303,12 @@ export default function MapView({
           
           // Adicionar janela de informações para origem
           const originInfoWindow = new window.google.maps.InfoWindow({
-            content: `<div><strong>Origem: ${origin.name}</strong><br>${origin.address || ""}<br>Lat: ${origin.lat}, Lng: ${origin.lng}</div>`
+            content: `<div style="min-width: 200px; padding: 8px;">
+                        <strong>Origem: ${origin.name}</strong>
+                        <br>${origin.address || ""}
+                        <br>CEP: ${origin.cep || "N/A"}
+                        <br>Coordenadas: ${parseFloat(origin.lat).toFixed(6)}, ${parseFloat(origin.lng).toFixed(6)}
+                      </div>`
           });
           
           // Abrir ao clicar no marcador de origem
@@ -398,10 +403,11 @@ export default function MapView({
         
         // Adicionar janela de informações
         const infoWindow = new window.google.maps.InfoWindow({
-          content: `<div>
+          content: `<div style="min-width: 200px; padding: 8px;">
                      <strong>${waypoint.name || `Destino ${index + 1}`}</strong>
                      <br>${waypoint.address || ""}
-                     <br>Lat: ${lat}, Lng: ${lng}
+                     <br>CEP: ${waypoint.cep || "N/A"}
+                     <br>Coordenadas: ${lat.toFixed(6)}, ${lng.toFixed(6)}
                     </div>`
         });
         
