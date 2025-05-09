@@ -14,19 +14,8 @@ let googleMapsLoaded = false;
 let googleMapsCallbacks: (() => void)[] = [];
 let loadAttempted = false;
 
-// Limpa carregamentos anteriores do Google Maps API
-const clearPreviousGoogleMapsScripts = () => {
-  const existingScripts = document.querySelectorAll('script[src*="maps.googleapis.com"]');
-  existingScripts.forEach(script => {
-    script.parentNode?.removeChild(script);
-  });
-};
-
 // Initialize Google Maps API
 const loadGoogleMaps = () => {
-  // Limpa scripts anteriores para evitar carregamentos duplicados
-  clearPreviousGoogleMapsScripts();
-  
   // Prevent multiple loading attempts
   if (loadAttempted) return;
   loadAttempted = true;
