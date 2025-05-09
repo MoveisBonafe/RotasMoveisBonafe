@@ -3,6 +3,7 @@ import { RouteInfo, VehicleType, CityEvent, TruckRestriction, PointOfInterest, T
 import { formatDistance, formatDuration, formatCurrency, formatRouteSequence } from "@/lib/mapUtils";
 import { calculateFuelConsumption, getFuelEfficiency } from "@/lib/costCalculator";
 import { useQuery } from "@tanstack/react-query";
+import RouteReport from "./RouteReport";
 
 interface RouteInfoPanelProps {
   routeInfo: RouteInfo | null;
@@ -10,6 +11,8 @@ interface RouteInfoPanelProps {
   startDate: string | null;
   endDate: string | null;
   poisAlongRoute: PointOfInterest[];
+  origin: LocationType | null;
+  calculatedRoute: LocationType[] | null;
 }
 
 export default function RouteInfoPanel({
@@ -17,7 +20,9 @@ export default function RouteInfoPanel({
   vehicleType,
   startDate,
   endDate,
-  poisAlongRoute
+  poisAlongRoute,
+  origin,
+  calculatedRoute
 }: RouteInfoPanelProps) {
   const [activeTab, setActiveTab] = useState<TabType>("summary");
 

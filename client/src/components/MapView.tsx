@@ -338,76 +338,107 @@ export default function MapView({
   
   // Função para adicionar marcadores ao mapa
   const updateMarkersOnMap = () => {
-    if (!directMapRef.current || !origin || !waypoints || waypoints.length === 0) return;
+    if (!directMapRef.current || !origin) return;
     
     try {
       const map = directMapRef.current;
       
-      // Limpar marcadores existentes (exceto origem)
-      if (markersRef.current.length > 1) {
-        for (let i = 1; i < markersRef.current.length; i++) {
+      // Limpar todos os marcadores existentes
+      if (markersRef.current.length > 0) {
+        for (let i = 0; i < markersRef.current.length; i++) {
           markersRef.current[i].setMap(null);
         }
-        markersRef.current = [markersRef.current[0]]; // Manter apenas o marcador de origem
+        markersRef.current = []; // Limpar completamente o array
       }
       
       // Limites para ajustar zoom
       const bounds = new window.google.maps.LatLngBounds();
       
-      // Adicionar origem aos limites
-      bounds.extend({ 
-        lat: parseFloat(origin.lat), 
-        lng: parseFloat(origin.lng) 
-      });
+      // Decidir quais pontos mostrar (rota calculada tem prioridade se existir)
+      const pointsToShow = calculatedRoute || (waypoints.length > 0 ? [origin, ...waypoints] : [origin]);
+      console.log(`Exibindo ${pointsToShow.length} pontos no mapa...`);
       
-      console.log(`Adicionando ${waypoints.length} marcadores no mapa...`);
-      
-      // Adicionar cada waypoint ao mapa
-      waypoints.forEach((waypoint, index) => {
+      // Adicionar cada ponto ao mapa com marcadores sequenciais
+      pointsToShow.forEach((point, index) => {
         // Garantir que temos coordenadas válidas
-        if (!waypoint.lat || !waypoint.lng) {
-          console.warn(`Waypoint ${index + 1} (${waypoint.name}) não tem coordenadas válidas`);
-          return; // Pular este waypoint
+        if (!point.lat || !point.lng) {
+          console.warn(`Ponto ${index} (${point.name}) não tem coordenadas válidas`);
+          return; // Pular este ponto
         }
         
         // Converter para números e verificar
-        const lat = parseFloat(waypoint.lat);
-        const lng = parseFloat(waypoint.lng);
+        const lat = parseFloat(point.lat);
+        const lng = parseFloat(point.lng);
         
         if (isNaN(lat) || isNaN(lng)) {
-          console.warn(`Waypoint ${index + 1} tem coordenadas inválidas: lat=${waypoint.lat}, lng=${waypoint.lng}`);
-          return; // Pular este waypoint
+          console.warn(`Ponto ${index} tem coordenadas inválidas: lat=${point.lat}, lng=${point.lng}`);
+          return; // Pular este ponto
         }
         
         const position = { lat, lng };
-        console.log(`Marcador ${index + 1}: ${waypoint.name} em ${lat},${lng}`);
+        console.log(`Marcador ${index}: ${point.name} em ${lat},${lng}`);
         
-        // Adicionar marcador com número
+        // Determinar se é origem, destino ou ponto intermediário
+        const isOrigin = index === 0;
+        const isDestination = calculatedRoute && index === pointsToShow.length - 1;
+        let markerColor, markerLabel, markerIcon;
+        
+        if (isOrigin) {
+          // Marcador de origem (A)
+          markerColor = "#0066FF"; // Azul
+          markerLabel = "A";
+          markerIcon = null; // Usar ícone padrão para origem
+        } else if (isDestination) {
+          // Marcador de destino final (B)
+          markerColor = "#00AA00"; // Verde
+          markerLabel = "B";
+          markerIcon = null; // Usar ícone padrão para destino
+        } else {
+          // Marcadores de waypoints numerados
+          markerColor = "#FF4500"; // Laranja-avermelhado
+          markerLabel = index.toString();
+          markerIcon = {
+            path: window.google.maps.SymbolPath.CIRCLE,
+            fillColor: markerColor,
+            fillOpacity: 1,
+            strokeWeight: 2,
+            strokeColor: "#FFFFFF",
+            scale: 14
+          };
+        }
+        
+        // Criar marcador com estilo apropriado
         const marker = new window.google.maps.Marker({
           position: position,
           map: map,
-          title: waypoint.name || `Destino ${index + 1}`,
-          label: {
-            text: (index + 1).toString(),
-            color: "white"
-          },
+          title: point.name || `Ponto ${index}`,
+          label: markerIcon ? {
+            text: markerLabel,
+            color: "#FFFFFF",
+            fontWeight: "bold"
+          } : markerLabel,
           animation: window.google.maps.Animation.DROP,
-          icon: {
-            path: window.google.maps.SymbolPath.CIRCLE,
-            fillColor: "#FF0000",
-            fillOpacity: 1,
-            strokeWeight: 0,
-            scale: 12
-          }
+          icon: markerIcon,
+          zIndex: isOrigin || isDestination ? 100 : 10 // Origem e destino ficam acima dos outros
         });
         
-        // Adicionar janela de informações
+        // Conteúdo mais detalhado para janela de informações
+        const getPointTypeText = () => {
+          if (isOrigin) return "Origem";
+          if (isDestination) return "Destino Final";
+          return `Parada ${index}`;
+        };
+        
+        // Criar janela de informações mais detalhada
         const infoWindow = new window.google.maps.InfoWindow({
-          content: `<div style="min-width: 200px; padding: 8px;">
-                     <strong>${waypoint.name || `Destino ${index + 1}`}</strong>
-                     <br>${waypoint.address || ""}
-                     <br>CEP: ${waypoint.cep || "N/A"}
-                     <br>Coordenadas: ${lat.toFixed(6)}, ${lng.toFixed(6)}
+          content: `<div style="min-width: 220px; padding: 10px; font-family: Arial, sans-serif;">
+                     <h3 style="margin: 0 0 8px 0; color: ${markerColor};">${getPointTypeText()}</h3>
+                     <strong>${point.name || `Ponto ${index}`}</strong>
+                     <p style="margin: 8px 0;">${point.address || ""}</p>
+                     <div style="font-size: 12px; color: #666;">
+                       CEP: ${point.cep || "N/A"}<br>
+                       Coordenadas: ${lat.toFixed(6)}, ${lng.toFixed(6)}
+                     </div>
                     </div>`
         });
         
@@ -423,17 +454,45 @@ export default function MapView({
         bounds.extend(position);
       });
       
+      // Desenhar linhas conectando os pontos se temos pelo menos 2 pontos
+      if (pointsToShow.length >= 2) {
+        // Extrair coordenadas de cada ponto
+        const routeCoordinates = pointsToShow.map(point => ({
+          lat: parseFloat(point.lat),
+          lng: parseFloat(point.lng)
+        }));
+        
+        // Configurar estilo mais moderno para a linha
+        const routePath = new window.google.maps.Polyline({
+          path: routeCoordinates,
+          geodesic: true,
+          strokeColor: "#4285F4", // Azul Google Maps
+          strokeOpacity: 0.8,
+          strokeWeight: 5,
+          map: map
+        });
+        
+        // Adicionar efeito de animação na linha da rota
+        routePath.addListener("click", () => {
+          // Aumentar temporariamente a largura da linha quando clicada
+          routePath.setOptions({ strokeWeight: 8 });
+          setTimeout(() => {
+            routePath.setOptions({ strokeWeight: 5 });
+          }, 300);
+        });
+      }
+      
       // Apenas ajustar zoom se tivermos pontos no mapa
-      if (markersRef.current.length > 1) {
+      if (pointsToShow.length > 0) {
         // Ajustar zoom para mostrar todos os pontos
         map.fitBounds(bounds);
         
-        // Adicionar um padding para não ficar muito justo
+        // Adicionar um padding adequado
         const padding = { 
-          top: 50, 
-          right: 50, 
-          bottom: 50, 
-          left: 50 
+          top: 60, 
+          right: 60, 
+          bottom: 60, 
+          left: 60 
         };
         map.fitBounds(bounds, padding);
         
@@ -444,13 +503,13 @@ export default function MapView({
     }
   };
   
-  // Atualizar marcadores quando waypoints mudarem
+  // Atualizar marcadores quando waypoints ou calculatedRoute mudarem
   useEffect(() => {
-    if (directMapRef.current && waypoints) {
-      console.log(`Atualizando ${waypoints.length} waypoints no mapa`);
+    if (directMapRef.current) {
+      console.log(`Atualizando marcadores no mapa. Waypoints: ${waypoints.length}, Rota calculada: ${calculatedRoute ? calculatedRoute.length : 0}`);
       updateMarkersOnMap();
     }
-  }, [waypoints]);
+  }, [waypoints, calculatedRoute]);
   
   // Inicializar o mapa quando o componente montar
   useEffect(() => {
