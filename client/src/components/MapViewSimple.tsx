@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Location } from "@/lib/types";
+import MapRedirect from "./MapRedirect";
 
 interface MapViewProps {
   origin: Location | null;
@@ -156,7 +157,15 @@ export default function MapViewSimple({
         {/* Instruções para zoom */}
         <div className="absolute top-4 left-4 bg-white bg-opacity-80 rounded-md shadow-md p-2 z-10 text-xs text-gray-600">
           <p>Para zoom: use os botões <b>+</b> e <b>-</b> no mapa ou segure <b>Ctrl</b> + roda do mouse</p>
+          <p className="mt-1 text-blue-600">Para zoom com roda, use o botão abaixo para abrir o Google Maps</p>
         </div>
+        
+        {/* Botão para abrir no Google Maps */}
+        <MapRedirect 
+          origin={origin} 
+          waypoints={waypoints} 
+          calculatedRoute={calculatedRoute}
+        />
         
         {/* Legenda para os pontos no mapa */}
         {waypoints && waypoints.length > 0 && (
