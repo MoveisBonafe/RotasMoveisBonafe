@@ -58,7 +58,7 @@ export default function MapView({
   // Quando uma rota for calculada, atualizar o iframe para mostrar a rota
   useEffect(() => {
     if (origin && calculatedRoute && calculatedRoute.length > 0) {
-      // URL base para direções
+      // URL base para direções com versão específica
       const baseUrl = `https://www.google.com/maps/embed/v1/directions`;
       
       // Obter origem e destino com coordenadas exatas para a rota
