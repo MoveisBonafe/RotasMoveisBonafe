@@ -405,8 +405,17 @@ export default function MapView({
           markerURL = "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
         } else {
           // Marcadores de waypoints numerados (sequenciais) - LARANJA
-          // Usamos o índice correto na sequência da rota (começando em 1)
-          markerLabel = (index).toString();
+          // Para os pontos intermediários, a numeração deve começar em 1 (não em 0)
+          
+          // Corrigir a numeração dos pontos intermediários para iniciar em 1 em vez de 0
+          if (!isOrigin && !isDestination) {
+            // Se não é origem nem destino, é um ponto intermediário, numere de 1 a N
+            // Calculamos o número sequencial para os waypoints (índice - 1, pois índice 0 é a origem)
+            const waypointIndex = index - 1;
+            markerLabel = (waypointIndex + 1).toString(); // +1 para começar em 1, não em 0
+          }
+          
+          // Usar ícone laranja para os pontos intermediários
           markerURL = "http://maps.google.com/mapfiles/ms/icons/orange-dot.png";
         }
         
@@ -432,7 +441,9 @@ export default function MapView({
         const getPointTypeText = () => {
           if (isOrigin) return "Origem";
           if (isDestination) return "Destino Final";
-          return `Parada ${index}`;
+          // Cálculo correto do número da parada
+          const waypointIndex = index - 1;
+          return `Parada ${waypointIndex + 1}`;
         };
         
         // Definir cor baseada no tipo de marcador
