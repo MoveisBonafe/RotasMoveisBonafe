@@ -328,8 +328,8 @@ export default function RouteReport({
               Distância Total
             </div>
             <div className="summary-item-value text-blue-700">{totalDistanceKm.toFixed(1).replace('.', ',')} km</div>
-            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-              <div className="bg-blue-600 h-2 rounded-full" style={{ width: '100%' }}></div>
+            <div className="w-full bg-gray-200 rounded-full h-1 mt-1">
+              <div className="bg-blue-600 h-1 rounded-full" style={{ width: '100%' }}></div>
             </div>
           </div>
           <div className="summary-item">
@@ -340,8 +340,8 @@ export default function RouteReport({
               Tempo Estimado
             </div>
             <div className="summary-item-value text-green-700">{formatDuration(routeInfo.totalDuration)}</div>
-            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-              <div className="bg-green-600 h-2 rounded-full" style={{ width: '100%' }}></div>
+            <div className="w-full bg-gray-200 rounded-full h-1 mt-1">
+              <div className="bg-green-600 h-1 rounded-full" style={{ width: '100%' }}></div>
             </div>
           </div>
           <div className="summary-item">
@@ -355,9 +355,9 @@ export default function RouteReport({
             <div className="summary-item-value text-orange-700">{numberOfStops} pontos</div>
             <div className="flex mt-2">
               {Array.from({ length: Math.min(numberOfStops, 10) }).map((_, i) => (
-                <div key={i} className="w-2 h-2 rounded-full bg-orange-500 mr-1 flex-shrink-0"></div>
+                <div key={i} className="w-1.5 h-1.5 rounded-full bg-orange-500 mr-0.5 flex-shrink-0"></div>
               ))}
-              {numberOfStops > 10 && <div className="text-xs text-gray-500 ml-1 self-center">+{numberOfStops - 10}</div>}
+              {numberOfStops > 10 && <div className="text-[0.6rem] text-gray-500 ml-0.5 self-center">+{numberOfStops - 10}</div>}
             </div>
           </div>
           <div className="summary-item">
@@ -372,9 +372,9 @@ export default function RouteReport({
               <span>Combustível: {Math.round(routeInfo.fuelCost / routeInfo.totalCost * 100)}%</span>
               <span>Pedágios: {Math.round(routeInfo.tollCost / routeInfo.totalCost * 100)}%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2 mt-1 overflow-hidden">
-              <div className="bg-green-500 h-2 float-left" style={{ width: `${Math.round(routeInfo.fuelCost / routeInfo.totalCost * 100)}%` }}></div>
-              <div className="bg-yellow-500 h-2 float-left" style={{ width: `${Math.round(routeInfo.tollCost / routeInfo.totalCost * 100)}%` }}></div>
+            <div className="w-full bg-gray-200 rounded-full h-1 mt-1 overflow-hidden">
+              <div className="bg-green-500 h-1 float-left" style={{ width: `${Math.round(routeInfo.fuelCost / routeInfo.totalCost * 100)}%` }}></div>
+              <div className="bg-yellow-500 h-1 float-left" style={{ width: `${Math.round(routeInfo.tollCost / routeInfo.totalCost * 100)}%` }}></div>
             </div>
           </div>
         </div>
@@ -448,8 +448,8 @@ export default function RouteReport({
           <div className="flex flex-col space-y-3 my-4">
             {/* Origem */}
             <div className="flex items-start bg-blue-50 p-3 rounded-lg border-l-4 border-blue-600 shadow-sm">
-              <div className="flex-shrink-0 mr-3">
-                <span className="point-label origin-label w-8 h-8 flex items-center justify-center">A</span>
+              <div className="flex-shrink-0 mr-2">
+                <span className="point-label origin-label w-6 h-6 flex items-center justify-center">A</span>
               </div>
               <div className="flex-grow">
                 <div className="font-bold text-blue-800">{origin.name || 'Origem'}</div>
@@ -457,7 +457,7 @@ export default function RouteReport({
                 <div className="text-xs text-gray-500 mt-1">CEP: {origin.cep || '-'}</div>
               </div>
               <div className="flex-shrink-0 ml-2">
-                <svg className="w-5 h-5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg className="w-4 h-4 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
               </div>
@@ -474,8 +474,8 @@ export default function RouteReport({
             {calculatedRoute.slice(1, -1).map((point, index) => (
               <React.Fragment key={index}>
                 <div className="flex items-start bg-orange-50 p-3 rounded-lg border-l-4 border-orange-400 shadow-sm">
-                  <div className="flex-shrink-0 mr-3">
-                    <span className="point-label w-8 h-8 flex items-center justify-center bg-orange-500">{index + 1}</span>
+                  <div className="flex-shrink-0 mr-2">
+                    <span className="point-label w-6 h-6 flex items-center justify-center bg-orange-500 text-sm">{index + 1}</span>
                   </div>
                   <div className="flex-grow">
                     <div className="font-bold text-orange-800">{point.name || `Ponto ${index + 1}`}</div>
@@ -502,8 +502,8 @@ export default function RouteReport({
             {/* Destino final */}
             {calculatedRoute.length > 1 && (
               <div className="flex items-start bg-green-50 p-3 rounded-lg border-l-4 border-green-600 shadow-sm">
-                <div className="flex-shrink-0 mr-3">
-                  <span className="point-label destination-label w-8 h-8 flex items-center justify-center">B</span>
+                <div className="flex-shrink-0 mr-2">
+                  <span className="point-label destination-label w-6 h-6 flex items-center justify-center text-sm">B</span>
                 </div>
                 <div className="flex-grow">
                   <div className="font-bold text-green-800">{calculatedRoute[calculatedRoute.length - 1]?.name || 'Destino Final'}</div>

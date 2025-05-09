@@ -111,14 +111,25 @@ export default function Sidebar({
           });
           
           // Calcular automaticamente a rota após importação
-          // Verifica se temos localizações suficientes (pelo menos uma além da origem)
-          // e não estamos já calculando uma rota
+          // Esperar um pouco mais para garantir que as localizações foram processadas
+          console.log("Agendando cálculo automático de rota após importação");
+          
+          // Usar um temporizador mais longo para garantir que todas as atualizações
+          // de estado foram processadas antes de acionar o cálculo
           setTimeout(() => {
-            if (locations.length > 0 && !isCalculating) {
-              console.log("Calculando rota automaticamente após importação de CEPs");
+            // Verificar se ainda é relevante calcular (podem ter removido localizações, etc)
+            if (allGeocodingResults.length > 0) {
+              console.log("Executando cálculo automático da rota após importação de CEPs");
               onCalculateRoute();
+              
+              // Notificar o usuário
+              toast({
+                title: "Calculando rota",
+                description: "Calculando a rota otimizada automaticamente",
+                duration: 3000
+              });
             }
-          }, 1000); // Pequeno delay para garantir que as localizações foram adicionadas
+          }, 2000); // Aumentar o delay para garantir que o estado foi atualizado
         } else {
           toast({
             title: "Importação falhou",

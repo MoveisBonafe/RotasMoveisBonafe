@@ -414,8 +414,17 @@ export default function MapView({
           const waypointIndex = index - 1; // índice - 1, pois índice 0 é a origem
           markerLabel = (waypointIndex + 1).toString(); // +1 para começar em 1, não em 0
           
-          // Usar ícone laranja para os pontos intermediários
+          // Usar ícone laranja para os pontos intermediários e garantir visibilidade
           markerURL = "http://maps.google.com/mapfiles/ms/icons/orange-dot.png";
+          
+          // Log para debug
+          console.log(`Criando marcador intermediário #${markerLabel} em (${lat},${lng}) para ${point.name || 'ponto sem nome'}`);
+          
+          // Verificar se todos os marcadores intermediários estão presentes
+          if (calculatedRoute) {
+            const totalIntermediatePoints = calculatedRoute.length - 2; // -2 para excluir origem e destino
+            console.log(`Total de pontos intermediários na rota: ${totalIntermediatePoints}`);
+          }
           
           console.log(`Criando marcador intermediário #${markerLabel} para ponto ${point.name}`);
         }
