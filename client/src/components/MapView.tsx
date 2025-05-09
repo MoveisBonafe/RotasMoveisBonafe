@@ -297,7 +297,19 @@ export default function MapView({
             position: originCoords,
             map: map,
             title: origin.name || "Origem",
-            label: "A",
+            label: {
+              text: "A",
+              color: "#FFFFFF",
+              fontWeight: "bold"
+            },
+            icon: {
+              path: window.google.maps.SymbolPath.CIRCLE,
+              fillColor: "#0066FF", // Azul
+              fillOpacity: 1,
+              strokeWeight: 2,
+              strokeColor: "#FFFFFF",
+              scale: 14
+            },
             animation: window.google.maps.Animation.DROP
           });
           

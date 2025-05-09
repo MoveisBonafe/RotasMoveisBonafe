@@ -163,8 +163,8 @@ export class MemStorage implements IStorage {
     const types: Omit<VehicleType, 'id'>[] = [
       { name: "Carro", type: "car", fuelEfficiency: 116, tollMultiplier: 100 },
       { name: "Moto", type: "motorcycle", fuelEfficiency: 250, tollMultiplier: 50 },
-      { name: "Caminhão 1 eixo", type: "truck-1-axle", fuelEfficiency: 60, tollMultiplier: 200 },
-      { name: "Caminhão 2 eixos", type: "truck-2-axle", fuelEfficiency: 40, tollMultiplier: 300 }
+      { name: "Caminhão 1 eixo", type: "truck1", fuelEfficiency: 60, tollMultiplier: 200 },
+      { name: "Caminhão 2 eixos", type: "truck2", fuelEfficiency: 40, tollMultiplier: 300 }
     ];
     
     types.forEach(type => {
