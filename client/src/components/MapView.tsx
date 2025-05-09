@@ -44,7 +44,10 @@ export default function MapView({
       // URL base para direções
       const baseUrl = `https://www.google.com/maps/embed/v1/directions`;
       
-      // Obter origem e destino com coordenadas exatas
+      // Vamos mostrar a origem e os pontos de parada com marcadores numerados
+      const originParams = `color:blue|label:A|${origin.lat},${origin.lng}`;
+      
+      // Obter origem e destino com coordenadas exatas para a rota
       const originParam = `${origin.lat},${origin.lng}`;
       const destination = calculatedRoute[calculatedRoute.length - 1];
       const destinationParam = `${destination.lat},${destination.lng}`;
@@ -75,46 +78,58 @@ export default function MapView({
         params.append("waypoints", waypointsArray.join("|"));
       }
       
+      // Adicionar marcador de origem (A azul)
+      params.append("markers", originParams);
+      
+      // Adicionar marcadores numerados para cada destino na rota otimizada
+      calculatedRoute.forEach((location, index) => {
+        if (index > 0) { // Ignoramos o primeiro ponto (origem)
+          params.append("markers", `color:red|label:${index}|${location.lat},${location.lng}`);
+        }
+      });
+      
       // Gerar a URL para o mapa
       const routeUrl = `${baseUrl}?${params.toString()}`;
       setMapSrc(routeUrl);
-      console.log("Rota otimizada exibida com sequência numérica");
+      console.log("Rota otimizada exibida com marcadores numerados");
     }
   }, [calculatedRoute, origin, GOOGLE_MAPS_API_KEY]);
 
   // Quando waypoints mudam, mas não há rota calculada ainda
   useEffect(() => {
     if (origin && waypoints.length > 0 && !calculatedRoute) {
-      // Usaremos a API de directions para mostrar todos os pontos sem traçar rota
-      const baseUrl = `https://www.google.com/maps/embed/v1/directions`;
+      // Vamos usar a API de visualização estática com marcadores numerados
+      const baseUrl = `https://www.google.com/maps/embed/v1/view`;
       
-      // Usar o primeiro waypoint como destino
-      const destination = waypoints[0];
+      // Calcular a média das coordenadas para centrar o mapa
+      let sumLat = parseFloat(origin.lat);
+      let sumLng = parseFloat(origin.lng);
       
-      // Construir uma lista de waypoints intermediários (se houver mais de 1 waypoint)
-      let waypointsArray: string[] = [];
-      
-      if (waypoints.length > 1) {
-        waypointsArray = waypoints.slice(1).map(wp => `${wp.lat},${wp.lng}`);
-      }
-      
-      // Centralizar no primeiro local (origem)
-      const params = new URLSearchParams({
-        key: GOOGLE_MAPS_API_KEY,
-        origin: `${origin.lat},${origin.lng}`,
-        destination: `${destination.lat},${destination.lng}`,
-        zoom: "10",
-        maptype: "roadmap",
-        mode: "driving",
-        // Define avoidances para impedir o cálculo real de rota
-        // isso fará com que mostre apenas os pinos
-        avoid: "highways|tolls|ferries"
+      waypoints.forEach(wp => {
+        sumLat += parseFloat(wp.lat);
+        sumLng += parseFloat(wp.lng);
       });
       
-      // Adicionar waypoints se houver
-      if (waypointsArray.length > 0) {
-        params.append("waypoints", waypointsArray.join('|'));
-      }
+      const centerLat = sumLat / (waypoints.length + 1);
+      const centerLng = sumLng / (waypoints.length + 1);
+      
+      // Parâmetros básicos do mapa
+      const params = new URLSearchParams({
+        key: GOOGLE_MAPS_API_KEY,
+        center: `${centerLat},${centerLng}`,
+        zoom: "10",
+        maptype: "roadmap"
+      });
+      
+      // Adicionar o marcador de origem (letra A em azul)
+      params.append("markers", `color:blue|label:A|${origin.lat},${origin.lng}`);
+      
+      // Adicionar os marcadores numerados para cada destino
+      waypoints.forEach((waypoint, index) => {
+        // Os índices começam em 0, mas queremos mostrar números a partir de 1
+        const label = (index + 1).toString();
+        params.append("markers", `color:red|label:${label}|${waypoint.lat},${waypoint.lng}`);
+      });
       
       setMapSrc(`${baseUrl}?${params.toString()}`);
       console.log("Mostrando pontos de destino como pinos no mapa");
@@ -142,48 +157,76 @@ export default function MapView({
     }
   };
   
-  // Função auxiliar para criar a URL do mapa com coordenadas exatas
+  // Função auxiliar para criar a URL do mapa com coordenadas exatas e marcadores coloridos
   const createMapUrl = (mapType = "roadmap") => {
     if (!origin) return "";
     
     let baseUrl, params;
     
-    // Se tivermos waypoints, usamos directions para mostrar todos os pontos
-    if (waypoints && waypoints.length > 0) {
-      baseUrl = `https://www.google.com/maps/embed/v1/directions`;
+    // Se temos uma rota calculada, mostramos ela
+    if (calculatedRoute && calculatedRoute.length > 0) {
+      baseUrl = `https://www.google.com/maps/embed/v1/view`;
       
-      // Usar o primeiro waypoint como destino
-      const destination = waypoints[0];
+      // Calcular centro do mapa
+      let sumLat = parseFloat(origin.lat);
+      let sumLng = parseFloat(origin.lng);
       
-      // Construir uma lista de waypoints intermediários (se houver mais de 1 waypoint)
-      let waypointsArray: string[] = [];
+      calculatedRoute.forEach(loc => {
+        sumLat += parseFloat(loc.lat);
+        sumLng += parseFloat(loc.lng);
+      });
       
-      if (waypoints.length > 1) {
-        waypointsArray = waypoints.slice(1).map(wp => `${wp.lat},${wp.lng}`);
-      }
-      
-      // Calcular zoom baseado no número de pontos
-      let zoom = "14";
-      if (waypoints.length > 5) {
-        zoom = "10";
-      } else if (waypoints.length > 0) {
-        zoom = "12";
-      }
+      const centerLat = sumLat / (calculatedRoute.length + 1);
+      const centerLng = sumLng / (calculatedRoute.length + 1);
       
       params = new URLSearchParams({
         key: GOOGLE_MAPS_API_KEY,
-        origin: `${origin.lat},${origin.lng}`,
-        destination: `${destination.lat},${destination.lng}`,
-        zoom,
-        maptype: mapType,
-        mode: "driving",
-        avoid: "highways|tolls|ferries" // Isso fará com que mostre apenas os pinos
+        center: `${centerLat},${centerLng}`,
+        zoom: "10",
+        maptype: mapType
       });
       
-      // Adicionar waypoints se houver
-      if (waypointsArray.length > 0) {
-        params.append("waypoints", waypointsArray.join('|'));
-      }
+      // Adicionar o marcador de origem
+      params.append("markers", `color:blue|label:A|${origin.lat},${origin.lng}`);
+      
+      // Adicionar marcadores numerados para a rota calculada
+      calculatedRoute.forEach((location, index) => {
+        if (index > 0) { // Ignorar a origem
+          params.append("markers", `color:red|label:${index}|${location.lat},${location.lng}`);
+        }
+      });
+    }
+    // Se tivermos waypoints, mas não a rota calculada ainda
+    else if (waypoints && waypoints.length > 0) {
+      baseUrl = `https://www.google.com/maps/embed/v1/view`;
+      
+      // Calcular centro do mapa
+      let sumLat = parseFloat(origin.lat);
+      let sumLng = parseFloat(origin.lng);
+      
+      waypoints.forEach(wp => {
+        sumLat += parseFloat(wp.lat);
+        sumLng += parseFloat(wp.lng);
+      });
+      
+      const centerLat = sumLat / (waypoints.length + 1);
+      const centerLng = sumLng / (waypoints.length + 1);
+      
+      params = new URLSearchParams({
+        key: GOOGLE_MAPS_API_KEY,
+        center: `${centerLat},${centerLng}`,
+        zoom: "10",
+        maptype: mapType
+      });
+      
+      // Adicionar o marcador de origem
+      params.append("markers", `color:blue|label:A|${origin.lat},${origin.lng}`);
+      
+      // Adicionar marcadores numerados para cada waypoint
+      waypoints.forEach((waypoint, index) => {
+        const label = (index + 1).toString();
+        params.append("markers", `color:red|label:${label}|${waypoint.lat},${waypoint.lng}`);
+      });
     } 
     // Se não tivermos waypoints, usamos place para mostrar apenas a origem
     else {
