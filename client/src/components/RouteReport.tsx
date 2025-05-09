@@ -1,7 +1,8 @@
 import React, { useRef } from 'react';
-import { Location } from '@/lib/types';
+import { Location, PointOfInterest, CityEvent, TruckRestriction } from '@/lib/types';
 import { formatDistance, formatDuration, formatCurrency } from '@/lib/mapUtils';
 import { Button } from '@/components/ui/button';
+import { useQuery } from '@tanstack/react-query';
 
 interface RouteReportProps {
   origin: Location | null;
@@ -35,6 +36,69 @@ export default function RouteReport({
   endDate
 }: RouteReportProps) {
   const reportRef = useRef<HTMLDivElement>(null);
+
+  // Extrair cidades dos destinos para consultas
+  const destinationCityNames = calculatedRoute 
+    ? calculatedRoute.map(location => 
+        location.city || location.address?.split(',')[0].trim() || null
+      ).filter(Boolean) as string[]
+    : [];
+
+  // Buscar pontos de interesse
+  const { data: poisAlongRoute = [] } = useQuery({ 
+    queryKey: ['/api/points-of-interest'],
+    queryFn: async () => {
+      const response = await fetch('/api/points-of-interest');
+      if (!response.ok) {
+        throw new Error('Erro ao buscar pontos de interesse');
+      }
+      return await response.json();
+    },
+    enabled: !!calculatedRoute && calculatedRoute.length > 1
+  });
+
+  // Buscar eventos das cidades
+  const { data: cityEvents = [] } = useQuery({ 
+    queryKey: ['/api/city-events', startDate, endDate, destinationCityNames],
+    queryFn: async () => {
+      if (!startDate || !endDate || destinationCityNames.length === 0) return [];
+      
+      const queryParams = new URLSearchParams();
+      if (startDate) queryParams.append('startDate', startDate);
+      if (endDate) queryParams.append('endDate', endDate);
+      destinationCityNames.forEach(city => {
+        if (city) queryParams.append('cities', city);
+      });
+      
+      const response = await fetch(`/api/city-events?${queryParams.toString()}`);
+      if (!response.ok) {
+        throw new Error('Erro ao buscar eventos das cidades');
+      }
+      return await response.json();
+    },
+    enabled: !!startDate && !!endDate && destinationCityNames.length > 0
+  });
+
+  // Buscar restrições de caminhões
+  const { data: truckRestrictions = [] } = useQuery({ 
+    queryKey: ['/api/truck-restrictions', destinationCityNames],
+    queryFn: async () => {
+      if (destinationCityNames.length === 0) return [];
+      
+      const queryParams = new URLSearchParams();
+      destinationCityNames.forEach(city => {
+        if (city) queryParams.append('cities', city);
+      });
+      
+      const response = await fetch(`/api/truck-restrictions?${queryParams.toString()}`);
+      if (!response.ok) {
+        throw new Error('Erro ao buscar restrições de caminhões');
+      }
+      
+      return await response.json();
+    },
+    enabled: !!vehicleType && vehicleType.type.includes('truck') && destinationCityNames.length > 0
+  });
 
   const handlePrint = () => {
     // Salvar o título de página atual
@@ -129,7 +193,7 @@ export default function RouteReport({
           </div>
         </div>
         
-        <div className="border border-gray-200 rounded-sm p-2">
+        <div className="border border-gray-200 rounded-sm p-2 mb-2">
           <h3 className="text-xs font-semibold mb-1 text-primary">Sequência de Rota</h3>
           <div className="space-y-1">
             {[origin, ...calculatedRoute.slice(1)].map((location, index) => (
@@ -145,6 +209,79 @@ export default function RouteReport({
             ))}
           </div>
         </div>
+        
+        {/* Pontos de Atenção */}
+        {poisAlongRoute.length > 0 && (
+          <div className="border border-gray-200 rounded-sm p-2 mb-2">
+            <h3 className="text-xs font-semibold mb-1 text-primary">Pontos de Atenção</h3>
+            <div className="space-y-1">
+              <ul className="list-disc pl-4 text-xs space-y-1">
+                {poisAlongRoute.map((poi: PointOfInterest) => (
+                  <li key={poi.id} className="text-gray-700">
+                    <span className="font-medium">{poi.name}</span>
+                    <span className="text-gray-500 ml-1">({poi.type})</span>
+                    {poi.description && (
+                      <div className="text-gray-500 text-xs">{poi.description}</div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+        
+        {/* Eventos nas Cidades */}
+        {startDate && endDate && cityEvents && cityEvents.length > 0 && (
+          <div className="border border-gray-200 rounded-sm p-2 mb-2">
+            <h3 className="text-xs font-semibold mb-1 text-primary">Eventos nas Cidades</h3>
+            <div className="space-y-1">
+              {cityEvents.map((event: CityEvent) => (
+                <div key={event.id} className="mb-1 pb-1 border-b border-gray-50 last:border-b-0 last:mb-0 last:pb-0">
+                  <div className="flex items-start">
+                    <span className={`inline-block w-2 h-2 rounded-full mr-1 mt-1 
+                      ${event.eventType === 'holiday' ? 'bg-red-600' : 
+                        event.eventType === 'festival' ? 'bg-yellow-500' : 'bg-green-600'}`}>
+                    </span>
+                    <div>
+                      <span className="font-medium">{event.eventName}</span>
+                      <span className="text-gray-500 ml-1">
+                        ({event.cityName}, {event.startDate === event.endDate 
+                          ? event.startDate 
+                          : `${event.startDate} - ${event.endDate}`})
+                      </span>
+                      {event.description && (
+                        <div className="text-gray-500 text-xs">{event.description}</div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Restrições para Caminhões */}
+        {vehicleType && vehicleType.type.includes('truck') && truckRestrictions && truckRestrictions.length > 0 && (
+          <div className="border border-gray-200 rounded-sm p-2 mb-2">
+            <h3 className="text-xs font-semibold mb-1 text-primary">Restrições para Caminhões</h3>
+            <div className="space-y-1">
+              {truckRestrictions.map((restriction: TruckRestriction) => (
+                <div key={restriction.id} className="mb-1 pb-1 border-b border-gray-50 last:border-b-0 last:mb-0 last:pb-0">
+                  <div className="font-medium">{restriction.cityName} - {restriction.restriction}</div>
+                  <div className="text-gray-600 text-xs">
+                    Horário: {restriction.startTime || '00:00'} - {restriction.endTime || '23:59'}
+                  </div>
+                  <div className="text-gray-600 text-xs">
+                    Veículos: {restriction.applicableVehicles}
+                  </div>
+                  {restriction.description && (
+                    <div className="text-gray-500 text-xs">{restriction.description}</div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         
         <div className="text-center text-xs text-gray-400 mt-4 print:mt-8">
           Gerado em {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}
