@@ -337,31 +337,41 @@ export default function MapViewNative({
           // Fazer a requisição para o DirectionsService
           directionsService.route(request, (result, status) => {
             if (status === google.maps.DirectionsStatus.OK && result) {
+              // IMPORTANTE: Configurar o renderer para suprimir os marcadores padrão
+              // para podermos usar nossos próprios marcadores personalizados
+              renderer.setOptions({
+                suppressMarkers: true,
+                preserveViewport: false
+              });
+              
               // Mostrar a rota
               renderer.setDirections(result);
               
               // Criar bounds para ajustar o zoom
               const bounds = new google.maps.LatLngBounds();
               
-              // Adicionar marcadores para cada ponto
+              // IMPORTANTE: Sempre adicionar marcador da origem com número 0
               const originMarker = new google.maps.Marker({
                 position: originPoint,
                 map,
                 title: origin.name,
                 icon: {
                   path: google.maps.SymbolPath.CIRCLE,
-                  fillColor: "#4285F4",
+                  fillColor: "#4285F4", // Azul Google
                   fillOpacity: 1,
-                  strokeWeight: 1,
+                  strokeWeight: 2,
                   strokeColor: "#FFFFFF",
-                  scale: 10
+                  scale: 12
                 },
                 label: {
-                  text: "0",
+                  text: "0", // Origem é o ponto 0
                   color: "#FFFFFF",
-                  fontWeight: "bold"
-                }
+                  fontWeight: "bold",
+                  fontSize: "12px"
+                },
+                zIndex: 1000 // Maior zIndex para ficar em cima de outros marcadores
               });
+              bounds.extend(originPoint);
               newMarkers.push(originMarker);
               bounds.extend(originPoint);
               
