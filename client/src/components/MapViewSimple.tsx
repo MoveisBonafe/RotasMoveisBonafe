@@ -136,9 +136,103 @@ export default function MapViewSimple({
     }
   }, [mapRef, origin]);
 
-  // Efeito para atualizar a rota quando os waypoints mudarem
+  // Efeito para atualizar a rota quando os waypoints mudarem ou quando a rota for calculada
   useEffect(() => {
+    // Só processamos a rota quando temos todos os dados necessários
+    // E quando a rota foi calculada pelo usuário (calculatedRoute existe)
     if (map && directionsRenderer && origin && waypoints.length > 0) {
+      // Verificar se devemos processar a rota
+      const shouldProcessRoute = calculatedRoute && calculatedRoute.length > 0;
+      
+      // Se não temos uma rota calculada, apenas adicionamos marcadores sem mostrar rotas
+      if (!shouldProcessRoute) {
+        console.log("Adicionando marcadores sem calcular rota...");
+        
+        // Limpar marcadores existentes
+        markers.forEach(marker => marker.setMap(null));
+        
+        // Fechar janelas de informação
+        infoWindows.forEach(infoWindow => infoWindow.close());
+        
+        // Limpar a rota atual (polyline)
+        directionsRenderer.setDirections({ routes: [] });
+        
+        // Criar novos arrays de marcadores
+        const newMarkers = [];
+        const newInfoWindows = [];
+        
+        // Adicionar marcador para a origem
+        if (origin) {
+          const originMarker = new window.google.maps.Marker({
+            position: { lat: parseFloat(origin.lat), lng: parseFloat(origin.lng) },
+            map: map,
+            title: origin.name || "Origem",
+            icon: {
+              url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+            },
+            zIndex: 100
+          });
+          
+          // Criar janela de informação
+          const infoWindow = new window.google.maps.InfoWindow({
+            content: `<div class="info-window"><strong>${origin.name || "Origem"}</strong><br>${origin.address || ""}</div>`
+          });
+          
+          // Adicionar evento para mostrar janela ao clicar
+          originMarker.addListener("click", () => {
+            infoWindow.open(map, originMarker);
+          });
+          
+          newMarkers.push(originMarker);
+          newInfoWindows.push(infoWindow);
+        }
+        
+        // Adicionar marcadores para cada waypoint (sem números)
+        waypoints.forEach((point, index) => {
+          const waypointMarker = new window.google.maps.Marker({
+            position: { lat: parseFloat(point.lat), lng: parseFloat(point.lng) },
+            map: map,
+            title: point.name || `Destino ${index + 1}`,
+            icon: {
+              url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+            },
+            zIndex: 100
+          });
+          
+          // Criar janela de informação
+          const infoWindow = new window.google.maps.InfoWindow({
+            content: `<div class="info-window"><strong>${point.name || `Destino ${index + 1}`}</strong><br>${point.address || ""}</div>`
+          });
+          
+          // Adicionar evento para mostrar janela ao clicar
+          waypointMarker.addListener("click", () => {
+            infoWindow.open(map, waypointMarker);
+          });
+          
+          newMarkers.push(waypointMarker);
+          newInfoWindows.push(infoWindow);
+        });
+        
+        // Atualizar o estado com os novos marcadores
+        setMarkers(newMarkers);
+        setInfoWindows(newInfoWindows);
+        
+        // Ajustar o mapa para mostrar todos os pontos
+        const bounds = new window.google.maps.LatLngBounds();
+        newMarkers.forEach(marker => {
+          if (marker.getPosition()) {
+            bounds.extend(marker.getPosition());
+          }
+        });
+        
+        if (newMarkers.length > 0) {
+          map.fitBounds(bounds);
+        }
+        
+        return;
+      }
+      
+      // Agora processamos a rota quando temos calculatedRoute
       // Evitar execuções repetidas e tremulação
       if (isProcessingRoute.current) return;
       isProcessingRoute.current = true;
@@ -249,14 +343,17 @@ export default function MapViewSimple({
               newInfoWindows.push(infoWindow);
             }
             
-            // 2. Adicionar marcadores para cada waypoint (numerados conforme sequência da rota)
+            // 2. Adicionar marcadores para cada waypoint
             if (waypoints && waypoints.length > 0) {
               // Criar uma cópia da lista de waypoints para ordenação
               const waypointsToOrder = [...waypoints];
               let routeOrderedWaypoints = [...waypoints];
               
+              // Verificar se já temos uma rota calculada
+              const isRouteCalculated = calculatedRoute && calculatedRoute.length > 0;
+              
               // Se temos uma ordem otimizada da API, reorganizar os waypoints
-              if (waypointOrder.length > 0 && waypointOrder.length === waypoints.length - 1) {
+              if (isRouteCalculated && waypointOrder.length > 0 && waypointOrder.length === waypoints.length - 1) {
                 // A API retorna a ordem sem incluir o destino final, pois ele já está separado
                 // Reorganizamos todos exceto o último
                 const tempPoints = [...waypointsToOrder];
@@ -285,12 +382,13 @@ export default function MapViewSimple({
                   icon: {
                     url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
                   },
-                  label: {
+                  // Só mostrar números sequenciais se a rota já tiver sido calculada
+                  label: isRouteCalculated ? {
                     text: (index + 1).toString(),
                     color: "#FFFFFF",
                     fontSize: "14px",
                     fontWeight: "bold"
-                  },
+                  } : null,
                   zIndex: 100
                 });
                 
@@ -487,8 +585,27 @@ export default function MapViewSimple({
             
             // Informar o componente pai sobre a rota calculada
             if (onRouteCalculated) {
-              // Se usamos waypoints ordenados, passamos essa ordem atualizada para o componente pai
-              const orderedSequence = [origin, ...routeOrderedWaypoints];
+              // Criar a sequência ordenada de waypoints
+              let orderedSequence = [origin, ...waypoints];
+              
+              // Se temos uma ordem otimizada, usar essa ordem
+              if (waypointOrder.length > 0 && waypointOrder.length === waypoints.length - 1) {
+                // Recriar a sequência ordenada com base na ordem dos waypoints
+                orderedSequence = [origin];
+                
+                // Primeiro adicionar os waypoints na ordem correta
+                const tempWaypoints = [...waypoints];
+                const lastWaypoint = tempWaypoints.pop(); // Remover o último
+                
+                for (let i = 0; i < waypointOrder.length; i++) {
+                  orderedSequence.push(tempWaypoints[waypointOrder[i]]);
+                }
+                
+                // Adicionar o último waypoint
+                if (lastWaypoint) {
+                  orderedSequence.push(lastWaypoint);
+                }
+              }
               
               onRouteCalculated({
                 ...result,
