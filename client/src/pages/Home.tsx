@@ -298,6 +298,12 @@ export default function Home() {
       description: "Por favor, aguarde enquanto calculamos a melhor rota...",
     });
     
+    // IMPORTANTE: Usar a origem como primeiro ponto sempre
+    // Em seguida, adicionar os waypoints na ordem que foram adicionados
+    // Isso vai garantir que a sequência numérica corresponda à sequência mostrada no painel
+    const sequentialRoute = [origin, ...locations];
+    setCalculatedRoute(sequentialRoute);
+    
     // Garante que pointsOfInterest seja um array válido
     const pois = Array.isArray(pointsOfInterest) ? pointsOfInterest : [];
     
@@ -310,7 +316,9 @@ export default function Home() {
       try {
         // Optimize the route locally - isso atualiza poisAlongRoute dentro do hook
         const routeResult = optimizeRouteLocally(origin, locations, vehicleTypeObj, pois);
-        setCalculatedRoute(routeResult.waypoints);
+        
+        // Não atualizamos o calculated route aqui, para manter a ordem original
+        // setCalculatedRoute(routeResult.waypoints);
         
         // SOLUÇÃO APRIMORADA:
         // Vamos detectar a rota e mostrar apenas os POIs realmente relevantes

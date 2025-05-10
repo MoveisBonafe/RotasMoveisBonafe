@@ -249,28 +249,11 @@ export default function MapViewSimple({
               newInfoWindows.push(infoWindow);
             }
             
-            // 2. Adicionar marcadores para cada waypoint (numerados conforme sequência da rota)
+            // 2. Adicionar marcadores para cada waypoint (numerados sequencialmente)
             if (waypoints && waypoints.length > 0) {
-              // Criar array com pontos na ordem correta da rota conforme calculado pela API
-              const orderedWaypoints = [...waypoints];
-              
-              // Se temos uma ordem otimizada da API, reorganizar os waypoints
-              if (waypointOrder.length > 0 && waypointOrder.length === waypoints.length - 1) {
-                // A API retorna a ordem sem incluir o destino final, pois ele já está separado
-                // Reorganizamos todos exceto o último
-                const tempPoints = [...waypoints];
-                tempPoints.pop(); // Remover o último (destino)
-                
-                // Reorganizar pontos intermediários
-                for (let i = 0; i < waypointOrder.length; i++) {
-                  orderedWaypoints[i] = tempPoints[waypointOrder[i]];
-                }
-                
-                // Manter o último ponto como destino final
-                orderedWaypoints[orderedWaypoints.length - 1] = waypoints[waypoints.length - 1];
-              }
-                
-              orderedWaypoints.forEach((point, index) => {
+              // Usar os waypoints na mesma ordem que foram fornecidos
+              // Isso garantirá que a numeração corresponde à sequência exibida no painel
+              waypoints.forEach((point, index) => {
                 const waypointMarker = new window.google.maps.Marker({
                   position: { lat: parseFloat(point.lat), lng: parseFloat(point.lng) },
                   map: map,
@@ -480,14 +463,14 @@ export default function MapViewSimple({
             
             // Informar o componente pai sobre a rota calculada
             if (onRouteCalculated) {
-              // Se usamos waypoints ordenados, passamos essa ordem atualizada para o componente pai
-              const orderedSequence = [origin, ...orderedWaypoints];
+              // Mantemos a sequência original para manter a numeração consistente
+              // Não passamos uma sequência reordenada, vamos usar a original
               
               onRouteCalculated({
                 ...result,
                 tollPoints: tollPoints,
-                googleSource: true,
-                orderedSequence: orderedSequence // Incluir a sequência ordenada
+                googleSource: true
+                // Não incluímos sequência reordenada para garantir que os números permaneçam consistentes
               });
             }
             
