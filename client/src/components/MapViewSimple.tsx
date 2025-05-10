@@ -505,7 +505,8 @@ export default function MapViewSimple({
                 };
                 
                 // Verificar se o POI está próximo da rota (dentro de um raio máximo)
-                const MAX_DISTANCE_KM = 5; // 5km de distância máxima da rota
+                // Distância máxima varia conforme o tipo de POI
+                const MAX_DISTANCE_KM = poi.type === "toll" ? 2 : 1; // Mais restritivo para balanças
                 
                 // Função para calcular distância entre dois pontos em km
                 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
@@ -545,11 +546,14 @@ export default function MapViewSimple({
                 
                 // Casos especiais - critérios adicionais para POIs importantes
                 const isSpecialCase = 
-                  // Casos para a rota Ribeirão Preto
-                  (hasRibeiraoPreto && poi.name.includes("Boa Esperança")) || 
-                  (hasRibeiraoPreto && poi.name.includes("Luís Antônio")) ||
-                  // Garantir que todos os pedágios do percurso sejam incluídos
-                  (poi.type === "toll" && minDistance <= MAX_DISTANCE_KM * 2);
+                  // Pedágio obrigatório para rota Ribeirão Preto
+                  (hasRibeiraoPreto && poi.name.includes("Guatapará")) || 
+                  (hasRibeiraoPreto && poi.name.includes("Boa Esperança")) ||
+                  // Remover Luís Antônio como caso especial, será controlado pela distância
+                  
+                  // Garantir que todos os pedágios do percurso sejam incluídos conforme relatado pelo Google Maps
+                  // Distância mais flexível para pedágios da rodovia principal
+                  (poi.type === "toll" && poi.roadName === "SP-255" && hasRibeiraoPreto && minDistance <= 12);
                 
                 // Verificar se é um ponto capturado da API da Google
                 const isTollFromAPI = tollPointsFromAPI.some(tp => 
