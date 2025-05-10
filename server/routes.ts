@@ -283,6 +283,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to retrieve points of interest" });
     }
   });
+  
+  // Importar pontos de pesagem (balanças)
+  app.post("/api/import-weighing-stations", async (req: Request, res: Response) => {
+    try {
+      console.log("Recebendo requisição para importar pontos de pesagem");
+      const { points } = req.body;
+      
+      if (!Array.isArray(points)) {
+        return res.status(400).json({ message: "Formato inválido. Esperado um array de pontos de pesagem." });
+      }
+      
+      console.log(`Processando ${points.length} pontos de pesagem`);
+      
+      const importedPoints = [];
+      
+      for (const point of points) {
+        try {
+          // Validar campos obrigatórios
+          if (!point.name || !point.lat || !point.lng) {
+            console.warn(`Ponto inválido (faltando dados obrigatórios): ${JSON.stringify(point)}`);
+            continue;
+          }
+          
+          // Criar o ponto de interesse
+          const newPoint = {
+            name: point.name,
+            type: 'weighing_station',
+            lat: point.lat.toString(),
+            lng: point.lng.toString(),
+            cost: null, // Balanças não têm custo
+            roadName: point.roadName || point.road || "",
+            city: point.city || "",
+            restrictions: point.restrictions || "Veículos de carga"
+          };
+          
+          // Adicionar ao banco de dados
+          const savedPoint = await storage.addPointOfInterest(newPoint);
+          importedPoints.push(savedPoint);
+          
+          console.log(`Ponto de pesagem importado: ${newPoint.name}`);
+        } catch (err) {
+          console.error(`Erro ao processar ponto de pesagem:`, err);
+        }
+      }
+      
+      console.log(`Importação concluída. ${importedPoints.length} pontos de pesagem adicionados.`);
+      res.json({ message: "Pontos de pesagem importados com sucesso", points: importedPoints });
+    } catch (error) {
+      console.error("Erro ao importar pontos de pesagem:", error);
+      res.status(500).json({ message: "Erro ao processar importação" });
+    }
+  });
 
   // Get city events - implementação simplificada para melhorar desempenho
   app.get("/api/city-events", (req: Request, res: Response) => {
