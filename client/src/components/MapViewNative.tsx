@@ -405,19 +405,22 @@ export default function MapViewNative({
                     
                     bounds.extend(poiPosition);
                     
-                    // Criar um marcador para cada POI com ícone e cor específicos
+                    // Criar um ícone personalizado para cada tipo de POI
+                    let iconUrl;
+                    if (poi.type === 'toll') {
+                      // Ícone de pedágio - pino amarelo com símbolo de dinheiro
+                      iconUrl = "https://maps.google.com/mapfiles/kml/paddle/dollar.png";
+                    } else if (poi.type === 'weighing_station') {
+                      // Ícone de balança - pino vermelho com símbolo de alerta
+                      iconUrl = "https://maps.google.com/mapfiles/kml/paddle/B.png";
+                    }
+                    
+                    // Criar um marcador para cada POI com ícone personalizado
                     const poiMarker = new google.maps.Marker({
                       position: poiPosition,
                       map,
                       title: poi.name,
-                      icon: {
-                        path: google.maps.SymbolPath.CIRCLE,
-                        fillColor: poi.type === 'toll' ? "#FFC107" : "#F44336", // Amarelo ou vermelho
-                        fillOpacity: 1,
-                        strokeWeight: 1,
-                        strokeColor: "#000000",
-                        scale: 10
-                      },
+                      icon: iconUrl,
                       label: {
                         text: poi.type === 'toll' ? '$' : 'B', // Símbolo $ para pedágio, B para balança
                         color: "#FFFFFF",
@@ -566,24 +569,24 @@ export default function MapViewNative({
               
               bounds.extend(poiPosition);
               
-              // Criar um marcador para cada POI
+              // Criar um ícone personalizado para cada tipo de POI
+              let iconUrl;
+              if (poi.type === 'toll') {
+                // Ícone de pedágio - pino amarelo com símbolo de dinheiro
+                iconUrl = "https://maps.google.com/mapfiles/kml/paddle/dollar.png";
+              } else if (poi.type === 'weighing_station') {
+                // Ícone de balança - pino vermelho com símbolo de alerta
+                iconUrl = "https://maps.google.com/mapfiles/kml/paddle/B.png";
+              }
+              
+              // Criar um marcador para cada POI com ícone personalizado
               const poiMarker = new google.maps.Marker({
                 position: poiPosition,
                 map,
                 title: poi.name,
-                icon: {
-                  path: google.maps.SymbolPath.CIRCLE,
-                  fillColor: poi.type === 'toll' ? "#FFC107" : "#F44336",
-                  fillOpacity: 1,
-                  strokeWeight: 1,
-                  strokeColor: "#000000",
-                  scale: 10
-                },
-                label: {
-                  text: poi.type === 'toll' ? '$' : 'B',
-                  color: "#FFFFFF",
-                  fontWeight: "bold"
-                }
+                icon: iconUrl,
+                animation: google.maps.Animation.DROP, // Adicionar animação
+                zIndex: 900 // Alto mas abaixo dos marcadores de rota
               });
               
               newMarkers.push(poiMarker);

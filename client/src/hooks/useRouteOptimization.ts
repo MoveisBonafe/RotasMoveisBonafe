@@ -59,14 +59,18 @@ export function useRouteOptimization() {
     
     // IMPORTANTE: Verificar se os destinos incluem Ribeirão Preto
     const includesRibeiraoPreto = optimizedLocations.some(location => 
-      location.name.toLowerCase().includes("ribeirão") || 
-      location.address.toLowerCase().includes("ribeirão") ||
-      location.name.toLowerCase().includes("pedro") // O CEP de Ribeirão Preto foi importado como "Pedro"
+      (location.name && location.name.toLowerCase().includes("ribeirão")) || 
+      (location.name && location.name.toLowerCase().includes("ribeirao")) ||
+      (location.address && location.address.toLowerCase().includes("ribeirão")) ||
+      (location.address && location.address.toLowerCase().includes("ribeirao")) ||
+      (location.name && location.name.toLowerCase() === "pedro") // O CEP de Ribeirão Preto foi importado como "Pedro"
     );
     
     const includesDoisCorregos = optimizedLocations.some(location => 
-      location.name.toLowerCase().includes("dois córregos") || 
-      location.address.toLowerCase().includes("dois córregos")
+      (location.name && location.name.toLowerCase().includes("dois córregos")) || 
+      (location.name && location.name.toLowerCase().includes("dois corregos")) ||
+      (location.address && location.address.toLowerCase().includes("dois córregos")) ||
+      (location.address && location.address.toLowerCase().includes("dois corregos"))
     );
     
     console.log("Rota inclui Dois Córregos?", includesDoisCorregos ? "SIM" : "NÃO");
