@@ -188,7 +188,7 @@ export default function MapViewSimple({
         origin: originLatLng,
         destination: destination,
         waypoints: googleWaypoints,
-        optimizeWaypoints: false, // Não otimizar a ordem dos waypoints
+        optimizeWaypoints: true, // Otimizar a ordem dos waypoints para seguir sequência lógica
         travelMode: window.google.maps.TravelMode.DRIVING,
         unitSystem: window.google.maps.UnitSystem.METRIC,
         avoidHighways: false,
@@ -196,6 +196,8 @@ export default function MapViewSimple({
         avoidFerries: true,
         provideRouteAlternatives: false
       };
+      
+      console.log("Solicitando rota otimizada para", waypoints.length, "destinos.");
       
       // Solicitar a rota à API
       directionsService.route(request, function(result, status) {
@@ -248,12 +250,30 @@ export default function MapViewSimple({
               
               console.log("Ordem otimizada dos waypoints:", waypointOrder);
               
+              // Reorganizar os waypoints na ordem calculada pelo Google
+              const orderedWaypoints = [...waypoints];
+              
+              // Criar um array com os waypoints na ordem correta da rota
+              let waypointsInRouteOrder: any[] = [];
+              waypointOrder.forEach((wpIndex: number, sequenceIndex: number) => {
+                if (wpIndex < orderedWaypoints.length) {
+                  // Adicionar à posição exata na sequência da rota
+                  waypointsInRouteOrder[sequenceIndex] = {
+                    ...orderedWaypoints[wpIndex],
+                    routeIndex: sequenceIndex + 1
+                  };
+                }
+              });
+              
+              // Remover buracos no array (undefined values)
+              waypointsInRouteOrder = waypointsInRouteOrder.filter(wp => wp !== undefined);
+              
+              console.log("Waypoints reordenados:", waypointsInRouteOrder.map(wp => wp.name));
+              
               // Adicionar waypoints na ordem da rota calculada
-              waypoints.forEach((point, i) => {
-                // Obter o índice real na ordem da rota otimizada
-                const routeIndex = waypointOrder.indexOf(i);
-                // Ou usar i diretamente se não encontrar na ordem (fallback)
-                const sequenceNumber = (routeIndex !== -1) ? routeIndex + 1 : i + 1;
+              waypointsInRouteOrder.forEach((point) => {
+                // Usar o índice da sequência da rota
+                const sequenceNumber = point.routeIndex;
                 
                 const waypointMarker = new window.google.maps.Marker({
                   position: { lat: parseFloat(point.lat), lng: parseFloat(point.lng) },
@@ -334,7 +354,15 @@ export default function MapViewSimple({
                 map,
                 title: toll.name,
                 icon: {
-                  url: "https://maps.google.com/mapfiles/ms/icons/dollar.png"
+                  url: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
+                  scaledSize: new window.google.maps.Size(24, 24),
+                  labelOrigin: new window.google.maps.Point(12, 10)
+                },
+                label: {
+                  text: "$",
+                  color: "#FFFFFF",
+                  fontSize: "12px",
+                  fontWeight: "bold"
                 },
                 zIndex: 5
               });
@@ -392,9 +420,17 @@ export default function MapViewSimple({
                   title: poi.name,
                   icon: {
                     url: poi.type === 'weighing_station' 
-                      ? "https://maps.google.com/mapfiles/ms/icons/truck.png"
-                      : "https://maps.google.com/mapfiles/ms/icons/info.png"
+                      ? "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                      : "https://maps.google.com/mapfiles/ms/icons/info.png",
+                    scaledSize: new window.google.maps.Size(24, 24),
+                    labelOrigin: new window.google.maps.Point(12, 10)
                   },
+                  label: poi.type === 'weighing_station' ? {
+                    text: "T",
+                    color: "#FFFFFF",
+                    fontSize: "10px",
+                    fontWeight: "bold"
+                  } : undefined,
                   zIndex: 4
                 });
                 
