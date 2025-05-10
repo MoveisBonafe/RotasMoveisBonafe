@@ -210,23 +210,34 @@ export default function RouteInfoPanel({
   
   console.log("Rodovias relevantes para a rota:", Array.from(roadsInRoute));
   
-  // ALGORITMO UNIVERSAL: Filtrar POIs baseado nas mesmas regras do mapa
+  // ALGORITMO UNIVERSAL: Filtrar baseado nos POIs que já foram adicionados no mapa
+  // Assumir que o componente de mapa já fez a filtragem precisa
+  
+  // Para casos onde o poisAlongRoute vem com poucos POIs, aplicar regras suplementares
+  // para garantir que pedágios e balanças importantes apareçam
   const filteredPOIs = poisAlongRoute.filter(poi => {
-    // Critério 1: POI está em uma rodovia presente na rota
+    // Regra 1: Incluir todos os pedágios e balanças que já chegaram aqui
+    // A filtragem principal já deve ter sido feita no mapa
+    const isImportantPOI = poi.type === "toll" || poi.type === "weighing_station";
+    
+    // Regra 2: Filtrar pedágios e balanças por rodovia
     const onRelevantRoad = poi.roadName && roadsInRoute.has(poi.roadName);
     
-    // Critério 2: POI está em uma cidade presente na rota
-    const inRelevantCity = Array.from(citiesInRoute).some(city => 
-      poi.name.includes(city)
-    );
+    // Regra 3: Casos especiais conhecidos pela rodovia
+    const isSpecialCase = 
+      (isRibeiraoPretoRoute && (
+        poi.name.includes("Boa Esperança") || 
+        poi.name.includes("Luís Antônio") ||
+        (poi.roadName === "SP-255" && !poi.name.includes("km 122"))
+      )) || 
+      (isBauruRoute && (
+        poi.roadName === "SP-300" || 
+        poi.roadName === "SP-225" ||
+        poi.name.includes("Bauru") ||
+        poi.name.includes("Jaú")
+      ));
     
-    // Critério 3: Casos específicos conhecidos
-    const isSpecialCase = (isRibeiraoPretoRoute && poi.name.includes("Boa Esperança")) || 
-                         (isRibeiraoPretoRoute && poi.name.includes("Luís Antônio"));
-    
-    const isRelevant = onRelevantRoad || inRelevantCity || isSpecialCase;
-    
-    return isRelevant;
+    return isImportantPOI && (onRelevantRoad || isSpecialCase);
   });
   
   // Remover duplicatas dos POIs filtrados

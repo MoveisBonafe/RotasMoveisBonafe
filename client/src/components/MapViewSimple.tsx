@@ -445,34 +445,137 @@ export default function MapViewSimple({
               // Adicionar logicamente todas as rodovias que conectam Dois Córregos ao destino
               console.log("Rodovias detectadas na rota:", Array.from(roadsInRoute));
               
-              // ALGORITMO UNIVERSAL: Filtrar POIs baseado em rodovias e proximidade às cidades na rota
-              const relevantPOIs = pointsOfInterest.filter(poi => {
-                // Critério 1: POI está em uma rodovia presente na rota
-                const onRelevantRoad = poi.roadName && roadsInRoute.has(poi.roadName);
+              // ALGORITMO UNIVERSAL: Filtrar POIs baseado na proximidade real com a rota
+              const relevantPOIs = [];
+              
+              // Extrair todos os pontos da rota para análise de proximidade
+              const routePoints: {lat: number, lng: number}[] = [];
+              
+              if (result.routes && result.routes[0] && result.routes[0].legs) {
+                // Extrair todos os pontos do percurso
+                result.routes[0].legs.forEach(leg => {
+                  if (leg.steps) {
+                    leg.steps.forEach(step => {
+                      if (step.path) {
+                        step.path.forEach(point => {
+                          routePoints.push({
+                            lat: point.lat(),
+                            lng: point.lng()
+                          });
+                        });
+                      } else if (step.lat_lngs) {
+                        step.lat_lngs.forEach(point => {
+                          routePoints.push({
+                            lat: point.lat(),
+                            lng: point.lng()
+                          });
+                        });
+                      }
+                    });
+                  }
+                });
+              }
+              
+              // Extrair pontos de início e fim da rota
+              const startPoint = {
+                lat: parseFloat(origin.lat),
+                lng: parseFloat(origin.lng)
+              };
+              let endPoint = startPoint;
+              
+              if (calculatedRoute && calculatedRoute.length > 0) {
+                const lastPoint = calculatedRoute[calculatedRoute.length - 1];
+                endPoint = {
+                  lat: parseFloat(lastPoint.lat),
+                  lng: parseFloat(lastPoint.lng)
+                };
+              }
+              
+              // Adicionar pontos de início e fim explicitamente
+              routePoints.push(startPoint);
+              routePoints.push(endPoint);
+              
+              console.log(`Analisando ${pointsOfInterest.length} POIs contra ${routePoints.length} pontos da rota`);
+              
+              // Filtragem baseada em distância real da rota
+              pointsOfInterest.forEach(poi => {
+                const poiPoint = {
+                  lat: parseFloat(poi.lat),
+                  lng: parseFloat(poi.lng)
+                };
                 
-                // Critério 2: POI está em uma cidade presente na rota
-                const inRelevantCity = Array.from(citiesInRoute).some(city => 
-                  poi.name.includes(city)
+                // Verificar se o POI está próximo da rota (dentro de um raio máximo)
+                const MAX_DISTANCE_KM = 5; // 5km de distância máxima da rota
+                
+                // Função para calcular distância entre dois pontos em km
+                function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+                  const R = 6371; // Raio da terra em km
+                  const dLat = deg2rad(lat2 - lat1);
+                  const dLon = deg2rad(lon2 - lon1);
+                  const a = 
+                    Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+                    Math.sin(dLon/2) * Math.sin(dLon/2); 
+                  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+                  const d = R * c;
+                  return d;
+                }
+                
+                function deg2rad(deg) {
+                  return deg * (Math.PI/180);
+                }
+                
+                // Encontrar o ponto mais próximo na rota
+                let minDistance = Infinity;
+                for (const routePoint of routePoints) {
+                  const distance = getDistanceFromLatLonInKm(
+                    poiPoint.lat, poiPoint.lng,
+                    routePoint.lat, routePoint.lng
+                  );
+                  
+                  if (distance < minDistance) {
+                    minDistance = distance;
+                  }
+                  
+                  // Otimização: sair do loop ao encontrar um ponto próximo o suficiente
+                  if (minDistance <= 0.5) break; // 500m é próximo o suficiente
+                }
+                
+                const isNearRoute = minDistance <= MAX_DISTANCE_KM;
+                
+                // Casos especiais - critérios adicionais para POIs importantes
+                const isSpecialCase = 
+                  // Casos para a rota Ribeirão Preto
+                  (hasRibeiraoPreto && poi.name.includes("Boa Esperança")) || 
+                  (hasRibeiraoPreto && poi.name.includes("Luís Antônio")) ||
+                  // Garantir que todos os pedágios do percurso sejam incluídos
+                  (poi.type === "toll" && minDistance <= MAX_DISTANCE_KM * 2);
+                
+                // Verificar se é um ponto capturado da API da Google
+                const isTollFromAPI = tollPointsFromAPI.some(tp => 
+                  getDistanceFromLatLonInKm(
+                    parseFloat(tp.lat), parseFloat(tp.lng),
+                    poiPoint.lat, poiPoint.lng
+                  ) < 1.0 // Menos de 1km de qualquer pedágio da API
                 );
                 
-                // Critério 3: Casos específicos conhecidos
-                const isSpecialCase = (hasRibeiraoPreto && poi.name.includes("Boa Esperança")) || 
-                                    (hasRibeiraoPreto && poi.name.includes("Luís Antônio"));
-                
-                const isRelevant = onRelevantRoad || inRelevantCity || isSpecialCase;
+                const isRelevant = isNearRoute || isSpecialCase || isTollFromAPI;
                 
                 // Informações para debug
                 if (isRelevant) {
                   console.log(`POI INCLUÍDO: ${poi.name} - Motivo: ${
-                    onRelevantRoad ? 'Rodovia relevante' : 
-                    inRelevantCity ? 'Cidade relevante' : 
-                    'Caso especial'
-                  }`);
+                    isNearRoute ? 'Próximo da rota' : 
+                    isSpecialCase ? 'Caso especial' : 
+                    isTollFromAPI ? 'Pedágio da API' : 'Outra razão'
+                  } (distância: ${minDistance.toFixed(2)}km)`);
+                  
+                  // Adicionar à lista de POIs relevantes
+                  relevantPOIs.push(poi);
                 } else if (poi.type === "toll" || poi.type === "weighing_station") {
-                  console.log(`POI EXCLUÍDO: ${poi.name} - Não relevante para esta rota`);
+                  console.log(`POI EXCLUÍDO: ${poi.name} - Não relevante para esta rota (distância: ${minDistance.toFixed(2)}km)`);
                 }
                 
-                return isRelevant;
+                // Não usar return, pois já adicionamos ao array relevantPOIs manualmente
               });
               
               // Adicionar os POIs relevantes à lista evitando duplicados
