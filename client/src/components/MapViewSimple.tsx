@@ -105,18 +105,62 @@ export default function MapViewSimple({
                   el.classList.add('map-scale-enhanced');
                 });
                 
+                // Transformar botões quadrados de zoom em botões redondos
+                const applyRoundedCorners = () => {
+                  // Aplicar cantos arredondados aos botões de zoom e outros controles
+                  const zoomButtons = document.querySelectorAll('.gm-bundled-control button');
+                  zoomButtons.forEach(btn => {
+                    const button = btn as HTMLElement;
+                    button.style.borderRadius = '50%';
+                    button.style.margin = '2px auto';
+                    button.style.display = 'flex';
+                    button.style.alignItems = 'center';
+                    button.style.justifyContent = 'center';
+                    button.style.width = '40px';
+                    button.style.height = '40px';
+                  });
+                };
+                
                 // Adicionar uma escala personalizada ao mapa
-                const scaleControl = document.createElement('div');
-                scaleControl.className = 'custom-scale-control';
-                scaleControl.innerHTML = `
-                  <div class="absolute bottom-4 right-4 flex flex-col items-center">
-                    <div class="flex items-center bg-white px-3 py-1.5 rounded-md shadow-md">
-                      <span class="text-xs font-medium text-gray-700 mr-2">100 m</span>
-                      <div class="h-0.5 w-16 bg-gradient-to-r from-gray-800 to-gray-400 rounded-full"></div>
+                const addCustomScale = () => {
+                  // Remover escala personalizada anterior caso exista
+                  const existingScale = document.querySelector('.custom-scale-control');
+                  if (existingScale) {
+                    existingScale.remove();
+                  }
+                  
+                  const scaleControl = document.createElement('div');
+                  scaleControl.className = 'custom-scale-control';
+                  scaleControl.innerHTML = `
+                    <div class="absolute bottom-4 right-4 flex flex-col items-center">
+                      <div class="flex items-center bg-white px-3 py-1.5 rounded-md shadow-md">
+                        <span class="text-xs font-medium text-gray-700 mr-2">100 m</span>
+                        <div class="h-0.5 w-16 bg-gradient-to-r from-gray-800 to-gray-400 rounded-full"></div>
+                      </div>
                     </div>
-                  </div>
-                `;
-                mapRef.current?.appendChild(scaleControl);
+                  `;
+                  mapRef.current?.appendChild(scaleControl);
+                };
+                
+                // Aplicar melhorias visuais
+                applyRoundedCorners();
+                addCustomScale();
+                
+                // Observar mudanças na DOM para replicar estilos em novos elementos
+                const observer = new MutationObserver((mutations) => {
+                  applyRoundedCorners();
+                });
+                
+                // Iniciar observação para mudanças na DOM
+                observer.observe(document.body, {
+                  childList: true,
+                  subtree: true
+                });
+                
+                // Adicionar evento para aplicar estilos após mudanças de zoom
+                newMap.addListener('zoom_changed', () => {
+                  setTimeout(applyRoundedCorners, 100);
+                });
               } else {
                 console.log("Nenhum elemento .gm-style encontrado para aplicar helper de zoom");
               }

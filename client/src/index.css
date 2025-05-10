@@ -89,6 +89,20 @@
   margin: 10px !important;
 }
 
+/* Escala personalizada no canto inferior direito */
+.custom-scale-control {
+  position: absolute;
+  bottom: 20px;
+  right: 10px;
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* Esconder a escala nativa do Google Maps que está próxima da nossa escala personalizada */
+.gm-style-cc[style*="bottom: 0px"][style*="right: 0px"] {
+  opacity: 0 !important;
+}
+
 /* Estilos para marcadores personalizados */
 .marker-label-centered {
   margin-top: -2px;
