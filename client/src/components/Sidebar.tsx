@@ -9,9 +9,6 @@ import { useToast } from "@/hooks/use-toast";
 interface SidebarProps {
   origin: Location | null;
   locations: Location[];
-  selectedVehicleType: string;
-  onVehicleSelect: (vehicleType: VehicleType) => void;
-  onOpenFuelSettings?: () => void; // Propriedade para abrir o diálogo de configurações
   onSelectLocation: (location: GeocodingResult | GeocodingResult[]) => void;
   onRemoveLocation: (index: number) => void;
   onMoveLocationUp: (index: number) => void;
@@ -29,9 +26,6 @@ interface SidebarProps {
 export default function Sidebar({
   origin,
   locations,
-  selectedVehicleType,
-  onVehicleSelect,
-  onOpenFuelSettings,
   onSelectLocation,
   onRemoveLocation,
   onMoveLocationUp,

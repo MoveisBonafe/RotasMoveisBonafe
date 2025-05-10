@@ -435,9 +435,6 @@ export default function Home() {
         <Sidebar
           origin={origin}
           locations={locations}
-          selectedVehicleType={selectedVehicleType}
-          onVehicleSelect={(vehicle) => setSelectedVehicleType(vehicle.type)}
-          onOpenFuelSettings={handleOpenFuelSettings}
           onSelectLocation={handleSelectLocation}
           onRemoveLocation={handleRemoveLocation}
           onMoveLocationUp={handleMoveLocationUp}
