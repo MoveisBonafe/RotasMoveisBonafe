@@ -90,6 +90,42 @@ export default function MapViewSimple({
         newDirectionsRenderer.setMap(newMap);
         setDirectionsRenderer(newDirectionsRenderer);
         
+        // Adicionar um evento para aplicar estilos adicionais aos controles após o mapa ser carregado completamente
+        google.maps.event.addListenerOnce(newMap, 'idle', () => {
+          // Aplicar melhorias aos controles do Google Maps
+          setTimeout(() => {
+            try {
+              // Aplicar estilos às escalas e outros componentes específicos do Google Maps
+              const elements = document.querySelectorAll('.gm-style');
+              if (elements.length > 0) {
+                console.log("Helper de zoom aplicado aos elementos do Google Maps");
+                
+                // Adicionar classes adicionais para aplicar estilos personalizados
+                document.querySelectorAll('.gm-style-cc').forEach(el => {
+                  el.classList.add('map-scale-enhanced');
+                });
+                
+                // Adicionar uma escala personalizada ao mapa
+                const scaleControl = document.createElement('div');
+                scaleControl.className = 'custom-scale-control';
+                scaleControl.innerHTML = `
+                  <div class="absolute bottom-4 right-4 flex flex-col items-center">
+                    <div class="flex items-center bg-white px-3 py-1.5 rounded-md shadow-md">
+                      <span class="text-xs font-medium text-gray-700 mr-2">100 m</span>
+                      <div class="h-0.5 w-16 bg-gradient-to-r from-gray-800 to-gray-400 rounded-full"></div>
+                    </div>
+                  </div>
+                `;
+                mapRef.current?.appendChild(scaleControl);
+              } else {
+                console.log("Nenhum elemento .gm-style encontrado para aplicar helper de zoom");
+              }
+            } catch (error) {
+              console.error("Erro ao aplicar estilos aos controles do mapa:", error);
+            }
+          }, 1000); // Pequeno delay para garantir que os elementos estejam renderizados
+        });
+        
         // Verificar se temos a origem para adicionar o marcador inicial
         if (origin) {
           console.log("ADICIONANDO MARCADOR DE ORIGEM NA INICIALIZAÇÃO:", origin);

@@ -12,6 +12,91 @@
   touch-action: manipulation !important;
 }
 
+/* Melhorias no estilo dos controles nativos do Google Maps */
+/* Botões de zoom - Mais modernos e elegantes */
+.gm-bundled-control {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  margin: 10px !important;
+}
+
+.gm-bundled-control button {
+  transition: background-color 0.2s ease !important;
+}
+
+.gm-bundled-control button:hover {
+  background-color: #f5f5f5 !important;
+}
+
+/* Controles de tipo de mapa (Mapa/Satélite) */
+.gm-style-mtc {
+  border-radius: 6px !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+  margin-top: 10px !important;
+  margin-right: 10px !important;
+}
+
+.gm-style-mtc button {
+  padding: 8px 12px !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 14px !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.gm-style-mtc button:hover {
+  background-color: #f5f5f5 !important;
+}
+
+/* Menu dropdown para opções de tipo de mapa */
+.gm-style-mtc ul {
+  border-radius: 6px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  padding: 4px 0 !important;
+  margin-top: 5px !important;
+}
+
+.gm-style-mtc li {
+  padding: 8px 12px !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.gm-style-mtc li:hover {
+  background-color: #f5f5f5 !important;
+}
+
+/* Botão de Street View */
+.gm-svpc {
+  border-radius: 50% !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+  overflow: hidden !important;
+  margin: 10px !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.gm-svpc:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Escala do mapa */
+.gm-style-cc {
+  background-color: white !important;
+  border-radius: 4px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1) !important;
+  padding: 2px 6px !important;
+  margin: 10px !important;
+}
+
+/* Estilos para marcadores personalizados */
+.marker-label-centered {
+  margin-top: -2px;
+  margin-left: 0px;
+  text-align: center;
+  font-weight: bold;
+}
+
 /* Estilos para impressão de relatórios */
 @media print {
   body {
