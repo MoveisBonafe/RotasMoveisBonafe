@@ -157,16 +157,40 @@ export default function MapViewSimple({
             directionsRenderer.setDirections(result);
             
             // Adicionar marcadores de origem e destino explicitamente
-            // Isso é necessário porque suprimimos os marcadores padrão do DirectionsRenderer
-            addRouteMarkers(calculatedRoute || [origin, ...waypoints.map(w => ({ 
-              id: 0,
-              name: w.location.toString(),
-              address: "",
-              lat: w.location.lat().toString(),
-              lng: w.location.lng().toString(),
-              isOrigin: false,
-              cep: null
-            }))]);
+            console.log("Rota calculada, adicionando marcadores de rota manualmente!");
+            
+            // Criar array de pontos para passar para a função addRouteMarkers
+            const routePoints: Location[] = [];
+            
+            // Adicionar origem
+            if (origin) {
+              routePoints.push(origin);
+            }
+            
+            // Se temos calculatedRoute, usá-los (excluindo origem que já foi adicionada)
+            if (calculatedRoute && calculatedRoute.length > 1) {
+              routePoints.push(...calculatedRoute.slice(1));
+            } 
+            // Senão, usamos os waypoints
+            else if (waypoints && waypoints.length > 0) {
+              waypoints.forEach((wp, idx) => {
+                if (wp && wp.location) {
+                  routePoints.push({
+                    id: idx + 1,
+                    name: `Ponto ${idx + 1}`,
+                    address: "",
+                    lat: wp.location.lat().toString(),
+                    lng: wp.location.lng().toString(),
+                    isOrigin: false,
+                    cep: null
+                  });
+                }
+              });
+            }
+            
+            console.log("Adicionando marcadores para pontos:", routePoints);
+            // Chamar a função para adicionar marcadores
+            addRouteMarkers(routePoints);
             
             // Processar pedágios e outras informações da API Routes Preferred
             try {
