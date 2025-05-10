@@ -497,7 +497,7 @@ export default function MapViewSimple({
               
               console.log(`Analisando ${pointsOfInterest.length} POIs contra ${routePoints.length} pontos da rota`);
               
-              // Filtragem baseada em distância real da rota
+              // Filtragem baseada em distância real da rota e regras de negócio específicas
               pointsOfInterest.forEach(poi => {
                 const poiPoint = {
                   lat: parseFloat(poi.lat),
@@ -511,6 +511,18 @@ export default function MapViewSimple({
                 // Pedágios na SP-255 (rota para Ribeirão Preto) podem ter um raio maior
                 if (poi.type === "toll" && poi.roadName === "SP-255" && hasRibeiraoPreto) {
                   MAX_DISTANCE_KM = 3; // Aumentar raio para capturar pedágios importantes na rota SP-255
+                }
+                
+                // Para a rota Dois Córregos -> Ribeirão Preto, SEMPRE incluir os pedágios obrigatórios
+                // antes mesmo de analisar a distância
+                if (hasRibeiraoPreto && poi.type === "toll" && poi.roadName === "SP-255") {
+                  const mandatoryTolls = ["Guatapará", "Boa Esperança", "Ribeirão Preto"];
+                  
+                  // Se o POI é um dos pedágios obrigatórios na SP-255
+                  if (mandatoryTolls.some(name => poi.name.includes(name))) {
+                    console.log(`POI INCLUÍDO (regra especial): ${poi.name} - Pedágio obrigatório na SP-255`);
+                    return true; // Adicionar ao mapa
+                  }
                 }
                 
                 // Função para calcular distância entre dois pontos em km
@@ -559,25 +571,26 @@ export default function MapViewSimple({
                 
                 // 2. Lógica específica para rotas com destino a Ribeirão Preto
                 if (hasRibeiraoPreto) {
-                  // Pedágios obrigatórios na SP-255 para rota de Ribeirão Preto
-                  if (poi.roadName === "SP-255" && poi.type === "toll") {
-                    // Para pedágios específicos na rota, aumentar raio de detecção
+                  // REGRA FORÇADA: Para a rota SP-255 (Dois Córregos -> Ribeirão Preto), SEMPRE incluir estes 3 pedágios
+                  if (poi.type === "toll" && poi.roadName === "SP-255") {
+                    // Pedágios OBRIGATÓRIOS - estes 3 sempre são incluídos para esta rota específica
                     if (poi.name.includes("Guatapará") || 
                         poi.name.includes("Boa Esperança") || 
                         poi.name.includes("Ribeirão Preto")) {
-                      
-                      console.log(`POI INCLUÍDO: ${poi.name} - Motivo: Caso especial (distância: ${minDistance.toFixed(2)}km)`);
+                        
+                      // Pedágios garantidos na rota Ribeirão Preto
+                      console.log(`POI INCLUÍDO: ${poi.name} - Motivo: Pedágio obrigatório na rota SP-255 (distância: ${minDistance.toFixed(2)}km)`);
                       return true;
                     }
                   }
                   
-                  // Balanças na rota para Ribeirão Preto - verificar apenas distância específica
+                  // Balanças na rota SP-255 - incluir apenas quando estiverem realmente próximas
                   if (poi.type === "weighing_station" && poi.roadName === "SP-255") {
-                    // Balança de Luís Antônio só inclui se estiver muito próxima
+                    // Balança de Luís Antônio - critério mais restritivo
                     if (poi.name.includes("Luís Antônio") || poi.name.includes("km 150")) {
-                      // Só incluir se a distância for menor que 5km
-                      const isClose = minDistance <= 5;
-                      if (isClose) {
+                      // Só incluir se a distância for menor que 3km
+                      const isRelevant = minDistance <= 3;
+                      if (isRelevant) {
                         console.log(`POI INCLUÍDO: ${poi.name} - Motivo: Balança relevante (distância: ${minDistance.toFixed(2)}km)`);
                         return true;
                       }

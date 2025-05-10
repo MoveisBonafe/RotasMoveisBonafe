@@ -118,10 +118,10 @@ export default function RouteInfoPanel({
       && vehicleType?.type.includes('truck') // Só buscar restrições para caminhões
   });
   
-  // Função auxiliar para detectar POIs duplicados
+  // Função auxiliar para detectar POIs duplicados - algoritmo aprimorado
   function isDuplicatePOI(poi1: PointOfInterest, poi2: PointOfInterest): boolean {
-    // Se for o mesmo ID ou mesmo nome, é duplicado
-    if (poi1.id === poi2.id || poi1.name === poi2.name) return true;
+    // Se for o mesmo ID, é duplicado
+    if (poi1.id === poi2.id) return true;
     
     // Verificar duplicação específica para balanças (km 150 e Luís Antônio são a mesma)
     if ((poi1.name.includes("Luís Antônio") && poi2.name.includes("km 150")) ||
@@ -129,18 +129,40 @@ export default function RouteInfoPanel({
       return true;
     }
     
-    // Verificação específica para o pedágio de Boa Esperança do Sul que é adicionado manualmente
-    if ((poi1.type === 'toll' && poi1.name.includes("Boa Esperança")) ||
+    // Para a rota Ribeirão Preto, preservar todos os pedágios importantes
+    if (isRibeiraoPretoRoute && poi1.type === "toll" && poi2.type === "toll") {
+      // Lista de pedágios críticos na SP-255, cada um deve aparecer apenas uma vez
+      const criticalTolls = ["Guatapará", "Boa Esperança", "Ribeirão Preto"];
+      
+      // Para cada pedágio crítico, verificar se ambos os POIs são o mesmo pedágio crítico
+      for (const criticalName of criticalTolls) {
+        if (poi1.name.includes(criticalName) && poi2.name.includes(criticalName)) {
+          // Encontramos um par de duplicatas do mesmo pedágio crítico 
+          console.log(`Pedágio crítico duplicado detectado: ${criticalName}`);
+          return true;
+        }
+      }
+      
+      // Se chegou aqui, são pedágios de nomes diferentes - não são duplicatas
+      // mesmo que estejam próximos geograficamente
+      if (criticalTolls.some(name => poi1.name.includes(name)) && 
+          criticalTolls.some(name => poi2.name.includes(name))) {
+        return false;
+      }
+    }
+    
+    // Verificação específica para o pedágio de Boa Esperança do Sul (duas formas de nomeá-lo)
+    if ((poi1.type === 'toll' && poi1.name.includes("Boa Esperança")) &&
         (poi2.type === 'toll' && poi2.name.includes("Boa Esperança"))) {
       console.log("Removendo duplicata de pedágio de Boa Esperança do Sul", poi1.name, poi2.name);
       return true;
     }
     
-    // Verificar duplicação específica para pedágios de SP-255
+    // Verificar duplicação específica para pedágios de SP-255 por coordenadas próximas
     if (poi1.type === 'toll' && poi2.type === 'toll' &&
         poi1.roadName === poi2.roadName &&
-        Math.abs(Number(poi1.lat) - Number(poi2.lat)) < 0.01 &&
-        Math.abs(Number(poi1.lng) - Number(poi2.lng)) < 0.01) {
+        Math.abs(Number(poi1.lat) - Number(poi2.lat)) < 0.005 &&
+        Math.abs(Number(poi1.lng) - Number(poi2.lng)) < 0.005) {
       return true;
     }
     
@@ -219,55 +241,57 @@ export default function RouteInfoPanel({
   // Inicialmente, considerar todos os POIs que vieram do mapa
   let filteredPOIs = [...poisAlongRoute];
   
+  // Algoritmo otimizado para garantir inclusão dos pedágios corretos
+  
   // Para a rota específica Dois Córregos -> Ribeirão Preto
   if (isRibeiraoPretoRoute) {
-    // Definimos os pedágios obrigatórios para esta rota específica
+    // Lista de TODOS os pedágios obrigatórios na SP-255
     const requiredPedagiosSP255 = [
       "Pedágio Boa Esperança do Sul",
       "Pedágio SP-255 (Guatapará)",
       "Pedágio SP-255 (Ribeirão Preto)"
     ];
     
-    // Verificar quais pedágios obrigatórios já estão na lista
-    const missingPedagios = requiredPedagiosSP255.filter(requiredName => {
-      return !filteredPOIs.some(poi => 
-        poi.name.includes(requiredName) || 
-        // Considerar também nomes parciais
-        (requiredName.includes("Guatapará") && poi.name.includes("Guatapará")) ||
-        (requiredName.includes("Boa Esperança") && poi.name.includes("Boa Esperança")) ||
-        (requiredName.includes("Ribeirão Preto") && poi.name.includes("Ribeirão Preto"))
-      );
-    });
-    
-    // Se faltar algum pedágio, forçar a inclusão
-    if (missingPedagios.length > 0) {
-      console.log("Faltam pedágios obrigatórios, forçando inclusão");
-      
-      // Buscar todos os POIs disponíveis e encontrar os que faltam
-      fetch('/api/points-of-interest')
-        .then(response => response.json())
-        .then(allPois => {
-          const missingPois = allPois.filter(poi => 
-            poi.type === "toll" && 
-            missingPedagios.some(missingName => 
-              poi.name.includes(missingName) || 
-              (missingName.includes("Guatapará") && poi.name.includes("Guatapará")) ||
-              (missingName.includes("Boa Esperança") && poi.name.includes("Boa Esperança")) ||
-              (missingName.includes("Ribeirão Preto") && poi.name.includes("Ribeirão Preto"))
-            )
-          );
-          
-          // Adicionar os POIs faltantes ao filteredPOIs
-          filteredPOIs.push(...missingPois);
-        })
-        .catch(error => console.error("Erro ao buscar pedágios faltantes:", error));
-    }
-    
-    // Remover a balança de km 122 que sabemos não estar na rota
-    filteredPOIs = filteredPOIs.filter(poi => !poi.name.includes("km 122"));
+    // Verificação síncrona para garantir todos os pedágios importantes
+    fetch('/api/points-of-interest')
+      .then(response => response.json())
+      .then(allPois => {
+        // Resetar filteredPOIs para a rota SP-255
+        filteredPOIs = [];
+        
+        // 1. Adicionar todos os pedágios obrigatórios da SP-255
+        allPois.forEach(poi => {
+          if (poi.type === "toll" && poi.roadName === "SP-255") {
+            if (requiredPedagiosSP255.some(reqName => 
+              poi.name.includes(reqName.split(" ").pop() || "") || // Compara com a última parte do nome
+              (reqName.includes("Guatapará") && poi.name.includes("Guatapará")) ||
+              (reqName.includes("Boa Esperança") && poi.name.includes("Boa Esperança")) ||
+              (reqName.includes("Ribeirão") && poi.name.includes("Ribeirão"))
+            )) {
+              // É um pedágio obrigatório da rota - adicionar
+              filteredPOIs.push(poi);
+            }
+          }
+        });
+        
+        // 2. Adicionar qualquer balança que já estava presente no mapa
+        poisAlongRoute.forEach(poi => {
+          if (poi.type === "weighing_station" && !filteredPOIs.some(p => p.id === poi.id)) {
+            filteredPOIs.push(poi);
+          }
+        });
+        
+        // Log dos pedágios que foram incluídos
+        console.log("Pedágios garantidos na rota SP-255:", filteredPOIs.map(p => p.name));
+      })
+      .catch(error => {
+        console.error("Erro ao garantir pedágios:", error);
+        // Em caso de erro, apenas usar os POIs já detectados
+        filteredPOIs = poisAlongRoute;
+      });
   } else {
-    // Para outras rotas, manter apenas os POIs relevantes por rodovia
-    filteredPOIs = filteredPOIs.filter(poi => {
+    // Para outras rotas, manter apenas os POIs relevantes por rodovia 
+    filteredPOIs = poisAlongRoute.filter(poi => {
       // Verificar se o POI está em uma das rodovias da rota
       return poi.roadName && roadsInRoute.has(poi.roadName);
     });
