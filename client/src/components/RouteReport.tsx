@@ -225,7 +225,14 @@ export default function RouteReport({
           <h3 className="text-xs font-semibold mb-1 text-primary">Custos Estimados</h3>
           <div className="grid grid-cols-2 gap-1">
             <div className="text-gray-600">Pedágios:</div>
-            <div className="font-medium">{formatCurrency(routeInfo.tollCost || 0)}</div>
+            <div className="font-medium">
+              {formatCurrency(routeInfo.tollCost || 0)}
+              {vehicleType && vehicleType.type !== 'car' && (
+                <span className="text-xxs text-gray-500 ml-1">
+                  ({(vehicleType.tollMultiplier / 100).toFixed(1)}x)
+                </span>
+              )}
+            </div>
             
             <div className="text-gray-600">Combustível:</div>
             <div>
@@ -237,7 +244,7 @@ export default function RouteReport({
             
             <div className="text-gray-600 font-semibold border-t border-gray-100 pt-1 mt-1">Total:</div>
             <div className="font-bold border-t border-gray-100 pt-1 mt-1 text-primary">
-              {formatCurrency(routeInfo.totalCost || (routeInfo.tollCost || 0) + (routeInfo.fuelCost || 0))}
+              {formatCurrency(routeInfo.totalCost)}
             </div>
           </div>
         </div>
@@ -483,7 +490,15 @@ export default function RouteReport({
           </div>
         )}
         
-        <div className="text-center text-xs text-gray-400 mt-4 print:mt-8">
+        {vehicleType && vehicleType.type !== 'car' && (
+          <div className="text-center text-xxs text-gray-400 mt-2">
+            * Valor do pedágio ajustado para {vehicleType.name.toLowerCase()}: 
+            {vehicleType.type === 'motorcycle' ? ' 50% do valor para carros.' : 
+             vehicleType.type === 'truck1' ? ' 200% do valor para carros.' : 
+             vehicleType.type === 'truck2' ? ' 300% do valor para carros.' : ''}
+          </div>
+        )}
+        <div className="text-center text-xs text-gray-400 mt-2 print:mt-8">
           Gerado em {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}
         </div>
       </div>
