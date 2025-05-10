@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Location, VehicleType, GeocodingResult, PointOfInterest } from "@/lib/types";
-import MapViewSimple from "@/components/MapViewSimple";
+import MapViewBasic from "@/components/MapViewBasic";
 import Sidebar from "@/components/Sidebar";
 import DateRangeSelector from "@/components/DateRangeSelector";
 import AddLocationModal from "@/components/AddLocationModal";
@@ -438,13 +438,13 @@ export default function Home() {
             </div>
           )}
           
-          {/* Google Maps mostrando apenas os POIs no percurso da rota incluindo pedágios da API Routes Preferred */}
-          <MapViewSimple 
+          {/* Google Maps mostrando marcadores e calculando rota apenas quando solicitado */}
+          <MapViewBasic 
             origin={origin}
             waypoints={locations}
             calculatedRoute={calculatedRoute}
             onRouteCalculated={handleRouteCalculated}
-            pointsOfInterest={poisOnRoute} // IMPORTANTE: Usar APENAS os POIs filtrados ao longo da rota
+            pointsOfInterest={poisOnRoute}
           />
           
           {/* Removidos logs de debug que não eram mais necessários */}
