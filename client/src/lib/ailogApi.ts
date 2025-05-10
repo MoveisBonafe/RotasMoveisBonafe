@@ -4,11 +4,17 @@
  * 
  * ATENÇÃO: Esta é a ÚNICA fonte de pedágios e pontos de interesse autorizada no sistema.
  * Não usar nenhuma outra fonte de pedágios para evitar conflitos e informações imprecisas.
+ * 
+ * DOCUMENTAÇÃO: Este arquivo contém a implementação da integração com a API AILOG
+ * para identificação de pedágios nas rodovias brasileiras. Todas as funções deste arquivo
+ * são usadas pelo MapViewSimple.tsx para exibir os pedágios no mapa.
  */
 
 import { PointOfInterest, Location } from './types';
 
 // Credenciais para a API AILOG
+// Em ambiente de produção, este valor seria configurado em variáveis de ambiente
+// No ambiente de desenvolvimento, usamos uma chave de demonstração
 const AILOG_API_KEY = import.meta.env.VITE_AILOG_API_KEY || 'demo-key';
 const AILOG_API_BASE = 'https://api.ailog.com.br/v1';
 
@@ -65,12 +71,18 @@ export async function fetchTollsFromAilog(
   // Verificar se estamos em modo de simulação (desenvolvendo localmente)
   // Isso é essencial para testes sem acesso real à API
   const lowercaseOrigin = origin.name.toLowerCase();
-  const isSimulationMode = brasileiroCities.some(city => lowercaseOrigin.includes(city));
+  
+  // SEMPRE USAR MODO DE SIMULAÇÃO até termos acesso à API real
+  // Isso garante que os pedágios sejam exibidos corretamente no mapa durante o desenvolvimento
+  const isSimulationMode = true; // brasileiroCities.some(city => lowercaseOrigin.includes(city));
 
-  console.log(`AILOG API ${isSimulationMode ? 'Modo SIMULAÇÃO' : 'Modo PRODUÇÃO'}`);
+  console.log(`AILOG API ${isSimulationMode ? 'Modo SIMULAÇÃO ATIVO' : 'Modo PRODUÇÃO'}`);
+  console.log(`Rota: ${origin.name} -> ${destinations.map(d => d.name).join(' -> ')}`);
 
-  // Se estamos em ambiente de teste/simulação e a rota é entre cidades brasileiras conhecidas
+  // Em ambiente de desenvolvimento ou se a rota inclui cidades brasileiras conhecidas,
+  // usar dados simulados precisos para demonstração
   if (isSimulationMode) {
+    console.log("Usando dados de pedágio simulados da AILOG para demonstração");
     return getMockedTollPointsForRoute(origin, destinations, vehicleType);
   }
 
