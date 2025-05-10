@@ -6,6 +6,7 @@ interface MapViewProps {
   waypoints: Location[];
   calculatedRoute: Location[] | null;
   onRouteCalculated?: (result: any) => void;
+  pointsOfInterest?: any[]; // Adicionar pontos de interesse (pedágios, balanças)
 }
 
 // Definições simplificadas para TypeScript
@@ -22,7 +23,8 @@ const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string;
 export default function MapViewNative({
   origin,
   waypoints,
-  calculatedRoute
+  calculatedRoute,
+  pointsOfInterest = []
 }: MapViewProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<any>(null);
