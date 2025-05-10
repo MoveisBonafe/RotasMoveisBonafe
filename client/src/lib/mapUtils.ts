@@ -283,15 +283,8 @@ export function decodePolyline(encoded: string): { lat: number, lng: number }[] 
  * @returns Promise com array de PointOfInterest representando pedágios
  */
 export async function findTollsUsingGooglePlaces(map: any, route: any): Promise<PointOfInterest[]> {
-  // Verificar se temos o que precisamos
-  if (!map || !route || !route.routes || route.routes.length === 0) {
-    console.error("Google Places: Dados insuficientes para buscar pedágios");
-    return [];
-  }
-  
-  // Verificar se a API do Google Maps está carregada
-  if (!window.google || !window.google.maps || !window.google.maps.places) {
-    console.error("Google Maps Places API não está disponível");
+  if (!map || !route || !route.routes || route.routes.length === 0 || !window.google) {
+    console.log("Google Places: Dados insuficientes para buscar pedágios");
     return [];
   }
 
