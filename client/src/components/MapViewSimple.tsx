@@ -156,6 +156,18 @@ export default function MapViewSimple({
           if (status === google.maps.DirectionsStatus.OK) {
             directionsRenderer.setDirections(result);
             
+            // Adicionar marcadores de origem e destino explicitamente
+            // Isso é necessário porque suprimimos os marcadores padrão do DirectionsRenderer
+            addRouteMarkers(calculatedRoute || [origin, ...waypoints.map(w => ({ 
+              id: 0,
+              name: w.location.toString(),
+              address: "",
+              lat: w.location.lat().toString(),
+              lng: w.location.lng().toString(),
+              isOrigin: false,
+              cep: null
+            }))]);
+            
             // Processar pedágios e outras informações da API Routes Preferred
             try {
               console.log("Processando resultado completo da API Routes Preferred:");
