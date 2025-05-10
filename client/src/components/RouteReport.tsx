@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Location, PointOfInterest, CityEvent, TruckRestriction } from '@/lib/types';
 import { formatDistance, formatDuration, formatCurrency } from '@/lib/mapUtils';
 import { extractCityFromAddress } from '@/lib/utils';
@@ -43,6 +43,7 @@ export default function RouteReport({
   onRouteNameChange = () => {}
 }: RouteReportProps) {
   const reportRef = useRef<HTMLDivElement>(null);
+  const [isEditingName, setIsEditingName] = useState(false);
 
   // Extrair cidades dos destinos para consultas usando a função extractCityFromAddress
   const destinationCityNames = calculatedRoute 
@@ -191,38 +192,13 @@ export default function RouteReport({
     // Adicionar modo de transporte
     googleMapsUrl += "&travelmode=driving";
     
-    // Criar texto do relatório para compartilhar
+    // Criar texto do relatório para compartilhar - simplificado
     let text = routeName 
       ? `📍 *${routeName}* 📍\n\n` 
-      : "📍 *Relatório de Rota* 📍\n\n";
-    
-    // Adicionar origem
-    text += `*Origem:* ${origin.name || 'Não definida'}\n\n`;
-    
-    // Adicionar destinos
-    if (calculatedRoute.length > 0) {
-      text += "*Destinos:*\n";
-      calculatedRoute.slice(1).forEach((location, index) => {
-        const locationName = location.name.startsWith("R.") || location.name.startsWith("Av.") 
-          ? extractCityFromAddress(location.address)
-          : location.name;
-        text += `${index + 1}. ${locationName}\n`;
-      });
-      text += "\n";
-    }
-    
-    // Adicionar veículo
-    if (vehicleType) {
-      text += `*Veículo:* ${vehicleType.name}\n\n`;
-    }
-    
-    // Adicionar datas se disponíveis
-    if (startDate && endDate) {
-      text += `*Data de viagem:* ${startDate === endDate ? startDate : `${startDate} - ${endDate}`}\n\n`;
-    }
+      : "📍 *Rota de Entrega* 📍\n\n";
     
     // Adicionar link para abrir no Google Maps
-    text += `*Abrir rota no Google Maps:*\n${googleMapsUrl}\n\n`;
+    text += `${googleMapsUrl}`;
     
     // Compartilhar via WhatsApp
     const whatsappURL = `https://wa.me/?text=${encodeURIComponent(text)}`;
@@ -317,14 +293,38 @@ export default function RouteReport({
           <h3 className="text-xs font-semibold mb-1 text-primary">Informações da Rota</h3>
           <div className="grid grid-cols-2 gap-x-2 gap-y-1">
             <div className="text-gray-600">Nome da Rota:</div>
-            <div className="font-medium">
-              <input
-                type="text"
-                value={routeName}
-                onChange={(e) => onRouteNameChange(e.target.value)}
-                placeholder="Ex: Rota de Entrega Semanal"
-                className="w-full px-1 py-0.5 text-xs border border-gray-300 rounded"
-              />
+            <div className="font-medium flex items-center gap-1">
+              <div className="flex-1">
+                {isEditingName ? (
+                  <input
+                    type="text"
+                    value={routeName}
+                    onChange={(e) => onRouteNameChange(e.target.value)}
+                    placeholder="Ex: Rota de Entrega Semanal"
+                    className="w-full px-1 py-0.5 text-xs border border-gray-300 rounded"
+                    autoFocus
+                  />
+                ) : (
+                  <div className="py-0.5 px-1">
+                    {routeName || "Sem nome"}
+                  </div>
+                )}
+              </div>
+              <button 
+                onClick={() => setIsEditingName(!isEditingName)} 
+                className="text-primary hover:text-primary-dark"
+                title={isEditingName ? "Salvar" : "Editar"}
+              >
+                {isEditingName ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                )}
+              </button>
             </div>
             
             <div className="text-gray-600">Origem:</div>
