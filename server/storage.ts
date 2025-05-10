@@ -246,83 +246,15 @@ export class MemStorage implements IStorage {
   
   // City events methods
   async getCityEvents(startDate?: string, endDate?: string, cities?: string[]): Promise<CityEvent[]> {
-    let events = Array.from(this.cityEvents.values());
-    
-    if (cities && cities.length > 0) {
-      events = events.filter(event => 
-        cities.some(city => event.cityName.toLowerCase().includes(city.toLowerCase()))
-      );
-    }
-    
-    if (startDate && endDate) {
-      events = events.filter(event => {
-        const eventStart = new Date(event.startDate);
-        const eventEnd = new Date(event.endDate);
-        const filterStart = new Date(startDate);
-        const filterEnd = new Date(endDate);
-        
-        return (eventStart <= filterEnd && eventEnd >= filterStart);
-      });
-    }
-    
-    return events;
+    // Esse método foi desabilitado para evitar conflitos entre dados do storage.ts e dados do routes.ts
+    // Todos os eventos são definidos diretamente no routes.ts para garantir consistência
+    return [];
   }
   
   async seedCityEvents(): Promise<CityEvent[]> {
-    if (this.cityEvents.size > 0) {
-      return Array.from(this.cityEvents.values());
-    }
-    
-    const events: Omit<CityEvent, 'id'>[] = [
-      {
-        cityName: "Jaú",
-        eventName: "Festa da Cidade",
-        eventType: "anniversary",
-        startDate: "2023-08-15",
-        endDate: "2023-08-15",
-        description: "Aniversário da cidade com eventos no centro"
-      },
-      {
-        cityName: "Barra Bonita",
-        eventName: "Feriado Municipal",
-        eventType: "holiday",
-        startDate: "2023-08-20",
-        endDate: "2023-08-20",
-        description: "Dia do padroeiro da cidade"
-      },
-      {
-        cityName: "Dois Córregos",
-        eventName: "Festival de Inverno",
-        eventType: "festival",
-        startDate: "2023-07-10",
-        endDate: "2023-07-20",
-        description: "Festival cultural com shows e gastronomia"
-      },
-      {
-        cityName: "Pederneiras",
-        eventName: "Aniversário da Cidade",
-        eventType: "anniversary",
-        startDate: "2023-09-22",
-        endDate: "2023-09-22",
-        description: "Comemorações pelo aniversário da cidade"
-      },
-      {
-        cityName: "Brotas",
-        eventName: "Festival de Ecoturismo",
-        eventType: "festival",
-        startDate: "2023-10-05",
-        endDate: "2023-10-10",
-        description: "Eventos de ecoturismo e aventura na natureza"
-      }
-    ];
-    
-    events.forEach(event => {
-      const id = this.eventId++;
-      const cityEvent: CityEvent = { ...event, id };
-      this.cityEvents.set(id, cityEvent);
-    });
-    
-    return Array.from(this.cityEvents.values());
+    // Esse método foi desabilitado para evitar conflitos entre dados do storage.ts e dados do routes.ts
+    // Todos os eventos são definidos diretamente no routes.ts para garantir consistência
+    return [];
   }
   
   // Truck restrictions methods
