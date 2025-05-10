@@ -1,7 +1,25 @@
 import { Location, VehicleType, PointOfInterest, RouteInfo } from "./types";
 
-// Average fuel price in reais
-const AVERAGE_FUEL_PRICE = 5.0;
+// Default fuel price in reais
+const DEFAULT_FUEL_PRICE = 5.0;
+
+// Global fuel price that can be customized
+let currentFuelPrice = DEFAULT_FUEL_PRICE;
+
+// Function to get the current fuel price
+export function getFuelPrice(): number {
+  return currentFuelPrice;
+}
+
+// Function to set a custom fuel price
+export function setFuelPrice(price: number): void {
+  currentFuelPrice = price > 0 ? price : DEFAULT_FUEL_PRICE;
+}
+
+// Function to reset the fuel price to default
+export function resetFuelPrice(): void {
+  currentFuelPrice = DEFAULT_FUEL_PRICE;
+}
 
 /**
  * Calculate toll cost based on vehicle type and route
@@ -53,8 +71,8 @@ export function calculateFuelCost(
   // fuelEfficiency is stored as km/liter * 10 for precision
   const fuelConsumptionLiters = distanceInKm / (vehicleType.fuelEfficiency / 10);
   
-  // Calculate cost in cents
-  const costInCents = Math.round(fuelConsumptionLiters * AVERAGE_FUEL_PRICE * 100);
+  // Calculate cost in cents using the current fuel price
+  const costInCents = Math.round(fuelConsumptionLiters * currentFuelPrice * 100);
   
   return costInCents;
 }

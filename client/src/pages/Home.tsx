@@ -6,6 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import DateRangeSelector from "@/components/DateRangeSelector";
 import AddLocationModal from "@/components/AddLocationModal";
 import RouteInfoPanel from "@/components/RouteInfoPanel";
+import FuelSettingsDialog from "@/components/FuelSettingsDialog";
 import { useRouteOptimization } from "@/hooks/useRouteOptimization";
 import { useToast } from "@/hooks/use-toast";
 
@@ -17,6 +18,8 @@ export default function Home() {
   const [selectedVehicleType, setSelectedVehicleType] = useState<string>("truck1");
   const [vehicleTypeObj, setVehicleTypeObj] = useState<VehicleType | null>(null);
   const [isAddLocationModalOpen, setIsAddLocationModalOpen] = useState(false);
+  // Estado para o diálogo de configurações de combustível
+  const [isFuelSettingsOpen, setIsFuelSettingsOpen] = useState(false);
   // Dados para filtragem por data
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);

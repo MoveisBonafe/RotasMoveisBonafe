@@ -196,8 +196,8 @@ export class MemStorage implements IStorage {
       {
         name: "Pedágio SP-255 (Brotas)",
         type: "toll",
-        lat: "-22.2736",
-        lng: "-48.1427",
+        lat: "-22.2982",
+        lng: "-48.1157",
         cost: 1100, // R$11.00 (preço base para carros)
         roadName: "SP-255",
         restrictions: null
@@ -205,8 +205,8 @@ export class MemStorage implements IStorage {
       {
         name: "Pedágio SP-255 (Ribeirão Preto)",
         type: "toll",
-        lat: "-21.2864",
-        lng: "-47.8352",
+        lat: "-21.2112",
+        lng: "-47.7875",
         cost: 950, // R$9.50 (preço base para carros)
         roadName: "SP-255",
         restrictions: null
@@ -241,8 +241,8 @@ export class MemStorage implements IStorage {
       {
         name: "Balança SP-255 (km 122)",
         type: "weighing_station",
-        lat: "-22.1635",
-        lng: "-48.2122",
+        lat: "-22.2153",
+        lng: "-48.1887",
         cost: null,
         restrictions: "Veículos acima de 1 eixo",
         roadName: "SP-255"
