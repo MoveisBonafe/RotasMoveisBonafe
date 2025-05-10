@@ -254,7 +254,7 @@ export function decodePolyline(encoded: string): { lat: number, lng: number }[] 
 
 /**
  * Extrai informações de pedágio diretamente da resposta da API do Google Maps
- * Esta função é mais precisa porque usa os dados exatos da API
+ * IMPORTANTE: Usa EXCLUSIVAMENTE as coordenadas fornecidas pela API, sem qualquer alteração
  */
 export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] {
   if (!directionsResult || !directionsResult.routes || directionsResult.routes.length === 0) {
@@ -268,15 +268,29 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
   // ID base para os pedágios
   let tollId = 10000;
   
+  // IMPORTANTE: Usar apenas a propriedade toll_info.toll_points da API
+  console.log("Extraindo pedágios EXCLUSIVAMENTE da API Routes Preferred");
+  console.log("Sem manipulação de coordenadas");
+  
   // Processar cada trecho (leg) da rota
   legs.forEach((leg: any, legIndex: number) => {
     // Verificar se há informações de pedágio neste trecho
     if (leg.toll_info && leg.toll_info.toll_points && leg.toll_info.toll_points.length > 0) {
+      console.log(`Encontrados ${leg.toll_info.toll_points.length} pedágios no trecho ${legIndex + 1}`);
+      
       // Processar cada ponto de pedágio informado pela API
       leg.toll_info.toll_points.forEach((tollPoint: any, tollIndex: number) => {
         if (tollPoint.location) {
           // Obter o nome do pedágio, ou criar um nome padrão
           const tollName = tollPoint.name || `Pedágio ${legIndex + 1}.${tollIndex + 1}`;
+          
+          // IMPORTANTE: Usar as coordenadas EXATAS da API
+          const lat = tollPoint.location.lat.toString();
+          const lng = tollPoint.location.lng.toString();
+          
+          // LOG detalhado para debug
+          console.log(`Pedágio original da API: ${tollName}`);
+          console.log(`Coordenadas EXATAS: ${lat}, ${lng}`);
           
           // Obter custo do pedágio
           let cost = 0;
@@ -284,15 +298,15 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
             cost = Math.round(tollPoint.cost.value * 100); // converter para centavos
           }
           
-          // Criar um objeto para este pedágio
+          // Criar um objeto para este pedágio usando APENAS os dados da API
           const poi: PointOfInterest = {
             id: tollId++,
             name: tollName,
-            lat: tollPoint.location.lat.toString(),
-            lng: tollPoint.location.lng.toString(),
+            lat: lat, // EXATAMENTE como fornecido pela API
+            lng: lng, // EXATAMENTE como fornecido pela API
             type: 'toll',
             cost: cost,
-            roadName: `Trecho ${legIndex + 1}`,
+            roadName: `Rodovia ${legIndex + 1}`,
             restrictions: leg.toll_info.toll_passes 
               ? leg.toll_info.toll_passes.map((pass: any) => pass.name).join(", ")
               : ''
@@ -300,27 +314,21 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
           
           // Adicionar à lista de pontos de pedágio
           tollPoints.push(poi);
+          console.log(`Pedágio adicionado: ${poi.name} em ${poi.lat},${poi.lng}`);
+        } else {
+          console.log(`Pedágio sem localização no trecho ${legIndex + 1}, índice ${tollIndex}`);
         }
       });
-    }
-    
-    // Procurar informações de pedágio nos passos detalhados de cada trecho
-    if (leg.steps && leg.steps.length > 0) {
-      leg.steps.forEach((step: any, stepIndex: number) => {
-        // Verificar se este passo tem informações sobre pedágios
-        if (step.html_instructions && step.html_instructions.includes("pedágio")) {
-          console.log(`Passo ${stepIndex} contém informação de pedágio: ${step.html_instructions}`);
-          
-          // Se não encontramos pedágio especificamente em leg.toll_info, podemos tentar extrair aqui
-          // usando ponto médio do passo como aproximação
-          if (!leg.toll_info || !leg.toll_info.toll_points || leg.toll_info.toll_points.length === 0) {
-            console.log("Pedágio detectado nas instruções, mas não em toll_info");
-          }
-        }
-      });
+    } else {
+      console.log(`Nenhuma informação de pedágio no trecho ${legIndex + 1}`);
     }
   });
   
-  console.log(`Extraídos ${tollPoints.length} pedágios diretamente da resposta da API Google Maps`);
+  // Log final resumido
+  console.log(`Extraídos ${tollPoints.length} pedágios EXCLUSIVAMENTE da API Google Maps`);
+  tollPoints.forEach((toll, idx) => {
+    console.log(`${idx + 1}. ${toll.name}: ${toll.lat},${toll.lng}`);
+  });
+  
   return tollPoints;
 }

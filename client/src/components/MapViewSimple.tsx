@@ -39,7 +39,7 @@ export default function MapViewSimple({
   const [apiTollPoints, setApiTollPoints] = useState<PointOfInterest[]>([]);
   
   // Usar o hook para trabalhar com a API Routes Preferred
-  const { extractTollPoints, calculateRouteSegments } = useRoutesPreferred();
+  const { calculateRouteSegments } = useRoutesPreferred(); // Não usamos mais extractTollPoints
 
   // Inicializar o mapa quando o componente montar
   useEffect(() => {
@@ -159,25 +159,25 @@ export default function MapViewSimple({
             // Processar pedágios e outras informações da API Routes Preferred
             try {
               console.log("Processando resultado da API Routes Preferred para extrair pedágios");
-              // Extrair informações de pedágio da resposta
-              const tollPointsFromAPI = extractTollPoints(result);
+              // Extrair informações de pedágio diretamente da API do Google Maps
+              const tollPointsFromAPI = extractTollsFromRoute(result);
               
-              // Se encontramos pedágios através da API, vamos mesclá-los com os pontos de interesse existentes
+              // Se encontramos pedágios através da API, usamos APENAS esses pedágios (nada de mesclar)
               if (tollPointsFromAPI && tollPointsFromAPI.length > 0) {
-                console.log(`Encontrados ${tollPointsFromAPI.length} pedágios via API Routes Preferred`);
+                console.log(`Encontrados ${tollPointsFromAPI.length} pedágios EXATOS via API Routes Preferred`);
                 
                 // Armazenar para uso posterior
                 setApiTollPoints(tollPointsFromAPI);
                 
-                // Calcular posições aproximadas dos pedágios ao longo da rota
-                // (Aqui nós temos que estimar as posições, pois a API não retorna coordenadas específicas)
-                // Idealmente, usaríamos algoritmos de interpolação ao longo da polyline da rota
+                // Substituir completamente os pontos de interesse com os pedágios da API
+                pointsOfInterest = tollPointsFromAPI;
                 
                 // Notificar o componente pai sobre os dados da rota processados
+                // APENAS com os pedágios exatos da API
                 if (onRouteCalculated && typeof onRouteCalculated === 'function') {
                   onRouteCalculated({
                     ...result,
-                    toll_points: tollPointsFromAPI
+                    poisAlongRoute: tollPointsFromAPI // Usando apenas os pedágios da API
                   });
                 }
               }
