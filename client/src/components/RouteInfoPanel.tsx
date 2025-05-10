@@ -4,7 +4,8 @@ import { formatDistance, formatDuration, formatCurrency, formatRouteSequence } f
 import { calculateFuelConsumption, getFuelEfficiency } from "@/lib/costCalculator";
 import { extractCityFromAddress } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { Maximize2, Minimize2, X } from "lucide-react";
+import { Maximize2, Minimize2, X, Truck, Calendar, MapPin, Clock, AlertTriangle, Ban, Scale } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import RouteReport from "./RouteReport";
 
 interface RouteInfoPanelProps {
@@ -615,7 +616,7 @@ export default function RouteInfoPanel({
                 </div>
               )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div className={`grid grid-cols-1 ${isExpanded ? 'lg:grid-cols-3' : 'md:grid-cols-2'} gap-2`}>
                 {/* Route Info Card - Version compacta */}
                 <div className="bg-white rounded p-2 border border-gray-100">
                   <h3 className="text-xs font-medium mb-1 text-primary">{vehicleType?.name || "Veículo"}</h3>
@@ -728,6 +729,156 @@ export default function RouteInfoPanel({
                     );
                   })()}
                 </div>
+                
+                {/* Eventos da rota (integrados no resumo) - Visível apenas quando há eventos */}
+                {isExpanded && Array.isArray(cityEvents) && cityEvents.length > 0 && (
+                  <div className="bg-white rounded p-2 border border-gray-100">
+                    <div className="flex items-center gap-1 mb-1">
+                      <Calendar className="h-3 w-3 text-primary" />
+                      <h3 className="text-xs font-medium text-primary">Eventos nas Cidades da Rota</h3>
+                    </div>
+                    
+                    {(() => {
+                      // Criar um mapa para saber a posição de cada cidade na rota
+                      const cityPositionMap = new Map();
+                      
+                      // Preencher o mapa com posições de cidades
+                      Array.isArray(calculatedRoute) && calculatedRoute.forEach((location, index) => {
+                        const cityName = extractCityFromAddress(location.address);
+                        if (cityName && !cityPositionMap.has(cityName)) {
+                          cityPositionMap.set(cityName, index);
+                        }
+                      });
+                      
+                      // Filtrar e ordenar eventos das cidades na rota
+                      const filteredAndSortedEvents = [...cityEvents]
+                        // Primeiro filtramos para manter apenas eventos de cidades na rota
+                        .filter(event => {
+                          // Verificar se a cidade do evento está na rota
+                          return Array.from(citiesInRoute).some(city => 
+                            event.cityName.includes(city) || city.includes(event.cityName)
+                          );
+                        })
+                        // Depois ordenamos os eventos filtrados
+                        .sort((a, b) => {
+                          // Primeiro critério: posição da cidade na rota
+                          const cityA = a.cityName;
+                          const cityB = b.cityName;
+                          
+                          // Encontrar posição das cidades na rota
+                          let posA = 999;
+                          let posB = 999;
+                          
+                          // Fazer uma busca mais flexível para encontrar a cidade na rota
+                          Array.from(cityPositionMap.keys()).forEach((city) => {
+                            const position = cityPositionMap.get(city);
+                            if (cityA.includes(city) || city.includes(cityA)) {
+                              posA = position;
+                            }
+                            if (cityB.includes(city) || city.includes(cityB)) {
+                              posB = position;
+                            }
+                          });
+                          
+                          if (posA !== posB) {
+                            return posA - posB;
+                          }
+                          
+                          // Segundo critério: data do evento
+                          const dateA = new Date(a.eventDate);
+                          const dateB = new Date(b.eventDate);
+                          return dateA.getTime() - dateB.getTime();
+                        });
+                        
+                      if (filteredAndSortedEvents.length === 0) {
+                        return (
+                          <div className="text-gray-500 text-xs p-1">
+                            Nenhum evento encontrado para as cidades na rota.
+                          </div>
+                        );
+                      }
+                        
+                      return filteredAndSortedEvents.map((event: CityEvent, index) => (
+                        <div key={index} className="border-b border-gray-100 last:border-0 py-1">
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <p className="text-xs font-medium">{event.eventName}</p>
+                              <p className="text-xxs text-gray-500 flex items-center">
+                                <MapPin className="h-2 w-2 mr-1" />
+                                {event.cityName}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-xxs font-medium text-gray-600">
+                                {new Date(event.eventDate).toLocaleDateString('pt-BR')}
+                              </p>
+                              <span className={`text-xxs px-1 rounded ${getEventTypeColor(event.eventType)}`}>
+                                {getEventTypeLabel(event.eventType)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ));
+                    })()}
+                  </div>
+                )}
+                
+                {/* Restrições para caminhões (integradas no resumo) - Visível apenas com veículo caminhão e quando expandido */}
+                {isExpanded && vehicleType?.type.includes("truck") && truckRestrictions && Array.isArray(truckRestrictions) && truckRestrictions.length > 0 && (
+                  <div className="bg-white rounded p-2 border border-gray-100">
+                    <div className="flex items-center gap-1 mb-1">
+                      <Truck className="h-3 w-3 text-red-600" />
+                      <h3 className="text-xs font-medium text-primary">Restrições para Caminhões</h3>
+                    </div>
+                    
+                    {(() => {
+                      // Definir a sequência de cidades pela ordem em que aparecem na rota
+                      const routeSequence = Array.isArray(calculatedRoute) 
+                        ? calculatedRoute.map(loc => loc.name || "").filter(Boolean)
+                        : [];
+                      
+                      // Filtrar as restrições para cidades na rota
+                      const filteredRestrictions = truckRestrictions.filter(r => {
+                        return Array.from(citiesInRoute).some(city => 
+                          r.cityName.toLowerCase().includes(city.toLowerCase()) ||
+                          city.toLowerCase().includes(r.cityName.toLowerCase())
+                        );
+                      });
+                      
+                      if (filteredRestrictions.length === 0) {
+                        return (
+                          <div className="text-gray-500 text-xs p-1">
+                            Nenhuma restrição encontrada para as cidades na rota.
+                          </div>
+                        );
+                      }
+                      
+                      return filteredRestrictions.map((restriction, idx) => (
+                        <div key={idx} className="border-b border-gray-100 last:border-0 py-1">
+                          <div className="flex items-start">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-1">
+                                <Badge variant="outline" className="text-xxs py-0 border-red-200 text-red-700">
+                                  {restriction.restrictionType}
+                                </Badge>
+                                <p className="text-xs font-medium">{restriction.cityName}</p>
+                              </div>
+                              <p className="text-xxs text-gray-600 mt-0.5">
+                                {restriction.description}
+                              </p>
+                              <div className="flex items-center gap-1 mt-0.5">
+                                <Clock className="h-2 w-2 text-gray-400" />
+                                <p className="text-xxs text-gray-500">
+                                  {restriction.timeRestriction}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ));
+                    })()}
+                  </div>
+                )}
               </div>
             </div>
           )}
