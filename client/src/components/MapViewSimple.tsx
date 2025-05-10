@@ -582,70 +582,167 @@ export default function MapViewSimple({
             console.log("Cidades identificadas na rota:", cities);
             
             // Buscar pedágios e outros pontos de interesse relevantes para esta rota
-            console.log("Iniciando busca de pedágios com Google Maps Places API");
+            // Implementação híbrida de busca de pedágios
+            console.log("Iniciando busca híbrida de pedágios (AILOG + Google Places)");
             
-            // Iniciar busca de pedágios com a API do Google
+            // Primeiro obter os POIs existentes do banco de dados (apenas balanças)
+            let balanças: PointOfInterest[] = [];
+            if (pointsOfInterest) {
+              // Filtrar apenas balanças do banco de dados para rota atual
+              balanças = pointsOfInterest.filter(poi => poi.type === 'weighing_station');
+              console.log(`Obtidas ${balanças.length} balanças do banco de dados`);
+            }
+            
+            // Iniciar busca sequencial de pedágios
+            let allPOIs: PointOfInterest[] = [...balanças]; // Começar com as balanças
+            
+            // Passo 1: Buscar com API AILOG
             fetchTollsFromAilog(origin, waypoints, localStorage.getItem('selectedVehicleType') || 'car')
               .then(ailogTolls => {
-                // Pedágios encontrados pela API AILOG
-                console.log(`API AILOG encontrou ${ailogTolls?.length || 0} pedágios`);
+                if (ailogTolls && ailogTolls.length > 0) {
+                  console.log(`API AILOG encontrou ${ailogTolls.length} pedágios`);
+                  // Marcar a origem dos dados
+                  const markedTolls = ailogTolls.map(toll => ({
+                    ...toll,
+                    ailogSource: true
+                  }));
+                  allPOIs = [...allPOIs, ...markedTolls];
+                } else {
+                  console.log("API AILOG não encontrou pedágios");
+                }
                 
-                // Adicionar flag para identificar a origem
-                const markedAilogTolls = ailogTolls ? ailogTolls.map(toll => ({
-                  ...toll,
-                  ailogSource: true
-                })) : [];
-                
-                // Buscar pedágios também com Google Places
+                // Passo 2: Buscar com Google Places API
+                console.log("Buscando pedágios com Google Places API...");
                 return findTollsUsingGooglePlaces(map, result)
                   .then(googleTolls => {
-                    console.log(`Google Places encontrou ${googleTolls?.length || 0} pedágios`);
-                    
-                    // Combinar resultados, evitando duplicatas
-                    let allTolls = [...markedAilogTolls];
-                    
-                    // Adicionar apenas pedágios do Google que não são duplicatas
                     if (googleTolls && googleTolls.length > 0) {
-                      const uniqueGoogleTolls = googleTolls.filter(gToll => 
-                        !allTolls.some(existingToll => {
-                          // Calcular distância entre os pontos
-                          const dist = window.google.maps.geometry.spherical.computeDistanceBetween(
-                            new window.google.maps.LatLng(parseFloat(gToll.lat), parseFloat(gToll.lng)),
-                            new window.google.maps.LatLng(parseFloat(existingToll.lat), parseFloat(existingToll.lng))
-                          );
-                          // Se estiver a menos de 1km, considerar duplicata
-                          return dist < 1000;
-                        })
-                      );
+                      console.log(`Google Places encontrou ${googleTolls.length} pedágios`);
                       
-                      console.log(`Adicionando ${uniqueGoogleTolls.length} pedágios únicos do Google Places`);
-                      allTolls = [...allTolls, ...uniqueGoogleTolls];
+                      // Verificar duplicatas
+                      const tollsToAdd = googleTolls.filter(gToll => {
+                        // Um pedágio é duplicado se estiver muito próximo de outro já na lista
+                        return !allPOIs.some(existing => {
+                          if (existing.type !== 'toll') return false;
+                          
+                          // Calcular distância entre os pontos
+                          const distance = google.maps.geometry.spherical.computeDistanceBetween(
+                            new google.maps.LatLng(parseFloat(gToll.lat), parseFloat(gToll.lng)),
+                            new google.maps.LatLng(parseFloat(existing.lat), parseFloat(existing.lng))
+                          );
+                          
+                          // Considerar duplicado se estiver a menos de 1km
+                          return distance < 1000;
+                        });
+                      });
+                      
+                      console.log(`Adicionando ${tollsToAdd.length} pedágios únicos do Google Places`);
+                      allPOIs = [...allPOIs, ...tollsToAdd];
+                    } else {
+                      console.log("Google Places não encontrou pedágios");
                     }
                     
-                    // Se não encontrou pedágios, tentar com as rodovias conhecidas
-                    if (allTolls.length === 0) {
+                    // Passo 3: Se ainda não encontrou pedágios, usar rodovias conhecidas
+                    if (allPOIs.filter(p => p.type === 'toll').length === 0) {
+                      console.log("Tentando método de rodovias conhecidas...");
                       const knownTolls = findTollsFromKnownHighways(result);
-                      console.log(`Encontrados ${knownTolls?.length || 0} pedágios em rodovias conhecidas`);
                       
                       if (knownTolls && knownTolls.length > 0) {
-                        allTolls = [...allTolls, ...knownTolls];
+                        console.log(`Encontrados ${knownTolls.length} pedágios em rodovias conhecidas`);
+                        allPOIs = [...allPOIs, ...knownTolls];
+                      } else {
+                        console.log("Nenhum pedágio encontrado em rodovias conhecidas");
                       }
                     }
                     
-                    // Notificar sobre os pontos encontrados
-                    if (onRouteCalculated && typeof onRouteCalculated === 'function') {
+                    // Fornecer os POIs para o componente pai
+                    console.log(`Total final: ${allPOIs.length} pontos de interesse para esta rota`);
+                    if (onRouteCalculated) {
                       onRouteCalculated({
                         ...result,
-                        poisAlongRoute: allTolls
+                        poisAlongRoute: allPOIs
                       });
                     }
                     
-                    return allTolls;
+                    // Retornar os POIs encontrados para processamento adicional (marcadores no mapa)
+                    return allPOIs;
                   });
               })
+              .then(pois => {
+                // Adicionar marcadores para os pontos encontrados
+                if (pois && pois.length > 0) {
+                  console.log(`Adicionando ${pois.length} marcadores ao mapa`);
+                  pois.forEach(poi => {
+                    // Criar marcador para este POI
+                    const position = {
+                      lat: parseFloat(poi.lat),
+                      lng: parseFloat(poi.lng)
+                    };
+                    
+                    // Escolher cor com base no tipo e fonte
+                    let fillColor = '#2196F3'; // Azul padrão
+                    if (poi.type === 'toll') {
+                      if (poi.ailogSource) {
+                        fillColor = '#f44336'; // Vermelho para AILOG
+                      } else if (poi.googlePlacesSource) {
+                        fillColor = '#E91E63'; // Rosa para Google Places
+                      } else if (poi.knownHighwaySource) {
+                        fillColor = '#FF9800'; // Laranja para rodovias conhecidas
+                      }
+                    } else if (poi.type === 'weighing_station') {
+                      fillColor = '#4CAF50'; // Verde para balanças
+                    }
+                    
+                    // Criar e adicionar marcador
+                    const poiMarker = new google.maps.Marker({
+                      position,
+                      map,
+                      title: poi.name,
+                      icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: fillColor,
+                        fillOpacity: 1,
+                        strokeWeight: 2,
+                        strokeColor: '#FFFFFF',
+                        scale: 10
+                      },
+                      zIndex: 2
+                    });
+                    
+                    // Criar janela de informação
+                    const infoContent = poi.type === 'toll' 
+                      ? `<div>
+                          <h3>${poi.name}</h3>
+                          <p>Rodovia: ${poi.roadName || 'N/A'}</p>
+                          <p>Valor: ${formatCurrency(poi.cost)}</p>
+                         </div>`
+                      : `<div>
+                          <h3>${poi.name}</h3>
+                          <p>Tipo: Balança de Pesagem</p>
+                         </div>`;
+                         
+                    const infoWindow = new google.maps.InfoWindow({
+                      content: infoContent
+                    });
+                    
+                    // Adicionar evento e metadados
+                    poiMarker.set('isPOI', true);
+                    poiMarker.set('poiType', poi.type);
+                    poiMarker.set('poiInfo', poi);
+                    
+                    // Abrir janela ao clicar
+                    poiMarker.addListener("click", () => {
+                      infoWindow.open(map, poiMarker);
+                    });
+                    
+                    // Adicionar às listas
+                    newMarkers.push(poiMarker);
+                    newInfoWindows.push(infoWindow);
+                  });
+                }
+              })
               .catch(error => {
-                console.error("Erro ao buscar pedágios:", error);
-                // Se houver erro, notificar com lista vazia
+                console.error("Erro ao processar pedágios:", error);
+                // Notificar com lista vazia em caso de erro
                 if (onRouteCalculated) {
                   onRouteCalculated({
                     ...result,
