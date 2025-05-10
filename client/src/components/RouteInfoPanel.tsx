@@ -4,6 +4,7 @@ import { formatDistance, formatDuration, formatCurrency, formatRouteSequence } f
 import { calculateFuelConsumption, getFuelEfficiency } from "@/lib/costCalculator";
 import { extractCityFromAddress } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
+import { Maximize2, Minimize2, X } from "lucide-react";
 import RouteReport from "./RouteReport";
 
 interface RouteInfoPanelProps {

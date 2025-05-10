@@ -184,24 +184,50 @@ iframe {
 /* Classe especial para a aba de relatório */
 .report-expanded {
   position: fixed;
-  top: 170px;
+  top: 110px;
   left: 0;
   right: 0;
   bottom: 0;
-  height: auto;
+  width: 100vw;
+  height: calc(100vh - 110px);
   max-height: unset;
+  max-width: 100vw;
   overflow-y: auto;
   transition: all 0.3s ease;
-  z-index: 10;
+  z-index: 999;
   background-color: white;
-  padding: 0 16px;
-  border-top: 1px solid #eee;
+  padding: 16px;
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-top: 2px solid var(--primary);
 }
 
 /* Ajuste para o layout do relatório quando expandido */
 .report-expanded .report-container {
-  padding-bottom: 40px;
-  padding-right: 4px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+/* Grid para o relatório em tela cheia */
+.report-expanded .report-container > div {
+  margin-bottom: 16px;
+}
+
+/* Layout em grid no modo expandido */
+@media (min-width: 768px) {
+  .report-expanded .report-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  /* Item que ocupa linha inteira */
+  .report-expanded .report-container > div:nth-child(3),
+  .report-expanded .report-container > div:nth-child(4),
+  .report-expanded .report-container > div:nth-child(5) {
+    grid-column: 1 / -1;
+  }
 }
 
 /* Exibir conteúdo em duas colunas quando a aba estiver expandida */

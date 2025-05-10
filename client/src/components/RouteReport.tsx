@@ -186,7 +186,7 @@ export default function RouteReport({
         </div>
       </div>
       
-      <div ref={reportRef} className="print:p-4 overflow-y-auto max-h-[45vh] report-container">
+      <div ref={reportRef} className="print:p-4 overflow-y-auto report-container">
         <div className="border border-gray-200 rounded-sm p-2 mb-2">
           <h3 className="text-xs font-semibold mb-1 text-primary">Informações da Rota</h3>
           <div className="grid grid-cols-2 gap-x-2 gap-y-1">
