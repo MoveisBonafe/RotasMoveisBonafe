@@ -276,12 +276,11 @@ export function decodePolyline(encoded: string): { lat: number, lng: number }[] 
 }
 
 /**
- * Extrai informações de pedágio diretamente da resposta da API do Google Maps 
- * Implementa múltiplos métodos para garantir a detecção de pedágios
+ * Extrai informações de pedágio diretamente da resposta da API do Google Maps e do polyline da rota
+ * Esta abordagem utiliza um método alternativo quando o toll_info não está disponível
  */
 export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] {
   if (!directionsResult || !directionsResult.routes || directionsResult.routes.length === 0) {
-    console.log("Nenhuma rota para extrair pedágios");
     return [];
   }
 
@@ -293,35 +292,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
   // ID base para os pedágios
   let tollId = 10000;
   
-  console.log(`Extraindo informações de pedágio para ${legs.length} trechos de rota`);
-  
-  // Dados específicos de pedágios na região de Dois Córregos / Boa Esperança do Sul
-  const pedagiosRegiao = [
-    { 
-      name: "Pedágio Boa Esperança do Sul", 
-      lat: -21.9901, 
-      lng: -48.3923,
-      roadName: "SP-255"
-    },
-    { 
-      name: "Pedágio SP-225 (Brotas)", 
-      lat: -22.2794, 
-      lng: -48.1257,
-      roadName: "SP-225"
-    },
-    { 
-      name: "Pedágio SP-225 (Dois Córregos)", 
-      lat: -22.3673, 
-      lng: -48.2823,
-      roadName: "SP-225"
-    },
-    { 
-      name: "Pedágio SP-255 (Jaú)", 
-      lat: -22.1856, 
-      lng: -48.6087,
-      roadName: "SP-255"
-    }
-  ];
+  console.log("Extraindo informações de pedágio usando todos os métodos disponíveis");
   
   // MÉTODO 1: Verificar se a resposta da API contém pedágios explícitos
   legs.forEach((leg: any, legIndex: number) => {
