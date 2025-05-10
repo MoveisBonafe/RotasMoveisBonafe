@@ -254,48 +254,37 @@ export default function MapViewSimple({
                 // Mesclar pedágios encontrados com os pontos de interesse existentes
                 const combinedPOIs = [...pointsOfInterest];
                 
-                // Adicionar apenas pedágios que não estão já incluídos nos POIs existentes (evitar duplicatas)
-                // Utilizamos uma tolerância maior para considerar pedágios próximos como duplicatas
+                // EXCLUSIVAMENTE usar os pedágios da API Google Maps Routes Preferred
+                // Não combinamos com outros - usamos apenas e somente os dados da API
+                
+                // Limpar a lista completamente para usar só os pedágios da API
+                const apiOnlyPois: PointOfInterest[] = [];
+                
+                // Adicionar pedágios da API (todos eles, sem exceção)
                 tollPointsFromAPI.forEach(tollPoint => {
-                  // Verificar se esse pedágio já está incluído nos POIs existentes com base na proximidade geográfica
-                  const isDuplicate = pointsOfInterest.some(existingPOI => {
-                    // Se não for um pedágio, não é uma duplicata
-                    if (existingPOI.type !== 'toll') return false;
-                    
-                    // Calcular a distância aproximada em graus (1 grau ≈ 111km no equador)
-                    // Usamos uma tolerância menor para melhor precisão
-                    const latDiff = Math.abs(parseFloat(existingPOI.lat) - parseFloat(tollPoint.lat));
-                    const lngDiff = Math.abs(parseFloat(existingPOI.lng) - parseFloat(tollPoint.lng));
-                    
-                    // Se estiverem a menos de ~500 metros um do outro, considerar duplicata
-                    return latDiff < 0.005 && lngDiff < 0.005;
+                  // Adicionar o pedágio com as coordenadas exatas da API
+                  apiOnlyPois.push({
+                    ...tollPoint,
+                    // Usar EXCLUSIVAMENTE as coordenadas fornecidas pela API
+                    lat: tollPoint.lat || '0',
+                    lng: tollPoint.lng || '0'
                   });
                   
-                  if (!isDuplicate) {
-                    // Adicionar o pedágio da API 
-                    combinedPOIs.push({
-                      ...tollPoint,
-                      // Garantir que a posição seja válida
-                      lat: tollPoint.lat || '0',
-                      lng: tollPoint.lng || '0'
-                    });
-                    console.log(`Adicionado pedágio da API: ${tollPoint.name} em ${tollPoint.lat},${tollPoint.lng}`);
-                  } else {
-                    console.log(`Ignorado pedágio duplicado: ${tollPoint.name}`);
-                  }
+                  console.log(`Usando EXCLUSIVAMENTE pedágio da API: ${tollPoint.name} em ${tollPoint.lat},${tollPoint.lng}`);
                 });
                 
-                // Atualizar POIs com os pedágios encontrados
-                pointsOfInterest = combinedPOIs;
+                // Atualizar POIs com APENAS OS PEDÁGIOS DA API
+                pointsOfInterest = apiOnlyPois;
                 
                 // Armazenar os pontos de pedágio encontrados para referência
                 setApiTollPoints(tollPointsFromAPI);
                 
                 // Notificar o componente pai sobre os pedágios encontrados, se necessário
+                // Apenas enviamos os pedágios da API, conforme solicitado
                 if (onRouteCalculated) {
                   onRouteCalculated({
                     ...result,
-                    poisAlongRoute: combinedPOIs
+                    poisAlongRoute: apiOnlyPois // Usando apenas os pedágios da API
                   });
                 }
               } else {

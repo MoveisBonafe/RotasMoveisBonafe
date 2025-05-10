@@ -138,41 +138,35 @@ export function useRoutesPreferred() {
             // Processar cada ponto de pedágio
             leg.toll_info.toll_points.forEach((tollPoint, tollIndex) => {
               if (tollPoint.location) {
+                // Usar EXCLUSIVAMENTE as coordenadas fornecidas pela API do Google Maps
                 // Gerar um ID único para este pedágio
                 const id = 1000 + (legIndex * 100) + tollIndex;
                 
-                // Encontrar a rodovia mais próxima para este pedágio
+                // Extrair informações da rodovia diretamente da API
                 let roadName = '';
-                let minDistance = Number.MAX_VALUE;
                 
-                // Percorrer todos os passos para encontrar o mais próximo
+                // Procurar no segmento da rodovia mais próximo
                 for (const step of leg.steps) {
-                  const distance = Math.sqrt(
+                  // Distância entre o pedágio e o ponto inicial do segmento
+                  const startDistance = Math.sqrt(
                     Math.pow(step.start_location.lat - tollPoint.location.lat, 2) +
                     Math.pow(step.start_location.lng - tollPoint.location.lng, 2)
                   );
                   
-                  if (distance < minDistance) {
-                    minDistance = distance;
+                  // Distância entre o pedágio e o ponto final do segmento
+                  const endDistance = Math.sqrt(
+                    Math.pow(step.end_location.lat - tollPoint.location.lat, 2) +
+                    Math.pow(step.end_location.lng - tollPoint.location.lng, 2)
+                  );
+                  
+                  // Se o pedágio está próximo deste segmento (menos de ~1km)
+                  if (startDistance < 0.01 || endDistance < 0.01) {
                     const extractedName = extractRoadName(step.html_instructions);
                     if (extractedName) {
                       roadName = extractedName;
+                      break; // Encontramos a rodovia, podemos parar a busca
                     }
                   }
-                }
-                
-                // Se não encontrou nome de rodovia, tentar inferir pela proximidade
-                if (!roadName) {
-                  roadNames.forEach((name, key) => {
-                    const [lat, lng] = key.split(',').map(parseFloat);
-                    const distance = Math.sqrt(
-                      Math.pow(lat - tollPoint.location.lat, 2) +
-                      Math.pow(lng - tollPoint.location.lng, 2)
-                    );
-                    if (distance < 0.05) { // ~5km de tolerância
-                      roadName = name;
-                    }
-                  });
                 }
                 
                 // Extrair custo do pedágio, se disponível
@@ -191,7 +185,8 @@ export function useRoutesPreferred() {
                     `Pedágio Trecho ${legIndex + 1}.${tollIndex + 1}`;
                 }
                 
-                // Criar um objeto de ponto de pedágio com os dados disponíveis
+                // IMPORTANTE: Usar EXATAMENTE as coordenadas da API do Google Maps
+                // Criar um objeto de ponto de pedágio com os dados EXATOS da API
                 const poi: PointOfInterest = {
                   id,
                   name: tollName,
@@ -205,7 +200,7 @@ export function useRoutesPreferred() {
                     : ''
                 };
                 
-                console.log(`Pedágio detectado: ${poi.name} em ${poi.roadName}, posição: ${poi.lat},${poi.lng}, custo: R$ ${(poi.cost/100).toFixed(2)}`);
+                console.log(`Pedágio EXATO da API Google Maps: ${poi.name}, coordenadas: ${poi.lat},${poi.lng}, custo: R$ ${(poi.cost/100).toFixed(2)}`);
                 
                 // Adicionar à lista de pontos de pedágio
                 tollPoints.push(poi);
@@ -213,63 +208,15 @@ export function useRoutesPreferred() {
             });
           }
           
-          // Método alternativo: extrair pedágios dos passos individuais
-          let stepIndexWithTolls = new Set<number>();
-          
-          // Primeiro, identifique quais passos têm pedágios para evitar duplicação
-          leg.steps.forEach((step, stepIndex) => {
-            if (step.tolls && step.tolls.length > 0) {
-              stepIndexWithTolls.add(stepIndex);
-            }
-          });
-          
-          // Agora processe apenas os passos que não têm pedágios duplicados do toll_info
-          if (stepIndexWithTolls.size > 0 && (!leg.toll_info || !leg.toll_info.toll_points)) {
-            console.log(`Encontrados pedágios em ${stepIndexWithTolls.size} passos do trecho ${legIndex + 1}`);
+          // SOMENTE usar toll_info dos dados completos de pedágio, 
+          // conforme solicitado: usar exclusivamente os dados da API
+          if (!leg.toll_info || !leg.toll_info.toll_points) {
+            const tollsFound = leg.steps.some(step => step.tolls && step.tolls.length > 0);
             
-            // Processar cada passo com pedágio
-            leg.steps.forEach((step, stepIndex) => {
-              if (step.tolls && step.tolls.length > 0) {
-                step.tolls.forEach((toll, tollIndex) => {
-                  // Determinar as coordenadas do pedágio
-                  let lat, lng;
-                  if (toll.location && toll.location.lat && toll.location.lng) {
-                    lat = toll.location.lat.toString();
-                    lng = toll.location.lng.toString();
-                  } else {
-                    // Fallback: usar o ponto médio do passo (menos preciso)
-                    lat = ((step.start_location.lat + step.end_location.lat) / 2).toString();
-                    lng = ((step.start_location.lng + step.end_location.lng) / 2).toString();
-                  }
-                  
-                  // Obter nome da rodovia
-                  const roadName = extractRoadName(step.html_instructions) || `Trecho ${legIndex + 1}`;
-                  
-                  // Gerar um ID único
-                  const id = 5000 + (legIndex * 100) + (stepIndex * 10) + tollIndex;
-                  
-                  // Criar nome para o pedágio
-                  const tollName = toll.name || 
-                    (roadName ? `Pedágio ${roadName}` : `Pedágio ${legIndex + 1}.${stepIndex + 1}`);
-                  
-                  // Criar objeto de pedágio
-                  const tollPoint: PointOfInterest = {
-                    id,
-                    name: tollName,
-                    lat,
-                    lng,
-                    type: 'toll',
-                    cost: toll.cost ? Math.round(toll.cost.value * 100) : 0,
-                    roadName,
-                    restrictions: ''
-                  };
-                  
-                  // Adicionar o pedágio à lista
-                  tollPoints.push(tollPoint);
-                  console.log(`Pedágio detectado via steps: ${tollPoint.name}, posição: ${lat},${lng}, custo: R$ ${(tollPoint.cost/100).toFixed(2)}`);
-                });
-              }
-            });
+            if (tollsFound) {
+              console.log(`Pedágios encontrados nos passos da rota, mas não usando esses dados conforme solicitado.`);
+              console.log(`Seguindo exclusivamente as coordenadas da API Routes Preferred.`);
+            }
           }
         });
       }
