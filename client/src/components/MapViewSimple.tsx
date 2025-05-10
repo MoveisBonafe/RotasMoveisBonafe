@@ -441,9 +441,13 @@ export default function MapViewSimple({
               // Especialmente para balança do km 150 que pode aparecer duplicada
               relevantPOIs.forEach(newPoi => {
                 // Verificar se já existe um POI com localização muito próxima
+                // Considerar Balança Luís Antônio e Balança km 150 como o mesmo ponto
                 const isDuplicate = allPOIs.some(existingPoi => 
                   isDuplicateLocation(existingPoi, newPoi) || 
-                  existingPoi.name === newPoi.name
+                  existingPoi.name === newPoi.name ||
+                  // Checagem específica para as balanças duplicadas
+                  (newPoi.name.includes("Luís Antônio") && existingPoi.name.includes("km 150")) ||
+                  (newPoi.name.includes("km 150") && existingPoi.name.includes("Luís Antônio"))
                 );
                 
                 if (!isDuplicate) {

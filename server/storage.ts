@@ -261,16 +261,7 @@ export class MemStorage implements IStorage {
         roadName: "SP-255"
       },
       {
-        name: "Balança SP-255 (km 150)",
-        type: "weighing_station",
-        lat: "-21.5872",
-        lng: "-48.0748",
-        cost: null,
-        restrictions: "Todos os veículos de carga",
-        roadName: "SP-255"
-      },
-      {
-        name: "Balança Luís Antônio",
+        name: "Balança Luís Antônio (km 150)",
         type: "weighing_station",
         lat: "-21.5502",
         lng: "-47.7770",

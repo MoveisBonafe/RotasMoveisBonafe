@@ -479,8 +479,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
         'SP-255': [
           {nome: 'Balança SP-255 (km 122)', lat: '-22.2153', lng: '-48.1887', restricoes: 'Veículos acima de 1 eixo'},
           {nome: 'Balança SP-255 (km 86)', lat: '-21.8901', lng: '-48.2305', restricoes: 'Veículos acima de 1 eixo'},
-          {nome: 'Balança SP-255 (km 150)', lat: '-21.5872', lng: '-48.0748', restricoes: 'Todos os veículos de carga'},
-          {nome: 'Balança Luís Antônio', lat: '-21.5502', lng: '-47.7770', restricoes: 'Veículos acima de 1 eixo'}
+          {nome: 'Balança Luís Antônio (km 150)', lat: '-21.5502', lng: '-47.7770', restricoes: 'Veículos acima de 1 eixo'}
         ],
         'SP-310': [
           {nome: 'Balança SP-310 (km 173)', lat: '-21.9845', lng: '-47.8897', restricoes: 'Veículos acima de 1 eixo'},
