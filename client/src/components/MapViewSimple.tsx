@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Location, PointOfInterest } from "@/lib/types";
 import { useRoutesPreferred } from "@/hooks/useRoutesPreferred";
-import { extractTollsFromRoute } from "@/lib/mapUtils";
+import { extractTollsFromRoute } from "@/lib/tollUtils";
 
 interface MapViewProps {
   origin: Location | null;
