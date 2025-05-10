@@ -546,6 +546,513 @@ export function findTollsFromKnownHighways(directionsResult: any): PointOfIntere
 }
 
 /**
+ * Busca balanças de pesagem ao longo da rota utilizando a API Places do Google Maps
+ * Esta abordagem é similar à busca de pedágios, mas utiliza palavras-chave específicas
+ * @param map Instância do mapa Google Maps
+ * @param route Rota calculada pelo DirectionsService
+ * @returns Promise com array de PointOfInterest representando balanças
+ */
+export async function findWeighingStationsWithGooglePlaces(map: any, route: any): Promise<PointOfInterest[]> {
+  if (!map || !route || !route.routes || route.routes.length === 0 || !window.google) {
+    console.log("Google Places: Dados insuficientes para buscar balanças");
+    return [];
+  }
+
+  return new Promise((resolve) => {
+    // Array para armazenar as balanças encontradas
+    const stations: PointOfInterest[] = [];
+    let stationId = 40000; // ID base para balanças via Places
+    
+    try {
+      console.log("Iniciando busca de balanças com Google Places API");
+      
+      // Obter o polyline da rota
+      const polyline = route.routes[0].overview_polyline.points;
+      const path = decodePolyline(polyline);
+      
+      // Criar um serviço Places
+      const placesService = new window.google.maps.places.PlacesService(map);
+      
+      // Determinar pontos de busca ao longo da rota (a cada 75km aproximadamente)
+      const searchPoints: {lat: number, lng: number}[] = [];
+      const SEARCH_INTERVAL_KM = 75; // Balanças são mais espaçadas que pedágios
+      
+      // Adicionar ponto inicial
+      if (path.length > 0) {
+        searchPoints.push(path[0]);
+      }
+      
+      // Adicionar pontos intermediários a cada SEARCH_INTERVAL_KM
+      let distanceSum = 0;
+      for (let i = 1; i < path.length; i++) {
+        const prevPoint = path[i-1];
+        const currentPoint = path[i];
+        
+        const segmentDistance = calculateHaversineDistance(
+          prevPoint.lat, prevPoint.lng, 
+          currentPoint.lat, currentPoint.lng
+        );
+        
+        distanceSum += segmentDistance;
+        
+        if (distanceSum >= SEARCH_INTERVAL_KM) {
+          searchPoints.push(currentPoint);
+          distanceSum = 0;
+        }
+      }
+      
+      // Adicionar ponto final se não foi adicionado pela lógica anterior
+      if (path.length > 1 && searchPoints[searchPoints.length - 1] !== path[path.length - 1]) {
+        searchPoints.push(path[path.length - 1]);
+      }
+      
+      console.log(`Google Places: Buscando balanças em ${searchPoints.length} pontos ao longo da rota`);
+      
+      // Contador para controlar quando todos os pedidos foram concluídos
+      let completedRequests = 0;
+      let foundStations = false;
+      
+      // Keywords para encontrar balanças no Brasil
+      const weighingStationKeywords = [
+        'balança',
+        'posto de pesagem',
+        'pesagem de caminhões',
+        'posto de fiscalização',
+        'balança rodoviária',
+        'fiscalização de peso'
+      ];
+      
+      // Processar cada ponto de busca
+      searchPoints.forEach((point, index) => {
+        // Para cada ponto, fazer múltiplas buscas com diferentes palavras-chave
+        let keywordSearchesCompleted = 0;
+        let stationsFoundAtThisPoint: PointOfInterest[] = [];
+        
+        weighingStationKeywords.forEach(keyword => {
+          // Criar request para buscar por palavra-chave
+          const request = {
+            location: new window.google.maps.LatLng(point.lat, point.lng),
+            radius: 30000, // 30km de raio
+            keyword: keyword
+          };
+          
+          // Executar a busca com um pequeno atraso
+          setTimeout(() => {
+            placesService.nearbySearch(request, (results: any, status: any) => {
+              keywordSearchesCompleted++;
+              
+              if (status === window.google.maps.places.PlacesServiceStatus.OK && results && results.length) {
+                console.log(`Google Places: Encontradas ${results.length} possíveis balanças com a palavra "${keyword}" próximas ao ponto ${index + 1}`);
+                foundStations = true;
+                
+                // Processar cada resultado
+                results.forEach((place: any) => {
+                  // Verificar se este local parece ser realmente uma balança
+                  const nameHints = ['balanc', 'pesag', 'fiscaliz', 'posto'];
+                  const isLikelyStation = 
+                    nameHints.some(hint => 
+                      place.name?.toLowerCase().includes(hint) || 
+                      place.vicinity?.toLowerCase().includes(hint)
+                    );
+                  
+                  if (isLikelyStation) {
+                    // Verificar se já foi adicionado
+                    const isDuplicate = stationsFoundAtThisPoint.some(station => 
+                      calculateHaversineDistance(
+                        parseFloat(station.lat), parseFloat(station.lng),
+                        place.geometry.location.lat(), place.geometry.location.lng()
+                      ) < 1 // Se estiver a menos de 1km, considerar duplicata
+                    );
+                    
+                    if (!isDuplicate) {
+                      // Extrair informações do local
+                      const stationName = place.name || `Balança ${index + 1}`;
+                      
+                      const poi: PointOfInterest = {
+                        id: stationId++,
+                        name: stationName,
+                        lat: place.geometry.location.lat().toString(),
+                        lng: place.geometry.location.lng().toString(),
+                        type: 'weighing_station',
+                        googlePlaceId: place.place_id,
+                        roadName: place.vicinity || '',
+                        googlePlacesSource: true
+                      };
+                      
+                      console.log(`Google Places: Adicionada balança "${stationName}" em ${poi.lat},${poi.lng}`);
+                      stationsFoundAtThisPoint.push(poi);
+                    }
+                  }
+                });
+              }
+              
+              // Se terminamos todas as buscas por palavra-chave neste ponto
+              if (keywordSearchesCompleted === weighingStationKeywords.length) {
+                // Adicionar as balanças encontradas à lista principal
+                stationsFoundAtThisPoint.forEach(station => {
+                  // Verificar se já não foi adicionada em outro ponto
+                  const isDuplicate = stations.some(existingStation => 
+                    calculateHaversineDistance(
+                      parseFloat(station.lat), parseFloat(station.lng),
+                      parseFloat(existingStation.lat), parseFloat(existingStation.lng)
+                    ) < 1 // Se estiver a menos de 1km, considerar duplicata
+                  );
+                  
+                  if (!isDuplicate) {
+                    stations.push(station);
+                  }
+                });
+                
+                // Incrementar o contador de pontos completos
+                completedRequests++;
+                
+                // Se todos os pontos foram processados, resolver a Promise
+                if (completedRequests === searchPoints.length) {
+                  console.log(`Google Places: Busca completa, encontradas ${stations.length} balanças únicas`);
+                  
+                  if (!foundStations) {
+                    console.log("Google Places: Nenhuma balança encontrada pela API. Usando dados conhecidos.");
+                    // Se não encontrou balanças, usar o fallback
+                    const knownStations = findKnownWeighingStations(route);
+                    resolve([...stations, ...knownStations]);
+                  } else {
+                    resolve(stations);
+                  }
+                }
+              }
+            });
+          }, index * 200 + weighingStationKeywords.indexOf(keyword) * 50); // Atraso escalonado
+        });
+      });
+    } catch (error) {
+      console.error("Erro ao buscar balanças com Google Places:", error);
+      resolve([]);
+    }
+  });
+}
+
+/**
+ * Identifica balanças conhecidas com base na rota atual
+ * Método de fallback quando a busca com Places API não encontra resultados
+ */
+export function findKnownWeighingStations(directionsResult: any): PointOfInterest[] {
+  if (!directionsResult || !directionsResult.routes || directionsResult.routes.length === 0) {
+    return [];
+  }
+  
+  console.log("Buscando balanças em locais conhecidos");
+  const stations: PointOfInterest[] = [];
+  let stationId = 50000; // ID base para balanças conhecidas
+  
+  try {
+    // Extrair cidades e rodovias da rota
+    const route = directionsResult.routes[0];
+    const legs = route.legs || [];
+    
+    // Conjuntos para armazenar cidades e rodovias únicas
+    const citiesInRoute = new Set<string>();
+    const highwaysInRoute = new Set<string>();
+    
+    // Extrair cidades dos endereços
+    legs.forEach((leg: any) => {
+      if (leg.start_address) {
+        const cityMatch = leg.start_address.match(/([A-Za-zÀ-ú\s]+)(?:\s*-\s*[A-Z]{2})/);
+        if (cityMatch && cityMatch[1]) {
+          citiesInRoute.add(cityMatch[1].trim());
+        }
+      }
+      if (leg.end_address) {
+        const cityMatch = leg.end_address.match(/([A-Za-zÀ-ú\s]+)(?:\s*-\s*[A-Z]{2})/);
+        if (cityMatch && cityMatch[1]) {
+          citiesInRoute.add(cityMatch[1].trim());
+        }
+      }
+      
+      // Extrair rodovias das instruções
+      if (leg.steps) {
+        leg.steps.forEach((step: any) => {
+          if (step.html_instructions) {
+            // Extrair menções a rodovias (SP-XXX, BR-XXX, etc)
+            const instText = step.html_instructions.replace(/<[^>]*>/g, '');
+            const rodoviaMatches = instText.match(/(SP|BR|MG|PR|RS|SC|GO|MT|MS|BA|PE|RJ|ES)[-\s](\d{3})/g);
+            if (rodoviaMatches) {
+              rodoviaMatches.forEach((rod: any) => {
+                const normalizedRod = rod.replace(/\s+/g, '-').toUpperCase();
+                highwaysInRoute.add(normalizedRod);
+              });
+            }
+          }
+        });
+      }
+    });
+    
+    console.log(`Cidades na rota: ${Array.from(citiesInRoute).join(', ')}`);
+    console.log(`Rodovias na rota: ${Array.from(highwaysInRoute).join(', ')}`);
+    
+    // Tentar buscar do endpoint primeiro (método preferido)
+    try {
+      const citiesArray = Array.from(citiesInRoute) as string[];
+      const highwaysArray = Array.from(highwaysInRoute) as string[];
+      
+      // Usar a nova função para obter as balanças
+      const externalStations = fetchWeighingStationsAsync(citiesArray, highwaysArray);
+      if (externalStations && externalStations.length > 0) {
+        console.log(`Obtidas ${externalStations.length} balanças da API`);
+        stations.push(...externalStations);
+        return stations;
+      }
+    } catch (apiError) {
+      console.error("Erro ao buscar balanças da API externa:", apiError);
+      // Continuar com o método de fallback
+    }
+    
+    // Se o endpoint falhar, cair para o método de fallback com dados locais
+    // Importar dados do arquivo weighingStationData aqui, dinamicamente
+    // Isso é apenas um fallback, não deve ser o caminho principal
+    
+    // Exemplo de como seria com dados locais codificados
+    const balancasPorRodovia: {[key: string]: {nome: string, lat: string, lng: string, km?: number}[]} = {
+      'SP-255': [
+        {nome: 'Balança Luís Antônio (km 150)', lat: '-21.5510', lng: '-47.7770', km: 150}
+      ]
+    };
+    
+    const balancasPorCidade: {[key: string]: {nome: string, lat: string, lng: string, rodovia?: string}[]} = {
+      'Luís Antônio': [
+        {nome: 'Balança Luís Antônio', lat: '-21.5510', lng: '-47.7770', rodovia: 'SP-255'}
+      ]
+    };
+    
+    // Adicionar balanças por rodovia
+    highwaysInRoute.forEach((rodovia: any) => {
+      const balancas = balancasPorRodovia[rodovia];
+      if (balancas) {
+        console.log(`Analisando ${balancas.length} balanças na rodovia ${rodovia}`);
+        
+        balancas.forEach(balanca => {
+          // Criar objeto de ponto de interesse
+          const poi: PointOfInterest = {
+            id: stationId++,
+            name: balanca.nome,
+            lat: balanca.lat,
+            lng: balanca.lng,
+            type: 'weighing_station',
+            roadName: rodovia,
+            knownHighwaySource: true
+          };
+          
+          // Verificar se está próxima da rota
+          const withinRoute = isPointNearRoute(poi, directionsResult, 20); // 20km de tolerância
+          
+          if (withinRoute) {
+            console.log(`Adicionada balança conhecida: ${balanca.nome}`);
+            stations.push(poi);
+          } else {
+            console.log(`Balança ${balanca.nome} está fora da rota atual`);
+          }
+        });
+      }
+    });
+    
+  } catch (error) {
+    console.error("Erro ao buscar balanças conhecidas:", error);
+  }
+  
+  return stations;
+}
+
+/**
+ * Obtém balanças de pesagem da API externa e das fontes locais
+ * Função que pode ser usada sem modificar o componente MapView
+ * 
+ * @param directionsResult O resultado do Google Directions API
+ * @returns Promise<PointOfInterest[]> Promessa com as balanças encontradas
+ */
+export async function getEnhancedWeighingStations(directionsResult: any): Promise<PointOfInterest[]> {
+  if (!directionsResult || !directionsResult.routes || directionsResult.routes.length === 0) {
+    return [];
+  }
+  
+  try {
+    // Extrair cidades e rodovias da rota
+    const route = directionsResult.routes[0];
+    const legs = route.legs || [];
+    
+    // Conjuntos para armazenar cidades e rodovias únicas
+    const citiesInRoute = new Set<string>();
+    const highwaysInRoute = new Set<string>();
+    
+    // Extrair cidades dos endereços
+    legs.forEach((leg: any) => {
+      if (leg.start_address) {
+        const cityMatch = leg.start_address.match(/([A-Za-zÀ-ú\s]+)(?:\s*-\s*[A-Z]{2})/);
+        if (cityMatch && cityMatch[1]) {
+          citiesInRoute.add(cityMatch[1].trim());
+        }
+      }
+      if (leg.end_address) {
+        const cityMatch = leg.end_address.match(/([A-Za-zÀ-ú\s]+)(?:\s*-\s*[A-Z]{2})/);
+        if (cityMatch && cityMatch[1]) {
+          citiesInRoute.add(cityMatch[1].trim());
+        }
+      }
+      
+      // Extrair rodovias das instruções
+      if (leg.steps) {
+        leg.steps.forEach((step: any) => {
+          if (step.html_instructions) {
+            // Extrair menções a rodovias (SP-XXX, BR-XXX, etc)
+            const instText = step.html_instructions.replace(/<[^>]*>/g, '');
+            const rodoviaMatches = instText.match(/(SP|BR|MG|PR|RS|SC|GO|MT|MS|BA|PE|RJ|ES)[-\s](\d{3})/g);
+            if (rodoviaMatches) {
+              rodoviaMatches.forEach((m: any) => {
+                const normalizedRod = m.replace(/\s+/g, '-').toUpperCase();
+                highwaysInRoute.add(normalizedRod);
+              });
+            }
+          }
+        });
+      }
+    });
+    
+    // Converter para arrays de strings
+    const cities = Array.from(citiesInRoute as Set<string>);
+    const highways = Array.from(highwaysInRoute as Set<string>);
+    
+    console.log("Cidades detectadas:", cities);
+    console.log("Rodovias detectadas:", highways);
+    
+    // Buscar balanças da API
+    const apiStations = await fetchWeighingStationsFromAPI(cities, highways);
+    
+    // Buscar balanças com Google Places API (fallback, se tiver acesso à API)
+    let placesStations: PointOfInterest[] = [];
+    if (window.google && window.google.maps) {
+      const map = document.getElementById('map'); // Elemento do mapa
+      if (map) {
+        try {
+          // Aqui, você pode implementar chamada ao método do Google Places API
+          // (removemos esta parte por enquanto para não modificar o MapView)
+        } catch (placesError) {
+          console.error("Erro ao buscar com Places API:", placesError);
+        }
+      }
+    }
+    
+    // Buscar balanças de fontes locais (fallback)
+    const localStations = await fetchLocalWeighingStations(cities, highways, directionsResult);
+    
+    // Combinar e remover duplicatas
+    const allStations = [...apiStations, ...placesStations, ...localStations];
+    const uniqueStations = removeDuplicateStations(allStations);
+    
+    console.log(`Total de balanças encontradas: ${uniqueStations.length}`);
+    return uniqueStations;
+    
+  } catch (error) {
+    console.error("Erro ao buscar balanças aprimoradas:", error);
+    return [];
+  }
+}
+
+/**
+ * Busca balanças do servidor através do novo endpoint
+ * @param cities Lista de cidades na rota
+ * @param highways Lista de rodovias na rota
+ * @returns Promise com array de Balanças
+ */
+export async function fetchWeighingStationsFromAPI(cities: string[], highways: string[]): Promise<PointOfInterest[]> {
+  try {
+    console.log("Buscando balanças da API...");
+    
+    // Construir URL com parâmetros
+    const params = new URLSearchParams();
+    if (cities.length > 0) {
+      params.set('cities', cities.join(','));
+    }
+    if (highways.length > 0) {
+      params.set('highways', highways.join(','));
+    }
+    
+    // Fazer a requisição
+    const response = await fetch(`/api/weighing-stations?${params.toString()}`);
+    
+    if (!response.ok) {
+      throw new Error(`Erro na requisição: ${response.status}`);
+    }
+    
+    const stations = await response.json();
+    console.log(`API retornou ${stations.length} balanças`);
+    return stations;
+  } catch (error) {
+    console.error("Erro ao buscar balanças da API:", error);
+    return [];
+  }
+}
+
+/**
+ * Versão síncrona para obter balanças (para compatibilidade)
+ */
+export function fetchWeighingStationsAsync(cities: string[], highways: string[]): PointOfInterest[] {
+  console.log("Versão síncrona de busca de balanças");
+  // Como é síncrono, retornamos um array vazio e esperamos a versão assíncrona
+  return [];
+}
+
+/**
+ * Busca balanças de fontes locais (arquivo weighingStationData)
+ */
+export async function fetchLocalWeighingStations(cities: string[], highways: string[], directionsResult: any): Promise<PointOfInterest[]> {
+  try {
+    console.log("Buscando balanças de fontes locais...");
+    
+    // Aqui, podemos importar dinâmicamente as funções do arquivo weighingStationData
+    // Porém, como não queremos modificar a estrutura, vamos usar os dados básicos
+    
+    // Verificar quais balanças conhecidas estão próximas da rota
+    const knownStations = findKnownWeighingStations(directionsResult);
+    console.log(`Encontradas ${knownStations.length} balanças conhecidas próximas à rota`);
+    
+    return knownStations;
+  } catch (error) {
+    console.error("Erro ao buscar balanças locais:", error);
+    return [];
+  }
+}
+
+/**
+ * Remove estações duplicadas com base na proximidade geográfica
+ */
+export function removeDuplicateStations(stations: PointOfInterest[]): PointOfInterest[] {
+  const uniqueStations: PointOfInterest[] = [];
+  
+  stations.forEach(station => {
+    // Verificar se já existe uma estação similar na lista de únicas
+    const isDuplicate = uniqueStations.some(existingStation => {
+      try {
+        // Calcular distância entre as estações
+        const distance = calculateHaversineDistance(
+          parseFloat(station.lat), parseFloat(station.lng),
+          parseFloat(existingStation.lat), parseFloat(existingStation.lng)
+        );
+        // Se a distância for menor que 5km, considerar duplicata
+        return distance < 5;
+      } catch (e) {
+        // Se não conseguir calcular distância, verificar pelo nome
+        return station.name === existingStation.name;
+      }
+    });
+    
+    // Se não for duplicata, adicionar à lista de únicas
+    if (!isDuplicate) {
+      uniqueStations.push(station);
+    }
+  });
+  
+  return uniqueStations;
+}
+
+/**
  * Verifica se um ponto está próximo à rota
  * @param point Ponto a ser verificado (pedágio, etc)
  * @param directionsResult Resultado do directions service

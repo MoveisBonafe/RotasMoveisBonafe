@@ -283,6 +283,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to retrieve points of interest" });
     }
   });
+  
+  /**
+   * Endpoint para obter balanças de pesagem de várias fontes
+   * Permite filtrar por cidade ou rodovia
+   */
+  app.get("/api/weighing-stations", async (req: Request, res: Response) => {
+    try {
+      // Obter as balanças do banco de dados primeiro
+      const allPOIs = await storage.getAllPointsOfInterest();
+      let weighingStations = allPOIs.filter(poi => poi.type === 'weighing_station');
+      
+      // Parâmetros opcionais para filtrar
+      const cities = req.query.cities ? String(req.query.cities).split(',') : [];
+      const highways = req.query.highways ? String(req.query.highways).split(',') : [];
+      
+      // Log dos parâmetros recebidos
+      console.log(`Buscando balanças. Cidades: [${cities.join(", ")}], Rodovias: [${highways.join(", ")}]`);
+      
+      // Fontes de dados de balanças
+      let weighingStationsFromOtherSources: any[] = [];
+      
+      // Buscar balanças por cidade (se fornecidas)
+      if (cities.length > 0) {
+        // Importar as funções do arquivo weighingStationData
+        const { getWeighingStationsByCities } = require('../client/src/lib/weighingStationData');
+        const cityStations = getWeighingStationsByCities(cities);
+        console.log(`Encontradas ${cityStations.length} balanças adicionais por cidade`);
+        weighingStationsFromOtherSources = [...weighingStationsFromOtherSources, ...cityStations];
+      }
+      
+      // Buscar balanças por rodovia (se fornecidas)
+      if (highways.length > 0) {
+        // Importar as funções do arquivo weighingStationData
+        const { getWeighingStationsByHighways } = require('../client/src/lib/weighingStationData');
+        const highwayStations = getWeighingStationsByHighways(highways);
+        console.log(`Encontradas ${highwayStations.length} balanças adicionais por rodovia`);
+        weighingStationsFromOtherSources = [...weighingStationsFromOtherSources, ...highwayStations];
+      }
+      
+      // Remover duplicatas pelo ID
+      const uniqueIds = new Set<number>();
+      const uniqueStations = [...weighingStations];
+      
+      // Adicionar balanças de outras fontes, verificando duplicatas
+      weighingStationsFromOtherSources.forEach(station => {
+        if (!uniqueIds.has(station.id)) {
+          uniqueIds.add(station.id);
+          uniqueStations.push(station);
+        }
+      });
+      
+      console.log(`Total de balanças encontradas: ${uniqueStations.length}`);
+      res.json(uniqueStations);
+    } catch (error) {
+      console.error("Erro ao buscar balanças:", error);
+      res.status(500).json({ error: "Falha ao buscar balanças", details: error.message });
+    }
+  });
 
   // Get city events - implementação simplificada para melhorar desempenho
   app.get("/api/city-events", (req: Request, res: Response) => {
