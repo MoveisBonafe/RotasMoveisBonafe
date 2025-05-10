@@ -9,9 +9,22 @@
 
 .route-tab-collapsed {
   max-height: 40px !important;
-  overflow: hidden;
+  overflow: hidden !important;
   padding: 0 !important;
   margin-bottom: 0 !important;
+  visibility: visible !important;
+  position: relative !important;
+}
+
+/* Quando o painel está minimizado */
+.route-info-panel.collapsed {
+  max-height: 48px !important;
+  overflow: hidden !important;
+}
+
+/* Conteúdo da aba */
+.tab-content {
+  transition: all 0.3s ease;
 }
 
 .route-info-summary {

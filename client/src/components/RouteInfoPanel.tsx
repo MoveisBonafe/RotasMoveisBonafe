@@ -61,7 +61,7 @@ export default function RouteInfoPanel({
   }, [calculatedRoute, poisAlongRoute]);
   
   return (
-    <div className={`route-info-panel w-full bg-white border rounded-md shadow-sm flex flex-col ${isCollapsed ? 'route-tab-collapsed' : ''}`}>
+    <div className={`route-info-panel w-full bg-white border rounded-md shadow-sm flex flex-col ${isCollapsed ? 'collapsed' : ''}`}>
       {/* Tabs */}
       <div className="flex border-b">
         <button
@@ -96,7 +96,7 @@ export default function RouteInfoPanel({
 
       {/* Summary Tab */}
       {activeTab === "summary" && (
-        <div className={`${isCollapsed ? 'route-tab-collapsed p-1' : 'p-2'} ${isExpanded ? 'expanded-tab' : ''}`}>
+        <div className={`tab-content ${isCollapsed ? 'route-tab-collapsed p-1' : 'p-2'} ${isExpanded ? 'expanded-tab' : ''}`}>
           {/* Header with minimize/expand buttons */}
           <div className="flex justify-between items-center w-full px-2">
             <div className="flex items-center">
