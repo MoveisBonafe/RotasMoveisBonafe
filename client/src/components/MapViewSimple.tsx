@@ -39,6 +39,8 @@ export default function MapViewSimple({
   const [error, setError] = useState<string | null>(null);
   const [apiTollPoints, setApiTollPoints] = useState<PointOfInterest[]>([]);
   const [mapType, setMapType] = useState<string>("roadmap");
+  const [streetViewPanorama, setStreetViewPanorama] = useState<google.maps.StreetViewPanorama | null>(null);
+  const [isStreetViewActive, setIsStreetViewActive] = useState<boolean>(false);
   
   // Usar o hook para trabalhar com a API Routes Preferred
   const { calculateRouteSegments } = useRoutesPreferred(); // Não usamos mais extractTollPoints
@@ -52,6 +54,62 @@ export default function MapViewSimple({
     if (type.includes('toll')) return "#8BC34A"; // Outros pedágios (verde)
     return "#9C27B0"; // Outros POIs (roxo)
   };
+  
+  // Função para alternar o Street View
+  const toggleStreetView = useCallback(() => {
+    if (!map || !mapRef.current) return;
+    
+    if (isStreetViewActive) {
+      // Desativar Street View
+      if (streetViewPanorama) {
+        streetViewPanorama.setVisible(false);
+      }
+      setIsStreetViewActive(false);
+      
+      // Restaurar o mapa normal
+      map.setMapTypeId(mapType as google.maps.MapTypeId);
+    } else {
+      // Ativar Street View
+      try {
+        // Usar a posição atual ou a origem como posição inicial do Street View
+        const position = map.getCenter();
+        
+        // Criar serviço de Street View
+        const streetViewService = new google.maps.StreetViewService();
+        
+        streetViewService.getPanorama({
+          location: position,
+          radius: 50,
+          source: google.maps.StreetViewSource.OUTDOOR
+        }, (data, status) => {
+          if (status === google.maps.StreetViewStatus.OK && mapRef.current) {
+            // Criar panorama de Street View
+            const panorama = new google.maps.StreetViewPanorama(
+              mapRef.current,
+              {
+                position: data.location!.latLng!,
+                pov: {
+                  heading: 270,
+                  pitch: 0
+                },
+                visible: true,
+                zoom: 1
+              }
+            );
+            
+            map.setStreetView(panorama);
+            setStreetViewPanorama(panorama);
+            setIsStreetViewActive(true);
+          } else {
+            console.error("Street View não disponível nesta localização");
+            alert("Street View não disponível nesta localização. Tente outro ponto no mapa.");
+          }
+        });
+      } catch (error) {
+        console.error("Erro ao iniciar Street View:", error);
+      }
+    }
+  }, [map, mapType, isStreetViewActive, streetViewPanorama]);
 
   // Inicializar o mapa quando o componente montar
   useEffect(() => {
@@ -417,13 +475,15 @@ export default function MapViewSimple({
               path: google.maps.SymbolPath.CIRCLE,
               fillColor: "#4285F4",
               fillOpacity: 1,
-              strokeWeight: 1,
+              strokeWeight: 2,
               strokeColor: "#FFFFFF",
-              scale: 10
+              scale: 12
             },
             label: {
-              text: "A",
-              color: "#FFFFFF"
+              text: "0",
+              color: "#FFFFFF",
+              fontSize: "11px",
+              fontWeight: "bold"
             }
           });
           
@@ -468,13 +528,15 @@ export default function MapViewSimple({
               path: google.maps.SymbolPath.CIRCLE,
               fillColor: "#DB4437",
               fillOpacity: 1,
-              strokeWeight: 1,
+              strokeWeight: 2,
               strokeColor: "#FFFFFF",
-              scale: 10
+              scale: 12
             },
             label: {
               text: `${index + 1}`,
-              color: "#FFFFFF"
+              color: "#FFFFFF",
+              fontSize: "11px",
+              fontWeight: "bold"
             }
           });
           
