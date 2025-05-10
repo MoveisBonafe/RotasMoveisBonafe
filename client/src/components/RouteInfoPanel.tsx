@@ -106,8 +106,9 @@ export default function RouteInfoPanel({
   
   // Separar os pontos de interesse por tipo
   const tollsOnRoute = poisAlongRoute.filter(poi => poi.type === 'toll');
-  const balancesOnRoute = poisAlongRoute.filter(poi => poi.type === 'weight_station');
-  const restAreasOnRoute = poisAlongRoute.filter(poi => poi.type === 'rest_area');
+  const balancesOnRoute = poisAlongRoute.filter(poi => poi.type === 'weighing_station');
+  // Não temos áreas de descanso implementadas ainda
+  const restAreasOnRoute: typeof poisAlongRoute = [];
   
   // Calcular consumo de combustível
   const fuelConsumption = routeInfo && vehicleType

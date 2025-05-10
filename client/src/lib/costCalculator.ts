@@ -65,9 +65,11 @@ export function calculateRouteCosts(
     totalDistance: number;
     totalDuration: number;
   },
-  tolls: PointOfInterest[],
+  pois: PointOfInterest[],
   vehicleType: VehicleType
 ): RouteInfo {
+  // Filtrar apenas os pedágios para o cálculo de custo
+  const tolls = pois.filter(poi => poi.type === 'toll');
   const tollCost = calculateTollCost(tolls, vehicleType);
   const fuelCost = calculateFuelCost(route.totalDistance, vehicleType);
   

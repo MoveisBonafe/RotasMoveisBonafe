@@ -41,13 +41,14 @@ export function useRouteOptimization() {
     const totalDuration = 8100; // 2h 15min in seconds
     
     // Filter POIs along route (in a real app this would be based on actual route)
-    const tollsOnRoute = pois.filter(poi => poi.type === 'toll');
-    setPoisAlongRoute(tollsOnRoute);
+    // Incluir pedágios e balanças
+    const poisOnRoute = pois.filter(poi => poi.type === 'toll' || poi.type === 'weighing_station');
+    setPoisAlongRoute(poisOnRoute);
     
     // Calculate costs based on vehicle type and route details
     const routeInfoData = calculateRouteCosts(
       { totalDistance, totalDuration },
-      tollsOnRoute,
+      poisOnRoute,
       vehicleType
     );
     
