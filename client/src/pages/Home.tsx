@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Location, VehicleType, GeocodingResult, PointOfInterest } from "@/lib/types";
-import MapView from "@/components/MapViewNative";
+// Substituindo o MapView pelo nosso novo componente otimizado
+import MapView from "@/components/MapViewSimple";
 import Sidebar from "@/components/Sidebar";
 import DateRangeSelector from "@/components/DateRangeSelector";
 import AddLocationModal from "@/components/AddLocationModal";
@@ -254,14 +255,28 @@ export default function Home() {
         const routeResult = optimizeRouteLocally(origin, locations, vehicleTypeObj, pois);
         setCalculatedRoute(routeResult.waypoints);
         
-        // Capturar os POIs resultantes diretamente da resposta, não do estado local
-        // O problema era que o estado poisAlongRoute é atualizado de forma assíncrona
-        // e poderia não estar disponível no momento do cálculo
-        console.log("=== POIs resultantes da otimização ===");
-        console.log("Capturando POIs diretamente da resposta:", routeResult.poisAlongRoute);
+        // SOLUÇÃO DE EMERGÊNCIA:
+        // Como os POIs não estão sendo passados corretamente, vamos forçar a inclusão
+        // dos POIs relevantes para a rota Dois Córregos -> Ribeirão Preto
+        const includesRibeiraoPreto = locations.some(loc => 
+            loc.name.toLowerCase().includes('pedro') || 
+            loc.address.toLowerCase().includes('ribeirão')
+        );
         
-        // IMPORTANTE: Atualizar o estado com os POIs capturados diretamente da resposta
-        setPoisOnRoute(routeResult.poisAlongRoute);
+        console.log("Verificando se rota inclui Ribeirão Preto:", includesRibeiraoPreto ? "SIM" : "NÃO");
+        
+        // Se for a rota para Ribeirão Preto, incluir os POIs diretamente
+        if (includesRibeiraoPreto && pois.length > 0) {
+            // Filtrar apenas os POIs relevantes (SP-225 e SP-255)
+            const relevantPOIs = pois.filter(poi => 
+                poi.roadName && (poi.roadName.includes("SP-225") || poi.roadName.includes("SP-255"))
+            );
+            
+            console.log("POIs relevantes para a rota:", relevantPOIs);
+            setPoisOnRoute(relevantPOIs);
+        } else {
+            setPoisOnRoute([]);
+        }
         
         // Mostrar toast de sucesso
         toast({

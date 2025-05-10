@@ -1,11 +1,20 @@
-import { useState, useEffect } from "react";
-import { Location } from "@/lib/types";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Location, PointOfInterest } from "@/lib/types";
 
 interface MapViewProps {
   origin: Location | null;
   waypoints: Location[];
   calculatedRoute: Location[] | null;
   onRouteCalculated?: (result: any) => void;
+  pointsOfInterest?: PointOfInterest[]; // Pontos de interesse (pedágios, balanças)
+}
+
+// Definições para TypeScript
+declare global {
+  interface Window {
+    google: any;
+    initMap: () => void;
+  }
 }
 
 // Recuperar a API key do ambiente
@@ -13,175 +22,401 @@ const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string;
 
 export default function MapViewSimple({ 
   origin, 
-  waypoints, 
-  calculatedRoute 
+  waypoints,
+  calculatedRoute,
+  pointsOfInterest = []
 }: MapViewProps) {
-  const [mapSrc, setMapSrc] = useState<string>("");
+  const mapRef = useRef<HTMLDivElement>(null);
+  const [map, setMap] = useState<any>(null);
+  const [markers, setMarkers] = useState<any[]>([]);
+  const [directionsRenderer, setDirectionsRenderer] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-  
-  // Função auxiliar para criar a URL do mapa com coordenadas exatas
-  const createMapUrl = (mapType = "roadmap") => {
-    if (!origin) return "";
-    
-    let baseUrl;
-    const params = new URLSearchParams({
-      key: GOOGLE_MAPS_API_KEY,
-      maptype: mapType
-    });
-    
-    // Se temos uma rota calculada, mostramos ela usando o modo directions
-    if (calculatedRoute && calculatedRoute.length > 0) {
-      baseUrl = `https://www.google.com/maps/embed/v1/directions`;
-      
-      const originParam = `${origin.lat},${origin.lng}`;
-      const destination = calculatedRoute[calculatedRoute.length - 1];
-      const destinationParam = `${destination.lat},${destination.lng}`;
-      
-      // Adicionar origem e destino
-      params.append("origin", originParam);
-      params.append("destination", destinationParam);
-      params.append("mode", "driving");
-      
-      // Extrair waypoints da rota (excluindo origem e destino)
-      if (calculatedRoute.length > 2) {
-        const waypointsParam = calculatedRoute
-          .slice(1, calculatedRoute.length - 1)
-          .map(wp => `${wp.lat},${wp.lng}`)
-          .join('|');
+
+  // Inicializar o mapa quando o componente montar
+  useEffect(() => {
+    if (mapRef.current && window.google && window.google.maps) {
+      try {
+        console.log("Inicializando mapa simplificado...");
         
-        if (waypointsParam) {
-          params.append("waypoints", waypointsParam);
-        }
+        // Configurações iniciais do mapa
+        const mapOptions = {
+          center: { lat: -22.36752, lng: -48.38016 }, // Dois Córregos-SP
+          zoom: 12,
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          fullscreenControl: true,
+          scrollwheel: true,
+          gestureHandling: "greedy",
+          mapTypeControl: true,
+          mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+            position: google.maps.ControlPosition.TOP_RIGHT,
+          },
+          zoomControl: true,
+          streetViewControl: true
+        };
+
+        // Criar a instância do mapa
+        const newMap = new google.maps.Map(mapRef.current, mapOptions);
+        setMap(newMap);
+        
+        // Configurar o renderizador de direções
+        const newDirectionsRenderer = new google.maps.DirectionsRenderer({
+          suppressMarkers: true, // Importante: suprimir marcadores para usar os nossos customizados
+          polylineOptions: {
+            strokeColor: "#4285F4",
+            strokeWeight: 5,
+            strokeOpacity: 0.8
+          }
+        });
+        newDirectionsRenderer.setMap(newMap);
+        setDirectionsRenderer(newDirectionsRenderer);
+        
+        console.log("Mapa inicializado com sucesso");
+      } catch (e) {
+        console.error("Erro ao inicializar mapa:", e);
+        setError("Erro ao inicializar o mapa. Tente recarregar a página.");
       }
     }
-    // Se tivermos waypoints, mas não a rota calculada ainda
-    else if (waypoints && waypoints.length > 0) {
-      baseUrl = `https://www.google.com/maps/embed/v1/place`;
-      
-      // Calcular centro do mapa
-      let sumLat = parseFloat(origin.lat);
-      let sumLng = parseFloat(origin.lng);
-      
-      waypoints.forEach(wp => {
-        sumLat += parseFloat(wp.lat);
-        sumLng += parseFloat(wp.lng);
-      });
-      
-      const centerLat = sumLat / (waypoints.length + 1);
-      const centerLng = sumLng / (waypoints.length + 1);
-      
-      // Usar o centro calculado como ponto central
-      const centerLocation = `${centerLat},${centerLng}`;
-      
-      params.append("q", centerLocation);
-      params.append("center", centerLocation);
-      params.append("zoom", "10");
-    } 
-    // Se não tivermos waypoints, usamos place para mostrar apenas a origem
-    else {
-      baseUrl = `https://www.google.com/maps/embed/v1/place`;
-      params.append("q", `${origin.lat},${origin.lng}`);
-      params.append("zoom", "14");
+  }, []);
+
+  // Renderizar a rota calculada
+  useEffect(() => {
+    if (!map || !directionsRenderer || !origin || !calculatedRoute || calculatedRoute.length < 1) {
+      console.log("Dados insuficientes para renderizar rota ou mapa não inicializado ainda");
+      return;
     }
+
+    console.log("Renderizando rota calculada no novo mapa simplificado");
     
-    return `${baseUrl}?${params.toString()}`;
-  };
-  
-  // Quando origin ou waypoints mudarem, atualizar a URL do mapa
-  useEffect(() => {
-    if (origin) {
-      try {
-        const url = createMapUrl();
-        setMapSrc(url);
-      } catch (e) {
-        console.error("Erro ao criar URL do mapa:", e);
-        setError("Erro ao carregar mapa. Tente novamente.");
+    try {
+      // Limpar marcadores antigos
+      markers.forEach(marker => marker.setMap(null));
+      const newMarkers: any[] = [];
+      
+      // Bounds para ajustar o mapa
+      const bounds = new google.maps.LatLngBounds();
+      
+      // Se temos uma rota calculada com pelo menos 2 pontos
+      if (calculatedRoute && calculatedRoute.length >= 2) {
+        // Preparar pontos para o DirectionsService
+        const originPoint = {
+          lat: parseFloat(origin.lat),
+          lng: parseFloat(origin.lng)
+        };
+        bounds.extend(originPoint);
+        
+        // Pontos intermediários
+        const waypoints = calculatedRoute.slice(1, -1).map(point => ({
+          location: new google.maps.LatLng(
+            parseFloat(point.lat),
+            parseFloat(point.lng)
+          ),
+          stopover: true
+        }));
+        
+        // Ponto de destino (último ponto)
+        const destinationPoint = {
+          lat: parseFloat(calculatedRoute[calculatedRoute.length - 1].lat),
+          lng: parseFloat(calculatedRoute[calculatedRoute.length - 1].lng)
+        };
+        bounds.extend(destinationPoint);
+        
+        // Criar serviço de direções
+        const directionsService = new google.maps.DirectionsService();
+        
+        // Configurar requisição
+        const request = {
+          origin: originPoint,
+          destination: destinationPoint,
+          waypoints: waypoints,
+          optimizeWaypoints: false,
+          travelMode: google.maps.TravelMode.DRIVING
+        };
+        
+        // Obter direções
+        directionsService.route(request, (result, status) => {
+          if (status === google.maps.DirectionsStatus.OK) {
+            directionsRenderer.setDirections(result);
+            
+            // IMPORTANTE: Adicionar marcadores personalizados para cada ponto da rota
+            // Origem (0)
+            const originMarker = new google.maps.Marker({
+              position: originPoint,
+              map,
+              title: origin.name,
+              icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: "#4285F4", // Azul Google
+                fillOpacity: 1,
+                strokeWeight: 1,
+                strokeColor: "#FFFFFF",
+                scale: 10
+              },
+              label: {
+                text: "0", // "Origem" é o ponto 0
+                color: "#FFFFFF",
+                fontWeight: "bold"
+              },
+              zIndex: 100
+            });
+            newMarkers.push(originMarker);
+            
+            // Destinos com números sequenciais
+            calculatedRoute.slice(1).forEach((point, index) => {
+              const position = {
+                lat: parseFloat(point.lat),
+                lng: parseFloat(point.lng)
+              };
+              
+              bounds.extend(position);
+              
+              const marker = new google.maps.Marker({
+                position,
+                map,
+                title: point.name,
+                icon: {
+                  path: google.maps.SymbolPath.CIRCLE,
+                  fillColor: "#DB4437", // Vermelho Google
+                  fillOpacity: 1,
+                  strokeWeight: 1,
+                  strokeColor: "#FFFFFF",
+                  scale: 10
+                },
+                label: {
+                  text: `${index + 1}`, // Numeração sequencial
+                  color: "#FFFFFF",
+                  fontWeight: "bold"
+                },
+                zIndex: 90
+              });
+              
+              newMarkers.push(marker);
+            });
+            
+            // SUPER IMPORTANTE: Adicionar POIs explicitamente como marcadores
+            console.log("Adicionando POIs como marcadores:", pointsOfInterest);
+            
+            // Verificar se temos POIs para mostrar
+            if (pointsOfInterest && pointsOfInterest.length > 0) {
+              pointsOfInterest.forEach(poi => {
+                try {
+                  if (!poi.lat || !poi.lng) {
+                    console.warn(`POI ${poi.name} possui coordenadas inválidas`);
+                    return;
+                  }
+                  
+                  const poiPosition = {
+                    lat: parseFloat(poi.lat),
+                    lng: parseFloat(poi.lng)
+                  };
+                  
+                  // Não estender bounds com POIs para manter o zoom adequado na rota
+                  
+                  // Criar marcador com estilo apropriado para pedágios/balanças
+                  const poiMarker = new google.maps.Marker({
+                    position: poiPosition,
+                    map,
+                    title: poi.name,
+                    icon: {
+                      path: google.maps.SymbolPath.CIRCLE,
+                      fillColor: poi.type === 'toll' ? "#FFC107" : "#F44336", // Amarelo para pedágio, vermelho para balança
+                      fillOpacity: 1,
+                      strokeWeight: 2,
+                      strokeColor: "#000000",
+                      scale: 12
+                    },
+                    label: {
+                      text: poi.type === 'toll' ? '$' : 'B', // Símbolo $ para pedágio, B para balança
+                      color: "#FFFFFF",
+                      fontWeight: "bold",
+                      fontSize: "11px"
+                    },
+                    zIndex: 110 // Prioridade maior que os outros marcadores
+                  });
+                  
+                  // Informações detalhadas ao clicar no POI
+                  const infoContent = `
+                    <div style="padding: 8px; max-width: 240px; font-family: Arial, sans-serif;">
+                      <h3 style="margin: 0 0 8px 0; color: #333; font-size: 14px;">${poi.name}</h3>
+                      <p style="margin: 5px 0; font-size: 12px; color: #666;">
+                        ${poi.type === 'toll' ? '🚧 Pedágio' : '⚖️ Balança de pesagem'}
+                      </p>
+                      ${poi.roadName ? `<p style="margin: 5px 0; font-size: 12px;">🛣️ Rodovia: ${poi.roadName}</p>` : ''}
+                      ${poi.cost ? `<p style="margin: 5px 0; font-size: 12px;">💰 Custo: <strong>R$ ${(poi.cost/100).toFixed(2)}</strong></p>` : ''}
+                      ${poi.restrictions ? `<p style="margin: 5px 0; font-size: 12px;">⚠️ <strong>Restrições:</strong> ${poi.restrictions}</p>` : ''}
+                    </div>
+                  `;
+                  
+                  const infoWindow = new google.maps.InfoWindow({
+                    content: infoContent
+                  });
+                  
+                  poiMarker.addListener('click', () => {
+                    infoWindow.open(map, poiMarker);
+                  });
+                  
+                  newMarkers.push(poiMarker);
+                  console.log(`POI adicionado ao mapa: ${poi.name} (${poi.type})`);
+                } catch (error) {
+                  console.error(`Erro ao adicionar POI ${poi.name}:`, error);
+                }
+              });
+              
+              console.log(`Total de ${pointsOfInterest.length} POIs adicionados ao mapa`);
+            } else {
+              console.log("Nenhum POI disponível para adicionar ao mapa");
+            }
+            
+            // Ajustar o mapa para mostrar todos os pontos
+            map.fitBounds(bounds);
+            
+            // Guardar os marcadores
+            setMarkers(newMarkers);
+          } else {
+            console.error(`Erro no serviço de direções: ${status}`);
+            setError(`Não foi possível calcular a rota. Erro: ${status}`);
+            
+            // Mostrar pelo menos os marcadores dos pontos
+            showFallbackMarkers();
+          }
+        });
+      } else {
+        // Se não temos rota calculada, mostrar apenas marcadores
+        showFallbackMarkers();
       }
-    }
-  }, [origin, waypoints]);
-  
-  // Quando uma rota for calculada, atualizar o iframe para mostrar a rota
-  useEffect(() => {
-    if (origin && calculatedRoute && calculatedRoute.length > 0) {
-      try {
-        const url = createMapUrl();
-        setMapSrc(url);
-      } catch (e) {
-        console.error("Erro ao criar URL do mapa para rota:", e);
-        setError("Erro ao carregar rota no mapa. Tente novamente.");
+      
+      // Função para mostrar apenas marcadores se a rota falhar
+      function showFallbackMarkers() {
+        console.log("Usando fallback para mostrar apenas marcadores");
+        
+        if (origin) {
+          const originPoint = {
+            lat: parseFloat(origin.lat),
+            lng: parseFloat(origin.lng)
+          };
+          
+          const originMarker = new google.maps.Marker({
+            position: originPoint,
+            map,
+            title: origin.name,
+            icon: {
+              path: google.maps.SymbolPath.CIRCLE,
+              fillColor: "#4285F4",
+              fillOpacity: 1,
+              strokeWeight: 1,
+              strokeColor: "#FFFFFF",
+              scale: 10
+            },
+            label: {
+              text: "A",
+              color: "#FFFFFF"
+            }
+          });
+          
+          bounds.extend(originPoint);
+          newMarkers.push(originMarker);
+        }
+        
+        // Marcadores para os waypoints
+        waypoints.forEach((point, index) => {
+          const position = {
+            lat: parseFloat(point.lat),
+            lng: parseFloat(point.lng)
+          };
+          
+          bounds.extend(position);
+          
+          const marker = new google.maps.Marker({
+            position,
+            map,
+            title: point.name,
+            icon: {
+              path: google.maps.SymbolPath.CIRCLE,
+              fillColor: "#DB4437",
+              fillOpacity: 1,
+              strokeWeight: 1,
+              strokeColor: "#FFFFFF",
+              scale: 10
+            },
+            label: {
+              text: `${index + 1}`,
+              color: "#FFFFFF"
+            }
+          });
+          
+          newMarkers.push(marker);
+        });
+        
+        // Adicionar POIs no fallback também
+        if (pointsOfInterest && pointsOfInterest.length > 0) {
+          pointsOfInterest.forEach(poi => {
+            try {
+              const position = {
+                lat: parseFloat(poi.lat),
+                lng: parseFloat(poi.lng)
+              };
+              
+              // Criar marcador para o POI
+              const poiMarker = new google.maps.Marker({
+                position,
+                map,
+                title: poi.name,
+                icon: {
+                  path: google.maps.SymbolPath.CIRCLE,
+                  fillColor: poi.type === 'toll' ? "#FFC107" : "#F44336",
+                  fillOpacity: 1,
+                  strokeWeight: 1,
+                  strokeColor: "#000000",
+                  scale: 10
+                },
+                label: {
+                  text: poi.type === 'toll' ? '$' : 'B',
+                  color: "#FFFFFF"
+                }
+              });
+              
+              newMarkers.push(poiMarker);
+            } catch (error) {
+              console.error(`Erro ao adicionar POI ${poi.name} no fallback:`, error);
+            }
+          });
+        }
+        
+        // Ajustar o mapa para mostrar todos os pontos
+        if (newMarkers.length > 0) {
+          map.fitBounds(bounds);
+        } else {
+          map.setCenter({ lat: -22.36752, lng: -48.38016 });
+          map.setZoom(10);
+        }
+        
+        // Guardar os marcadores
+        setMarkers(newMarkers);
       }
+    } catch (e) {
+      console.error("Erro ao renderizar rota:", e);
+      setError("Ocorreu um erro ao mostrar a rota no mapa.");
     }
-  }, [calculatedRoute, origin]);
-  
-  // Botões para alternar entre visualizações
-  const showSatelliteView = () => {
-    setMapSrc(createMapUrl("satellite"));
-  };
-  
-  const showRoadmapView = () => {
-    setMapSrc(createMapUrl("roadmap"));
-  };
-  
+  }, [map, directionsRenderer, origin, calculatedRoute, pointsOfInterest]);
+
   return (
     <div className="flex-1 relative h-full">
-      <div className="h-full w-full relative rounded-xl overflow-hidden shadow-xl border border-blue-100" style={{ minHeight: '500px' }}>
-        {mapSrc ? (
-          <iframe
-            className="w-full h-full border-0 rounded-xl"
-            style={{ 
-              minHeight: '500px',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
-            }}
-            loading="lazy"
-            allowFullScreen
-            referrerPolicy="no-referrer-when-downgrade"
-            src={mapSrc}
-            title="Google Maps"
-          ></iframe>
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-            <div className="text-gray-500">Carregando mapa...</div>
-          </div>
-        )}
-        
-        {/* Controles do mapa */}
-        <div className="absolute top-4 right-4 bg-white rounded-md shadow-md p-2 flex flex-col space-y-2 z-10">
-          {/* Botão de visualização de satélite */}
-          <button 
-            onClick={showSatelliteView} 
-            className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
-            title="Visualização de satélite"
-          >
-            <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clipRule="evenodd" />
-            </svg>
-          </button>
-          
-          {/* Botão de visualização de mapa */}
-          <button 
-            onClick={showRoadmapView}
-            className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
-            title="Visualização de mapa"
-          >
-            <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path fillRule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clipRule="evenodd" />
-            </svg>
-          </button>
-        </div>
-        
-        {/* Mostrar erro caso ocorra */}
+      <div 
+        ref={mapRef} 
+        className="h-full w-full rounded-xl overflow-hidden shadow-xl border border-blue-100" 
+        style={{ minHeight: '500px' }}
+      >
+        {/* Mostrar mensagem de erro se necessário */}
         {error && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90 z-50">
-            <div className="text-center p-4">
-              <p className="text-red-600 font-bold mb-2">Erro ao carregar o mapa</p>
-              <p className="mb-4">{error}</p>
-              <button
-                onClick={() => window.location.reload()}
-                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
-              >
-                Tentar novamente
-              </button>
-            </div>
+          <div className="absolute inset-0 flex items-center justify-center flex-col bg-white bg-opacity-90 p-4 z-50">
+            <div className="text-red-600 font-bold mb-2">Erro ao carregar o mapa</div>
+            <div className="text-center text-sm mb-4">{error}</div>
+            <button 
+              onClick={() => window.location.reload()}
+              className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
+            >
+              Tentar novamente
+            </button>
           </div>
         )}
       </div>
