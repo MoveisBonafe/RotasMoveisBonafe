@@ -505,8 +505,13 @@ export default function MapViewSimple({
                 };
                 
                 // Verificar se o POI está próximo da rota (dentro de um raio máximo)
-                // Distância máxima varia conforme o tipo de POI
-                const MAX_DISTANCE_KM = poi.type === "toll" ? 2 : 1; // Mais restritivo para balanças
+                // Distância máxima varia conforme o tipo de POI e rodovia
+                let MAX_DISTANCE_KM = poi.type === "toll" ? 2 : 1; // Mais restritivo para balanças
+                
+                // Pedágios na SP-255 (rota para Ribeirão Preto) podem ter um raio maior
+                if (poi.type === "toll" && poi.roadName === "SP-255" && hasRibeiraoPreto) {
+                  MAX_DISTANCE_KM = 3; // Aumentar raio para capturar pedágios importantes na rota SP-255
+                }
                 
                 // Função para calcular distância entre dois pontos em km
                 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
@@ -544,50 +549,45 @@ export default function MapViewSimple({
                 
                 const isNearRoute = minDistance <= MAX_DISTANCE_KM;
                 
-                // Sistema melhorado para detecção de POIs relevantes
+                // ALGORITMO APRIMORADO: Sistema inteligente para detecção de POIs relevantes
                 
                 // 1. Se o POI está dentro da distância limite padrão, sempre inclua
                 if (isNearRoute) {
+                  console.log(`POI INCLUÍDO: ${poi.name} - Motivo: Próximo da rota (distância: ${minDistance.toFixed(2)}km)`);
                   return true; // Adicionar ao mapa imediatamente
                 }
                 
-                // 2. Lógica específica para rotas conhecidas
-                const isSpecialCase = 
-                  // Rota para Ribeirão Preto: incluir todos os pedágios da SP-255
-                  (hasRibeiraoPreto && 
-                   poi.roadName === "SP-255" && 
-                   poi.type === "toll" && 
-                   (
-                     // Aumentar o raio de detecção para pedágios específicos
-                     poi.name.includes("Guatapará") || 
-                     poi.name.includes("Boa Esperança") || 
-                     poi.name.includes("Ribeirão Preto")
-                   )
-                  );
-                
-                // Verificar se é um ponto capturado da API da Google
-                const isTollFromAPI = tollPointsFromAPI.some(tp => 
-                  getDistanceFromLatLonInKm(
-                    parseFloat(tp.lat), parseFloat(tp.lng),
-                    poiPoint.lat, poiPoint.lng
-                  ) < 1.0 // Menos de 1km de qualquer pedágio da API
-                );
-                
-                const isRelevant = isNearRoute || isSpecialCase || isTollFromAPI;
-                
-                // Informações para debug
-                if (isRelevant) {
-                  console.log(`POI INCLUÍDO: ${poi.name} - Motivo: ${
-                    isNearRoute ? 'Próximo da rota' : 
-                    isSpecialCase ? 'Caso especial' : 
-                    isTollFromAPI ? 'Pedágio da API' : 'Outra razão'
-                  } (distância: ${minDistance.toFixed(2)}km)`);
+                // 2. Lógica específica para rotas com destino a Ribeirão Preto
+                if (hasRibeiraoPreto) {
+                  // Pedágios obrigatórios na SP-255 para rota de Ribeirão Preto
+                  if (poi.roadName === "SP-255" && poi.type === "toll") {
+                    // Para pedágios específicos na rota, aumentar raio de detecção
+                    if (poi.name.includes("Guatapará") || 
+                        poi.name.includes("Boa Esperança") || 
+                        poi.name.includes("Ribeirão Preto")) {
+                      
+                      console.log(`POI INCLUÍDO: ${poi.name} - Motivo: Caso especial (distância: ${minDistance.toFixed(2)}km)`);
+                      return true;
+                    }
+                  }
                   
-                  // Adicionar à lista de POIs relevantes
-                  relevantPOIs.push(poi);
-                } else if (poi.type === "toll" || poi.type === "weighing_station") {
-                  console.log(`POI EXCLUÍDO: ${poi.name} - Não relevante para esta rota (distância: ${minDistance.toFixed(2)}km)`);
+                  // Balanças na rota para Ribeirão Preto - verificar apenas distância específica
+                  if (poi.type === "weighing_station" && poi.roadName === "SP-255") {
+                    // Balança de Luís Antônio só inclui se estiver muito próxima
+                    if (poi.name.includes("Luís Antônio") || poi.name.includes("km 150")) {
+                      // Só incluir se a distância for menor que 5km
+                      const isClose = minDistance <= 5;
+                      if (isClose) {
+                        console.log(`POI INCLUÍDO: ${poi.name} - Motivo: Balança relevante (distância: ${minDistance.toFixed(2)}km)`);
+                        return true;
+                      }
+                    }
+                  }
                 }
+                
+                // Caso não atenda nenhum critério acima
+                console.log(`POI EXCLUÍDO: ${poi.name} - Não relevante para esta rota (distância: ${minDistance.toFixed(2)}km)`);
+                return false;
                 
                 // Não usar return, pois já adicionamos ao array relevantPOIs manualmente
               });
