@@ -1,6 +1,9 @@
 /**
  * Cliente para a API AILOG - API especializada em logística e rotas no Brasil
  * Permite identificar com precisão os pedágios em rotas específicas
+ * 
+ * ATENÇÃO: Esta é a ÚNICA fonte de pedágios e pontos de interesse autorizada no sistema.
+ * Não usar nenhuma outra fonte de pedágios para evitar conflitos e informações imprecisas.
  */
 
 import { PointOfInterest, Location } from './types';
