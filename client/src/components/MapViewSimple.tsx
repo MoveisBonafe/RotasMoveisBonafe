@@ -2,6 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { Location, PointOfInterest } from "@/lib/types";
 import { useRoutesPreferred } from "@/hooks/useRoutesPreferred";
 import { fetchTollsFromAilog } from "@/lib/ailogApi";
+import { 
+  formatCurrency, 
+  formatDistance, 
+  formatDuration, 
+  findTollsUsingGooglePlaces,
+  findTollsFromKnownHighways
+} from "@/lib/mapUtils";
 
 interface MapViewProps {
   origin: Location | null;
@@ -571,73 +578,81 @@ export default function MapViewSimple({
               });
             }
             
-            console.log("Cidades na rota:", cities);
+            // Cidades na rota para análise de pontos de interesse
+            console.log("Cidades identificadas na rota:", cities);
             
-            // Verificar se a rota passa por regiões específicas
-            const hasNortheasternCity = northeasternCities.some(city => 
-              cities.some(routeCity => routeCity.includes(city))
-            );
+            // Buscar pedágios e outros pontos de interesse relevantes para esta rota
+            console.log("Iniciando busca de pedágios com Google Maps Places API");
             
-            // Adicionar o pedágio de Boa Esperança do Sul se necessário
-            if (hasNortheasternCity) {
-              console.log("Rota passa por região que pode conter o pedágio de Boa Esperança do Sul");
-              
-              // Verificar se o pedágio já está incluído
-              const hasBESPToll = tollPointsFromAPI.some(toll => 
-                toll.name.includes("Boa Esperança") || 
-                (Math.abs(parseFloat(toll.lat) - (-21.9901)) < 0.01 && 
-                Math.abs(parseFloat(toll.lng) - (-48.3923)) < 0.01)
-              );
-              
-              if (!hasBESPToll) {
-                console.log("Adicionando pedágio de Boa Esperança do Sul manualmente");
+            // Iniciar busca de pedágios com a API do Google
+            fetchTollsFromAilog(origin, waypoints, localStorage.getItem('selectedVehicleType') || 'car')
+              .then(ailogTolls => {
+                // Pedágios encontrados pela API AILOG
+                console.log(`API AILOG encontrou ${ailogTolls?.length || 0} pedágios`);
                 
-                // Adicionar o pedágio explicitamente
-                const boaEsperancaToll = {
-                  id: 99999,
-                  name: "Pedágio Boa Esperança do Sul",
-                  lat: "-21.9901",
-                  lng: "-48.3923",
-                  type: "toll" as "toll", // Type assertion para garantir compatibilidade
-                  cost: 1050, // R$ 10.50
-                  roadName: "SP-255",
-                  restrictions: "Pedágio manual" // String em vez de null
-                };
+                // Adicionar flag para identificar a origem
+                const markedAilogTolls = ailogTolls ? ailogTolls.map(toll => ({
+                  ...toll,
+                  ailogSource: true
+                })) : [];
                 
-                tollPointsFromAPI.push(boaEsperancaToll as PointOfInterest);
-              }
-            }
-            
-            // Notificar sobre os pontos calculados - agendar para depois
-            // do resto do processamento (para evitar loop infinito)
-            if (onRouteCalculated && typeof onRouteCalculated === 'function') {
-              setTimeout(() => {
-                // Verificar se a função ainda existe
+                // Buscar pedágios também com Google Places
+                return findTollsUsingGooglePlaces(map, result)
+                  .then(googleTolls => {
+                    console.log(`Google Places encontrou ${googleTolls?.length || 0} pedágios`);
+                    
+                    // Combinar resultados, evitando duplicatas
+                    let allTolls = [...markedAilogTolls];
+                    
+                    // Adicionar apenas pedágios do Google que não são duplicatas
+                    if (googleTolls && googleTolls.length > 0) {
+                      const uniqueGoogleTolls = googleTolls.filter(gToll => 
+                        !allTolls.some(existingToll => {
+                          // Calcular distância entre os pontos
+                          const dist = window.google.maps.geometry.spherical.computeDistanceBetween(
+                            new window.google.maps.LatLng(parseFloat(gToll.lat), parseFloat(gToll.lng)),
+                            new window.google.maps.LatLng(parseFloat(existingToll.lat), parseFloat(existingToll.lng))
+                          );
+                          // Se estiver a menos de 1km, considerar duplicata
+                          return dist < 1000;
+                        })
+                      );
+                      
+                      console.log(`Adicionando ${uniqueGoogleTolls.length} pedágios únicos do Google Places`);
+                      allTolls = [...allTolls, ...uniqueGoogleTolls];
+                    }
+                    
+                    // Se não encontrou pedágios, tentar com as rodovias conhecidas
+                    if (allTolls.length === 0) {
+                      const knownTolls = findTollsFromKnownHighways(result);
+                      console.log(`Encontrados ${knownTolls?.length || 0} pedágios em rodovias conhecidas`);
+                      
+                      if (knownTolls && knownTolls.length > 0) {
+                        allTolls = [...allTolls, ...knownTolls];
+                      }
+                    }
+                    
+                    // Notificar sobre os pontos encontrados
+                    if (onRouteCalculated && typeof onRouteCalculated === 'function') {
+                      onRouteCalculated({
+                        ...result,
+                        poisAlongRoute: allTolls
+                      });
+                    }
+                    
+                    return allTolls;
+                  });
+              })
+              .catch(error => {
+                console.error("Erro ao buscar pedágios:", error);
+                // Se houver erro, notificar com lista vazia
                 if (onRouteCalculated) {
                   onRouteCalculated({
                     ...result,
-                    poisAlongRoute: allPOIs
+                    poisAlongRoute: []
                   });
                 }
-              }, 200);
-            }
-            
-            // Combinar os POIs da API com os do backend
-            let allPOIs = [...tollPointsFromAPI];
-            
-            // Função para verificar coordenadas duplicadas (considerar até 0.01 grau de diferença, ~1km)
-            function isDuplicateLocation(poi1: PointOfInterest, poi2: PointOfInterest): boolean {
-              const lat1 = parseFloat(poi1.lat);
-              const lng1 = parseFloat(poi1.lng);
-              const lat2 = parseFloat(poi2.lat);
-              const lng2 = parseFloat(poi2.lng);
-              
-              const latDiff = Math.abs(lat1 - lat2);
-              const lngDiff = Math.abs(lng1 - lng2);
-              
-              // Se as coordenadas estiverem muito próximas (< ~1km), considerar duplicado
-              return latDiff < 0.01 && lngDiff < 0.01;
-            }
+              });
             
             // Adicionar os POIs do backend que são relevantes para a rota
             if (pointsOfInterest && pointsOfInterest.length > 0) {
