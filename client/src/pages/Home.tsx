@@ -249,6 +249,12 @@ export default function Home() {
         // Optimize the route locally
         const routeResult = optimizeRouteLocally(origin, locations, vehicleTypeObj, pois);
         setCalculatedRoute(routeResult.waypoints);
+        
+        // Debug para verificar os POIs
+        console.log("POIs disponíveis para a rota:", pois);
+        console.log("POIs filtrados para a rota:", poisAlongRoute);
+        
+        // Definir os POIs para exibição no mapa
         setPoisOnRoute(poisAlongRoute);
         
         // Mostrar toast de sucesso
