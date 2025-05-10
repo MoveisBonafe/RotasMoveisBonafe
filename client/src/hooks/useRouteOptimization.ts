@@ -202,22 +202,21 @@ export function useRouteOptimization() {
       vehicleType
     );
     
-    // Set the waypoints in the route info (inclui todos os pontos)
-    const waypoints = optimizedLocations.map(loc => `${loc.lat},${loc.lng}`).join('|');
-    
+    // Set the waypoints in the route info
     console.log("POIs processados para a rota:", poisOnRoute);
     
-    // Update the route info state with the calculated data
-    const routeInfoWithPOIs = {
+    // Adicionar informações completas ao objeto de retorno
+    const routeInfoComplete = {
       ...routeInfoData,
-      waypoints,
-      poisAlongRoute: poisOnRoute
+      waypoints: optimizedLocations, // Adicionamos o array completo de localizações
+      poisAlongRoute: poisOnRoute,
+      destinations: optimizedLocations.slice(1) // Remove a origem
     };
     
     // Necessário para que o componente RouteInfoPanel tenha acesso aos POIs
-    setRouteInfo(routeInfoWithPOIs);
+    setRouteInfo(routeInfoComplete);
     
-    return routeInfoData;
+    return routeInfoComplete;
   }, []);
 
   /**
