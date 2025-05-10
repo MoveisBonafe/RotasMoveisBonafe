@@ -339,14 +339,18 @@ export default function Home() {
             </div>
           )}
           
-          {/* Google Maps */}
+          {/* Google Maps com log explícito dos POIs */}
           <MapView 
             origin={origin}
             waypoints={locations}
             calculatedRoute={calculatedRoute}
             onRouteCalculated={handleRouteCalculated}
-            pointsOfInterest={poisOnRoute} // Usar os POIs filtrados
+            pointsOfInterest={Array.isArray(pointsOfInterest) ? pointsOfInterest : []} // IMPORTANTE: Usar TODOS os POIs disponíveis, não apenas os filtrados
           />
+          
+          {/* Log de debug para verificar os dados que estão sendo passados */}
+          {console.log("Passando os seguintes POIs para o mapa:", 
+                       Array.isArray(pointsOfInterest) ? pointsOfInterest : [])}
         </div>
       </div>
       

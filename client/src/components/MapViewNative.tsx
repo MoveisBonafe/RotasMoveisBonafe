@@ -167,13 +167,21 @@ export default function MapViewNative({
 
   // Renderizar os pontos de interesse (pedágios e balanças)
   const renderPointsOfInterest = (map: any, bounds: any) => {
-    // Adicionar logs de depuração
-    console.log("Pontos de interesse recebidos:", pointsOfInterest);
+    // Log detalhado dos pontos de interesse
+    console.log("Renderizando pontos de interesse:", pointsOfInterest);
     
-    if (!pointsOfInterest || pointsOfInterest.length === 0) {
-      console.log("Nenhum ponto de interesse para exibir");
+    // Verificação explícita para garantir que temos dados
+    if (!pointsOfInterest) {
+      console.error("Array de POIs é undefined");
       return [];
     }
+    
+    if (pointsOfInterest.length === 0) {
+      console.log("Array de POIs está vazio (length=0)");
+      return [];
+    }
+    
+    console.log(`Processando ${pointsOfInterest.length} pontos de interesse para o mapa`);
     
     const google = window.google;
     const poiMarkers: any[] = [];
@@ -498,14 +506,50 @@ export default function MapViewNative({
           map
         });
         
-        // Adicionar os pontos de interesse ao mapa
-        console.log("Fallback: Adicionando pontos de interesse:", pointsOfInterest);
-        const poiMarkers = renderPointsOfInterest(map, bounds);
-        if (poiMarkers.length > 0) {
-          console.log(`Fallback: Adicionados ${poiMarkers.length} marcadores de POI`);
-          newMarkers.push(...poiMarkers);
+        // IMPORTANTE: Adicionar TODOS os pontos de interesse ao mapa no fallback
+        console.log("Fallback: Tentando adicionar POIs DIRETAMENTE:", pointsOfInterest);
+        
+        // Vamos ignorar o renderPointsOfInterest e adicionar diretamente
+        if (pointsOfInterest && pointsOfInterest.length > 0) {
+          pointsOfInterest.forEach(poi => {
+            try {
+              const poiPosition = {
+                lat: parseFloat(poi.lat),
+                lng: parseFloat(poi.lng)
+              };
+              
+              bounds.extend(poiPosition);
+              
+              // Criar um marcador para cada POI
+              const poiMarker = new google.maps.Marker({
+                position: poiPosition,
+                map,
+                title: poi.name,
+                icon: {
+                  path: google.maps.SymbolPath.CIRCLE,
+                  fillColor: poi.type === 'toll' ? "#FFC107" : "#F44336",
+                  fillOpacity: 1,
+                  strokeWeight: 1,
+                  strokeColor: "#000000",
+                  scale: 10
+                },
+                label: {
+                  text: poi.type === 'toll' ? '$' : 'B',
+                  color: "#FFFFFF",
+                  fontWeight: "bold"
+                }
+              });
+              
+              newMarkers.push(poiMarker);
+              console.log(`POI adicionado diretamente: ${poi.name}`);
+            } catch (error) {
+              console.error('Erro ao adicionar POI diretamente:', error);
+            }
+          });
+          
+          console.log(`Adicionados ${pointsOfInterest.length} POIs diretos no fallback`);
         } else {
-          console.log("Fallback: Nenhum POI adicionado");
+          console.log("Fallback: Nenhum POI disponível para adicionar");
         }
         
         // Ajustar o mapa para mostrar todos os pontos
