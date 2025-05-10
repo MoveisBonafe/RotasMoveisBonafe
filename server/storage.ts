@@ -146,8 +146,8 @@ export class MemStorage implements IStorage {
       name: "Dois Córregos",
       address: "Dois Córregos, SP, Brasil",
       cep: "17300-000",
-      lat: "-22.3673",
-      lng: "-48.3823",
+      lat: "-22.387068452814354",
+      lng: "-48.386156060395095",
       isOrigin: true
     };
     
