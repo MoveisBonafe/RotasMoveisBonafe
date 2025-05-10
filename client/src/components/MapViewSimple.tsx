@@ -1006,8 +1006,16 @@ export default function MapViewSimple({
               
               // Personalizar baseado no tipo
               if (poi.type === "toll") {
-                // Pedágio - Símbolo $
-                poiIcon.fillColor = '#38B000'; // Verde
+                // Pedágio - Símbolo $ em fundo verde
+                poiIcon = {
+                  path: google.maps.SymbolPath.CIRCLE,
+                  fillColor: '#38B000', // Verde vivo
+                  fillOpacity: 1,
+                  strokeColor: '#FFFFFF',
+                  strokeWeight: 1,
+                  scale: 12
+                };
+                // Usar o símbolo $ como texto
                 labelText = "$";
               } else if (poi.type === "weighing_station") {
                 // Balança - Símbolo ⚖
