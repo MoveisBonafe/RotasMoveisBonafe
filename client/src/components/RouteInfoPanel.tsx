@@ -30,6 +30,7 @@ export default function RouteInfoPanel({
 }: RouteInfoPanelProps) {
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [filteredPOIs, setFilteredPOIs] = useState<PointOfInterest[]>([]);
   
   // Função para alternar a tab e expandir/recolher
   const toggleTab = (tab: TabType) => {
@@ -44,11 +45,76 @@ export default function RouteInfoPanel({
   };
   
   // Quando a rota é calculada (calculatedRoute muda), ativar a aba de resumo
+  // E também atualizar os POIs filtrados
   useEffect(() => {
     if (calculatedRoute && calculatedRoute.length > 0) {
       setActiveTab("summary");
+      
+      // FILTRAR POIs AQUI COM BASE NA ROTA ATUAL
+      if (calculatedRoute.length > 0) {
+        console.log("Filtrando POIs com base na rota atual:", calculatedRoute.map(loc => loc.name));
+        
+        // Extrair cidades dos destinos da rota calculada
+        const allCitiesInRoute = new Set<string>();
+        calculatedRoute.forEach(location => {
+          // De cada local, extrair cidade do nome ou endereço
+          if (location.name) {
+            const cityName = location.name.split(',')[0].trim().toLowerCase();
+            allCitiesInRoute.add(cityName);
+          }
+          
+          if (location.address) {
+            // Formato: "Cidade - UF, Brasil"
+            const cityMatch = location.address.match(/([^,]+?)(?:\s*-\s*[A-Z]{2})/i);
+            if (cityMatch && cityMatch[1]) {
+              allCitiesInRoute.add(cityMatch[1].trim().toLowerCase());
+            }
+          }
+        });
+        
+        console.log("Cidades na rota:", Array.from(allCitiesInRoute));
+        
+        // Filtragem baseada em cidade - verificação mais estrita
+        const newFilteredPOIs = poisAlongRoute.filter(poi => {
+          // 1. Verificar pelo campo city do POI
+          if (poi.city) {
+            const poiCity = poi.city.toLowerCase();
+            const cityMatch = Array.from(allCitiesInRoute).some(city => 
+              poiCity.includes(city) || city.includes(poiCity)
+            );
+            
+            if (cityMatch) {
+              console.log(`POI "${poi.name}" incluído por cidade "${poi.city}"`);
+              return true;
+            }
+          }
+          
+          // 2. Verificar pelo nome do POI (pode conter nome da cidade)
+          if (poi.name) {
+            const poiName = poi.name.toLowerCase();
+            const nameMatch = Array.from(allCitiesInRoute).some(city => 
+              poiName.includes(city) || city.includes(poiName)
+            );
+            
+            if (nameMatch) {
+              console.log(`POI "${poi.name}" incluído por nome`);
+              return true;
+            }
+          }
+          
+          // 3. Se chegou aqui, este POI não está na rota atual
+          console.log(`POI "${poi.name}" EXCLUÍDO por não estar na rota atual`);
+          return false;
+        });
+        
+        console.log("POIs filtrados para a rota atual:", newFilteredPOIs.map(p => p.name));
+        setFilteredPOIs(newFilteredPOIs);
+      } else {
+        // Sem rota, não mostrar nenhum POI
+        setFilteredPOIs([]);
+      }
     }
-  }, [calculatedRoute]);
+  }, [calculatedRoute, poisAlongRoute]);
 
   // Extrair nomes das cidades dos destinos escolhidos
   const destinationCityNames = calculatedRoute 
@@ -240,68 +306,23 @@ export default function RouteInfoPanel({
   
   // USAR EXCLUSIVAMENTE os POIs que vieram da API AILOG através do mapa
   // Estes já foram filtrados corretamente com base na rota
-  let filteredPOIs = [...poisAlongRoute];
+  // A filtragem é feita no useEffect e armazenada no estado filteredPOIs
   
   // Verificar se temos pedágios da AILOG na lista
   const hasAilogTolls = poisAlongRoute.some(poi => poi.type === 'toll' && (poi as any).ailogSource === true);
   
   // Algoritmo otimizado para garantir inclusão dos pedágios corretos
   
-  // LIMPAR TODOS OS PONTOS QUE NÃO ESTÃO NA ROTA
+  // A filtragem de POIs é feita no useEffect no topo deste componente
+  // O resultado está armazenado no estado filteredPOIs
+  
+  // Para debugging
   console.log("Depurando: calculatedRoute =", calculatedRoute);
+  console.log("Pontos de Atenção filtrados:", filteredPOIs.map(p => p.name));
   
-  // Se temos uma rota calculada, filtrar os POIs para incluir apenas os que realmente estão nessa rota
-  let uniquePOIs: PointOfInterest[] = [];
-  
-  if (calculatedRoute && calculatedRoute.length > 0) {
-    // Extrair cidades dos destinos na rota atual
-    const citiesInRoute = new Set<string>();
-    calculatedRoute.forEach(location => {
-      if (location.address) {
-        const cityMatch = location.address.match(/([A-Za-zÀ-ú\s]+)(?:\s*-\s*[A-Z]{2})/);
-        if (cityMatch && cityMatch[1]) {
-          citiesInRoute.add(cityMatch[1].trim().toLowerCase());
-        }
-      }
-      if (location.name) {
-        citiesInRoute.add(location.name.split(',')[0].trim().toLowerCase());
-      }
-    });
-    
-    console.log("Cidades na rota:", Array.from(citiesInRoute));
-    
-    // Filtrar os POIs para incluir apenas aqueles cuja cidade está na rota
-    uniquePOIs = poisAlongRoute.filter(poi => {
-      // Se o POI tem city definido, verificar se essa cidade está na rota
-      if (poi.city) {
-        const poiCity = poi.city.toLowerCase();
-        return Array.from(citiesInRoute).some(city => 
-          poiCity.includes(city) || city.includes(poiCity)
-        );
-      }
-      
-      // Se não temos informação de cidade, verificar pelo nome
-      if (poi.name) {
-        const poiName = poi.name.toLowerCase();
-        return Array.from(citiesInRoute).some(city => 
-          poiName.includes(city) || city.includes(poiName)
-        );
-      }
-      
-      return false; // Se não conseguimos determinar, não incluir
-    });
-    
-    console.log("POIs filtrados por cidade:", uniquePOIs.map(p => p.name));
-  } else {
-    // Se não temos rota calculada, não mostrar nenhum POI
-    uniquePOIs = [];
-  }
-  
-  console.log("POIs filtrados e sem duplicatas:", uniquePOIs.map(p => p.name));
-  
-  // Separar os pontos de interesse por tipo
-  const tollsOnRoute = uniquePOIs.filter(poi => poi.type === 'toll');
-  const balancesOnRoute = uniquePOIs.filter(poi => poi.type === 'weighing_station');
+  // Separar os pontos de interesse por tipo (usando o filteredPOIs definido no state)
+  const tollsOnRoute = filteredPOIs.filter(poi => poi.type === 'toll');
+  const balancesOnRoute = filteredPOIs.filter(poi => poi.type === 'weighing_station');
   // Não temos áreas de descanso implementadas ainda
   const restAreasOnRoute: typeof poisAlongRoute = [];
   
@@ -459,64 +480,72 @@ export default function RouteInfoPanel({
                 <div className="bg-white rounded p-2 border border-gray-100">
                   <h3 className="text-xs font-medium mb-1 text-primary">Pontos de Atenção</h3>
                   
-                  {/* Verificar se temos poisAlongRoute filtrados para a rota atual - esses são os pontos realmente no percurso */}
-                  {(poisAlongRoute.filter(p => p.type === 'toll').length > 0 || 
-                    poisAlongRoute.filter(p => p.type === 'weighing_station').length > 0 || 
-                    (truckRestrictions && truckRestrictions.length > 0 && 
-                     calculatedRoute && calculatedRoute.some(loc => 
-                        truckRestrictions.some(r => r.cityName.includes(loc.name) || 
-                                                   loc.name.includes(r.cityName) || 
-                                                   loc.address?.includes(r.cityName))
-                     ))) ? (
-                    <ul className="text-xs space-y-1">
-                      {poisAlongRoute.filter(p => p.type === 'toll').length > 0 && (
-                        <li className="flex items-center">
-                          <span className="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-1"></span>
-                          <span>
-                            {poisAlongRoute.filter(p => p.type === 'toll').length} {poisAlongRoute.filter(p => p.type === 'toll').length === 1 ? 'pedágio' : 'pedágios'}: 
-                            <span className="text-gray-500 ml-1">
-                              {poisAlongRoute.filter(p => p.type === 'toll').map(toll => 
-                                toll.name.includes('(') ? toll.name.split('(').pop()?.replace(')', '') || '' : toll.roadName || toll.name
-                              ).filter(Boolean).join(', ')}
-                            </span>
-                          </span>
-                        </li>
-                      )}
-                      
-                      {poisAlongRoute.filter(p => p.type === 'weighing_station').length > 0 && (
-                        <li className="flex items-center">
-                          <span className="inline-block w-2 h-2 rounded-full bg-red-600 mr-1"></span>
-                          <span>
-                            {poisAlongRoute.filter(p => p.type === 'weighing_station').length} {poisAlongRoute.filter(p => p.type === 'weighing_station').length === 1 ? 'balança' : 'balanças'} em operação
-                          </span>
-                        </li>
-                      )}
-                      
-                      {/* Mostrar apenas restrições para cidades no trajeto calculado */}
-                      {(truckRestrictions && truckRestrictions.length > 0 && calculatedRoute) && (
-                        <>
-                          {truckRestrictions.filter(r => 
-                            calculatedRoute.some(loc => 
-                              loc.name.includes(r.cityName) || 
-                              r.cityName.includes(loc.name) || 
-                              loc.address?.includes(r.cityName)
-                            )
-                          ).map((restriction, idx) => (
-                            <li key={idx} className="flex items-center">
-                              <span className="inline-block w-2 h-2 rounded-full bg-primary mr-1"></span>
-                              <span>
-                                {`Restrição em ${restriction.cityName}: ${restriction.startTime || '00:00'}-${restriction.endTime || '23:59'}`}
+                  {/* SOLUÇÃO DEFINITIVA: USAR APENAS filteredPOIs QUE FORAM FILTRADOS NO useEffect */}
+                  {(() => {
+                    // DECISÃO FINAL: Usar o filteredPOIs do state, que foi filtrado no useEffect
+                    // Isso garante que apenas os pontos realmente na rota sejam mostrados
+                    const tollsToShow = filteredPOIs.filter(p => p.type === 'toll');
+                    const balancesToShow = filteredPOIs.filter(p => p.type === 'weighing_station');
+                    
+                    // Filtrar também as restrições para mostrar apenas as da rota atual
+                    const restrictionsToShow = truckRestrictions && calculatedRoute ? 
+                      truckRestrictions.filter(r => 
+                        calculatedRoute.some(loc => 
+                          loc.name?.toLowerCase().includes(r.cityName?.toLowerCase()) || 
+                          r.cityName?.toLowerCase().includes(loc.name?.toLowerCase()) || 
+                          loc.address?.toLowerCase().includes(r.cityName?.toLowerCase())
+                        )
+                      ) : [];
+                    
+                    // Verificar se temos algum ponto de atenção para mostrar
+                    const hasAttentionPoints = tollsToShow.length > 0 || 
+                                              balancesToShow.length > 0 || 
+                                              restrictionsToShow.length > 0;
+                    
+                    // Mostrar os pontos de atenção (se houver)
+                    return hasAttentionPoints ? (
+                      <ul className="text-xs space-y-1">
+                        {/* 1. Pedágios */}
+                        {tollsToShow.length > 0 && (
+                          <li className="flex items-center">
+                            <span className="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-1"></span>
+                            <span>
+                              {tollsToShow.length} {tollsToShow.length === 1 ? 'pedágio' : 'pedágios'}: 
+                              <span className="text-gray-500 ml-1">
+                                {tollsToShow.map(toll => 
+                                  toll.name.includes('(') ? toll.name.split('(').pop()?.replace(')', '') || '' : toll.roadName || toll.name
+                                ).filter(Boolean).join(', ')}
                               </span>
-                            </li>
-                          ))}
-                        </>
-                      )}
-                    </ul>
-                  ) : (
-                    <div className="text-xs text-gray-500">
-                      Nenhum ponto de atenção identificado na rota atual
-                    </div>
-                  )}
+                            </span>
+                          </li>
+                        )}
+                        
+                        {/* 2. Balanças */}
+                        {balancesToShow.length > 0 && (
+                          <li className="flex items-center">
+                            <span className="inline-block w-2 h-2 rounded-full bg-red-600 mr-1"></span>
+                            <span>
+                              {balancesToShow.length} {balancesToShow.length === 1 ? 'balança' : 'balanças'} em operação
+                            </span>
+                          </li>
+                        )}
+                        
+                        {/* 3. Restrições */}
+                        {restrictionsToShow.map((restriction, idx) => (
+                          <li key={idx} className="flex items-center">
+                            <span className="inline-block w-2 h-2 rounded-full bg-primary mr-1"></span>
+                            <span>
+                              {`Restrição em ${restriction.cityName}: ${restriction.startTime || '00:00'}-${restriction.endTime || '23:59'}`}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div className="text-xs text-gray-500">
+                        Nenhum ponto de atenção na rota atual
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
             </div>
