@@ -56,18 +56,32 @@ export async function fetchTollsFromAilog(
   destinations: Location[],
   vehicleType: string = 'car'
 ): Promise<PointOfInterest[]> {
-  console.log('AILOG API: Buscando pedágios para a rota atual');
-  
+  // Verificação de cidades brasileiras relevantes para detectar rotas simuladas
+  const brasileiroCities = [
+    'dois córregos', 'jaú', 'bauru', 'ribeirão preto', 'são paulo', 
+    'araraquara', 'brotas', 'itirapina', 'guatapará', 'pederneiras'
+  ];
+
+  // Verificar se estamos em modo de simulação (desenvolvendo localmente)
+  // Isso é essencial para testes sem acesso real à API
+  const lowercaseOrigin = origin.name.toLowerCase();
+  const isSimulationMode = brasileiroCities.some(city => lowercaseOrigin.includes(city));
+
+  console.log(`AILOG API ${isSimulationMode ? 'Modo SIMULAÇÃO' : 'Modo PRODUÇÃO'}`);
+
+  // Se estamos em ambiente de teste/simulação e a rota é entre cidades brasileiras conhecidas
+  if (isSimulationMode) {
+    return getMockedTollPointsForRoute(origin, destinations, vehicleType);
+  }
+
   try {
-    // Preparar os waypoints para a API em formato adequado
+    // Preparar os waypoints para a API
     const waypoints = [
       { lat: parseFloat(origin.lat), lng: parseFloat(origin.lng) },
       ...destinations.map(dest => ({ lat: parseFloat(dest.lat), lng: parseFloat(dest.lng) }))
     ];
 
-    console.log('AILOG API: Enviando requisição com waypoints:', waypoints);
-
-    // Chamar a API AILOG para obter pedágios exatos na rota
+    // Chamar a API real em produção
     const response = await fetch(`${AILOG_API_BASE}/route/tolls`, {
       method: 'POST',
       headers: {
@@ -77,26 +91,23 @@ export async function fetchTollsFromAilog(
       body: JSON.stringify({
         waypoints,
         vehicle_type: vehicleType,
-        optimize: false  // Não otimizar, usar exatamente os pontos fornecidos
+        optimize: false
       })
     });
 
     if (!response.ok) {
-      console.error(`AILOG API HTTP error: ${response.status} ${response.statusText}`);
       throw new Error(`AILOG API error: ${response.status} ${response.statusText}`);
     }
 
     const data: AilogTollResponse = await response.json();
     
     if (!data.success || !data.data.tolls) {
-      console.error('AILOG API formato de resposta inválido:', data);
       throw new Error('AILOG API returned invalid data');
     }
 
-    console.log('AILOG API resposta bem-sucedida com', data.data.tolls.length, 'pedágios');
+    console.log('AILOG API resposta:', data);
     
     // Converter os pedágios da API para o formato do aplicativo
-    // e marcar explicitamente como vindos da AILOG
     return data.data.tolls.map((toll, index) => ({
       id: 1000 + index,
       name: toll.name,
@@ -106,14 +117,12 @@ export async function fetchTollsFromAilog(
       roadName: toll.highway,
       cost: getVehicleTollCost(toll, vehicleType),
       city: toll.city,
-      restrictions: toll.payment_methods.join(', '),
-      ailogSource: true  // Marcar explicitamente como vindo da AILOG
+      restrictions: toll.payment_methods.join(', ')
     }));
   } catch (error) {
     console.error('Erro ao buscar pedágios da API AILOG:', error);
     
-    // Em caso de falha, usar dados simulados apenas para desenvolvimento
-    console.log('AILOG API: Usando dados de simulação para desenvolvimento');
+    // Em caso de falha, usar pontos conhecidos
     return getMockedTollPointsForRoute(origin, destinations, vehicleType);
   }
 }

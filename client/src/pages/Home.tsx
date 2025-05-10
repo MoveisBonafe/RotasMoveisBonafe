@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Location, VehicleType, GeocodingResult, PointOfInterest } from "@/lib/types";
-import MapViewBasic from "@/components/MapViewBasic";
+import MapViewSimple from "@/components/MapViewSimple";
 import Sidebar from "@/components/Sidebar";
 import DateRangeSelector from "@/components/DateRangeSelector";
 import AddLocationModal from "@/components/AddLocationModal";
@@ -265,14 +265,8 @@ export default function Home() {
   const handleRouteCalculated = (routeResponse: any) => {
     console.log("Rota calculada pelo Google Maps, processando resposta:", routeResponse);
     
-    // Verificar se recebemos a sequência ordenada de pontos da rota
-    if (routeResponse && routeResponse.orderedSequence) {
-      console.log("Sequência ordenada recebida do mapa:", routeResponse.orderedSequence);
-      
-      // Usar a sequência ordenada para atualizar a rota calculada
-      // Isso vai garantir que os números nos alfinetes correspondam à ordem da rota
-      setCalculatedRoute(routeResponse.orderedSequence);
-    }
+    // Aqui você pode processar a resposta da API do Google Maps se necessário
+    // Por exemplo, extrair pedágios, distâncias, ou outros detalhes
     
     // Atualizar o estado com os dados da rota se necessário
     if (routeResponse && routeResponse.routes && routeResponse.routes.length > 0) {
@@ -438,13 +432,13 @@ export default function Home() {
             </div>
           )}
           
-          {/* Google Maps mostrando marcadores e calculando rota apenas quando solicitado */}
-          <MapViewBasic 
+          {/* Google Maps mostrando apenas os POIs no percurso da rota incluindo pedágios da API Routes Preferred */}
+          <MapViewSimple 
             origin={origin}
             waypoints={locations}
             calculatedRoute={calculatedRoute}
             onRouteCalculated={handleRouteCalculated}
-            pointsOfInterest={poisOnRoute}
+            pointsOfInterest={poisOnRoute} // IMPORTANTE: Usar APENAS os POIs filtrados ao longo da rota
           />
           
           {/* Removidos logs de debug que não eram mais necessários */}
