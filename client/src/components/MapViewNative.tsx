@@ -63,8 +63,9 @@ export default function MapViewNative({
       setMap(newMap);
       
       // Configurar o renderizador de direções
+      // MUITO IMPORTANTE: suppressMarkers deve ser TRUE para usar nossos próprios marcadores
       const newDirectionsRenderer = new google.maps.DirectionsRenderer({
-        suppressMarkers: false,
+        suppressMarkers: true, // Não mostrar marcadores padrão do Google, vamos adicionar os nossos próprios
         preserveViewport: false,
         polylineOptions: {
           strokeColor: "#4285F4",
@@ -79,7 +80,10 @@ export default function MapViewNative({
 
   // Quando origin ou waypoints mudarem, atualizar os marcadores
   useEffect(() => {
+    // Se não temos o mapa inicializado ou origem, não há nada para fazer
     if (!map || !origin) return;
+
+    console.log("Atualizando marcadores no mapa (useEffect para origin/waypoints)");
 
     // Limpar marcadores antigos
     markers.forEach(marker => marker.setMap(null));
@@ -91,24 +95,26 @@ export default function MapViewNative({
       lng: parseFloat(origin.lng)
     };
 
-    // Criar marcador para origem
+    // IMPORTANTE: Criar marcador para origem com estilo destacado
     const originMarker = new google.maps.Marker({
       position: originPosition,
       map,
       title: origin.name,
       icon: {
         path: google.maps.SymbolPath.CIRCLE,
-        fillColor: "#4285F4",
+        fillColor: "#DB4437", // Vermelho para destacar a origem
         fillOpacity: 1,
-        strokeWeight: 1,
+        strokeWeight: 2,
         strokeColor: "#FFFFFF",
-        scale: 10
+        scale: 12 // Tamanho maior para ser bem visível
       },
       label: {
-        text: "A",
+        text: "0", // SEMPRE usar "0" para a origem (não "A")
         color: "#FFFFFF",
-        fontWeight: "bold"
-      }
+        fontWeight: "bold",
+        fontSize: "14px" // Fonte maior
+      },
+      zIndex: 1000 // Garantir que fique em cima de outros marcadores
     });
     newMarkers.push(originMarker);
 
@@ -499,7 +505,7 @@ export default function MapViewNative({
         // Criar bounds para ajustar o zoom
         const bounds = new google.maps.LatLngBounds();
         
-        // Adicionar marcador para origem
+        // Adicionar marcador para origem - MARCADOR DE FALLBACK 
         const originPoint = {
           lat: parseFloat(origin.lat),
           lng: parseFloat(origin.lng)
@@ -507,23 +513,26 @@ export default function MapViewNative({
         
         bounds.extend(originPoint);
         
+        // IMPORTANTE: Marcador para origem no modo de FALLBACK
         const originMarker = new google.maps.Marker({
           position: originPoint,
           map,
           title: origin.name,
           icon: {
             path: google.maps.SymbolPath.CIRCLE,
-            fillColor: "#4285F4",
+            fillColor: "#DB4437", // Vermelho para destacar a origem
             fillOpacity: 1,
-            strokeWeight: 1,
+            strokeWeight: 2,
             strokeColor: "#FFFFFF",
-            scale: 10
+            scale: 12 // Tamanho maior
           },
           label: {
-            text: "A",
+            text: "0", // Sempre usar 0 para a origem
             color: "#FFFFFF",
-            fontWeight: "bold"
-          }
+            fontWeight: "bold",
+            fontSize: "14px" // Fonte maior
+          },
+          zIndex: 1000 // Garantir que fique em cima de outros marcadores
         });
         newMarkers.push(originMarker);
         
