@@ -6,6 +6,7 @@ import { extractCityFromAddress } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Maximize2, Minimize2, X, Truck, Clock } from "lucide-react";
 import RouteReport from "./RouteReport";
+import AnimatedRouteSequence from "./AnimatedRouteSequence";
 
 interface RouteInfoPanelProps {
   routeInfo: RouteInfo | null;
@@ -193,13 +194,13 @@ export default function RouteInfoPanel({
             </div>
           ) : (
             <div>
-              {/* Sequência da Rota */}
+              {/* Sequência da Rota Animada */}
               {calculatedRoute && calculatedRoute.length > 0 && (
-                <div className="mb-3 bg-white rounded p-2 border border-gray-100">
-                  <h3 className="text-xs font-medium mb-1 text-primary">Sequência da Rota Otimizada</h3>
-                  <div className="text-xs text-gray-600">
-                    {formatRouteSequence(calculatedRoute)}
-                  </div>
+                <div className="mb-3">
+                  <AnimatedRouteSequence 
+                    calculatedRoute={calculatedRoute} 
+                    isExpanded={isExpanded} 
+                  />
                 </div>
               )}
               
