@@ -197,12 +197,18 @@ export function locationToLatLng(location: Location): LatLng {
 /**
  * Formats a route sequence as a string
  */
-export function formatRouteSequence(locations: Location[]): string {
-  if (locations.length === 0) {
-    return "";
-  }
+export function formatRouteSequence(origin: Location | null, locations: Location[] | null): string {
+  // Se não há origem ou destinos, retorna string vazia
+  if (!origin) return "";
+  if (!locations || locations.length === 0) return origin.name || "";
   
-  const names = locations.map(location => location.name);
+  // Cria array com origem e destinos
+  const allLocations = [origin, ...locations].filter(Boolean);
+  
+  // Extrai apenas os nomes das localizações
+  const names = allLocations.map(location => location.name);
+  
+  // Une os nomes com setas
   return names.join(" → ");
 }
 
