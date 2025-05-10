@@ -91,7 +91,32 @@ export default function RouteReport({
     enabled: !!calculatedRoute && calculatedRoute.length > 1
   });
 
-
+  // Buscar eventos das cidades - melhorado para enviar os parâmetros de data
+  const { data: cityEvents = [] } = useQuery({ 
+    queryKey: ['/api/city-events', startDate, endDate],
+    queryFn: async () => {
+      if (!startDate || !endDate) return [];
+      
+      try {
+        console.log("Buscando eventos para datas:", startDate, "até", endDate);
+        
+        // Enviar parâmetros de data para a API
+        const queryParams = new URLSearchParams();
+        if (startDate) queryParams.append('startDate', startDate);
+        if (endDate) queryParams.append('endDate', endDate);
+        
+        const response = await fetch(`/api/city-events?${queryParams.toString()}`);
+        console.log("Resposta do servidor:", response.status);
+        const data = await response.json();
+        console.log("Eventos recebidos:", data.length, data);
+        return data;
+      } catch (error) {
+        console.error("Erro ao buscar eventos:", error);
+        return [];
+      }
+    },
+    enabled: !!startDate && !!endDate
+  });
 
   // Buscar restrições de caminhões
   const { data: truckRestrictions = [] } = useQuery({ 
@@ -128,13 +153,11 @@ export default function RouteReport({
     document.title = originalTitle;
   };
 
-  // Variável vazia para eventos (funcionalidade removida)
-  const cityEvents: CityEvent[] = [];
-  
   // Log para debug
   console.log('RouteReport - Debug Info:', {
     routeInfo,
     destinationCityNames,
+    cityEvents,
     truckRestrictions,
     poisAlongRoute
   });
@@ -272,9 +295,153 @@ export default function RouteReport({
           </div>
         </div>
         
-
+        {/* Pontos de Atenção */}
+        {poisAlongRoute.length > 0 && (
+          <div className="border border-gray-200 rounded-sm p-2 mb-2">
+            <h3 className="text-xs font-semibold mb-1 text-primary">Pontos de Atenção</h3>
+            <div className="space-y-1">
+              <ul className="list-disc pl-4 text-xs space-y-1">
+                {/* Agrupar POIs por tipo para melhor visualização */}
+                {/* Primeiro todos os pedágios */}
+                {poisAlongRoute.filter(poi => poi.type === 'toll').map((poi: PointOfInterest) => (
+                  <li key={poi.id} className="text-gray-700">
+                    <span className="font-medium">{poi.name}</span>
+                    <span className="text-gray-500 ml-1">(pedágio)</span>
+                    {poi.cost && (
+                      <div className="text-gray-500 text-xs">Custo base: {(poi.cost / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                    )}
+                  </li>
+                ))}
+                
+                {/* Depois as balanças */}
+                {poisAlongRoute.filter(poi => poi.type === 'weighing_station').map((poi: PointOfInterest) => (
+                  <li key={poi.id} className="text-gray-700">
+                    <span className="font-medium">{poi.name}</span>
+                    <span className="text-gray-500 ml-1">(balança)</span>
+                    {poi.restrictions && (
+                      <div className="text-gray-500 text-xs">{poi.restrictions}</div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
         
-
+        {/* Eventos nas Cidades - Modificado para sempre mostrar */}
+        <div className="border border-gray-200 rounded-sm p-2 mb-2">
+          <h3 className="text-xs font-semibold mb-1 text-primary">Eventos nas Cidades</h3>
+          <div className="space-y-1">
+            {cityEvents && cityEvents.length > 0 ? (
+              (() => {
+                // Extrair o nome exato das cidades da rota usando a nova função de extração
+                const citiesInRoute = new Set<string>();
+                
+                // Adicionar a origem (Dois Córregos)
+                citiesInRoute.add("Dois Córregos");
+                
+                // Adicionar cidades dos destinos usando a função extractCityFromAddress
+                if (Array.isArray(calculatedRoute)) {
+                  calculatedRoute.forEach(location => {
+                    if (location.address) {
+                      const cityName = extractCityFromAddress(location.address);
+                      if (cityName) {
+                        citiesInRoute.add(cityName);
+                      }
+                    }
+                  });
+                }
+                
+                // Forçar incluir Ribeirão Preto na lista se estiver no endereço
+                const hasRibeiraoPreto = calculatedRoute ? calculatedRoute.some(location => 
+                  location.address && location.address.includes("Ribeirão Preto")
+                ) : false;
+                
+                if (hasRibeiraoPreto) {
+                  citiesInRoute.add("Ribeirão Preto");
+                }
+                
+                // Log para debug
+                console.log("Eventos disponíveis:", JSON.stringify(cityEvents));
+                console.log("Cidades extraídas da rota:", JSON.stringify(Array.from(citiesInRoute)));
+                
+                // Criar um mapa para saber a posição de cada cidade na rota
+                const cityPositionMap = new Map();
+                
+                // Preencher o mapa com posições de cidades
+                Array.isArray(calculatedRoute) && calculatedRoute.forEach((location, index) => {
+                  const cityName = extractCityFromAddress(location.address);
+                  if (cityName && !cityPositionMap.has(cityName)) {
+                    cityPositionMap.set(cityName, index);
+                  }
+                });
+                
+                // Filtrar e ordenar eventos das cidades na rota
+                const filteredAndSortedEvents = [...cityEvents]
+                  // Primeiro filtramos para manter apenas eventos de cidades na rota
+                  .filter(event => {
+                    // Verificar se a cidade do evento está na rota
+                    return Array.from(citiesInRoute).some(city => 
+                      event.cityName.includes(city) || city.includes(event.cityName)
+                    );
+                  })
+                  // Depois ordenamos os eventos filtrados
+                  .sort((a, b) => {
+                    // Primeiro critério: posição da cidade na rota
+                    const cityA = a.cityName;
+                    const cityB = b.cityName;
+                    
+                    // Encontrar posição das cidades na rota
+                    let posA = 999;
+                    let posB = 999;
+                    
+                    // Fazer uma busca mais flexível para encontrar a cidade na rota
+                    Array.from(cityPositionMap.keys()).forEach((city) => {
+                      const position = cityPositionMap.get(city);
+                      if (cityA.includes(city) || city.includes(cityA)) {
+                        posA = position;
+                      }
+                      if (cityB.includes(city) || city.includes(cityB)) {
+                        posB = position;
+                      }
+                    });
+                    
+                    if (posA !== posB) {
+                      return posA - posB; // Ordem crescente por posição na rota
+                    }
+                    
+                    // Segundo critério: data do evento
+                    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime(); // Ordem crescente por data
+                  });
+                
+                return filteredAndSortedEvents.map((event: CityEvent, index) => (
+                  <div key={event.id} className="mb-1 pb-1 border-b border-gray-50 last:border-b-0 last:mb-0 last:pb-0 animate-fadeInUp" style={{ animationDelay: `${index * 0.1}s` }}>
+                    <div className="flex items-start">
+                      <span className={`inline-block w-2 h-2 rounded-full mr-1 mt-1 
+                        ${event.eventType === 'holiday' ? 'bg-red-600' : 
+                          event.eventType === 'festival' ? 'bg-yellow-500' : 'bg-green-600'}`}>
+                      </span>
+                      <div>
+                        <span className="font-medium">{event.eventName}</span>
+                        <span className="text-gray-500 ml-1">
+                          ({event.cityName}, {new Date(event.startDate).toLocaleDateString('pt-BR')}
+                          {event.startDate !== event.endDate && ` - ${new Date(event.endDate).toLocaleDateString('pt-BR')}`})
+                        </span>
+                        {event.description && (
+                          <div className="text-gray-500 text-xs">{event.description}</div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ));
+              })()
+            ) : (
+              <div className="text-gray-500 text-center py-2">
+                Nenhum evento encontrado para esta data/localização
+              </div>
+            )}
+          </div>
+        </div>
         
         {/* Restrições para Caminhões */}
         {vehicleType && vehicleType.type.includes('truck') && truckRestrictions && truckRestrictions.length > 0 && (
