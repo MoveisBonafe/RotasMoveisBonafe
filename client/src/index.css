@@ -189,7 +189,8 @@ iframe {
 
 /* Classe para a aba expandida normal */
 .expanded-tab {
-  max-height: 50vh;
+  max-height: 80vh;
+  height: 80vh;
   overflow-y: auto;
   transition: all 0.3s ease;
 }

@@ -304,22 +304,86 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Fontes de dados de balanças
       let weighingStationsFromOtherSources: any[] = [];
       
+      // Dados de balanças diretamente no servidor
+      // Poderíamos buscar de um arquivo local mas vamos simplificar para manter a compatibilidade
+      const balancasPorCidade: Record<string, any[]> = {
+        'Dois Córregos': [
+          {nome: 'Posto de Fiscalização Dois Córregos', lat: '-22.3650', lng: '-48.3750', rodovia: 'SP-225', fonte: 'DER-SP'}
+        ],
+        'Ribeirão Preto': [
+          {nome: 'Balança DER Ribeirão Preto', lat: '-21.1776', lng: '-47.8234', rodovia: 'SP-330', fonte: 'DER-SP'},
+        ]
+      };
+      
+      const balancasPorRodovia: Record<string, any[]> = {
+        'SP-225': [
+          {nome: 'Balança Itirapina (km 110)', lat: '-22.2505', lng: '-47.8456', km: 110, fonte: 'DER-SP'},
+          {nome: 'Balança Jaú (km 230)', lat: '-22.3006', lng: '-48.5584', km: 230, fonte: 'DER-SP'},
+          {nome: 'Balança Dois Córregos', lat: '-22.3650', lng: '-48.3750', km: 185, fonte: 'ANTT'}
+        ],
+        'SP-255': [
+          {nome: 'Balança Luís Antônio (km 150)', lat: '-21.5510', lng: '-47.7770', km: 150, fonte: 'DER-SP'},
+        ]
+      };
+      
       // Buscar balanças por cidade (se fornecidas)
       if (cities.length > 0) {
-        // Importar as funções do arquivo weighingStationData
-        const { getWeighingStationsByCities } = require('../client/src/lib/weighingStationData');
-        const cityStations = getWeighingStationsByCities(cities);
-        console.log(`Encontradas ${cityStations.length} balanças adicionais por cidade`);
-        weighingStationsFromOtherSources = [...weighingStationsFromOtherSources, ...cityStations];
+        // Criar pontos de interesse a partir dos dados locais
+        let stationId = 60000;
+        cities.forEach(city => {
+          const normalizedCity = city.toLowerCase();
+          // Procurar por correspondências aproximadas
+          Object.keys(balancasPorCidade).forEach(cityKey => {
+            const normalizedCityKey = cityKey.toLowerCase();
+            if (normalizedCityKey.includes(normalizedCity) || normalizedCity.includes(normalizedCityKey)) {
+              const cityStations = balancasPorCidade[cityKey];
+              if (cityStations && cityStations.length > 0) {
+                console.log(`Encontradas ${cityStations.length} balanças próximas à cidade ${cityKey}`);
+                
+                // Converter para o formato PointOfInterest
+                cityStations.forEach(station => {
+                  weighingStationsFromOtherSources.push({
+                    id: stationId++,
+                    name: station.nome,
+                    type: 'weighing_station',
+                    lat: station.lat,
+                    lng: station.lng,
+                    roadName: station.rodovia || `Próximo a ${cityKey}`,
+                    city: cityKey,
+                    address: `${station.nome}, ${cityKey}, SP`,
+                    knownHighwaySource: true
+                  });
+                });
+              }
+            }
+          });
+        });
       }
       
       // Buscar balanças por rodovia (se fornecidas)
       if (highways.length > 0) {
-        // Importar as funções do arquivo weighingStationData
-        const { getWeighingStationsByHighways } = require('../client/src/lib/weighingStationData');
-        const highwayStations = getWeighingStationsByHighways(highways);
-        console.log(`Encontradas ${highwayStations.length} balanças adicionais por rodovia`);
-        weighingStationsFromOtherSources = [...weighingStationsFromOtherSources, ...highwayStations];
+        let stationId = 70000;
+        highways.forEach(highway => {
+          const normalizedHighway = highway.replace(/\s+/g, '-').toUpperCase();
+          const highwayStations = balancasPorRodovia[normalizedHighway];
+          if (highwayStations && highwayStations.length > 0) {
+            console.log(`Encontradas ${highwayStations.length} balanças na rodovia ${normalizedHighway}`);
+            
+            // Converter para o formato PointOfInterest
+            highwayStations.forEach(station => {
+              weighingStationsFromOtherSources.push({
+                id: stationId++,
+                name: station.nome,
+                type: 'weighing_station',
+                lat: station.lat,
+                lng: station.lng,
+                roadName: normalizedHighway,
+                address: `${station.nome}, km ${station.km || 'N/A'}, ${normalizedHighway}`,
+                knownHighwaySource: true
+              });
+            });
+          }
+        });
       }
       
       // Remover duplicatas pelo ID
