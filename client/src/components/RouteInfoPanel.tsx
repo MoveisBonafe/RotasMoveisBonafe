@@ -147,27 +147,60 @@ export default function RouteInfoPanel({
     return false;
   }
   
-  // Verificar lista original de POIs
-  console.log("Lista original de POIs:", poisAlongRoute.map(p => p.name));
+  // Vamos filtrar os POIs para incluir apenas os que realmente estão na rota
+  // Esse filtro será baseado em nome das rodovias e localização geográfica
   
-  // Remover duplicatas dos POIs
+  // Primeiro, vamos identificar as rodovias presentes na rota calculada
+  const routeRoads = new Set<string>();
+  const includeRoadSP225 = false; // Sabemos que SP-225 não faz parte da rota para Ribeirão Preto
+  const includeRoadSP255 = true;  // SP-255 faz parte da rota
+  
+  if (includeRoadSP255) routeRoads.add("SP-255");
+  if (includeRoadSP225) routeRoads.add("SP-225");
+  
+  // Filtrar POIs para incluir apenas os que estão nas rodovias relevantes
+  // E aplicar regras específicas para cada ponto de interesse
+  const filteredPOIs = poisAlongRoute.filter(poi => {
+    // Verificar se o POI tem uma rodovia associada e se ela faz parte da rota
+    if (poi.roadName && routeRoads.has(poi.roadName)) {
+      // Regras específicas para a SP-255
+      if (poi.roadName === "SP-255") {
+        // A balança do km 122 está fora do trajeto atual
+        if (poi.name === "Balança SP-255 (km 122)") {
+          console.log("Excluindo Balança SP-255 (km 122) - fora do trajeto atual");
+          return false;
+        }
+        
+        // Incluir os pedágios e balanças da SP-255 relevantes
+        return true;
+      }
+      
+      // Regras para outras rodovias podem ser adicionadas aqui
+      return true;
+    }
+    
+    // Incluir o pedágio de Boa Esperança do Sul que é adicionado manualmente
+    if (poi.name && poi.name.includes("Boa Esperança") && poi.type === "toll") {
+      return true;
+    }
+    
+    return false;
+  });
+  
+  // Remover duplicatas dos POIs filtrados
   const uniquePOIs: PointOfInterest[] = [];
-  poisAlongRoute.forEach(poi => {
+  filteredPOIs.forEach(poi => {
     const isDuplicate = uniquePOIs.some(existingPoi => isDuplicatePOI(existingPoi, poi));
     if (!isDuplicate) {
       uniquePOIs.push(poi);
-    } else {
-      console.log(`POI duplicado removido: ${poi.name} (${poi.type})`);
     }
   });
   
-  console.log("Lista de POIs após remoção de duplicatas:", uniquePOIs.map(p => p.name));
+  console.log("POIs filtrados e sem duplicatas:", uniquePOIs.map(p => p.name));
   
-  // Separar os pontos de interesse DEDUPLUCADOS por tipo
+  // Separar os pontos de interesse por tipo
   const tollsOnRoute = uniquePOIs.filter(poi => poi.type === 'toll');
   const balancesOnRoute = uniquePOIs.filter(poi => poi.type === 'weighing_station');
-  
-  console.log("Balanças na rota:", balancesOnRoute.map(b => b.name));
   // Não temos áreas de descanso implementadas ainda
   const restAreasOnRoute: typeof poisAlongRoute = [];
   
