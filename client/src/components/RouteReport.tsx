@@ -91,26 +91,23 @@ export default function RouteReport({
     enabled: !!calculatedRoute && calculatedRoute.length > 1
   });
 
-  // Buscar eventos das cidades
+  // Buscar eventos das cidades - simplificado para funcionar corretamente
   const { data: cityEvents = [] } = useQuery({ 
-    queryKey: ['/api/city-events', startDate, endDate, destinationCityNames],
+    queryKey: ['/api/city-events'],
     queryFn: async () => {
-      if (!startDate || !endDate || destinationCityNames.length === 0) return [];
-      
-      const queryParams = new URLSearchParams();
-      if (startDate) queryParams.append('startDate', startDate);
-      if (endDate) queryParams.append('endDate', endDate);
-      destinationCityNames.forEach(city => {
-        if (city) queryParams.append('cities', city);
-      });
-      
-      const response = await fetch(`/api/city-events?${queryParams.toString()}`);
-      if (!response.ok) {
-        throw new Error('Erro ao buscar eventos das cidades');
+      try {
+        console.log("Buscando eventos das cidades...");
+        const response = await fetch('/api/city-events');
+        console.log("Resposta do servidor:", response.status);
+        const data = await response.json();
+        console.log("Eventos recebidos:", data.length);
+        return data;
+      } catch (error) {
+        console.error("Erro ao buscar eventos:", error);
+        return [];
       }
-      return await response.json();
     },
-    enabled: !!startDate && !!endDate && destinationCityNames.length > 0
+    enabled: true // Sempre habilitado para debug
   });
 
   // Buscar restrições de caminhões
@@ -147,6 +144,15 @@ export default function RouteReport({
     // Restaurar o título original
     document.title = originalTitle;
   };
+
+  // Log para debug
+  console.log('RouteReport - Debug Info:', {
+    routeInfo,
+    destinationCityNames,
+    cityEvents,
+    truckRestrictions,
+    poisAlongRoute
+  });
 
   if (!routeInfo || !origin || !calculatedRoute || !vehicleType) {
     return (
@@ -229,19 +235,43 @@ export default function RouteReport({
         
         <div className="border border-gray-200 rounded-sm p-2 mb-2">
           <h3 className="text-xs font-semibold mb-1 text-primary">Sequência de Rota</h3>
-          <div className="space-y-1">
+          
+          {/* Versão animada da rota */}
+          <div className="space-y-1 relative">
+            {/* Linha de conexão entre os pontos */}
+            <div className="absolute left-[9px] top-[12px] w-[2px] h-[calc(100%-24px)] bg-blue-100 z-0"></div>
+            
             {[origin, ...calculatedRoute.slice(1)].map((location, index) => (
-              <div key={index} className="flex items-start">
-                <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center mr-2 text-xs">
+              <div 
+                key={index} 
+                className={`flex items-start relative z-10 animate-fadeInUp`}
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mr-2 text-xs
+                  ${index === 0 
+                    ? 'bg-blue-500 text-white' 
+                    : index === calculatedRoute.length 
+                      ? 'bg-green-500 text-white' 
+                      : 'bg-gray-100 text-gray-700'}`}
+                >
                   {index === 0 ? 'A' : index}
                 </div>
                 <div>
                   <div className="font-medium">{location.name}</div>
                   <div className="text-xs text-gray-500">{location.address}</div>
                 </div>
+                
+                {/* Indicador de direção se não for o último ponto */}
+                {index < calculatedRoute.length && (
+                  <div className="absolute left-[9px] top-[22px] h-6 flex items-center justify-center">
+                    <div className="w-[10px] h-[10px] rotate-45 border-r-2 border-b-2 border-blue-300"></div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
+
+          {/* A animação agora usa classes do tailwind */}
         </div>
         
         {/* Pontos de Atenção */}

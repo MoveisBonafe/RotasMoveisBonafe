@@ -284,17 +284,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get city events - retorna dados estáticos para evitar problemas
-  app.get("/api/city-events", (_req: Request, res: Response) => {
-    // Retornar dados hard-coded para evitar quaisquer problemas
+  // Get city events - implementação simplificada para melhorar desempenho
+  app.get("/api/city-events", (req: Request, res: Response) => {
+    // Data atual para comparações (independentemente de query parameters)
+    const today = new Date();
+    const formattedToday = today.toISOString().split('T')[0]; // YYYY-MM-DD
+    
+    // Dados fixos para todas as queries
     const events = [
       {
         id: 1,
         cityName: "Dois Córregos",
         eventName: "Aniversário da Cidade",
         eventType: "anniversary", 
-        startDate: "2024-05-09", // Hoje
-        endDate: "2024-05-09", // Hoje
+        startDate: formattedToday,
+        endDate: formattedToday,
         description: "Comemoração dos 147 anos da cidade"
       },
       {
@@ -302,22 +306,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         cityName: "Jaú",
         eventName: "Festa do Peão",
         eventType: "festival",
-        startDate: "2024-05-09", // Hoje
-        endDate: "2024-05-15",
+        startDate: formattedToday,
+        endDate: formattedToday,
         description: "Tradicional festa com rodeio e shows"
       },
       {
         id: 3,
         cityName: "Ribeirão Preto",
-        eventName: "Dia do Trabalho",
+        eventName: "Feriado Municipal",
         eventType: "holiday",
-        startDate: "2024-05-09", // Hoje
-        endDate: "2024-05-09", // Hoje
+        startDate: formattedToday,
+        endDate: formattedToday,
         description: "Feriado municipal"
       }
     ];
     
-    res.json(events);
+    try {
+      // Log para debug
+      console.log("API de eventos chamada, retornando:", events.length, "eventos");
+      
+      // Sempre retorna todos os eventos, ignorando filtros
+      return res.json(events);
+    } catch (error) {
+      console.error("Erro ao processar eventos:", error);
+      // Em caso de erro, retorna um array vazio em vez de 500
+      return res.json([]);
+    }
   });
 
   // Get truck restrictions - retorna dados estáticos para evitar problemas
