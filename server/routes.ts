@@ -297,9 +297,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         cityName: "Dois Córregos",
         eventName: "Aniversário da Cidade",
         eventType: "anniversary", 
-        startDate: formattedToday,
-        endDate: formattedToday,
-        description: "Comemoração dos 147 anos da cidade"
+        startDate: "2025-02-05",
+        endDate: "2025-02-05",
+        description: "Comemoração dos 150 anos da cidade (fundada em 5 de fevereiro de 1875)"
       },
       {
         id: 2,
@@ -312,12 +312,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       },
       {
         id: 3,
+        cityName: "Jaú",
+        eventName: "Aniversário da Cidade",
+        eventType: "anniversary",
+        startDate: "2025-08-15",
+        endDate: "2025-08-15",
+        description: "Comemoração dos 172 anos da cidade (fundada em 15 de agosto de 1853)"
+      },
+      {
+        id: 4,
         cityName: "Ribeirão Preto",
         eventName: "Aniversário da Cidade",
         eventType: "anniversary",
-        startDate: formattedToday,
-        endDate: formattedToday,
-        description: "Comemoração dos 166 anos da cidade"
+        startDate: "2025-06-19",
+        endDate: "2025-06-19",
+        description: "Comemoração dos 169 anos da cidade (fundada em 19 de junho de 1856)"
       }
     ];
     
