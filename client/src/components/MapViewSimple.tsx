@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Location, PointOfInterest } from "@/lib/types";
 import { useRoutesPreferred } from "@/hooks/useRoutesPreferred";
 import { extractTollsFromRoute } from "@/lib/tollUtils";
-import MapControls from "@/components/MapControls";
+import MapControls from "./MapControls";
 
 interface MapViewProps {
   origin: Location | null;
@@ -322,7 +322,7 @@ export default function MapViewSimple({
                     title: poi.name,
                     icon: {
                       path: google.maps.SymbolPath.CIRCLE,
-                      fillColor: poi.type === 'toll' ? (isFromAPI ? "#FF9800" : "#FFC107") : "#F44336", // Cores diferentes para pedágios da API vs. predefinidos
+                      fillColor: poi.type.includes('toll') ? (isFromAPI ? "#FF9800" : "#FFC107") : "#F44336", // Cores diferentes para pedágios da API vs. predefinidos
                       fillOpacity: 1,
                       strokeWeight: 2,
                       strokeColor: "#000000",

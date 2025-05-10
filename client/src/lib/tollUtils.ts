@@ -245,7 +245,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
               name: tollPoint.name || `Pedágio ${legIndex + 1}`,
               lat: lat,
               lng: lng,
-              type: 'toll',
+              type: 'api-toll',
               cost: tollPoint.cost || 0,
               roadName: tollPoint.road || "",
               restrictions: ""
@@ -285,7 +285,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
               name: `Pedágio (instruções)`,
               lat: lat,
               lng: lng,
-              type: 'toll',
+              type: 'api-toll',
               cost: 0,
               roadName: `Trecho ${legIndex + 1}`,
               restrictions: ""
