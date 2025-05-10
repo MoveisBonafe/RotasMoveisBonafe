@@ -299,6 +299,13 @@ export class MemStorage implements IStorage {
     return Array.from(this.pointsOfInterest.values());
   }
   
+  async addPointOfInterest(poi: Omit<PointOfInterest, 'id'>): Promise<PointOfInterest> {
+    const id = this.poiId++;
+    const newPoi: PointOfInterest = { ...poi, id };
+    this.pointsOfInterest.set(id, newPoi);
+    return newPoi;
+  }
+  
   // City events methods
   async getCityEvents(startDate?: string, endDate?: string, cities?: string[]): Promise<CityEvent[]> {
     // Esse método foi desabilitado para evitar conflitos entre dados do storage.ts e dados do routes.ts
