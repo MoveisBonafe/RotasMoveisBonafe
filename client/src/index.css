@@ -266,3 +266,16 @@ iframe {
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 8px;
 }
+
+/* Estilos para os marcadores do mapa */
+.marker-label {
+  /* Adicionar borda para melhor contraste */
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+  /* Outros estilos para destacar */
+  font-family: 'Arial', sans-serif;
+  font-weight: 900 !important;
+}

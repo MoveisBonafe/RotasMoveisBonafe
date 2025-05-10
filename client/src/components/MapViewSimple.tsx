@@ -91,21 +91,23 @@ export default function MapViewSimple({
             lng: parseFloat(origin.lng)
           };
           
-          // Usar marcador de pino tradicional para a origem
+          // Usar marcador de pino tradicional para a origem (mais destacado)
           const originMarker = new google.maps.Marker({
             position: originPoint,
             map: newMap,
             title: origin.name || "Origem",
-            // Usar o pino vermelho padrão
+            // Usar o pino vermelho padrão com tamanho aumentado
             icon: {
               url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png", // Pino vermelho tradicional
-              labelOrigin: new google.maps.Point(14, 40) // Posição do rótulo abaixo do pino
+              scaledSize: new google.maps.Size(45, 45), // Pino maior
+              labelOrigin: new google.maps.Point(22, 55) // Posição ajustada para o label
             },
             label: {
               text: "0",
               color: "#FFFFFF",
-              fontSize: "11px",
-              fontWeight: "bold"
+              fontSize: "16px", // Tamanho maior
+              fontWeight: "bold",
+              className: "marker-label" // Classe para estilização adicional
             },
             zIndex: 100
           });
@@ -213,21 +215,23 @@ export default function MapViewSimple({
           
           console.log("Rota calculada! Adicionando marcadores...");
           
-          // 1. Adicionar marcador para a origem
+          // 1. Adicionar marcador para a origem - também mais destacado
           const originMarker = new google.maps.Marker({
             position: originPoint,
             map: map,
             title: origin.name || "Origem",
-            // Usar pino vermelho tradicional
+            // Usar pino vermelho tradicional ampliado
             icon: {
               url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-              labelOrigin: new google.maps.Point(14, 40)
+              scaledSize: new google.maps.Size(45, 45), // Pino maior
+              labelOrigin: new google.maps.Point(22, 55) // Posição ajustada para o label
             },
             label: {
               text: "0",
               color: "#FFFFFF",
-              fontSize: "11px",
-              fontWeight: "bold"
+              fontSize: "16px", // Tamanho maior
+              fontWeight: "bold",
+              className: "marker-label" // Classe para estilização adicional
             },
             zIndex: 100
           });
@@ -253,7 +257,7 @@ export default function MapViewSimple({
                 lng: parseFloat(point.lng)
               };
               
-              // Criar marcador com pino e numeração sequencial
+              // Criar marcador com pino e numeração sequencial mais destacada
               const waypointMarker = new google.maps.Marker({
                 position,
                 map: map,
@@ -261,13 +265,15 @@ export default function MapViewSimple({
                 // Usar pino vermelho tradicional
                 icon: {
                   url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-                  labelOrigin: new google.maps.Point(14, 40)
+                  scaledSize: new google.maps.Size(45, 45), // Pino maior
+                  labelOrigin: new google.maps.Point(22, 55) // Posição ajustada para o label
                 },
                 label: {
                   text: (index + 1).toString(),
                   color: "#FFFFFF",
-                  fontSize: "11px",
-                  fontWeight: "bold"
+                  fontSize: "16px", // Tamanho maior
+                  fontWeight: "bold",
+                  className: "marker-label" // Classe para estilização adicional
                 },
                 zIndex: 100
               });
