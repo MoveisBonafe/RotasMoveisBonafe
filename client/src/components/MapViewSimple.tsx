@@ -538,8 +538,8 @@ export default function MapViewSimple({
               }, 200);
             }
             
-            // Combinar os POIs da API com os do backend
-            let allPOIs = [...tollPointsFromAPI];
+            // Inicializar array para armazenar todos os POIs relevantes
+            const allPOIs: PointOfInterest[] = [];
             
             // Função para verificar coordenadas duplicadas (considerar até 0.01 grau de diferença, ~1km)
             function isDuplicateLocation(poi1: PointOfInterest, poi2: PointOfInterest): boolean {
@@ -558,9 +558,6 @@ export default function MapViewSimple({
             // Adicionar os POIs do backend que são relevantes para a rota
             if (pointsOfInterest && pointsOfInterest.length > 0) {
               console.log(`ANALISANDO ROTA: ${origin?.name} -> ${calculatedRoute?.[calculatedRoute.length-1]?.name || 'Destino'}`);
-              
-              // Inicializar array de POIs
-              const allPOIs: PointOfInterest[] = [];
               
               // Identificar as rodovias presentes na rota
               const roadsInRoute = new Set<string>();
