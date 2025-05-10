@@ -1009,11 +1009,11 @@ export default function MapViewSimple({
                 // Pedágio - Símbolo $ em fundo verde
                 poiIcon = {
                   path: google.maps.SymbolPath.CIRCLE,
-                  fillColor: '#38B000', // Verde vivo
+                  fillColor: '#38B000', // Verde vivo mais brilhante
                   fillOpacity: 1,
                   strokeColor: '#FFFFFF',
-                  strokeWeight: 1,
-                  scale: 12
+                  strokeWeight: 1.5,
+                  scale: 10
                 };
                 // Usar o símbolo $ como texto
                 labelText = "$";
@@ -1032,25 +1032,42 @@ export default function MapViewSimple({
                 label: labelText ? {
                   text: labelText,
                   color: "#FFFFFF",
-                  fontSize: "12px",
+                  fontSize: poi.type === "toll" ? "14px" : "12px", // Tamanho maior para o símbolo $
                   fontWeight: "bold",
                   className: "marker-label-centered"
                 } : null,
-                zIndex: 50 // Abaixo dos marcadores de rota
+                zIndex: poi.type === "toll" ? 60 : 50 // Pedágios mais visíveis que outros marcadores
               });
               
               // Criar conteúdo da janela de informação
-              let infoContent = `<div><strong>${poi.name}</strong></div>`;
+              // Criar estilos CSS para a janela de informação
+              const infoStyles = `
+                <style>
+                  .info-window { font-family: 'Inter', sans-serif; padding: 8px; }
+                  .info-title { font-weight: bold; font-size: 14px; margin-bottom: 5px; }
+                  .info-cost { color: #2B9348; font-weight: bold; font-size: 16px; margin: 5px 0; }
+                  .info-detail { font-size: 12px; color: #555; margin: 2px 0; }
+                  .toll-info { display: flex; flex-direction: column; }
+                </style>
+              `;
+              
+              let infoContent = infoStyles + `<div class="info-window"><div class="info-title">${poi.name}</div>`;
+              
               if (poi.type === "toll") {
                 const costInReais = (poi.cost || 0) / 100;
-                infoContent += `<div>Custo: R$ ${costInReais.toFixed(2)}</div>`;
-                infoContent += `<div>Rodovia: ${poi.roadName || ""}</div>`;
+                infoContent += `<div class="toll-info">
+                  <div class="info-cost">R$ ${costInReais.toFixed(2)}</div>
+                  <div class="info-detail">Rodovia: ${poi.roadName || ""}</div>
+                  <div class="info-detail">Pagamentos: ${poi.restrictions || "Dinheiro e cartão"}</div>
+                </div>`;
               } else if (poi.type === "weighing_station") {
-                infoContent += `<div>Tipo: Balança</div>`;
+                infoContent += `<div class="info-detail">Tipo: Balança</div>`;
                 if (poi.restrictions) {
-                  infoContent += `<div>Restrições: ${poi.restrictions}</div>`;
+                  infoContent += `<div class="info-detail">Restrições: ${poi.restrictions}</div>`;
                 }
               }
+              
+              infoContent += '</div>'; // Fechando a div info-window
               
               // Criar e configurar janela de informação
               const infoWindow = new google.maps.InfoWindow({
