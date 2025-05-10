@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RouteInfo, VehicleType, CityEvent, TruckRestriction, PointOfInterest, TabType, Location as LocationType } from "@/lib/types";
 import { formatDistance, formatDuration, formatCurrency, formatRouteSequence } from "@/lib/mapUtils";
 import { calculateFuelConsumption, getFuelEfficiency } from "@/lib/costCalculator";
@@ -13,6 +13,7 @@ interface RouteInfoPanelProps {
   poisAlongRoute: PointOfInterest[];
   origin: LocationType | null;
   calculatedRoute: LocationType[] | null;
+  initialTab?: TabType; // Tab inicial a ser mostrada
 }
 
 export default function RouteInfoPanel({
@@ -22,9 +23,17 @@ export default function RouteInfoPanel({
   endDate,
   poisAlongRoute,
   origin,
-  calculatedRoute
+  calculatedRoute,
+  initialTab = "summary"
 }: RouteInfoPanelProps) {
-  const [activeTab, setActiveTab] = useState<TabType>("summary");
+  const [activeTab, setActiveTab] = useState<TabType>(initialTab);
+  
+  // Quando a rota é calculada (calculatedRoute muda), ativar a aba de resumo
+  useEffect(() => {
+    if (calculatedRoute && calculatedRoute.length > 0) {
+      setActiveTab("summary");
+    }
+  }, [calculatedRoute]);
 
   // Extrair apenas os nomes das cidades dos destinos escolhidos (não do percurso)
   // Isso atende ao requisito de mostrar eventos apenas das cidades selecionadas como destino
@@ -139,6 +148,34 @@ export default function RouteInfoPanel({
             </div>
           ) : (
             <div>
+              {/* Sequência da Rota */}
+              {calculatedRoute && calculatedRoute.length > 0 && (
+                <div className="mb-3 bg-white rounded p-2 border border-gray-100">
+                  <h3 className="text-xs font-medium mb-1 text-primary">Sequência da Rota</h3>
+                  
+                  <div className="relative overflow-hidden">
+                    <div className="flex flex-wrap items-center text-xs route-sequence-animation">
+                      {calculatedRoute.map((location, index) => (
+                        <div key={index} className="flex items-center route-point-animation" style={{animationDelay: `${index * 0.2}s`}}>
+                          <div className="flex items-center">
+                            <span className="inline-flex justify-center items-center w-5 h-5 rounded-full bg-primary text-white text-xs mr-1">
+                              {index + 1}
+                            </span>
+                            <span className="font-medium">{location.name}</span>
+                          </div>
+                          
+                          {index < calculatedRoute.length - 1 && (
+                            <div className="mx-2 text-gray-400 route-connector-animation" style={{animationDelay: `${index * 0.2 + 0.1}s`}}>
+                              →
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {/* Route Info Card - Version compacta */}
                 <div className="bg-white rounded p-2 border border-gray-100">

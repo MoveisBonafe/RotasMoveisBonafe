@@ -313,11 +313,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       {
         id: 3,
         cityName: "Ribeirão Preto",
-        eventName: "Feriado Municipal",
-        eventType: "holiday",
+        eventName: "Aniversário da Cidade",
+        eventType: "anniversary",
         startDate: formattedToday,
         endDate: formattedToday,
-        description: "Feriado municipal"
+        description: "Comemoração dos 166 anos da cidade"
       }
     ];
     
