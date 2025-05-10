@@ -182,8 +182,8 @@ export default function RouteInfoPanel({
                       {calculatedRoute.map((location, index) => (
                         <div key={index} className="flex items-center route-point-animation" style={{animationDelay: `${index * 0.2}s`}}>
                           <div className="flex items-center">
-                            <span className="inline-flex justify-center items-center w-5 h-5 rounded-full bg-primary text-white text-xs mr-1">
-                              {index + 1}
+                            <span className={`inline-flex justify-center items-center w-5 h-5 rounded-full ${index === 0 ? 'bg-blue-600' : 'bg-primary'} text-white text-xs mr-1`}>
+                              {index === 0 ? 'O' : index}
                             </span>
                             <span className="font-medium">
                               {location.name.startsWith("R.") || location.name.startsWith("Av.") 

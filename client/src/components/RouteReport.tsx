@@ -188,7 +188,7 @@ export default function RouteReport({
           <h3 className="text-xs font-semibold mb-1 text-primary">Informações da Rota</h3>
           <div className="grid grid-cols-2 gap-x-2 gap-y-1">
             <div className="text-gray-600">Origem:</div>
-            <div className="font-medium">{origin.name}</div>
+            <div className="font-medium">0. {origin.name}</div>
             
             <div className="text-gray-600">Destinos:</div>
             <div>
@@ -263,7 +263,7 @@ export default function RouteReport({
                       ? 'bg-green-500 text-white' 
                       : 'bg-gray-100 text-gray-700'}`}
                 >
-                  {index === 0 ? 'A' : index}
+                  {index === 0 ? '0' : index}
                 </div>
                 <div>
                   <div className="font-medium">
