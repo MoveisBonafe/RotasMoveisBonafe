@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Location, VehicleType, GeocodingResult, PointOfInterest } from "@/lib/types";
-import MapView from "@/components/MapViewNative";
+import MapViewSimple from "@/components/MapViewSimple";
 import Sidebar from "@/components/Sidebar";
 import DateRangeSelector from "@/components/DateRangeSelector";
 import AddLocationModal from "@/components/AddLocationModal";
@@ -261,6 +261,20 @@ export default function Home() {
     });
   };
   
+  // Callback para processar os dados de rota retornados pelo Google Maps API
+  const handleRouteCalculated = (routeResponse: any) => {
+    console.log("Rota calculada pelo Google Maps, processando resposta:", routeResponse);
+    
+    // Aqui você pode processar a resposta da API do Google Maps se necessário
+    // Por exemplo, extrair pedágios, distâncias, ou outros detalhes
+    
+    // Atualizar o estado com os dados da rota se necessário
+    if (routeResponse && routeResponse.routes && routeResponse.routes.length > 0) {
+      // A resposta contém dados úteis que podemos usar para mostrar informações adicionais
+      console.log("Rota contém pedágios:", routeResponse.routes[0].legs.some((leg: any) => leg.toll_info));
+    }
+  };
+
   // Handle calculate route button click
   const handleCalculateRoute = () => {
     if (!origin || !vehicleTypeObj || locations.length === 0) {
@@ -364,12 +378,7 @@ export default function Home() {
     }, 800); // Delay para um efeito visual melhor
   };
   
-  // Handle route calculated from the map component
-  const handleRouteCalculated = (result: any) => {
-    if (result && result.poisAlongRoute) {
-      setPoisOnRoute(result.poisAlongRoute);
-    }
-  };
+  // Função antiga substituída pela implementação acima
   
   return (
     <div className="flex flex-col h-screen">
@@ -423,8 +432,8 @@ export default function Home() {
             </div>
           )}
           
-          {/* Google Maps mostrando apenas os POIs no percurso da rota */}
-          <MapView 
+          {/* Google Maps mostrando apenas os POIs no percurso da rota incluindo pedágios da API Routes Preferred */}
+          <MapViewSimple 
             origin={origin}
             waypoints={locations}
             calculatedRoute={calculatedRoute}

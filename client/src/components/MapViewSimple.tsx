@@ -243,7 +243,44 @@ export default function MapViewSimple({
             console.log("Adicionando POIs como marcadores:", pointsOfInterest);
             
             // Verificar se temos POIs para mostrar
+            // Primeiro, tentar extrair pedágios da API Routes Preferred
+            try {
+              // Extrair pedágios da resposta da API Routes Preferred
+              const tollPointsFromAPI = extractTollPoints(result);
+              if (tollPointsFromAPI && tollPointsFromAPI.length > 0) {
+                console.log(`Encontrados ${tollPointsFromAPI.length} pedágios via API Routes Preferred`, tollPointsFromAPI);
+                
+                // Mesclar pedágios encontrados com os pontos de interesse existentes
+                const combinedPOIs = [...pointsOfInterest];
+                
+                // Adicionar apenas pedágios que não estão já incluídos nos POIs existentes (evitar duplicatas)
+                tollPointsFromAPI.forEach(tollPoint => {
+                  // Verificar se esse pedágio já está incluído nos POIs existentes
+                  const isDuplicate = pointsOfInterest.some(existingPOI => 
+                    existingPOI.type === 'toll' && 
+                    Math.abs(parseFloat(existingPOI.lat) - parseFloat(tollPoint.lat)) < 0.01 &&
+                    Math.abs(parseFloat(existingPOI.lng) - parseFloat(tollPoint.lng)) < 0.01
+                  );
+                  
+                  if (!isDuplicate) {
+                    combinedPOIs.push(tollPoint);
+                  }
+                });
+                
+                // Atualizar POIs com os pedágios encontrados
+                pointsOfInterest = combinedPOIs;
+                
+                // Armazenar os pontos de pedágio encontrados
+                setApiTollPoints(tollPointsFromAPI);
+              }
+            } catch (error) {
+              console.error("Erro ao extrair pedágios da API Routes Preferred:", error);
+            }
+            
+            // Agora mostrar todos os pontos de interesse, incluindo os extraídos da API
             if (pointsOfInterest && pointsOfInterest.length > 0) {
+              console.log(`Adicionando ${pointsOfInterest.length} POIs ao mapa (incluindo pedágios da API)`);
+              
               pointsOfInterest.forEach(poi => {
                 try {
                   if (!poi.lat || !poi.lng) {
@@ -259,17 +296,18 @@ export default function MapViewSimple({
                   // Não estender bounds com POIs para manter o zoom adequado na rota
                   
                   // Criar marcador com estilo apropriado para pedágios/balanças
+                  const isFromAPI = apiTollPoints.some(t => t.id === poi.id);
                   const poiMarker = new google.maps.Marker({
                     position: poiPosition,
                     map,
                     title: poi.name,
                     icon: {
                       path: google.maps.SymbolPath.CIRCLE,
-                      fillColor: poi.type === 'toll' ? "#FFC107" : "#F44336", // Amarelo para pedágio, vermelho para balança
+                      fillColor: poi.type === 'toll' ? (isFromAPI ? "#FF9800" : "#FFC107") : "#F44336", // Cores diferentes para pedágios da API vs. predefinidos
                       fillOpacity: 1,
                       strokeWeight: 2,
                       strokeColor: "#000000",
-                      scale: 12
+                      scale: isFromAPI ? 14 : 12 // Pedágios da API um pouco maiores
                     },
                     label: {
                       text: poi.type === 'toll' ? '$' : 'B', // Símbolo $ para pedágio, B para balança
@@ -277,7 +315,7 @@ export default function MapViewSimple({
                       fontWeight: "bold",
                       fontSize: "11px"
                     },
-                    zIndex: 110 // Prioridade maior que os outros marcadores
+                    zIndex: isFromAPI ? 120 : 110 // Prioridade maior para pedágios da API
                   });
                   
                   // Informações detalhadas ao clicar no POI
@@ -286,6 +324,7 @@ export default function MapViewSimple({
                       <h3 style="margin: 0 0 8px 0; color: #333; font-size: 14px;">${poi.name}</h3>
                       <p style="margin: 5px 0; font-size: 12px; color: #666;">
                         ${poi.type === 'toll' ? '🚧 Pedágio' : '⚖️ Balança de pesagem'}
+                        ${isFromAPI ? ' <span style="color:#FF5722;font-weight:bold;">(API)</span>' : ''}
                       </p>
                       ${poi.roadName ? `<p style="margin: 5px 0; font-size: 12px;">🛣️ Rodovia: ${poi.roadName}</p>` : ''}
                       ${poi.cost ? `<p style="margin: 5px 0; font-size: 12px;">💰 Custo: <strong>R$ ${(poi.cost/100).toFixed(2)}</strong></p>` : ''}
@@ -302,7 +341,7 @@ export default function MapViewSimple({
                   });
                   
                   newMarkers.push(poiMarker);
-                  console.log(`POI adicionado ao mapa: ${poi.name} (${poi.type})`);
+                  console.log(`POI adicionado ao mapa: ${poi.name} (${poi.type})${isFromAPI ? ' (da API)' : ''}`);
                 } catch (error) {
                   console.error(`Erro ao adicionar POI ${poi.name}:`, error);
                 }
