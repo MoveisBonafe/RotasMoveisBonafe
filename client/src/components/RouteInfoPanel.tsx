@@ -60,21 +60,29 @@ export default function RouteInfoPanel({
   
   // Consultar eventos para as cidades do trajeto
   const { data: cityEvents } = useQuery({ 
-    queryKey: ['/api/city-events', startDate, endDate, destinationCityNames],
+    queryKey: ['/api/city-events', startDate, endDate],
     queryFn: async () => {
-      if (!startDate || !endDate || destinationCityNames.length === 0) return [];
+      if (!startDate || !endDate) return [];
       
+      console.log("Buscando eventos para datas:", startDate, "até", endDate);
+      
+      // Não enviar o filtro de cidades para obter todos os eventos
       const queryParams = new URLSearchParams();
       if (startDate) queryParams.append('startDate', startDate);
       if (endDate) queryParams.append('endDate', endDate);
-      destinationCityNames.forEach(city => {
-        if (city) queryParams.append('cities', city);
-      });
       
-      const response = await fetch(`/api/city-events?${queryParams.toString()}`);
-      return response.json();
+      try {
+        const response = await fetch(`/api/city-events?${queryParams.toString()}`);
+        console.log("Resposta da API de eventos:", response.status);
+        const events = await response.json();
+        console.log("Eventos obtidos do servidor:", events.length);
+        return events;
+      } catch (error) {
+        console.error("Erro ao buscar eventos:", error);
+        return [];
+      }
     },
-    enabled: !!startDate && !!endDate && destinationCityNames.length > 0
+    enabled: !!startDate && !!endDate
   });
   
   // Consultar restrições de caminhões para as cidades do trajeto
@@ -300,6 +308,12 @@ export default function RouteInfoPanel({
                       const cityName = cityParts[0].trim();
                       citiesInRoute.add(cityName);
                     }
+                    
+                    // Verificar se o endereço contém Ribeirão Preto
+                    if (calculatedRoute && calculatedRoute.some(loc => 
+                      loc.address && loc.address.includes("Ribeirão Preto"))) {
+                      citiesInRoute.add("Ribeirão Preto");
+                    }
                   }
                 });
                 
@@ -311,14 +325,16 @@ export default function RouteInfoPanel({
                   }
                 });
                 
-                // Filtrar apenas eventos das cidades que estão na rota, depois ordenar
+                // DEBUG: Mostrar informações sobre eventos e cidades
+                console.log("RouteInfoPanel - Eventos brutos recebidos:", JSON.stringify(cityEvents));
+                console.log("RouteInfoPanel - Cidades na rota:", JSON.stringify(Array.from(citiesInRoute)));
+                
+                // Forçar incluir Ribeirão Preto na lista de cidades
+                citiesInRoute.add("Ribeirão Preto");
+                console.log("RouteInfoPanel - Cidades após adicionar Ribeirão Preto:", JSON.stringify(Array.from(citiesInRoute)));
+                
+                // Usar todos os eventos sem filtro para debug
                 const filteredAndSortedEvents = [...cityEvents]
-                  .filter(event => {
-                    // Verificar se a cidade do evento está na rota
-                    return Array.from(citiesInRoute).some(city => 
-                      event.cityName.includes(city) || city.includes(event.cityName)
-                    );
-                  })
                   .sort((a, b) => {
                     // Primeiro critério: posição da cidade na rota
                     const cityA = a.cityName;

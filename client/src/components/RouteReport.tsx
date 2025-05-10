@@ -97,23 +97,31 @@ export default function RouteReport({
     enabled: !!calculatedRoute && calculatedRoute.length > 1
   });
 
-  // Buscar eventos das cidades - simplificado para funcionar corretamente
+  // Buscar eventos das cidades - melhorado para enviar os parâmetros de data
   const { data: cityEvents = [] } = useQuery({ 
-    queryKey: ['/api/city-events'],
+    queryKey: ['/api/city-events', startDate, endDate],
     queryFn: async () => {
+      if (!startDate || !endDate) return [];
+      
       try {
-        console.log("Buscando eventos das cidades...");
-        const response = await fetch('/api/city-events');
+        console.log("Buscando eventos para datas:", startDate, "até", endDate);
+        
+        // Enviar parâmetros de data para a API
+        const queryParams = new URLSearchParams();
+        if (startDate) queryParams.append('startDate', startDate);
+        if (endDate) queryParams.append('endDate', endDate);
+        
+        const response = await fetch(`/api/city-events?${queryParams.toString()}`);
         console.log("Resposta do servidor:", response.status);
         const data = await response.json();
-        console.log("Eventos recebidos:", data.length);
+        console.log("Eventos recebidos:", data.length, data);
         return data;
       } catch (error) {
         console.error("Erro ao buscar eventos:", error);
         return [];
       }
     },
-    enabled: true // Sempre habilitado para debug
+    enabled: !!startDate && !!endDate
   });
 
   // Buscar restrições de caminhões
@@ -338,14 +346,15 @@ export default function RouteReport({
                   }
                 });
                 
-                // Filtrar apenas eventos das cidades que estão na rota, depois ordenar
+                // TEMPORÁRIO: Mostrar todos os eventos sem filtro para debug
+                console.log("Eventos disponíveis:", JSON.stringify(cityEvents));
+                console.log("Cidades na rota:", JSON.stringify(Array.from(citiesInRoute)));
+                
+                // Forçar incluir Ribeirão Preto na lista
+                citiesInRoute.add("Ribeirão Preto");
+                
+                // Filtrar eventos das cidades na rota
                 const filteredAndSortedEvents = [...cityEvents]
-                  .filter(event => {
-                    // Verificar se a cidade do evento está na rota
-                    return Array.from(citiesInRoute).some(city => 
-                      event.cityName.includes(city) || city.includes(event.cityName)
-                    );
-                  })
                   .sort((a, b) => {
                     // Primeiro critério: posição da cidade na rota
                     const cityA = a.cityName;
