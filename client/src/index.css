@@ -183,16 +183,24 @@ iframe {
 
 /* Classe especial para a aba de relatório */
 .report-expanded {
-  height: calc(100vh - 220px);
+  position: fixed;
+  top: 170px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: auto;
   max-height: unset;
   overflow-y: auto;
   transition: all 0.3s ease;
+  z-index: 10;
+  background-color: white;
+  padding: 0 16px;
+  border-top: 1px solid #eee;
 }
 
 /* Ajuste para o layout do relatório quando expandido */
 .report-expanded .report-container {
-  height: 100%;
-  overflow-y: auto;
+  padding-bottom: 40px;
   padding-right: 4px;
 }
 

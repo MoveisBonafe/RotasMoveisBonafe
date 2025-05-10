@@ -174,14 +174,16 @@ export default function RouteReport({
     <div className="text-xs">
       <div className="mb-2 flex justify-between items-center">
         <h2 className="text-xs font-bold">Relatório de Rota</h2>
-        <Button 
-          onClick={handlePrint} 
-          variant="outline" 
-          size="sm" 
-          className="h-6 text-xs py-0 px-2"
-        >
-          Imprimir
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            onClick={handlePrint} 
+            variant="outline" 
+            size="sm" 
+            className="h-6 text-xs py-0 px-2"
+          >
+            Imprimir
+          </Button>
+        </div>
       </div>
       
       <div ref={reportRef} className="print:p-4 overflow-y-auto max-h-[45vh] report-container">
