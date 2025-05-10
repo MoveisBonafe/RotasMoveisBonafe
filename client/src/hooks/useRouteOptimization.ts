@@ -40,21 +40,63 @@ export function useRouteOptimization() {
     const totalDistance = 145000; // 145km in meters
     const totalDuration = 8100; // 2h 15min in seconds
     
-    // IMPORTANTE: Não filtrar os POIs, apenas usar todos que estão disponíveis
-    console.log("POIs disponíveis:", pois);
+    // Filtrar POIs que estão ao longo da rota
+    console.log("POIs disponíveis para filtrar:", pois);
+    console.log("Rota calculada (pontos):", optimizedLocations);
     
-    // Utilizar todos os POIs disponíveis em vez de tentar filtrar
-    // Isso garantirá que pelo menos vejamos algo no mapa para depuração
-    const poisOnRoute = [...pois];
+    // Função para calcular a distância entre dois pontos em km (haversine)
+    const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+      const R = 6371; // Raio da Terra em km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    };
     
-    // Log de cada POI incluído
-    poisOnRoute.forEach(poi => {
-      console.log(`POI incluído: ${poi.name} (${poi.type}) em ${poi.lat}, ${poi.lng}`);
+    // Filtrar POIs que estão até 20km de distância de qualquer ponto da rota
+    // Aumentamos para 20km para garantir que capturamos os POIs relevantes
+    const MAX_DISTANCE_KM = 20;
+    console.log(`Filtrando POIs a até ${MAX_DISTANCE_KM}km da rota`);
+    
+    const poisOnRoute = pois.filter(poi => {
+      const poiLat = parseFloat(poi.lat);
+      const poiLng = parseFloat(poi.lng);
+      
+      console.log(`Avaliando POI: ${poi.name} (${poi.type}) em [${poiLat}, ${poiLng}]`);
+      
+      // Verificar cada ponto da rota
+      let minDistance = Number.MAX_VALUE;
+      let closestPoint = null;
+      
+      for (const location of optimizedLocations) {
+        const locationLat = parseFloat(location.lat);
+        const locationLng = parseFloat(location.lng);
+        
+        // Calcular distância entre POI e ponto da rota
+        const distance = calculateDistance(poiLat, poiLng, locationLat, locationLng);
+        
+        // Manter registro da menor distância para este POI
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestPoint = location.name;
+        }
+      }
+      
+      // Se POI estiver a menos de MAX_DISTANCE_KM de algum ponto da rota, incluir
+      const shouldInclude = minDistance <= MAX_DISTANCE_KM;
+      
+      console.log(`POI ${poi.name}: ${shouldInclude ? 'INCLUÍDO' : 'EXCLUÍDO'} - Distância mínima: ${minDistance.toFixed(2)}km (local mais próximo: ${closestPoint})`);
+      
+      return shouldInclude;
     });
     
-    console.log(`Total de POIs para mostrar: ${poisOnRoute.length}`);
+    console.log(`Total de POIs filtrados para a rota: ${poisOnRoute.length} de ${pois.length}`);
     
-    // Atualizar o estado com os pontos
+    // Atualizar o estado com os pontos filtrados
     setPoisAlongRoute(poisOnRoute);
     
     // Calculate costs based on vehicle type and route details
