@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Location, PointOfInterest } from "@/lib/types";
 import { useRoutesPreferred } from "@/hooks/useRoutesPreferred";
 import { extractTollsFromRoute } from "@/lib/tollUtils";
+import MapControls from "@/components/MapControls";
 
 interface MapViewProps {
   origin: Location | null;
@@ -37,6 +38,7 @@ export default function MapViewSimple({
   const [directionsRenderer, setDirectionsRenderer] = useState<google.maps.DirectionsRenderer | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [apiTollPoints, setApiTollPoints] = useState<PointOfInterest[]>([]);
+  const [mapType, setMapType] = useState<string>("roadmap");
   
   // Usar o hook para trabalhar com a API Routes Preferred
   const { calculateRouteSegments } = useRoutesPreferred(); // Não usamos mais extractTollPoints
