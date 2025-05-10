@@ -243,6 +243,10 @@ export default function Home() {
     // Garante que pointsOfInterest seja um array válido
     const pois = Array.isArray(pointsOfInterest) ? pointsOfInterest : [];
     
+    // Verificar os dados recebidos da API
+    console.log("Dados de POI recebidos da API:", pointsOfInterest);
+    console.log("POIs processados para a rota:", pois);
+    
     // Adicionar um pequeno atraso para simular o processamento e mostrar o efeito visual
     setTimeout(() => {
       try {
@@ -251,8 +255,8 @@ export default function Home() {
         setCalculatedRoute(routeResult.waypoints);
         
         // Debug para verificar os POIs
-        console.log("POIs disponíveis para a rota:", pois);
-        console.log("POIs filtrados para a rota:", poisAlongRoute);
+        console.log("POIs disponíveis para a rota após otimização:", pois.length);
+        console.log("POIs filtrados para a rota após otimização:", poisAlongRoute);
         
         // IMPORTANTE: Atualizar o estado com os POIs filtrados no momento do cálculo
         setPoisOnRoute(poisAlongRoute); // Atualizar com os POIs filtrados

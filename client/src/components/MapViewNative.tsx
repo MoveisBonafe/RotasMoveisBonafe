@@ -388,9 +388,15 @@ export default function MapViewNative({
                 newMarkers.push(marker);
               });
               
-              // Adicionar os pontos de interesse ao mapa
+              // IMPORTANTE: Adicionar os pontos de interesse ao mapa
+              console.log("Adicionando pontos de interesse direto:", pointsOfInterest);
               const poiMarkers = renderPointsOfInterest(map, bounds);
-              newMarkers.push(...poiMarkers);
+              if (poiMarkers.length > 0) {
+                console.log(`Adicionados ${poiMarkers.length} marcadores de POI ao mapa`);
+                newMarkers.push(...poiMarkers);
+              } else {
+                console.log("Nenhum marcador de POI adicionado");
+              }
               
               // Ajustar o mapa para mostrar todos os pontos
               map.fitBounds(bounds);
@@ -493,8 +499,14 @@ export default function MapViewNative({
         });
         
         // Adicionar os pontos de interesse ao mapa
+        console.log("Fallback: Adicionando pontos de interesse:", pointsOfInterest);
         const poiMarkers = renderPointsOfInterest(map, bounds);
-        newMarkers.push(...poiMarkers);
+        if (poiMarkers.length > 0) {
+          console.log(`Fallback: Adicionados ${poiMarkers.length} marcadores de POI`);
+          newMarkers.push(...poiMarkers);
+        } else {
+          console.log("Fallback: Nenhum POI adicionado");
+        }
         
         // Ajustar o mapa para mostrar todos os pontos
         map.fitBounds(bounds);
