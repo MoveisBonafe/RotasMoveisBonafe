@@ -30,18 +30,48 @@ export default function RouteInfoPanel({
 }: RouteInfoPanelProps) {
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(true); // Estado para controlar minimização completa
   const [filteredPOIs, setFilteredPOIs] = useState<PointOfInterest[]>([]);
   
   // Função para alternar a tab e expandir/recolher
   const toggleTab = (tab: TabType) => {
     if (activeTab === tab) {
       // Se a mesma tab for clicada, alterna entre expandido e recolhido
-      setIsExpanded(!isExpanded);
+      if (isMinimized) {
+        // Se estiver completamente minimizado, mostrar conteúdo recolhido
+        setIsMinimized(false);
+        setIsExpanded(false);
+      } else if (!isExpanded) {
+        // Se estiver mostrando conteúdo recolhido, minimizar completamente
+        setIsMinimized(true);
+      } else {
+        // Se estiver expandido, recolher primeiro
+        setIsExpanded(false);
+      }
     } else {
-      // Se for uma tab diferente, ativa essa tab e expande
+      // Se for uma tab diferente, ativa essa tab e mostra conteúdo (não expandido)
       setActiveTab(tab);
-      setIsExpanded(true);
+      setIsMinimized(false);
+      setIsExpanded(false);
     }
+  };
+  
+  // Função para expandir completamente a aba ativa
+  const expandTab = () => {
+    setIsExpanded(true);
+    setIsMinimized(false);
+  };
+  
+  // Função para recolher parcialmente a aba ativa (mostra cabeçalho)
+  const collapseTab = () => {
+    setIsExpanded(false);
+    setIsMinimized(false);
+  };
+  
+  // Função para minimizar completamente a aba ativa
+  const minimizeTab = () => {
+    setIsMinimized(true);
+    setIsExpanded(false);
   };
   
   // Quando a rota é calculada (calculatedRoute muda), ativar a aba de resumo
@@ -499,15 +529,21 @@ export default function RouteInfoPanel({
       </div>
 
       {/* Summary Tab */}
-      {activeTab === "summary" && (
-        <div className={`p-2 ${isExpanded ? 'expanded-tab' : ''}`}>
-          <div className="flex justify-end mb-1">
+      {activeTab === "summary" && !isMinimized && (
+        <div className={`p-2 ${isExpanded ? 'expanded-tab' : 'collapsed-tab'}`}>
+          <div className="flex justify-between mb-1">
             <button
-              onClick={() => setIsExpanded(!isExpanded)}
+              onClick={minimizeTab}
+              className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+            >
+              <X className="h-3 w-3" /> Ocultar
+            </button>
+            <button
+              onClick={isExpanded ? collapseTab : expandTab}
               className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
             >
               {isExpanded ? 
-                <><Minimize2 className="h-3 w-3" /> Minimizar</> : 
+                <><Minimize2 className="h-3 w-3" /> Recolher</> : 
                 <><Maximize2 className="h-3 w-3" /> Expandir</>
               }
             </button>
@@ -670,15 +706,21 @@ export default function RouteInfoPanel({
       )}
 
       {/* City Events Tab */}
-      {activeTab === "events" && (
-        <div className={`p-2 ${isExpanded ? 'expanded-tab' : ''}`}>
-          <div className="flex justify-end mb-1">
+      {activeTab === "events" && !isMinimized && (
+        <div className={`p-2 ${isExpanded ? 'expanded-tab' : 'collapsed-tab'}`}>
+          <div className="flex justify-between mb-1">
             <button
-              onClick={() => setIsExpanded(!isExpanded)}
+              onClick={minimizeTab}
+              className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+            >
+              <X className="h-3 w-3" /> Ocultar
+            </button>
+            <button
+              onClick={isExpanded ? collapseTab : expandTab}
               className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
             >
               {isExpanded ? 
-                <><Minimize2 className="h-3 w-3" /> Minimizar</> : 
+                <><Minimize2 className="h-3 w-3" /> Recolher</> : 
                 <><Maximize2 className="h-3 w-3" /> Expandir</>
               }
             </button>
