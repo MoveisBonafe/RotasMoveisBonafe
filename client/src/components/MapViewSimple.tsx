@@ -1112,17 +1112,13 @@ export default function MapViewSimple({
   }, [map, directionsRenderer, origin, calculatedRoute]);
 
   return (
-    <div className="map-container relative" style={{ width: "100%", height: "100%" }}>
+    <div className="map-container" style={{ width: "100%", height: "100%", position: "relative" }}>
       {error && <div className="map-error">{error}</div>}
       <div ref={mapRef} style={{ width: "100%", height: "100%" }} />
       
-      {/* O controle de camadas ficará fora do mapa para garantir que seja exibido */}
+      {/* Botão de camadas do mapa */}
       {map && (
-        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-          <div style={{ pointerEvents: 'auto' }}>
-            <MapLayersControl map={map} />
-          </div>
-        </div>
+        <MapLayersControl map={map} />
       )}
     </div>
   );

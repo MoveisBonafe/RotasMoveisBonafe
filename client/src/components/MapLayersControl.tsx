@@ -30,7 +30,7 @@ export default function MapLayersControl({ map }: MapLayersControlProps) {
   }, [map, currentMapType, showLabels]);
 
   return (
-    <div className="fixed bottom-20 left-4 z-50">
+    <div className="absolute bottom-6 left-6 z-50" style={{ pointerEvents: 'auto' }}>
       {/* Botão principal de camadas */}
       <div 
         className="bg-white rounded-md shadow-md p-3 cursor-pointer flex items-center hover:bg-gray-50"
