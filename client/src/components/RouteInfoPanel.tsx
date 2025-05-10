@@ -129,6 +129,13 @@ export default function RouteInfoPanel({
       return true;
     }
     
+    // Verificação específica para o pedágio de Boa Esperança do Sul que é adicionado manualmente
+    if ((poi1.type === 'toll' && poi1.name.includes("Boa Esperança")) ||
+        (poi2.type === 'toll' && poi2.name.includes("Boa Esperança"))) {
+      console.log("Removendo duplicata de pedágio de Boa Esperança do Sul", poi1.name, poi2.name);
+      return true;
+    }
+    
     // Verificar duplicação específica para pedágios de SP-255
     if (poi1.type === 'toll' && poi2.type === 'toll' &&
         poi1.roadName === poi2.roadName &&
@@ -140,18 +147,27 @@ export default function RouteInfoPanel({
     return false;
   }
   
+  // Verificar lista original de POIs
+  console.log("Lista original de POIs:", poisAlongRoute.map(p => p.name));
+  
   // Remover duplicatas dos POIs
   const uniquePOIs: PointOfInterest[] = [];
   poisAlongRoute.forEach(poi => {
     const isDuplicate = uniquePOIs.some(existingPoi => isDuplicatePOI(existingPoi, poi));
     if (!isDuplicate) {
       uniquePOIs.push(poi);
+    } else {
+      console.log(`POI duplicado removido: ${poi.name} (${poi.type})`);
     }
   });
+  
+  console.log("Lista de POIs após remoção de duplicatas:", uniquePOIs.map(p => p.name));
   
   // Separar os pontos de interesse DEDUPLUCADOS por tipo
   const tollsOnRoute = uniquePOIs.filter(poi => poi.type === 'toll');
   const balancesOnRoute = uniquePOIs.filter(poi => poi.type === 'weighing_station');
+  
+  console.log("Balanças na rota:", balancesOnRoute.map(b => b.name));
   // Não temos áreas de descanso implementadas ainda
   const restAreasOnRoute: typeof poisAlongRoute = [];
   
