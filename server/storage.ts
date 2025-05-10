@@ -194,12 +194,12 @@ export class MemStorage implements IStorage {
     
     const pois: Omit<PointOfInterest, 'id'>[] = [
       {
-        name: "Pedágio SP-225 (Jaú)",
+        name: "Pedágio SP-255 (Brotas)",
         type: "toll",
         lat: "-22.2562",
-        lng: "-48.5648",
-        cost: 1100, // R$11.00
-        roadName: "SP-225",
+        lng: "-48.1248",
+        cost: 1100, // R$11.00 (preço base para carros)
+        roadName: "SP-255",
         restrictions: null
       },
       {
@@ -207,7 +207,7 @@ export class MemStorage implements IStorage {
         type: "toll",
         lat: "-21.2964",
         lng: "-47.8248",
-        cost: 950, // R$9.50
+        cost: 950, // R$9.50 (preço base para carros)
         roadName: "SP-255",
         restrictions: null
       },
@@ -216,7 +216,7 @@ export class MemStorage implements IStorage {
         type: "toll",
         lat: "-22.8837",
         lng: "-48.4436",
-        cost: 1290, // R$12.90
+        cost: 1290, // R$12.90 (preço base para carros)
         roadName: "SP-300",
         restrictions: null
       },
@@ -230,13 +230,13 @@ export class MemStorage implements IStorage {
         roadName: "SP-300"
       },
       {
-        name: "Balança SP-225 (km 122)",
+        name: "Balança SP-255 (km 122)",
         type: "weighing_station",
         lat: "-22.1835",
-        lng: "-48.6022",
+        lng: "-48.2022",
         cost: null,
         restrictions: "Veículos acima de 1 eixo",
-        roadName: "SP-225"
+        roadName: "SP-255"
       }
     ];
     

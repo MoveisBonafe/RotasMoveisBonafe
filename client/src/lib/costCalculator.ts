@@ -5,18 +5,38 @@ const AVERAGE_FUEL_PRICE = 5.0;
 
 /**
  * Calculate toll cost based on vehicle type and route
+ * 
+ * O custo do pedágio varia conforme o tipo de veículo:
+ * - car: 100% do valor base (1.0x)
+ * - motorcycle: 50% do valor base (0.5x)
+ * - truck1: 200% do valor base (2.0x) - caminhão com 1 eixo
+ * - truck2: 300% do valor base (3.0x) - caminhão com 2 eixos
  */
 export function calculateTollCost(
   tolls: PointOfInterest[],
   vehicleType: VehicleType
 ): number {
-  // Sum all toll costs and apply vehicle multiplier
-  const totalBaseCost = tolls.reduce((sum, toll) => {
-    return sum + (toll.cost || 0);
-  }, 0);
+  // Adiciona cada pedágio com custo específico por tipo de veículo
+  let totalCost = 0;
   
-  // Apply the vehicle type multiplier (percentage)
-  return Math.round(totalBaseCost * (vehicleType.tollMultiplier / 100));
+  // Percorre todos os pedágios na rota
+  tolls.forEach(toll => {
+    if (toll.cost) {
+      // O custo base do pedágio (armazenado no banco) é para carros
+      const baseCost = toll.cost;
+      
+      // Aplica o multiplicador específico para o tipo de veículo
+      // tollMultiplier é armazenado como porcentagem (100 = 1x, 200 = 2x, etc.)
+      const vehicleMultiplier = vehicleType.tollMultiplier / 100;
+      
+      // Adiciona o custo ajustado para este pedágio ao total
+      totalCost += Math.round(baseCost * vehicleMultiplier);
+      
+      console.log(`Pedágio ${toll.name}: R$${(baseCost/100).toFixed(2)} x ${vehicleMultiplier} = R$${(baseCost * vehicleMultiplier/100).toFixed(2)} (${vehicleType.name})`);
+    }
+  });
+  
+  return totalCost;
 }
 
 /**

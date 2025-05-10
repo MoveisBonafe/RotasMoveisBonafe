@@ -219,15 +219,31 @@ export default function RouteInfoPanel({
                     <span className="text-gray-500">Consumo:</span> {fuelConsumption.toFixed(1)}L ({fuelEfficiency.toFixed(1)} km/L)
                   </div>
                   
-                  <div className="mt-2 grid grid-cols-2 text-xs border-t border-gray-100 pt-1">
-                    <div>
-                      <div>Pedágios: <span className="font-medium">{formatCurrency(routeInfo.tollCost)}</span></div>
-                      <div>Combustível: <span className="font-medium">{formatCurrency(routeInfo.fuelCost)}</span></div>
+                  <div className="mt-2 text-xs border-t border-gray-100 pt-1">
+                    <div className="grid grid-cols-2">
+                      <div>
+                        <div>
+                          Pedágios ({vehicleType?.name}): 
+                          <span className="font-medium ml-1">{formatCurrency(routeInfo.tollCost)}</span>
+                          <span className="text-gray-500 text-xs ml-1">
+                            ({(vehicleType?.tollMultiplier || 100)/100}x)
+                          </span>
+                        </div>
+                        <div>Combustível: <span className="font-medium">{formatCurrency(routeInfo.fuelCost)}</span></div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-gray-500">Total:</div>
+                        <div className="font-bold text-primary">{formatCurrency(routeInfo.tollCost + routeInfo.fuelCost)}</div>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-gray-500">Total:</div>
-                      <div className="font-bold text-primary">{formatCurrency(routeInfo.tollCost + routeInfo.fuelCost)}</div>
-                    </div>
+                    {vehicleType && vehicleType.type !== 'car' && (
+                      <div className="mt-1 text-xxs text-gray-500 italic">
+                        * Valor do pedágio ajustado para {vehicleType.name.toLowerCase()}: 
+                        {vehicleType.type === 'motorcycle' ? ' 50% do valor para carros.' : 
+                         vehicleType.type === 'truck1' ? ' 200% do valor para carros.' : 
+                         vehicleType.type === 'truck2' ? ' 300% do valor para carros.' : ''}
+                      </div>
+                    )}
                   </div>
                 </div>
 
