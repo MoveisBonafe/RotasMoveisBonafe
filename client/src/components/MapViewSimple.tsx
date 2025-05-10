@@ -53,16 +53,16 @@ export default function MapViewSimple({
         const mapOptions = {
           center: { lat: -22.36752, lng: -48.38016 }, // Dois Córregos-SP
           zoom: 12,
-          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          mapTypeId: mapType === "roadmap" ? google.maps.MapTypeId.ROADMAP :
+                    mapType === "satellite" ? google.maps.MapTypeId.SATELLITE :
+                    mapType === "hybrid" ? google.maps.MapTypeId.HYBRID :
+                    google.maps.MapTypeId.TERRAIN,
           fullscreenControl: true,
           scrollwheel: true,
           gestureHandling: "greedy",
-          mapTypeControl: true,
-          mapTypeControlOptions: {
-            style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-            position: google.maps.ControlPosition.TOP_RIGHT,
-          },
-          zoomControl: true,
+          // Desabilitar controles nativos que vamos substituir com nossos próprios widgets
+          mapTypeControl: false, // Desativamos para usar nosso próprio widget
+          zoomControl: false, // Usaremos nossos próprios controles de zoom
           streetViewControl: true
         };
 
@@ -566,6 +566,50 @@ export default function MapViewSimple({
     }
   }, [map, directionsRenderer, origin, calculatedRoute, pointsOfInterest]);
 
+  // Funções de controle do mapa
+  const handleZoomIn = useCallback(() => {
+    if (map) {
+      const currentZoom = map.getZoom() || 0;
+      map.setZoom(currentZoom + 1);
+    }
+  }, [map]);
+
+  const handleZoomOut = useCallback(() => {
+    if (map) {
+      const currentZoom = map.getZoom() || 0;
+      map.setZoom(Math.max(1, currentZoom - 1));
+    }
+  }, [map]);
+
+  const handleToggleStreetView = useCallback(() => {
+    if (map) {
+      const panorama = map.getStreetView();
+      const position = map.getCenter();
+      
+      if (panorama) {
+        if (panorama.getVisible()) {
+          panorama.setVisible(false);
+        } else {
+          panorama.setPosition(position);
+          panorama.setVisible(true);
+        }
+      }
+    }
+  }, [map]);
+
+  const handleChangeMapType = useCallback((type: string) => {
+    setMapType(type);
+    
+    if (map) {
+      map.setMapTypeId(
+        type === "roadmap" ? google.maps.MapTypeId.ROADMAP :
+        type === "satellite" ? google.maps.MapTypeId.SATELLITE :
+        type === "hybrid" ? google.maps.MapTypeId.HYBRID :
+        google.maps.MapTypeId.TERRAIN
+      );
+    }
+  }, [map]);
+
   return (
     <div className="flex-1 relative h-full">
       <div 
@@ -573,6 +617,17 @@ export default function MapViewSimple({
         className="h-full w-full rounded-xl overflow-hidden shadow-xl border border-blue-100" 
         style={{ minHeight: '500px' }}
       >
+        {/* Componente de controles do mapa */}
+        {map && (
+          <MapControls
+            onZoomIn={handleZoomIn}
+            onZoomOut={handleZoomOut}
+            onToggleStreetView={handleToggleStreetView}
+            onChangeMapType={handleChangeMapType}
+            mapType={mapType}
+          />
+        )}
+        
         {/* Mostrar mensagem de erro se necessário */}
         {error && (
           <div className="absolute inset-0 flex items-center justify-center flex-col bg-white bg-opacity-90 p-4 z-50">
