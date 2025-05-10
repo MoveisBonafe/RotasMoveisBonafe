@@ -27,6 +27,8 @@ interface RouteReportProps {
   } | null;
   startDate: string | null;
   endDate: string | null;
+  routeName?: string;
+  onRouteNameChange?: (name: string) => void;
 }
 
 // Componente para relatório detalhado da rota com layout otimizado para a visualização expandida
@@ -36,7 +38,9 @@ export default function RouteReport({
   routeInfo,
   vehicleType,
   startDate,
-  endDate
+  endDate,
+  routeName = "",
+  onRouteNameChange = () => {}
 }: RouteReportProps) {
   const reportRef = useRef<HTMLDivElement>(null);
 
@@ -145,7 +149,9 @@ export default function RouteReport({
     const originalTitle = document.title;
     
     // Mudar o título para o relatório
-    document.title = `Relatório de Rota - ${origin?.name || 'Dois Córregos'} - ${new Date().toLocaleDateString()}`;
+    document.title = routeName 
+      ? `${routeName} - ${origin?.name || 'Dois Córregos'} - ${new Date().toLocaleDateString()}`
+      : `Relatório de Rota - ${origin?.name || 'Dois Córregos'} - ${new Date().toLocaleDateString()}`;
     
     // Imprimir
     window.print();
@@ -186,7 +192,9 @@ export default function RouteReport({
     googleMapsUrl += "&travelmode=driving";
     
     // Criar texto do relatório para compartilhar
-    let text = "📍 *Relatório de Rota* 📍\n\n";
+    let text = routeName 
+      ? `📍 *${routeName}* 📍\n\n` 
+      : "📍 *Relatório de Rota* 📍\n\n";
     
     // Adicionar origem
     text += `*Origem:* ${origin.name || 'Não definida'}\n\n`;
@@ -308,6 +316,17 @@ export default function RouteReport({
         <div className="border border-gray-200 rounded-sm p-2 mb-2">
           <h3 className="text-xs font-semibold mb-1 text-primary">Informações da Rota</h3>
           <div className="grid grid-cols-2 gap-x-2 gap-y-1">
+            <div className="text-gray-600">Nome da Rota:</div>
+            <div className="font-medium">
+              <input
+                type="text"
+                value={routeName}
+                onChange={(e) => onRouteNameChange(e.target.value)}
+                placeholder="Ex: Rota de Entrega Semanal"
+                className="w-full px-1 py-0.5 text-xs border border-gray-300 rounded"
+              />
+            </div>
+            
             <div className="text-gray-600">Origem:</div>
             <div className="font-medium">0. {origin.name}</div>
             
