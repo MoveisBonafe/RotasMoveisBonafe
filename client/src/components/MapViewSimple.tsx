@@ -380,23 +380,78 @@ export default function MapViewSimple({
             // Combinar os POIs da API com os do backend
             let allPOIs = [...tollPointsFromAPI];
             
+            // Função para verificar coordenadas duplicadas (considerar até 0.01 grau de diferença, ~1km)
+            function isDuplicateLocation(poi1: PointOfInterest, poi2: PointOfInterest): boolean {
+              const lat1 = parseFloat(poi1.lat);
+              const lng1 = parseFloat(poi1.lng);
+              const lat2 = parseFloat(poi2.lat);
+              const lng2 = parseFloat(poi2.lng);
+              
+              const latDiff = Math.abs(lat1 - lat2);
+              const lngDiff = Math.abs(lng1 - lng2);
+              
+              // Se as coordenadas estiverem muito próximas (< ~1km), considerar duplicado
+              return latDiff < 0.01 && lngDiff < 0.01;
+            }
+            
             // Adicionar os POIs do backend que são relevantes para a rota
             if (pointsOfInterest && pointsOfInterest.length > 0) {
               console.log(`ROTA ESPECIAL DETECTADA: ${origin?.name} -> ${calculatedRoute?.[calculatedRoute.length-1]?.name || 'Destino'}`);
               console.log("Incluindo todos os pedágios e balanças relevantes para esta rota");
               
-              // Filtrar apenas os POIs relevantes para a rota SP-255
+              // Filtrar apenas os POIs relevantes para a rota atual
               const relevantPOIs = pointsOfInterest.filter(poi => {
-                const isRelevant = poi.roadName?.includes("SP-255") || 
-                                   cities.some(city => poi.name?.includes(city));
+                // Identificar se o destino é Ribeirão Preto ou proximidades
+                const destinoRibeiraoPreto = cities.some(city => 
+                  city.includes("Ribeirão") || city.includes("Pedro") || city.includes("Preto"));
+                
+                // Identificar casos especiais
+                let isRelevant = poi.roadName?.includes("SP-255") || false;
+                
+                // Exclusões específicas
+                if (poi.name === "Pedágio SP-225 (Brotas)" || poi.name.includes("SP-225")) {
+                  console.log(`POI ${poi.name}: EXCLUÍDO (Fora da rota para Ribeirão Preto)`);
+                  return false;
+                }
+                
+                // Exclusão de Balança SP-255 (km 122) para esta rota específica
+                if (poi.name === "Balança SP-255 (km 122)") {
+                  console.log(`POI ${poi.name}: EXCLUÍDO (Fora do trajeto atual)`);
+                  return false;
+                }
+                
+                // Verificar se o ponto está na rota para Ribeirão Preto
+                if (destinoRibeiraoPreto) {
+                  // Incluir apenas pedágios/balanças entre Dois Córregos e Ribeirão
+                  isRelevant = isRelevant && 
+                    !poi.name.includes("Brotas") && 
+                    (poi.name.includes("Guatapará") || 
+                     poi.name.includes("Luís Antônio") || 
+                     poi.name.includes("Ribeirão") ||
+                     poi.name.includes("(km 150)") ||
+                     poi.name.includes("Boa Esperança"));
+                }
                 
                 console.log(`POI ${poi.name}: ${isRelevant ? 'INCLUÍDO' : 'EXCLUÍDO'} (${isRelevant ? 'rodovia relevante' : 'rodovia não relevante'})`);
                 
                 return isRelevant;
               });
               
-              // Adicionar os POIs relevantes à lista
-              allPOIs = [...allPOIs, ...relevantPOIs];
+              // Adicionar os POIs relevantes à lista evitando duplicados
+              // Especialmente para balança do km 150 que pode aparecer duplicada
+              relevantPOIs.forEach(newPoi => {
+                // Verificar se já existe um POI com localização muito próxima
+                const isDuplicate = allPOIs.some(existingPoi => 
+                  isDuplicateLocation(existingPoi, newPoi) || 
+                  existingPoi.name === newPoi.name
+                );
+                
+                if (!isDuplicate) {
+                  allPOIs.push(newPoi);
+                } else {
+                  console.log(`POI duplicado ignorado: ${newPoi.name} (${newPoi.lat}, ${newPoi.lng})`);
+                }
+              });
               
               console.log(`Total de POIs filtrados para a rota: ${relevantPOIs.length} de ${pointsOfInterest.length}`);
             }
