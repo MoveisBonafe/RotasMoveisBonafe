@@ -133,22 +133,26 @@ export default function MapViewSimple({
         // Criar serviço de direções usando Routes Preferred API
         const directionsService = new google.maps.DirectionsService();
         
-        // Configurar requisição com opções especiais para Routes Preferred
+        // Configurar requisição com opções avançadas para garantir informações de pedágios
         const request = {
           origin: originPoint,
           destination: destinationPoint,
           waypoints: waypoints,
           optimizeWaypoints: false,
           travelMode: google.maps.TravelMode.DRIVING,
-          // Habilitando Routes Preferred API
+          // Configurações avançadas para Routes Preferred API
           drivingOptions: {
             departureTime: new Date(),
             trafficModel: google.maps.TrafficModel.BEST_GUESS
           },
-          // Requisitando informações sobre pedágios
+          // Requisitando informações sobre pedágios (crítico: NÃO evitar pedágios)
           avoidTolls: false,
-          // Solicitando alternativas para mostrar os pedágios
-          provideRouteAlternatives: false
+          // Região específica (Brasil) para melhorar resultados
+          region: 'br',
+          // Solicitando alternativas pode ajudar a API a fornecer detalhes dos pedágios
+          provideRouteAlternatives: true,
+          // Usar sistema métrico para resultados mais precisos
+          unitSystem: google.maps.UnitSystem.METRIC
         };
         
         // Obter direções
