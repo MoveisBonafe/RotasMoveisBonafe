@@ -156,14 +156,43 @@ export default function RouteReport({
   
   // Função para compartilhar relatório via WhatsApp
   const handleShareWhatsApp = () => {
+    // Verificar se temos os pontos necessários
+    if (!origin || !calculatedRoute || calculatedRoute.length === 0) {
+      return;
+    }
+    
+    // Criar o link do Google Maps
+    let googleMapsUrl = "https://www.google.com/maps/dir/?api=1";
+    
+    // Adicionar origem
+    googleMapsUrl += `&origin=${origin.lat},${origin.lng}`;
+    
+    // Adicionar último destino
+    const finalDestination = calculatedRoute[calculatedRoute.length - 1];
+    googleMapsUrl += `&destination=${finalDestination.lat},${finalDestination.lng}`;
+    
+    // Adicionar pontos intermediários (waypoints)
+    if (calculatedRoute.length > 2) {
+      const waypoints = calculatedRoute
+        .slice(1, calculatedRoute.length - 1) // Excluir o destino final
+        .map(loc => `${loc.lat},${loc.lng}`)
+        .join('|');
+      
+      // Google Maps requer que os waypoints sejam precedidos por "via:"
+      googleMapsUrl += `&waypoints=via:${encodeURIComponent(waypoints)}`;
+    }
+    
+    // Adicionar modo de transporte
+    googleMapsUrl += "&travelmode=driving";
+    
     // Criar texto do relatório para compartilhar
     let text = "📍 *Relatório de Rota* 📍\n\n";
     
     // Adicionar origem
-    text += `*Origem:* ${origin?.name || 'Não definida'}\n\n`;
+    text += `*Origem:* ${origin.name || 'Não definida'}\n\n`;
     
     // Adicionar destinos
-    if (calculatedRoute && calculatedRoute.length > 0) {
+    if (calculatedRoute.length > 0) {
       text += "*Destinos:*\n";
       calculatedRoute.slice(1).forEach((location, index) => {
         const locationName = location.name.startsWith("R.") || location.name.startsWith("Av.") 
@@ -183,6 +212,9 @@ export default function RouteReport({
     if (startDate && endDate) {
       text += `*Data de viagem:* ${startDate === endDate ? startDate : `${startDate} - ${endDate}`}\n\n`;
     }
+    
+    // Adicionar link para abrir no Google Maps
+    text += `*Abrir rota no Google Maps:*\n${googleMapsUrl}\n\n`;
     
     // Compartilhar via WhatsApp
     const whatsappURL = `https://wa.me/?text=${encodeURIComponent(text)}`;
@@ -228,6 +260,46 @@ export default function RouteReport({
             <FaWhatsapp className="mr-1 text-sm" /> 
             <span className="hidden sm:inline">Compartilhar</span>
             <span className="sm:hidden">WhatsApp</span>
+          </Button>
+          <Button 
+            onClick={() => {
+              // Criar e abrir link para o Google Maps
+              if (!origin || !calculatedRoute || calculatedRoute.length === 0) return;
+              
+              // URL base do Google Maps
+              let url = "https://www.google.com/maps/dir/?api=1";
+              
+              // Adicionar origem
+              url += `&origin=${origin.lat},${origin.lng}`;
+              
+              // Adicionar destino final
+              const finalDestination = calculatedRoute[calculatedRoute.length - 1];
+              url += `&destination=${finalDestination.lat},${finalDestination.lng}`;
+              
+              // Adicionar waypoints (pontos intermediários)
+              if (calculatedRoute.length > 2) {
+                const waypoints = calculatedRoute
+                  .slice(1, calculatedRoute.length - 1)
+                  .map(loc => `${loc.lat},${loc.lng}`)
+                  .join('|');
+                url += `&waypoints=via:${encodeURIComponent(waypoints)}`;
+              }
+              
+              // Adicionar modo
+              url += "&travelmode=driving";
+              
+              // Abrir no Google Maps
+              window.open(url, '_blank');
+            }}
+            variant="outline" 
+            size="sm"
+            className="h-6 text-xs py-0 px-2 bg-blue-600 hover:bg-blue-700 text-white border-blue-600 hover:border-blue-700 flex items-center"
+          >
+            <svg className="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+            </svg>
+            <span className="hidden sm:inline">Abrir no Maps</span>
+            <span className="sm:hidden">Maps</span>
           </Button>
         </div>
       </div>
