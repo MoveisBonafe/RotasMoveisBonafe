@@ -1,6 +1,5 @@
 import { useState } from "react";
 import SearchBox from "./SearchBox";
-import VehicleSelector from "./VehicleSelector";
 import LocationsList from "./LocationsList";
 import DateRangeSelector from "./DateRangeSelector";
 import { Location, VehicleType, GeocodingResult } from "@/lib/types";
@@ -214,12 +213,6 @@ export default function Sidebar({
           )}
         </div>
 
-        {/* Vehicle Selector */}
-        <VehicleSelector 
-          selectedVehicleType={selectedVehicleType}
-          onVehicleSelect={onVehicleSelect}
-          onOpenFuelSettings={onOpenFuelSettings}
-        />
 
         {/* Botão de calcular rota */}
         <button 

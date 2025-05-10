@@ -1012,21 +1012,18 @@ export default function MapViewSimple({
               
               // Personalizar baseado no tipo
               if (poi.type === "toll") {
-                // Pedágio - Ícone customizado SVG
-                const svgMarker = {
-                  // Usar ícone SVG personalizado para pedágio
-                  path: 'M 0,0 m -12,-12 a 12,12 0 1,0 24,0 a 12,12 0 1,0 -24,0 M -6,-2 L -6,4 L -4,4 L -3,0 L -1,4 L 1,0 L 3,4 L 6,4 L 6,-2 Z',
-                  fillColor: '#16A34A', // Verde mais vivo
+                // Pedágio - Usar um ícone simples
+                poiIcon = {
+                  path: google.maps.SymbolPath.CIRCLE,
+                  fillColor: '#16A34A', // Verde
                   fillOpacity: 1,
                   strokeColor: '#FFFFFF',
-                  strokeWeight: 2.5,
-                  scale: 1.5,
-                  anchor: new google.maps.Point(0, 0)
+                  strokeWeight: 3,
+                  scale: 10
                 };
                 
-                poiIcon = svgMarker;
-                // Deixamos o label vazio pois o ícone SVG já tem o símbolo $
-                labelText = "";
+                // Definir o símbolo $ como texto do label
+                labelText = "$";
               } else if (poi.type === "weighing_station") {
                 // Balança - Símbolo ⚖
                 poiIcon.fillColor = '#FFBA08'; // Amarelo
