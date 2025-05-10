@@ -12,7 +12,7 @@ interface MapViewProps {
 // Definições para TypeScript
 declare global {
   interface Window {
-    google: any;
+    google: typeof google;
     initMap: () => void;
   }
 }
@@ -27,9 +27,11 @@ export default function MapViewSimple({
   pointsOfInterest = []
 }: MapViewProps) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const [map, setMap] = useState<any>(null);
-  const [markers, setMarkers] = useState<any[]>([]);
-  const [directionsRenderer, setDirectionsRenderer] = useState<any>(null);
+  // Tipagem mais precisa para os estados do Google Maps
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [markers, setMarkers] = useState<google.maps.Marker[]>([]);
+  const [infoWindows, setInfoWindows] = useState<google.maps.InfoWindow[]>([]);
+  const [directionsRenderer, setDirectionsRenderer] = useState<google.maps.DirectionsRenderer | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // Inicializar o mapa quando o componente montar
@@ -324,11 +326,15 @@ export default function MapViewSimple({
           
           originMarker.addListener("click", () => {
             // Fechar outras info windows abertas
-            infoWindows.forEach(iw => iw.close());
+            const currentInfoWindows = infoWindows || [];
+            currentInfoWindows.forEach((iw: google.maps.InfoWindow) => iw.close());
             originInfoWindow.open(map, originMarker);
           });
           
-          infoWindows.push(originInfoWindow);
+          const newInfoWindows = [...(infoWindows || [])];
+          newInfoWindows.push(originInfoWindow);
+          setInfoWindows(newInfoWindows);
+          
           bounds.extend(originPoint);
           newMarkers.push(originMarker);
         }
@@ -360,6 +366,26 @@ export default function MapViewSimple({
             }
           });
           
+          // Adicionar info window para cada waypoint
+          const waypointInfoWindow = new google.maps.InfoWindow({
+            content: `<div class="p-2">
+              <div class="font-bold">${point.name}</div>
+              <div class="text-xs text-gray-500">Destino ${index + 1}</div>
+              <div class="text-xs">${point.address}</div>
+            </div>`
+          });
+          
+          marker.addListener("click", () => {
+            // Fechar outras info windows abertas
+            const currentInfoWindows = infoWindows || [];
+            currentInfoWindows.forEach((iw: google.maps.InfoWindow) => iw.close());
+            waypointInfoWindow.open(map, marker);
+          });
+          
+          const newInfoWindows = [...(infoWindows || [])];
+          newInfoWindows.push(waypointInfoWindow);
+          setInfoWindows(newInfoWindows);
+          
           newMarkers.push(marker);
         });
         
@@ -390,6 +416,29 @@ export default function MapViewSimple({
                   color: "#FFFFFF"
                 }
               });
+              
+              // Adicionar info window para o POI
+              const poiContent = `<div class="p-2">
+                <div class="font-bold">${poi.name}</div>
+                <div class="text-xs text-gray-500">${poi.type === 'toll' ? 'Pedágio' : 'Balança de Pesagem'}</div>
+                ${poi.roadName ? `<div class="text-xs">Rodovia: ${poi.roadName}</div>` : ''}
+                ${poi.cost ? `<div class="text-xs">Custo: R$ ${(poi.cost/100).toFixed(2)}</div>` : ''}
+              </div>`;
+              
+              const poiInfoWindow = new google.maps.InfoWindow({
+                content: poiContent
+              });
+              
+              poiMarker.addListener("click", () => {
+                // Fechar outras info windows abertas
+                const currentInfoWindows = infoWindows || [];
+                currentInfoWindows.forEach((iw: google.maps.InfoWindow) => iw.close());
+                poiInfoWindow.open(map, poiMarker);
+              });
+              
+              const newInfoWindows = [...(infoWindows || [])];
+              newInfoWindows.push(poiInfoWindow);
+              setInfoWindows(newInfoWindows);
               
               newMarkers.push(poiMarker);
             } catch (error) {
