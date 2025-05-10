@@ -449,8 +449,7 @@ export default function Home() {
           endDate={endDate}
           onStartDateChange={setStartDate}
           onEndDateChange={setEndDate}
-          routeName={routeName}
-          onRouteNameChange={setRouteName}
+
         />
         
         {/* Área principal com o mapa */}
