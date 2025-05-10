@@ -155,18 +155,15 @@ export default function MapViewSimple({
     console.log("Renderizando rota calculada no mapa");
     
     try {
-      // Limpar marcadores existentes
+      // Limpar marcadores existentes do mapa
       markers.forEach(marker => marker.setMap(null));
       infoWindows.forEach(infoWindow => infoWindow.close());
       
-      // Resetar arrays de marcadores
-      setMarkers([]);
-      setInfoWindows([]);
-      
+      // Arrays temporários para novos marcadores
       const newMarkers: google.maps.Marker[] = [];
       const newInfoWindows: google.maps.InfoWindow[] = [];
       
-      // Bounds para ajustar o mapa
+      // Criar bounds apenas uma vez (evita problemas com zoom excessivo)
       const bounds = new google.maps.LatLngBounds();
       
       // Preparar pontos para a requisição
@@ -350,12 +347,18 @@ export default function MapViewSimple({
               }
             }
             
-            // Notificar sobre os pontos calculados
+            // Notificar sobre os pontos calculados - agendar para depois
+            // do resto do processamento (para evitar loop infinito)
             if (onRouteCalculated && typeof onRouteCalculated === 'function') {
-              onRouteCalculated({
-                ...result,
-                poisAlongRoute: tollPointsFromAPI
-              });
+              setTimeout(() => {
+                // Verificar se a função ainda existe
+                if (onRouteCalculated) {
+                  onRouteCalculated({
+                    ...result,
+                    poisAlongRoute: tollPointsFromAPI
+                  });
+                }
+              }, 200);
             }
             
             // Adicionar pedágios e POIs como marcadores no mapa
@@ -420,8 +423,18 @@ export default function MapViewSimple({
             console.error("Erro ao processar dados de pedágio:", error);
           }
           
-          // Ajustar o zoom para mostrar todos os pontos
-          map.fitBounds(bounds);
+          // Ajustar o zoom para mostrar todos os pontos, mas com um pequeno atraso
+          // para evitar problemas de zoom excessivo/recursivo
+          if (newMarkers.length > 0) {
+            setTimeout(() => {
+              map.fitBounds(bounds);
+              // Definir um zoom máximo para evitar aproximação excessiva
+              const listener = google.maps.event.addListener(map, 'idle', () => {
+                if (map.getZoom() > 15) map.setZoom(15);
+                google.maps.event.removeListener(listener);
+              });
+            }, 100);
+          }
           
           // Armazenar todos os marcadores e infoWindows
           setMarkers(newMarkers);
@@ -443,7 +456,15 @@ export default function MapViewSimple({
       // Resetar a flag em caso de erro
       isProcessingRoute.current = false;
     }
-  }, [map, directionsRenderer, origin, calculatedRoute, waypoints, pointsOfInterest, onRouteCalculated, markers, infoWindows]);
+    
+    // Limpar ao desmontar
+    return () => {
+      isProcessingRoute.current = false;
+    };
+    
+  // Reduzir dependências para evitar atualizações excessivas
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
+  }, [map, directionsRenderer, origin, calculatedRoute]);
 
   return (
     <div className="map-container" style={{ width: "100%", height: "100%" }}>
