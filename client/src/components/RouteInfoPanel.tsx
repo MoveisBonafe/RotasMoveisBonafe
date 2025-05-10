@@ -247,19 +247,14 @@ export default function RouteInfoPanel({
   
   // Algoritmo otimizado para garantir inclusão dos pedágios corretos
   
-  // USAR EXCLUSIVAMENTE os POIs que vieram da API AILOG
+  // USAR EXCLUSIVAMENTE os POIs que vieram da API AILOG e que estão corretamente na rota
   // Não precisamos de processamento extra - a API AILOG já retorna os pedágios corretos
   console.log("POIs filtrados diretamente da API AILOG:", filteredPOIs.map(p => p.name));
   console.log("Usando EXCLUSIVAMENTE pedágios da API AILOG");
   
-  // Remover duplicatas dos POIs filtrados
-  const uniquePOIs: PointOfInterest[] = [];
-  filteredPOIs.forEach(poi => {
-    const isDuplicate = uniquePOIs.some(existingPoi => isDuplicatePOI(existingPoi, poi));
-    if (!isDuplicate) {
-      uniquePOIs.push(poi);
-    }
-  });
+  // Remover duplicatas dos POIs filtrados - com os que vieram na prop poisAlongRoute (já filtrados pelo mapa)
+  // Aqui não precisamos adicionar nada, pois o componente pai (MapViewSimple) já fez esse trabalho
+  const uniquePOIs = poisAlongRoute;
   
   console.log("POIs filtrados e sem duplicatas:", uniquePOIs.map(p => p.name));
   
@@ -423,48 +418,62 @@ export default function RouteInfoPanel({
                 <div className="bg-white rounded p-2 border border-gray-100">
                   <h3 className="text-xs font-medium mb-1 text-primary">Pontos de Atenção</h3>
                   
-                  {(uniquePOIs.filter(p => p.type === 'toll').length > 0 || 
-                    uniquePOIs.filter(p => p.type === 'weighing_station').length > 0 || 
-                    (truckRestrictions && truckRestrictions.length > 0)) ? (
+                  {/* Verificar se temos poisAlongRoute filtrados para a rota atual - esses são os pontos realmente no percurso */}
+                  {(poisAlongRoute.filter(p => p.type === 'toll').length > 0 || 
+                    poisAlongRoute.filter(p => p.type === 'weighing_station').length > 0 || 
+                    (truckRestrictions && truckRestrictions.length > 0 && 
+                     calculatedRoute && calculatedRoute.some(loc => 
+                        truckRestrictions.some(r => r.cityName.includes(loc.name) || 
+                                                   loc.name.includes(r.cityName) || 
+                                                   loc.address?.includes(r.cityName))
+                     ))) ? (
                     <ul className="text-xs space-y-1">
-                      {uniquePOIs.filter(p => p.type === 'toll').length > 0 && (
+                      {poisAlongRoute.filter(p => p.type === 'toll').length > 0 && (
                         <li className="flex items-center">
                           <span className="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-1"></span>
                           <span>
-                            {uniquePOIs.filter(p => p.type === 'toll').length} {uniquePOIs.filter(p => p.type === 'toll').length === 1 ? 'pedágio' : 'pedágios'}: 
+                            {poisAlongRoute.filter(p => p.type === 'toll').length} {poisAlongRoute.filter(p => p.type === 'toll').length === 1 ? 'pedágio' : 'pedágios'}: 
                             <span className="text-gray-500 ml-1">
-                              {uniquePOIs.filter(p => p.type === 'toll').map(toll => toll.name.split('(').pop()?.replace(')', '') || toll.roadName).join(', ')}
+                              {poisAlongRoute.filter(p => p.type === 'toll').map(toll => 
+                                toll.name.includes('(') ? toll.name.split('(').pop()?.replace(')', '') || '' : toll.roadName || toll.name
+                              ).filter(Boolean).join(', ')}
                             </span>
                           </span>
                         </li>
                       )}
                       
-                      {uniquePOIs.filter(p => p.type === 'weighing_station').length > 0 && (
+                      {poisAlongRoute.filter(p => p.type === 'weighing_station').length > 0 && (
                         <li className="flex items-center">
                           <span className="inline-block w-2 h-2 rounded-full bg-red-600 mr-1"></span>
                           <span>
-                            {uniquePOIs.filter(p => p.type === 'weighing_station').length} {uniquePOIs.filter(p => p.type === 'weighing_station').length === 1 ? 'balança' : 'balanças'} em operação
+                            {poisAlongRoute.filter(p => p.type === 'weighing_station').length} {poisAlongRoute.filter(p => p.type === 'weighing_station').length === 1 ? 'balança' : 'balanças'} em operação
                           </span>
                         </li>
                       )}
                       
-                      {(truckRestrictions && truckRestrictions.length > 0) && (
-                        <li className="flex items-center">
-                          <span className="inline-block w-2 h-2 rounded-full bg-primary mr-1"></span>
-                          <span>
-                            {(() => {
-                              const restriction = truckRestrictions[0] as TruckRestriction;
-                              return restriction && restriction.cityName 
-                                ? `Restrição em ${restriction.cityName}: ${restriction.startTime || '00:00'}-${restriction.endTime || '23:59'}`
-                                : "Restrições para caminhões"
-                            })()}
-                          </span>
-                        </li>
+                      {/* Mostrar apenas restrições para cidades no trajeto calculado */}
+                      {(truckRestrictions && truckRestrictions.length > 0 && calculatedRoute) && (
+                        <>
+                          {truckRestrictions.filter(r => 
+                            calculatedRoute.some(loc => 
+                              loc.name.includes(r.cityName) || 
+                              r.cityName.includes(loc.name) || 
+                              loc.address?.includes(r.cityName)
+                            )
+                          ).map((restriction, idx) => (
+                            <li key={idx} className="flex items-center">
+                              <span className="inline-block w-2 h-2 rounded-full bg-primary mr-1"></span>
+                              <span>
+                                {`Restrição em ${restriction.cityName}: ${restriction.startTime || '00:00'}-${restriction.endTime || '23:59'}`}
+                              </span>
+                            </li>
+                          ))}
+                        </>
                       )}
                     </ul>
                   ) : (
                     <div className="text-xs text-gray-500">
-                      Nenhum ponto de atenção identificado
+                      Nenhum ponto de atenção identificado na rota atual
                     </div>
                   )}
                 </div>
