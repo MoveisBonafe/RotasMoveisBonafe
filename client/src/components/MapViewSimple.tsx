@@ -356,7 +356,7 @@ export default function MapViewSimple({
                   type: "toll" as "toll", // Type assertion para garantir compatibilidade
                   cost: 1050, // R$ 10.50
                   roadName: "SP-255",
-                  restrictions: null
+                  restrictions: "Pedágio manual" // String em vez de null
                 };
                 
                 tollPointsFromAPI.push(boaEsperancaToll as PointOfInterest);
