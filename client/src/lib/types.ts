@@ -91,3 +91,12 @@ export interface GeocodingResult {
   lng: string;
   placeId?: string;
 }
+
+export interface RouteSegment {
+  origin: Location;
+  destination: Location;
+  distance: number; // em metros
+  duration: number; // em segundos
+  tollCost: number; // em centavos
+  polyline: string; // string de codificação polyline
+}

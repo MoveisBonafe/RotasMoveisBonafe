@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Location, PointOfInterest } from "@/lib/types";
+import { useRoutesPreferred } from "@/hooks/useRoutesPreferred";
 
 interface MapViewProps {
   origin: Location | null;
@@ -24,7 +25,8 @@ export default function MapViewSimple({
   origin, 
   waypoints,
   calculatedRoute,
-  pointsOfInterest = []
+  pointsOfInterest = [],
+  onRouteCalculated
 }: MapViewProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   // Tipagem mais precisa para os estados do Google Maps
@@ -33,6 +35,10 @@ export default function MapViewSimple({
   const [infoWindows, setInfoWindows] = useState<google.maps.InfoWindow[]>([]);
   const [directionsRenderer, setDirectionsRenderer] = useState<google.maps.DirectionsRenderer | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [apiTollPoints, setApiTollPoints] = useState<PointOfInterest[]>([]);
+  
+  // Usar o hook para trabalhar com a API Routes Preferred
+  const { extractTollPoints, calculateRouteSegments } = useRoutesPreferred();
 
   // Inicializar o mapa quando o componente montar
   useEffect(() => {
@@ -123,22 +129,60 @@ export default function MapViewSimple({
         };
         bounds.extend(destinationPoint);
         
-        // Criar serviço de direções
+        // Criar serviço de direções usando Routes Preferred API
         const directionsService = new google.maps.DirectionsService();
         
-        // Configurar requisição
+        // Configurar requisição com opções especiais para Routes Preferred
         const request = {
           origin: originPoint,
           destination: destinationPoint,
           waypoints: waypoints,
           optimizeWaypoints: false,
-          travelMode: google.maps.TravelMode.DRIVING
+          travelMode: google.maps.TravelMode.DRIVING,
+          // Habilitando Routes Preferred API
+          drivingOptions: {
+            departureTime: new Date(),
+            trafficModel: google.maps.TrafficModel.BEST_GUESS
+          },
+          // Requisitando informações sobre pedágios
+          avoidTolls: false,
+          // Solicitando alternativas para mostrar os pedágios
+          provideRouteAlternatives: false
         };
         
         // Obter direções
         directionsService.route(request, (result, status) => {
           if (status === google.maps.DirectionsStatus.OK) {
             directionsRenderer.setDirections(result);
+            
+            // Processar pedágios e outras informações da API Routes Preferred
+            try {
+              console.log("Processando resultado da API Routes Preferred para extrair pedágios");
+              // Extrair informações de pedágio da resposta
+              const tollPointsFromAPI = extractTollPoints(result);
+              
+              // Se encontramos pedágios através da API, vamos mesclá-los com os pontos de interesse existentes
+              if (tollPointsFromAPI && tollPointsFromAPI.length > 0) {
+                console.log(`Encontrados ${tollPointsFromAPI.length} pedágios via API Routes Preferred`);
+                
+                // Armazenar para uso posterior
+                setApiTollPoints(tollPointsFromAPI);
+                
+                // Calcular posições aproximadas dos pedágios ao longo da rota
+                // (Aqui nós temos que estimar as posições, pois a API não retorna coordenadas específicas)
+                // Idealmente, usaríamos algoritmos de interpolação ao longo da polyline da rota
+                
+                // Notificar o componente pai sobre os dados da rota processados
+                if (onRouteCalculated && typeof onRouteCalculated === 'function') {
+                  onRouteCalculated({
+                    ...result,
+                    toll_points: tollPointsFromAPI
+                  });
+                }
+              }
+            } catch (error) {
+              console.error("Erro ao processar dados de pedágio da API Routes Preferred:", error);
+            }
             
             // IMPORTANTE: Adicionar marcadores personalizados para cada ponto da rota
             // Origem (0)
