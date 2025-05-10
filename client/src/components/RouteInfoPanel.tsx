@@ -262,27 +262,60 @@ export default function RouteInfoPanel({
             </div>
           ) : cityEvents && Array.isArray(cityEvents) && cityEvents.length > 0 ? (
             <div className="grid grid-cols-1 gap-2">
-              {cityEvents.map((event: CityEvent) => (
-                <div key={event.id} className="bg-white rounded p-2 border border-gray-100 text-xs">
-                  <div className="flex items-start">
-                    <span className={`inline-block w-2 h-2 rounded-full mr-1 mt-1 
-                      ${event.eventType === 'holiday' ? 'bg-red-600' : 
-                        event.eventType === 'festival' ? 'bg-yellow-500' : 'bg-green-600'}`}>
-                    </span>
-                    <div>
-                      <h3 className="font-medium text-xs">{event.eventName}</h3>
-                      <p className="text-xs text-gray-600">
-                        {event.cityName} | {event.startDate === event.endDate 
-                          ? event.startDate 
-                          : `${event.startDate} - ${event.endDate}`}
-                      </p>
-                      {event.description && (
-                        <p className="text-xs mt-1 text-gray-500">{event.description}</p>
-                      )}
+              {/* Ordenar eventos: primeiro pela ordem das cidades na rota, depois por data */}
+              {(() => {
+                // Definir a sequência de cidades pela ordem em que aparecem na rota
+                const routeSequence = Array.isArray(calculatedRoute) 
+                  ? calculatedRoute.map(loc => loc.name || "").filter(Boolean)
+                  : [];
+                
+                // Criar um mapa para saber a posição de cada cidade na rota
+                const cityPositionMap = new Map();
+                routeSequence.forEach((city, index) => {
+                  if (!cityPositionMap.has(city)) {
+                    cityPositionMap.set(city, index);
+                  }
+                });
+                
+                // Ordenar eventos por ordem da cidade na rota e depois por data
+                const sortedEvents = [...cityEvents].sort((a, b) => {
+                  // Primeiro critério: posição da cidade na rota
+                  const cityA = a.cityName;
+                  const cityB = b.cityName;
+                  
+                  // Se uma cidade não está no mapa, colocar no final
+                  const posA = cityPositionMap.has(cityA) ? cityPositionMap.get(cityA) : 999;
+                  const posB = cityPositionMap.has(cityB) ? cityPositionMap.get(cityB) : 999;
+                  
+                  if (posA !== posB) {
+                    return posA - posB; // Ordem crescente por posição na rota
+                  }
+                  
+                  // Segundo critério: data do evento
+                  return new Date(a.startDate).getTime() - new Date(b.startDate).getTime(); // Ordem crescente por data
+                });
+                
+                return sortedEvents.map((event: CityEvent) => (
+                  <div key={event.id} className="bg-white rounded p-2 border border-gray-100 text-xs">
+                    <div className="flex items-start">
+                      <span className={`inline-block w-2 h-2 rounded-full mr-1 mt-1 
+                        ${event.eventType === 'holiday' ? 'bg-red-600' : 
+                          event.eventType === 'festival' ? 'bg-yellow-500' : 'bg-green-600'}`}>
+                      </span>
+                      <div>
+                        <h3 className="font-medium text-xs">{event.eventName}</h3>
+                        <p className="text-xs text-gray-600">
+                          {event.cityName} | {new Date(event.startDate).toLocaleDateString('pt-BR')}
+                          {event.startDate !== event.endDate && ` - ${new Date(event.endDate).toLocaleDateString('pt-BR')}`}
+                        </p>
+                        {event.description && (
+                          <p className="text-xs mt-1 text-gray-500">{event.description}</p>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ));
+              })()}
             </div>
           ) : (
             <div className="text-center p-2 text-gray-500 text-xs">
