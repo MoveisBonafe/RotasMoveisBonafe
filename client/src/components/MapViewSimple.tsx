@@ -559,6 +559,9 @@ export default function MapViewSimple({
             if (pointsOfInterest && pointsOfInterest.length > 0) {
               console.log(`ANALISANDO ROTA: ${origin?.name} -> ${calculatedRoute?.[calculatedRoute.length-1]?.name || 'Destino'}`);
               
+              // Inicializar array de POIs
+              const allPOIs: PointOfInterest[] = [];
+              
               // Identificar as rodovias presentes na rota
               const roadsInRoute = new Set<string>();
               const citiesInRoute = new Set<string>(cities);
