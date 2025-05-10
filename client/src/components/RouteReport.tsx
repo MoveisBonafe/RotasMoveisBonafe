@@ -28,6 +28,7 @@ interface RouteReportProps {
   endDate: string | null;
 }
 
+// Componente para relatório detalhado da rota com layout otimizado para a visualização expandida
 export default function RouteReport({
   origin,
   calculatedRoute,
@@ -183,7 +184,7 @@ export default function RouteReport({
         </Button>
       </div>
       
-      <div ref={reportRef} className="print:p-4">
+      <div ref={reportRef} className="print:p-4 report-container">
         <div className="border border-gray-200 rounded-sm p-2 mb-2">
           <h3 className="text-xs font-semibold mb-1 text-primary">Informações da Rota</h3>
           <div className="grid grid-cols-2 gap-x-2 gap-y-1">
@@ -290,8 +291,6 @@ export default function RouteReport({
               </div>
             ))}
           </div>
-
-          {/* A animação agora usa classes do tailwind */}
         </div>
         
         {/* Pontos de Atenção */}

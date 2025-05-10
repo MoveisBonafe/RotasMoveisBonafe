@@ -176,6 +176,23 @@ iframe {
 /* Classe para tabs expandidas */
 .expanded-tab {
   height: 50vh;
+  max-height: 50vh;
   overflow-y: auto;
-  transition: height 0.3s ease;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ajuste para o layout do relatório quando expandido */
+.expanded-tab .report-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 8px;
+}
+
+/* Exibir conteúdo em duas colunas quando a aba estiver expandida */
+.expanded-tab .grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 8px;
 }

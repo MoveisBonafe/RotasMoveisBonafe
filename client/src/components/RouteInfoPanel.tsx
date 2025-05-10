@@ -30,9 +30,6 @@ export default function RouteInfoPanel({
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [isExpanded, setIsExpanded] = useState(false);
   
-  // Classe CSS para estilo expandido
-  // Nota: Adicionaremos a regra CSS em index.css
-  
   // Função para alternar a tab e expandir/recolher
   const toggleTab = (tab: TabType) => {
     if (activeTab === tab) {
@@ -322,8 +319,7 @@ export default function RouteInfoPanel({
               Selecione as datas de início e fim para ver os eventos nas cidades do trajeto.
             </div>
           ) : cityEvents && Array.isArray(cityEvents) && cityEvents.length > 0 ? (
-            <div className="grid grid-cols-1 gap-2">
-              {/* Filtrar e ordenar eventos: mostrar apenas eventos das cidades na rota, na ordem da rota e por data */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {(() => {
                 // Definir a sequência de cidades pela ordem em que aparecem na rota
                 const routeSequence = Array.isArray(calculatedRoute) 
@@ -359,21 +355,16 @@ export default function RouteInfoPanel({
                 
                 // Criar um mapa para saber a posição de cada cidade na rota
                 const cityPositionMap = new Map();
-                routeSequence.forEach((city, index) => {
-                  if (!cityPositionMap.has(city)) {
-                    cityPositionMap.set(city, index);
+                
+                // Preencher o mapa com posições de cidades
+                Array.isArray(calculatedRoute) && calculatedRoute.forEach((location, index) => {
+                  const cityName = extractCityFromAddress(location.address);
+                  if (cityName && !cityPositionMap.has(cityName)) {
+                    cityPositionMap.set(cityName, index);
                   }
                 });
                 
-                // DEBUG: Mostrar informações sobre eventos e cidades
-                console.log("RouteInfoPanel - Eventos brutos recebidos:", JSON.stringify(cityEvents));
-                console.log("RouteInfoPanel - Cidades na rota:", JSON.stringify(Array.from(citiesInRoute)));
-                
-                // Forçar incluir Ribeirão Preto na lista de cidades
-                citiesInRoute.add("Ribeirão Preto");
-                console.log("RouteInfoPanel - Cidades após adicionar Ribeirão Preto:", JSON.stringify(Array.from(citiesInRoute)));
-                
-                // Filtrar para mostrar APENAS eventos de cidades que estão na rota
+                // Filtrar e ordenar eventos das cidades na rota
                 const filteredAndSortedEvents = [...cityEvents]
                   // Primeiro filtramos para manter apenas eventos de cidades na rota
                   .filter(event => {
@@ -411,21 +402,21 @@ export default function RouteInfoPanel({
                     return new Date(a.startDate).getTime() - new Date(b.startDate).getTime(); // Ordem crescente por data
                   });
                 
-                return filteredAndSortedEvents.map((event: CityEvent) => (
-                  <div key={event.id} className="bg-white rounded p-2 border border-gray-100 text-xs">
+                return filteredAndSortedEvents.map((event: CityEvent, index) => (
+                  <div key={event.id} className="bg-white rounded p-2 border border-gray-100 mb-1 animate-fadeInUp" style={{ animationDelay: `${index * 0.1}s` }}>
                     <div className="flex items-start">
                       <span className={`inline-block w-2 h-2 rounded-full mr-1 mt-1 
                         ${event.eventType === 'holiday' ? 'bg-red-600' : 
                           event.eventType === 'festival' ? 'bg-yellow-500' : 'bg-green-600'}`}>
                       </span>
                       <div>
-                        <h3 className="font-medium text-xs">{event.eventName}</h3>
-                        <p className="text-xs text-gray-600">
-                          {event.cityName} | {new Date(event.startDate).toLocaleDateString('pt-BR')}
+                        <span className="font-medium text-xs">{event.eventName}</span>
+                        <div className="text-gray-500 text-xs">
+                          {event.cityName}, {new Date(event.startDate).toLocaleDateString('pt-BR')}
                           {event.startDate !== event.endDate && ` - ${new Date(event.endDate).toLocaleDateString('pt-BR')}`}
-                        </p>
+                        </div>
                         {event.description && (
-                          <p className="text-xs mt-1 text-gray-500">{event.description}</p>
+                          <div className="text-gray-500 text-xs mt-1">{event.description}</div>
                         )}
                       </div>
                     </div>
@@ -435,7 +426,7 @@ export default function RouteInfoPanel({
             </div>
           ) : (
             <div className="text-center p-2 text-gray-500 text-xs">
-              Nenhum evento encontrado nas cidades do trajeto para o período selecionado.
+              Nenhum evento encontrado para este período nas cidades do trajeto.
             </div>
           )}
         </div>
@@ -446,18 +437,19 @@ export default function RouteInfoPanel({
         <div className={`p-2 ${isExpanded ? 'expanded-tab' : ''}`}>
           {vehicleType?.type.includes("truck") ? (
             truckRestrictions && Array.isArray(truckRestrictions) && truckRestrictions.length > 0 ? (
-              <div className="bg-white rounded p-2 border border-gray-100">
-                <h3 className="text-xs font-medium mb-1 text-primary">Restrições para caminhões</h3>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200 text-xs">
-                    <thead>
-                      <tr className="bg-gray-50">
-                        <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Cidade</th>
-                        <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Restrição</th>
-                        <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Horário</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div className="bg-white rounded p-2 border border-gray-100">
+                  <h3 className="text-xs font-medium mb-1 text-primary">Restrições para caminhões</h3>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200 text-xs">
+                      <thead>
+                        <tr className="bg-gray-50">
+                          <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Cidade</th>
+                          <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Restrição</th>
+                          <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Horário</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
                       {(() => {
                         // Definir a sequência de cidades pela ordem em que aparecem na rota
                         const routeSequence = Array.isArray(calculatedRoute) 
@@ -510,8 +502,9 @@ export default function RouteInfoPanel({
                           </tr>
                         ));
                       })()}
-                    </tbody>
-                  </table>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             ) : (
