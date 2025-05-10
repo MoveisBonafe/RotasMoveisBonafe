@@ -242,19 +242,29 @@ export default function MapViewSimple({
               newInfoWindows.push(infoWindow);
             }
             
-            // 2. Adicionar marcadores para cada waypoint (numerados sequencialmente)
-            if (waypoints && waypoints.length > 0) {
-              waypoints.forEach((point, index) => {
+            // 2. Adicionar marcadores usando a ordem otimizada da rota
+            if (result.routes && result.routes[0] && result.routes[0].waypoint_order) {
+              const waypointOrder = result.routes[0].waypoint_order;
+              
+              console.log("Ordem otimizada dos waypoints:", waypointOrder);
+              
+              // Adicionar waypoints na ordem da rota calculada
+              waypoints.forEach((point, i) => {
+                // Obter o índice real na ordem da rota otimizada
+                const routeIndex = waypointOrder.indexOf(i);
+                // Ou usar i diretamente se não encontrar na ordem (fallback)
+                const sequenceNumber = (routeIndex !== -1) ? routeIndex + 1 : i + 1;
+                
                 const waypointMarker = new window.google.maps.Marker({
                   position: { lat: parseFloat(point.lat), lng: parseFloat(point.lng) },
                   map: map,
-                  title: point.name || `Destino ${index + 1}`,
+                  title: point.name || `Destino ${sequenceNumber}`,
                   icon: {
                     url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
                   },
                   label: {
-                    text: (index + 1).toString(),
-                    color: "#FFFFFF",
+                    text: sequenceNumber.toString(),
+                    color: "#FFFFFF", 
                     fontSize: "14px",
                     fontWeight: "bold"
                   },
@@ -263,7 +273,7 @@ export default function MapViewSimple({
                 
                 // Criar janela de informação para o ponto
                 const infoWindow = new window.google.maps.InfoWindow({
-                  content: `<div class="info-window"><strong>${point.name || `Destino ${index + 1}`}</strong><br>${point.address || ""}</div>`
+                  content: `<div class="info-window"><strong>${point.name || `Destino ${sequenceNumber}`}</strong><br>${point.address || ""}</div>`
                 });
                 
                 // Adicionar evento para mostrar janela ao clicar
@@ -324,12 +334,7 @@ export default function MapViewSimple({
                 map,
                 title: toll.name,
                 icon: {
-                  path: window.google.maps.SymbolPath.CIRCLE,
-                  fillColor: '#f44336', // Vermelho para pedágios
-                  fillOpacity: 1,
-                  strokeWeight: 2,
-                  strokeColor: '#FFFFFF',
-                  scale: 10
+                  url: "https://maps.google.com/mapfiles/ms/icons/dollar.png"
                 },
                 zIndex: 5
               });
@@ -386,12 +391,9 @@ export default function MapViewSimple({
                   map,
                   title: poi.name,
                   icon: {
-                    path: window.google.maps.SymbolPath.CIRCLE,
-                    fillColor,
-                    fillOpacity: 1,
-                    strokeWeight: 2,
-                    strokeColor: '#FFFFFF',
-                    scale: 10
+                    url: poi.type === 'weighing_station' 
+                      ? "https://maps.google.com/mapfiles/ms/icons/truck.png"
+                      : "https://maps.google.com/mapfiles/ms/icons/info.png"
                   },
                   zIndex: 4
                 });
