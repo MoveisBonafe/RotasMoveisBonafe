@@ -526,26 +526,6 @@ export default function RouteInfoPanel({
           Resumo da Rota
         </button>
         <button
-          onClick={() => toggleTab("events")}
-          className={`px-4 py-2 text-xs font-medium ${
-            activeTab === "events"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-        >
-          Eventos
-        </button>
-        <button
-          onClick={() => toggleTab("restrictions")}
-          className={`px-4 py-2 text-xs font-medium ${
-            activeTab === "restrictions"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-        >
-          Restrições
-        </button>
-        <button
           onClick={() => toggleTab("report")}
           className={`px-4 py-2 text-xs font-medium ${
             activeTab === "report"
