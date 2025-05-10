@@ -166,3 +166,9 @@ iframe {
 .animate-delay-300 {
   animation-delay: 0.3s;
 }
+
+/* Classe para texto muito pequeno */
+.text-xxs {
+  font-size: 0.625rem; /* 10px */
+  line-height: 0.875rem; /* 14px */
+}

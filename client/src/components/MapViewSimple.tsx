@@ -313,6 +313,22 @@ export default function MapViewSimple({
             }
           });
           
+          // Adicionar info window para o ponto de origem
+          const originInfoWindow = new google.maps.InfoWindow({
+            content: `<div class="p-2">
+              <div class="font-bold">${origin.name}</div>
+              <div class="text-xs text-gray-500">Origem</div>
+              <div class="text-xs">${origin.address}</div>
+            </div>`
+          });
+          
+          originMarker.addListener("click", () => {
+            // Fechar outras info windows abertas
+            infoWindows.forEach(iw => iw.close());
+            originInfoWindow.open(map, originMarker);
+          });
+          
+          infoWindows.push(originInfoWindow);
           bounds.extend(originPoint);
           newMarkers.push(originMarker);
         }
