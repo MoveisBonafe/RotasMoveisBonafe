@@ -157,41 +157,82 @@ export default function MapViewSimple({
             directionsRenderer.setDirections(result);
             
             // Adicionar marcadores de origem e destino explicitamente
-            console.log("Rota calculada, adicionando marcadores de rota manualmente!");
+            console.log("Rota calculada! Usando abordagem direta para adicionar marcadores.");
             
-            // Criar array de pontos para passar para a função addRouteMarkers
-            const routePoints: Location[] = [];
+            // IMPORTANTE: Adicionar marcadores de origem e waypoints MANUALMENTE
+            // Isto é necessário porque 'suppressMarkers: true' remove os marcadores padrão
             
-            // Adicionar origem
+            // 1. Adicionar marcador para a origem
             if (origin) {
-              routePoints.push(origin);
+              console.log("ADICIONANDO MARCADOR DE ORIGEM:", origin);
+              const originPoint = {
+                lat: parseFloat(origin.lat),
+                lng: parseFloat(origin.lng)
+              };
+              
+              // Criar e adicionar marcador de origem
+              const originMarker = new google.maps.Marker({
+                position: originPoint,
+                map: map,
+                title: origin.name || "Origem",
+                icon: {
+                  path: google.maps.SymbolPath.CIRCLE,
+                  fillColor: "#4285F4", // Azul Google
+                  fillOpacity: 1,
+                  strokeWeight: 2,
+                  strokeColor: "#FFFFFF",
+                  scale: 8
+                },
+                label: {
+                  text: "0",
+                  color: "#FFFFFF",
+                  fontSize: "11px"
+                },
+                zIndex: 100
+              });
+              
+              newMarkers.push(originMarker);
+              console.log("✅ Marcador de origem adicionado");
             }
             
-            // Se temos calculatedRoute, usá-los (excluindo origem que já foi adicionada)
+            // 2. Adicionar marcadores para os waypoints/destinos
             if (calculatedRoute && calculatedRoute.length > 1) {
-              routePoints.push(...calculatedRoute.slice(1));
-            } 
-            // Senão, usamos os waypoints
-            else if (waypoints && waypoints.length > 0) {
-              waypoints.forEach((wp, idx) => {
-                if (wp && wp.location) {
-                  routePoints.push({
-                    id: idx + 1,
-                    name: `Ponto ${idx + 1}`,
-                    address: "",
-                    lat: wp.location.lat().toString(),
-                    lng: wp.location.lng().toString(),
-                    isOrigin: false,
-                    cep: null
-                  });
-                }
+              console.log("ADICIONANDO MARCADORES PARA DESTINOS:", calculatedRoute.length - 1);
+              
+              calculatedRoute.slice(1).forEach((point, index) => {
+                const position = {
+                  lat: parseFloat(point.lat),
+                  lng: parseFloat(point.lng)
+                };
+                
+                // Criar e adicionar marcador para waypoint/destino
+                const waypointMarker = new google.maps.Marker({
+                  position: position,
+                  map: map,
+                  title: point.name || `Ponto ${index + 1}`,
+                  icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: "#DB4437", // Vermelho Google
+                    fillOpacity: 1,
+                    strokeWeight: 2,
+                    strokeColor: "#FFFFFF",
+                    scale: 8
+                  },
+                  label: {
+                    text: (index + 1).toString(),
+                    color: "#FFFFFF",
+                    fontSize: "11px"
+                  },
+                  zIndex: 100
+                });
+                
+                newMarkers.push(waypointMarker);
+                console.log(`✅ Marcador ${index + 1} adicionado em ${position.lat}, ${position.lng}`);
               });
             }
             
-            console.log("Adicionando marcadores para pontos:", routePoints);
-            // Chamar a função para adicionar marcadores
-            addRouteMarkers(routePoints);
-            
+            console.log(`Total de ${newMarkers.length} marcadores adicionados ao mapa`);
+      
             // Processar pedágios e outras informações da API Routes Preferred
             try {
               console.log("Processando resultado completo da API Routes Preferred:");
@@ -501,79 +542,7 @@ export default function MapViewSimple({
         showFallbackMarkers();
       }
       
-      // Função para adicionar marcadores da rota
-      function addRouteMarkers(routePoints: Location[]) {
-        console.log("Adicionando marcadores da rota", routePoints);
-        
-        if (!routePoints || routePoints.length === 0) {
-          console.log("Nenhum ponto fornecido para adicionar marcadores");
-          return;
-        }
-        
-        // Adicionar marcador de origem (primeiro ponto)
-        const originPoint = {
-          lat: parseFloat(routePoints[0].lat),
-          lng: parseFloat(routePoints[0].lng)
-        };
-        
-        console.log(`Adicionando marcador de origem em ${originPoint.lat}, ${originPoint.lng}`);
-        
-        const originMarker = new google.maps.Marker({
-          position: originPoint,
-          map,
-          title: routePoints[0].name || 'Origem',
-          icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            fillColor: "#4285F4", // Azul Google
-            fillOpacity: 1,
-            strokeWeight: 2,
-            strokeColor: "#FFFFFF",
-            scale: 8
-          },
-          label: {
-            text: "0",
-            color: "#FFFFFF",
-            fontSize: "11px"
-          },
-          zIndex: 100 // Exibir acima de outros marcadores
-        });
-        
-        newMarkers.push(originMarker);
-        
-        // Adicionar marcadores para pontos intermediários
-        routePoints.slice(1).forEach((point, index) => {
-          const position = {
-            lat: parseFloat(point.lat),
-            lng: parseFloat(point.lng)
-          };
-          
-          console.log(`Adicionando marcador intermediário ${index+1} em ${position.lat}, ${position.lng}`);
-          
-          const marker = new google.maps.Marker({
-            position,
-            map,
-            title: point.name || `Ponto ${index + 1}`,
-            icon: {
-              path: google.maps.SymbolPath.CIRCLE,
-              fillColor: "#DB4437", // Vermelho Google
-              fillOpacity: 1,
-              strokeWeight: 2,
-              strokeColor: "#FFFFFF", 
-              scale: 8
-            },
-            label: {
-              text: (index + 1).toString(),
-              color: "#FFFFFF",
-              fontSize: "11px"
-            },
-            zIndex: 100
-          });
-          
-          newMarkers.push(marker);
-        });
-        
-        console.log(`Adicionados ${newMarkers.length} marcadores de rota`);
-      }
+      // A função para adicionar marcadores da rota foi integrada diretamente no código principal
       
       // Função para mostrar apenas marcadores se a rota falhar
       function showFallbackMarkers() {
