@@ -592,18 +592,17 @@ export default function RouteInfoPanel({
                   </div>
                 </div>
 
-                {/* Points of Attention - Versão compacta */}
-                <div className="bg-white rounded p-2 border border-gray-100">
+                {/* Points of Attention - Seção compacta */}
+                <div className="bg-white rounded p-2 border border-gray-100 mb-3">
                   <h3 className="text-xs font-medium mb-1 text-primary">Pontos de Atenção</h3>
                   
-                  {/* SOLUÇÃO DEFINITIVA: USAR APENAS filteredPOIs QUE FORAM FILTRADOS NO useEffect */}
+                  {/* Filtrar POIs, restrições e eventos */}
                   {(() => {
-                    // DECISÃO FINAL: Usar o filteredPOIs do state, que foi filtrado no useEffect
-                    // Isso garante que apenas os pontos realmente na rota sejam mostrados
+                    // Usar filteredPOIs do state para pedágios e balanças
                     const tollsToShow = filteredPOIs.filter(p => p.type === 'toll');
                     const balancesToShow = filteredPOIs.filter(p => p.type === 'weighing_station');
                     
-                    // Filtrar também as restrições para mostrar apenas as da rota atual
+                    // Filtrar restrições para mostrar apenas as da rota atual
                     const restrictionsToShow = truckRestrictions && calculatedRoute ? 
                       truckRestrictions.filter(r => 
                         calculatedRoute.some(loc => 
@@ -663,6 +662,145 @@ export default function RouteInfoPanel({
                     );
                   })()}
                 </div>
+                
+                {/* Eventos nas cidades - Nova seção no resumo da rota */}
+                <div className="bg-white rounded p-2 border border-gray-100 mb-3">
+                  <h3 className="text-xs font-medium mb-1 text-primary">Eventos e Feriados</h3>
+                  
+                  {(() => {
+                    // Verificar se temos datas selecionadas
+                    if (!startDate || !endDate) {
+                      return (
+                        <div className="text-xs text-gray-500">
+                          Selecione datas para ver eventos nas cidades do trajeto
+                        </div>
+                      );
+                    }
+                    
+                    // Extrair cidades da rota
+                    const citiesInRoute = new Set<string>();
+                    
+                    // Adicionar origem (Dois Córregos)
+                    citiesInRoute.add("Dois Córregos");
+                    
+                    // Adicionar cidades dos destinos
+                    if (Array.isArray(calculatedRoute)) {
+                      calculatedRoute.forEach(location => {
+                        if (location.address) {
+                          const cityName = extractCityFromAddress(location.address);
+                          if (cityName) {
+                            citiesInRoute.add(cityName);
+                          }
+                        }
+                        
+                        // Adicionar também pelo nome do local
+                        if (location.name) {
+                          const cityName = location.name.split(',')[0].trim();
+                          citiesInRoute.add(cityName);
+                        }
+                      });
+                    }
+                    
+                    // Filtrar eventos por cidades na rota
+                    const relevantEvents = cityEvents && Array.isArray(cityEvents) ? 
+                      cityEvents.filter(event => 
+                        Array.from(citiesInRoute).some(city => 
+                          event.cityName?.toLowerCase().includes(city.toLowerCase()) || 
+                          city.toLowerCase().includes(event.cityName?.toLowerCase())
+                        )
+                      ) : [];
+                    
+                    // Verificar se tem eventos para mostrar
+                    if (relevantEvents.length === 0) {
+                      return (
+                        <div className="text-xs text-gray-500">
+                          Nenhum evento encontrado nas cidades do trajeto no período selecionado
+                        </div>
+                      );
+                    }
+                    
+                    // Mostrar eventos relevantes
+                    return (
+                      <ul className="text-xs space-y-1">
+                        {relevantEvents.map((event, idx) => {
+                          // Processar data para formato mais amigável
+                          const eventDate = event.startDate ? new Date(event.startDate) : null;
+                          const formattedDate = eventDate ? 
+                            eventDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) : '';
+                          
+                          // Ícone baseado no tipo de evento
+                          const getEventIcon = (type) => {
+                            switch (type) {
+                              case 'anniversary': return '🎂';
+                              case 'holiday': return '📅';
+                              case 'festival': return '🎭';
+                              default: return '📌';
+                            }
+                          };
+                          
+                          return (
+                            <li key={idx} className="flex items-start">
+                              <span className="mr-1">{getEventIcon(event.eventType)}</span>
+                              <div>
+                                <span className="font-medium">{event.cityName}</span>
+                                <span className="mx-1">•</span>
+                                <span>{formattedDate}</span>
+                                <div className="text-gray-600">{event.eventName}</div>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    );
+                  })()}
+                </div>
+                
+                {/* Restrições de caminhões - Exibição detalhada no resumo da rota */}
+                {vehicleType && vehicleType.type.includes('truck') && (
+                  <div className="bg-white rounded p-2 border border-gray-100">
+                    <h3 className="text-xs font-medium mb-1 text-primary">Restrições de Caminhões</h3>
+                    
+                    {(() => {
+                      // Filtrar restrições para mostrar apenas as da rota atual
+                      const restrictionsToShow = truckRestrictions && calculatedRoute ? 
+                        truckRestrictions.filter(r => 
+                          calculatedRoute.some(loc => 
+                            loc.name?.toLowerCase().includes(r.cityName?.toLowerCase()) || 
+                            r.cityName?.toLowerCase().includes(loc.name?.toLowerCase()) || 
+                            loc.address?.toLowerCase().includes(r.cityName?.toLowerCase())
+                          )
+                        ) : [];
+                      
+                      // Verificar se temos restrições para mostrar
+                      if (restrictionsToShow.length === 0) {
+                        return (
+                          <div className="text-xs text-gray-500">
+                            Nenhuma restrição de caminhões nas cidades do trajeto
+                          </div>
+                        );
+                      }
+                      
+                      // Mostrar restrições em formato detalhado
+                      return (
+                        <ul className="text-xs space-y-2">
+                          {restrictionsToShow.map((restriction, idx) => (
+                            <li key={idx} className="border-l-2 border-primary pl-2">
+                              <div className="font-medium">{restriction.cityName}</div>
+                              <div className="text-gray-700">{restriction.description}</div>
+                              <div className="flex items-center text-gray-600 mt-1">
+                                <span className="bg-gray-100 px-1 rounded">{restriction.startTime}-{restriction.endTime}</span>
+                                <span className="mx-1">•</span>
+                                <span>{restriction.restriction}</span>
+                                <span className="mx-1">•</span>
+                                <span>{restriction.applicableVehicles}</span>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      );
+                    })()}
+                  </div>
+                )}
               </div>
             </div>
           )}
