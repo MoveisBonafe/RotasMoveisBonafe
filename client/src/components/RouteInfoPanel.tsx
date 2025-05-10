@@ -148,39 +148,67 @@ export default function RouteInfoPanel({
   }
   
   // Vamos filtrar os POIs para incluir apenas os que realmente estão na rota
-  // Esse filtro será baseado em nome das rodovias e localização geográfica
+  // Esse filtro será baseado em nome das rodovias, cidades e destino final
+  
+  // Verificar destino para determinar a rota
+  const isBauruRoute = calculatedRoute?.some(loc => 
+    loc.name.includes("Bauru") || 
+    (loc.address && loc.address.includes("Bauru"))
+  ) || false;
+
+  console.log("Destino Bauru detectado?", isBauruRoute);
   
   // Primeiro, vamos identificar as rodovias presentes na rota calculada
   const routeRoads = new Set<string>();
-  const includeRoadSP225 = false; // Sabemos que SP-225 não faz parte da rota para Ribeirão Preto
-  const includeRoadSP255 = true;  // SP-255 faz parte da rota
   
-  if (includeRoadSP255) routeRoads.add("SP-255");
-  if (includeRoadSP225) routeRoads.add("SP-225");
+  // Para a rota Bauru (usando SP-300 e SP-225)
+  if (isBauruRoute) {
+    routeRoads.add("SP-300");
+    routeRoads.add("SP-225");
+  } else {
+    // Rota para Ribeirão Preto (usando SP-255)
+    routeRoads.add("SP-255");
+  }
+  
+  console.log("Rodovias relevantes para a rota:", Array.from(routeRoads));
   
   // Filtrar POIs para incluir apenas os que estão nas rodovias relevantes
-  // E aplicar regras específicas para cada ponto de interesse
   const filteredPOIs = poisAlongRoute.filter(poi => {
     // Verificar se o POI tem uma rodovia associada e se ela faz parte da rota
     if (poi.roadName && routeRoads.has(poi.roadName)) {
-      // Regras específicas para a SP-255
-      if (poi.roadName === "SP-255") {
+      // Regras específicas para cada rodovia
+      if (poi.roadName === "SP-255" && !isBauruRoute) {
         // A balança do km 122 está fora do trajeto atual
         if (poi.name === "Balança SP-255 (km 122)") {
           console.log("Excluindo Balança SP-255 (km 122) - fora do trajeto atual");
           return false;
         }
-        
-        // Incluir os pedágios e balanças da SP-255 relevantes
         return true;
       }
       
-      // Regras para outras rodovias podem ser adicionadas aqui
+      // Regras para rota de Bauru
+      if (isBauruRoute) {
+        if (poi.roadName === "SP-300") {
+          console.log("Incluindo POI da SP-300 para rota de Bauru:", poi.name);
+          return true;
+        }
+        if (poi.roadName === "SP-225") {
+          console.log("Incluindo POI da SP-225 para rota de Bauru:", poi.name);
+          return true;
+        }
+      }
+      
       return true;
     }
     
-    // Incluir o pedágio de Boa Esperança do Sul que é adicionado manualmente
-    if (poi.name && poi.name.includes("Boa Esperança") && poi.type === "toll") {
+    // Incluir pontos por cidade
+    if (isBauruRoute && poi.name && poi.name.includes("Bauru")) {
+      console.log("Incluindo POI de Bauru:", poi.name);
+      return true;
+    }
+    
+    // Incluir o pedágio de Boa Esperança do Sul para rota de Ribeirão
+    if (!isBauruRoute && poi.name && poi.name.includes("Boa Esperança") && poi.type === "toll") {
       return true;
     }
     
