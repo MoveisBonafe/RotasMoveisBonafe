@@ -340,8 +340,16 @@ export default function RouteInfoPanel({
                 citiesInRoute.add("Ribeirão Preto");
                 console.log("RouteInfoPanel - Cidades após adicionar Ribeirão Preto:", JSON.stringify(Array.from(citiesInRoute)));
                 
-                // Usar todos os eventos sem filtro para debug
+                // Filtrar para mostrar APENAS eventos de cidades que estão na rota
                 const filteredAndSortedEvents = [...cityEvents]
+                  // Primeiro filtramos para manter apenas eventos de cidades na rota
+                  .filter(event => {
+                    // Verificar se a cidade do evento está na rota
+                    return Array.from(citiesInRoute).some(city => 
+                      event.cityName.includes(city) || city.includes(event.cityName)
+                    );
+                  })
+                  // Depois ordenamos os eventos filtrados
                   .sort((a, b) => {
                     // Primeiro critério: posição da cidade na rota
                     const cityA = a.cityName;

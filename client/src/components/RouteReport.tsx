@@ -357,6 +357,14 @@ export default function RouteReport({
                 
                 // Filtrar e ordenar eventos das cidades na rota
                 const filteredAndSortedEvents = [...cityEvents]
+                  // Primeiro filtramos para manter apenas eventos de cidades na rota
+                  .filter(event => {
+                    // Verificar se a cidade do evento está na rota
+                    return Array.from(citiesInRoute).some(city => 
+                      event.cityName.includes(city) || city.includes(event.cityName)
+                    );
+                  })
+                  // Depois ordenamos os eventos filtrados
                   .sort((a, b) => {
                     // Primeiro critério: posição da cidade na rota
                     const cityA = a.cityName;
