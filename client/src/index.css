@@ -279,3 +279,20 @@ iframe {
   font-family: 'Arial', sans-serif;
   font-weight: 900 !important;
 }
+
+/* Estilo específico para centralizar os rótulos nos marcadores circulares */
+.marker-label-centered {
+  /* Garantir que o texto fique bem centralizado no círculo */
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+  margin-top: -1px; /* Ajuste fino para centralização vertical */
+  margin-left: 0px; /* Ajuste fino para centralização horizontal */
+}
+
+/* Aumentar um pouco o tamanho para símbolos especiais ($ e ⚖) */
+.gm-style .marker-label-centered {
+  padding-bottom: 1px;
+}

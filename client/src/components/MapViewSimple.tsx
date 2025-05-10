@@ -91,23 +91,26 @@ export default function MapViewSimple({
             lng: parseFloat(origin.lng)
           };
           
-          // Usar marcador de pino tradicional para a origem (mais destacado)
+          // Usar marcador circular com número dentro para a origem
           const originMarker = new google.maps.Marker({
             position: originPoint,
             map: newMap,
             title: origin.name || "Origem",
-            // Usar o pino vermelho padrão com tamanho aumentado
+            // Usar círculo azul para origem
             icon: {
-              url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png", // Pino vermelho tradicional
-              scaledSize: new google.maps.Size(45, 45), // Pino maior
-              labelOrigin: new google.maps.Point(22, 55) // Posição ajustada para o label
+              path: google.maps.SymbolPath.CIRCLE,
+              fillColor: '#3772FF', // Azul para origem
+              fillOpacity: 1,
+              strokeWeight: 2,
+              strokeColor: '#FFFFFF',
+              scale: 15, // Tamanho do círculo
             },
             label: {
               text: "0",
               color: "#FFFFFF",
-              fontSize: "16px", // Tamanho maior
-              fontWeight: "bold",
-              className: "marker-label" // Classe para estilização adicional
+              fontSize: "14px",
+              fontWeight: "bold", 
+              className: "marker-label-centered" // Classe para centralizar
             },
             zIndex: 100
           });
@@ -220,18 +223,21 @@ export default function MapViewSimple({
             position: originPoint,
             map: map,
             title: origin.name || "Origem",
-            // Usar pino vermelho tradicional ampliado
+            // Usar marcador personalizado com número dentro
             icon: {
-              url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-              scaledSize: new google.maps.Size(45, 45), // Pino maior
-              labelOrigin: new google.maps.Point(22, 55) // Posição ajustada para o label
+              path: google.maps.SymbolPath.CIRCLE,
+              fillColor: '#3772FF', // Azul para se diferenciar (é a origem)
+              fillOpacity: 1,
+              strokeWeight: 2,
+              strokeColor: '#FFFFFF',
+              scale: 15, // Tamanho do círculo
             },
             label: {
               text: "0",
               color: "#FFFFFF",
-              fontSize: "16px", // Tamanho maior
+              fontSize: "14px",
               fontWeight: "bold",
-              className: "marker-label" // Classe para estilização adicional
+              className: "marker-label-centered" // Classe para centralizar
             },
             zIndex: 100
           });
@@ -262,18 +268,22 @@ export default function MapViewSimple({
                 position,
                 map: map,
                 title: point.name || `Ponto ${index + 1}`,
-                // Usar pino vermelho tradicional
+                // Usar marcador personalizado com número dentro
                 icon: {
-                  url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-                  scaledSize: new google.maps.Size(45, 45), // Pino maior
-                  labelOrigin: new google.maps.Point(22, 55) // Posição ajustada para o label
+                  // SVG com número dentro do pino
+                  path: google.maps.SymbolPath.CIRCLE,
+                  fillColor: '#E71D36', // Vermelho mais vivo
+                  fillOpacity: 1,
+                  strokeWeight: 2,
+                  strokeColor: '#FFFFFF',
+                  scale: 15, // Tamanho do círculo
                 },
                 label: {
                   text: (index + 1).toString(),
                   color: "#FFFFFF",
-                  fontSize: "16px", // Tamanho maior
+                  fontSize: "14px",
                   fontWeight: "bold",
-                  className: "marker-label" // Classe para estilização adicional
+                  className: "marker-label-centered" // Classe para centralizar
                 },
                 zIndex: 100
               });
@@ -376,12 +386,27 @@ export default function MapViewSimple({
                 lng: parseFloat(poi.lng)
               };
               
-              // Definir ícone baseado no tipo de POI
-              let iconUrl = "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"; // Padrão
+              // Criar ícones personalizados para POIs
+              let poiIcon = {
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: '#0466C8', // Azul para POIs genéricos
+                fillOpacity: 1,
+                strokeWeight: 1,
+                strokeColor: '#FFFFFF',
+                scale: 12
+              };
+              
+              let labelText = "";
+              
+              // Personalizar baseado no tipo
               if (poi.type === "toll") {
-                iconUrl = "https://maps.google.com/mapfiles/ms/icons/green-dot.png"; // Pedágio
+                // Pedágio - Símbolo $
+                poiIcon.fillColor = '#38B000'; // Verde
+                labelText = "$";
               } else if (poi.type === "weighing_station") {
-                iconUrl = "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png"; // Balança
+                // Balança - Símbolo ⚖
+                poiIcon.fillColor = '#FFBA08'; // Amarelo
+                labelText = "⚖";
               }
               
               // Criar marcador para o POI
@@ -389,10 +414,14 @@ export default function MapViewSimple({
                 position: poiPoint,
                 map: map,
                 title: poi.name,
-                icon: {
-                  url: iconUrl,
-                  scaledSize: new google.maps.Size(30, 30)
-                },
+                icon: poiIcon,
+                label: labelText ? {
+                  text: labelText,
+                  color: "#FFFFFF",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  className: "marker-label-centered"
+                } : null,
                 zIndex: 50 // Abaixo dos marcadores de rota
               });
               
