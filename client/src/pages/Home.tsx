@@ -254,12 +254,14 @@ export default function Home() {
         const routeResult = optimizeRouteLocally(origin, locations, vehicleTypeObj, pois);
         setCalculatedRoute(routeResult.waypoints);
         
-        // Debug para verificar os POIs
-        console.log("POIs disponíveis para a rota após otimização:", pois.length);
-        console.log("POIs filtrados para a rota após otimização:", poisAlongRoute);
+        // Capturar os POIs resultantes diretamente da resposta, não do estado local
+        // O problema era que o estado poisAlongRoute é atualizado de forma assíncrona
+        // e poderia não estar disponível no momento do cálculo
+        console.log("=== POIs resultantes da otimização ===");
+        console.log("Capturando POIs diretamente da resposta:", routeResult.poisAlongRoute);
         
-        // IMPORTANTE: Atualizar o estado com os POIs filtrados no momento do cálculo
-        setPoisOnRoute(poisAlongRoute); // Atualizar com os POIs filtrados
+        // IMPORTANTE: Atualizar o estado com os POIs capturados diretamente da resposta
+        setPoisOnRoute(routeResult.poisAlongRoute);
         
         // Mostrar toast de sucesso
         toast({

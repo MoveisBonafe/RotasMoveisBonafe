@@ -141,7 +141,12 @@ export function useRouteOptimization() {
     routeInfoData.destinations = locations;
     
     setRouteInfo(routeInfoData);
-    return routeInfoData;
+    
+    // IMPORTANTE: Retornar também os POIs filtrados ao longo da rota
+    return {
+      ...routeInfoData,
+      poisAlongRoute // Adicionado aqui para ter acesso aos POIs no componente Home
+    };
   }, []);
 
   // Optimize route using server API (for real distance calculations)

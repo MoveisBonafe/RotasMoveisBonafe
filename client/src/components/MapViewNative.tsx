@@ -396,14 +396,71 @@ export default function MapViewNative({
                 newMarkers.push(marker);
               });
               
-              // IMPORTANTE: Adicionar os pontos de interesse ao mapa
-              console.log("Adicionando pontos de interesse direto:", pointsOfInterest);
-              const poiMarkers = renderPointsOfInterest(map, bounds);
-              if (poiMarkers.length > 0) {
-                console.log(`Adicionados ${poiMarkers.length} marcadores de POI ao mapa`);
-                newMarkers.push(...poiMarkers);
+              // SUPER IMPORTANTE: Adicionar manualmente os POIs como marcadores separados
+              console.log("Adicionando POIs diretamente como marcadores:", pointsOfInterest);
+              
+              if (pointsOfInterest && pointsOfInterest.length > 0) {
+                pointsOfInterest.forEach(poi => {
+                  try {
+                    const poiPosition = {
+                      lat: parseFloat(poi.lat),
+                      lng: parseFloat(poi.lng)
+                    };
+                    
+                    bounds.extend(poiPosition);
+                    
+                    // Criar um marcador para cada POI com ícone e cor específicos
+                    const poiMarker = new google.maps.Marker({
+                      position: poiPosition,
+                      map,
+                      title: poi.name,
+                      icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: poi.type === 'toll' ? "#FFC107" : "#F44336", // Amarelo ou vermelho
+                        fillOpacity: 1,
+                        strokeWeight: 1,
+                        strokeColor: "#000000",
+                        scale: 10
+                      },
+                      label: {
+                        text: poi.type === 'toll' ? '$' : 'B', // Símbolo $ para pedágio, B para balança
+                        color: "#FFFFFF",
+                        fontWeight: "bold"
+                      },
+                      zIndex: 1000 // Prioridade alta para exibição
+                    });
+                    
+                    // Criar info window ao clicar no marcador
+                    const infoContent = `
+                      <div style="padding: 10px; max-width: 200px;">
+                        <h4 style="margin: 0 0 8px 0; color: #333;">${poi.name}</h4>
+                        <p style="margin: 0; font-size: 12px;">
+                          ${poi.type === 'toll' ? 'Pedágio' : 'Balança de pesagem'}
+                        </p>
+                        ${poi.roadName ? `<p style="margin: 4px 0 0; font-size: 12px;">Rodovia: ${poi.roadName}</p>` : ''}
+                        ${poi.cost ? `<p style="margin: 4px 0 0; font-size: 12px;"><strong>Custo:</strong> R$ ${(poi.cost/100).toFixed(2)}</p>` : ''}
+                        ${poi.restrictions ? `<p style="margin: 4px 0 0; font-size: 12px;"><strong>Restrições:</strong> ${poi.restrictions}</p>` : ''}
+                      </div>
+                    `;
+                    
+                    const infoWindow = new google.maps.InfoWindow({
+                      content: infoContent
+                    });
+                    
+                    poiMarker.addListener('click', () => {
+                      infoWindow.open(map, poiMarker);
+                    });
+                    
+                    newMarkers.push(poiMarker);
+                    console.log(`POI adicionado ao mapa: ${poi.name} (${poi.type})`);
+                  } catch (error) {
+                    console.error("Erro ao adicionar POI ao mapa:", error);
+                  }
+                });
+                
+                console.log(`Total de ${pointsOfInterest.length} POIs adicionados ao mapa`);
               } else {
-                console.log("Nenhum marcador de POI adicionado");
+                console.log("Nenhum POI disponível para adicionar ao mapa");
               }
               
               // Ajustar o mapa para mostrar todos os pontos
