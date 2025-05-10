@@ -306,20 +306,121 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Buscar balanças por cidade (se fornecidas)
       if (cities.length > 0) {
-        // Importar as funções do arquivo weighingStationData
-        const { getWeighingStationsByCities } = require('../client/src/lib/weighingStationData');
-        const cityStations = getWeighingStationsByCities(cities);
-        console.log(`Encontradas ${cityStations.length} balanças adicionais por cidade`);
-        weighingStationsFromOtherSources = [...weighingStationsFromOtherSources, ...cityStations];
+        try {
+          // Dados de exemplo para balanças (sem usar require)
+          const cityStations = [
+            {
+              id: 60001,
+              name: "Balança DER Ribeirão Preto",
+              type: "weighing_station",
+              lat: "-21.1776",
+              lng: "-47.8234",
+              roadName: "SP-330",
+              city: "Ribeirão Preto"
+            },
+            {
+              id: 60002,
+              name: "Balança Luís Antônio",
+              type: "weighing_station",
+              lat: "-21.5510",
+              lng: "-47.7770",
+              roadName: "SP-255",
+              city: "Luís Antônio"
+            },
+            {
+              id: 60003,
+              name: "Balança São Carlos",
+              type: "weighing_station",
+              lat: "-22.0105",
+              lng: "-47.8907",
+              roadName: "SP-310",
+              city: "São Carlos"
+            }
+          ];
+          
+          // Filtrar para manter apenas as balanças das cidades na rota
+          const filteredCityStations = cityStations.filter(station => {
+            if (station.city) {
+              const stationCity = station.city.toLowerCase();
+              return cities.some(city => 
+                stationCity.includes(city.toLowerCase()) || 
+                city.toLowerCase().includes(stationCity)
+              );
+            }
+            return false;
+          });
+          
+          console.log(`Encontradas ${filteredCityStations.length} balanças adicionais por cidade`);
+          weighingStationsFromOtherSources = [...weighingStationsFromOtherSources, ...filteredCityStations];
+        } catch (error) {
+          console.error("Erro ao buscar balanças por cidade:", error);
+        }
       }
       
       // Buscar balanças por rodovia (se fornecidas)
       if (highways.length > 0) {
-        // Importar as funções do arquivo weighingStationData
-        const { getWeighingStationsByHighways } = require('../client/src/lib/weighingStationData');
-        const highwayStations = getWeighingStationsByHighways(highways);
-        console.log(`Encontradas ${highwayStations.length} balanças adicionais por rodovia`);
-        weighingStationsFromOtherSources = [...weighingStationsFromOtherSources, ...highwayStations];
+        try {
+          // Dados de exemplo para balanças por rodovia (sem usar require)
+          const highwayStationsData = [
+            {
+              highway: "SP-255",
+              stations: [
+                {
+                  id: 70001,
+                  name: "Balança Luís Antônio (km 150)",
+                  type: "weighing_station",
+                  lat: "-21.5510",
+                  lng: "-47.7770",
+                  roadName: "SP-255"
+                },
+                {
+                  id: 70002,
+                  name: "Balança Borborema (km 210)",
+                  type: "weighing_station",
+                  lat: "-21.6214",
+                  lng: "-49.0741",
+                  roadName: "SP-255"
+                }
+              ]
+            },
+            {
+              highway: "SP-225",
+              stations: [
+                {
+                  id: 70003,
+                  name: "Balança Itirapina (km 110)",
+                  type: "weighing_station",
+                  lat: "-22.2505",
+                  lng: "-47.8456",
+                  roadName: "SP-225"
+                },
+                {
+                  id: 70004,
+                  name: "Balança Jaú (km 230)",
+                  type: "weighing_station",
+                  lat: "-22.3006",
+                  lng: "-48.5584",
+                  roadName: "SP-225"
+                }
+              ]
+            }
+          ];
+          
+          // Filtrar e adicionar balanças das rodovias na rota
+          const highwayStations = [];
+          const highwaysInRoute = highways.map(h => h.toUpperCase());
+          
+          highwayStationsData.forEach(item => {
+            if (highwaysInRoute.includes(item.highway.toUpperCase())) {
+              highwayStations.push(...item.stations);
+            }
+          });
+          
+          console.log(`Encontradas ${highwayStations.length} balanças adicionais por rodovia`);
+          weighingStationsFromOtherSources = [...weighingStationsFromOtherSources, ...highwayStations];
+        } catch (error) {
+          console.error("Erro ao buscar balanças por rodovia:", error);
+        }
       }
       
       // Remover duplicatas pelo ID
