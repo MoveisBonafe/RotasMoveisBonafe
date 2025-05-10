@@ -221,6 +221,15 @@ export class MemStorage implements IStorage {
         restrictions: null
       },
       {
+        name: "Pedágio SP-300 (Jaú)",
+        type: "toll",
+        lat: "-22.2891",
+        lng: "-48.5327",
+        cost: 1050, // R$10.50 (preço base para carros)
+        roadName: "SP-300",
+        restrictions: null
+      },
+      {
         name: "Balança SP-300 (km 45)",
         type: "weighing_station",
         lat: "-22.8765",
