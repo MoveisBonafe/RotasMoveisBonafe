@@ -5,9 +5,14 @@ import { useQuery } from "@tanstack/react-query";
 interface VehicleSelectorProps {
   selectedVehicleType: string;
   onVehicleSelect: (vehicleType: VehicleType) => void;
+  onOpenFuelSettings?: () => void;
 }
 
-export default function VehicleSelector({ selectedVehicleType, onVehicleSelect }: VehicleSelectorProps) {
+export default function VehicleSelector({ 
+  selectedVehicleType, 
+  onVehicleSelect,
+  onOpenFuelSettings 
+}: VehicleSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   
   // Buscar todos os tipos de veículos disponíveis
@@ -70,8 +75,27 @@ export default function VehicleSelector({ selectedVehicleType, onVehicleSelect }
     <div className="mb-4">
       <div className="mb-2 flex justify-between items-center">
         <label className="block text-xs font-medium text-gray-700">Tipo de veículo</label>
-        <div className="text-xs text-gray-500">
-          {selectedVehicle?.name || 'Selecione um veículo'}
+        <div className="flex items-center gap-2">
+          {onOpenFuelSettings && selectedVehicle && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (onOpenFuelSettings) onOpenFuelSettings();
+              }}
+              className="text-xs text-blue-600 hover:text-blue-800 flex items-center"
+              title="Configurar preço e consumo"
+            >
+              <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 6V4M12 6C10.8954 6 10 6.89543 10 8C10 9.10457 10.8954 10 12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12M12 6C13.1046 6 14 6.89543 14 8M12 18C11.4477 18 11 17.5523 11 17C11 16.4477 11.4477 16 12 16C12.5523 16 13 16.4477 13 17C13 17.5523 12.5523 18 12 18ZM12 18V20M12 14V16M6 18L10 18M14 18L18 18M18 8L14 8M10 8L6 8" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Config
+            </button>
+          )}
+          <div className="text-xs text-gray-500">
+            {selectedVehicle?.name || 'Selecione um veículo'}
+          </div>
         </div>
       </div>
       

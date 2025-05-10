@@ -226,6 +226,41 @@ export default function Home() {
     setCalculatedRoute(null);
   };
   
+  // Handle opening fuel settings dialog
+  const handleOpenFuelSettings = () => {
+    setIsFuelSettingsOpen(true);
+  };
+  
+  // Update vehicle fuel efficiency
+  const handleUpdateVehicleEfficiency = (vehicleType: VehicleType, newEfficiency: number) => {
+    if (!vehicleTypes || !Array.isArray(vehicleTypes)) return;
+    
+    // Create a copy of the vehicle types array
+    const updatedVehicleTypes = vehicleTypes.map((vt: VehicleType) => {
+      if (vt.id === vehicleType.id) {
+        // Update the fuel efficiency for the specified vehicle
+        return { ...vt, fuelEfficiency: newEfficiency };
+      }
+      return vt;
+    });
+    
+    // Update the vehicle type object if currently selected
+    if (vehicleTypeObj && vehicleTypeObj.id === vehicleType.id) {
+      setVehicleTypeObj({ ...vehicleTypeObj, fuelEfficiency: newEfficiency });
+    }
+    
+    // Recalculate the route if needed
+    if (calculatedRoute && calculatedRoute.length > 0) {
+      setCalculatedRoute(null);
+      setTimeout(() => handleCalculateRoute(), 100);
+    }
+    
+    toast({
+      title: "Configurações atualizadas",
+      description: "Os novos valores serão usados para os cálculos de rota.",
+    });
+  };
+  
   // Handle calculate route button click
   const handleCalculateRoute = () => {
     if (!origin || !vehicleTypeObj || locations.length === 0) {
@@ -360,6 +395,7 @@ export default function Home() {
           locations={locations}
           selectedVehicleType={selectedVehicleType}
           onVehicleSelect={(vehicle) => setSelectedVehicleType(vehicle.type)}
+          onOpenFuelSettings={handleOpenFuelSettings}
           onSelectLocation={handleSelectLocation}
           onRemoveLocation={handleRemoveLocation}
           onMoveLocationUp={handleMoveLocationUp}
@@ -416,6 +452,20 @@ export default function Home() {
         isOpen={isAddLocationModalOpen}
         onClose={() => setIsAddLocationModalOpen(false)}
         onAddLocation={handleSelectLocation}
+      />
+      
+      {/* Fuel Settings Dialog */}
+      <FuelSettingsDialog
+        open={isFuelSettingsOpen}
+        onOpenChange={setIsFuelSettingsOpen}
+        selectedVehicleType={vehicleTypeObj}
+        onVehicleEfficiencyChange={handleUpdateVehicleEfficiency}
+        onSettingsChanged={() => {
+          // Recalcular rota se necessário
+          if (calculatedRoute && calculatedRoute.length > 0) {
+            handleCalculateRoute();
+          }
+        }}
       />
     </div>
   );
