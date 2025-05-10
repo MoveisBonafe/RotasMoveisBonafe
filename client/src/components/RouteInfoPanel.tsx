@@ -28,7 +28,9 @@ export default function RouteInfoPanel({
   poisAlongRoute,
   origin,
   calculatedRoute,
-  initialTab = "summary"
+  initialTab = "summary",
+  routeName = "",
+  onRouteNameChange = () => {}
 }: RouteInfoPanelProps) {
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -731,6 +733,8 @@ export default function RouteInfoPanel({
               vehicleType={vehicleType}
               startDate={startDate}
               endDate={endDate}
+              routeName={routeName}
+              onRouteNameChange={onRouteNameChange}
             />
           ) : (
             <div className="text-center text-gray-500 py-4">
