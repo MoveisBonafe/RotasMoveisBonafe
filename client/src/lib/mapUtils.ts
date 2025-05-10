@@ -205,3 +205,122 @@ export function formatRouteSequence(locations: Location[]): string {
   const names = locations.map(location => location.name);
   return names.join(" → ");
 }
+
+/**
+ * Decodifica um polyline do Google Maps em uma série de coordenadas
+ * https://developers.google.com/maps/documentation/utilities/polylinealgorithm
+ */
+export function decodePolyline(encoded: string): { lat: number, lng: number }[] {
+  const points: { lat: number, lng: number }[] = [];
+  let index = 0;
+  const len = encoded.length;
+  let lat = 0;
+  let lng = 0;
+
+  while (index < len) {
+    let b;
+    let shift = 0;
+    let result = 0;
+    
+    do {
+      b = encoded.charCodeAt(index++) - 63;
+      result |= (b & 0x1f) << shift;
+      shift += 5;
+    } while (b >= 0x20);
+    
+    const dlat = ((result & 1) !== 0 ? ~(result >> 1) : (result >> 1));
+    lat += dlat;
+
+    shift = 0;
+    result = 0;
+    
+    do {
+      b = encoded.charCodeAt(index++) - 63;
+      result |= (b & 0x1f) << shift;
+      shift += 5;
+    } while (b >= 0x20);
+    
+    const dlng = ((result & 1) !== 0 ? ~(result >> 1) : (result >> 1));
+    lng += dlng;
+
+    points.push({
+      lat: lat / 1e5,
+      lng: lng / 1e5
+    });
+  }
+
+  return points;
+}
+
+/**
+ * Extrai informações de pedágio diretamente da resposta da API do Google Maps
+ * Esta função é mais precisa porque usa os dados exatos da API
+ */
+export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] {
+  if (!directionsResult || !directionsResult.routes || directionsResult.routes.length === 0) {
+    return [];
+  }
+
+  const route = directionsResult.routes[0];
+  const legs = route.legs || [];
+  const tollPoints: PointOfInterest[] = [];
+  
+  // ID base para os pedágios
+  let tollId = 10000;
+  
+  // Processar cada trecho (leg) da rota
+  legs.forEach((leg: any, legIndex: number) => {
+    // Verificar se há informações de pedágio neste trecho
+    if (leg.toll_info && leg.toll_info.toll_points && leg.toll_info.toll_points.length > 0) {
+      // Processar cada ponto de pedágio informado pela API
+      leg.toll_info.toll_points.forEach((tollPoint: any, tollIndex: number) => {
+        if (tollPoint.location) {
+          // Obter o nome do pedágio, ou criar um nome padrão
+          const tollName = tollPoint.name || `Pedágio ${legIndex + 1}.${tollIndex + 1}`;
+          
+          // Obter custo do pedágio
+          let cost = 0;
+          if (tollPoint.cost && tollPoint.cost.value) {
+            cost = Math.round(tollPoint.cost.value * 100); // converter para centavos
+          }
+          
+          // Criar um objeto para este pedágio
+          const poi: PointOfInterest = {
+            id: tollId++,
+            name: tollName,
+            lat: tollPoint.location.lat.toString(),
+            lng: tollPoint.location.lng.toString(),
+            type: 'toll',
+            cost: cost,
+            roadName: `Trecho ${legIndex + 1}`,
+            restrictions: leg.toll_info.toll_passes 
+              ? leg.toll_info.toll_passes.map((pass: any) => pass.name).join(", ")
+              : ''
+          };
+          
+          // Adicionar à lista de pontos de pedágio
+          tollPoints.push(poi);
+        }
+      });
+    }
+    
+    // Procurar informações de pedágio nos passos detalhados de cada trecho
+    if (leg.steps && leg.steps.length > 0) {
+      leg.steps.forEach((step: any, stepIndex: number) => {
+        // Verificar se este passo tem informações sobre pedágios
+        if (step.html_instructions && step.html_instructions.includes("pedágio")) {
+          console.log(`Passo ${stepIndex} contém informação de pedágio: ${step.html_instructions}`);
+          
+          // Se não encontramos pedágio especificamente em leg.toll_info, podemos tentar extrair aqui
+          // usando ponto médio do passo como aproximação
+          if (!leg.toll_info || !leg.toll_info.toll_points || leg.toll_info.toll_points.length === 0) {
+            console.log("Pedágio detectado nas instruções, mas não em toll_info");
+          }
+        }
+      });
+    }
+  });
+  
+  console.log(`Extraídos ${tollPoints.length} pedágios diretamente da resposta da API Google Maps`);
+  return tollPoints;
+}

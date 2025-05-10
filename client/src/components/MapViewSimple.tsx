@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Location, PointOfInterest } from "@/lib/types";
 import { useRoutesPreferred } from "@/hooks/useRoutesPreferred";
+import { extractTollsFromRoute } from "@/lib/mapUtils";
 
 interface MapViewProps {
   origin: Location | null;
@@ -242,56 +243,38 @@ export default function MapViewSimple({
             // SUPER IMPORTANTE: Adicionar POIs explicitamente como marcadores
             console.log("Adicionando POIs como marcadores:", pointsOfInterest);
             
-            // Verificar se temos POIs para mostrar
-            // Primeiro, tentar extrair pedágios da API Routes Preferred
+            // Extrair pedágios DIRETAMENTE da resposta da API do Google Maps
             try {
-              // Extrair pedágios da resposta da API Routes Preferred
-              // Extrair informações de pedágio da resposta da API Routes Preferred
-              const tollPointsFromAPI = extractTollPoints(result);
-              if (tollPointsFromAPI && tollPointsFromAPI.length > 0) {
-                console.log(`Encontrados ${tollPointsFromAPI.length} pedágios via API Routes Preferred`, tollPointsFromAPI);
+              // Usar nossa nova função mais precisa para extrair os pedágios
+              const apiTollPoints = extractTollsFromRoute(result);
+              
+              if (apiTollPoints && apiTollPoints.length > 0) {
+                console.log(`Encontrados ${apiTollPoints.length} pedágios diretamente da API do Google Maps:`, apiTollPoints);
                 
-                // Mesclar pedágios encontrados com os pontos de interesse existentes
-                const combinedPOIs = [...pointsOfInterest];
+                // Usar EXCLUSIVAMENTE os pedágios encontrados pela API do Google Maps
+                // Não misturar com outros dados
+                pointsOfInterest = apiTollPoints;
                 
-                // EXCLUSIVAMENTE usar os pedágios da API Google Maps Routes Preferred
-                // Não combinamos com outros - usamos apenas e somente os dados da API
+                // Armazenar os pontos de pedágio para referência
+                setApiTollPoints(apiTollPoints);
                 
-                // Limpar a lista completamente para usar só os pedágios da API
-                const apiOnlyPois: PointOfInterest[] = [];
-                
-                // Adicionar pedágios da API (todos eles, sem exceção)
-                tollPointsFromAPI.forEach(tollPoint => {
-                  // Adicionar o pedágio com as coordenadas exatas da API
-                  apiOnlyPois.push({
-                    ...tollPoint,
-                    // Usar EXCLUSIVAMENTE as coordenadas fornecidas pela API
-                    lat: tollPoint.lat || '0',
-                    lng: tollPoint.lng || '0'
-                  });
-                  
-                  console.log(`Usando EXCLUSIVAMENTE pedágio da API: ${tollPoint.name} em ${tollPoint.lat},${tollPoint.lng}`);
+                // Log detalhado dos pedágios para debug
+                apiTollPoints.forEach(toll => {
+                  console.log(`Pedágio EXATO da API: ${toll.name}, posição: ${toll.lat},${toll.lng}`);
                 });
                 
-                // Atualizar POIs com APENAS OS PEDÁGIOS DA API
-                pointsOfInterest = apiOnlyPois;
-                
-                // Armazenar os pontos de pedágio encontrados para referência
-                setApiTollPoints(tollPointsFromAPI);
-                
-                // Notificar o componente pai sobre os pedágios encontrados, se necessário
-                // Apenas enviamos os pedágios da API, conforme solicitado
+                // Notificar o componente pai sobre os pedágios encontrados
                 if (onRouteCalculated) {
                   onRouteCalculated({
                     ...result,
-                    poisAlongRoute: apiOnlyPois // Usando apenas os pedágios da API
+                    poisAlongRoute: apiTollPoints
                   });
                 }
               } else {
-                console.log("Nenhum pedágio encontrado na API Routes Preferred para esta rota");
+                console.log("Nenhum pedágio encontrado na API do Google Maps para esta rota");
               }
             } catch (error) {
-              console.error("Erro ao extrair pedágios da API Routes Preferred:", error);
+              console.error("Erro ao extrair pedágios diretamente da API:", error);
             }
             
             // Agora mostrar todos os pontos de interesse, incluindo os extraídos da API
