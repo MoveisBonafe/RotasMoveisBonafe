@@ -80,13 +80,44 @@ export default function MapViewSimple({
         newDirectionsRenderer.setMap(newMap);
         setDirectionsRenderer(newDirectionsRenderer);
         
+        // Verificar se temos a origem para adicionar o marcador inicial
+        if (origin) {
+          console.log("ADICIONANDO MARCADOR DE ORIGEM NA INICIALIZAÇÃO:", origin);
+          const originPoint = {
+            lat: parseFloat(origin.lat),
+            lng: parseFloat(origin.lng)
+          };
+          
+          const originMarker = new google.maps.Marker({
+            position: originPoint,
+            map: newMap,
+            title: origin.name || "Origem",
+            icon: {
+              path: google.maps.SymbolPath.CIRCLE,
+              fillColor: "#4285F4", // Azul Google
+              fillOpacity: 1,
+              strokeWeight: 2,
+              strokeColor: "#FFFFFF",
+              scale: 8
+            },
+            label: {
+              text: "0",
+              color: "#FFFFFF",
+              fontSize: "11px"
+            },
+            zIndex: 100
+          });
+          
+          console.log("✅ Marcador de origem adicionado na inicialização do mapa");
+        }
+        
         console.log("Mapa inicializado com sucesso");
       } catch (e) {
         console.error("Erro ao inicializar mapa:", e);
         setError("Erro ao inicializar o mapa. Tente recarregar a página.");
       }
     }
-  }, []);
+  }, [origin]);
 
   // Renderizar a rota calculada
   useEffect(() => {
