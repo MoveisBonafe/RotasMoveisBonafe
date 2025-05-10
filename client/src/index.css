@@ -173,7 +173,7 @@ iframe {
   line-height: 0.875rem; /* 14px */
 }
 
-/* Classe para tabs expandidas */
+/* Classe para tabs expandidas (padrão para abas normais) */
 .expanded-tab {
   height: 50vh;
   max-height: 50vh;
@@ -181,15 +181,23 @@ iframe {
   transition: all 0.3s ease;
 }
 
+/* Classe especial para a aba de relatório */
+.report-expanded {
+  height: calc(100vh - 220px);
+  max-height: unset;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+}
+
 /* Ajuste para o layout do relatório quando expandido */
-.expanded-tab .report-container {
+.report-expanded .report-container {
   height: 100%;
   overflow-y: auto;
   padding-right: 4px;
 }
 
 /* Exibir conteúdo em duas colunas quando a aba estiver expandida */
-.expanded-tab .grid-container {
+.expanded-tab .grid-container, .report-expanded .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 8px;

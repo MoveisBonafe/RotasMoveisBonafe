@@ -522,7 +522,7 @@ export default function RouteInfoPanel({
 
       {/* Detailed Report Tab */}
       {activeTab === "report" && (
-        <div className={`p-2 ${isExpanded ? 'expanded-tab' : ''}`}>
+        <div className={`p-2 ${isExpanded ? 'report-expanded' : ''}`}>
           {!routeInfo ? (
             <div className="text-center p-3 text-gray-500 text-xs">
               Calcule uma rota para gerar o relatório detalhado.
