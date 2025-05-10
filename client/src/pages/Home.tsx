@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Location, VehicleType, GeocodingResult, PointOfInterest } from "@/lib/types";
-// Substituindo o MapView pelo nosso novo componente otimizado
-import MapView from "@/components/MapViewSimple";
+import MapView from "@/components/MapViewNative";
 import Sidebar from "@/components/Sidebar";
 import DateRangeSelector from "@/components/DateRangeSelector";
 import AddLocationModal from "@/components/AddLocationModal";
