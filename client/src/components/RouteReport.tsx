@@ -1,12 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { Location, PointOfInterest, CityEvent, TruckRestriction } from '@/lib/types';
 import { formatDistance, formatDuration, formatCurrency } from '@/lib/mapUtils';
 import { extractCityFromAddress } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { FaWhatsapp } from 'react-icons/fa';
-import html2canvas from 'html2canvas';
-import { useToast } from '@/hooks/use-toast';
 
 interface RouteReportProps {
   origin: Location | null;
@@ -156,90 +154,39 @@ export default function RouteReport({
     document.title = originalTitle;
   };
   
-  const { toast } = useToast();
-  const [isCapturing, setIsCapturing] = useState(false);
-  
   // Função para compartilhar relatório via WhatsApp
-  const handleShareWhatsApp = async () => {
-    if (!reportRef.current) return;
+  const handleShareWhatsApp = () => {
+    // Criar texto do relatório para compartilhar
+    let text = "📍 *Relatório de Rota* 📍\n\n";
     
-    try {
-      setIsCapturing(true);
-      
-      // Mostra notificação de que está processando
-      toast({
-        title: "Processando relatório",
-        description: "Aguarde enquanto capturamos a imagem...",
-        duration: 2000
+    // Adicionar origem
+    text += `*Origem:* ${origin?.name || 'Não definida'}\n\n`;
+    
+    // Adicionar destinos
+    if (calculatedRoute && calculatedRoute.length > 0) {
+      text += "*Destinos:*\n";
+      calculatedRoute.slice(1).forEach((location, index) => {
+        const locationName = location.name.startsWith("R.") || location.name.startsWith("Av.") 
+          ? extractCityFromAddress(location.address)
+          : location.name;
+        text += `${index + 1}. ${locationName}\n`;
       });
-      
-      // Captura a imagem do relatório
-      const canvas = await html2canvas(reportRef.current, {
-        scale: 2, // Melhor qualidade
-        logging: false,
-        useCORS: true,
-        backgroundColor: '#FFFFFF'
-      });
-      
-      // Converte para imagem
-      const imageData = canvas.toDataURL('image/png');
-      
-      // Cria o texto para compartilhar
-      let text = "📍 *Relatório de Rota* 📍\n\n";
-      text += `*Origem:* ${origin?.name || 'Não definida'}\n`;
-      
-      if (calculatedRoute && calculatedRoute.length > 0) {
-        text += `*Destinos:* ${calculatedRoute.length - 1} locais\n`;
-      }
-      
-      if (vehicleType) {
-        text += `*Veículo:* ${vehicleType.name}\n`;
-      }
-      
-      if (startDate && endDate) {
-        text += `*Data:* ${startDate === endDate ? startDate : `${startDate} a ${endDate}`}\n`;
-      }
-      
-      // Adicionar data e hora atual
-      text += `\n_Gerado em ${new Date().toLocaleString()}_`;
-      
-      // Cria um elemento a para download
-      const a = document.createElement('a');
-      a.href = imageData;
-      a.download = `Relatório de Rota - ${origin?.name || 'Rota'}.png`;
-      
-      // Força o download imediatamente 
-      document.body.appendChild(a);
-      a.click();
-      
-      // Limpa após o download
-      setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(a.href);
-        
-        // Após o download, abre o WhatsApp
-        const whatsappURL = `https://wa.me/?text=${encodeURIComponent(text)}`;
-        window.open(whatsappURL, '_blank');
-        
-        // Informa que o processo foi concluído
-        toast({
-          title: "Captura concluída",
-          description: "Relatório salvo e compartilhado com sucesso!",
-          duration: 3000
-        });
-      }, 100);
-      
-    } catch (error) {
-      console.error("Erro ao compartilhar relatório:", error);
-      toast({
-        title: "Erro ao compartilhar",
-        description: "Não foi possível capturar a imagem do relatório.",
-        variant: "destructive",
-        duration: 3000
-      });
-    } finally {
-      setIsCapturing(false);
+      text += "\n";
     }
+    
+    // Adicionar veículo
+    if (vehicleType) {
+      text += `*Veículo:* ${vehicleType.name}\n\n`;
+    }
+    
+    // Adicionar datas se disponíveis
+    if (startDate && endDate) {
+      text += `*Data de viagem:* ${startDate === endDate ? startDate : `${startDate} - ${endDate}`}\n\n`;
+    }
+    
+    // Compartilhar via WhatsApp
+    const whatsappURL = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(whatsappURL, '_blank');
   };
 
   // Log para debug
@@ -276,21 +223,11 @@ export default function RouteReport({
             onClick={handleShareWhatsApp}
             variant="outline" 
             size="sm"
-            disabled={isCapturing}
             className="h-6 text-xs py-0 px-2 bg-green-600 hover:bg-green-700 text-white border-green-600 hover:border-green-700 flex items-center"
           >
-            {isCapturing ? (
-              <>
-                <span className="animate-spin mr-1">⏳</span>
-                <span>Processando...</span>
-              </>
-            ) : (
-              <>
-                <FaWhatsapp className="mr-1 text-sm" /> 
-                <span className="hidden sm:inline">Compartilhar</span>
-                <span className="sm:hidden">WhatsApp</span>
-              </>
-            )}
+            <FaWhatsapp className="mr-1 text-sm" /> 
+            <span className="hidden sm:inline">Compartilhar</span>
+            <span className="sm:hidden">WhatsApp</span>
           </Button>
         </div>
       </div>
