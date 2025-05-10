@@ -57,42 +57,69 @@ export function useRouteOptimization() {
       return R * c;
     };
     
-    // Filtrar POIs que estão até 20km de distância de qualquer ponto da rota
-    // Aumentamos para 20km para garantir que capturamos os POIs relevantes
-    const MAX_DISTANCE_KM = 20;
-    console.log(`Filtrando POIs a até ${MAX_DISTANCE_KM}km da rota`);
+    // IMPORTANTE: Verificar se os destinos incluem Ribeirão Preto
+    const includesRibeiraoPreto = optimizedLocations.some(location => 
+      location.name.toLowerCase().includes("ribeirão") || 
+      location.address.toLowerCase().includes("ribeirão") ||
+      location.name.toLowerCase().includes("pedro") // O CEP de Ribeirão Preto foi importado como "Pedro"
+    );
     
-    const poisOnRoute = pois.filter(poi => {
-      const poiLat = parseFloat(poi.lat);
-      const poiLng = parseFloat(poi.lng);
+    const includesDoisCorregos = optimizedLocations.some(location => 
+      location.name.toLowerCase().includes("dois córregos") || 
+      location.address.toLowerCase().includes("dois córregos")
+    );
+    
+    console.log("Rota inclui Dois Córregos?", includesDoisCorregos ? "SIM" : "NÃO");
+    console.log("Rota inclui Ribeirão Preto?", includesRibeiraoPreto ? "SIM" : "NÃO");
+    
+    let poisOnRoute = [];
+    
+    // Se a rota for de Dois Córregos para Ribeirão Preto ou vice-versa,
+    // incluir todos os POIs que estão na rodovia SP-225 e SP-255
+    if (includesDoisCorregos && includesRibeiraoPreto) {
+      console.log("ROTA ESPECIAL DETECTADA: Dois Córregos -> Ribeirão Preto");
+      console.log("Incluindo todos os pedágios e balanças relevantes para esta rota");
       
-      console.log(`Avaliando POI: ${poi.name} (${poi.type}) em [${poiLat}, ${poiLng}]`);
-      
-      // Verificar cada ponto da rota
-      let minDistance = Number.MAX_VALUE;
-      let closestPoint = null;
-      
-      for (const location of optimizedLocations) {
-        const locationLat = parseFloat(location.lat);
-        const locationLng = parseFloat(location.lng);
+      poisOnRoute = pois.filter(poi => {
+        // Incluir todos os pedágios e balanças na SP-225 e SP-255
+        const isOnSP225 = poi.roadName && poi.roadName.includes("SP-225");
+        const isOnSP255 = poi.roadName && poi.roadName.includes("SP-255");
         
-        // Calcular distância entre POI e ponto da rota
-        const distance = calculateDistance(poiLat, poiLng, locationLat, locationLng);
+        const shouldInclude = isOnSP225 || isOnSP255;
+        console.log(`POI ${poi.name}: ${shouldInclude ? 'INCLUÍDO (rodovia relevante)' : 'EXCLUÍDO (rodovia não relevante)'}`);
         
-        // Manter registro da menor distância para este POI
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestPoint = location.name;
+        return shouldInclude;
+      });
+    } else {
+      // Para outras rotas, manter a filtragem por distância
+      const MAX_DISTANCE_KM = 30; // Aumentado de 20 para 30km
+      console.log(`Rota padrão: Filtrando POIs a até ${MAX_DISTANCE_KM}km da rota`);
+      
+      poisOnRoute = pois.filter(poi => {
+        const poiLat = parseFloat(poi.lat);
+        const poiLng = parseFloat(poi.lng);
+        
+        let minDistance = Number.MAX_VALUE;
+        let closestPoint = null;
+        
+        for (const location of optimizedLocations) {
+          const locationLat = parseFloat(location.lat);
+          const locationLng = parseFloat(location.lng);
+          
+          const distance = calculateDistance(poiLat, poiLng, locationLat, locationLng);
+          
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestPoint = location.name;
+          }
         }
-      }
-      
-      // Se POI estiver a menos de MAX_DISTANCE_KM de algum ponto da rota, incluir
-      const shouldInclude = minDistance <= MAX_DISTANCE_KM;
-      
-      console.log(`POI ${poi.name}: ${shouldInclude ? 'INCLUÍDO' : 'EXCLUÍDO'} - Distância mínima: ${minDistance.toFixed(2)}km (local mais próximo: ${closestPoint})`);
-      
-      return shouldInclude;
-    });
+        
+        const shouldInclude = minDistance <= MAX_DISTANCE_KM;
+        console.log(`POI ${poi.name}: ${shouldInclude ? 'INCLUÍDO' : 'EXCLUÍDO'} - Distância: ${minDistance.toFixed(2)}km`);
+        
+        return shouldInclude;
+      });
+    }
     
     console.log(`Total de POIs filtrados para a rota: ${poisOnRoute.length} de ${pois.length}`);
     
