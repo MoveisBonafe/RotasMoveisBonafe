@@ -182,24 +182,44 @@ export default function MapViewNative({
         bounds.extend(poiPosition);
         
         // Determinar o ícone com base no tipo de POI
-        let icon = {
-          url: '',
-          scaledSize: new google.maps.Size(30, 30)
-        };
+        let icon;
         
         if (poi.type === 'toll') {
-          // Ícone para pedágio
-          icon.url = "https://maps.google.com/mapfiles/ms/icons/dollar.png";
+          // Ícone personalizado para pedágio (círculo amarelo com símbolo $)
+          icon = {
+            path: google.maps.SymbolPath.CIRCLE,
+            fillColor: "#FFC107", // Amarelo
+            fillOpacity: 1,
+            strokeWeight: 1,
+            strokeColor: "#000000",
+            scale: 10,
+            labelOrigin: new google.maps.Point(0, 0)
+          };
         } else if (poi.type === 'weighing_station') {
-          // Ícone para balança
-          icon.url = "https://maps.google.com/mapfiles/ms/icons/truck.png";
+          // Ícone personalizado para balança (círculo vermelho com símbolo da balança)
+          icon = {
+            path: google.maps.SymbolPath.CIRCLE,
+            fillColor: "#F44336", // Vermelho
+            fillOpacity: 1,
+            strokeWeight: 1,
+            strokeColor: "#000000",
+            scale: 10,
+            labelOrigin: new google.maps.Point(0, 0)
+          };
         }
         
+        // Adicionar rótulo específico para o tipo de POI
         const poiMarker = new google.maps.Marker({
           position: poiPosition,
           map,
           title: poi.name,
-          icon: icon
+          icon: icon,
+          label: {
+            text: poi.type === 'toll' ? '$' : 'B', // $ para pedágio, B para balança
+            color: '#FFFFFF',
+            fontWeight: 'bold',
+            fontSize: '11px'
+          }
         });
         
         // Adicionar popup de informação ao clicar no marcador
