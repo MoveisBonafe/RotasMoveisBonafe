@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Location } from "@/lib/types";
+import { extractCityFromAddress } from "@/lib/utils";
 
 interface LocationsListProps {
   origin: Location | null;
@@ -53,7 +54,9 @@ export default function LocationsList({
           
             <div>
               <h3 className="text-sm font-medium text-gray-900 truncate max-w-xs">
-                {location.name}
+                {location.name.startsWith("R.") || location.name.startsWith("Av.") 
+                  ? extractCityFromAddress(location.address) 
+                  : location.name}
               </h3>
               <p className="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
                 {location.address}

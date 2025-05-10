@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { Location, PointOfInterest, CityEvent, TruckRestriction } from '@/lib/types';
 import { formatDistance, formatDuration, formatCurrency } from '@/lib/mapUtils';
+import { extractCityFromAddress } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 
@@ -201,7 +202,9 @@ export default function RouteReport({
             <div>
               {calculatedRoute.slice(1).map((location, index) => (
                 <div key={index} className="font-medium">
-                  {index+1}. {location.name}
+                  {index+1}. {location.name.startsWith("R.") || location.name.startsWith("Av.") 
+                    ? extractCityFromAddress(location.address) 
+                    : location.name}
                 </div>
               ))}
             </div>
@@ -271,7 +274,11 @@ export default function RouteReport({
                   {index === 0 ? 'A' : index}
                 </div>
                 <div>
-                  <div className="font-medium">{location.name}</div>
+                  <div className="font-medium">
+                    {location.name.startsWith("R.") || location.name.startsWith("Av.") 
+                      ? extractCityFromAddress(location.address) 
+                      : location.name}
+                  </div>
                   <div className="text-xs text-gray-500">{location.address}</div>
                 </div>
                 
