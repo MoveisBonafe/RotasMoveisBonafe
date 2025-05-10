@@ -191,6 +191,14 @@ iframe {
 .expanded-tab {
   max-height: 50vh;
   overflow-y: auto;
+  transition: all 0.3s ease;
+}
+
+/* Classe para a aba colapsada (visível mas com tamanho reduzido) */
+.collapsed-tab {
+  max-height: 150px;
+  overflow-y: auto;
+  transition: all 0.3s ease;
 }
 
 /* Classe especial para a aba de relatório em modo expandido */

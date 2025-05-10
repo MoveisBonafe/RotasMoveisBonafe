@@ -95,10 +95,18 @@ export default function RouteInfoPanel({
     setIsExpanded(false);
   };
   
+  // Efeito de inicialização - garante que todas as abas comecem minimizadas
+  useEffect(() => {
+    // Configuração inicial: todas as abas minimizadas por padrão
+    setIsMinimized(true);
+    setIsExpanded(false);
+  }, []);
+  
   // Quando a rota é calculada (calculatedRoute muda), ativar a aba de resumo
   // E também atualizar os POIs filtrados
   useEffect(() => {
     if (calculatedRoute && calculatedRoute.length > 0) {
+      // Ativar a aba de resumo, mas manter o estado minimizado
       setActiveTab("summary");
       
       // FILTRAR POIs AQUI COM BASE NA ROTA ATUAL
