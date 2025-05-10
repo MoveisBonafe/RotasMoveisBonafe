@@ -237,6 +237,64 @@ export default function MapViewSimple({
                 }
               });
               
+              // Função para adicionar um POI ao mapa
+              function addPOIMarker(poi: PointOfInterest) {
+                const position = {
+                  lat: parseFloat(poi.lat),
+                  lng: parseFloat(poi.lng)
+                };
+                
+                // Criar marcador
+                const poiMarker = new google.maps.Marker({
+                  position,
+                  map,
+                  title: poi.name,
+                  icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: poi.type === 'toll' ? '#f44336' : '#ff9800', // Vermelho para pedágios, laranja para balanças
+                    fillOpacity: 1,
+                    strokeWeight: 2,
+                    strokeColor: '#FFFFFF',
+                    scale: 10
+                  },
+                  zIndex: 2
+                });
+                
+                // Criar janela de informações
+                const infoContent = `
+                  <div style="min-width: 200px;">
+                    <h3 style="margin: 0; font-size: 16px;">${poi.name}</h3>
+                    <p style="margin: 5px 0;">Tipo: ${poi.type === 'toll' ? 'Pedágio' : 'Balança'}</p>
+                    ${poi.cost ? `<p style="margin: 5px 0;">Custo: R$ ${(poi.cost / 100).toFixed(2)}</p>` : ''}
+                    ${poi.roadName ? `<p style="margin: 5px 0;">Rodovia: ${poi.roadName}</p>` : ''}
+                    ${poi.city ? `<p style="margin: 5px 0;">Cidade: ${poi.city}</p>` : ''}
+                    ${poi.restrictions ? `<p style="margin: 5px 0;">Pagamentos: ${poi.restrictions}</p>` : ''}
+                  </div>
+                `;
+                
+                const infoWindow = new google.maps.InfoWindow({
+                  content: infoContent
+                });
+                
+                // Adicionar evento de clique
+                poiMarker.addListener('click', () => {
+                  // Fechar todas as janelas de informações abertas
+                  infoWindows.forEach(iw => iw.close());
+                  // Abrir esta janela
+                  infoWindow.open(map, poiMarker);
+                });
+                
+                poiMarker.set('isPOI', true);
+                poiMarker.set('poiInfo', poi);
+                
+                // Adicionar às listas
+                markers.push(poiMarker);
+                infoWindows.push(infoWindow);
+                
+                console.log(`POI adicionado: ${poi.name} (${poi.type})`);
+                return poiMarker;
+              }
+              
               // Adicionar os novos marcadores de pedágio com base nos dados PRECISOS da API
               ailogTolls.forEach(poi => {
                 addPOIMarker(poi);
@@ -342,12 +400,99 @@ export default function MapViewSimple({
             });
           }
           
-          // 3. Processar pontos de interesse e pedágios
+          // 3. Processar pontos de interesse e pedágios com a API AILOG
           try {
-            // Extrair pedágios da resposta
+            // Extrair pedágios da resposta (método tradicional como backup)
             const tollPointsFromAPI = extractTollsFromRoute(result);
             
-            // Verificar se a rota passa por regiões específicas
+            // ============ INTEGRAÇÃO COM API AILOG ============
+            // Obter pedágios precisos da rota utilizando API especializada
+            const selectedVehicleType = localStorage.getItem('selectedVehicleType') || 'car';
+            
+            // Chamar a API AILOG assincronamente
+            fetchTollsFromAilog(origin, waypoints, selectedVehicleType)
+              .then(ailogTolls => {
+                console.log("API AILOG retornou", ailogTolls.length, "pedágios precisos para esta rota");
+                
+                // Limpar os pedágios existentes do mapa (detectados por proximidade)
+                markers.forEach(marker => {
+                  if (marker.get('isPOI') && marker.get('poiInfo')?.type === 'toll') {
+                    marker.setMap(null);
+                  }
+                });
+                
+                // Adicionar os novos pedágios precisos ao mapa
+                ailogTolls.forEach(toll => {
+                  const position = {
+                    lat: parseFloat(toll.lat),
+                    lng: parseFloat(toll.lng)
+                  };
+                  
+                  // Criar marcador com visual mais preciso
+                  const tollMarker = new google.maps.Marker({
+                    position,
+                    map,
+                    title: toll.name,
+                    icon: {
+                      path: google.maps.SymbolPath.CIRCLE,
+                      fillColor: '#f44336', // Vermelho para pedágios
+                      fillOpacity: 1,
+                      strokeWeight: 2,
+                      strokeColor: '#FFFFFF',
+                      scale: 10
+                    },
+                    zIndex: 2
+                  });
+                  
+                  // Criar janela de informações detalhada
+                  const infoContent = `
+                    <div style="min-width: 200px;">
+                      <h3 style="margin: 0; font-size: 16px;">${toll.name}</h3>
+                      <p style="margin: 5px 0;">Tipo: Pedágio (AILOG)</p>
+                      ${toll.cost ? `<p style="margin: 5px 0;">Custo: R$ ${(toll.cost / 100).toFixed(2)}</p>` : ''}
+                      ${toll.roadName ? `<p style="margin: 5px 0;">Rodovia: ${toll.roadName}</p>` : ''}
+                      ${toll.city ? `<p style="margin: 5px 0;">Cidade: ${toll.city}</p>` : ''}
+                      ${toll.restrictions ? `<p style="margin: 5px 0;">Pagamentos: ${toll.restrictions}</p>` : ''}
+                    </div>
+                  `;
+                  
+                  const infoWindow = new google.maps.InfoWindow({
+                    content: infoContent
+                  });
+                  
+                  // Adicionar evento de clique
+                  tollMarker.addListener('click', () => {
+                    infoWindows.forEach(iw => iw.close());
+                    infoWindow.open(map, tollMarker);
+                  });
+                  
+                  tollMarker.set('isPOI', true);
+                  tollMarker.set('poiInfo', toll);
+                  tollMarker.set('ailogSource', true); // Marcar fonte como AILOG
+                  
+                  // Adicionar às listas
+                  newMarkers.push(tollMarker);
+                  newInfoWindows.push(infoWindow);
+                  
+                  console.log(`Pedágio AILOG adicionado: ${toll.name}`);
+                });
+                
+                // Informar o componente pai sobre os pedágios precisos
+                if (onRouteCalculated) {
+                  const resultWithPreciseTolls = {
+                    ...result,
+                    tollPoints: ailogTolls,
+                    ailogSource: true
+                  };
+                  onRouteCalculated(resultWithPreciseTolls);
+                }
+              })
+              .catch(error => {
+                console.error("Erro ao obter pedágios da API AILOG:", error);
+                // Em caso de falha, usar o método tradicional (já executado acima)
+              });
+            
+            // Verificar se a rota passa por regiões específicas (método tradicional como backup)
             let northeasternCities = ['Ribeirão Preto', 'Jaú', 'Araraquara', 'São Carlos', 'Bauru'];
             
             // Extrair cidades da rota
