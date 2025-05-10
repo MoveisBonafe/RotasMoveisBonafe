@@ -97,15 +97,10 @@ export default function MapViewSimple({
             map: newMap,
             title: origin.name || "Origem",
             icon: {
-              path: window.google.maps.SymbolPath.CIRCLE,
-              fillColor: "#4CAF50", // Verde para origem
-              fillOpacity: 1,
-              strokeWeight: 2,
-              strokeColor: "#FFFFFF",
-              scale: 12
+              url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
             },
             label: {
-              text: "O",
+              text: "0",
               color: "#FFFFFF",
               fontSize: "14px",
               fontWeight: "bold"
@@ -222,15 +217,10 @@ export default function MapViewSimple({
                 map: map,
                 title: origin.name || "Origem",
                 icon: {
-                  path: window.google.maps.SymbolPath.CIRCLE,
-                  fillColor: "#4CAF50", // Verde para origem
-                  fillOpacity: 1,
-                  strokeWeight: 2,
-                  strokeColor: "#FFFFFF",
-                  scale: 12
+                  url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
                 },
                 label: {
-                  text: "O",
+                  text: "0",
                   color: "#FFFFFF",
                   fontSize: "14px",
                   fontWeight: "bold"
@@ -260,12 +250,7 @@ export default function MapViewSimple({
                   map: map,
                   title: point.name || `Destino ${index + 1}`,
                   icon: {
-                    path: window.google.maps.SymbolPath.CIRCLE,
-                    fillColor: "#2196F3", // Azul para destinos
-                    fillOpacity: 1,
-                    strokeWeight: 2,
-                    strokeColor: "#FFFFFF",
-                    scale: 12
+                    url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
                   },
                   label: {
                     text: (index + 1).toString(),
