@@ -367,15 +367,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Função auxiliar para verificar se um evento está entre duas datas (considerando apenas dia e mês)
       function filterEvents(eventDate: Date, startDate: Date, endDate: Date): boolean {
         // Para aniversários, comparamos apenas mês e dia, ignorando o ano
-        // Criamos uma data no mesmo ano do intervalo para fazer a comparação correta
-        const eventMonth = eventDate.getMonth();
+        const eventMonth = eventDate.getMonth(); // 0-11 (janeiro é 0)
         const eventDay = eventDate.getDate();
         
-        // Ajustamos para considerar o ano de referência do período filtrado
+        // Extrair mês e dia das datas de início e fim do período
+        const startMonth = startDate.getMonth();
+        const startDay = startDate.getDate();
+        const endMonth = endDate.getMonth();
+        const endDay = endDate.getDate();
+        
+        // Criar uma data no mesmo ano do filtro para comparação
         const adjustedEventDate = new Date(startDate.getFullYear(), eventMonth, eventDay);
         
-        // Verificar se está dentro do período
-        return adjustedEventDate >= startDate && adjustedEventDate <= endDate;
+        // Verificação precisa de inclusão no período
+        const isWithinPeriod = adjustedEventDate >= startDate && adjustedEventDate <= endDate;
+        
+        // Log para debug
+        console.log(`Verificando evento: ${eventDate.toISOString().split('T')[0]}, Período: ${startDate.toISOString().split('T')[0]} até ${endDate.toISOString().split('T')[0]}, Resultado: ${isWithinPeriod}`);
+        
+        return isWithinPeriod;
       }
       
       // Filtrar eventos com base no período selecionado pelo usuário e tipo de evento
