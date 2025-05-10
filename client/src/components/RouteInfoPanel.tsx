@@ -247,14 +247,55 @@ export default function RouteInfoPanel({
   
   // Algoritmo otimizado para garantir inclusão dos pedágios corretos
   
-  // USAR EXCLUSIVAMENTE os POIs que vieram da API AILOG e que estão corretamente na rota
-  // Não precisamos de processamento extra - a API AILOG já retorna os pedágios corretos
-  console.log("POIs filtrados diretamente da API AILOG:", filteredPOIs.map(p => p.name));
-  console.log("Usando EXCLUSIVAMENTE pedágios da API AILOG");
+  // LIMPAR TODOS OS PONTOS QUE NÃO ESTÃO NA ROTA
+  console.log("Depurando: calculatedRoute =", calculatedRoute);
   
-  // Remover duplicatas dos POIs filtrados - com os que vieram na prop poisAlongRoute (já filtrados pelo mapa)
-  // Aqui não precisamos adicionar nada, pois o componente pai (MapViewSimple) já fez esse trabalho
-  const uniquePOIs = poisAlongRoute;
+  // Se temos uma rota calculada, filtrar os POIs para incluir apenas os que realmente estão nessa rota
+  let uniquePOIs: PointOfInterest[] = [];
+  
+  if (calculatedRoute && calculatedRoute.length > 0) {
+    // Extrair cidades dos destinos na rota atual
+    const citiesInRoute = new Set<string>();
+    calculatedRoute.forEach(location => {
+      if (location.address) {
+        const cityMatch = location.address.match(/([A-Za-zÀ-ú\s]+)(?:\s*-\s*[A-Z]{2})/);
+        if (cityMatch && cityMatch[1]) {
+          citiesInRoute.add(cityMatch[1].trim().toLowerCase());
+        }
+      }
+      if (location.name) {
+        citiesInRoute.add(location.name.split(',')[0].trim().toLowerCase());
+      }
+    });
+    
+    console.log("Cidades na rota:", Array.from(citiesInRoute));
+    
+    // Filtrar os POIs para incluir apenas aqueles cuja cidade está na rota
+    uniquePOIs = poisAlongRoute.filter(poi => {
+      // Se o POI tem city definido, verificar se essa cidade está na rota
+      if (poi.city) {
+        const poiCity = poi.city.toLowerCase();
+        return Array.from(citiesInRoute).some(city => 
+          poiCity.includes(city) || city.includes(poiCity)
+        );
+      }
+      
+      // Se não temos informação de cidade, verificar pelo nome
+      if (poi.name) {
+        const poiName = poi.name.toLowerCase();
+        return Array.from(citiesInRoute).some(city => 
+          poiName.includes(city) || city.includes(poiName)
+        );
+      }
+      
+      return false; // Se não conseguimos determinar, não incluir
+    });
+    
+    console.log("POIs filtrados por cidade:", uniquePOIs.map(p => p.name));
+  } else {
+    // Se não temos rota calculada, não mostrar nenhum POI
+    uniquePOIs = [];
+  }
   
   console.log("POIs filtrados e sem duplicatas:", uniquePOIs.map(p => p.name));
   
