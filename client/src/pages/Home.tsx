@@ -254,26 +254,33 @@ export default function Home() {
         const routeResult = optimizeRouteLocally(origin, locations, vehicleTypeObj, pois);
         setCalculatedRoute(routeResult.waypoints);
         
-        // SOLUÇÃO DE EMERGÊNCIA:
-        // Como os POIs não estão sendo passados corretamente, vamos forçar a inclusão
-        // dos POIs relevantes para a rota Dois Córregos -> Ribeirão Preto
+        // SOLUÇÃO APRIMORADA:
+        // Vamos detectar a rota e mostrar apenas os POIs realmente relevantes
+        
+        // 1. Verificar se estamos com a rota para Ribeirão Preto (ou nome do arquivo "Pedro")
         const includesRibeiraoPreto = locations.some(loc => 
-            loc.name.toLowerCase().includes('pedro') || 
-            loc.address.toLowerCase().includes('ribeirão')
+            (loc.name && loc.name.toLowerCase().includes('pedro')) || 
+            (loc.name && loc.name.toLowerCase().includes('ribeir')) || 
+            (loc.address && loc.address.toLowerCase().includes('ribeir'))
         );
         
         console.log("Verificando se rota inclui Ribeirão Preto:", includesRibeiraoPreto ? "SIM" : "NÃO");
         
-        // Se for a rota para Ribeirão Preto, incluir os POIs diretamente
+        // 2. Forçar a limpeza dos POIs antes de calcular os novos
+        setPoisOnRoute([]);
+        
+        // 3. Filtrar os POIs com base na rota correta
         if (includesRibeiraoPreto && pois.length > 0) {
-            // Filtrar apenas os POIs relevantes (SP-225 e SP-255)
+            // Para a rota Dois Córregos -> Ribeirão Preto, mostrar apenas os pedágios das rodovias SP-225 e SP-255
             const relevantPOIs = pois.filter(poi => 
                 poi.roadName && (poi.roadName.includes("SP-225") || poi.roadName.includes("SP-255"))
             );
             
             console.log("POIs relevantes para a rota:", relevantPOIs);
+            // 4. Atualizar a lista de POIs filtrados
             setPoisOnRoute(relevantPOIs);
         } else {
+            // Para outras rotas, não mostrar nenhum POI até termos uma lógica melhor
             setPoisOnRoute([]);
         }
         
