@@ -16,12 +16,14 @@ interface MapViewProps {
   waypoints: Location[];
   calculatedRoute: Location[] | null;
   onRouteCalculated?: (result: any) => void;
+  pointsOfInterest?: any[]; // Pontos de interesse (pedágios e balanças)
 }
 
 export default function MapView({ 
   origin, 
   waypoints,
-  calculatedRoute
+  calculatedRoute,
+  pointsOfInterest = []
 }: MapViewProps) {
   const [isMapReady, setIsMapReady] = useState(false);
   const [mapSrc, setMapSrc] = useState("");

@@ -165,6 +165,68 @@ export default function MapViewNative({
     }
   }, [map, origin, waypoints]);
 
+  // Renderizar os pontos de interesse (pedágios e balanças)
+  const renderPointsOfInterest = (map: any, bounds: any) => {
+    if (!pointsOfInterest || pointsOfInterest.length === 0) return [];
+    
+    const google = window.google;
+    const poiMarkers: any[] = [];
+    
+    pointsOfInterest.forEach(poi => {
+      try {
+        const poiPosition = {
+          lat: parseFloat(poi.lat),
+          lng: parseFloat(poi.lng)
+        };
+        
+        bounds.extend(poiPosition);
+        
+        // Determinar o ícone com base no tipo de POI
+        let icon = {
+          url: '',
+          scaledSize: new google.maps.Size(30, 30)
+        };
+        
+        if (poi.type === 'toll') {
+          // Ícone para pedágio
+          icon.url = "https://maps.google.com/mapfiles/ms/icons/dollar.png";
+        } else if (poi.type === 'weighing_station') {
+          // Ícone para balança
+          icon.url = "https://maps.google.com/mapfiles/ms/icons/truck.png";
+        }
+        
+        const poiMarker = new google.maps.Marker({
+          position: poiPosition,
+          map,
+          title: poi.name,
+          icon: icon
+        });
+        
+        // Adicionar popup de informação ao clicar no marcador
+        const infoWindow = new google.maps.InfoWindow({
+          content: `
+            <div style="padding: 10px">
+              <h3 style="margin: 0 0 5px 0">${poi.name}</h3>
+              <p style="margin: 0">${poi.type === 'toll' ? 'Pedágio' : 'Balança'}</p>
+              ${poi.type === 'toll' && poi.cost ? `<p style="margin: 5px 0 0 0">Custo: R$ ${poi.cost.toFixed(2)}</p>` : ''}
+              ${poi.roadName ? `<p style="margin: 5px 0 0 0">Rodovia: ${poi.roadName}</p>` : ''}
+            </div>
+          `
+        });
+        
+        poiMarker.addListener('click', () => {
+          infoWindow.open(map, poiMarker);
+        });
+        
+        poiMarkers.push(poiMarker);
+      } catch (error) {
+        console.error('Erro ao renderizar ponto de interesse:', error);
+      }
+    });
+    
+    return poiMarkers;
+  };
+
   // Quando uma rota for calculada, usar DirectionsService para calcular rota real nas estradas
   useEffect(() => {
     if (!map || !origin || !calculatedRoute || calculatedRoute.length === 0) return;
@@ -244,6 +306,9 @@ export default function MapViewNative({
               // Mostrar a rota
               renderer.setDirections(result);
               
+              // Criar bounds para ajustar o zoom
+              const bounds = new google.maps.LatLngBounds();
+              
               // Adicionar marcadores para cada ponto
               const originMarker = new google.maps.Marker({
                 position: originPoint,
@@ -258,12 +323,13 @@ export default function MapViewNative({
                   scale: 10
                 },
                 label: {
-                  text: "A",
+                  text: "0",
                   color: "#FFFFFF",
                   fontWeight: "bold"
                 }
               });
               newMarkers.push(originMarker);
+              bounds.extend(originPoint);
               
               // Adicionar marcadores para cada ponto intermediário e destino
               calculatedRoute.slice(1).forEach((point, index) => {
@@ -271,6 +337,8 @@ export default function MapViewNative({
                   lat: parseFloat(point.lat),
                   lng: parseFloat(point.lng)
                 };
+                
+                bounds.extend(pointPos);
                 
                 const marker = new google.maps.Marker({
                   position: pointPos,
@@ -293,6 +361,13 @@ export default function MapViewNative({
                 
                 newMarkers.push(marker);
               });
+              
+              // Adicionar os pontos de interesse ao mapa
+              const poiMarkers = renderPointsOfInterest(map, bounds);
+              newMarkers.push(...poiMarkers);
+              
+              // Ajustar o mapa para mostrar todos os pontos
+              map.fitBounds(bounds);
               
               // Salvar marcadores
               setMarkers(newMarkers);
@@ -390,6 +465,10 @@ export default function MapViewNative({
           strokeWeight: 5,
           map
         });
+        
+        // Adicionar os pontos de interesse ao mapa
+        const poiMarkers = renderPointsOfInterest(map, bounds);
+        newMarkers.push(...poiMarkers);
         
         // Ajustar o mapa para mostrar todos os pontos
         map.fitBounds(bounds);
