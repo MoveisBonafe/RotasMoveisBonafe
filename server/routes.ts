@@ -1,4 +1,4 @@
-import type { Express, Request, Response } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
@@ -196,7 +196,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Processa cada linha do arquivo
       for (let i = 0; i < lines.length; i++) {
-        const line: string = lines[i].trim();
+        const line = lines[i].trim();
         
         // Verifica se a linha tem o formato CEP,Nome
         if (line.includes(',')) {
@@ -352,35 +352,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Datas passadas como parâmetros
       const { startDate, endDate, cities } = req.query;
       
-      // Implementar filtragem baseada nas datas atuais
-      const today = new Date();
-      // Simulamos estar hoje no dia 10 de maio de 2025
+      // Data simulada para apresentação
       const simulatedToday = new Date('2025-05-10');
       
-      // Filtrar eventos relevantes para o período atual
-      // Se um evento tem data FIXA (como aniversários), só mostramos se estamos perto da data
+      // Obter os parâmetros de data do request se disponíveis
+      let filterStartDate = startDate ? new Date(startDate as string) : new Date('2025-05-01');
+      let filterEndDate = endDate ? new Date(endDate as string) : new Date('2025-05-31');
+      
+      console.log("Filtrando eventos para o período:", 
+        filterStartDate.toISOString().split('T')[0], 
+        "até", 
+        filterEndDate.toISOString().split('T')[0]);
+      
+      // Função auxiliar para verificar se um evento está entre duas datas (considerando apenas dia e mês)
+      function filterEvents(eventDate: Date, startDate: Date, endDate: Date): boolean {
+        // Para aniversários, comparamos apenas mês e dia, ignorando o ano
+        // Criamos uma data no mesmo ano do intervalo para fazer a comparação correta
+        const eventMonth = eventDate.getMonth();
+        const eventDay = eventDate.getDate();
+        
+        // Ajustamos para considerar o ano de referência do período filtrado
+        const adjustedEventDate = new Date(startDate.getFullYear(), eventMonth, eventDay);
+        
+        // Verificar se está dentro do período
+        return adjustedEventDate >= startDate && adjustedEventDate <= endDate;
+      }
+      
+      // Filtrar eventos com base no período selecionado pelo usuário e tipo de evento
       const filteredEvents = events.filter(event => {
-        // Se for um evento de aniversário de cidade, verificamos se está próximo do dia atual
+        const eventStartDate = new Date(event.startDate);
+        const eventEndDate = new Date(event.endDate);
+        
+        // Verificar sobreposição de períodos
+        // A condição é verdadeira se o período do evento se sobrepõe ao período filtrado
+        const periodsOverlap = (
+          (eventStartDate <= filterEndDate && eventEndDate >= filterStartDate) ||
+          (eventStartDate.getMonth() === filterStartDate.getMonth() && eventStartDate.getDate() === filterStartDate.getDate()) ||
+          (eventStartDate.getMonth() === filterEndDate.getMonth() && eventStartDate.getDate() === filterEndDate.getDate())
+        );
+        
+        // Para aniversários de cidades, verificamos se o dia/mês está dentro do período
         if (event.eventType === 'anniversary') {
-          const eventDate = new Date(event.startDate);
-          // Usamos a data simulada para fins de demonstração
-          const dayDiff = Math.abs((eventDate.getTime() - simulatedToday.getTime()) / (1000 * 3600 * 24));
-          
-          // Considere próximo se estiver a 7 dias de distância (antes ou depois)
-          return dayDiff <= 7;
+          // Verificamos se o mês e dia do aniversário caem dentro do período filtrado
+          return filterEvents(eventStartDate, filterStartDate, filterEndDate);
         }
         
-        // Para eventos de festival, verificar se a data atual está dentro do período do evento
-        if (event.eventType === 'festival') {
-          const eventStartDate = new Date(event.startDate);
-          const eventEndDate = new Date(event.endDate);
-          
-          // Verificar se a data simulada está dentro do período do evento
-          return simulatedToday >= eventStartDate && simulatedToday <= eventEndDate;
-        }
-        
-        // Para outros tipos de eventos, mostra todos
-        return true;
+        // Para festivais ou outros eventos com duração
+        return periodsOverlap;
       });
       
       console.log("API de eventos chamada, retornando:", filteredEvents.length, "eventos");
