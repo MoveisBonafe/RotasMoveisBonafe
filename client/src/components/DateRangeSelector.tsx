@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { useToast } from '@/hooks/use-toast';
 
 interface DateRangeSelectorProps {
   startDate: string | null;
@@ -13,6 +14,44 @@ export default function DateRangeSelector({
   onStartDateChange, 
   onEndDateChange 
 }: DateRangeSelectorProps) {
+  const { toast } = useToast();
+  
+  // Efeito para validar se a data fim não é menor que a data início
+  useEffect(() => {
+    // Só verificar quando ambas as datas estiverem selecionadas
+    if (startDate && endDate) {
+      const startDateObj = new Date(startDate);
+      const endDateObj = new Date(endDate);
+      
+      // Se a data final for menor que a data inicial
+      if (endDateObj < startDateObj) {
+        // Corrigir automaticamente definindo a data fim igual à data início
+        onEndDateChange(startDate);
+        
+        // Notificar o usuário
+        toast({
+          title: "Data ajustada",
+          description: "A data de fim não pode ser anterior à data de início",
+          variant: "default"
+        });
+      }
+    }
+  }, [startDate, endDate, onEndDateChange, toast]);
+  
+  // Handler para mudança da data de início
+  const handleStartDateChange = (date: string | null) => {
+    onStartDateChange(date);
+    
+    // Se já temos uma data fim selecionada que agora é menor que a nova data início
+    if (date && endDate && new Date(endDate) < new Date(date)) {
+      // Ajustar a data fim para ser igual à data início
+      onEndDateChange(date);
+    }
+  };
+  
+  // Obter a data atual formatada como YYYY-MM-DD para min attribute
+  const today = new Date().toISOString().split('T')[0];
+  
   return (
     <div className="w-full">
       <div className="mb-2">
@@ -27,15 +66,18 @@ export default function DateRangeSelector({
             type="date" 
             className="border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary w-full"
             value={startDate || ""}
-            onChange={(e) => onStartDateChange(e.target.value || null)}
+            min={today} // Não permitir datas anteriores à atual
+            onChange={(e) => handleStartDateChange(e.target.value || null)}
           />
         </div>
         <div className="flex flex-col">
           <label className="text-xs text-gray-600 mb-1">Data fim:</label>
           <input 
             type="date" 
-            className="border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary w-full"
+            className={`border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary w-full ${!startDate ? 'bg-gray-100 cursor-not-allowed' : ''}`}
             value={endDate || ""}
+            min={startDate || today} // Definir o mínimo como a data de início ou hoje
+            disabled={!startDate} // Desabilitar até que a data início seja selecionada
             onChange={(e) => onEndDateChange(e.target.value || null)}
           />
         </div>
