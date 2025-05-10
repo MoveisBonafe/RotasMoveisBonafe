@@ -27,7 +27,8 @@ export function useRouteOptimization() {
     origin: Location,
     locations: Location[],
     vehicleType: VehicleType,
-    pois: PointOfInterest[]
+    pois: PointOfInterest[],
+    realMetrics?: {totalDistance: number, totalDuration: number}
   ): RouteInfo => {
     // Add origin to locations for optimization
     const allLocations = [origin, ...locations];
@@ -36,9 +37,16 @@ export function useRouteOptimization() {
     const optimizedLocations = createOptimizedRoute(allLocations, false); // false = não voltar ao ponto de origem
     setOptimizedRoute(optimizedLocations);
     
-    // For this demo, we'll use a simplified approach for route metrics
-    const totalDistance = 145000; // 145km in meters
-    const totalDuration = 8100; // 2h 15min in seconds
+    // Usar as métricas reais se disponíveis, ou valores padrão como fallback
+    const totalDistance = realMetrics && realMetrics.totalDistance > 0 
+      ? realMetrics.totalDistance 
+      : 145000; // 145km em metros (fallback)
+      
+    const totalDuration = realMetrics && realMetrics.totalDuration > 0
+      ? realMetrics.totalDuration
+      : 8100; // 2h 15min em segundos (fallback)
+      
+    console.log(`Usando métricas da rota: ${totalDistance/1000}km, ${totalDuration/60} min`);
     
     // Filtrar POIs que estão ao longo da rota
     console.log("POIs disponíveis para filtrar:", pois);

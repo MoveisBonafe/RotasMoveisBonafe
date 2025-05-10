@@ -25,6 +25,10 @@ export default function Home() {
   const [endDate, setEndDate] = useState<string | null>(null);
   const [calculatedRoute, setCalculatedRoute] = useState<Location[] | null>(null);
   const [poisOnRoute, setPoisOnRoute] = useState<PointOfInterest[]>([]);
+  const [routeMetrics, setRouteMetrics] = useState<{totalDistance: number, totalDuration: number}>({
+    totalDistance: 0,
+    totalDuration: 0
+  });
   
   const { toast } = useToast();
   
@@ -265,13 +269,31 @@ export default function Home() {
   const handleRouteCalculated = (routeResponse: any) => {
     console.log("Rota calculada pelo Google Maps, processando resposta:", routeResponse);
     
-    // Aqui você pode processar a resposta da API do Google Maps se necessário
-    // Por exemplo, extrair pedágios, distâncias, ou outros detalhes
-    
-    // Atualizar o estado com os dados da rota se necessário
+    // Extrair a distância total e duração da rota a partir da resposta do Google Maps
     if (routeResponse && routeResponse.routes && routeResponse.routes.length > 0) {
       // A resposta contém dados úteis que podemos usar para mostrar informações adicionais
       console.log("Rota contém pedágios:", routeResponse.routes[0].legs.some((leg: any) => leg.toll_info));
+      
+      // Extrair distância e duração total da rota
+      let totalDistance = 0;
+      let totalDuration = 0;
+      
+      routeResponse.routes[0].legs.forEach((leg: any) => {
+        if (leg.distance && leg.distance.value) {
+          totalDistance += leg.distance.value; // em metros
+        }
+        if (leg.duration && leg.duration.value) {
+          totalDuration += leg.duration.value; // em segundos
+        }
+      });
+      
+      console.log(`Distância real da rota: ${totalDistance}m, Duração: ${totalDuration}s`);
+      
+      // Atualizar o estado com os valores reais
+      setRouteMetrics({
+        totalDistance,
+        totalDuration
+      });
     }
   };
 
@@ -302,8 +324,18 @@ export default function Home() {
     // Adicionar um pequeno atraso para simular o processamento e mostrar o efeito visual
     setTimeout(() => {
       try {
-        // Optimize the route locally - isso atualiza poisAlongRoute dentro do hook
-        const routeResult = optimizeRouteLocally(origin, locations, vehicleTypeObj, pois);
+        // Usar as métricas reais da rota (distância e duração) obtidas do Google Maps
+        console.log("Usando métricas reais da rota:", routeMetrics);
+        
+        // Optimize the route locally com os valores reais de distância e duração
+        const routeResult = optimizeRouteLocally(
+          origin, 
+          locations, 
+          vehicleTypeObj, 
+          pois, 
+          routeMetrics.totalDistance > 0 ? routeMetrics : undefined // Usar métricas reais se disponíveis
+        );
+        
         setCalculatedRoute(routeResult.waypoints);
         
         // SOLUÇÃO APRIMORADA:
@@ -358,13 +390,14 @@ export default function Home() {
             setPoisOnRoute(relevantPOIs);
         }
         
-        // Mostrar toast de sucesso
+        // Mostrar toast de sucesso com a distância real
+        const distanciaEmKm = Math.round(routeMetrics.totalDistance / 100) / 10;
         toast({
           title: "Rota calculada com sucesso",
-          description: `${locations.length} paradas otimizadas`,
+          description: `${locations.length} paradas (${distanciaEmKm}km total)`,
         });
         
-        console.log(`Rota calculada com sucesso: ${routeResult.waypoints.length} pontos totais`);
+        console.log(`Rota calculada com sucesso: ${routeResult.waypoints.length} pontos totais, distância: ${distanciaEmKm}km`);
       } catch (error) {
         console.error("Erro ao calcular rota:", error);
         
