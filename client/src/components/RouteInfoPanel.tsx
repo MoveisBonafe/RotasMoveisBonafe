@@ -668,15 +668,44 @@ export default function RouteInfoPanel({
                     const tollsToShow = filteredPOIs.filter(p => p.type === 'toll');
                     const balancesToShow = filteredPOIs.filter(p => p.type === 'weighing_station');
                     
-                    // Filtrar também as restrições para mostrar apenas as da rota atual
+                    // Identificar as cidades na rota para filtrar restrições
+                    const citiesInRoute = new Set<string>();
+                    
+                    // Adicionar a origem (Dois Córregos)
+                    citiesInRoute.add("Dois Córregos");
+                    
+                    // Adicionar todas as cidades da rota
+                    if (calculatedRoute) {
+                      calculatedRoute.forEach(location => {
+                        if (location.name) {
+                          citiesInRoute.add(location.name.split(',')[0].trim());
+                        }
+                        if (location.address) {
+                          const cityMatch = location.address.match(/([^,]+?)(?:\s*-\s*[A-Z]{2})/i);
+                          if (cityMatch && cityMatch[1]) {
+                            citiesInRoute.add(cityMatch[1].trim());
+                          }
+                        }
+                        // Adicionar manualmente cidades importantes
+                        const address = location.address?.toLowerCase() || '';
+                        if (address.includes('ribeirao') || address.includes('ribeirão')) {
+                          citiesInRoute.add('Ribeirão Preto');
+                        }
+                        if (address.includes('campinas')) {
+                          citiesInRoute.add('Campinas');
+                        }
+                      });
+                    }
+                    
+                    // Filtrar as restrições para mostrar apenas as da rota atual
                     const restrictionsToShow = truckRestrictions && calculatedRoute ? 
-                      truckRestrictions.filter(r => 
-                        calculatedRoute.some(loc => 
-                          loc.name?.toLowerCase().includes(r.cityName?.toLowerCase()) || 
-                          r.cityName?.toLowerCase().includes(loc.name?.toLowerCase()) || 
-                          loc.address?.toLowerCase().includes(r.cityName?.toLowerCase())
-                        )
-                      ) : [];
+                      truckRestrictions.filter(r => {
+                        const cityName = r.cityName.toLowerCase();
+                        return Array.from(citiesInRoute).some(city => {
+                          const normalizedCity = city.toLowerCase();
+                          return cityName.includes(normalizedCity) || normalizedCity.includes(cityName);
+                        });
+                      }) : [];
                     
                     // Verificar se temos algum ponto de atenção para mostrar
                     const hasAttentionPoints = tollsToShow.length > 0 || 
@@ -940,13 +969,37 @@ export default function RouteInfoPanel({
                           citiesInRoute.add("Ribeirão Preto");
                         }
                         
-                        // Filtrar apenas restrições das cidades que estão na rota
+                        // Adicionando mais cidades manualmente para debugging
+                        console.log("Cidades na rota antes da adição manual:", Array.from(citiesInRoute));
+                        
+                        // Adicionar manualmente cidades importantes se houver endereços correspondentes na rota
+                        Array.isArray(calculatedRoute) && calculatedRoute.forEach(location => {
+                          const address = location.address?.toLowerCase() || '';
+                          if (address.includes('ribeirao') || address.includes('ribeirão')) {
+                            citiesInRoute.add('Ribeirão Preto');
+                          }
+                          if (address.includes('campinas')) {
+                            citiesInRoute.add('Campinas');
+                          }
+                        });
+                        
+                        console.log("Cidades na rota após adição manual:", Array.from(citiesInRoute));
+                        console.log("Todas as restrições disponíveis:", truckRestrictions);
+                        
+                        // Filtrar apenas restrições das cidades que estão na rota - com log para debug
                         const filteredRestrictions = [...truckRestrictions]
                           .filter(restriction => {
-                            // Verificar se a cidade da restrição está na rota
-                            return Array.from(citiesInRoute).some(city => 
-                              restriction.cityName.includes(city) || city.includes(restriction.cityName)
-                            );
+                            const cityName = restriction.cityName.toLowerCase();
+                            const matchFound = Array.from(citiesInRoute).some(city => {
+                              const normalizedCity = city.toLowerCase();
+                              return cityName.includes(normalizedCity) || normalizedCity.includes(cityName);
+                            });
+                            
+                            if (matchFound) {
+                              console.log(`Restrição incluída: ${restriction.cityName}`);
+                            }
+                            
+                            return matchFound;
                           });
                         
                         return filteredRestrictions.map((restriction: TruckRestriction) => (
