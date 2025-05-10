@@ -185,8 +185,8 @@ export default function RouteReport({
         .map(loc => `${loc.lat},${loc.lng}`)
         .join('|');
       
-      // Google Maps requer que os waypoints sejam precedidos por "via:"
-      googleMapsUrl += `&waypoints=via:${encodeURIComponent(waypoints)}`;
+      // Adicionar waypoints sem o prefixo "via:"
+      googleMapsUrl += `&waypoints=${encodeURIComponent(waypoints)}`;
     }
     
     // Adicionar modo de transporte
@@ -266,7 +266,7 @@ export default function RouteReport({
                   .slice(1, calculatedRoute.length - 1)
                   .map(loc => `${loc.lat},${loc.lng}`)
                   .join('|');
-                url += `&waypoints=via:${encodeURIComponent(waypoints)}`;
+                url += `&waypoints=${encodeURIComponent(waypoints)}`;
               }
               
               // Adicionar modo
