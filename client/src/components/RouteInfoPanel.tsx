@@ -72,43 +72,159 @@ export default function RouteInfoPanel({
           }
         });
         
+        // Extração de rodovias da rota
+        const highwaysInRoute = new Set<string>();
+        
+        // Adicionar rodovias relevantes com base nas cidades da rota
+        const citiesArray = Array.from(allCitiesInRoute);
+        if (citiesArray.some(city => city.includes("ribeirão") || city.includes("preto"))) {
+          highwaysInRoute.add("SP-255");
+        }
+        if (citiesArray.some(city => city.includes("bauru") || city.includes("jaú"))) {
+          highwaysInRoute.add("SP-225");
+        }
+        if (citiesArray.some(city => city.includes("araraquara") || city.includes("são carlos"))) {
+          highwaysInRoute.add("SP-310");
+        }
+        
+        // Dois Córregos está na SP-225 e próximo da SP-255
+        highwaysInRoute.add("SP-225");
+        
         console.log("Cidades na rota:", Array.from(allCitiesInRoute));
+        console.log("Rodovias na rota:", Array.from(highwaysInRoute));
         
-        // Filtragem baseada em cidade - verificação mais estrita
-        const newFilteredPOIs = poisAlongRoute.filter(poi => {
-          // 1. Verificar pelo campo city do POI
-          if (poi.city) {
-            const poiCity = poi.city.toLowerCase();
-            const cityMatch = Array.from(allCitiesInRoute).some(city => 
-              poiCity.includes(city) || city.includes(poiCity)
-            );
-            
-            if (cityMatch) {
-              console.log(`POI "${poi.name}" incluído por cidade "${poi.city}"`);
-              return true;
+        // Buscar balanças adicionais da API
+        const fetchAdditionalWeighingStations = async () => {
+          try {
+            // Construir URL com parâmetros para buscar balanças
+            const params = new URLSearchParams();
+            if (allCitiesInRoute.size > 0) {
+              params.set('cities', Array.from(allCitiesInRoute).join(','));
             }
-          }
-          
-          // 2. Verificar pelo nome do POI (pode conter nome da cidade)
-          if (poi.name) {
-            const poiName = poi.name.toLowerCase();
-            const nameMatch = Array.from(allCitiesInRoute).some(city => 
-              poiName.includes(city) || city.includes(poiName)
-            );
-            
-            if (nameMatch) {
-              console.log(`POI "${poi.name}" incluído por nome`);
-              return true;
+            if (highwaysInRoute.size > 0) {
+              params.set('highways', Array.from(highwaysInRoute).join(','));
             }
+            
+            // Chamar API do backend
+            const response = await fetch(`/api/weighing-stations?${params.toString()}`);
+            
+            if (!response.ok) {
+              throw new Error(`Erro ao buscar balanças: ${response.status}`);
+            }
+            
+            const additionalStations = await response.json();
+            console.log(`API retornou ${additionalStations.length} balanças adicionais`);
+            
+            // Combinar com os POIs existentes
+            const updatedPOIs = [...poisAlongRoute];
+            
+            // Adicionar apenas novas balanças que não existem na lista atual
+            additionalStations.forEach(station => {
+              const isDuplicate = updatedPOIs.some(existingPoi => 
+                existingPoi.id === station.id || 
+                (existingPoi.name === station.name && 
+                 existingPoi.type === station.type)
+              );
+              
+              if (!isDuplicate) {
+                updatedPOIs.push(station);
+              }
+            });
+            
+            // Filtragem baseada em cidade - verificação mais estrita
+            const newFilteredPOIs = updatedPOIs.filter(poi => {
+              // 1. Verificar pelo campo city do POI
+              if (poi.city) {
+                const poiCity = poi.city.toLowerCase();
+                const cityMatch = Array.from(allCitiesInRoute).some(city => 
+                  poiCity.includes(city) || city.includes(poiCity)
+                );
+                
+                if (cityMatch) {
+                  console.log(`POI "${poi.name}" incluído por cidade "${poi.city}"`);
+                  return true;
+                }
+              }
+              
+              // 2. Verificar pelo campo roadName do POI (comparar com rodovias na rota)
+              if (poi.roadName) {
+                const poiRoad = poi.roadName.toUpperCase();
+                const roadMatch = Array.from(highwaysInRoute).some(road => 
+                  poiRoad.includes(road) || road.includes(poiRoad)
+                );
+                
+                if (roadMatch) {
+                  console.log(`POI "${poi.name}" incluído por rodovia "${poi.roadName}"`);
+                  return true;
+                }
+              }
+              
+              // 3. Verificar pelo nome do POI (pode conter nome da cidade)
+              if (poi.name) {
+                const poiName = poi.name.toLowerCase();
+                const nameMatch = Array.from(allCitiesInRoute).some(city => 
+                  poiName.includes(city) || city.includes(poiName)
+                );
+                
+                if (nameMatch) {
+                  console.log(`POI "${poi.name}" incluído por nome`);
+                  return true;
+                }
+              }
+              
+              // 4. Se chegou aqui, este POI não está na rota atual
+              console.log(`POI "${poi.name}" EXCLUÍDO por não estar na rota atual`);
+              return false;
+            });
+            
+            console.log("POIs filtrados para a rota atual:", newFilteredPOIs.map(p => p.name));
+            setFilteredPOIs(newFilteredPOIs);
+            
+          } catch (error) {
+            console.error("Erro ao buscar balanças adicionais:", error);
+            
+            // Em caso de erro, continuar com a filtragem normal
+            // Filtragem baseada em cidade - verificação mais estrita
+            const newFilteredPOIs = poisAlongRoute.filter(poi => {
+              // 1. Verificar pelo campo city do POI
+              if (poi.city) {
+                const poiCity = poi.city.toLowerCase();
+                const cityMatch = Array.from(allCitiesInRoute).some(city => 
+                  poiCity.includes(city) || city.includes(poiCity)
+                );
+                
+                if (cityMatch) {
+                  console.log(`POI "${poi.name}" incluído por cidade "${poi.city}"`);
+                  return true;
+                }
+              }
+              
+              // 2. Verificar pelo nome do POI (pode conter nome da cidade)
+              if (poi.name) {
+                const poiName = poi.name.toLowerCase();
+                const nameMatch = Array.from(allCitiesInRoute).some(city => 
+                  poiName.includes(city) || city.includes(poiName)
+                );
+                
+                if (nameMatch) {
+                  console.log(`POI "${poi.name}" incluído por nome`);
+                  return true;
+                }
+              }
+              
+              // 3. Se chegou aqui, este POI não está na rota atual
+              console.log(`POI "${poi.name}" EXCLUÍDO por não estar na rota atual`);
+              return false;
+            });
+            
+            console.log("POIs filtrados para a rota atual:", newFilteredPOIs.map(p => p.name));
+            setFilteredPOIs(newFilteredPOIs);
           }
-          
-          // 3. Se chegou aqui, este POI não está na rota atual
-          console.log(`POI "${poi.name}" EXCLUÍDO por não estar na rota atual`);
-          return false;
-        });
+        };
         
-        console.log("POIs filtrados para a rota atual:", newFilteredPOIs.map(p => p.name));
-        setFilteredPOIs(newFilteredPOIs);
+        // Executar a função assíncrona
+        fetchAdditionalWeighingStations();
+        
       } else {
         // Sem rota, não mostrar nenhum POI
         setFilteredPOIs([]);
