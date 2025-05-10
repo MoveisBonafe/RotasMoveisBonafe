@@ -354,15 +354,8 @@ export default function MapViewSimple({
                 map,
                 title: toll.name,
                 icon: {
-                  url: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
-                  scaledSize: new window.google.maps.Size(24, 24),
-                  labelOrigin: new window.google.maps.Point(12, 10)
-                },
-                label: {
-                  text: "$",
-                  color: "#FFFFFF",
-                  fontSize: "12px",
-                  fontWeight: "bold"
+                  url: "https://maps.google.com/mapfiles/ms/micons/green-dollar.png",
+                  scaledSize: new window.google.maps.Size(24, 24)
                 },
                 zIndex: 5
               });
@@ -420,17 +413,10 @@ export default function MapViewSimple({
                   title: poi.name,
                   icon: {
                     url: poi.type === 'weighing_station' 
-                      ? "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                      ? "https://maps.google.com/mapfiles/ms/micons/blue-truck.png"
                       : "https://maps.google.com/mapfiles/ms/icons/info.png",
-                    scaledSize: new window.google.maps.Size(24, 24),
-                    labelOrigin: new window.google.maps.Point(12, 10)
+                    scaledSize: new window.google.maps.Size(24, 24)
                   },
-                  label: poi.type === 'weighing_station' ? {
-                    text: "T",
-                    color: "#FFFFFF",
-                    fontSize: "10px",
-                    fontWeight: "bold"
-                  } : undefined,
                   zIndex: 4
                 });
                 
