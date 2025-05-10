@@ -510,40 +510,6 @@ export default function RouteInfoPanel({
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Distância e Duração */}
-                <div className="bg-white rounded p-2 border border-gray-100">
-                  <h3 className="text-xs font-medium mb-1 text-primary">Distância e Duração</h3>
-                  <div className="text-sm font-medium">
-                    {formatDistance(routeInfo.totalDistance)}
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    {formatDuration(routeInfo.totalDuration)}
-                  </div>
-                </div>
-                
-                {/* Custos */}
-                <div className="bg-white rounded p-2 border border-gray-100">
-                  <h3 className="text-xs font-medium mb-1 text-primary">Custos Estimados</h3>
-                  <div className="text-sm font-medium">
-                    {formatCurrency(routeInfo.totalCost)} Total
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    Pedágios: {formatCurrency(routeInfo.tollCost)}
-                    {vehicleType && (
-                      <span className="ml-1">
-                        (para {vehicleType.name.toLowerCase()})
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    Combustível: {formatCurrency(routeInfo.fuelCost)}
-                    {fuelConsumption > 0 && (
-                      <span className="ml-1">
-                        ({fuelConsumption.toFixed(1)}L · {fuelEfficiency} km/L)
-                      </span>
-                    )}
-                  </div>
-                </div>
                 
                 {/* Eventos e Restrições - Nova Versão Combinada */}
                 <div className="bg-white rounded p-2 border border-gray-100">

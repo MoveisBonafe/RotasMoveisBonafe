@@ -207,12 +207,6 @@ export default function RouteReport({
             <div className="text-gray-600">Veículo:</div>
             <div className="font-medium">{vehicleType.name}</div>
             
-            <div className="text-gray-600">Distância total:</div>
-            <div className="font-medium">{formatDistance(routeInfo.totalDistance)}</div>
-            
-            <div className="text-gray-600">Tempo estimado:</div>
-            <div className="font-medium">{formatDuration(routeInfo.totalDuration)}</div>
-            
             {startDate && endDate && (
               <>
                 <div className="text-gray-600">Data de viagem:</div>
@@ -221,34 +215,6 @@ export default function RouteReport({
                 </div>
               </>
             )}
-          </div>
-        </div>
-        
-        <div className="border border-gray-200 rounded-sm p-2 mb-2">
-          <h3 className="text-xs font-semibold mb-1 text-primary">Custos Estimados</h3>
-          <div className="grid grid-cols-2 gap-1">
-            <div className="text-gray-600">Pedágios:</div>
-            <div className="font-medium">
-              {formatCurrency(routeInfo.tollCost || 0)}
-              {vehicleType && vehicleType.type !== 'car' && (
-                <span className="text-xxs text-gray-500 ml-1">
-                  ({(vehicleType.tollMultiplier / 100).toFixed(1)}x)
-                </span>
-              )}
-            </div>
-            
-            <div className="text-gray-600">Combustível:</div>
-            <div>
-              <span className="font-medium">{formatCurrency(routeInfo.fuelCost || 0)}</span>
-              <span className="text-xs text-gray-500 ml-1">
-                ({routeInfo.fuelConsumption !== undefined ? routeInfo.fuelConsumption.toFixed(1) : '0.0'} L)
-              </span>
-            </div>
-            
-            <div className="text-gray-600 font-semibold border-t border-gray-100 pt-1 mt-1">Total:</div>
-            <div className="font-bold border-t border-gray-100 pt-1 mt-1 text-primary">
-              {formatCurrency(routeInfo.totalCost)}
-            </div>
           </div>
         </div>
         
