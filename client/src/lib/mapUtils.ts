@@ -168,10 +168,20 @@ export function formatDuration(seconds: number): string {
 
 /**
  * Formats an amount in cents to a human-readable currency string
+ * Handles undefined/null values gracefully
  */
-export function formatCurrency(cents: number): string {
-  const reais = cents / 100;
-  return `R$ ${reais.toFixed(2)}`;
+export function formatCurrency(cents: number | null | undefined): string {
+  if (cents === null || cents === undefined) {
+    cents = 0;
+  }
+  
+  // Usar o Intl.NumberFormat para formatação correta em BRL
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(cents / 100);
 }
 
 /**

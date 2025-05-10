@@ -216,11 +216,11 @@ export default function RouteReport({
           <h3 className="text-xs font-semibold mb-1 text-primary">Custos Estimados</h3>
           <div className="grid grid-cols-2 gap-1">
             <div className="text-gray-600">Pedágios:</div>
-            <div className="font-medium">{formatCurrency(routeInfo.tollCost)}</div>
+            <div className="font-medium">{formatCurrency(routeInfo.tollCost || 0)}</div>
             
             <div className="text-gray-600">Combustível:</div>
             <div>
-              <span className="font-medium">{formatCurrency(routeInfo.fuelCost)}</span>
+              <span className="font-medium">{formatCurrency(routeInfo.fuelCost || 0)}</span>
               <span className="text-xs text-gray-500 ml-1">
                 ({routeInfo.fuelConsumption !== undefined ? routeInfo.fuelConsumption.toFixed(1) : '0.0'} L)
               </span>
@@ -228,7 +228,7 @@ export default function RouteReport({
             
             <div className="text-gray-600 font-semibold border-t border-gray-100 pt-1 mt-1">Total:</div>
             <div className="font-bold border-t border-gray-100 pt-1 mt-1 text-primary">
-              {formatCurrency(routeInfo.totalCost)}
+              {formatCurrency(routeInfo.totalCost || (routeInfo.tollCost || 0) + (routeInfo.fuelCost || 0))}
             </div>
           </div>
         </div>
@@ -294,13 +294,13 @@ export default function RouteReport({
           </div>
         )}
         
-        {/* Eventos nas Cidades */}
-        {startDate && endDate && cityEvents && cityEvents.length > 0 && (
-          <div className="border border-gray-200 rounded-sm p-2 mb-2">
-            <h3 className="text-xs font-semibold mb-1 text-primary">Eventos nas Cidades</h3>
-            <div className="space-y-1">
-              {cityEvents.map((event: CityEvent) => (
-                <div key={event.id} className="mb-1 pb-1 border-b border-gray-50 last:border-b-0 last:mb-0 last:pb-0">
+        {/* Eventos nas Cidades - Modificado para sempre mostrar */}
+        <div className="border border-gray-200 rounded-sm p-2 mb-2">
+          <h3 className="text-xs font-semibold mb-1 text-primary">Eventos nas Cidades</h3>
+          <div className="space-y-1">
+            {cityEvents && cityEvents.length > 0 ? (
+              cityEvents.map((event: CityEvent) => (
+                <div key={event.id} className="mb-1 pb-1 border-b border-gray-50 last:border-b-0 last:mb-0 last:pb-0 animate-fadeInUp" style={{ animationDelay: `${event.id * 0.1}s` }}>
                   <div className="flex items-start">
                     <span className={`inline-block w-2 h-2 rounded-full mr-1 mt-1 
                       ${event.eventType === 'holiday' ? 'bg-red-600' : 
@@ -319,10 +319,14 @@ export default function RouteReport({
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              ))
+            ) : (
+              <div className="text-gray-500 text-center py-2">
+                Nenhum evento encontrado para esta data/localização
+              </div>
+            )}
           </div>
-        )}
+        </div>
         
         {/* Restrições para Caminhões */}
         {vehicleType && vehicleType.type.includes('truck') && truckRestrictions && truckRestrictions.length > 0 && (
