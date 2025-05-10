@@ -306,14 +306,20 @@ export default function MapViewSimple({
                   map,
                   title: poi.name,
                   icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    fillColor: poi.type === 'toll' ? '#f44336' : '#ff9800', // Vermelho para pedágios, laranja para balanças
+                    path: poi.type === 'toll' ? google.maps.SymbolPath.SQUARE : google.maps.SymbolPath.CIRCLE,
+                    fillColor: poi.type === 'toll' ? '#16A34A' : '#ff9800', // Verde para pedágios, laranja para balanças
                     fillOpacity: 1,
-                    strokeWeight: 2,
+                    strokeWeight: poi.type === 'toll' ? 2.5 : 2,
                     strokeColor: '#FFFFFF',
-                    scale: 10
+                    scale: poi.type === 'toll' ? 12 : 10
                   },
-                  zIndex: 2
+                  label: poi.type === 'toll' ? {
+                    text: '$',
+                    color: "#FFFFFF",
+                    fontSize: "16px",
+                    fontWeight: "bold"
+                  } : undefined,
+                  zIndex: poi.type === 'toll' ? 60 : 40 // Pedágios com prioridade de visualização
                 });
                 
                 // Criar janela de informações
@@ -1014,7 +1020,7 @@ export default function MapViewSimple({
                   fillOpacity: 1,
                   strokeColor: '#FFFFFF',
                   strokeWeight: 2.5,
-                  scale: 10
+                  scale: 12
                 };
                 // Usar o símbolo $ como texto
                 labelText = "$";
