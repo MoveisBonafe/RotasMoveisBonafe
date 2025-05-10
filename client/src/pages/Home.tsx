@@ -246,7 +246,7 @@ export default function Home() {
     // Adicionar um pequeno atraso para simular o processamento e mostrar o efeito visual
     setTimeout(() => {
       try {
-        // Optimize the route locally
+        // Optimize the route locally - isso atualiza poisAlongRoute dentro do hook
         const routeResult = optimizeRouteLocally(origin, locations, vehicleTypeObj, pois);
         setCalculatedRoute(routeResult.waypoints);
         
@@ -254,8 +254,8 @@ export default function Home() {
         console.log("POIs disponíveis para a rota:", pois);
         console.log("POIs filtrados para a rota:", poisAlongRoute);
         
-        // Definir os POIs para exibição no mapa
-        setPoisOnRoute(poisAlongRoute);
+        // IMPORTANTE: Atualizar o estado com os POIs filtrados no momento do cálculo
+        setPoisOnRoute(poisAlongRoute); // Atualizar com os POIs filtrados
         
         // Mostrar toast de sucesso
         toast({

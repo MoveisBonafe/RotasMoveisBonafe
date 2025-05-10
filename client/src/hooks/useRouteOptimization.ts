@@ -40,9 +40,22 @@ export function useRouteOptimization() {
     const totalDistance = 145000; // 145km in meters
     const totalDuration = 8100; // 2h 15min in seconds
     
-    // Filter POIs along route (in a real app this would be based on actual route)
-    // Incluir pedágios e balanças
-    const poisOnRoute = pois.filter(poi => poi.type === 'toll' || poi.type === 'weighing_station');
+    // Filtrar POIs ao longo da rota
+    console.log("Verificando POIs para a rota:", pois.length);
+    
+    // Garantir que temos pedágios e balanças disponíveis para mostrar
+    const poisOnRoute = pois.filter(poi => {
+      // Verificar se é um pedágio ou balança
+      const isValidType = poi.type === 'toll' || poi.type === 'weighing_station';
+      
+      if (isValidType) {
+        console.log(`Incluindo POI: ${poi.name} (${poi.type}) em ${poi.lat}, ${poi.lng}`);
+        return true;
+      }
+      return false;
+    });
+    
+    console.log(`Total de POIs filtrados: ${poisOnRoute.length}`);
     setPoisAlongRoute(poisOnRoute);
     
     // Calculate costs based on vehicle type and route details
