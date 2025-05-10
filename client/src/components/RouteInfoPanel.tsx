@@ -442,6 +442,32 @@ export default function RouteInfoPanel({
           
           {routeInfo ? (
             <div className="space-y-3">
+              {/* Sequência de Rota - Visualização Minimalista */}
+              <div className="bg-white rounded p-2 border border-gray-100 col-span-1 sm:col-span-2 mb-1">
+                <h3 className="text-xs font-medium mb-2 text-primary">Sequência da Rota</h3>
+                <div className="flex items-center justify-start overflow-x-auto pb-1 max-w-full">
+                  {calculatedRoute && calculatedRoute.map((location, index) => (
+                    <div key={index} className="flex items-center">
+                      {/* Local atual */}
+                      <div className="flex flex-col items-center">
+                        <div className={`rounded-full w-6 h-6 flex items-center justify-center text-xs text-white 
+                          ${index === 0 ? 'bg-red-500' : 'bg-blue-500'}`}>
+                          {index}
+                        </div>
+                        <div className="text-xs font-medium mt-1 max-w-[80px] truncate text-center">
+                          {location.name || extractCityFromAddress(location.address || '')}
+                        </div>
+                      </div>
+                      
+                      {/* Linha conectora (se não for o último) */}
+                      {index < calculatedRoute.length - 1 && (
+                        <div className="h-[2px] w-8 bg-gray-300 mx-1"></div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Distância e Duração */}
                 <div className="bg-white rounded p-2 border border-gray-100">
