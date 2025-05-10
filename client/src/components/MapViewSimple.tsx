@@ -21,14 +21,13 @@ export default function MapViewSimple({
   onRouteCalculated
 }: MapViewProps) {
   const mapRef = useRef<HTMLDivElement>(null);
-  // Tipagem para os estados do Google Maps
   const [map, setMap] = useState<any>(null);
   const [markers, setMarkers] = useState<any[]>([]);
   const [infoWindows, setInfoWindows] = useState<any[]>([]);
   const [directionsRenderer, setDirectionsRenderer] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   
-  // Flag para controlar execuções repetidas
+  // Flag para evitar processamentos repetidos
   const isProcessingRoute = useRef(false);
 
   // Inicializar o mapa quando o componente montar
@@ -85,207 +84,144 @@ export default function MapViewSimple({
         
         setDirectionsRenderer(newDirectionsRenderer);
         console.log("Mapa inicializado com sucesso");
-        
-        // Adicionar marcador de origem se já tiver dados
-        if (origin) {
-          console.log("Adicionando marcador para origem durante inicialização:", origin);
-          const originMarker = new window.google.maps.Marker({
-            position: { 
-              lat: parseFloat(origin.lat), 
-              lng: parseFloat(origin.lng) 
-            },
-            map: newMap,
-            title: origin.name || "Origem",
-            icon: {
-              url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
-            },
-            label: null, // Sem numeração até calcular rota
-            zIndex: 100
-          });
-          
-          // Criar janela de informação
-          const infoWindow = new window.google.maps.InfoWindow({
-            content: `<div class="info-window"><strong>${origin.name || "Origem"}</strong><br>${origin.address || ""}</div>`
-          });
-          
-          // Adicionar evento para mostrar janela ao clicar
-          originMarker.addListener("click", () => {
-            infoWindow.open(newMap, originMarker);
-          });
-          
-          // Guardar referências
-          setMarkers([originMarker]);
-          setInfoWindows([infoWindow]);
-          
-          // Centralizar mapa na origem
-          newMap.setCenter({ 
-            lat: parseFloat(origin.lat), 
-            lng: parseFloat(origin.lng) 
-          });
-        }
-        
       } catch (e) {
         console.error("Erro ao inicializar mapa:", e);
         setError("Não foi possível carregar o mapa. Por favor, atualize a página.");
       }
     }
-  }, [mapRef, origin]);
+  }, [mapRef]);
 
-  // Efeito para mostrar os marcadores iniciais (sem números e sem rota)
+  // Efeito para mostrar os marcadores iniciais (sem números)
   useEffect(() => {
-    // Só processamos quando temos o mapa e a origem
-    if (map && directionsRenderer && origin) {
-      // Verificar se devemos processar a rota completa ou só mostrar marcadores
-      const shouldProcessRoute = calculatedRoute && calculatedRoute.length > 0;
-      
-      // Se não é para processar a rota completa, mostramos apenas os marcadores simples
-      if (!shouldProcessRoute) {
-        console.log("Adicionando marcadores sem calcular rota...");
-        
-        // Limpar marcadores existentes
-        markers.forEach(marker => marker.setMap(null));
-        
-        // Fechar janelas de informação
-        infoWindows.forEach(infoWindow => infoWindow.close());
-        
-        // Limpar a rota atual (polyline)
-        directionsRenderer.setDirections({ routes: [] });
-        
-        // Criar novos arrays de marcadores
-        const newMarkers = [];
-        const newInfoWindows = [];
-        
-        // Adicionar marcador para a origem
-        if (origin) {
-          const originMarker = new window.google.maps.Marker({
-            position: { lat: parseFloat(origin.lat), lng: parseFloat(origin.lng) },
-            map: map,
-            title: origin.name || "Origem",
-            icon: {
-              url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
-            },
-            zIndex: 100
-          });
-          
-          // Criar janela de informação
-          const infoWindow = new window.google.maps.InfoWindow({
-            content: `<div class="info-window"><strong>${origin.name || "Origem"}</strong><br>${origin.address || ""}</div>`
-          });
-          
-          // Adicionar evento para mostrar janela ao clicar
-          originMarker.addListener("click", () => {
-            infoWindow.open(map, originMarker);
-          });
-          
-          newMarkers.push(originMarker);
-          newInfoWindows.push(infoWindow);
-        }
-        
-        // Adicionar marcadores para cada waypoint (sem números)
-        if (waypoints && waypoints.length > 0) {
-          waypoints.forEach((point, index) => {
-            const waypointMarker = new window.google.maps.Marker({
-              position: { lat: parseFloat(point.lat), lng: parseFloat(point.lng) },
-              map: map,
-              title: point.name || `Destino ${index + 1}`,
-              icon: {
-                url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
-              },
-              zIndex: 100
-            });
-            
-            // Criar janela de informação
-            const infoWindow = new window.google.maps.InfoWindow({
-              content: `<div class="info-window"><strong>${point.name || `Destino ${index + 1}`}</strong><br>${point.address || ""}</div>`
-            });
-            
-            // Adicionar evento para mostrar janela ao clicar
-            waypointMarker.addListener("click", () => {
-              infoWindow.open(map, waypointMarker);
-            });
-            
-            newMarkers.push(waypointMarker);
-            newInfoWindows.push(infoWindow);
-          });
-        }
-        
-        // Atualizar o estado com os novos marcadores
-        setMarkers(newMarkers);
-        setInfoWindows(newInfoWindows);
-        
-        // Ajustar o mapa para mostrar todos os pontos
-        const bounds = new window.google.maps.LatLngBounds();
-        newMarkers.forEach(marker => {
-          if (marker.getPosition()) {
-            bounds.extend(marker.getPosition());
-          }
-        });
-        
-        if (newMarkers.length > 0) {
-          map.fitBounds(bounds);
-        }
-      }
+    if (!map || !origin) return;
+    
+    // Verificamos se já temos calculatedRoute
+    const isRouteCalculated = calculatedRoute && calculatedRoute.length > 0;
+    
+    // Não mostrar os marcadores iniciais se já tivermos uma rota calculada
+    if (isRouteCalculated) return;
+    
+    console.log("Atualizando marcadores iniciais (sem rota calculada)");
+    
+    // Limpar marcadores e polylines
+    markers.forEach(marker => marker.setMap(null));
+    infoWindows.forEach(infoWindow => infoWindow.close());
+    
+    if (directionsRenderer) {
+      directionsRenderer.setDirections({ routes: [] });
     }
-  }, [map, directionsRenderer, origin, waypoints, calculatedRoute]);
-  
-  // Efeito para calcular a rota quando o usuário clicar em Calcular Melhor Rota
-  useEffect(() => {
-    // Só processamos a rota quando temos todos os dados necessários
-    // E quando a rota foi calculada pelo usuário (calculatedRoute existe)
-    if (map && directionsRenderer && origin && waypoints.length > 0 && calculatedRoute && calculatedRoute.length > 0) {
-      // Evitar execuções repetidas e tremulação
-      if (isProcessingRoute.current) return;
-      isProcessingRoute.current = true;
-
-      console.log("Calculando nova rota...");
-      
-      // Desabilitar interações enquanto calcula para prevenir tremulações
-      if (map.setOptions) {
-        map.setOptions({
-          draggable: false,
-          zoomControl: false,
-          scrollwheel: false,
-          disableDoubleClickZoom: true
+    
+    const newMarkers = [];
+    const newInfoWindows = [];
+    
+    // Adicionar marcador da origem
+    const originMarker = new window.google.maps.Marker({
+      position: { lat: parseFloat(origin.lat), lng: parseFloat(origin.lng) },
+      map: map,
+      title: origin.name || "Origem",
+      icon: {
+        url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+      },
+      zIndex: 100
+    });
+    
+    const originInfoWindow = new window.google.maps.InfoWindow({
+      content: `<div><strong>${origin.name || "Origem"}</strong><br>${origin.address || ""}</div>`
+    });
+    
+    originMarker.addListener("click", () => {
+      originInfoWindow.open(map, originMarker);
+    });
+    
+    newMarkers.push(originMarker);
+    newInfoWindows.push(originInfoWindow);
+    
+    // Adicionar marcadores dos waypoints (sem números)
+    if (waypoints && waypoints.length > 0) {
+      waypoints.forEach((waypoint, index) => {
+        const waypointMarker = new window.google.maps.Marker({
+          position: { lat: parseFloat(waypoint.lat), lng: parseFloat(waypoint.lng) },
+          map: map,
+          title: waypoint.name || `Destino ${index + 1}`,
+          icon: {
+            url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+          },
+          zIndex: 100
         });
+        
+        const waypointInfoWindow = new window.google.maps.InfoWindow({
+          content: `<div><strong>${waypoint.name || `Destino ${index + 1}`}</strong><br>${waypoint.address || ""}</div>`
+        });
+        
+        waypointMarker.addListener("click", () => {
+          waypointInfoWindow.open(map, waypointMarker);
+        });
+        
+        newMarkers.push(waypointMarker);
+        newInfoWindows.push(waypointInfoWindow);
+      });
+    }
+    
+    // Atualizar o estado
+    setMarkers(newMarkers);
+    setInfoWindows(newInfoWindows);
+    
+    // Ajustar a visualização para mostrar todos os marcadores
+    const bounds = new window.google.maps.LatLngBounds();
+    newMarkers.forEach(marker => {
+      if (marker.getPosition()) {
+        bounds.extend(marker.getPosition());
       }
-      
+    });
+    
+    if (newMarkers.length > 0) {
+      map.fitBounds(bounds);
+    }
+  }, [map, origin, waypoints, calculatedRoute, directionsRenderer, markers, infoWindows]);
+  
+  // Efeito para calcular e mostrar a rota (com números)
+  // Só executa quando calculatedRoute está definido (o usuário clicou em "Calcular Melhor Rota")
+  useEffect(() => {
+    if (!map || !directionsRenderer || !origin || !waypoints.length || !calculatedRoute || !calculatedRoute.length) {
+      return;
+    }
+    
+    // Evitar execuções repetidas
+    if (isProcessingRoute.current) return;
+    isProcessingRoute.current = true;
+    
+    console.log("Calculando rota otimizada com waypoints numerados");
+    
+    try {
       // Limpar marcadores existentes
       markers.forEach(marker => marker.setMap(null));
-      
-      // Fechar janelas de informação
       infoWindows.forEach(infoWindow => infoWindow.close());
       
-      // Preparar arrays para os novos marcadores e infoWindows
-      const newMarkers = [];
-      const newInfoWindows = [];
-      
-      // Preparar os waypoints para a API do Google
+      // Preparar waypoints para a API Google Maps
       const googleWaypoints = waypoints.map(waypoint => ({
         location: new window.google.maps.LatLng(
-          parseFloat(waypoint.lat), 
+          parseFloat(waypoint.lat),
           parseFloat(waypoint.lng)
         ),
         stopover: true
       }));
       
-      // Configurar o serviço de rotas
-      const directionsService = new window.google.maps.DirectionsService();
-      
-      // Definir origem e destino
+      // Configurar origem e destino
       const originLatLng = new window.google.maps.LatLng(
         parseFloat(origin.lat),
         parseFloat(origin.lng)
       );
       
-      // O último ponto da lista será o destino
+      // O último waypoint é o destino final
       const destination = googleWaypoints.pop()?.location || originLatLng;
       
-      // Configurar a requisição de rota
+      // Configurar a requisição
+      const directionsService = new window.google.maps.DirectionsService();
       const request = {
         origin: originLatLng,
         destination: destination,
         waypoints: googleWaypoints,
-        optimizeWaypoints: false, // Não otimizar a ordem dos waypoints
+        optimizeWaypoints: false, // Não otimizar (já foi otimizado pelo algoritmo TSP)
         travelMode: window.google.maps.TravelMode.DRIVING,
         unitSystem: window.google.maps.UnitSystem.METRIC,
         avoidHighways: false,
@@ -294,411 +230,168 @@ export default function MapViewSimple({
         provideRouteAlternatives: false
       };
       
-      // Solicitar a rota à API
-      directionsService.route(request, function(result, status) {
+      directionsService.route(request, (result: any, status: any) => {
         if (status === window.google.maps.DirectionsStatus.OK) {
-          // Exibir a rota no mapa
+          // Mostrar a rota no mapa
           directionsRenderer.setDirections(result);
           
-          console.log("Rota calculada! Adicionando marcadores...");
-          
-          // Obter a ordem otimizada dos waypoints da resposta (se disponível)
+          // Obter ordem otimizada dos waypoints
           let waypointOrder: number[] = [];
           if (result.routes && result.routes[0] && result.routes[0].waypoint_order) {
             waypointOrder = result.routes[0].waypoint_order;
-            console.log("Ordem otimizada dos waypoints:", waypointOrder);
           }
           
-          // Processar a rota
+          // Criar novos marcadores com numeração sequencial
           const newMarkers = [];
           const newInfoWindows = [];
           
-          try {
-            // 1. Adicionar marcador para a origem
-            if (origin) {
-              const originMarker = new window.google.maps.Marker({
-                position: { lat: parseFloat(origin.lat), lng: parseFloat(origin.lng) },
-                map: map,
-                title: origin.name || "Origem",
-                icon: {
-                  url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
-                },
-                label: {
-                  text: "1", // Marcador da origem é #1 na rota
-                  color: "#FFFFFF",
-                  fontSize: "14px",
-                  fontWeight: "bold"
-                },
-                zIndex: 100
-              });
-              
-              // Criar janela de informação
-              const infoWindow = new window.google.maps.InfoWindow({
-                content: `<div class="info-window"><strong>${origin.name || "Origem"}</strong><br>${origin.address || ""}</div>`
-              });
-              
-              // Adicionar evento para mostrar janela ao clicar
-              originMarker.addListener("click", () => {
-                infoWindow.open(map, originMarker);
-              });
-              
-              newMarkers.push(originMarker);
-              newInfoWindows.push(infoWindow);
+          // Adicionar marcador para a origem com número 1
+          const originMarker = new window.google.maps.Marker({
+            position: { lat: parseFloat(origin.lat), lng: parseFloat(origin.lng) },
+            map: map,
+            title: origin.name || "Origem",
+            icon: {
+              url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+            },
+            label: {
+              text: "1",
+              color: "#FFFFFF",
+              fontSize: "14px",
+              fontWeight: "bold"
+            },
+            zIndex: 100
+          });
+          
+          const originInfoWindow = new window.google.maps.InfoWindow({
+            content: `<div><strong>${origin.name || "Origem"}</strong><br>${origin.address || ""}</div>`
+          });
+          
+          originMarker.addListener("click", () => {
+            originInfoWindow.open(map, originMarker);
+          });
+          
+          newMarkers.push(originMarker);
+          newInfoWindows.push(originInfoWindow);
+          
+          // Preparar os waypoints na ordem correta
+          let orderedWaypoints = [...waypoints];
+          
+          // Se temos ordem de waypoints da API do Google, reorganizar
+          if (waypointOrder.length > 0 && waypointOrder.length === waypoints.length - 1) {
+            const tempWaypoints = [...waypoints];
+            const lastWaypoint = tempWaypoints.pop(); // Guardar o último
+            
+            // Reordenar os waypoints intermediários
+            const reorderedWaypoints: Location[] = [];
+            for (let i = 0; i < waypointOrder.length; i++) {
+              reorderedWaypoints.push(tempWaypoints[waypointOrder[i]]);
             }
             
-            // 2. Adicionar marcadores para cada waypoint
-            if (waypoints && waypoints.length > 0) {
-              // Criar uma cópia da lista de waypoints para ordenação
-              const waypointsToOrder = [...waypoints];
-              let routeOrderedWaypoints = [...waypoints];
-              
-              // Verificar se já temos uma rota calculada
-              const isRouteCalculated = calculatedRoute && calculatedRoute.length > 0;
-              
-              // Se temos uma ordem otimizada da API, reorganizar os waypoints
-              if (isRouteCalculated && waypointOrder.length > 0 && waypointOrder.length === waypoints.length - 1) {
-                // A API retorna a ordem sem incluir o destino final, pois ele já está separado
-                // Reorganizamos todos exceto o último
-                const tempPoints = [...waypointsToOrder];
-                tempPoints.pop(); // Remover o último (destino)
-                
-                // Criar nova array com pontos na ordem correta
-                routeOrderedWaypoints = [];
-                
-                // Primeiro adicionar os pontos intermediários na ordem correta
-                for (let i = 0; i < waypointOrder.length; i++) {
-                  routeOrderedWaypoints.push(tempPoints[waypointOrder[i]]);
-                }
-                
-                // Adicionar o último ponto (destino final)
-                routeOrderedWaypoints.push(waypointsToOrder[waypointsToOrder.length - 1]);
-                
-                console.log("Waypoints reordenados conforme rota:", routeOrderedWaypoints.map(w => w.name));
-              }
-              
-              // Usar os waypoints na ordem correta da rota para adicionar marcadores
-              routeOrderedWaypoints.forEach((point, index) => {
-                const waypointMarker = new window.google.maps.Marker({
-                  position: { lat: parseFloat(point.lat), lng: parseFloat(point.lng) },
-                  map: map,
-                  title: point.name || `Destino ${index + 1}`,
-                  icon: {
-                    url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
-                  },
-                  // Só mostrar números sequenciais se a rota já tiver sido calculada
-                  label: isRouteCalculated ? {
-                    text: (index + 1).toString(),
-                    color: "#FFFFFF",
-                    fontSize: "14px",
-                    fontWeight: "bold"
-                  } : null,
-                  zIndex: 100
-                });
-                
-                // Criar janela de informação para o ponto
-                const infoWindow = new window.google.maps.InfoWindow({
-                  content: `<div class="info-window"><strong>${point.name || `Destino ${index + 1}`}</strong><br>${point.address || ""}</div>`
-                });
-                
-                // Adicionar evento para mostrar janela ao clicar
-                waypointMarker.addListener("click", () => {
-                  infoWindow.open(map, waypointMarker);
-                });
-                
-                newMarkers.push(waypointMarker);
-                newInfoWindows.push(infoWindow);
-              });
+            // Adicionar o último waypoint (destino)
+            if (lastWaypoint) {
+              reorderedWaypoints.push(lastWaypoint);
             }
             
-            // 3. Adicionar marcadores de pedágio pré-definidos
-            // Dados simulados para exemplificar
-            const tollPoints = [
-              {
-                id: 1001,
-                name: 'Pedágio SP-225 (Jaú)',
-                type: 'toll',
-                lat: '-22.2729',
-                lng: '-48.5569',
-                roadName: 'SP-225',
-                cost: 1300, // em centavos
-                city: 'Jaú'
+            orderedWaypoints = reorderedWaypoints;
+          }
+          
+          // Adicionar marcadores numerados para cada waypoint
+          orderedWaypoints.forEach((waypoint, index) => {
+            const waypointMarker = new window.google.maps.Marker({
+              position: { lat: parseFloat(waypoint.lat), lng: parseFloat(waypoint.lng) },
+              map: map,
+              title: waypoint.name || `Destino ${index + 1}`,
+              icon: {
+                url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
               },
-              {
-                id: 1002,
-                name: 'Pedágio SP-225 (Brotas)',
-                type: 'toll',
-                lat: '-22.2490',
-                lng: '-48.1236',
-                roadName: 'SP-225',
-                cost: 1300,
-                city: 'Brotas'
+              label: {
+                text: (index + 2).toString(), // +2 porque a origem é 1
+                color: "#FFFFFF",
+                fontSize: "14px",
+                fontWeight: "bold"
               },
-              {
-                id: 1003,
-                name: 'Pedágio SP-310 (Itirapina)',
-                type: 'toll',
-                lat: '-22.2404',
-                lng: '-47.8292',
-                roadName: 'SP-310',
-                cost: 1300,
-                city: 'Itirapina'
-              }
-            ];
-            
-            // Adicionar apenas os pedágios que fazem sentido para a rota
-            tollPoints.forEach(toll => {
-              const position = {
-                lat: parseFloat(toll.lat),
-                lng: parseFloat(toll.lng)
-              };
-              
-              // Criar marcador para o pedágio
-              const tollMarker = new window.google.maps.Marker({
-                position,
-                map,
-                title: toll.name,
-                icon: {
-                  path: window.google.maps.SymbolPath.CIRCLE,
-                  fillColor: '#f44336', // Vermelho para pedágios
-                  fillOpacity: 1,
-                  strokeWeight: 2,
-                  strokeColor: '#FFFFFF',
-                  scale: 10
-                },
-                zIndex: 5
-              });
-              
-              // Criar janela de informação
-              const infoContent = `
-                <div style="min-width: 200px; padding: 10px;">
-                  <h3 style="margin: 0; font-size: 16px; color: #d32f2f;">${toll.name}</h3>
-                  <p style="margin: 5px 0;"><strong>Tipo:</strong> Pedágio</p>
-                  <p style="margin: 5px 0;"><strong>Custo:</strong> R$ ${(toll.cost / 100).toFixed(2)}</p>
-                  <p style="margin: 5px 0;"><strong>Rodovia:</strong> ${toll.roadName}</p>
-                  <p style="margin: 5px 0;"><strong>Cidade:</strong> ${toll.city}</p>
-                </div>
-              `;
-              
-              const infoWindow = new window.google.maps.InfoWindow({
-                content: infoContent
-              });
-              
-              tollMarker.addListener('click', () => {
-                newInfoWindows.forEach(iw => iw.close());
-                infoWindow.open(map, tollMarker);
-              });
-              
-              // Adicionar metadados ao marcador
-              tollMarker.set('isPOI', true);
-              tollMarker.set('poiInfo', toll);
-              
-              // Adicionar às listas
-              newMarkers.push(tollMarker);
-              newInfoWindows.push(infoWindow);
+              zIndex: 100
             });
             
-            // 4. Adicionar outros POIs se necessário (ex: balanças)
-            const nonTollPOIs = pointsOfInterest.filter(poi => poi.type !== 'toll');
-            nonTollPOIs.forEach(poi => {
-              if (poi.lat && poi.lng) {
-                const position = {
-                  lat: parseFloat(poi.lat),
-                  lng: parseFloat(poi.lng)
-                };
-                
-                // Cor do marcador dependendo do tipo
-                let fillColor = '#FF9800'; // Laranja (padrão)
-                if (poi.type === 'weighing_station') {
-                  fillColor = '#FF9800'; // Laranja para balanças
-                } else if (poi.type === 'rest_area') {
-                  fillColor = '#4CAF50'; // Verde para áreas de descanso
-                }
-                
-                // Criar marcador
-                const poiMarker = new window.google.maps.Marker({
-                  position,
-                  map,
-                  title: poi.name,
-                  icon: {
-                    path: window.google.maps.SymbolPath.CIRCLE,
-                    fillColor,
-                    fillOpacity: 1,
-                    strokeWeight: 2,
-                    strokeColor: '#FFFFFF',
-                    scale: 10
-                  },
-                  zIndex: 4
-                });
-                
-                // Criar janela de informação
-                let infoContent = `
-                  <div style="min-width: 200px; padding: 10px;">
-                    <h3 style="margin: 0; font-size: 16px;">${poi.name}</h3>
-                `;
-                
-                if (poi.type === 'weighing_station') {
-                  infoContent += `<p style="margin: 5px 0;"><strong>Tipo:</strong> Balança</p>`;
-                  if (poi.roadName) infoContent += `<p style="margin: 5px 0;"><strong>Rodovia:</strong> ${poi.roadName}</p>`;
-                  if (poi.city) infoContent += `<p style="margin: 5px 0;"><strong>Cidade:</strong> ${poi.city}</p>`;
-                }
-                
-                infoContent += `</div>`;
-                
-                const infoWindow = new window.google.maps.InfoWindow({
-                  content: infoContent
-                });
-                
-                // Adicionar evento de clique
-                poiMarker.addListener('click', () => {
-                  newInfoWindows.forEach(iw => iw.close());
-                  infoWindow.open(map, poiMarker);
-                });
-                
-                // Adicionar metadados
-                poiMarker.set('isPOI', true);
-                poiMarker.set('poiInfo', poi);
-                
-                // Adicionar às listas
-                newMarkers.push(poiMarker);
-                newInfoWindows.push(infoWindow);
-              }
+            const waypointInfoWindow = new window.google.maps.InfoWindow({
+              content: `<div><strong>${waypoint.name || `Destino ${index + 1}`}</strong><br>${waypoint.address || ""}</div>`
             });
             
-            // Atualizar o estado com os novos marcadores
-            setMarkers(newMarkers);
-            setInfoWindows(newInfoWindows);
-            
-            // Ajustar o mapa para mostrar todos os pontos
-            const bounds = new window.google.maps.LatLngBounds();
-            newMarkers.forEach(marker => {
-              if (marker.getPosition()) {
-                bounds.extend(marker.getPosition());
-              }
+            waypointMarker.addListener("click", () => {
+              waypointInfoWindow.open(map, waypointMarker);
             });
             
-            if (newMarkers.length > 0) {
-              map.fitBounds(bounds);
-              
-              // Evitar zoom muito próximo
-              const listener = window.google.maps.event.addListener(map, "idle", () => {
-                if (map.getZoom() > 15) map.setZoom(15);
-                window.google.maps.event.removeListener(listener);
-              });
-            }
-            
-            // Informar o componente pai sobre a rota calculada
-            if (onRouteCalculated) {
-              // Criar a sequência ordenada de waypoints
-              let orderedSequence = [origin, ...waypoints];
-              
-              // Se temos uma ordem otimizada, usar essa ordem
-              if (waypointOrder.length > 0 && waypointOrder.length === waypoints.length - 1) {
-                // Recriar a sequência ordenada com base na ordem dos waypoints
-                orderedSequence = [origin];
-                
-                // Primeiro adicionar os waypoints na ordem correta
-                const tempWaypoints = [...waypoints];
-                const lastWaypoint = tempWaypoints.pop(); // Remover o último
-                
-                for (let i = 0; i < waypointOrder.length; i++) {
-                  orderedSequence.push(tempWaypoints[waypointOrder[i]]);
+            newMarkers.push(waypointMarker);
+            newInfoWindows.push(waypointInfoWindow);
+          });
+          
+          // Atualizar o estado
+          setMarkers(newMarkers);
+          setInfoWindows(newInfoWindows);
+          
+          // Processar pontos de interesse ao longo da rota
+          const tollPoints: any[] = [];
+          
+          // Se temos resultado do DirectionsService
+          if (result && result.routes && result.routes[0]) {
+            // Extrair informações de pedágio
+            if (result.routes[0].legs) {
+              result.routes[0].legs.forEach((leg: any) => {
+                if (leg.steps) {
+                  leg.steps.forEach((step: any) => {
+                    if (step.toll_info && step.toll_info.has_toll) {
+                      tollPoints.push(step.toll_info);
+                    }
+                  });
                 }
-                
-                // Adicionar o último waypoint
-                if (lastWaypoint) {
-                  orderedSequence.push(lastWaypoint);
-                }
-              }
-              
-              onRouteCalculated({
-                ...result,
-                tollPoints: tollPoints,
-                googleSource: true,
-                orderedSequence: orderedSequence // Incluir a sequência ordenada
               });
-            }
-            
-          } catch (error) {
-            console.error("Erro ao processar rota:", error);
-          } finally {
-            // Restaurar interações do mapa
-            if (map && map.setOptions) {
-              // Pequeno atraso para suavizar a transição
-              setTimeout(() => {
-                map.setOptions({
-                  draggable: true,
-                  zoomControl: true,
-                  scrollwheel: true,
-                  disableDoubleClickZoom: false,
-                  gestureHandling: 'greedy'
-                });
-                
-                // Remover marcadores antigos depois de renderizar os novos
-                markers.forEach(marker => marker.setMap(null));
-                
-                // Permitir novos cálculos
-                isProcessingRoute.current = false;
-              }, 200);
-            } else {
-              isProcessingRoute.current = false;
             }
           }
+          
+          // Informar o componente pai sobre a rota calculada
+          if (onRouteCalculated) {
+            const sequenceWithOrigin = [origin, ...orderedWaypoints];
+            
+            onRouteCalculated({
+              ...result,
+              tollPoints: tollPoints,
+              googleSource: true,
+              orderedSequence: sequenceWithOrigin
+            });
+          }
+          
+          // Habilitar interações do mapa novamente
+          map.setOptions({
+            draggable: true,
+            zoomControl: true,
+            scrollwheel: true,
+            disableDoubleClickZoom: false
+          });
+          
+          // Limpar flag de processamento
+          isProcessingRoute.current = false;
         } else {
           console.error("Erro ao calcular rota:", status);
-          // Em caso de falha, exibir mensagem de erro
-          setError("Não foi possível calcular a rota. Tente novamente mais tarde.");
-          
-          // Restaurar interações do mapa
-          if (map && map.setOptions) {
-            map.setOptions({
-              draggable: true,
-              zoomControl: true,
-              scrollwheel: true,
-              disableDoubleClickZoom: false,
-              gestureHandling: 'greedy'
-            });
-          }
-          
           isProcessingRoute.current = false;
         }
       });
+    } catch (error) {
+      console.error("Erro ao processar rota:", error);
+      isProcessingRoute.current = false;
     }
-  }, [map, directionsRenderer, origin, waypoints, markers, infoWindows, calculatedRoute, onRouteCalculated, pointsOfInterest]);
-
-  // Função para estimar custo de pedágio baseado no tipo de veículo
-  function estimateTollCost(vehicleType: string): number {
-    switch(vehicleType) {
-      case 'car': return 1300; // R$13,00
-      case 'motorcycle': return 650; // R$6,50
-      case 'truck1': return 2600; // R$26,00
-      case 'truck2': return 3900; // R$39,00
-      default: return 1300;
-    }
-  }
-
-  // Renderizar o componente
+  }, [map, directionsRenderer, origin, waypoints, calculatedRoute, onRouteCalculated, markers, infoWindows]);
+  
+  // Componente do mapa
   return (
-    <div className="map-container relative w-full h-full">
+    <div className="h-full w-full relative">
       {error && (
-        <div className="absolute top-0 left-0 right-0 bg-red-500 text-white text-center p-2 z-10">
+        <div className="absolute top-0 left-0 right-0 bg-red-500 text-white p-2 z-50 text-center">
           {error}
         </div>
       )}
-      <div 
-        ref={mapRef} 
-        className="w-full h-full"
-        style={{ width: "100%", height: "100%", borderRadius: "8px" }}
-      />
-      {!window.google && (
-        <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-white bg-opacity-80">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
-            <p className="mt-4 text-lg">Carregando mapa...</p>
-          </div>
-        </div>
-      )}
-      
-      {/* Legenda removida conforme solicitado */}
+      <div ref={mapRef} className="h-full w-full">
+        {/* O mapa será renderizado aqui */}
+      </div>
     </div>
   );
 }
