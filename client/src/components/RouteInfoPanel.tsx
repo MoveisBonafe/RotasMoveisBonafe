@@ -51,7 +51,7 @@ export default function RouteInfoPanel({
   useEffect(() => {
     if (calculatedRoute && calculatedRoute.length > 0) {
       setActiveTab("summary");
-      setIsCollapsed(false);
+      // Não modificamos o estado de minimização para permitir que a aba permaneça minimizada após o cálculo
       
       // FILTRAR POIs AQUI COM BASE NA ROTA ATUAL
       if (calculatedRoute.length > 0) {
