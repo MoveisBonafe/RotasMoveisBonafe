@@ -304,12 +304,12 @@ export default function RouteInfoPanel({
   // Algoritmo unificado e simplificado para exibição de POIs no painel de informações
   // Usa as mesmas regras do mapa, mas com lógica específica para o relatório
   
-  // USAR EXCLUSIVAMENTE os POIs que vieram da API AILOG através do mapa
+  // USAR EXCLUSIVAMENTE os POIs que vieram através do mapa
   // Estes já foram filtrados corretamente com base na rota
   // A filtragem é feita no useEffect e armazenada no estado filteredPOIs
   
-  // Verificar se temos pedágios da AILOG na lista
-  const hasAilogTolls = poisAlongRoute.some(poi => poi.type === 'toll' && (poi as any).ailogSource === true);
+  // Verificar se temos pedágios na lista (não mais usando a fonte AILOG)
+  const hasTolls = poisAlongRoute.some(poi => poi.type === 'toll');
   
   // Algoritmo otimizado para garantir inclusão dos pedágios corretos
   

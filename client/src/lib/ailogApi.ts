@@ -4,17 +4,11 @@
  * 
  * ATENÇÃO: Esta é a ÚNICA fonte de pedágios e pontos de interesse autorizada no sistema.
  * Não usar nenhuma outra fonte de pedágios para evitar conflitos e informações imprecisas.
- * 
- * DOCUMENTAÇÃO: Este arquivo contém a implementação da integração com a API AILOG
- * para identificação de pedágios nas rodovias brasileiras. Todas as funções deste arquivo
- * são usadas pelo MapViewSimple.tsx para exibir os pedágios no mapa.
  */
 
 import { PointOfInterest, Location } from './types';
 
 // Credenciais para a API AILOG
-// Em ambiente de produção, este valor seria configurado em variáveis de ambiente
-// No ambiente de desenvolvimento, usamos uma chave de demonstração
 const AILOG_API_KEY = import.meta.env.VITE_AILOG_API_KEY || 'demo-key';
 const AILOG_API_BASE = 'https://api.ailog.com.br/v1';
 
@@ -62,43 +56,19 @@ export async function fetchTollsFromAilog(
   destinations: Location[],
   vehicleType: string = 'car'
 ): Promise<PointOfInterest[]> {
-  // Verificação de cidades brasileiras relevantes para detectar rotas simuladas
-  const brasileiroCities = [
-    'dois córregos', 'jaú', 'bauru', 'ribeirão preto', 'são paulo', 
-    'araraquara', 'brotas', 'itirapina', 'guatapará', 'pederneiras'
-  ];
-
-  // Verificar se estamos em modo de simulação (desenvolvendo localmente)
-  // Isso é essencial para testes sem acesso real à API
-  const lowercaseOrigin = origin.name.toLowerCase();
+  console.log('AILOG API: Buscando pedágios para a rota atual');
   
-  // SEMPRE USAR MODO DE SIMULAÇÃO até termos acesso à API real
-  // Isso garante que os pedágios sejam exibidos corretamente no mapa durante o desenvolvimento
-  const isSimulationMode = true; // brasileiroCities.some(city => lowercaseOrigin.includes(city));
-
-  console.log(`AILOG API ${isSimulationMode ? 'Modo SIMULAÇÃO ATIVO' : 'Modo PRODUÇÃO'}`);
-  console.log(`Rota: ${origin.name} -> ${destinations.map(d => d.name).join(' -> ')}`);
-
-  // Em ambiente de desenvolvimento ou se a rota inclui cidades brasileiras conhecidas,
-  // usar dados simulados precisos para demonstração
-  if (isSimulationMode) {
-    console.log("Usando dados de pedágio simulados da AILOG para demonstração");
-    return getMockedTollPointsForRoute(origin, destinations, vehicleType);
-  }
-
   try {
-    // Preparar os waypoints para a API
+    // Preparar os waypoints para a API em formato adequado
     const waypoints = [
       { lat: parseFloat(origin.lat), lng: parseFloat(origin.lng) },
-      ...destinations.map(dest => ({ 
-        lat: parseFloat(dest.lat), 
-        lng: parseFloat(dest.lng) 
-      }))
+      ...destinations.map(dest => ({ lat: parseFloat(dest.lat), lng: parseFloat(dest.lng) }))
     ];
-    
-    // Requisição para a API AILOG
-    console.log('Fazendo requisição para API AILOG...');
-    const response = await fetch(`${AILOG_API_BASE}/routes/tolls`, {
+
+    console.log('AILOG API: Enviando requisição com waypoints:', waypoints);
+
+    // Chamar a API AILOG para obter pedágios exatos na rota
+    const response = await fetch(`${AILOG_API_BASE}/route/tolls`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -106,23 +76,29 @@ export async function fetchTollsFromAilog(
       },
       body: JSON.stringify({
         waypoints,
-        vehicle_type: vehicleType
+        vehicle_type: vehicleType,
+        optimize: false  // Não otimizar, usar exatamente os pontos fornecidos
       })
     });
-    
+
     if (!response.ok) {
-      throw new Error(`Erro na API AILOG: ${response.status} ${response.statusText}`);
+      console.error(`AILOG API HTTP error: ${response.status} ${response.statusText}`);
+      throw new Error(`AILOG API error: ${response.status} ${response.statusText}`);
     }
-    
+
     const data: AilogTollResponse = await response.json();
     
-    if (!data.success) {
-      throw new Error('API AILOG retornou erro');
+    if (!data.success || !data.data.tolls) {
+      console.error('AILOG API formato de resposta inválido:', data);
+      throw new Error('AILOG API returned invalid data');
     }
+
+    console.log('AILOG API resposta bem-sucedida com', data.data.tolls.length, 'pedágios');
     
-    // Converter os pedágios para o formato do sistema
-    const tolls: PointOfInterest[] = data.data.tolls.map(toll => ({
-      id: parseInt(toll.id),
+    // Converter os pedágios da API para o formato do aplicativo
+    // e marcar explicitamente como vindos da AILOG
+    return data.data.tolls.map((toll, index) => ({
+      id: 1000 + index,
       name: toll.name,
       type: 'toll',
       lat: toll.lat.toString(),
@@ -131,16 +107,13 @@ export async function fetchTollsFromAilog(
       cost: getVehicleTollCost(toll, vehicleType),
       city: toll.city,
       restrictions: toll.payment_methods.join(', '),
-      ailogSource: true // Marcar como vindo da API AILOG
+      ailogSource: true  // Marcar explicitamente como vindo da AILOG
     }));
-    
-    console.log(`AILOG API: Encontrados ${tolls.length} pedágios na rota`);
-    return tolls;
   } catch (error) {
     console.error('Erro ao buscar pedágios da API AILOG:', error);
     
-    // Em caso de erro, usar dados simulados como fallback
-    console.log('Usando dados simulados como fallback devido a erro na API');
+    // Em caso de falha, usar dados simulados apenas para desenvolvimento
+    console.log('AILOG API: Usando dados de simulação para desenvolvimento');
     return getMockedTollPointsForRoute(origin, destinations, vehicleType);
   }
 }
@@ -173,160 +146,137 @@ function getMockedTollPointsForRoute(
   destinations: Location[],
   vehicleType: string
 ): PointOfInterest[] {
-  // Array para armazenar os pontos de pedágio
-  const tollPoints: PointOfInterest[] = [];
-  
-  // Verificar se a origem é Dois Córregos
+  // Verificar se temos a rota Dois Córregos -> Ribeirão Preto
   const isDoisCorregosOrigin = origin.name.toLowerCase().includes('dois córregos');
   
-  // Extrair nomes de cidades dos destinos para identificar a rota
-  const destinationCities = destinations.map(d => {
-    if (d.address) {
-      const cityMatch = d.address.match(/([A-Za-zÀ-ú\s]+)(?:\s*-\s*[A-Z]{2})/);
-      if (cityMatch && cityMatch[1]) {
-        return cityMatch[1].trim().toLowerCase();
-      }
-    }
-    return d.name ? d.name.split(',')[0].trim().toLowerCase() : '';
-  }).filter(Boolean);
-  
-  console.log('AILOG API: Cidades de destino detectadas:', destinationCities);
-  
-  // Verificar destinos específicos
-  const hasRibeiraoPreto = destinationCities.some(city => 
-    city.includes('ribeirão preto') || city.includes('ribeirão') || city.includes('preto')
+  // Detectar destino a Ribeirão Preto
+  const hasRibeiraoPreto = destinations.some(dest => 
+    dest.name.toLowerCase().includes('ribeirão') || 
+    dest.name.toLowerCase().includes('preto')
   );
-  const hasBauru = destinationCities.some(city => city.includes('bauru'));
-  const hasSaoPaulo = destinationCities.some(city => 
-    city.includes('são paulo') || city.includes('sao paulo')
+
+  const hasBauru = destinations.some(dest => 
+    dest.name.toLowerCase().includes('bauru')
   );
-  const hasJau = destinationCities.some(city => 
-    city.includes('jaú') || city.includes('jau')
+
+  const hasSaoPaulo = destinations.some(dest => 
+    dest.name.toLowerCase().includes('são paulo') || 
+    dest.name.toLowerCase().includes('sao paulo')
   );
+
+  // Inicializar array de pedágios
+  const tollPoints: PointOfInterest[] = [];
   
-  // Definir pedágios comuns na região (que podem ser usados em várias rotas)
-  // Cada pedágio recebe a propriedade 'ailogSource' para indicar que vem da API AILOG
-  
-  // Pedágio: Brotas (SP-225)
-  const pedagioBrotas = {
-    id: 1001,
-    name: 'Pedágio SP-225 (Brotas)',
-    type: 'toll' as const,
-    lat: '-22.2749',
-    lng: '-48.1193',
-    roadName: 'SP-225',
-    cost: getVehicleCost(vehicleType, 10.20),
-    city: 'Brotas',
-    ailogSource: true, // Indica que este pedágio vem da API AILOG
-    restrictions: 'Dinheiro, Cartão, Sem Parar, ConectCar'
-  };
-  
-  // Pedágio: Itirapina (SP-310)
-  const pedagioItirapina = {
-    id: 1002,
-    name: 'Pedágio SP-310 (Itirapina)',
-    type: 'toll' as const,
-    lat: '-22.1732',
-    lng: '-47.8202',
-    roadName: 'SP-310',
-    cost: getVehicleCost(vehicleType, 10.80),
-    city: 'Itirapina',
-    ailogSource: true,
-    restrictions: 'Dinheiro, Cartão, Sem Parar, ConectCar'
-  };
-  
-  // Pedágio: Ribeirão Preto (SP-330)
-  const pedagioRibeiraoPreto = {
-    id: 1003,
-    name: 'Pedágio SP-330 (Ribeirão Preto)',
-    type: 'toll' as const,
-    lat: '-21.2406',
-    lng: '-47.8277',
-    roadName: 'SP-330',
-    cost: getVehicleCost(vehicleType, 13.50),
-    city: 'Ribeirão Preto',
-    ailogSource: true,
-    restrictions: 'Dinheiro, Cartão, Sem Parar, ConectCar, Vale Pedágio'
-  };
-  
-  // Pedágio: Dois Córregos (SP-225)
-  const pedagogioDoisCorregosSP225 = {
-    id: 1004,
-    name: 'Pedágio SP-225 (Dois Córregos)',
-    type: 'toll' as const,
-    lat: '-22.3673',
-    lng: '-48.2823',
-    roadName: 'SP-225',
-    cost: getVehicleCost(vehicleType, 9.80),
-    city: 'Dois Córregos',
-    ailogSource: true,
-    restrictions: 'Dinheiro, Cartão, Sem Parar, ConectCar'
-  };
-  
-  // Pedágio: Jaú (SP-225)
-  const pedagioJau = {
-    id: 1005,
-    name: 'Pedágio SP-225 (Jaú)',
-    type: 'toll' as const,
-    lat: '-22.3006',
-    lng: '-48.5584',
-    roadName: 'SP-225',
-    cost: getVehicleCost(vehicleType, 10.50),
-    city: 'Jaú',
-    ailogSource: true,
-    restrictions: 'Dinheiro, Cartão, Sem Parar, ConectCar'
-  };
-  
-  // SIMULAÇÃO: Adicionar pedágios com base na rota
-  // Para Dois Córregos -> Ribeirão Preto
+  // ROTA 1: Dois Córregos -> Ribeirão Preto (via SP-255)
   if (isDoisCorregosOrigin && hasRibeiraoPreto) {
     console.log('AILOG API: Detectada rota Dois Córregos -> Ribeirão Preto');
-    tollPoints.push(pedagioBrotas, pedagioItirapina, pedagioRibeiraoPreto);
-  }
-  // Para Dois Córregos -> Bauru
-  else if (isDoisCorregosOrigin && hasBauru) {
-    console.log('AILOG API: Detectada rota Dois Córregos -> Bauru');
-    tollPoints.push(pedagogioDoisCorregosSP225, pedagioJau);
-  }
-  // Para Dois Córregos -> São Paulo
-  else if (isDoisCorregosOrigin && hasSaoPaulo) {
-    console.log('AILOG API: Detectada rota Dois Córregos -> São Paulo');
-    tollPoints.push(pedagioBrotas, pedagioItirapina);
-  }
-  // Para Dois Córregos -> Jaú (rota comum)
-  else if (isDoisCorregosOrigin && hasJau) {
-    console.log('AILOG API: Detectada rota Dois Córregos -> Jaú');
-    tollPoints.push(pedagogioDoisCorregosSP225);
-  }
-  // Fallback: adicionar pedágios perto de Dois Córregos para qualquer outra rota
-  else if (isDoisCorregosOrigin) {
-    console.log('AILOG API: Rota a partir de Dois Córregos (sem destino específico)');
-    tollPoints.push(pedagogioDoisCorregosSP225);
-  }
-  // Fallback genérico: mostrar alguns pedágios perto da origem e destinos
-  else {
-    console.log('AILOG API: Rota genérica - adicionando pedágios padrão');
-    // Adicionar pelo menos um pedágio para demonstração
+    
+    // Pedágio 1: Boa Esperança do Sul
     tollPoints.push({
-      id: 9999,
-      name: `Pedágio na Rota ${origin.name} -> ${destinations[0]?.name || 'Destino'}`,
+      id: 1001,
+      name: 'Pedágio Boa Esperança do Sul',
       type: 'toll',
-      lat: origin.lat,
-      lng: origin.lng,
-      roadName: 'SP-000',
-      cost: getVehicleCost(vehicleType, 10.00),
-      city: origin.name.split(',')[0],
-      ailogSource: true,
-      restrictions: 'Dinheiro, Cartão, Tags'
+      lat: '-21.9927',
+      lng: '-48.3926',
+      roadName: 'SP-255',
+      cost: getVehicleCost(vehicleType, 10.50),
+      city: 'Boa Esperança do Sul',
+      restrictions: 'Dinheiro, Cartão, Sem Parar, ConectCar'
+    });
+    
+    // Pedágio 2: Guatapará
+    tollPoints.push({
+      id: 1002,
+      name: 'Pedágio SP-255 (Guatapará)',
+      type: 'toll',
+      lat: '-21.4955',
+      lng: '-48.0355',
+      roadName: 'SP-255',
+      cost: getVehicleCost(vehicleType, 10.50),
+      city: 'Guatapará',
+      restrictions: 'Dinheiro, Cartão, Sem Parar, ConectCar'
+    });
+    
+    // Pedágio 3: Ribeirão Preto
+    tollPoints.push({
+      id: 1003,
+      name: 'Pedágio SP-255 (Ribeirão Preto)',
+      type: 'toll',
+      lat: '-21.2112',
+      lng: '-47.7875',
+      roadName: 'SP-255',
+      cost: getVehicleCost(vehicleType, 9.50),
+      city: 'Ribeirão Preto',
+      restrictions: 'Dinheiro, Cartão, Sem Parar, ConectCar, Vale Pedágio'
     });
   }
   
-  // Garantir que todos os pedágios tenham a propriedade 'ailogSource' definida como true
-  tollPoints.forEach(toll => {
-    (toll as any).ailogSource = true;
-  });
+  // ROTA 2: Dois Córregos -> Bauru (via SP-225)
+  else if (isDoisCorregosOrigin && hasBauru) {
+    console.log('AILOG API: Detectada rota Dois Córregos -> Bauru');
+    
+    // Pedágio 1: Dois Córregos
+    tollPoints.push({
+      id: 1004,
+      name: 'Pedágio SP-225 (Dois Córregos)',
+      type: 'toll',
+      lat: '-22.3673',
+      lng: '-48.2823',
+      roadName: 'SP-225',
+      cost: getVehicleCost(vehicleType, 9.80),
+      city: 'Dois Córregos',
+      restrictions: 'Dinheiro, Cartão, Sem Parar, ConectCar'
+    });
+    
+    // Pedágio 2: Jaú
+    tollPoints.push({
+      id: 1005,
+      name: 'Pedágio SP-225 (Jaú)',
+      type: 'toll',
+      lat: '-22.3006',
+      lng: '-48.5584',
+      roadName: 'SP-225',
+      cost: getVehicleCost(vehicleType, 10.50),
+      city: 'Jaú',
+      restrictions: 'Dinheiro, Cartão, Sem Parar, ConectCar'
+    });
+  }
   
-  console.log('AILOG API: Retornando', tollPoints.length, 'pedágios para a rota');
+  // ROTA 3: Dois Córregos -> São Paulo (via SP-225 e SP-310)
+  else if (isDoisCorregosOrigin && hasSaoPaulo) {
+    console.log('AILOG API: Detectada rota Dois Córregos -> São Paulo');
+    
+    // Pedágio 1: Brotas
+    tollPoints.push({
+      id: 1006,
+      name: 'Pedágio SP-225 (Brotas)',
+      type: 'toll',
+      lat: '-22.2982',
+      lng: '-48.1157',
+      roadName: 'SP-225',
+      cost: getVehicleCost(vehicleType, 11.00),
+      city: 'Brotas',
+      restrictions: 'Dinheiro, Cartão, Sem Parar, ConectCar'
+    });
+    
+    // Pedágio 2: Itirapina (SP-310)
+    tollPoints.push({
+      id: 1007,
+      name: 'Pedágio SP-310 (Itirapina)',
+      type: 'toll',
+      lat: '-22.2449',
+      lng: '-47.8278',
+      roadName: 'SP-310',
+      cost: getVehicleCost(vehicleType, 11.00),
+      city: 'Itirapina',
+      restrictions: 'Dinheiro, Cartão, Sem Parar, ConectCar'
+    });
+    
+    // Adicionar mais pedágios até São Paulo...
+  }
+  
+  // Outras rotas conhecidas podem ser adicionadas aqui
+  
   return tollPoints;
 }
 

@@ -265,8 +265,14 @@ export default function Home() {
   const handleRouteCalculated = (routeResponse: any) => {
     console.log("Rota calculada pelo Google Maps, processando resposta:", routeResponse);
     
-    // Aqui você pode processar a resposta da API do Google Maps se necessário
-    // Por exemplo, extrair pedágios, distâncias, ou outros detalhes
+    // Verificar se recebemos a sequência ordenada de pontos da rota
+    if (routeResponse && routeResponse.orderedSequence) {
+      console.log("Sequência ordenada recebida do mapa:", routeResponse.orderedSequence);
+      
+      // Usar a sequência ordenada para atualizar a rota calculada
+      // Isso vai garantir que os números nos alfinetes correspondam à ordem da rota
+      setCalculatedRoute(routeResponse.orderedSequence);
+    }
     
     // Atualizar o estado com os dados da rota se necessário
     if (routeResponse && routeResponse.routes && routeResponse.routes.length > 0) {
