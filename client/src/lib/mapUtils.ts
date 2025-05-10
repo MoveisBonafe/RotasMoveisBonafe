@@ -144,18 +144,48 @@ function calculateHaversineDistance(lat1: number, lon1: number, lat2: number, lo
  * Formats a distance in meters to a human-readable string
  */
 export function formatDistance(meters: number): string {
+  if (!meters && meters !== 0) {
+    return "Calculando...";
+  }
+  
+  if (typeof meters === 'string') {
+    meters = parseFloat(meters);
+    if (isNaN(meters)) return "Calculando...";
+  }
+  
   if (meters < 1000) {
-    return `${meters} m`;
+    return `${Math.round(meters)} m`;
   }
   
   const kilometers = meters / 1000;
-  return `${kilometers.toFixed(1)} km`;
+  // Se for mais de 100km, arredonda para o inteiro mais próximo
+  if (kilometers > 100) {
+    return `${Math.round(kilometers)} km`;
+  }
+  // Se for mais de 10km, usa uma casa decimal
+  if (kilometers > 10) {
+    return `${kilometers.toFixed(1)} km`;
+  }
+  // Se for menos de 10km, usa duas casas decimais
+  return `${kilometers.toFixed(2)} km`;
 }
 
 /**
  * Formats a duration in seconds to a human-readable string
  */
 export function formatDuration(seconds: number): string {
+  if (!seconds && seconds !== 0) {
+    return "Calculando...";
+  }
+  
+  if (typeof seconds === 'string') {
+    seconds = parseFloat(seconds);
+    if (isNaN(seconds)) return "Calculando...";
+  }
+  
+  // Converter para valores inteiros para evitar problemas com arredondamentos
+  seconds = Math.round(seconds);
+  
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   
@@ -163,7 +193,13 @@ export function formatDuration(seconds: number): string {
     return `${minutes} min`;
   }
   
-  return `${hours}h ${minutes}min`;
+  // Se tiver minutos, mostra no formato "Xh Ymin"
+  if (minutes > 0) {
+    return `${hours}h ${minutes}min`;
+  }
+  
+  // Se não tiver minutos, mostra apenas as horas
+  return `${hours}h`;
 }
 
 /**
@@ -172,16 +208,38 @@ export function formatDuration(seconds: number): string {
  */
 export function formatCurrency(cents: number | null | undefined): string {
   if (cents === null || cents === undefined) {
-    cents = 0;
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(0);
   }
   
-  // Usar o Intl.NumberFormat para formatação correta em BRL
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(cents / 100);
+  // Se for uma string, converter para number
+  if (typeof cents === 'string') {
+    cents = parseFloat(cents);
+    if (isNaN(cents)) return 'R$ 0,00';
+  }
+  
+  // Verificar se é um número válido
+  if (!isFinite(cents)) {
+    return 'R$ 0,00';
+  }
+  
+  // Garantir que estamos convertendo cents para reais corretamente
+  try {
+    // Usar o Intl.NumberFormat para formatação correta em BRL
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(cents / 100);
+  } catch (error) {
+    console.error('Erro ao formatar moeda:', error);
+    return 'R$ 0,00';
+  }
 }
 
 /**
