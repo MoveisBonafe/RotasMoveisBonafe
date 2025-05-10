@@ -557,26 +557,7 @@ export default function RouteInfoPanel({
         >
           Resumo da Rota
         </button>
-        <button
-          onClick={() => toggleTab("events")}
-          className={`px-4 py-2 text-xs font-medium ${
-            activeTab === "events"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-        >
-          Eventos
-        </button>
-        <button
-          onClick={() => toggleTab("restrictions")}
-          className={`px-4 py-2 text-xs font-medium ${
-            activeTab === "restrictions"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-        >
-          Restrições
-        </button>
+
         <button
           onClick={() => toggleTab("report")}
           className={`px-4 py-2 text-xs font-medium ${
@@ -689,77 +670,80 @@ export default function RouteInfoPanel({
                   </div>
                 </div>
 
-                {/* Points of Attention - Versão compacta */}
-                <div className="bg-white rounded p-2 border border-gray-100">
-                  <h3 className="text-xs font-medium mb-1 text-primary">Pontos de Atenção</h3>
-                  
-                  {/* SOLUÇÃO DEFINITIVA: USAR APENAS filteredPOIs QUE FORAM FILTRADOS NO useEffect */}
-                  {(() => {
-                    // DECISÃO FINAL: Usar o filteredPOIs do state, que foi filtrado no useEffect
-                    // Isso garante que apenas os pontos realmente na rota sejam mostrados
-                    const tollsToShow = filteredPOIs.filter(p => p.type === 'toll');
-                    const balancesToShow = filteredPOIs.filter(p => p.type === 'weighing_station');
+                {/* Restrições para Caminhões - Quando o veículo for caminhão */}
+                {vehicleType?.type.includes("truck") && (
+                  <div className="bg-white rounded p-2 border border-gray-100">
+                    <div className="flex items-center gap-1 mb-2 border-b border-gray-100 pb-1">
+                      <Truck className="h-3 w-3 text-red-600" />
+                      <h3 className="text-xs font-medium text-primary">Restrições para Caminhões</h3>
+                    </div>
                     
-                    // Filtrar também as restrições para mostrar apenas as da rota atual
-                    const restrictionsToShow = truckRestrictions && calculatedRoute ? 
-                      truckRestrictions.filter(r => 
-                        calculatedRoute.some(loc => 
-                          loc.name?.toLowerCase().includes(r.cityName?.toLowerCase()) || 
-                          r.cityName?.toLowerCase().includes(loc.name?.toLowerCase()) || 
-                          loc.address?.toLowerCase().includes(r.cityName?.toLowerCase())
-                        )
-                      ) : [];
-                    
-                    // Verificar se temos algum ponto de atenção para mostrar
-                    const hasAttentionPoints = tollsToShow.length > 0 || 
-                                              balancesToShow.length > 0 || 
-                                              restrictionsToShow.length > 0;
-                    
-                    // Mostrar os pontos de atenção (se houver)
-                    return hasAttentionPoints ? (
-                      <ul className="text-xs space-y-1">
-                        {/* 1. Pedágios */}
-                        {tollsToShow.length > 0 && (
-                          <li className="flex items-center">
-                            <span className="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-1"></span>
-                            <span>
-                              {tollsToShow.length} {tollsToShow.length === 1 ? 'pedágio' : 'pedágios'}: 
-                              <span className="text-gray-500 ml-1">
-                                {tollsToShow.map(toll => 
-                                  toll.name.includes('(') ? toll.name.split('(').pop()?.replace(')', '') || '' : toll.roadName || toll.name
-                                ).filter(Boolean).join(', ')}
-                              </span>
-                            </span>
-                          </li>
-                        )}
-                        
-                        {/* 2. Balanças */}
-                        {balancesToShow.length > 0 && (
-                          <li className="flex items-center">
-                            <span className="inline-block w-2 h-2 rounded-full bg-red-600 mr-1"></span>
-                            <span>
-                              {balancesToShow.length} {balancesToShow.length === 1 ? 'balança' : 'balanças'} em operação
-                            </span>
-                          </li>
-                        )}
-                        
-                        {/* 3. Restrições */}
-                        {restrictionsToShow.map((restriction, idx) => (
-                          <li key={idx} className="flex items-center">
-                            <span className="inline-block w-2 h-2 rounded-full bg-primary mr-1"></span>
-                            <span>
-                              {`Restrição em ${restriction.cityName}: ${restriction.startTime || '00:00'}-${restriction.endTime || '23:59'}`}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <div className="text-xs text-gray-500">
-                        Nenhum ponto de atenção na rota atual
-                      </div>
-                    );
-                  })()}
-                </div>
+                    {(() => {
+                      // Buscar restrições para as cidades da rota
+                      const { data: truckRestrictions } = useQuery({
+                        queryKey: ['/api/truck-restrictions'],
+                        // Restrições já são retornadas filtradas por cidade pela API
+                      });
+                      
+                      // Se não tiver dados ou se não estiver expandido, mostrar resumo
+                      if (!isExpanded || !truckRestrictions || !Array.isArray(truckRestrictions) || truckRestrictions.length === 0) {
+                        return (
+                          <div className="text-xs text-gray-500">
+                            {!truckRestrictions || truckRestrictions.length === 0 
+                              ? "Nenhuma restrição para caminhões encontrada para as cidades do trajeto."
+                              : `${truckRestrictions.length} restrições para caminhões neste trajeto.`}
+                          </div>
+                        );
+                      }
+                      
+                      // Extrair cidades dos destinos para mostrar apenas restrições relevantes
+                      const routeCities = new Set<string>();
+                      if (calculatedRoute) {
+                        calculatedRoute.forEach(location => {
+                          const addressParts = location.address.split(',');
+                          if (addressParts.length > 1) {
+                            const cityPart = addressParts[1].trim().split(' - ');
+                            if (cityPart.length > 0) {
+                              routeCities.add(cityPart[0].trim());
+                            }
+                          }
+                          // Também extrair do nome da cidade do nome do local
+                          const cityFromName = extractCityFromAddress(location.name);
+                          if (cityFromName) {
+                            routeCities.add(cityFromName);
+                          }
+                        });
+                      }
+                      
+                      // Filtrar as restrições apenas para as cidades da rota
+                      const relevantRestrictions = truckRestrictions.filter(r => 
+                        routeCities.has(r.cityName) || [...routeCities].some(city => r.cityName.includes(city))
+                      );
+                      
+                      return (
+                        <div className="space-y-2 text-xs">
+                          {relevantRestrictions.length === 0 ? (
+                            <div className="text-gray-500">
+                              Nenhuma restrição específica para as cidades do trajeto.
+                            </div>
+                          ) : (
+                            relevantRestrictions.map((restriction, idx) => (
+                              <div key={idx} className="border-b border-gray-50 pb-1 last:border-0">
+                                <div className="font-medium">{restriction.cityName}</div>
+                                <div className="text-2xs text-gray-600">{restriction.restriction}</div>
+                                {restriction.startTime && restriction.endTime && (
+                                  <div className="text-2xs text-gray-500">
+                                    Horário: {restriction.startTime} - {restriction.endTime}
+                                  </div>
+                                )}
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
                 
                 {/* Eventos da rota (integrados no resumo) - Visível apenas quando há eventos */}
                 {isExpanded && Array.isArray(cityEvents) && cityEvents.length > 0 && (
