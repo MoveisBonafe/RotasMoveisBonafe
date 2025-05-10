@@ -66,11 +66,7 @@ export default function MapViewSimple({
           fullscreenControl: true,
           scrollwheel: true,
           gestureHandling: "greedy",
-          mapTypeControl: true,
-          mapTypeControlOptions: {
-            style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-            position: google.maps.ControlPosition.TOP_RIGHT,
-          },
+          mapTypeControl: false, // Desativamos o controle nativo de tipo de mapa
           zoomControl: true,
           streetViewControl: true
         };
