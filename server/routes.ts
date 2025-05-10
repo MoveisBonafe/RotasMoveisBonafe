@@ -573,6 +573,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
         endTime: "19:00",
         applicableVehicles: "Acima de 2 eixos",
         description: "Restrição de circulação à tarde"
+      },
+      {
+        id: 4,
+        cityName: "Barra Bonita",
+        restriction: "Centro da cidade",
+        startTime: "07:00",
+        endTime: "09:00",
+        applicableVehicles: "Acima de 1 eixo",
+        description: "Restrição nos horários de pico da manhã"
+      },
+      {
+        id: 5,
+        cityName: "Barra Bonita",
+        restriction: "Centro da cidade",
+        startTime: "17:00",
+        endTime: "19:00",
+        applicableVehicles: "Acima de 1 eixo",
+        description: "Restrição nos horários de pico da tarde"
+      },
+      {
+        id: 6,
+        cityName: "Ribeirão Preto",
+        restriction: "Centro comercial",
+        startTime: "08:00",
+        endTime: "18:00",
+        applicableVehicles: "Acima de 1 eixo",
+        description: "Restrição em dias úteis no centro comercial"
+      },
+      {
+        id: 7,
+        cityName: "Campinas",
+        restriction: "Centro expandido",
+        startTime: "07:00",
+        endTime: "20:00",
+        applicableVehicles: "Acima de 2 eixos",
+        description: "Restrição nos horários comerciais"
       }
     ];
     
