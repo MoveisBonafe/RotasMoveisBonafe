@@ -178,7 +178,7 @@ export default function RouteInfoPanel({
             const updatedPOIs = [...poisAlongRoute];
             
             // Adicionar apenas novas balanças que não existem na lista atual
-            additionalStations.forEach(station => {
+            additionalStations.forEach((station: any) => {
               const isDuplicate = updatedPOIs.some(existingPoi => 
                 existingPoi.id === station.id || 
                 (existingPoi.name === station.name && 
@@ -359,7 +359,7 @@ export default function RouteInfoPanel({
       && vehicleType?.type.includes('truck') // Só buscar restrições para caminhões
   });
   
-  // Função auxiliar para detectar POIs duplicados - algoritmo aprimorado
+  // Função auxiliar para detectar POIs duplicados
   function isDuplicatePOI(poi1: PointOfInterest, poi2: PointOfInterest): boolean {
     // Se for o mesmo ID, é duplicado
     if (poi1.id === poi2.id) return true;
@@ -370,138 +370,17 @@ export default function RouteInfoPanel({
       return true;
     }
     
-    // Para a rota Ribeirão Preto, preservar todos os pedágios importantes
-    if (isRibeiraoPretoRoute && poi1.type === "toll" && poi2.type === "toll") {
-      // Lista de pedágios críticos na SP-255, cada um deve aparecer apenas uma vez
-      const criticalTolls = ["Guatapará", "Boa Esperança", "Ribeirão Preto"];
-      
-      // Para cada pedágio crítico, verificar se ambos os POIs são o mesmo pedágio crítico
-      for (const criticalName of criticalTolls) {
-        if (poi1.name.includes(criticalName) && poi2.name.includes(criticalName)) {
-          // Encontramos um par de duplicatas do mesmo pedágio crítico 
-          console.log(`Pedágio crítico duplicado detectado: ${criticalName}`);
-          return true;
-        }
-      }
-      
-      // Se chegou aqui, são pedágios de nomes diferentes - não são duplicatas
-      // mesmo que estejam próximos geograficamente
-      if (criticalTolls.some(name => poi1.name.includes(name)) && 
-          criticalTolls.some(name => poi2.name.includes(name))) {
-        return false;
-      }
-    }
-    
-    // Verificação específica para o pedágio de Boa Esperança do Sul (duas formas de nomeá-lo)
-    if ((poi1.type === 'toll' && poi1.name.includes("Boa Esperança")) &&
-        (poi2.type === 'toll' && poi2.name.includes("Boa Esperança"))) {
-      console.log("Removendo duplicata de pedágio de Boa Esperança do Sul", poi1.name, poi2.name);
-      return true;
-    }
-    
-    // Verificar duplicação específica para pedágios de SP-255 por coordenadas próximas
-    if (poi1.type === 'toll' && poi2.type === 'toll' &&
-        poi1.roadName === poi2.roadName &&
-        Math.abs(Number(poi1.lat) - Number(poi2.lat)) < 0.005 &&
-        Math.abs(Number(poi1.lng) - Number(poi2.lng)) < 0.005) {
-      return true;
-    }
-    
     return false;
   }
   
-  // Vamos filtrar os POIs para incluir apenas os que realmente estão na rota
-  // Utilizando um algoritmo universal que funciona para qualquer rota
+  // Verificar se estamos com a rota para Ribeirão Preto
+  const isRibeiraoPretoRoute = calculatedRoute ? calculatedRoute.some(
+    location => location.address && location.address.includes("Ribeirão Preto")
+  ) : false;
   
-  // Extrair cidades da rota atual
-  const citiesInRoute = new Set<string>();
-  
-  // Identificar origem 
-  if (origin) {
-    const cityMatch = origin.address.match(/([A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú][a-zà-ú]+)*)\s*-\s*([A-Z]{2})/);
-    if (cityMatch && cityMatch[1]) {
-      citiesInRoute.add(cityMatch[1]);
-    }
-    if (origin.name) citiesInRoute.add(origin.name.split(',')[0].trim());
-  }
-  
-  // Identificar cidades de destino na rota
-  if (calculatedRoute && calculatedRoute.length > 0) {
-    calculatedRoute.forEach(loc => {
-      // Extrair do endereço, formato "Cidade - UF, Brasil"
-      if (loc.address) {
-        const cityMatch = loc.address.match(/([A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú][a-zà-ú]+)*)\s*-\s*([A-Z]{2})/);
-        if (cityMatch && cityMatch[1]) {
-          citiesInRoute.add(cityMatch[1]);
-        }
-      }
-      
-      // Extrair do nome, que pode conter cidade
-      if (loc.name) {
-        // Tentar extrair o nome da cidade da primeira parte antes da vírgula
-        const cityName = loc.name.split(',')[0].trim();
-        citiesInRoute.add(cityName);
-      }
-    });
-  }
-  
-  console.log("Cidades detectadas para eventos:", Array.from(citiesInRoute));
-  
-  // Determinar automaticamente as rodovias com base nas cidades
-  const roadsInRoute = new Set<string>();
-  
-  // Detectar as principais rotas
-  const isRibeiraoPretoRoute = Array.from(citiesInRoute).some(city => 
-    city.includes("Ribeirão") || city.includes("Preto"));
-  const isBauruRoute = Array.from(citiesInRoute).some(city => 
-    city.includes("Bauru") || city.includes("Jaú") || city.includes("Botucatu"));
-    
-  // Inferir as rodovias baseado nas cidades detectadas
-  if (isRibeiraoPretoRoute) {
-    roadsInRoute.add("SP-255");
-  }
-  
-  if (isBauruRoute) {
-    roadsInRoute.add("SP-225");
-    roadsInRoute.add("SP-300");
-  }
-  
-  // Se não detectamos nenhuma rodovia específica, adicionar a rodovia padrão
-  if (roadsInRoute.size === 0) {
-    roadsInRoute.add("SP-255"); // Rodovia padrão de Dois Córregos
-  }
-  
-  console.log("Rodovias relevantes para a rota:", Array.from(roadsInRoute));
-  
-  // ALGORITMO UNIVERSAL: Filtrar baseado nos POIs que já foram adicionados no mapa
-  // Assumir que o componente de mapa já fez a filtragem precisa
-  
-  // Algoritmo unificado e simplificado para exibição de POIs no painel de informações
-  // Usa as mesmas regras do mapa, mas com lógica específica para o relatório
-  
-  // USAR EXCLUSIVAMENTE os POIs que vieram da API AILOG através do mapa
-  // Estes já foram filtrados corretamente com base na rota
-  // A filtragem é feita no useEffect e armazenada no estado filteredPOIs
-  
-  // Verificar se temos pedágios da AILOG na lista
-  const hasAilogTolls = poisAlongRoute.some(poi => poi.type === 'toll' && (poi as any).ailogSource === true);
-  
-  // Algoritmo otimizado para garantir inclusão dos pedágios corretos
-  
-  // A filtragem de POIs é feita no useEffect no topo deste componente
-  // O resultado está armazenado no estado filteredPOIs
-  
-  // Para debugging
-  console.log("Depurando: calculatedRoute =", calculatedRoute);
-  console.log("Pontos de Atenção filtrados:", filteredPOIs.map(p => p.name));
-  
-  // Separar os pontos de interesse por tipo (usando o filteredPOIs definido no state)
+  // Contagem dos tipos de POI para mostrar no resumo
   const tollsOnRoute = filteredPOIs.filter(poi => poi.type === 'toll');
   const balancesOnRoute = filteredPOIs.filter(poi => poi.type === 'weighing_station');
-  // Não temos áreas de descanso implementadas ainda
-  const restAreasOnRoute: typeof poisAlongRoute = [];
-  
-  // NÃO forçamos mais a inclusão de pedágios - confiamos exclusivamente nos dados da API AILOG
   
   // Calcular consumo de combustível
   const fuelConsumption = routeInfo && vehicleType
@@ -539,104 +418,66 @@ export default function RouteInfoPanel({
 
       {/* Summary Tab */}
       {activeTab === "summary" && !isMinimized && (
-        <div className={`p-2 ${isExpanded ? 'expanded-tab' : 'collapsed-tab'}`}>
-          <div className="flex justify-between mb-1">
-            <button
-              onClick={minimizeTab}
-              className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
-            >
-              <X className="h-3 w-3" /> Ocultar
-            </button>
-            <button
-              onClick={isExpanded ? collapseTab : expandTab}
-              className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
-            >
-              {isExpanded ? 
-                <><Minimize2 className="h-3 w-3" /> Recolher</> : 
-                <><Maximize2 className="h-3 w-3" /> Expandir</>
-              }
-            </button>
-          </div>
-          {!routeInfo ? (
-            <div className="text-center p-3 text-gray-500 text-xs">
-              Calcule uma rota para ver o resumo.
+        <div className={`p-4 ${isExpanded ? 'h-[80vh] overflow-y-auto' : ''}`}>
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-base font-semibold">Resumo da Rota</h2>
+            <div className="flex space-x-2">
+              <button
+                onClick={minimizeTab}
+                className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+              >
+                <X className="h-3 w-3" /> Ocultar
+              </button>
+              <button
+                onClick={isExpanded ? collapseTab : expandTab}
+                className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+              >
+                {isExpanded ? 
+                  <><Minimize2 className="h-3 w-3" /> Recolher</> : 
+                  <><Maximize2 className="h-3 w-3" /> Expandir</>
+                }
+              </button>
             </div>
-          ) : (
-            <div>
-              {/* Sequência da Rota */}
-              {calculatedRoute && calculatedRoute.length > 0 && (
-                <div className="mb-3 bg-white rounded p-2 border border-gray-100">
-                  <h3 className="text-xs font-medium mb-1 text-primary">Sequência da Rota</h3>
-                  
-                  <div className="relative overflow-hidden">
-                    <div className="flex flex-wrap items-center text-xs route-sequence-animation">
-                      {calculatedRoute.map((location, index) => (
-                        <div key={index} className="flex items-center route-point-animation" style={{animationDelay: `${index * 0.2}s`}}>
-                          <div className="flex items-center">
-                            <span className={`inline-flex justify-center items-center w-5 h-5 rounded-full ${index === 0 ? 'bg-blue-600' : 'bg-primary'} text-white text-xs mr-1`}>
-                              {index === 0 ? 'O' : index}
-                            </span>
-                            <span className="font-medium">
-                              {location.name.startsWith("R.") || location.name.startsWith("Av.") 
-                                ? extractCityFromAddress(location.address) 
-                                : location.name}
-                            </span>
-                          </div>
-                          
-                          {index < calculatedRoute.length - 1 && (
-                            <div className="mx-2 text-gray-400 route-connector-animation" style={{animationDelay: `${index * 0.2 + 0.1}s`}}>
-                              →
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
+          </div>
+          
+          {routeInfo ? (
+            <div className="space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Distância e Duração */}
+                <div className="bg-white rounded p-2 border border-gray-100">
+                  <h3 className="text-xs font-medium mb-1 text-primary">Distância e Duração</h3>
+                  <div className="text-sm font-medium">
+                    {formatDistance(routeInfo.totalDistance)}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {formatDuration(routeInfo.totalDuration)}
                   </div>
                 </div>
-              )}
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {/* Route Info Card - Version compacta */}
+                
+                {/* Custos */}
                 <div className="bg-white rounded p-2 border border-gray-100">
-                  <h3 className="text-xs font-medium mb-1 text-primary">{vehicleType?.name || "Veículo"}</h3>
-                  
-                  <div className="text-xs mb-1">
-                    <span className="text-gray-500">Distância:</span> {formatDistance(routeInfo.totalDistance)} • 
-                    <span className="text-gray-500 ml-1">Tempo:</span> {formatDuration(routeInfo.totalDuration)}
+                  <h3 className="text-xs font-medium mb-1 text-primary">Custos Estimados</h3>
+                  <div className="text-sm font-medium">
+                    {formatCurrency(routeInfo.totalCost)} Total
                   </div>
-                  
-                  <div className="text-xs mb-1">
-                    <span className="text-gray-500">Consumo:</span> {fuelConsumption.toFixed(1)}L ({fuelEfficiency.toFixed(1)} km/L)
+                  <div className="text-xs text-gray-500">
+                    Pedágios: {formatCurrency(routeInfo.tollCost)}
+                    {vehicleType && (
+                      <span className="ml-1">
+                        (para {vehicleType.name.toLowerCase()})
+                      </span>
+                    )}
                   </div>
-                  
-                  <div className="mt-2 text-xs border-t border-gray-100 pt-1">
-                    <div className="grid grid-cols-2">
-                      <div>
-                        <div>
-                          Pedágios ({vehicleType?.name}): 
-                          <span className="font-medium ml-1">{formatCurrency(routeInfo.tollCost)}</span>
-                          <span className="text-gray-500 text-xs ml-1">
-                            ({(vehicleType?.tollMultiplier || 100)/100}x)
-                          </span>
-                        </div>
-                        <div>Combustível: <span className="font-medium">{formatCurrency(routeInfo.fuelCost)}</span></div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-gray-500">Total:</div>
-                        <div className="font-bold text-primary">{formatCurrency(routeInfo.totalCost)}</div>
-                      </div>
-                    </div>
-                    {vehicleType && vehicleType.type !== 'car' && (
-                      <div className="mt-1 text-xxs text-gray-500 italic">
-                        * Valor do pedágio ajustado para {vehicleType.name.toLowerCase()}: 
-                        {vehicleType.type === 'motorcycle' ? ' 50% do valor para carros.' : 
-                         vehicleType.type === 'truck1' ? ' 200% do valor para carros.' : 
-                         vehicleType.type === 'truck2' ? ' 300% do valor para carros.' : ''}
-                      </div>
+                  <div className="text-xs text-gray-500">
+                    Combustível: {formatCurrency(routeInfo.fuelCost)}
+                    {fuelConsumption > 0 && (
+                      <span className="ml-1">
+                        ({fuelConsumption.toFixed(1)}L · {fuelEfficiency} km/L)
+                      </span>
                     )}
                   </div>
                 </div>
-
+                
                 {/* Eventos e Restrições - Nova Versão Combinada */}
                 <div className="bg-white rounded p-2 border border-gray-100">
                   <h3 className="text-xs font-medium mb-1 text-primary">Eventos nas Cidades da Rota</h3>
@@ -693,10 +534,6 @@ export default function RouteInfoPanel({
                       })
                       // Depois ordenamos os eventos filtrados
                       .sort((a, b) => {
-                        // Primeiro critério: posição da cidade na rota
-                        const cityA = a.cityName;
-                        const cityB = b.cityName;
-                        
                         // Ordem crescente por data
                         return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
                       }) : [];
@@ -738,7 +575,7 @@ export default function RouteInfoPanel({
                         ))}
                         {filteredAndSortedEvents.length > 3 && (
                           <li className="text-xxs text-gray-500 italic">
-                            + {filteredAndSortedEvents.length - 3} outros eventos (ver aba Eventos)
+                            + {filteredAndSortedEvents.length - 3} outros eventos
                           </li>
                         )}
                       </ul>
@@ -819,272 +656,9 @@ export default function RouteInfoPanel({
                 </div>
               </div>
             </div>
-          )}
-        </div>
-      )}
-
-      {/* City Events Tab */}
-      {activeTab === "events" && !isMinimized && (
-        <div className={`p-2 ${isExpanded ? 'expanded-tab' : 'collapsed-tab'}`}>
-          <div className="flex justify-between mb-1">
-            <button
-              onClick={minimizeTab}
-              className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
-            >
-              <X className="h-3 w-3" /> Ocultar
-            </button>
-            <button
-              onClick={isExpanded ? collapseTab : expandTab}
-              className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
-            >
-              {isExpanded ? 
-                <><Minimize2 className="h-3 w-3" /> Recolher</> : 
-                <><Maximize2 className="h-3 w-3" /> Expandir</>
-              }
-            </button>
-          </div>
-          {!startDate || !endDate ? (
-            <div className="bg-blue-50 text-blue-700 p-2 rounded-md text-xs">
-              Selecione as datas de início e fim para ver os eventos nas cidades do trajeto.
-            </div>
-          ) : cityEvents && Array.isArray(cityEvents) && cityEvents.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {(() => {
-                // Definir a sequência de cidades pela ordem em que aparecem na rota
-                const routeSequence = Array.isArray(calculatedRoute) 
-                  ? calculatedRoute.map(loc => loc.name || "").filter(Boolean)
-                  : [];
-                
-                // Extrair o nome exato das cidades da rota usando a função extractCityFromAddress
-                const citiesInRoute = new Set<string>();
-                
-                // Adicionar a origem (Dois Córregos)
-                citiesInRoute.add("Dois Córregos");
-                
-                // Adicionar cidades dos destinos usando a função extractCityFromAddress
-                if (Array.isArray(calculatedRoute)) {
-                  calculatedRoute.forEach(location => {
-                    if (location.address) {
-                      const cityName = extractCityFromAddress(location.address);
-                      if (cityName) {
-                        citiesInRoute.add(cityName);
-                      }
-                    }
-                  });
-                }
-                
-                // Forçar incluir Ribeirão Preto na lista se estiver no endereço
-                const hasRibeiraoPreto = calculatedRoute ? calculatedRoute.some(location => 
-                  location.address && location.address.includes("Ribeirão Preto")
-                ) : false;
-                
-                if (hasRibeiraoPreto) {
-                  citiesInRoute.add("Ribeirão Preto");
-                }
-                
-                // Criar um mapa para saber a posição de cada cidade na rota
-                const cityPositionMap = new Map();
-                
-                // Preencher o mapa com posições de cidades
-                Array.isArray(calculatedRoute) && calculatedRoute.forEach((location, index) => {
-                  const cityName = extractCityFromAddress(location.address);
-                  if (cityName && !cityPositionMap.has(cityName)) {
-                    cityPositionMap.set(cityName, index);
-                  }
-                });
-                
-                // Filtrar e ordenar eventos das cidades na rota
-                const filteredAndSortedEvents = [...cityEvents]
-                  // Primeiro filtramos para manter apenas eventos de cidades na rota
-                  .filter(event => {
-                    // Verificar se a cidade do evento está na rota
-                    return Array.from(citiesInRoute).some(city => 
-                      event.cityName.includes(city) || city.includes(event.cityName)
-                    );
-                  })
-                  // Depois ordenamos os eventos filtrados
-                  .sort((a, b) => {
-                    // Primeiro critério: posição da cidade na rota
-                    const cityA = a.cityName;
-                    const cityB = b.cityName;
-                    
-                    // Encontrar posição das cidades na rota
-                    let posA = 999;
-                    let posB = 999;
-                    
-                    // Fazer uma busca mais flexível para encontrar a cidade na rota
-                    Array.from(cityPositionMap.keys()).forEach((city) => {
-                      const position = cityPositionMap.get(city);
-                      if (cityA.includes(city) || city.includes(cityA)) {
-                        posA = position;
-                      }
-                      if (cityB.includes(city) || city.includes(cityB)) {
-                        posB = position;
-                      }
-                    });
-                    
-                    if (posA !== posB) {
-                      return posA - posB; // Ordem crescente por posição na rota
-                    }
-                    
-                    // Segundo critério: data do evento
-                    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime(); // Ordem crescente por data
-                  });
-                
-                return filteredAndSortedEvents.map((event: CityEvent, index) => (
-                  <div key={event.id} className="bg-white rounded p-2 border border-gray-100 mb-1 animate-fadeInUp" style={{ animationDelay: `${index * 0.1}s` }}>
-                    <div className="flex items-start">
-                      <span className={`inline-block w-2 h-2 rounded-full mr-1 mt-1 
-                        ${event.eventType === 'holiday' ? 'bg-red-600' : 
-                          event.eventType === 'festival' ? 'bg-yellow-500' : 'bg-green-600'}`}>
-                      </span>
-                      <div>
-                        <span className="font-medium text-xs">{event.eventName}</span>
-                        <div className="text-gray-500 text-xs">
-                          {event.cityName}, {new Date(event.startDate).toLocaleDateString('pt-BR')}
-                          {event.startDate !== event.endDate && ` - ${new Date(event.endDate).toLocaleDateString('pt-BR')}`}
-                        </div>
-                        {event.description && (
-                          <div className="text-gray-500 text-xs mt-1">{event.description}</div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ));
-              })()}
-            </div>
           ) : (
-            <div className="text-center p-2 text-gray-500 text-xs">
-              Nenhum evento encontrado para este período nas cidades do trajeto.
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Vehicle Restrictions Tab */}
-      {activeTab === "restrictions" && !isMinimized && (
-        <div className={`p-2 ${isExpanded ? 'expanded-tab' : 'collapsed-tab'}`}>
-          <div className="flex justify-between mb-1">
-            <button
-              onClick={minimizeTab}
-              className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
-            >
-              <X className="h-3 w-3" /> Ocultar
-            </button>
-            <button
-              onClick={isExpanded ? collapseTab : expandTab}
-              className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
-            >
-              {isExpanded ? 
-                <><Minimize2 className="h-3 w-3" /> Recolher</> : 
-                <><Maximize2 className="h-3 w-3" /> Expandir</>
-              }
-            </button>
-          </div>
-          {vehicleType?.type.includes("truck") ? (
-            truckRestrictions && Array.isArray(truckRestrictions) && truckRestrictions.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <div className="bg-white rounded p-2 border border-gray-100">
-                  <h3 className="text-xs font-medium mb-1 text-primary">Restrições para caminhões</h3>
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 text-xs">
-                      <thead>
-                        <tr className="bg-gray-50">
-                          <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Cidade</th>
-                          <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Restrição</th>
-                          <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Horário</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-200">
-                      {(() => {
-                        // Definir a sequência de cidades pela ordem em que aparecem na rota
-                        const routeSequence = Array.isArray(calculatedRoute) 
-                          ? calculatedRoute.map(loc => loc.name || "").filter(Boolean)
-                          : [];
-                        
-                        // Extrair o nome exato das cidades da rota usando a função extractCityFromAddress
-                        const citiesInRoute = new Set<string>();
-                        
-                        // Adicionar a origem (Dois Córregos)
-                        citiesInRoute.add("Dois Córregos");
-                        
-                        // Adicionar cidades dos destinos usando a função extractCityFromAddress
-                        if (Array.isArray(calculatedRoute)) {
-                          calculatedRoute.forEach(location => {
-                            if (location.address) {
-                              const cityName = extractCityFromAddress(location.address);
-                              if (cityName) {
-                                citiesInRoute.add(cityName);
-                              }
-                            }
-                          });
-                        }
-                        
-                        // Forçar incluir Ribeirão Preto na lista se estiver no endereço
-                        const hasRibeiraoPreto = calculatedRoute ? calculatedRoute.some(location => 
-                          location.address && location.address.includes("Ribeirão Preto")
-                        ) : false;
-                        
-                        if (hasRibeiraoPreto) {
-                          citiesInRoute.add("Ribeirão Preto");
-                        }
-                        
-                        // Adicionando mais cidades manualmente para debugging
-                        console.log("Cidades na rota antes da adição manual:", Array.from(citiesInRoute));
-                        
-                        // Adicionar manualmente cidades importantes se houver endereços correspondentes na rota
-                        Array.isArray(calculatedRoute) && calculatedRoute.forEach(location => {
-                          const address = location.address?.toLowerCase() || '';
-                          if (address.includes('ribeirao') || address.includes('ribeirão')) {
-                            citiesInRoute.add('Ribeirão Preto');
-                          }
-                          if (address.includes('campinas')) {
-                            citiesInRoute.add('Campinas');
-                          }
-                        });
-                        
-                        console.log("Cidades na rota após adição manual:", Array.from(citiesInRoute));
-                        console.log("Todas as restrições disponíveis:", truckRestrictions);
-                        
-                        // Filtrar apenas restrições das cidades que estão na rota - com log para debug
-                        const filteredRestrictions = [...truckRestrictions]
-                          .filter(restriction => {
-                            const cityName = restriction.cityName.toLowerCase();
-                            const matchFound = Array.from(citiesInRoute).some(city => {
-                              const normalizedCity = city.toLowerCase();
-                              return cityName.includes(normalizedCity) || normalizedCity.includes(cityName);
-                            });
-                            
-                            if (matchFound) {
-                              console.log(`Restrição incluída: ${restriction.cityName}`);
-                            }
-                            
-                            return matchFound;
-                          });
-                        
-                        return filteredRestrictions.map((restriction: TruckRestriction) => (
-                          <tr key={restriction.id}>
-                            <td className="px-2 py-1 whitespace-nowrap">{restriction.cityName}</td>
-                            <td className="px-2 py-1">{restriction.restriction}</td>
-                            <td className="px-2 py-1 whitespace-nowrap">
-                              {restriction.startTime} - {restriction.endTime}
-                            </td>
-                          </tr>
-                        ));
-                      })()}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="text-center p-2 text-gray-500 text-xs">
-                Nenhuma restrição encontrada para caminhões nas cidades do trajeto.
-              </div>
-            )
-          ) : (
-            <div className="bg-blue-50 text-blue-700 p-2 rounded-md text-xs">
-              Restrições aplicáveis apenas para caminhões. Selecione um tipo de caminhão para ver as restrições.
+            <div className="text-center text-gray-500 py-4">
+              Nenhuma rota calculada
             </div>
           )}
         </div>
@@ -1092,30 +666,10 @@ export default function RouteInfoPanel({
 
       {/* Detailed Report Tab */}
       {activeTab === "report" && !isMinimized && (
-        <div className={`tab-panel ${isExpanded ? 'report-expanded' : 'p-2'}`}>
-          {isExpanded && (
-            <div className="report-header">
-              <h2 className="text-lg font-semibold">Relatório Completo de Rota</h2>
-              <div className="flex gap-2">
-                <button
-                  onClick={minimizeTab}
-                  className="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-gray-900 px-3 py-1 rounded text-sm transition-colors"
-                >
-                  <span>Ocultar</span>
-                  <X className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={collapseTab}
-                  className="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-gray-900 px-3 py-1 rounded text-sm transition-colors"
-                >
-                  <span>Recolher</span>
-                  <Minimize2 className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-          )}
-          {!isExpanded && (
-            <div className="flex justify-between mb-1">
+        <div className={`p-4 ${isExpanded ? 'h-[80vh] overflow-y-auto' : ''}`}>
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-base font-semibold">Relatório Detalhado</h2>
+            <div className="flex space-x-2">
               <button
                 onClick={minimizeTab}
                 className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
@@ -1123,26 +677,30 @@ export default function RouteInfoPanel({
                 <X className="h-3 w-3" /> Ocultar
               </button>
               <button
-                onClick={expandTab}
+                onClick={isExpanded ? collapseTab : expandTab}
                 className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
               >
-                <Maximize2 className="h-3 w-3" /> Expandir
+                {isExpanded ? 
+                  <><Minimize2 className="h-3 w-3" /> Recolher</> : 
+                  <><Maximize2 className="h-3 w-3" /> Expandir</>
+                }
               </button>
             </div>
-          )}
-          {!routeInfo ? (
-            <div className="text-center p-3 text-gray-500 text-xs">
-              Calcule uma rota para gerar o relatório detalhado.
-            </div>
-          ) : (
+          </div>
+          
+          {routeInfo ? (
             <RouteReport 
-              origin={origin} 
+              origin={origin}
               calculatedRoute={calculatedRoute}
               routeInfo={routeInfo}
               vehicleType={vehicleType}
               startDate={startDate}
               endDate={endDate}
             />
+          ) : (
+            <div className="text-center text-gray-500 py-4">
+              Nenhuma rota calculada ainda
+            </div>
           )}
         </div>
       )}
