@@ -25,6 +25,8 @@ export default function Home() {
   const [endDate, setEndDate] = useState<string | null>(null);
   const [calculatedRoute, setCalculatedRoute] = useState<Location[] | null>(null);
   const [poisOnRoute, setPoisOnRoute] = useState<PointOfInterest[]>([]);
+  // Estado para o nome da rota
+  const [routeName, setRouteName] = useState<string>("");
   const [routeMetrics, setRouteMetrics] = useState<{totalDistance: number, totalDuration: number}>({
     totalDistance: 0,
     totalDuration: 0
@@ -447,6 +449,8 @@ export default function Home() {
           endDate={endDate}
           onStartDateChange={setStartDate}
           onEndDateChange={setEndDate}
+          routeName={routeName}
+          onRouteNameChange={setRouteName}
         />
         
         {/* Área principal com o mapa */}
