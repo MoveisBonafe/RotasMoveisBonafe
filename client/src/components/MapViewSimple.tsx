@@ -249,21 +249,29 @@ export default function MapViewSimple({
               newInfoWindows.push(infoWindow);
             }
             
-            // 2. Adicionar marcadores para cada waypoint (numerados sequencialmente)
+            // 2. Adicionar marcadores para cada waypoint (copiando a mesma ordem da interface)
             if (waypoints && waypoints.length > 0) {
               // Usar os waypoints na mesma ordem que foram fornecidos
               // Isso garantirá que a numeração corresponde à sequência exibida no painel
+              
+              // Identificar a ordem atual dos pontos pela lista de waypoints
+              const finalIndex = waypoints.length - 1;
+              
+              // Marcar origem como 0 e para os demais pontos usar índices a partir de 1
               waypoints.forEach((point, index) => {
+                // Cada ponto terá etiqueta de 1 a N (origem já é 0)
+                const displayNumber = (index + 1).toString();
+                
                 const waypointMarker = new window.google.maps.Marker({
                   position: { lat: parseFloat(point.lat), lng: parseFloat(point.lng) },
                   map: map,
-                  title: point.name || `Destino ${index + 1}`,
+                  title: point.name || `Destino ${displayNumber}`,
                   icon: {
                     url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
                   },
                   label: {
-                    text: (index + 1).toString(),
-                    color: "#FFFFFF",
+                    text: displayNumber,
+                    color: "#FFFFFF", 
                     fontSize: "14px",
                     fontWeight: "bold"
                   },
