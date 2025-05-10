@@ -544,16 +544,26 @@ export default function MapViewSimple({
                 
                 const isNearRoute = minDistance <= MAX_DISTANCE_KM;
                 
-                // Casos especiais - critérios adicionais para POIs importantes
+                // Sistema melhorado para detecção de POIs relevantes
+                
+                // 1. Se o POI está dentro da distância limite padrão, sempre inclua
+                if (isNearRoute) {
+                  return true; // Adicionar ao mapa imediatamente
+                }
+                
+                // 2. Lógica específica para rotas conhecidas
                 const isSpecialCase = 
-                  // Pedágio obrigatório para rota Ribeirão Preto
-                  (hasRibeiraoPreto && poi.name.includes("Guatapará")) || 
-                  (hasRibeiraoPreto && poi.name.includes("Boa Esperança")) ||
-                  // Remover Luís Antônio como caso especial, será controlado pela distância
-                  
-                  // Garantir que todos os pedágios do percurso sejam incluídos conforme relatado pelo Google Maps
-                  // Distância mais flexível para pedágios da rodovia principal
-                  (poi.type === "toll" && poi.roadName === "SP-255" && hasRibeiraoPreto && minDistance <= 12);
+                  // Rota para Ribeirão Preto: incluir todos os pedágios da SP-255
+                  (hasRibeiraoPreto && 
+                   poi.roadName === "SP-255" && 
+                   poi.type === "toll" && 
+                   (
+                     // Aumentar o raio de detecção para pedágios específicos
+                     poi.name.includes("Guatapará") || 
+                     poi.name.includes("Boa Esperança") || 
+                     poi.name.includes("Ribeirão Preto")
+                   )
+                  );
                 
                 // Verificar se é um ponto capturado da API da Google
                 const isTollFromAPI = tollPointsFromAPI.some(tp => 

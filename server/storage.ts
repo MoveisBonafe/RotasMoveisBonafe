@@ -218,8 +218,8 @@ export class MemStorage implements IStorage {
       {
         name: "Pedágio SP-255 (Ribeirão Preto)",
         type: "toll",
-        lat: "-21.2112",
-        lng: "-47.7875",
+        lat: "-21.2167", // Coordenada corrigida na entrada de Ribeirão Preto
+        lng: "-47.7940", // Localização mais precisa na rodovia SP-255
         cost: 950, // R$9.50 (preço base para carros)
         roadName: "SP-255",
         restrictions: null
@@ -263,8 +263,8 @@ export class MemStorage implements IStorage {
       {
         name: "Balança Luís Antônio (km 150)",
         type: "weighing_station",
-        lat: "-21.5502",
-        lng: "-47.7770",
+        lat: "-21.5483", // Coordenada corrigida no km 150 da SP-255
+        lng: "-47.7699", // Localização mais precisa na rodovia
         cost: null,
         restrictions: "Veículos acima de 1 eixo",
         roadName: "SP-255"
@@ -272,10 +272,19 @@ export class MemStorage implements IStorage {
       {
         name: "Pedágio SP-255 (Guatapará)", 
         type: "toll",
-        lat: "-21.4955",
-        lng: "-48.0355",
+        lat: "-21.4091", // Coordenada corrigida para o Km 37 da SP-255
+        lng: "-47.9834", // Localização mais precisa no percurso da rodovia
         cost: 1050, // R$10.50 (preço base para carros)
         roadName: "SP-255",
+        restrictions: null
+      },
+      {
+        name: "Pedágio Boa Esperança do Sul",
+        type: "toll",
+        lat: "-21.9932", // Coordenada precisa no percurso entre Dois Córregos e Ribeirão Preto
+        lng: "-48.3871", // Na SP-255
+        cost: 950, // R$9.50 (preço base para carros)
+        roadName: "SP-255", 
         restrictions: null
       }
     ];

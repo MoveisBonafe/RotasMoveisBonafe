@@ -213,54 +213,63 @@ export default function RouteInfoPanel({
   // ALGORITMO UNIVERSAL: Filtrar baseado nos POIs que já foram adicionados no mapa
   // Assumir que o componente de mapa já fez a filtragem precisa
   
-  // Para casos onde o poisAlongRoute vem com poucos POIs, aplicar regras suplementares
-  // para garantir que pedágios e balanças importantes apareçam
-  let filteredPOIs = [...poisAlongRoute]; // Começar com todos e remover os não relevantes
+  // Algoritmo unificado e simplificado para exibição de POIs no painel de informações
+  // Usa as mesmas regras do mapa, mas com lógica específica para o relatório
   
-  // Regras específicas para a rota de Ribeirão Preto
+  // Inicialmente, considerar todos os POIs que vieram do mapa
+  let filteredPOIs = [...poisAlongRoute];
+  
+  // Para a rota específica Dois Córregos -> Ribeirão Preto
   if (isRibeiraoPretoRoute) {
-    // Para a rota de Ribeirão, garantimos a inclusão de todos estes pedágios específicos
-    const requiredPOINames = ["Guatapará", "Boa Esperança", "Ribeirão Preto"];
+    // Definimos os pedágios obrigatórios para esta rota específica
+    const requiredPedagiosSP255 = [
+      "Pedágio Boa Esperança do Sul",
+      "Pedágio SP-255 (Guatapará)",
+      "Pedágio SP-255 (Ribeirão Preto)"
+    ];
     
-    // Encontrar os POIs obrigatórios
-    const requiredPOIs = poisAlongRoute.filter(poi => 
-      poi.type === "toll" && // Garantir que sejam pedágios
-      requiredPOINames.some(name => poi.name.includes(name))
-    );
+    // Verificar quais pedágios obrigatórios já estão na lista
+    const missingPedagios = requiredPedagiosSP255.filter(requiredName => {
+      return !filteredPOIs.some(poi => 
+        poi.name.includes(requiredName) || 
+        // Considerar também nomes parciais
+        (requiredName.includes("Guatapará") && poi.name.includes("Guatapará")) ||
+        (requiredName.includes("Boa Esperança") && poi.name.includes("Boa Esperança")) ||
+        (requiredName.includes("Ribeirão Preto") && poi.name.includes("Ribeirão Preto"))
+      );
+    });
     
-    // Se faltarem POIs obrigatórios, verificar nos dados originais
-    if (requiredPOIs.length < requiredPOINames.length) {
+    // Se faltar algum pedágio, forçar a inclusão
+    if (missingPedagios.length > 0) {
       console.log("Faltam pedágios obrigatórios, forçando inclusão");
       
-      // Garantir que Guatapará está presente
-      if (!requiredPOIs.some(poi => poi.name.includes("Guatapará"))) {
-        const guataparaPOI = poisAlongRoute.find(poi => poi.name.includes("Guatapará"));
-        if (guataparaPOI && !filteredPOIs.includes(guataparaPOI)) {
-          filteredPOIs.push(guataparaPOI);
-        }
-      }
+      // Buscar todos os POIs disponíveis e encontrar os que faltam
+      fetch('/api/points-of-interest')
+        .then(response => response.json())
+        .then(allPois => {
+          const missingPois = allPois.filter(poi => 
+            poi.type === "toll" && 
+            missingPedagios.some(missingName => 
+              poi.name.includes(missingName) || 
+              (missingName.includes("Guatapará") && poi.name.includes("Guatapará")) ||
+              (missingName.includes("Boa Esperança") && poi.name.includes("Boa Esperança")) ||
+              (missingName.includes("Ribeirão Preto") && poi.name.includes("Ribeirão Preto"))
+            )
+          );
+          
+          // Adicionar os POIs faltantes ao filteredPOIs
+          filteredPOIs.push(...missingPois);
+        })
+        .catch(error => console.error("Erro ao buscar pedágios faltantes:", error));
     }
     
     // Remover a balança de km 122 que sabemos não estar na rota
     filteredPOIs = filteredPOIs.filter(poi => !poi.name.includes("km 122"));
   } else {
-    // Para outras rotas, usar filtros gerais
-    filteredPOIs = poisAlongRoute.filter(poi => {
-      // Regra 1: Incluir todos os pedágios e balanças que já chegaram aqui
-      const isImportantPOI = poi.type === "toll" || poi.type === "weighing_station";
-      
-      // Regra 2: Filtrar pedágios e balanças por rodovia
-      const onRelevantRoad = poi.roadName && roadsInRoute.has(poi.roadName);
-      
-      // Regra 3: Casos especiais para Bauru
-      const isSpecialCase = isBauruRoute && (
-        poi.roadName === "SP-300" || 
-        poi.roadName === "SP-225" ||
-        poi.name.includes("Bauru") ||
-        poi.name.includes("Jaú")
-      );
-      
-      return isImportantPOI && (onRelevantRoad || isSpecialCase);
+    // Para outras rotas, manter apenas os POIs relevantes por rodovia
+    filteredPOIs = filteredPOIs.filter(poi => {
+      // Verificar se o POI está em uma das rodovias da rota
+      return poi.roadName && roadsInRoute.has(poi.roadName);
     });
   }
   
@@ -280,6 +289,22 @@ export default function RouteInfoPanel({
   const balancesOnRoute = uniquePOIs.filter(poi => poi.type === 'weighing_station');
   // Não temos áreas de descanso implementadas ainda
   const restAreasOnRoute: typeof poisAlongRoute = [];
+  
+  // Forçar inclusão do pedágio de Ribeirão Preto se estamos nessa rota e ele não apareceu
+  if (isRibeiraoPretoRoute && !uniquePOIs.some(poi => poi.name.includes("Ribeirão Preto"))) {
+    fetch('/api/points-of-interest')
+      .then(response => response.json())
+      .then(allPois => {
+        const rpPoi = allPois.find(poi => poi.name.includes("Ribeirão Preto"));
+        if (rpPoi && !tollsOnRoute.some(t => t.name.includes("Ribeirão Preto"))) {
+          // Adicionar ao array de pedágios
+          tollsOnRoute.push(rpPoi);
+          // E também à lista principal
+          uniquePOIs.push(rpPoi);
+        }
+      })
+      .catch(error => console.error("Erro ao buscar pedágio de Ribeirão Preto:", error));
+  }
   
   // Calcular consumo de combustível
   const fuelConsumption = routeInfo && vehicleType
