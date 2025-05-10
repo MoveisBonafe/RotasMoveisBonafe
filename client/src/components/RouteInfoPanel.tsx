@@ -297,7 +297,8 @@ export default function RouteInfoPanel({
 
       {/* Summary Tab */}
       {activeTab === "summary" && (
-        <div className={`p-2 ${isExpanded ? 'expanded-tab' : ''}`}>
+        <div className={`${isCollapsed ? 'p-1' : 'p-2'} ${isExpanded ? 'expanded-tab' : ''}`}>
+          {/* Header com botões de minimizar/expandir */}
           <div className="flex justify-between mb-1">
             <div className="flex items-center">
               {isCollapsed && routeInfo && (
@@ -321,6 +322,7 @@ export default function RouteInfoPanel({
               <button
                 onClick={() => setIsCollapsed(!isCollapsed)}
                 className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+                aria-label={isCollapsed ? "Mostrar conteúdo" : "Ocultar conteúdo"}
               >
                 {isCollapsed ? 
                   <><Maximize2 className="h-3 w-3" /> Mostrar</> : 
@@ -330,6 +332,7 @@ export default function RouteInfoPanel({
             </div>
           </div>
 
+          {/* Somente exibe o conteúdo se não estiver minimizado */}
           {!isCollapsed && (
             !routeInfo ? (
               <div className="text-center p-3 text-gray-500 text-xs">
@@ -375,7 +378,16 @@ export default function RouteInfoPanel({
                   
                   {/* Filtrar POIs, restrições e eventos */}
                   {(() => {
-                    // Usar filteredPOIs do state para pedágios e balanças
+                    // Verificar se temos uma rota calculada para filtrar pontos de atenção
+                    if (!calculatedRoute || calculatedRoute.length === 0) {
+                      return (
+                        <div className="text-xs text-gray-500">
+                          Calcule uma rota para ver os pontos de atenção no trajeto
+                        </div>
+                      );
+                    }
+                    
+                    // Usar filteredPOIs do state (que já está filtrado para mostrar apenas os da rota)
                     const tollsToShow = filteredPOIs.filter(p => p.type === 'toll');
                     const balancesToShow = filteredPOIs.filter(p => p.type === 'weighing_station');
                     
@@ -389,10 +401,13 @@ export default function RouteInfoPanel({
                         )
                       ) : [];
                     
-                    // Verificar se temos algum ponto de atenção para mostrar
+                    // Verificar se temos pontos de atenção relevantes no percurso
                     const hasAttentionPoints = tollsToShow.length > 0 || 
-                                              balancesToShow.length > 0 || 
-                                              restrictionsToShow.length > 0;
+                                            balancesToShow.length > 0 || 
+                                            restrictionsToShow.length > 0;
+                    
+                    // Log para ajudar no debug
+                    console.log(`Pontos de Atenção no percurso: ${tollsToShow.length} pedágios e ${balancesToShow.length} balanças`);
                     
                     // Mostrar os pontos de atenção (se houver)
                     return hasAttentionPoints ? (
@@ -402,7 +417,7 @@ export default function RouteInfoPanel({
                           <li className="flex items-center">
                             <span className="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-1"></span>
                             <span>
-                              {tollsToShow.length} {tollsToShow.length === 1 ? 'pedágio' : 'pedágios'}: 
+                              {tollsToShow.length} {tollsToShow.length === 1 ? 'pedágio' : 'pedágios'} no percurso: 
                               <span className="text-gray-500 ml-1">
                                 {tollsToShow.map(toll => 
                                   toll.name.includes('(') ? toll.name.split('(').pop()?.replace(')', '') || '' : toll.roadName || toll.name
@@ -417,7 +432,7 @@ export default function RouteInfoPanel({
                           <li className="flex items-center">
                             <span className="inline-block w-2 h-2 rounded-full bg-red-600 mr-1"></span>
                             <span>
-                              {balancesToShow.length} {balancesToShow.length === 1 ? 'balança' : 'balanças'} em operação
+                              {balancesToShow.length} {balancesToShow.length === 1 ? 'balança' : 'balanças'} em operação no percurso
                             </span>
                           </li>
                         )}
