@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { RouteInfo, VehicleType, CityEvent, TruckRestriction, PointOfInterest, TabType, Location as LocationType } from "@/lib/types";
 import { formatDistance, formatDuration, formatCurrency, formatRouteSequence } from "@/lib/mapUtils";
 import { calculateFuelConsumption, getFuelEfficiency } from "@/lib/costCalculator";
+import { extractCityFromAddress } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import RouteReport from "./RouteReport";
 
@@ -184,7 +185,11 @@ export default function RouteInfoPanel({
                             <span className="inline-flex justify-center items-center w-5 h-5 rounded-full bg-primary text-white text-xs mr-1">
                               {index + 1}
                             </span>
-                            <span className="font-medium">{location.name}</span>
+                            <span className="font-medium">
+                              {location.name.startsWith("R.") || location.name.startsWith("Av.") 
+                                ? extractCityFromAddress(location.address) 
+                                : location.name}
+                            </span>
                           </div>
                           
                           {index < calculatedRoute.length - 1 && (
@@ -292,30 +297,32 @@ export default function RouteInfoPanel({
                   ? calculatedRoute.map(loc => loc.name || "").filter(Boolean)
                   : [];
                 
-                // Extrair o nome exato das cidades da rota
+                // Extrair o nome exato das cidades da rota usando a função extractCityFromAddress
                 const citiesInRoute = new Set<string>();
-                routeSequence.forEach(city => {
-                  // Considerar a origem (Dois Córregos)
-                  if (city === "Dois Córregos") {
-                    citiesInRoute.add("Dois Córregos");
-                  } else {
-                    // Para destinos, verificar nome completo ou parte do nome
-                    citiesInRoute.add(city);
-                    
-                    // Extrair nome da cidade do endereço (caso tenha cidade no endereço)
-                    const cityParts = city.split(",");
-                    if (cityParts.length > 1) {
-                      const cityName = cityParts[0].trim();
-                      citiesInRoute.add(cityName);
+                
+                // Adicionar a origem (Dois Córregos)
+                citiesInRoute.add("Dois Córregos");
+                
+                // Adicionar cidades dos destinos usando a função extractCityFromAddress
+                if (Array.isArray(calculatedRoute)) {
+                  calculatedRoute.forEach(location => {
+                    if (location.address) {
+                      const cityName = extractCityFromAddress(location.address);
+                      if (cityName) {
+                        citiesInRoute.add(cityName);
+                      }
                     }
-                    
-                    // Verificar se o endereço contém Ribeirão Preto
-                    if (calculatedRoute && calculatedRoute.some(loc => 
-                      loc.address && loc.address.includes("Ribeirão Preto"))) {
-                      citiesInRoute.add("Ribeirão Preto");
-                    }
-                  }
-                });
+                  });
+                }
+                
+                // Forçar incluir Ribeirão Preto na lista se estiver no endereço
+                const hasRibeiraoPreto = calculatedRoute ? calculatedRoute.some(location => 
+                  location.address && location.address.includes("Ribeirão Preto")
+                ) : false;
+                
+                if (hasRibeiraoPreto) {
+                  citiesInRoute.add("Ribeirão Preto");
+                }
                 
                 // Criar um mapa para saber a posição de cada cidade na rota
                 const cityPositionMap = new Map();
@@ -416,24 +423,32 @@ export default function RouteInfoPanel({
                           ? calculatedRoute.map(loc => loc.name || "").filter(Boolean)
                           : [];
                         
-                        // Extrair o nome exato das cidades da rota
+                        // Extrair o nome exato das cidades da rota usando a função extractCityFromAddress
                         const citiesInRoute = new Set<string>();
-                        routeSequence.forEach(city => {
-                          // Considerar a origem (Dois Córregos)
-                          if (city === "Dois Córregos") {
-                            citiesInRoute.add("Dois Córregos");
-                          } else {
-                            // Para destinos, verificar nome completo ou parte do nome
-                            citiesInRoute.add(city);
-                            
-                            // Extrair nome da cidade do endereço (caso tenha cidade no endereço)
-                            const cityParts = city.split(",");
-                            if (cityParts.length > 1) {
-                              const cityName = cityParts[0].trim();
-                              citiesInRoute.add(cityName);
+                        
+                        // Adicionar a origem (Dois Córregos)
+                        citiesInRoute.add("Dois Córregos");
+                        
+                        // Adicionar cidades dos destinos usando a função extractCityFromAddress
+                        if (Array.isArray(calculatedRoute)) {
+                          calculatedRoute.forEach(location => {
+                            if (location.address) {
+                              const cityName = extractCityFromAddress(location.address);
+                              if (cityName) {
+                                citiesInRoute.add(cityName);
+                              }
                             }
-                          }
-                        });
+                          });
+                        }
+                        
+                        // Forçar incluir Ribeirão Preto na lista se estiver no endereço
+                        const hasRibeiraoPreto = calculatedRoute ? calculatedRoute.some(location => 
+                          location.address && location.address.includes("Ribeirão Preto")
+                        ) : false;
+                        
+                        if (hasRibeiraoPreto) {
+                          citiesInRoute.add("Ribeirão Preto");
+                        }
                         
                         // Filtrar apenas restrições das cidades que estão na rota
                         const filteredRestrictions = [...truckRestrictions]

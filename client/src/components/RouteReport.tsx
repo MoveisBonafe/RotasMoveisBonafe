@@ -38,32 +38,24 @@ export default function RouteReport({
 }: RouteReportProps) {
   const reportRef = useRef<HTMLDivElement>(null);
 
-  // Extrair cidades dos destinos para consultas
+  // Extrair cidades dos destinos para consultas usando a função extractCityFromAddress
   const destinationCityNames = calculatedRoute 
     ? calculatedRoute.map(location => {
-        // Tenta extrair o nome da cidade do endereço (os padrões de endereço no Brasil geralmente têm a cidade antes do estado)
         if (location.address) {
-          const parts = location.address.split(',');
-          
-          // Procurar cidade antes do estado (SP, MG, RJ, etc.)
-          for (let i = 0; i < parts.length; i++) {
-            const part = parts[i].trim();
-            // Se encontramos um padrão que parece um estado brasileiro (2 letras maiúsculas)
-            if (/[A-Z]{2}/.test(part)) {
-              // A cidade geralmente está antes do estado
-              if (i > 0) {
-                return parts[i-1].trim();
-              }
-            }
-          }
-          
-          // Se não encontrar padrão de estado, use a primeira parte como default
-          if (parts.length > 0) {
-            return parts[0].trim();
+          // Usar a função centralizada para extrair nome da cidade
+          const cityName = extractCityFromAddress(location.address);
+          if (cityName) {
+            return cityName;
           }
         }
         
-        // Se tudo mais falhar, usa o nome do local
+        // Se a função de extração falhar ou não houver endereço, usa o nome do local
+        // Mas verifica se é nome de rua primeiro
+        if (location.name.startsWith("R.") || location.name.startsWith("Av.")) {
+          const cityName = extractCityFromAddress(location.address);
+          return cityName || location.name;
+        }
+        
         return location.name;
       }).filter(Boolean) as string[]
     : [];
