@@ -218,16 +218,69 @@ export default function MapViewSimple({
           
           console.log("Rota calculada! Adicionando marcadores...");
           
-          // ===== NOVO: Integração com API AILOG para obter pedágios precisos na rota =====
-          // Usar a API AILOG para obter pedágios preciso ao invés de estimá-los por proximidade
+          // ===== SOLUÇÃO HÍBRIDA: Integração com API AILOG + Google Places para pedágios =====
+          // Usar diferentes fontes para localizar pedágios com mais precisão
           const vehicleType = localStorage.getItem('selectedVehicleType') || 'car';
           
           // Para garantir que a função assíncrona não bloqueie a renderização da rota
           (async () => {
             try {
-              // Chamar a API AILOG para obter pedágios precisos desta rota
-              const ailogTolls = await fetchTollsFromAilog(origin, waypoints, vehicleType);
-              console.log('Pedágios identificados pela API AILOG:', ailogTolls);
+              // Array que vai conter todos os pedágios encontrados
+              let allTolls: PointOfInterest[] = [];
+              
+              // 1. Chamar a API AILOG para obter pedágios precisos 
+              console.log('Buscando pedágios pela API AILOG...');
+              try {
+                const ailogTolls = await fetchTollsFromAilog(origin, waypoints, vehicleType);
+                if (ailogTolls && ailogTolls.length > 0) {
+                  console.log('Pedágios identificados pela API AILOG:', ailogTolls.length);
+                  // Adicionar flag indicando a fonte
+                  allTolls = ailogTolls.map(toll => ({
+                    ...toll, 
+                    ailogSource: true
+                  }));
+                } else {
+                  console.log('Nenhum pedágio encontrado pela API AILOG');
+                }
+              } catch (ailogError) {
+                console.error('Erro ao buscar pedágios pela API AILOG:', ailogError);
+              }
+              
+              // 2. Usar Google Places API para encontrar pedágios
+              console.log('Buscando pedágios pelo Google Places API...');
+              try {
+                const googlePlacesTolls = await findTollsUsingGooglePlaces(map, result);
+                if (googlePlacesTolls && googlePlacesTolls.length > 0) {
+                  console.log('Pedágios identificados pelo Google Places:', googlePlacesTolls.length);
+                  
+                  // Verificar se temos duplicatas entre as fontes
+                  const uniqueTolls = googlePlacesTolls.filter(gToll => {
+                    return !allTolls.some(existingToll => 
+                      calculateHaversineDistance(
+                        parseFloat(gToll.lat), parseFloat(gToll.lng),
+                        parseFloat(existingToll.lat), parseFloat(existingToll.lng)
+                      ) < 1 // Menos de 1km de distância = considerado duplicata
+                    );
+                  });
+                  
+                  console.log(`Adicionando ${uniqueTolls.length} pedágios únicos do Google Places`);
+                  allTolls = [...allTolls, ...uniqueTolls];
+                }
+              } catch (placesError) {
+                console.error('Erro ao buscar pedágios pelo Google Places:', placesError);
+              }
+              
+              // 3. Se os métodos anteriores falharem, usar pedágios conhecidos
+              if (allTolls.length === 0) {
+                console.log('Tentando método alternativo: pedágios de rodovias conhecidas');
+                const knownTolls = findTollsFromKnownHighways(result);
+                if (knownTolls && knownTolls.length > 0) {
+                  console.log(`Encontrados ${knownTolls.length} pedágios em rodovias conhecidas`);
+                  allTolls = knownTolls;
+                }
+              }
+              
+              console.log(`Total final de pedágios encontrados: ${allTolls.length}`);
               
               // Limpar marcadores existentes de POIs
               markers.forEach(marker => {

@@ -26,6 +26,11 @@ export interface PointOfInterest {
   restrictions?: string;
   roadName?: string;
   city?: string; // cidade onde está localizado o pedágio
+  address?: string; // endereço completo quando disponível
+  googlePlaceId?: string; // ID do lugar no Google Places API
+  ailogSource?: boolean; // Se veio da API AILOG
+  googlePlacesSource?: boolean; // Se veio do Google Places API
+  knownHighwaySource?: boolean; // Se veio da lista de pedágios conhecidos
 }
 
 export interface CityEvent {

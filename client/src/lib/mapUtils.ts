@@ -276,6 +276,311 @@ export function decodePolyline(encoded: string): { lat: number, lng: number }[] 
 }
 
 /**
+ * Busca pedágios ao longo da rota utilizando a API Places do Google Maps
+ * Esta abordagem é mais confiável para identificar pedágios no Brasil
+ * @param map Instância do mapa Google Maps
+ * @param route Rota calculada pelo DirectionsService
+ * @returns Promise com array de PointOfInterest representando pedágios
+ */
+export async function findTollsUsingGooglePlaces(map: any, route: any): Promise<PointOfInterest[]> {
+  if (!map || !route || !route.routes || route.routes.length === 0 || !window.google) {
+    console.log("Google Places: Dados insuficientes para buscar pedágios");
+    return [];
+  }
+
+  return new Promise((resolve) => {
+    // Array para armazenar os pedágios encontrados
+    const tolls: PointOfInterest[] = [];
+    let tollId = 20000; // ID base para pedágios Places
+    
+    try {
+      console.log("Iniciando busca de pedágios com Google Places API");
+      
+      // Obter o polyline da rota
+      const polyline = route.routes[0].overview_polyline.points;
+      const path = decodePolyline(polyline);
+      
+      // Criar um serviço Places
+      const placesService = new window.google.maps.places.PlacesService(map);
+      
+      // Determinar pontos de busca ao longo da rota (a cada 50km aproximadamente)
+      const searchPoints: {lat: number, lng: number}[] = [];
+      const SEARCH_INTERVAL_KM = 50; // Buscar a cada 50km
+      
+      // Adicionar ponto inicial
+      if (path.length > 0) {
+        searchPoints.push(path[0]);
+      }
+      
+      // Adicionar pontos intermediários a cada SEARCH_INTERVAL_KM
+      let distanceSum = 0;
+      for (let i = 1; i < path.length; i++) {
+        const prevPoint = path[i-1];
+        const currentPoint = path[i];
+        
+        const segmentDistance = calculateHaversineDistance(
+          prevPoint.lat, prevPoint.lng, 
+          currentPoint.lat, currentPoint.lng
+        );
+        
+        distanceSum += segmentDistance;
+        
+        if (distanceSum >= SEARCH_INTERVAL_KM) {
+          searchPoints.push(currentPoint);
+          distanceSum = 0;
+        }
+      }
+      
+      // Adicionar ponto final se não foi adicionado pela lógica anterior
+      if (path.length > 1 && searchPoints[searchPoints.length - 1] !== path[path.length - 1]) {
+        searchPoints.push(path[path.length - 1]);
+      }
+      
+      console.log(`Google Places: Buscando pedágios em ${searchPoints.length} pontos ao longo da rota`);
+      
+      // Contador para controlar quando todos os pedidos foram concluídos
+      let completedRequests = 0;
+      let foundTolls = false;
+      
+      // Processar cada ponto de busca
+      searchPoints.forEach((point, index) => {
+        // Criar request para buscar pontos de interesse do tipo 'toll_booth'
+        const request = {
+          location: new window.google.maps.LatLng(point.lat, point.lng),
+          radius: 20000, // 20km de raio
+          type: 'toll_booth' // Tipo específico para pedágios
+        };
+        
+        // Executar a busca com um pequeno atraso para não sobrecarregar a API
+        setTimeout(() => {
+          placesService.nearbySearch(request, (results: any, status: any) => {
+            completedRequests++;
+            
+            if (status === window.google.maps.places.PlacesServiceStatus.OK && results && results.length) {
+              console.log(`Google Places: Encontrados ${results.length} pedágios próximos ao ponto ${index + 1}`);
+              foundTolls = true;
+              
+              // Processar cada resultado
+              results.forEach((place: any) => {
+                // Verificar se este pedágio já foi adicionado (evitar duplicatas)
+                const isDuplicate = tolls.some(toll => 
+                  calculateHaversineDistance(
+                    parseFloat(toll.lat), parseFloat(toll.lng),
+                    place.geometry.location.lat(), place.geometry.location.lng()
+                  ) < 1 // Se estiver a menos de 1km, considerar duplicata
+                );
+                
+                if (!isDuplicate) {
+                  // Criar objeto de ponto de interesse
+                  const tollName = place.name || `Pedágio ${index + 1}`;
+                  
+                  const poi: PointOfInterest = {
+                    id: tollId++,
+                    name: tollName,
+                    lat: place.geometry.location.lat().toString(),
+                    lng: place.geometry.location.lng().toString(),
+                    type: 'toll',
+                    googlePlaceId: place.place_id,
+                    roadName: place.vicinity || '',
+                    ailogSource: false,
+                    googlePlacesSource: true
+                  };
+                  
+                  console.log(`Google Places: Adicionado pedágio "${tollName}" em ${poi.lat},${poi.lng}`);
+                  tolls.push(poi);
+                  
+                  // Opcionalmente, buscar detalhes adicionais
+                  placesService.getDetails({
+                    placeId: place.place_id,
+                    fields: ['name', 'formatted_address', 'formatted_phone_number', 'rating']
+                  }, (placeDetails: any, detailStatus: any) => {
+                    if (detailStatus === window.google.maps.places.PlacesServiceStatus.OK) {
+                      // Atualizar informações com os detalhes obtidos
+                      const tollIndex = tolls.findIndex(t => t.googlePlaceId === place.place_id);
+                      if (tollIndex >= 0) {
+                        if (placeDetails.formatted_address) {
+                          tolls[tollIndex].address = placeDetails.formatted_address;
+                        }
+                        if (placeDetails.name && placeDetails.name !== tolls[tollIndex].name) {
+                          tolls[tollIndex].name = placeDetails.name;
+                        }
+                      }
+                    }
+                  });
+                }
+              });
+            }
+            
+            // Se todos os pedidos foram concluídos, resolver a Promise
+            if (completedRequests === searchPoints.length) {
+              console.log(`Google Places: Busca completa, encontrados ${tolls.length} pedágios únicos`);
+              
+              if (!foundTolls) {
+                console.log("Google Places: Nenhum pedágio encontrado pela API. Verificando rodovias conhecidas.");
+                // Se não encontrou pedágios, usa o fallback de rodovias conhecidas
+                const knownTolls = findTollsFromKnownHighways(route);
+                resolve([...tolls, ...knownTolls]);
+              } else {
+                resolve(tolls);
+              }
+            }
+          });
+        }, index * 300); // Atraso escalonado para não sobrecarregar a API
+      });
+    } catch (error) {
+      console.error("Erro ao buscar pedágios com Google Places:", error);
+      resolve([]);
+    }
+  });
+}
+
+/**
+ * Identifica pedágios com base em rodovias conhecidas mencionadas nas direções
+ * Método de fallback quando os outros métodos não encontram pedágios
+ */
+export function findTollsFromKnownHighways(directionsResult: any): PointOfInterest[] {
+  if (!directionsResult || !directionsResult.routes || directionsResult.routes.length === 0) {
+    return [];
+  }
+  
+  console.log("Buscando pedágios em rodovias conhecidas");
+  const tollPoints: PointOfInterest[] = [];
+  let tollId = 30000; // ID base para pedágios de rodovias conhecidas
+  
+  try {
+    const route = directionsResult.routes[0];
+    const legs = route.legs || [];
+    
+    // Identificar rodovias mencionadas
+    const rodovias: string[] = [];
+    legs.forEach(leg => {
+      if (leg.steps) {
+        leg.steps.forEach((step: any) => {
+          if (step.html_instructions) {
+            // Extrair menções a rodovias (SP-XXX, BR-XXX, etc)
+            const instText = step.html_instructions.replace(/<[^>]*>/g, '');
+            const rodoviaMatches = instText.match(/(SP|BR|MG|PR|RS|SC|GO|MT|MS|BA|PE|RJ|ES)[-\s](\d{3})/g);
+            if (rodoviaMatches) {
+              rodoviaMatches.forEach(rod => {
+                const normalizedRod = rod.replace(/\s+/g, '-').toUpperCase();
+                if (!rodovias.includes(normalizedRod)) {
+                  rodovias.push(normalizedRod);
+                  console.log(`Rodovia detectada: ${normalizedRod}`);
+                }
+              });
+            }
+          }
+        });
+      }
+    });
+    
+    // Mapa de pedágios conhecidos por rodovia - Dados mais completos
+    const pedagiosPorRodovia: {[key: string]: {nome: string, lat: string, lng: string, custo?: number}[]} = {
+      'SP-255': [
+        {nome: 'Pedágio SP-255 (Jaú)', lat: '-22.1856', lng: '-48.6087', custo: 1150},
+        {nome: 'Pedágio SP-255 (Barra Bonita)', lat: '-22.5123', lng: '-48.5566', custo: 950},
+        {nome: 'Pedágio SP-255 (Boa Esperança do Sul)', lat: '-21.9927', lng: '-48.3926', custo: 1050},
+        {nome: 'Pedágio SP-255 (Araraquara)', lat: '-21.7925', lng: '-48.2067', custo: 970},
+        {nome: 'Pedágio SP-255 (Guatapará)', lat: '-21.4955', lng: '-48.0355', custo: 1050},
+        {nome: 'Pedágio SP-255 (Ribeirão Preto)', lat: '-21.2112', lng: '-47.7875', custo: 950}
+      ],
+      'SP-225': [
+        {nome: 'Pedágio SP-225 (Brotas)', lat: '-22.2982', lng: '-48.1157', custo: 1100},
+        {nome: 'Pedágio SP-225 (Dois Córregos)', lat: '-22.3673', lng: '-48.2823', custo: 980},
+        {nome: 'Pedágio SP-225 (Jaú)', lat: '-22.3006', lng: '-48.5584', custo: 1050},
+        {nome: 'Pedágio SP-225 (Itirapina)', lat: '-22.2505', lng: '-47.8456', custo: 990}
+      ],
+      'SP-310': [
+        {nome: 'Pedágio SP-310 (Itirapina)', lat: '-22.2449', lng: '-47.8278', custo: 1100},
+        {nome: 'Pedágio SP-310 (São Carlos)', lat: '-22.0105', lng: '-47.9107', custo: 1050},
+        {nome: 'Pedágio SP-310 (Araraquara)', lat: '-21.7950', lng: '-48.1758', custo: 1150},
+        {nome: 'Pedágio SP-310 (Matão)', lat: '-21.6215', lng: '-48.3663', custo: 1050},
+        {nome: 'Pedágio SP-310 (Catanduva)', lat: '-21.1389', lng: '-48.9689', custo: 1050}
+      ],
+      'SP-330': [
+        {nome: 'Pedágio SP-330 (Ribeirão Preto)', lat: '-21.2089', lng: '-47.8651', custo: 1100},
+        {nome: 'Pedágio SP-330 (Sertãozinho)', lat: '-21.0979', lng: '-47.9959', custo: 950},
+        {nome: 'Pedágio SP-330 (Bebedouro)', lat: '-20.9492', lng: '-48.4846', custo: 1050},
+        {nome: 'Pedágio SP-330 (Colômbia)', lat: '-20.1775', lng: '-48.7064', custo: 1100}
+      ]
+    };
+    
+    // Para cada rodovia detectada, adicionar pedágios conhecidos
+    rodovias.forEach(rodovia => {
+      const pedagios = pedagiosPorRodovia[rodovia];
+      if (pedagios) {
+        console.log(`Encontrados ${pedagios.length} pedágios conhecidos na rodovia ${rodovia}`);
+        
+        pedagios.forEach(pedagio => {
+          // Criar objeto de ponto de interesse
+          const poi: PointOfInterest = {
+            id: tollId++,
+            name: pedagio.nome,
+            lat: pedagio.lat,
+            lng: pedagio.lng,
+            type: 'toll',
+            cost: pedagio.custo || 0,
+            roadName: rodovia,
+            knownHighwaySource: true
+          };
+          
+          // Verificar se este pedágio não está muito longe da rota
+          // Isso evita adicionar pedágios de trechos da rodovia que não fazem parte da rota
+          const withinRoute = isPointNearRoute(poi, directionsResult);
+          
+          if (withinRoute) {
+            console.log(`Adicionado pedágio conhecido: ${pedagio.nome}`);
+            tollPoints.push(poi);
+          } else {
+            console.log(`Pedágio ${pedagio.nome} está fora da rota atual`);
+          }
+        });
+      }
+    });
+    
+  } catch (error) {
+    console.error("Erro ao buscar pedágios em rodovias conhecidas:", error);
+  }
+  
+  return tollPoints;
+}
+
+/**
+ * Verifica se um ponto está próximo à rota
+ * @param point Ponto a ser verificado (pedágio, etc)
+ * @param directionsResult Resultado do directions service
+ * @param maxDistanceKm Distância máxima em km
+ * @returns true se o ponto estiver próximo à rota
+ */
+function isPointNearRoute(point: PointOfInterest, directionsResult: any, maxDistanceKm: number = 10): boolean {
+  if (!directionsResult?.routes?.[0]?.overview_path) {
+    return false;
+  }
+  
+  try {
+    const path = directionsResult.routes[0].overview_path;
+    const pointLatLng = { lat: parseFloat(point.lat), lng: parseFloat(point.lng) };
+    
+    // Verificar distância para cada ponto da rota
+    for (const pathPoint of path) {
+      const distance = calculateHaversineDistance(
+        pointLatLng.lat, pointLatLng.lng,
+        pathPoint.lat(), pathPoint.lng()
+      );
+      
+      if (distance <= maxDistanceKm) {
+        return true;
+      }
+    }
+    
+    return false;
+  } catch (error) {
+    console.error("Erro ao verificar proximidade do ponto com a rota:", error);
+    return false;
+  }
+}
+
+/**
  * Extrai informações de pedágio diretamente da resposta da API do Google Maps e do polyline da rota
  * Esta abordagem utiliza um método alternativo quando o toll_info não está disponível
  */
