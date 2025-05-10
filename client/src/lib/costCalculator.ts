@@ -37,23 +37,39 @@ export function calculateTollCost(
   // Adiciona cada pedágio com custo específico por tipo de veículo
   let totalCost = 0;
   
+  if (!tolls || !Array.isArray(tolls) || tolls.length === 0) {
+    console.log('Nenhum pedágio para calcular');
+    return 0;
+  }
+  
+  console.log(`Calculando custo de ${tolls.length} pedágios para ${vehicleType.name}`);
+  
   // Percorre todos os pedágios na rota
   tolls.forEach(toll => {
-    if (toll.cost) {
+    if (toll && toll.cost !== undefined && toll.cost !== null) {
       // O custo base do pedágio (armazenado no banco) é para carros
-      const baseCost = toll.cost;
+      const baseCost = typeof toll.cost === 'string' ? parseInt(toll.cost, 10) : toll.cost;
+      
+      if (isNaN(baseCost)) {
+        console.warn(`Pedágio ${toll.name}: custo inválido`, toll.cost);
+        return; // Pula este pedágio
+      }
       
       // Aplica o multiplicador específico para o tipo de veículo
       // tollMultiplier é armazenado como porcentagem (100 = 1x, 200 = 2x, etc.)
       const vehicleMultiplier = vehicleType.tollMultiplier / 100;
       
       // Adiciona o custo ajustado para este pedágio ao total
-      totalCost += Math.round(baseCost * vehicleMultiplier);
+      const tollCost = Math.round(baseCost * vehicleMultiplier);
+      totalCost += tollCost;
       
-      console.log(`Pedágio ${toll.name}: R$${(baseCost/100).toFixed(2)} x ${vehicleMultiplier} = R$${(baseCost * vehicleMultiplier/100).toFixed(2)} (${vehicleType.name})`);
+      console.log(`Pedágio ${toll.name}: R$${(baseCost/100).toFixed(2)} x ${vehicleMultiplier} = R$${(tollCost/100).toFixed(2)} (${vehicleType.name})`);
+    } else {
+      console.warn(`Pedágio ${toll?.name || 'desconhecido'} sem custo definido`);
     }
   });
   
+  console.log(`Custo total de pedágios: R$${(totalCost/100).toFixed(2)}`);
   return totalCost;
 }
 
