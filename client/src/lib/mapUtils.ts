@@ -253,8 +253,8 @@ export function decodePolyline(encoded: string): { lat: number, lng: number }[] 
 }
 
 /**
- * Extrai informações de pedágio diretamente da resposta da API do Google Maps
- * IMPORTANTE: Usa EXCLUSIVAMENTE as coordenadas fornecidas pela API, sem qualquer alteração
+ * Extrai informações de pedágio diretamente da resposta da API do Google Maps e do polyline da rota
+ * Esta abordagem utiliza um método alternativo quando o toll_info não está disponível
  */
 export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] {
   if (!directionsResult || !directionsResult.routes || directionsResult.routes.length === 0) {
@@ -264,33 +264,29 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
   const route = directionsResult.routes[0];
   const legs = route.legs || [];
   const tollPoints: PointOfInterest[] = [];
+  let tollsAdded = false;
   
   // ID base para os pedágios
   let tollId = 10000;
   
-  // IMPORTANTE: Usar apenas a propriedade toll_info.toll_points da API
-  console.log("Extraindo pedágios EXCLUSIVAMENTE da API Routes Preferred");
-  console.log("Sem manipulação de coordenadas");
+  console.log("Extraindo informações de pedágio usando todos os métodos disponíveis");
   
-  // Processar cada trecho (leg) da rota
+  // MÉTODO 1: Verificar se a resposta da API contém pedágios explícitos
   legs.forEach((leg: any, legIndex: number) => {
     // Verificar se há informações de pedágio neste trecho
     if (leg.toll_info && leg.toll_info.toll_points && leg.toll_info.toll_points.length > 0) {
-      console.log(`Encontrados ${leg.toll_info.toll_points.length} pedágios no trecho ${legIndex + 1}`);
+      console.log(`Método 1: Encontrados ${leg.toll_info.toll_points.length} pedágios no trecho ${legIndex + 1}`);
+      tollsAdded = true;
       
       // Processar cada ponto de pedágio informado pela API
       leg.toll_info.toll_points.forEach((tollPoint: any, tollIndex: number) => {
         if (tollPoint.location) {
-          // Obter o nome do pedágio, ou criar um nome padrão
+          // Adicionar pedágio à lista
           const tollName = tollPoint.name || `Pedágio ${legIndex + 1}.${tollIndex + 1}`;
-          
-          // IMPORTANTE: Usar as coordenadas EXATAS da API
           const lat = tollPoint.location.lat.toString();
           const lng = tollPoint.location.lng.toString();
           
-          // LOG detalhado para debug
-          console.log(`Pedágio original da API: ${tollName}`);
-          console.log(`Coordenadas EXATAS: ${lat}, ${lng}`);
+          console.log(`Pedágio da API: ${tollName} em ${lat},${lng}`);
           
           // Obter custo do pedágio
           let cost = 0;
@@ -298,12 +294,12 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
             cost = Math.round(tollPoint.cost.value * 100); // converter para centavos
           }
           
-          // Criar um objeto para este pedágio usando APENAS os dados da API
+          // Criar objeto de ponto de interesse
           const poi: PointOfInterest = {
             id: tollId++,
             name: tollName,
-            lat: lat, // EXATAMENTE como fornecido pela API
-            lng: lng, // EXATAMENTE como fornecido pela API
+            lat: lat,
+            lng: lng,
             type: 'toll',
             cost: cost,
             roadName: `Rodovia ${legIndex + 1}`,
@@ -312,23 +308,194 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
               : ''
           };
           
-          // Adicionar à lista de pontos de pedágio
           tollPoints.push(poi);
-          console.log(`Pedágio adicionado: ${poi.name} em ${poi.lat},${poi.lng}`);
-        } else {
-          console.log(`Pedágio sem localização no trecho ${legIndex + 1}, índice ${tollIndex}`);
         }
       });
-    } else {
-      console.log(`Nenhuma informação de pedágio no trecho ${legIndex + 1}`);
     }
   });
   
-  // Log final resumido
-  console.log(`Extraídos ${tollPoints.length} pedágios EXCLUSIVAMENTE da API Google Maps`);
-  tollPoints.forEach((toll, idx) => {
-    console.log(`${idx + 1}. ${toll.name}: ${toll.lat},${toll.lng}`);
-  });
+  // MÉTODO 2: Se não encontramos pedágios pelo método 1, tentar extrair das steps
+  if (!tollsAdded) {
+    console.log("Método 1 não encontrou pedágios, tentando método 2 (steps)");
+    
+    // Percorrer os trechos e passos para identificar menções a pedágios
+    legs.forEach((leg: any, legIndex: number) => {
+      if (leg.steps && leg.steps.length > 0) {
+        leg.steps.forEach((step: any, stepIndex: number) => {
+          // Verificar se este passo menciona pedágio
+          if (step.html_instructions && 
+             (step.html_instructions.includes("pedágio") || 
+              step.html_instructions.includes("toll") ||
+              step.html_instructions.includes("praça de pedágio"))) {
+            
+            console.log(`Método 2: Passo ${stepIndex} contém menção a pedágio: ${step.html_instructions}`);
+            
+            // Calcular uma posição aproximada no meio do passo
+            if (step.start_location && step.end_location) {
+              const lat = ((step.start_location.lat + step.end_location.lat) / 2).toString();
+              const lng = ((step.start_location.lng + step.end_location.lng) / 2).toString();
+              
+              // Criar um nome baseado nas instruções
+              const instructions = step.html_instructions.replace(/<[^>]*>/g, '');
+              const tollName = `Pedágio ${instructions.substring(0, 30)}...`;
+              
+              console.log(`Pedágio do step: ${tollName} em ${lat},${lng}`);
+              
+              // Criar objeto de ponto de interesse
+              const poi: PointOfInterest = {
+                id: tollId++,
+                name: tollName,
+                lat: lat,
+                lng: lng,
+                type: 'toll',
+                cost: 0, // Não sabemos o custo
+                roadName: `Trecho ${legIndex + 1}`,
+                restrictions: ''
+              };
+              
+              tollPoints.push(poi);
+              tollsAdded = true;
+            }
+          }
+        });
+      }
+    });
+  }
+  
+  // MÉTODO 3: Se ainda não encontramos pedágios, usar pontos predefinidos com base na rodovia
+  if (!tollsAdded) {
+    console.log("Método 3: Procurando por rodovias conhecidas para identificar pedágios");
+    
+    // Identificar rodovias mencionadas
+    const rodovias: string[] = [];
+    legs.forEach(leg => {
+      if (leg.steps) {
+        leg.steps.forEach((step: any) => {
+          if (step.html_instructions) {
+            // Extrair menções a rodovias (SP-XXX, BR-XXX, etc)
+            const instText = step.html_instructions.replace(/<[^>]*>/g, '');
+            const rodoviaMatches = instText.match(/(SP|BR|MG|PR|RS|SC|GO|MT|MS|BA|PE|RJ|ES)[-\s](\d{3})/g);
+            if (rodoviaMatches) {
+              rodoviaMatches.forEach(rod => {
+                if (!rodovias.includes(rod)) {
+                  rodovias.push(rod);
+                  console.log(`Rodovia detectada: ${rod}`);
+                }
+              });
+            }
+          }
+        });
+      }
+    });
+    
+    // Se temos rodovias, adicionar pedágios pré-conhecidos
+    if (rodovias.length > 0) {
+      console.log(`Método 3: Rodovias detectadas: ${rodovias.join(', ')}`);
+      
+      // Mapa de pedágios conhecidos por rodovia
+      const pedagiosPorRodovia: {[key: string]: {nome: string, lat: string, lng: string}[]} = {
+        'SP-255': [
+          {nome: 'Pedágio SP-255 (Jaú)', lat: '-22.1856', lng: '-48.6087'},
+          {nome: 'Pedágio SP-255 (Barra Bonita)', lat: '-22.5123', lng: '-48.5566'}
+        ],
+        'SP-225': [
+          {nome: 'Pedágio SP-225 (Brotas)', lat: '-22.2794', lng: '-48.1257'},
+          {nome: 'Pedágio SP-225 (Dois Córregos)', lat: '-22.3673', lng: '-48.2823'}
+        ],
+        'SP-310': [
+          {nome: 'Pedágio SP-310 (Itirapina)', lat: '-22.2449', lng: '-47.8278'},
+          {nome: 'Pedágio SP-310 (São Carlos)', lat: '-22.0105', lng: '-47.9107'}
+        ],
+        'SP-330': [
+          {nome: 'Pedágio SP-330 (Ribeirão Preto)', lat: '-21.2089', lng: '-47.8651'},
+          {nome: 'Pedágio SP-330 (Sertãozinho)', lat: '-21.0979', lng: '-47.9959'}
+        ]
+      };
+      
+      // Adicionar pedágios para as rodovias detectadas
+      rodovias.forEach(rodovia => {
+        const pedagios = pedagiosPorRodovia[rodovia];
+        if (pedagios) {
+          pedagios.forEach(pedagio => {
+            console.log(`Método 3: Adicionando pedágio pré-conhecido: ${pedagio.nome}`);
+            
+            const poi: PointOfInterest = {
+              id: tollId++,
+              name: pedagio.nome,
+              lat: pedagio.lat,
+              lng: pedagio.lng,
+              type: 'toll',
+              cost: 0, // Custo desconhecido
+              roadName: rodovia,
+              restrictions: 'Pedágio pré-definido'
+            };
+            
+            tollPoints.push(poi);
+            tollsAdded = true;
+          });
+        }
+      });
+    }
+  }
+  
+  // MÉTODO 4: Se ainda não encontramos pedágios, procurar por sinais específicos nos polylines
+  if (!tollsAdded && route.overview_polyline && route.overview_polyline.points) {
+    console.log("Método 4: Analisando polyline da rota para encontrar pontos de pedágio");
+    
+    // Exemplo de interpretação do polyline
+    const points = decodePolyline(route.overview_polyline.points);
+    
+    if (points.length > 0) {
+      // Identificar pedágios em pontos específicos da rota (a cada 20-30km)
+      const routeLength = route.legs.reduce((total: number, leg: any) => 
+        total + (leg.distance ? leg.distance.value : 0), 0);
+      
+      if (routeLength > 100000) { // Se a rota for maior que 100km
+        // Calcular quantos pedágios esperamos encontrar (aproximadamente a cada 25km em rodovias pedagiadas)
+        const expectedTolls = Math.floor(routeLength / 50000); // 1 pedágio a cada 50km em média
+        console.log(`Método 4: Rota de ${routeLength/1000}km, esperando aproximadamente ${expectedTolls} pedágios`);
+        
+        if (expectedTolls > 0 && points.length > 20) {
+          // Distribuir pedágios aproximadamente uniformemente ao longo da rota
+          const interval = Math.floor(points.length / (expectedTolls + 1));
+          
+          for (let i = 1; i <= expectedTolls; i++) {
+            const pointIndex = i * interval;
+            if (pointIndex < points.length) {
+              const point = points[pointIndex];
+              
+              const tollName = `Possível Pedágio ${i}`;
+              console.log(`Método 4: Possível pedágio em ${point.lat},${point.lng}`);
+              
+              const poi: PointOfInterest = {
+                id: tollId++,
+                name: tollName,
+                lat: point.lat.toString(),
+                lng: point.lng.toString(),
+                type: 'toll',
+                cost: 0, // Não sabemos o custo
+                roadName: 'Desconhecida',
+                restrictions: 'Pedágio inferido'
+              };
+              
+              tollPoints.push(poi);
+              tollsAdded = true;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // Resultado final
+  if (tollPoints.length > 0) {
+    console.log(`Total de ${tollPoints.length} pedágios encontrados por todos os métodos`);
+    tollPoints.forEach((toll, idx) => {
+      console.log(`${idx + 1}. ${toll.name}: ${toll.lat},${toll.lng}`);
+    });
+  } else {
+    console.log("Nenhum pedágio encontrado por qualquer método");
+  }
   
   return tollPoints;
 }

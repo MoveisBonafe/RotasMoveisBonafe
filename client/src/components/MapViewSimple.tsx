@@ -158,7 +158,20 @@ export default function MapViewSimple({
             
             // Processar pedágios e outras informações da API Routes Preferred
             try {
-              console.log("Processando resultado da API Routes Preferred para extrair pedágios");
+              console.log("Processando resultado completo da API Routes Preferred:");
+              console.log("Resposta completa da API:", JSON.stringify(result, null, 2));
+              
+              // Verificar se a resposta contém informações de pedágio
+              if (result.routes && result.routes[0] && result.routes[0].legs) {
+                console.log("Analisando legs da rota para encontrar dados de pedágio");
+                result.routes[0].legs.forEach((leg: any, i: number) => {
+                  console.log(`Leg ${i+1} contém toll_info:`, !!leg.toll_info);
+                  if (leg.toll_info) {
+                    console.log(`Toll info para leg ${i+1}:`, JSON.stringify(leg.toll_info, null, 2));
+                  }
+                });
+              }
+              
               // Extrair informações de pedágio diretamente da API do Google Maps
               const tollPointsFromAPI = extractTollsFromRoute(result);
               
