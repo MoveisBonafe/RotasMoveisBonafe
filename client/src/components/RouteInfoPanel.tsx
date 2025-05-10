@@ -468,15 +468,35 @@ export default function RouteInfoPanel({
                         </div>
                       </div>
                       
-                      {/* Linha conectora com ponta de seta (se não for o último) */}
+                      {/* Linha conectora com seta animada (se não for o último) */}
                       {index < calculatedRoute.length - 1 && (
                         <div 
-                          className="route-connector mx-1"
+                          className="route-connector mx-1 relative"
                           style={{ 
                             width: '5rem', 
                             animationDelay: `${index * 0.15 + 0.2}s`,
                           }}
-                        ></div>
+                        >
+                          {/* Seta animada */}
+                          <svg 
+                            className="route-arrow" 
+                            viewBox="0 0 24 24" 
+                            fill="none" 
+                            xmlns="http://www.w3.org/2000/svg"
+                            style={{ 
+                              animationDelay: `${index * 0.15 + 0.7}s`,
+                              animationDuration: `${3 - (index * 0.2)}s` 
+                            }}
+                          >
+                            <path 
+                              d="M13 5L20 12L13 19M4 12H20" 
+                              stroke="currentColor" 
+                              strokeWidth="2.5" 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </div>
                       )}
                     </div>
                   ))}
