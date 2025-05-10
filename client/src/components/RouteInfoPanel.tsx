@@ -458,23 +458,27 @@ export default function RouteInfoPanel({
                 <div className="bg-white rounded p-2 border border-gray-100">
                   <h3 className="text-xs font-medium mb-1 text-primary">Pontos de Atenção</h3>
                   
-                  {(tollsOnRoute.length > 0 || balancesOnRoute.length > 0 || (truckRestrictions && truckRestrictions.length > 0)) ? (
+                  {(uniquePOIs.filter(p => p.type === 'toll').length > 0 || 
+                    uniquePOIs.filter(p => p.type === 'weighing_station').length > 0 || 
+                    (truckRestrictions && truckRestrictions.length > 0)) ? (
                     <ul className="text-xs space-y-1">
-                      {tollsOnRoute.length > 0 && (
+                      {uniquePOIs.filter(p => p.type === 'toll').length > 0 && (
                         <li className="flex items-center">
                           <span className="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-1"></span>
                           <span>
-                            {tollsOnRoute.length} {tollsOnRoute.length === 1 ? 'pedágio' : 'pedágios'}: 
-                            <span className="text-gray-500 ml-1">{tollsOnRoute.map(toll => toll.roadName).join(', ')}</span>
+                            {uniquePOIs.filter(p => p.type === 'toll').length} {uniquePOIs.filter(p => p.type === 'toll').length === 1 ? 'pedágio' : 'pedágios'}: 
+                            <span className="text-gray-500 ml-1">
+                              {uniquePOIs.filter(p => p.type === 'toll').map(toll => toll.name.split('(').pop()?.replace(')', '') || toll.roadName).join(', ')}
+                            </span>
                           </span>
                         </li>
                       )}
                       
-                      {balancesOnRoute.length > 0 && (
+                      {uniquePOIs.filter(p => p.type === 'weighing_station').length > 0 && (
                         <li className="flex items-center">
                           <span className="inline-block w-2 h-2 rounded-full bg-red-600 mr-1"></span>
                           <span>
-                            {balancesOnRoute.length} {balancesOnRoute.length === 1 ? 'balança' : 'balanças'} em operação
+                            {uniquePOIs.filter(p => p.type === 'weighing_station').length} {uniquePOIs.filter(p => p.type === 'weighing_station').length === 1 ? 'balança' : 'balanças'} em operação
                           </span>
                         </li>
                       )}

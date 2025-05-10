@@ -301,10 +301,23 @@ export default function RouteReport({
             <h3 className="text-xs font-semibold mb-1 text-primary">Pontos de Atenção</h3>
             <div className="space-y-1">
               <ul className="list-disc pl-4 text-xs space-y-1">
-                {poisAlongRoute.map((poi: PointOfInterest) => (
+                {/* Agrupar POIs por tipo para melhor visualização */}
+                {/* Primeiro todos os pedágios */}
+                {poisAlongRoute.filter(poi => poi.type === 'toll').map((poi: PointOfInterest) => (
                   <li key={poi.id} className="text-gray-700">
                     <span className="font-medium">{poi.name}</span>
-                    <span className="text-gray-500 ml-1">({poi.type})</span>
+                    <span className="text-gray-500 ml-1">(pedágio)</span>
+                    {poi.cost && (
+                      <div className="text-gray-500 text-xs">Custo base: {(poi.cost / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                    )}
+                  </li>
+                ))}
+                
+                {/* Depois as balanças */}
+                {poisAlongRoute.filter(poi => poi.type === 'weighing_station').map((poi: PointOfInterest) => (
+                  <li key={poi.id} className="text-gray-700">
+                    <span className="font-medium">{poi.name}</span>
+                    <span className="text-gray-500 ml-1">(balança)</span>
                     {poi.restrictions && (
                       <div className="text-gray-500 text-xs">{poi.restrictions}</div>
                     )}
