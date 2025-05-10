@@ -477,6 +477,80 @@ export default function MapViewSimple({
         showFallbackMarkers();
       }
       
+      // Função para adicionar marcadores da rota
+      function addRouteMarkers(routePoints: Location[]) {
+        console.log("Adicionando marcadores da rota", routePoints);
+        
+        if (!routePoints || routePoints.length === 0) {
+          console.log("Nenhum ponto fornecido para adicionar marcadores");
+          return;
+        }
+        
+        // Adicionar marcador de origem (primeiro ponto)
+        const originPoint = {
+          lat: parseFloat(routePoints[0].lat),
+          lng: parseFloat(routePoints[0].lng)
+        };
+        
+        console.log(`Adicionando marcador de origem em ${originPoint.lat}, ${originPoint.lng}`);
+        
+        const originMarker = new google.maps.Marker({
+          position: originPoint,
+          map,
+          title: routePoints[0].name || 'Origem',
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            fillColor: "#4285F4", // Azul Google
+            fillOpacity: 1,
+            strokeWeight: 2,
+            strokeColor: "#FFFFFF",
+            scale: 8
+          },
+          label: {
+            text: "0",
+            color: "#FFFFFF",
+            fontSize: "11px"
+          },
+          zIndex: 100 // Exibir acima de outros marcadores
+        });
+        
+        newMarkers.push(originMarker);
+        
+        // Adicionar marcadores para pontos intermediários
+        routePoints.slice(1).forEach((point, index) => {
+          const position = {
+            lat: parseFloat(point.lat),
+            lng: parseFloat(point.lng)
+          };
+          
+          console.log(`Adicionando marcador intermediário ${index+1} em ${position.lat}, ${position.lng}`);
+          
+          const marker = new google.maps.Marker({
+            position,
+            map,
+            title: point.name || `Ponto ${index + 1}`,
+            icon: {
+              path: google.maps.SymbolPath.CIRCLE,
+              fillColor: "#DB4437", // Vermelho Google
+              fillOpacity: 1,
+              strokeWeight: 2,
+              strokeColor: "#FFFFFF", 
+              scale: 8
+            },
+            label: {
+              text: (index + 1).toString(),
+              color: "#FFFFFF",
+              fontSize: "11px"
+            },
+            zIndex: 100
+          });
+          
+          newMarkers.push(marker);
+        });
+        
+        console.log(`Adicionados ${newMarkers.length} marcadores de rota`);
+      }
+      
       // Função para mostrar apenas marcadores se a rota falhar
       function showFallbackMarkers() {
         console.log("Usando fallback para mostrar apenas marcadores");
