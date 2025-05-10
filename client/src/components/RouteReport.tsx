@@ -341,8 +341,8 @@ export default function RouteReport({
               ))}
             </div>
             
-            <div className="text-gray-600">Veículo:</div>
-            <div className="font-medium">{vehicleType.name}</div>
+            <div className="text-gray-600">Tipo:</div>
+            <div className="font-medium">Caminhão</div>
             
             {startDate && endDate && (
               <>
@@ -578,7 +578,7 @@ export default function RouteReport({
         
         {vehicleType && vehicleType.type !== 'car' && (
           <div className="text-center text-xxs text-gray-400 mt-2">
-            * Valor do pedágio ajustado para {vehicleType.name.toLowerCase()}: 
+            * Valor do pedágio ajustado para caminhão: 
             {vehicleType.type === 'motorcycle' ? ' 50% do valor para carros.' : 
              vehicleType.type === 'truck1' ? ' 200% do valor para carros.' : 
              vehicleType.type === 'truck2' ? ' 300% do valor para carros.' : ''}
