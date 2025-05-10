@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Location, PointOfInterest } from "@/lib/types";
 import { useRoutesPreferred } from "@/hooks/useRoutesPreferred";
 import { extractTollsFromRoute } from "@/lib/mapUtils";
+import { fetchTollsFromAilog } from "@/lib/ailogApi";
 
 interface MapViewProps {
   origin: Location | null;
