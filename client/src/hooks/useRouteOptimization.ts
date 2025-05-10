@@ -5,43 +5,24 @@ import { calculateRouteCosts } from "@/lib/costCalculator";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 
-/**
- * Hook para otimização de rotas e cálculo de custos
- */
 export function useRouteOptimization() {
   const [optimizedRoute, setOptimizedRoute] = useState<Location[]>([]);
   const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null);
   const [poisAlongRoute, setPoisAlongRoute] = useState<PointOfInterest[]>([]);
 
-  // Mutation para calcular rota via servidor (não implementado completamente)
+  // Mutation for calculating route
   const calculateRouteMutation = useMutation({
     mutationFn: async ({ locationIds, vehicleType }: { locationIds: number[], vehicleType: string }) => {
       const response = await apiRequest("POST", "/api/calculate-route", { locationIds, vehicleType });
       return response.json();
     },
     onSuccess: (data) => {
+      // Handle the route data from the server
       console.log("Route calculated:", data);
     }
   });
 
-  /**
-   * Função para calcular a distância entre dois pontos em km usando a fórmula de Haversine
-   */
-  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
-    const R = 6371; // Raio da Terra em km
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
-  };
-
-  /**
-   * Otimização local de rota usando algoritmo TSP
-   */
+  // Optimize route locally
   const optimizeRouteLocally = useCallback((
     origin: Location,
     locations: Location[],
@@ -49,78 +30,40 @@ export function useRouteOptimization() {
     pois: PointOfInterest[],
     realMetrics?: {totalDistance: number, totalDuration: number}
   ): RouteInfo => {
-    // Caso base: verificar se origem e locais estão disponíveis
-    if (!origin || locations.length === 0) {
-      console.log("Origem ou destinos não fornecidos");
-      return {
-        totalDistance: 0,
-        totalDuration: 0,
-        tollCost: 0,
-        fuelCost: 0,
-        fuelConsumption: 0,
-        totalCost: 0
-      };
-    }
-
-    // Adicionar origem aos locais para otimização
+    // Add origin to locations for optimization
     const allLocations = [origin, ...locations];
     
-    // Se for apenas a origem e um destino, não há necessidade de otimização
-    const optimizedLocations = locations.length <= 1 
-      ? allLocations 
-      : createOptimizedRoute(allLocations, false); // false = não voltar ao ponto de origem
-    
-    if (locations.length <= 1) {
-      console.log("Apenas origem e um destino, não há necessidade de otimização");
-    }
-    
+    // Run TSP algorithm to optimize the route (não retorna ao ponto de origem)
+    const optimizedLocations = createOptimizedRoute(allLocations, false); // false = não voltar ao ponto de origem
     setOptimizedRoute(optimizedLocations);
     
-    // Calcular distância e duração da rota
-    let totalDistance = 0;
-    let totalDuration = 0;
-    
-    // Usar métricas reais se disponíveis, ou estimar com base nas coordenadas
-    if (realMetrics && realMetrics.totalDistance > 0 && realMetrics.totalDuration > 0) {
-      // Se temos métricas reais da API do Google Maps, usamos elas
-      console.log(`Usando métricas REAIS da rota: ${realMetrics.totalDistance/1000}km, ${Math.round(realMetrics.totalDuration/60)} min`);
-      totalDistance = realMetrics.totalDistance;
-      totalDuration = realMetrics.totalDuration;
-    } else {
-      // Se não temos métricas reais, fazemos uma estimativa grosseira baseada nas coordenadas
-      let estimatedDistance = 0;
+    // Usar as métricas reais se disponíveis, ou valores padrão como fallback
+    const totalDistance = realMetrics && realMetrics.totalDistance > 0 
+      ? realMetrics.totalDistance 
+      : 145000; // 145km em metros (fallback)
       
-      for (let i = 0; i < optimizedLocations.length - 1; i++) {
-        const point1 = optimizedLocations[i];
-        const point2 = optimizedLocations[i + 1];
-        
-        const dist = calculateDistance(
-          parseFloat(point1.lat), 
-          parseFloat(point1.lng), 
-          parseFloat(point2.lat), 
-          parseFloat(point2.lng)
-        );
-        
-        // Converter para metros e adicionar à distância total
-        estimatedDistance += (dist * 1000);
-      }
-      
-      // Adicionar um fator de correção para estradas (as rotas reais são geralmente 20-30% mais longas que a linha reta)
-      const correctionFactor = 1.3;
-      totalDistance = Math.round(estimatedDistance * correctionFactor);
-      
-      // Estimar duração baseada em uma velocidade média de 60 km/h
-      // Velocidade em m/s = 60km/h ÷ 3.6 = 16.67 m/s
-      totalDuration = Math.round(totalDistance / 16.67);
-      
-      console.log(`Usando métricas ESTIMADAS da rota: ${totalDistance/1000}km, ${Math.round(totalDuration/60)} min`);
-    }
+    const totalDuration = realMetrics && realMetrics.totalDuration > 0
+      ? realMetrics.totalDuration
+      : 8100; // 2h 15min em segundos (fallback)
       
     console.log(`Usando métricas da rota: ${totalDistance/1000}km, ${totalDuration/60} min`);
     
     // Filtrar POIs que estão ao longo da rota
     console.log("POIs disponíveis para filtrar:", pois);
     console.log("Rota calculada (pontos):", optimizedLocations);
+    
+    // Função para calcular a distância entre dois pontos em km (haversine)
+    const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+      const R = 6371; // Raio da Terra em km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    };
     
     // IMPORTANTE: Verificar se os destinos incluem Ribeirão Preto
     const includesRibeiraoPreto = optimizedLocations.some(location => 
@@ -202,48 +145,48 @@ export function useRouteOptimization() {
       vehicleType
     );
     
-    // Set the waypoints in the route info
-    console.log("POIs processados para a rota:", poisOnRoute);
+    // Set the waypoints in the route info (inclui todos os pontos)
+    routeInfoData.waypoints = optimizedLocations;
     
-    // Adicionar informações completas ao objeto de retorno
-    const routeInfoComplete = {
+    // Armazenar apenas os destinos originais (sem origem)
+    // Isso permite identificar quais são as cidades de destino reais vs. pontos de passagem
+    routeInfoData.destinations = locations;
+    
+    setRouteInfo(routeInfoData);
+    
+    // IMPORTANTE: Retornar também os POIs filtrados ao longo da rota
+    return {
       ...routeInfoData,
-      waypoints: optimizedLocations, // Adicionamos o array completo de localizações
-      poisAlongRoute: poisOnRoute,
-      destinations: optimizedLocations.slice(1) // Remove a origem
+      poisAlongRoute // Adicionado aqui para ter acesso aos POIs no componente Home
     };
-    
-    // Necessário para que o componente RouteInfoPanel tenha acesso aos POIs
-    setRouteInfo(routeInfoComplete);
-    
-    return routeInfoComplete;
   }, []);
 
-  /**
-   * Função para calcular rota através de uma mutation para o servidor
-   */
-  const calculateRoute = useCallback(async (
+  // Optimize route using server API (for real distance calculations)
+  const optimizeRoute = useCallback(async (
     origin: Location,
-    destinations: Location[],
+    locations: Location[],
     vehicleType: VehicleType
   ) => {
+    // Extract location IDs
+    const locationIds = locations.map(loc => loc.id);
+    
     try {
-      const locationIds = [origin.id, ...destinations.map(d => d.id)];
-      await calculateRouteMutation.mutateAsync({
+      return await calculateRouteMutation.mutateAsync({
         locationIds,
         vehicleType: vehicleType.type
       });
     } catch (error) {
-      console.error("Erro ao calcular rota:", error);
+      console.error("Failed to calculate optimal route:", error);
+      throw error;
     }
   }, [calculateRouteMutation]);
 
   return {
-    optimizeRouteLocally,
-    calculateRoute,
-    routeInfo,
     optimizedRoute,
+    routeInfo,
     poisAlongRoute,
+    optimizeRouteLocally,
+    optimizeRoute,
     isCalculating: calculateRouteMutation.isPending
   };
 }

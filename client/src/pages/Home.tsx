@@ -336,16 +336,7 @@ export default function Home() {
           routeMetrics.totalDistance > 0 ? routeMetrics : undefined // Usar métricas reais se disponíveis
         );
         
-        // Verificar se waypoints é um array, senão precisamos converter
-        console.log("Tipo de dados do waypoints:", typeof routeResult.waypoints, routeResult.waypoints);
-        
-        if (Array.isArray(routeResult.waypoints)) {
-          setCalculatedRoute(routeResult.waypoints);
-        } else {
-          console.log("Waypoints não é um array. Usando locais originais");
-          // Se não for um array, usamos os locais originais
-          setCalculatedRoute(locations);
-        }
+        setCalculatedRoute(routeResult.waypoints);
         
         // SOLUÇÃO APRIMORADA:
         // Vamos detectar a rota e mostrar apenas os POIs realmente relevantes
@@ -399,15 +390,14 @@ export default function Home() {
             setPoisOnRoute(relevantPOIs);
         }
         
-        // Mostrar toast de sucesso com o número de paradas
+        // Mostrar toast de sucesso com a distância real
+        const distanciaEmKm = Math.round(routeMetrics.totalDistance / 100) / 10;
         toast({
           title: "Rota calculada com sucesso",
-          description: `${locations.length} paradas`,
+          description: `${locations.length} paradas (${distanciaEmKm}km total)`,
         });
         
-        // Calcular distância para logging (não usado na UI)
-        const distanciaEmKm = Math.round(routeMetrics.totalDistance / 100) / 10;
-        console.log(`Rota calculada com sucesso: ${locations.length} pontos totais, distância: ${distanciaEmKm}km`);
+        console.log(`Rota calculada com sucesso: ${routeResult.waypoints.length} pontos totais, distância: ${distanciaEmKm}km`);
       } catch (error) {
         console.error("Erro ao calcular rota:", error);
         
