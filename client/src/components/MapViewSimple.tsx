@@ -431,12 +431,12 @@ export default function MapViewSimple({
                   };
                   
                   // Criar marcador com visual mais preciso
-                  const tollMarker = new google.maps.Marker({
+                  const tollMarker = new window.google.maps.Marker({
                     position,
                     map,
                     title: toll.name,
                     icon: {
-                      path: google.maps.SymbolPath.CIRCLE,
+                      path: window.google.maps.SymbolPath.CIRCLE,
                       fillColor: '#f44336', // Vermelho para pedágios
                       fillOpacity: 1,
                       strokeWeight: 2,
@@ -458,7 +458,7 @@ export default function MapViewSimple({
                     </div>
                   `;
                   
-                  const infoWindow = new google.maps.InfoWindow({
+                  const infoWindow = new window.google.maps.InfoWindow({
                     content: infoContent
                   });
                   
@@ -473,8 +473,8 @@ export default function MapViewSimple({
                   tollMarker.set('ailogSource', true); // Marcar fonte como AILOG
                   
                   // Adicionar às listas
-                  newMarkers.push(tollMarker);
-                  newInfoWindows.push(infoWindow);
+                  setMarkers(prev => [...prev, tollMarker]);
+                  setInfoWindows(prev => [...prev, infoWindow]);
                   
                   console.log(`Pedágio AILOG adicionado: ${toll.name}`);
                 });
