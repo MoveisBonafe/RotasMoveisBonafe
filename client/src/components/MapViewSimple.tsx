@@ -155,13 +155,12 @@ export default function MapViewSimple({
         });
       }
       
-      // Limpar marcadores existentes
-      markers.forEach(marker => marker.setMap(null));
-      setMarkers([]);
+      // Não limpar marcadores existentes ainda - faremos isso apenas quando tivermos os novos prontos
+      // Isso evita a piscagem na tela
       
-      // Fechar janelas de informação
-      infoWindows.forEach(infoWindow => infoWindow.close());
-      setInfoWindows([]);
+      // Preparar arrays para os novos marcadores e infoWindows
+      const newMarkers = [];
+      const newInfoWindows = [];
       
       // Preparar os waypoints para a API do Google
       const googleWaypoints = waypoints.map(waypoint => ({
@@ -189,7 +188,7 @@ export default function MapViewSimple({
         origin: originLatLng,
         destination: destination,
         waypoints: googleWaypoints,
-        optimizeWaypoints: true, // Otimizar ordem dos waypoints
+        optimizeWaypoints: false, // Não otimizar a ordem dos waypoints
         travelMode: window.google.maps.TravelMode.DRIVING,
         unitSystem: window.google.maps.UnitSystem.METRIC,
         avoidHighways: false,
@@ -243,21 +242,9 @@ export default function MapViewSimple({
               newInfoWindows.push(infoWindow);
             }
             
-            // 2. Adicionar marcadores para cada waypoint (na ordem da rota calculada)
-            if (result.routes && result.routes[0] && result.routes[0].waypoint_order) {
-              const waypointOrder = result.routes[0].waypoint_order;
-              console.log("Ordem dos waypoints:", waypointOrder);
-              
-              // Reordenar waypoints conforme a ordem otimizada da rota
-              const waypointsInOrder = waypointOrder.map(index => waypoints[index]);
-              
-              // Adicionar também o destino final (que não está nos waypoints do Google)
-              if (waypoints.length > googleWaypoints.length + 1) {
-                waypointsInOrder.push(waypoints[waypoints.length - 1]);
-              }
-              
-              // Adicionar marcadores para cada ponto na ordem correta
-              waypointsInOrder.forEach((point, index) => {
+            // 2. Adicionar marcadores para cada waypoint (numerados sequencialmente)
+            if (waypoints && waypoints.length > 0) {
+              waypoints.forEach((point, index) => {
                 const waypointMarker = new window.google.maps.Marker({
                   position: { lat: parseFloat(point.lat), lng: parseFloat(point.lng) },
                   map: map,
@@ -289,8 +276,40 @@ export default function MapViewSimple({
               });
             }
             
-            // 3. Adicionar marcadores de pedágio
-            const tollPoints = pointsOfInterest.filter(poi => poi.type === 'toll');
+            // 3. Adicionar marcadores de pedágio pré-definidos
+            // Dados simulados para exemplificar
+            const tollPoints = [
+              {
+                id: 1001,
+                name: 'Pedágio SP-225 (Jaú)',
+                type: 'toll',
+                lat: '-22.2729',
+                lng: '-48.5569',
+                roadName: 'SP-225',
+                cost: 1300, // em centavos
+                city: 'Jaú'
+              },
+              {
+                id: 1002,
+                name: 'Pedágio SP-225 (Brotas)',
+                type: 'toll',
+                lat: '-22.2490',
+                lng: '-48.1236',
+                roadName: 'SP-225',
+                cost: 1300,
+                city: 'Brotas'
+              },
+              {
+                id: 1003,
+                name: 'Pedágio SP-310 (Itirapina)',
+                type: 'toll',
+                lat: '-22.2404',
+                lng: '-47.8292',
+                roadName: 'SP-310',
+                cost: 1300,
+                city: 'Itirapina'
+              }
+            ];
             
             // Adicionar apenas os pedágios que fazem sentido para a rota
             tollPoints.forEach(toll => {
@@ -305,8 +324,12 @@ export default function MapViewSimple({
                 map,
                 title: toll.name,
                 icon: {
-                  url: "https://maps.google.com/mapfiles/ms/micons/green-dollar.png",
-                  scaledSize: new window.google.maps.Size(32, 32)
+                  path: window.google.maps.SymbolPath.CIRCLE,
+                  fillColor: '#f44336', // Vermelho para pedágios
+                  fillOpacity: 1,
+                  strokeWeight: 2,
+                  strokeColor: '#FFFFFF',
+                  scale: 10
                 },
                 zIndex: 5
               });
@@ -316,9 +339,9 @@ export default function MapViewSimple({
                 <div style="min-width: 200px; padding: 10px;">
                   <h3 style="margin: 0; font-size: 16px; color: #d32f2f;">${toll.name}</h3>
                   <p style="margin: 5px 0;"><strong>Tipo:</strong> Pedágio</p>
-                  <p style="margin: 5px 0;"><strong>Custo:</strong> R$ ${(toll.cost ? toll.cost / 100 : 0).toFixed(2)}</p>
-                  <p style="margin: 5px 0;"><strong>Rodovia:</strong> ${toll.roadName || 'N/A'}</p>
-                  <p style="margin: 5px 0;"><strong>Cidade:</strong> ${toll.city || 'N/A'}</p>
+                  <p style="margin: 5px 0;"><strong>Custo:</strong> R$ ${(toll.cost / 100).toFixed(2)}</p>
+                  <p style="margin: 5px 0;"><strong>Rodovia:</strong> ${toll.roadName}</p>
+                  <p style="margin: 5px 0;"><strong>Cidade:</strong> ${toll.city}</p>
                 </div>
               `;
               
@@ -349,16 +372,26 @@ export default function MapViewSimple({
                   lng: parseFloat(poi.lng)
                 };
                 
+                // Cor do marcador dependendo do tipo
+                let fillColor = '#FF9800'; // Laranja (padrão)
+                if (poi.type === 'weighing_station') {
+                  fillColor = '#FF9800'; // Laranja para balanças
+                } else if (poi.type === 'rest_area') {
+                  fillColor = '#4CAF50'; // Verde para áreas de descanso
+                }
+                
                 // Criar marcador
                 const poiMarker = new window.google.maps.Marker({
                   position,
                   map,
                   title: poi.name,
                   icon: {
-                    url: poi.type === 'weighing_station'
-                      ? "https://maps.google.com/mapfiles/ms/micons/blue-truck.png"
-                      : "https://maps.google.com/mapfiles/ms/icons/info.png",
-                    scaledSize: new window.google.maps.Size(32, 32)
+                    path: window.google.maps.SymbolPath.CIRCLE,
+                    fillColor,
+                    fillOpacity: 1,
+                    strokeWeight: 2,
+                    strokeColor: '#FFFFFF',
+                    scale: 10
                   },
                   zIndex: 4
                 });
@@ -443,6 +476,9 @@ export default function MapViewSimple({
                   gestureHandling: 'greedy'
                 });
                 
+                // Remover marcadores antigos depois de renderizar os novos
+                markers.forEach(marker => marker.setMap(null));
+                
                 // Permitir novos cálculos
                 isProcessingRoute.current = false;
               }, 200);
@@ -470,7 +506,7 @@ export default function MapViewSimple({
         }
       });
     }
-  }, [map, directionsRenderer, origin, waypoints, calculatedRoute, onRouteCalculated, pointsOfInterest]);
+  }, [map, directionsRenderer, origin, waypoints, markers, infoWindows, calculatedRoute, onRouteCalculated, pointsOfInterest]);
 
   // Função para estimar custo de pedágio baseado no tipo de veículo
   function estimateTollCost(vehicleType: string): number {
@@ -504,6 +540,26 @@ export default function MapViewSimple({
           </div>
         </div>
       )}
+      
+      {/* Adicionar legenda do mapa */}
+      <div className="absolute bottom-4 left-4 bg-white p-2 rounded-md shadow-md z-10 text-sm">
+        <div className="flex items-center mb-1">
+          <div className="w-4 h-4 rounded-full bg-green-500 mr-2"></div>
+          <span>Origem</span>
+        </div>
+        <div className="flex items-center mb-1">
+          <div className="w-4 h-4 rounded-full bg-blue-500 mr-2"></div>
+          <span>Destino</span>
+        </div>
+        <div className="flex items-center mb-1">
+          <div className="w-4 h-4 rounded-full bg-red-500 mr-2"></div>
+          <span>Pedágio</span>
+        </div>
+        <div className="flex items-center">
+          <div className="w-4 h-4 rounded-full bg-orange-500 mr-2"></div>
+          <span>Balança</span>
+        </div>
+      </div>
     </div>
   );
 }
