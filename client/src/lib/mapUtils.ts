@@ -400,9 +400,10 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
             const rodoviaMatches = instText.match(/(SP|BR|MG|PR|RS|SC|GO|MT|MS|BA|PE|RJ|ES)[-\s](\d{3})/g);
             if (rodoviaMatches) {
               rodoviaMatches.forEach(rod => {
-                if (!rodovias.includes(rod)) {
-                  rodovias.push(rod);
-                  console.log(`Rodovia detectada: ${rod}`);
+                const normalizedRod = rod.replace(/\s+/g, '-').toUpperCase();
+                if (!rodovias.includes(normalizedRod)) {
+                  rodovias.push(normalizedRod);
+                  console.log(`Rodovia detectada: ${normalizedRod}`);
                 }
               });
             }
@@ -415,53 +416,124 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
     if (rodovias.length > 0) {
       console.log(`Método 3: Rodovias detectadas: ${rodovias.join(', ')}`);
       
-      // Mapa de pedágios conhecidos por rodovia
-      const pedagiosPorRodovia: {[key: string]: {nome: string, lat: string, lng: string}[]} = {
+      // Mapa de pedágios conhecidos por rodovia - Dados mais completos
+      const pedagiosPorRodovia: {[key: string]: {nome: string, lat: string, lng: string, custo?: number}[]} = {
         'SP-255': [
-          {nome: 'Pedágio SP-255 (Jaú)', lat: '-22.1856', lng: '-48.6087'},
-          {nome: 'Pedágio SP-255 (Barra Bonita)', lat: '-22.5123', lng: '-48.5566'},
-          {nome: 'Pedágio SP-255 (Boa Esperança do Sul)', lat: '-21.9927', lng: '-48.3926'}
+          {nome: 'Pedágio SP-255 (Jaú)', lat: '-22.1856', lng: '-48.6087', custo: 1150},
+          {nome: 'Pedágio SP-255 (Barra Bonita)', lat: '-22.5123', lng: '-48.5566', custo: 950},
+          {nome: 'Pedágio SP-255 (Boa Esperança do Sul)', lat: '-21.9927', lng: '-48.3926', custo: 1050},
+          {nome: 'Pedágio SP-255 (Araraquara)', lat: '-21.7925', lng: '-48.2067', custo: 970},
+          {nome: 'Pedágio SP-255 (Ribeirão Preto)', lat: '-21.2112', lng: '-47.7875', custo: 950}
         ],
         'SP-225': [
-          {nome: 'Pedágio SP-225 (Brotas)', lat: '-22.2794', lng: '-48.1257'},
-          {nome: 'Pedágio SP-225 (Dois Córregos)', lat: '-22.3673', lng: '-48.2823'},
-          {nome: 'Pedágio SP-225 (Jaú)', lat: '-22.3006', lng: '-48.5584'}
+          {nome: 'Pedágio SP-225 (Brotas)', lat: '-22.2982', lng: '-48.1157', custo: 1100},
+          {nome: 'Pedágio SP-225 (Dois Córregos)', lat: '-22.3673', lng: '-48.2823', custo: 980},
+          {nome: 'Pedágio SP-225 (Jaú)', lat: '-22.3006', lng: '-48.5584', custo: 1050},
+          {nome: 'Pedágio SP-225 (Itirapina)', lat: '-22.2505', lng: '-47.8456', custo: 990}
         ],
         'SP-310': [
-          {nome: 'Pedágio SP-310 (Itirapina)', lat: '-22.2449', lng: '-47.8278'},
-          {nome: 'Pedágio SP-310 (São Carlos)', lat: '-22.0105', lng: '-47.9107'},
-          {nome: 'Pedágio SP-310 (Araraquara)', lat: '-21.7950', lng: '-48.1758'}
+          {nome: 'Pedágio SP-310 (Itirapina)', lat: '-22.2449', lng: '-47.8278', custo: 1100},
+          {nome: 'Pedágio SP-310 (São Carlos)', lat: '-22.0105', lng: '-47.9107', custo: 1050},
+          {nome: 'Pedágio SP-310 (Araraquara)', lat: '-21.7950', lng: '-48.1758', custo: 1150},
+          {nome: 'Pedágio SP-310 (Matão)', lat: '-21.6215', lng: '-48.3663', custo: 1050},
+          {nome: 'Pedágio SP-310 (Catanduva)', lat: '-21.1389', lng: '-48.9689', custo: 1050}
         ],
         'SP-330': [
-          {nome: 'Pedágio SP-330 (Ribeirão Preto)', lat: '-21.2089', lng: '-47.8651'},
-          {nome: 'Pedágio SP-330 (Sertãozinho)', lat: '-21.0979', lng: '-47.9959'}
+          {nome: 'Pedágio SP-330 (Ribeirão Preto)', lat: '-21.2089', lng: '-47.8651', custo: 1100},
+          {nome: 'Pedágio SP-330 (Sertãozinho)', lat: '-21.0979', lng: '-47.9959', custo: 950},
+          {nome: 'Pedágio SP-330 (Bebedouro)', lat: '-20.9492', lng: '-48.4846', custo: 1050},
+          {nome: 'Pedágio SP-330 (Colômbia)', lat: '-20.1775', lng: '-48.7064', custo: 1100}
         ],
         'SP-333': [
-          {nome: 'Pedágio SP-333 (Jaú)', lat: '-22.3211', lng: '-48.5584'},
-          {nome: 'Pedágio SP-333 (Borborema)', lat: '-21.6214', lng: '-49.0741'}
+          {nome: 'Pedágio SP-333 (Jaú)', lat: '-22.3211', lng: '-48.5584', custo: 950},
+          {nome: 'Pedágio SP-333 (Borborema)', lat: '-21.6214', lng: '-49.0741', custo: 900},
+          {nome: 'Pedágio SP-333 (Marília)', lat: '-22.1953', lng: '-49.9331', custo: 950}
         ],
         'SP-304': [
-          {nome: 'Pedágio SP-304 (Jaú/Bariri)', lat: '-22.1472', lng: '-48.6795'},
-          {nome: 'Pedágio SP-304 (Torrinha)', lat: '-22.4238', lng: '-48.1701'}
+          {nome: 'Pedágio SP-304 (Jaú/Bariri)', lat: '-22.1472', lng: '-48.6795', custo: 900},
+          {nome: 'Pedágio SP-304 (Torrinha)', lat: '-22.4238', lng: '-48.1701', custo: 850},
+          {nome: 'Pedágio SP-304 (Piracicaba)', lat: '-22.7233', lng: '-47.6493', custo: 950}
+        ],
+        'SP-300': [
+          {nome: 'Pedágio SP-300 (Botucatu)', lat: '-22.8847', lng: '-48.4436', custo: 980},
+          {nome: 'Pedágio SP-300 (Bauru)', lat: '-22.3156', lng: '-49.0414', custo: 1050},
+          {nome: 'Pedágio SP-300 (Lins)', lat: '-21.6706', lng: '-49.7553', custo: 950}
+        ],
+        'SP-270': [
+          {nome: 'Pedágio SP-270 (Ourinhos)', lat: '-22.9711', lng: '-49.8686', custo: 880},
+          {nome: 'Pedágio SP-270 (Piraju)', lat: '-23.1981', lng: '-49.3914', custo: 900}
+        ],
+        'SP-280': [
+          {nome: 'Pedágio SP-280 (Sorocaba)', lat: '-23.5017', lng: '-47.4584', custo: 1150},
+          {nome: 'Pedágio SP-280 (Itu)', lat: '-23.2645', lng: '-47.2995', custo: 1050}
+        ],
+        'SP-348': [
+          {nome: 'Pedágio SP-348 (Campinas)', lat: '-22.9481', lng: '-47.1417', custo: 1150}, 
+          {nome: 'Pedágio SP-348 (Limeira)', lat: '-22.5839', lng: '-47.3794', custo: 1100}
+        ]
+      };
+      
+      // Balanças por rodovia (pontos de pesagem)
+      const balancasPorRodovia: {[key: string]: {nome: string, lat: string, lng: string, restricoes?: string}[]} = {
+        'SP-255': [
+          {nome: 'Balança SP-255 (km 122)', lat: '-22.2153', lng: '-48.1887', restricoes: 'Veículos acima de 1 eixo'},
+          {nome: 'Balança SP-255 (km 86)', lat: '-21.8901', lng: '-48.2305', restricoes: 'Veículos acima de 1 eixo'}
+        ],
+        'SP-310': [
+          {nome: 'Balança SP-310 (km 173)', lat: '-21.9845', lng: '-47.8897', restricoes: 'Veículos acima de 1 eixo'},
+          {nome: 'Balança SP-310 (km 235)', lat: '-21.6432', lng: '-48.3089', restricoes: 'Veículos acima de 2 eixos'}
+        ],
+        'SP-330': [
+          {nome: 'Balança SP-330 (km 316)', lat: '-21.1267', lng: '-47.9123', restricoes: 'Todos veículos de carga'},
+          {nome: 'Balança SP-330 (km 357)', lat: '-20.7812', lng: '-48.2256', restricoes: 'Veículos acima de 2 eixos'}
+        ],
+        'SP-304': [
+          {nome: 'Balança SP-304 (km 285)', lat: '-22.6218', lng: '-47.7756', restricoes: 'Veículos acima de 1 eixo'}
+        ],
+        'SP-225': [
+          {nome: 'Balança SP-225 (km 177)', lat: '-22.2734', lng: '-48.3917', restricoes: 'Veículos acima de 1 eixo'}
         ]
       };
       
       // Adicionar pedágios importantes por cidade (independente da rodovia)
-      const pedagogiosPorCidade: {[key: string]: {nome: string, lat: string, lng: string}[]} = {
+      const pedagogiosPorCidade: {[key: string]: {nome: string, lat: string, lng: string, custo?: number}[]} = {
         'Dois Córregos': [
-          {nome: 'Pedágio Dois Córregos/Brotas', lat: '-22.3191', lng: '-48.1605'}
+          {nome: 'Pedágio Dois Córregos/Brotas', lat: '-22.3191', lng: '-48.1605', custo: 930}
         ],
         'Ribeirão Preto': [
-          {nome: 'Pedágio Ribeirão Preto/Pradópolis', lat: '-21.2556', lng: '-48.0039'}
+          {nome: 'Pedágio Ribeirão Preto/Pradópolis', lat: '-21.2556', lng: '-48.0039', custo: 970},
+          {nome: 'Pedágio Ribeirão Preto/Dumont', lat: '-21.1593', lng: '-47.7725', custo: 950}
         ],
         'Boa Esperança do Sul': [
-          {nome: 'Pedágio Boa Esperança do Sul', lat: '-21.9901', lng: '-48.3923'}
+          {nome: 'Pedágio Boa Esperança do Sul', lat: '-21.9901', lng: '-48.3923', custo: 1050}
         ],
         'Jaú': [
-          {nome: 'Pedágio Jaú/Bocaina', lat: '-22.1434', lng: '-48.4863'}
+          {nome: 'Pedágio Jaú/Bocaina', lat: '-22.1434', lng: '-48.4863', custo: 980},
+          {nome: 'Pedágio Jaú/Itapuí', lat: '-22.2343', lng: '-48.7234', custo: 950}
         ],
         'Araraquara': [
-          {nome: 'Pedágio Araraquara/Américo Brasiliense', lat: '-21.6822', lng: '-48.1038'}
+          {nome: 'Pedágio Araraquara/Américo Brasiliense', lat: '-21.6822', lng: '-48.1038', custo: 1000},
+          {nome: 'Pedágio Araraquara/Gavião Peixoto', lat: '-21.8359', lng: '-48.4912', custo: 950}
+        ],
+        'São Carlos': [
+          {nome: 'Pedágio São Carlos/Ibaté', lat: '-22.0012', lng: '-47.9876', custo: 980}
+        ],
+        'Bauru': [
+          {nome: 'Pedágio Bauru/Agudos', lat: '-22.4689', lng: '-49.1134', custo: 1050}
+        ]
+      };
+      
+      // Balanças por cidade
+      const balancasPorCidade: {[key: string]: {nome: string, lat: string, lng: string, restricoes?: string}[]} = {
+        'Ribeirão Preto': [
+          {nome: 'Balança Ribeirão Preto (Entrada Norte)', lat: '-21.1076', lng: '-47.7763', restricoes: 'Veículos acima de 1 eixo'},
+          {nome: 'Balança Ribeirão Preto (Anel Viário)', lat: '-21.2365', lng: '-47.8213', restricoes: 'Todos veículos de carga'}
+        ],
+        'Dois Córregos': [
+          {nome: 'Balança Dois Córregos/Mineiros do Tietê', lat: '-22.3867', lng: '-48.4423', restricoes: 'Veículos acima de 2 eixos'}
+        ],
+        'Jaú': [
+          {nome: 'Balança Jaú (Entrada Leste)', lat: '-22.2978', lng: '-48.5012', restricoes: 'Veículos acima de 1 eixo'}
         ]
       };
       
@@ -499,8 +571,12 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
       
       console.log("Cidades na rota:", cidadesNaRota);
       
-      // Adicionar pedágios de cidades na rota
+      // ID base para as balanças
+      let balancaId = 20000;
+
+      // Adicionar pedágios e balanças de cidades na rota
       cidadesNaRota.forEach(cidade => {
+        // Adicionar pedágios por cidade
         const pedagogios = pedagogiosPorCidade[cidade];
         if (pedagogios) {
           pedagogios.forEach(pedagio => {
@@ -512,13 +588,34 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
               lat: pedagio.lat,
               lng: pedagio.lng,
               type: 'toll',
-              cost: 0,
+              cost: pedagio.custo || 980, // Valor padrão de 9,80 se não especificado
               roadName: `Próximo a ${cidade}`,
               restrictions: 'Pedágio por cidade'
             };
             
             tollPoints.push(poi);
             tollsAdded = true;
+          });
+        }
+        
+        // Adicionar balanças por cidade
+        const balancas = balancasPorCidade[cidade];
+        if (balancas) {
+          balancas.forEach(balanca => {
+            console.log(`Adicionando balança por cidade ${cidade}: ${balanca.nome}`);
+            
+            const poi: PointOfInterest = {
+              id: balancaId++,
+              name: balanca.nome,
+              lat: balanca.lat,
+              lng: balanca.lng,
+              type: 'weighing_station',
+              cost: null,
+              roadName: `Próximo a ${cidade}`,
+              restrictions: balanca.restricoes || 'Veículos de carga'
+            };
+            
+            tollPoints.push(poi);
           });
         }
       });
