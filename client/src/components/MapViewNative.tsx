@@ -363,6 +363,28 @@ export default function MapViewNative({
                 zIndex: 1000 // Maior zIndex para garantir que fique por cima de outros elementos
               });
               
+              // Criar janela de informações ao clicar no marcador de origem
+              const infoContent = `
+                <div style="padding: 8px; max-width: 200px;">
+                  <h4 style="margin: 0 0 5px 0; color: #333; font-size: 14px;">
+                    ${origin.name} (Origem)
+                  </h4>
+                  <p style="margin: 0; font-size: 12px; color: #666;">
+                    ${origin.address || 'Endereço não disponível'}
+                  </p>
+                  ${origin.cep ? `<p style="margin: 3px 0 0; font-size: 12px; color: #888;">CEP: ${origin.cep}</p>` : ''}
+                </div>
+              `;
+              
+              const infoWindow = new google.maps.InfoWindow({
+                content: infoContent
+              });
+              
+              // Abrir a janela de informações ao clicar no marcador
+              originMarker.addListener('click', () => {
+                infoWindow.open(map, originMarker);
+              });
+              
               bounds.extend(originPoint);
               newMarkers.push(originMarker);
               
@@ -387,6 +409,28 @@ export default function MapViewNative({
                   },
                   // Adicionando animação com delay baseado no índice para criar efeito sequencial
                   animation: google.maps.Animation.DROP
+                });
+                
+                // Criar janela de informações ao clicar no marcador
+                const infoContent = `
+                  <div style="padding: 8px; max-width: 200px;">
+                    <h4 style="margin: 0 0 5px 0; color: #333; font-size: 14px;">
+                      ${point.name}
+                    </h4>
+                    <p style="margin: 0; font-size: 12px; color: #666;">
+                      ${point.address || 'Endereço não disponível'}
+                    </p>
+                    ${point.cep ? `<p style="margin: 3px 0 0; font-size: 12px; color: #888;">CEP: ${point.cep}</p>` : ''}
+                  </div>
+                `;
+                
+                const infoWindow = new google.maps.InfoWindow({
+                  content: infoContent
+                });
+                
+                // Abrir a janela de informações ao clicar no marcador
+                marker.addListener('click', () => {
+                  infoWindow.open(map, marker);
                 });
                 
                 newMarkers.push(marker);
@@ -511,6 +555,29 @@ export default function MapViewNative({
           animation: google.maps.Animation.DROP, // Animação
           zIndex: 1000 // Garantir que fique em cima de outros marcadores
         });
+        
+        // Criar janela de informações ao clicar no marcador de origem
+        const infoContent = `
+          <div style="padding: 8px; max-width: 200px;">
+            <h4 style="margin: 0 0 5px 0; color: #333; font-size: 14px;">
+              ${origin.name} (Origem)
+            </h4>
+            <p style="margin: 0; font-size: 12px; color: #666;">
+              ${origin.address || 'Endereço não disponível'}
+            </p>
+            ${origin.cep ? `<p style="margin: 3px 0 0; font-size: 12px; color: #888;">CEP: ${origin.cep}</p>` : ''}
+          </div>
+        `;
+        
+        const infoWindow = new google.maps.InfoWindow({
+          content: infoContent
+        });
+        
+        // Abrir a janela de informações ao clicar no marcador
+        originMarker.addListener('click', () => {
+          infoWindow.open(map, originMarker);
+        });
+        
         newMarkers.push(originMarker);
         
         // Adicionar marcadores para destinos
@@ -534,6 +601,28 @@ export default function MapViewNative({
             },
             // Adicionar uma pequena animação com um atraso baseado no índice
             animation: google.maps.Animation.DROP
+          });
+          
+          // Criar janela de informações ao clicar no marcador
+          const infoContent = `
+            <div style="padding: 8px; max-width: 200px;">
+              <h4 style="margin: 0 0 5px 0; color: #333; font-size: 14px;">
+                ${point.name}
+              </h4>
+              <p style="margin: 0; font-size: 12px; color: #666;">
+                ${point.address || 'Endereço não disponível'}
+              </p>
+              ${point.cep ? `<p style="margin: 3px 0 0; font-size: 12px; color: #888;">CEP: ${point.cep}</p>` : ''}
+            </div>
+          `;
+          
+          const infoWindow = new google.maps.InfoWindow({
+            content: infoContent
+          });
+          
+          // Abrir a janela de informações ao clicar no marcador
+          marker.addListener('click', () => {
+            infoWindow.open(map, marker);
           });
           
           newMarkers.push(marker);
@@ -590,6 +679,28 @@ export default function MapViewNative({
                 },
                 animation: google.maps.Animation.DROP, // Adicionar animação
                 zIndex: 900 // Alto mas abaixo dos marcadores de rota
+              });
+              
+              // Criar janela de informações ao clicar no marcador do POI
+              const infoContent = `
+                <div style="padding: 10px; max-width: 200px;">
+                  <h4 style="margin: 0 0 8px 0; color: #333;">${poi.name}</h4>
+                  <p style="margin: 0; font-size: 12px;">
+                    ${poi.type === 'toll' ? 'Pedágio' : 'Balança de pesagem'}
+                  </p>
+                  ${poi.roadName ? `<p style="margin: 4px 0 0; font-size: 12px;">Rodovia: ${poi.roadName}</p>` : ''}
+                  ${poi.cost ? `<p style="margin: 4px 0 0; font-size: 12px;"><strong>Custo:</strong> R$ ${(poi.cost/100).toFixed(2)}</p>` : ''}
+                  ${poi.restrictions ? `<p style="margin: 4px 0 0; font-size: 12px;"><strong>Restrições:</strong> ${poi.restrictions}</p>` : ''}
+                </div>
+              `;
+              
+              const infoWindow = new google.maps.InfoWindow({
+                content: infoContent
+              });
+              
+              // Abrir a janela de informações ao clicar no marcador
+              poiMarker.addListener('click', () => {
+                infoWindow.open(map, poiMarker);
               });
               
               newMarkers.push(poiMarker);
