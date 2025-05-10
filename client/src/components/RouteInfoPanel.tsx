@@ -657,17 +657,120 @@ export default function RouteInfoPanel({
                   </div>
                 </div>
 
-                {/* Points of Attention - Versão compacta */}
+                {/* Eventos e Restrições - Nova Versão Combinada */}
                 <div className="bg-white rounded p-2 border border-gray-100">
-                  <h3 className="text-xs font-medium mb-1 text-primary">Pontos de Atenção</h3>
+                  <h3 className="text-xs font-medium mb-1 text-primary">Eventos nas Cidades da Rota</h3>
                   
-                  {/* SOLUÇÃO DEFINITIVA: USAR APENAS filteredPOIs QUE FORAM FILTRADOS NO useEffect */}
                   {(() => {
-                    // DECISÃO FINAL: Usar o filteredPOIs do state, que foi filtrado no useEffect
-                    // Isso garante que apenas os pontos realmente na rota sejam mostrados
-                    const tollsToShow = filteredPOIs.filter(p => p.type === 'toll');
-                    const balancesToShow = filteredPOIs.filter(p => p.type === 'weighing_station');
+                    // Extrair o nome exato das cidades da rota usando a função extractCityFromAddress
+                    const citiesInRoute = new Set<string>();
                     
+                    // Adicionar a origem (Dois Córregos)
+                    citiesInRoute.add("Dois Córregos");
+                    
+                    // Adicionar todas as cidades da rota
+                    if (calculatedRoute) {
+                      calculatedRoute.forEach(location => {
+                        if (location.name) {
+                          citiesInRoute.add(location.name.split(',')[0].trim());
+                        }
+                        if (location.address) {
+                          const cityMatch = location.address.match(/([^,]+?)(?:\s*-\s*[A-Z]{2})/i);
+                          if (cityMatch && cityMatch[1]) {
+                            citiesInRoute.add(cityMatch[1].trim());
+                          }
+                        }
+                        // Adicionar manualmente cidades importantes
+                        const address = location.address?.toLowerCase() || '';
+                        if (address.includes('ribeirao') || address.includes('ribeirão')) {
+                          citiesInRoute.add('Ribeirão Preto');
+                        }
+                        if (address.includes('campinas')) {
+                          citiesInRoute.add('Campinas');
+                        }
+                      });
+                    }
+                    
+                    // Criar um mapa para saber a posição de cada cidade na rota
+                    const cityPositionMap = new Map();
+                    
+                    // Preencher o mapa com posições de cidades
+                    Array.isArray(calculatedRoute) && calculatedRoute.forEach((location, index) => {
+                      const cityName = extractCityFromAddress(location.address);
+                      if (cityName && !cityPositionMap.has(cityName)) {
+                        cityPositionMap.set(cityName, index);
+                      }
+                    });
+                    
+                    // Filtrar e ordenar eventos das cidades na rota
+                    const filteredAndSortedEvents = cityEvents && Array.isArray(cityEvents) ? [...cityEvents]
+                      // Primeiro filtramos para manter apenas eventos de cidades na rota
+                      .filter(event => {
+                        // Verificar se a cidade do evento está na rota
+                        return Array.from(citiesInRoute).some(city => 
+                          event.cityName.includes(city) || city.includes(event.cityName)
+                        );
+                      })
+                      // Depois ordenamos os eventos filtrados
+                      .sort((a, b) => {
+                        // Primeiro critério: posição da cidade na rota
+                        const cityA = a.cityName;
+                        const cityB = b.cityName;
+                        
+                        // Ordem crescente por data
+                        return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+                      }) : [];
+                    
+                    // Verificar se temos eventos para mostrar
+                    if (!startDate || !endDate) {
+                      return (
+                        <div className="text-xs text-gray-500">
+                          Selecione datas para ver eventos na rota
+                        </div>
+                      );
+                    } else if (filteredAndSortedEvents.length === 0) {
+                      return (
+                        <div className="text-xs text-gray-500">
+                          Nenhum evento no período selecionado
+                        </div>
+                      );
+                    }
+                    
+                    // Mostrar até 3 eventos mais próximos
+                    const eventsToShow = filteredAndSortedEvents.slice(0, 3);
+                    return (
+                      <ul className="text-xs space-y-1">
+                        {eventsToShow.map((event, idx) => (
+                          <li key={idx} className="flex items-start">
+                            <span className={`inline-block w-2 h-2 rounded-full mt-1 mr-1 
+                              ${event.eventType === 'holiday' ? 'bg-red-600' : 
+                                event.eventType === 'festival' ? 'bg-yellow-500' : 'bg-green-600'}`}>
+                            </span>
+                            <span>
+                              <span className="font-medium">{event.cityName}:</span> {event.eventName}
+                              <span className="block text-gray-500">
+                                {new Date(event.startDate).toLocaleDateString('pt-BR')}
+                                {event.startDate !== event.endDate ? 
+                                  ` até ${new Date(event.endDate).toLocaleDateString('pt-BR')}` : ''}
+                              </span>
+                            </span>
+                          </li>
+                        ))}
+                        {filteredAndSortedEvents.length > 3 && (
+                          <li className="text-xxs text-gray-500 italic">
+                            + {filteredAndSortedEvents.length - 3} outros eventos (ver aba Eventos)
+                          </li>
+                        )}
+                      </ul>
+                    );
+                  })()}
+                </div>
+                
+                {/* Restrições para Caminhões */}
+                <div className="bg-white rounded p-2 border border-gray-100 mt-2">
+                  <h3 className="text-xs font-medium mb-1 text-primary">Restrições para Caminhões</h3>
+                  
+                  {(() => {
                     // Identificar as cidades na rota para filtrar restrições
                     const citiesInRoute = new Set<string>();
                     
@@ -707,53 +810,30 @@ export default function RouteInfoPanel({
                         });
                       }) : [];
                     
-                    // Verificar se temos algum ponto de atenção para mostrar
-                    const hasAttentionPoints = tollsToShow.length > 0 || 
-                                              balancesToShow.length > 0 || 
-                                              restrictionsToShow.length > 0;
+                    // Verificar se temos restrições para mostrar
+                    if (restrictionsToShow.length === 0) {
+                      return (
+                        <div className="text-xs text-gray-500">
+                          Nenhuma restrição nas cidades da rota
+                        </div>
+                      );
+                    }
                     
-                    // Mostrar os pontos de atenção (se houver)
-                    return hasAttentionPoints ? (
+                    // Mostrar todas as restrições
+                    return (
                       <ul className="text-xs space-y-1">
-                        {/* 1. Pedágios */}
-                        {tollsToShow.length > 0 && (
-                          <li className="flex items-center">
-                            <span className="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-1"></span>
-                            <span>
-                              {tollsToShow.length} {tollsToShow.length === 1 ? 'pedágio' : 'pedágios'}: 
-                              <span className="text-gray-500 ml-1">
-                                {tollsToShow.map(toll => 
-                                  toll.name.includes('(') ? toll.name.split('(').pop()?.replace(')', '') || '' : toll.roadName || toll.name
-                                ).filter(Boolean).join(', ')}
-                              </span>
-                            </span>
-                          </li>
-                        )}
-                        
-                        {/* 2. Balanças */}
-                        {balancesToShow.length > 0 && (
-                          <li className="flex items-center">
-                            <span className="inline-block w-2 h-2 rounded-full bg-red-600 mr-1"></span>
-                            <span>
-                              {balancesToShow.length} {balancesToShow.length === 1 ? 'balança' : 'balanças'} em operação
-                            </span>
-                          </li>
-                        )}
-                        
-                        {/* 3. Restrições */}
                         {restrictionsToShow.map((restriction, idx) => (
-                          <li key={idx} className="flex items-center">
-                            <span className="inline-block w-2 h-2 rounded-full bg-primary mr-1"></span>
+                          <li key={idx} className="flex items-start">
+                            <span className="inline-block w-2 h-2 rounded-full bg-primary mt-1 mr-1"></span>
                             <span>
-                              {`Restrição em ${restriction.cityName}: ${restriction.startTime || '00:00'}-${restriction.endTime || '23:59'}`}
+                              <span className="font-medium">{restriction.cityName}:</span> {restriction.restriction}
+                              <span className="block text-gray-500">
+                                {restriction.startTime}-{restriction.endTime} | {restriction.applicableVehicles}
+                              </span>
                             </span>
                           </li>
                         ))}
                       </ul>
-                    ) : (
-                      <div className="text-xs text-gray-500">
-                        Nenhum ponto de atenção na rota atual
-                      </div>
                     );
                   })()}
                 </div>
