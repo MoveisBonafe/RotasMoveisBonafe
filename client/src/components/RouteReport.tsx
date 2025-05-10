@@ -305,6 +305,25 @@ export default function RouteReport({
                   ? calculatedRoute.map(loc => loc.name || "").filter(Boolean)
                   : [];
                 
+                // Extrair o nome exato das cidades da rota
+                const citiesInRoute = new Set<string>();
+                routeSequence.forEach(city => {
+                  // Considerar a origem (Dois Córregos)
+                  if (city === "Dois Córregos") {
+                    citiesInRoute.add("Dois Córregos");
+                  } else {
+                    // Para destinos, verificar nome completo ou parte do nome
+                    citiesInRoute.add(city);
+                    
+                    // Extrair nome da cidade do endereço (caso tenha cidade no endereço)
+                    const cityParts = city.split(",");
+                    if (cityParts.length > 1) {
+                      const cityName = cityParts[0].trim();
+                      citiesInRoute.add(cityName);
+                    }
+                  }
+                });
+                
                 // Criar um mapa para saber a posição de cada cidade na rota
                 const cityPositionMap = new Map();
                 routeSequence.forEach((city, index) => {
@@ -313,25 +332,43 @@ export default function RouteReport({
                   }
                 });
                 
-                // Ordenar eventos por ordem da cidade na rota e depois por data
-                const sortedEvents = [...cityEvents].sort((a, b) => {
-                  // Primeiro critério: posição da cidade na rota
-                  const cityA = a.cityName;
-                  const cityB = b.cityName;
-                  
-                  // Se uma cidade não está no mapa, colocar no final
-                  const posA = cityPositionMap.has(cityA) ? cityPositionMap.get(cityA) : 999;
-                  const posB = cityPositionMap.has(cityB) ? cityPositionMap.get(cityB) : 999;
-                  
-                  if (posA !== posB) {
-                    return posA - posB; // Ordem crescente por posição na rota
-                  }
-                  
-                  // Segundo critério: data do evento
-                  return new Date(a.startDate).getTime() - new Date(b.startDate).getTime(); // Ordem crescente por data
-                });
+                // Filtrar apenas eventos das cidades que estão na rota, depois ordenar
+                const filteredAndSortedEvents = [...cityEvents]
+                  .filter(event => {
+                    // Verificar se a cidade do evento está na rota
+                    return Array.from(citiesInRoute).some(city => 
+                      event.cityName.includes(city) || city.includes(event.cityName)
+                    );
+                  })
+                  .sort((a, b) => {
+                    // Primeiro critério: posição da cidade na rota
+                    const cityA = a.cityName;
+                    const cityB = b.cityName;
+                    
+                    // Encontrar posição das cidades na rota
+                    let posA = 999;
+                    let posB = 999;
+                    
+                    // Fazer uma busca mais flexível para encontrar a cidade na rota
+                    Array.from(cityPositionMap.keys()).forEach((city) => {
+                      const position = cityPositionMap.get(city);
+                      if (cityA.includes(city) || city.includes(cityA)) {
+                        posA = position;
+                      }
+                      if (cityB.includes(city) || city.includes(cityB)) {
+                        posB = position;
+                      }
+                    });
+                    
+                    if (posA !== posB) {
+                      return posA - posB; // Ordem crescente por posição na rota
+                    }
+                    
+                    // Segundo critério: data do evento
+                    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime(); // Ordem crescente por data
+                  });
                 
-                return sortedEvents.map((event: CityEvent, index) => (
+                return filteredAndSortedEvents.map((event: CityEvent, index) => (
                   <div key={event.id} className="mb-1 pb-1 border-b border-gray-50 last:border-b-0 last:mb-0 last:pb-0 animate-fadeInUp" style={{ animationDelay: `${index * 0.1}s` }}>
                     <div className="flex items-start">
                       <span className={`inline-block w-2 h-2 rounded-full mr-1 mt-1 
@@ -365,20 +402,55 @@ export default function RouteReport({
           <div className="border border-gray-200 rounded-sm p-2 mb-2">
             <h3 className="text-xs font-semibold mb-1 text-primary">Restrições para Caminhões</h3>
             <div className="space-y-1">
-              {truckRestrictions.map((restriction: TruckRestriction) => (
-                <div key={restriction.id} className="mb-1 pb-1 border-b border-gray-50 last:border-b-0 last:mb-0 last:pb-0">
-                  <div className="font-medium">{restriction.cityName} - {restriction.restriction}</div>
-                  <div className="text-gray-600 text-xs">
-                    Horário: {restriction.startTime || '00:00'} - {restriction.endTime || '23:59'}
+              {(() => {
+                // Definir a sequência de cidades pela ordem em que aparecem na rota
+                const routeSequence = Array.isArray(calculatedRoute) 
+                  ? calculatedRoute.map(loc => loc.name || "").filter(Boolean)
+                  : [];
+                
+                // Extrair o nome exato das cidades da rota
+                const citiesInRoute = new Set<string>();
+                routeSequence.forEach(city => {
+                  // Considerar a origem (Dois Córregos)
+                  if (city === "Dois Córregos") {
+                    citiesInRoute.add("Dois Córregos");
+                  } else {
+                    // Para destinos, verificar nome completo ou parte do nome
+                    citiesInRoute.add(city);
+                    
+                    // Extrair nome da cidade do endereço (caso tenha cidade no endereço)
+                    const cityParts = city.split(",");
+                    if (cityParts.length > 1) {
+                      const cityName = cityParts[0].trim();
+                      citiesInRoute.add(cityName);
+                    }
+                  }
+                });
+                
+                // Filtrar apenas restrições das cidades que estão na rota
+                const filteredRestrictions = [...truckRestrictions]
+                  .filter(restriction => {
+                    // Verificar se a cidade da restrição está na rota
+                    return Array.from(citiesInRoute).some(city => 
+                      restriction.cityName.includes(city) || city.includes(restriction.cityName)
+                    );
+                  });
+                
+                return filteredRestrictions.map((restriction: TruckRestriction) => (
+                  <div key={restriction.id} className="mb-1 pb-1 border-b border-gray-50 last:border-b-0 last:mb-0 last:pb-0">
+                    <div className="font-medium">{restriction.cityName} - {restriction.restriction}</div>
+                    <div className="text-gray-600 text-xs">
+                      Horário: {restriction.startTime || '00:00'} - {restriction.endTime || '23:59'}
+                    </div>
+                    <div className="text-gray-600 text-xs">
+                      Veículos: {restriction.applicableVehicles}
+                    </div>
+                    {restriction.description && (
+                      <div className="text-gray-500 text-xs">{restriction.description}</div>
+                    )}
                   </div>
-                  <div className="text-gray-600 text-xs">
-                    Veículos: {restriction.applicableVehicles}
-                  </div>
-                  {restriction.description && (
-                    <div className="text-gray-500 text-xs">{restriction.description}</div>
-                  )}
-                </div>
-              ))}
+                ));
+              })()}
             </div>
           </div>
         )}

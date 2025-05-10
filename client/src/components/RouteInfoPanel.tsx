@@ -262,12 +262,31 @@ export default function RouteInfoPanel({
             </div>
           ) : cityEvents && Array.isArray(cityEvents) && cityEvents.length > 0 ? (
             <div className="grid grid-cols-1 gap-2">
-              {/* Ordenar eventos: primeiro pela ordem das cidades na rota, depois por data */}
+              {/* Filtrar e ordenar eventos: mostrar apenas eventos das cidades na rota, na ordem da rota e por data */}
               {(() => {
                 // Definir a sequência de cidades pela ordem em que aparecem na rota
                 const routeSequence = Array.isArray(calculatedRoute) 
                   ? calculatedRoute.map(loc => loc.name || "").filter(Boolean)
                   : [];
+                
+                // Extrair o nome exato das cidades da rota
+                const citiesInRoute = new Set<string>();
+                routeSequence.forEach(city => {
+                  // Considerar a origem (Dois Córregos)
+                  if (city === "Dois Córregos") {
+                    citiesInRoute.add("Dois Córregos");
+                  } else {
+                    // Para destinos, verificar nome completo ou parte do nome
+                    citiesInRoute.add(city);
+                    
+                    // Extrair nome da cidade do endereço (caso tenha cidade no endereço)
+                    const cityParts = city.split(",");
+                    if (cityParts.length > 1) {
+                      const cityName = cityParts[0].trim();
+                      citiesInRoute.add(cityName);
+                    }
+                  }
+                });
                 
                 // Criar um mapa para saber a posição de cada cidade na rota
                 const cityPositionMap = new Map();
@@ -277,25 +296,43 @@ export default function RouteInfoPanel({
                   }
                 });
                 
-                // Ordenar eventos por ordem da cidade na rota e depois por data
-                const sortedEvents = [...cityEvents].sort((a, b) => {
-                  // Primeiro critério: posição da cidade na rota
-                  const cityA = a.cityName;
-                  const cityB = b.cityName;
-                  
-                  // Se uma cidade não está no mapa, colocar no final
-                  const posA = cityPositionMap.has(cityA) ? cityPositionMap.get(cityA) : 999;
-                  const posB = cityPositionMap.has(cityB) ? cityPositionMap.get(cityB) : 999;
-                  
-                  if (posA !== posB) {
-                    return posA - posB; // Ordem crescente por posição na rota
-                  }
-                  
-                  // Segundo critério: data do evento
-                  return new Date(a.startDate).getTime() - new Date(b.startDate).getTime(); // Ordem crescente por data
-                });
+                // Filtrar apenas eventos das cidades que estão na rota, depois ordenar
+                const filteredAndSortedEvents = [...cityEvents]
+                  .filter(event => {
+                    // Verificar se a cidade do evento está na rota
+                    return Array.from(citiesInRoute).some(city => 
+                      event.cityName.includes(city) || city.includes(event.cityName)
+                    );
+                  })
+                  .sort((a, b) => {
+                    // Primeiro critério: posição da cidade na rota
+                    const cityA = a.cityName;
+                    const cityB = b.cityName;
+                    
+                    // Encontrar posição das cidades na rota
+                    let posA = 999;
+                    let posB = 999;
+                    
+                    // Fazer uma busca mais flexível para encontrar a cidade na rota
+                    Array.from(cityPositionMap.keys()).forEach((city) => {
+                      const position = cityPositionMap.get(city);
+                      if (cityA.includes(city) || city.includes(cityA)) {
+                        posA = position;
+                      }
+                      if (cityB.includes(city) || city.includes(cityB)) {
+                        posB = position;
+                      }
+                    });
+                    
+                    if (posA !== posB) {
+                      return posA - posB; // Ordem crescente por posição na rota
+                    }
+                    
+                    // Segundo critério: data do evento
+                    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime(); // Ordem crescente por data
+                  });
                 
-                return sortedEvents.map((event: CityEvent) => (
+                return filteredAndSortedEvents.map((event: CityEvent) => (
                   <div key={event.id} className="bg-white rounded p-2 border border-gray-100 text-xs">
                     <div className="flex items-start">
                       <span className={`inline-block w-2 h-2 rounded-full mr-1 mt-1 
@@ -342,15 +379,50 @@ export default function RouteInfoPanel({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                      {truckRestrictions.map((restriction: TruckRestriction) => (
-                        <tr key={restriction.id}>
-                          <td className="px-2 py-1 whitespace-nowrap">{restriction.cityName}</td>
-                          <td className="px-2 py-1">{restriction.restriction}</td>
-                          <td className="px-2 py-1 whitespace-nowrap">
-                            {restriction.startTime} - {restriction.endTime}
-                          </td>
-                        </tr>
-                      ))}
+                      {(() => {
+                        // Definir a sequência de cidades pela ordem em que aparecem na rota
+                        const routeSequence = Array.isArray(calculatedRoute) 
+                          ? calculatedRoute.map(loc => loc.name || "").filter(Boolean)
+                          : [];
+                        
+                        // Extrair o nome exato das cidades da rota
+                        const citiesInRoute = new Set<string>();
+                        routeSequence.forEach(city => {
+                          // Considerar a origem (Dois Córregos)
+                          if (city === "Dois Córregos") {
+                            citiesInRoute.add("Dois Córregos");
+                          } else {
+                            // Para destinos, verificar nome completo ou parte do nome
+                            citiesInRoute.add(city);
+                            
+                            // Extrair nome da cidade do endereço (caso tenha cidade no endereço)
+                            const cityParts = city.split(",");
+                            if (cityParts.length > 1) {
+                              const cityName = cityParts[0].trim();
+                              citiesInRoute.add(cityName);
+                            }
+                          }
+                        });
+                        
+                        // Filtrar apenas restrições das cidades que estão na rota
+                        const filteredRestrictions = [...truckRestrictions]
+                          .filter(restriction => {
+                            // Verificar se a cidade da restrição está na rota
+                            return Array.from(citiesInRoute).some(city => 
+                              restriction.cityName.includes(city) || city.includes(restriction.cityName)
+                            );
+                          });
+                        
+                        return filteredRestrictions.map((restriction: TruckRestriction) => (
+                          <tr key={restriction.id}>
+                            <td className="px-2 py-1 whitespace-nowrap">{restriction.cityName}</td>
+                            <td className="px-2 py-1">{restriction.restriction}</td>
+                            <td className="px-2 py-1 whitespace-nowrap">
+                              {restriction.startTime} - {restriction.endTime}
+                            </td>
+                          </tr>
+                        ));
+                      })()}
                     </tbody>
                   </table>
                 </div>
