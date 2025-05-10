@@ -172,3 +172,10 @@ iframe {
   font-size: 0.625rem; /* 10px */
   line-height: 0.875rem; /* 14px */
 }
+
+/* Classe para tabs expandidas */
+.expanded-tab {
+  height: 50vh;
+  overflow-y: auto;
+  transition: height 0.3s ease;
+}

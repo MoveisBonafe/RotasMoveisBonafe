@@ -28,6 +28,22 @@ export default function RouteInfoPanel({
   initialTab = "summary"
 }: RouteInfoPanelProps) {
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
+  const [isExpanded, setIsExpanded] = useState(false);
+  
+  // Classe CSS para estilo expandido
+  // Nota: Adicionaremos a regra CSS em index.css
+  
+  // Função para alternar a tab e expandir/recolher
+  const toggleTab = (tab: TabType) => {
+    if (activeTab === tab) {
+      // Se a mesma tab for clicada, alterna entre expandido e recolhido
+      setIsExpanded(!isExpanded);
+    } else {
+      // Se for uma tab diferente, ativa essa tab e expande
+      setActiveTab(tab);
+      setIsExpanded(true);
+    }
+  };
   
   // Quando a rota é calculada (calculatedRoute muda), ativar a aba de resumo
   useEffect(() => {
@@ -123,7 +139,7 @@ export default function RouteInfoPanel({
       {/* Tabs */}
       <div className="flex border-b border-gray-200">
         <button
-          onClick={() => setActiveTab("summary")}
+          onClick={() => toggleTab("summary")}
           className={`px-4 py-2 text-xs font-medium ${
             activeTab === "summary"
               ? "text-primary border-b-2 border-primary"
@@ -133,7 +149,7 @@ export default function RouteInfoPanel({
           Resumo da Rota
         </button>
         <button
-          onClick={() => setActiveTab("events")}
+          onClick={() => toggleTab("events")}
           className={`px-4 py-2 text-xs font-medium ${
             activeTab === "events"
               ? "text-primary border-b-2 border-primary"
@@ -143,7 +159,7 @@ export default function RouteInfoPanel({
           Eventos
         </button>
         <button
-          onClick={() => setActiveTab("restrictions")}
+          onClick={() => toggleTab("restrictions")}
           className={`px-4 py-2 text-xs font-medium ${
             activeTab === "restrictions"
               ? "text-primary border-b-2 border-primary"
@@ -153,7 +169,7 @@ export default function RouteInfoPanel({
           Restrições
         </button>
         <button
-          onClick={() => setActiveTab("report")}
+          onClick={() => toggleTab("report")}
           className={`px-4 py-2 text-xs font-medium ${
             activeTab === "report"
               ? "text-primary border-b-2 border-primary"
@@ -166,7 +182,7 @@ export default function RouteInfoPanel({
 
       {/* Summary Tab */}
       {activeTab === "summary" && (
-        <div className="p-2">
+        <div className={`p-2 ${isExpanded ? 'expanded-tab' : ''}`}>
           {!routeInfo ? (
             <div className="text-center p-3 text-gray-500 text-xs">
               Calcule uma rota para ver o resumo.
@@ -300,7 +316,7 @@ export default function RouteInfoPanel({
 
       {/* City Events Tab */}
       {activeTab === "events" && (
-        <div className="p-2">
+        <div className={`p-2 ${isExpanded ? 'expanded-tab' : ''}`}>
           {!startDate || !endDate ? (
             <div className="bg-blue-50 text-blue-700 p-2 rounded-md text-xs">
               Selecione as datas de início e fim para ver os eventos nas cidades do trajeto.
@@ -427,7 +443,7 @@ export default function RouteInfoPanel({
 
       {/* Vehicle Restrictions Tab */}
       {activeTab === "restrictions" && (
-        <div className="p-2">
+        <div className={`p-2 ${isExpanded ? 'expanded-tab' : ''}`}>
           {vehicleType?.type.includes("truck") ? (
             truckRestrictions && Array.isArray(truckRestrictions) && truckRestrictions.length > 0 ? (
               <div className="bg-white rounded p-2 border border-gray-100">
@@ -513,7 +529,7 @@ export default function RouteInfoPanel({
 
       {/* Detailed Report Tab */}
       {activeTab === "report" && (
-        <div className="p-2">
+        <div className={`p-2 ${isExpanded ? 'expanded-tab' : ''}`}>
           {!routeInfo ? (
             <div className="text-center p-3 text-gray-500 text-xs">
               Calcule uma rota para gerar o relatório detalhado.
