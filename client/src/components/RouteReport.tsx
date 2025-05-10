@@ -39,9 +39,16 @@ export default function RouteReport({
 
   // Extrair cidades dos destinos para consultas
   const destinationCityNames = calculatedRoute 
-    ? calculatedRoute.map(location => 
-        location.city || location.address?.split(',')[0].trim() || null
-      ).filter(Boolean) as string[]
+    ? calculatedRoute.map(location => {
+        // Extrai o nome da cidade do endereço (geralmente é o primeiro componente antes da primeira vírgula)
+        if (location.address) {
+          const parts = location.address.split(',');
+          if (parts.length > 0) {
+            return parts[0].trim();
+          }
+        }
+        return location.name; // Se não conseguir extrair do endereço, usa o nome do local
+      }).filter(Boolean) as string[]
     : [];
 
   // Buscar pontos de interesse
@@ -220,8 +227,8 @@ export default function RouteReport({
                   <li key={poi.id} className="text-gray-700">
                     <span className="font-medium">{poi.name}</span>
                     <span className="text-gray-500 ml-1">({poi.type})</span>
-                    {poi.description && (
-                      <div className="text-gray-500 text-xs">{poi.description}</div>
+                    {poi.restrictions && (
+                      <div className="text-gray-500 text-xs">{poi.restrictions}</div>
                     )}
                   </li>
                 ))}
