@@ -196,18 +196,20 @@ export class MemStorage implements IStorage {
       {
         name: "Pedágio SP-225 (Jaú)",
         type: "toll",
-        lat: "-22.2989",
-        lng: "-48.5211",
+        lat: "-22.2562",
+        lng: "-48.5648",
         cost: 1100, // R$11.00
-        roadName: "SP-225"
+        roadName: "SP-225",
+        restrictions: null
       },
       {
-        name: "Pedágio SP-255 (Bocaina)",
+        name: "Pedágio SP-255 (Ribeirão Preto)",
         type: "toll",
-        lat: "-22.1457",
-        lng: "-48.5237",
+        lat: "-21.2964",
+        lng: "-47.8248",
         cost: 950, // R$9.50
-        roadName: "SP-255"
+        roadName: "SP-255",
+        restrictions: null
       },
       {
         name: "Pedágio SP-300 (Botucatu)",
@@ -215,21 +217,24 @@ export class MemStorage implements IStorage {
         lat: "-22.8837",
         lng: "-48.4436",
         cost: 1290, // R$12.90
-        roadName: "SP-300"
+        roadName: "SP-300",
+        restrictions: null
       },
       {
         name: "Balança SP-300 (km 45)",
         type: "weighing_station",
         lat: "-22.8765",
         lng: "-48.5123",
+        cost: null,
         restrictions: "Veículos acima de 2 eixos",
         roadName: "SP-300"
       },
       {
         name: "Balança SP-225 (km 122)",
         type: "weighing_station",
-        lat: "-22.3154",
-        lng: "-48.3956",
+        lat: "-22.1835",
+        lng: "-48.6022",
+        cost: null,
         restrictions: "Veículos acima de 1 eixo",
         roadName: "SP-225"
       }
