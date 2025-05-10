@@ -22,7 +22,7 @@ export interface PointOfInterest {
   type: 'toll' | 'weighing_station';
   lat: string;
   lng: string;
-  cost?: number; // in cents
+  cost?: number | null; // in cents, null para balanças
   restrictions?: string;
   roadName?: string;
 }

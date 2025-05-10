@@ -610,7 +610,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
               lat: balanca.lat,
               lng: balanca.lng,
               type: 'weighing_station',
-              cost: null,
+              cost: null, // balanças não têm custo
               roadName: `Próximo a ${cidade}`,
               restrictions: balanca.restricoes || 'Veículos de carga'
             };
@@ -622,6 +622,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
       
       // Adicionar pedágios para as rodovias detectadas
       rodovias.forEach(rodovia => {
+        // Adicionar pedágios por rodovia
         const pedagios = pedagiosPorRodovia[rodovia];
         if (pedagios) {
           pedagios.forEach(pedagio => {
@@ -633,13 +634,34 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
               lat: pedagio.lat,
               lng: pedagio.lng,
               type: 'toll',
-              cost: 0, // Custo desconhecido
+              cost: pedagio.custo || 980, // Usar custo definido ou padrão de 9,80
               roadName: rodovia,
               restrictions: 'Pedágio pré-definido'
             };
             
             tollPoints.push(poi);
             tollsAdded = true;
+          });
+        }
+        
+        // Adicionar balanças por rodovia
+        const balancas = balancasPorRodovia[rodovia];
+        if (balancas) {
+          balancas.forEach(balanca => {
+            console.log(`Método 3: Adicionando balança pré-conhecida: ${balanca.nome}`);
+            
+            const poi: PointOfInterest = {
+              id: balancaId++,
+              name: balanca.nome,
+              lat: balanca.lat,
+              lng: balanca.lng,
+              type: 'weighing_station',
+              cost: null, // balanças não têm custo
+              roadName: rodovia,
+              restrictions: balanca.restricoes || 'Veículos de carga'
+            };
+            
+            tollPoints.push(poi);
           });
         }
       });
