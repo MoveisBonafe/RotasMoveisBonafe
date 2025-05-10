@@ -86,29 +86,86 @@ export default function MapViewSimple({
         setDirectionsRenderer(newDirectionsRenderer);
         console.log("Mapa inicializado com sucesso");
         
+        // Adicionar marcador de origem se já tiver dados
+        if (origin) {
+          console.log("Adicionando marcador para origem durante inicialização:", origin);
+          const originMarker = new window.google.maps.Marker({
+            position: { 
+              lat: parseFloat(origin.lat), 
+              lng: parseFloat(origin.lng) 
+            },
+            map: newMap,
+            title: origin.name || "Origem",
+            icon: {
+              path: window.google.maps.SymbolPath.CIRCLE,
+              fillColor: "#4CAF50", // Verde para origem
+              fillOpacity: 1,
+              strokeWeight: 2,
+              strokeColor: "#FFFFFF",
+              scale: 12
+            },
+            label: {
+              text: "O",
+              color: "#FFFFFF",
+              fontSize: "14px",
+              fontWeight: "bold"
+            },
+            zIndex: 100
+          });
+          
+          // Criar janela de informação
+          const infoWindow = new window.google.maps.InfoWindow({
+            content: `<div class="info-window"><strong>${origin.name || "Origem"}</strong><br>${origin.address || ""}</div>`
+          });
+          
+          // Adicionar evento para mostrar janela ao clicar
+          originMarker.addListener("click", () => {
+            infoWindow.open(newMap, originMarker);
+          });
+          
+          // Guardar referências
+          setMarkers([originMarker]);
+          setInfoWindows([infoWindow]);
+          
+          // Centralizar mapa na origem
+          newMap.setCenter({ 
+            lat: parseFloat(origin.lat), 
+            lng: parseFloat(origin.lng) 
+          });
+        }
+        
       } catch (e) {
         console.error("Erro ao inicializar mapa:", e);
         setError("Não foi possível carregar o mapa. Por favor, atualize a página.");
       }
     }
-  }, [mapRef]);
+  }, [mapRef, origin]);
 
   // Efeito para atualizar a rota quando os waypoints mudarem
   useEffect(() => {
     if (map && directionsRenderer && origin && waypoints.length > 0) {
-      // Evitar execuções repetidas
+      // Evitar execuções repetidas e tremulação
       if (isProcessingRoute.current) return;
       isProcessingRoute.current = true;
 
       console.log("Calculando nova rota...");
       
-      // Limpar marcadores existentes
-      markers.forEach(marker => marker.setMap(null));
-      setMarkers([]);
+      // Desabilitar interações enquanto calcula para prevenir tremulações
+      if (map.setOptions) {
+        map.setOptions({
+          draggable: false,
+          zoomControl: false,
+          scrollwheel: false,
+          disableDoubleClickZoom: true
+        });
+      }
       
-      // Fechar janelas de informação
-      infoWindows.forEach(infoWindow => infoWindow.close());
-      setInfoWindows([]);
+      // Não limpar marcadores existentes ainda - faremos isso apenas quando tivermos os novos prontos
+      // Isso evita a piscagem na tela
+      
+      // Preparar arrays para os novos marcadores e infoWindows
+      const newMarkers = [];
+      const newInfoWindows = [];
       
       // Preparar os waypoints para a API do Google
       const googleWaypoints = waypoints.map(waypoint => ({
@@ -422,13 +479,44 @@ export default function MapViewSimple({
           } catch (error) {
             console.error("Erro ao processar rota:", error);
           } finally {
-            // Permitir novos cálculos
-            isProcessingRoute.current = false;
+            // Restaurar interações do mapa
+            if (map && map.setOptions) {
+              // Pequeno atraso para suavizar a transição
+              setTimeout(() => {
+                map.setOptions({
+                  draggable: true,
+                  zoomControl: true,
+                  scrollwheel: true,
+                  disableDoubleClickZoom: false,
+                  gestureHandling: 'greedy'
+                });
+                
+                // Remover marcadores antigos depois de renderizar os novos
+                markers.forEach(marker => marker.setMap(null));
+                
+                // Permitir novos cálculos
+                isProcessingRoute.current = false;
+              }, 200);
+            } else {
+              isProcessingRoute.current = false;
+            }
           }
         } else {
           console.error("Erro ao calcular rota:", status);
           // Em caso de falha, exibir mensagem de erro
           setError("Não foi possível calcular a rota. Tente novamente mais tarde.");
+          
+          // Restaurar interações do mapa
+          if (map && map.setOptions) {
+            map.setOptions({
+              draggable: true,
+              zoomControl: true,
+              scrollwheel: true,
+              disableDoubleClickZoom: false,
+              gestureHandling: 'greedy'
+            });
+          }
+          
           isProcessingRoute.current = false;
         }
       });
