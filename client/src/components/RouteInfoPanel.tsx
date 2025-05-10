@@ -471,31 +471,37 @@ export default function RouteInfoPanel({
                       {/* Linha conectora com seta animada (se não for o último) */}
                       {index < calculatedRoute.length - 1 && (
                         <div 
-                          className="route-connector mx-1 relative"
-                          style={{ 
-                            width: '5rem', 
-                            animationDelay: `${index * 0.15 + 0.2}s`,
-                          }}
+                          className="mx-3 flex items-center" 
+                          style={{ height: '40px' }}
                         >
-                          {/* Seta animada */}
-                          <svg 
-                            className="route-arrow" 
-                            viewBox="0 0 24 24" 
-                            fill="none" 
-                            xmlns="http://www.w3.org/2000/svg"
+                          <div 
+                            className="route-connector relative"
                             style={{ 
-                              animationDelay: `${index * 0.15 + 0.7}s`,
-                              animationDuration: `${3 - (index * 0.2)}s` 
+                              width: '5rem', 
+                              animationDelay: `${index * 0.15 + 0.2}s`,
+                              margin: '0 5px'
                             }}
                           >
-                            <path 
-                              d="M13 5L20 12L13 19M4 12H20" 
-                              stroke="currentColor" 
-                              strokeWidth="2.5" 
-                              strokeLinecap="round" 
-                              strokeLinejoin="round"
-                            />
-                          </svg>
+                            {/* Seta animada */}
+                            <svg 
+                              className="route-arrow" 
+                              viewBox="0 0 24 24" 
+                              fill="none" 
+                              xmlns="http://www.w3.org/2000/svg"
+                              style={{ 
+                                animationDelay: `${index * 0.15 + 0.7}s`,
+                                animationDuration: `${3 - (index * 0.2)}s` 
+                              }}
+                            >
+                              <path 
+                                d="M13 5L20 12L13 19M4 12H20" 
+                                stroke="currentColor" 
+                                strokeWidth="2.5" 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </div>
                         </div>
                       )}
                     </div>
