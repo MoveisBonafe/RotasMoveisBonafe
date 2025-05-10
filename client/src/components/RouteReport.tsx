@@ -67,16 +67,22 @@ export default function RouteReport({
       }).filter(Boolean) as string[]
     : [];
     
-  // Adicionando manualmente Dois Córregos, Ribeirão Preto e Jaú para testes
+  // Garante que temos apenas as cidades que estão na rota e não todas
+  // 1. Garantir que Dois Córregos (origem) está sempre na lista
   if (!destinationCityNames.includes("Dois Córregos")) {
     destinationCityNames.push("Dois Córregos");
   }
-  if (!destinationCityNames.includes("Ribeirão Preto")) {
+  
+  // 2. Verificar se Ribeirão Preto está presente nos endereços
+  const hasRibeiraoPreto = calculatedRoute ? calculatedRoute.some(location => 
+    location.address && location.address.includes("Ribeirão Preto")
+  ) : false;
+  
+  if (hasRibeiraoPreto && !destinationCityNames.includes("Ribeirão Preto")) {
     destinationCityNames.push("Ribeirão Preto");
   }
-  if (!destinationCityNames.includes("Jaú")) {
-    destinationCityNames.push("Jaú");
-  }
+  
+  console.log("Cidades na rota:", destinationCityNames);
 
   // Buscar pontos de interesse
   const { data: poisAlongRoute = [] } = useQuery({ 

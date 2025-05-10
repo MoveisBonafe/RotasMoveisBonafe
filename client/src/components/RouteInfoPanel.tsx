@@ -35,13 +35,28 @@ export default function RouteInfoPanel({
     }
   }, [calculatedRoute]);
 
-  // Extrair apenas os nomes das cidades dos destinos escolhidos (não do percurso)
-  // Isso atende ao requisito de mostrar eventos apenas das cidades selecionadas como destino
+  // Extrair nomes das cidades dos destinos escolhidos
   const destinationCityNames = calculatedRoute 
     ? calculatedRoute.map(location => 
-        location.city || location.address?.split(',')[0].trim() || null
-      ).filter(Boolean)
+        location.name || location.address?.split(',')[0].trim() || null
+      ).filter(Boolean) as string[]
     : [];
+    
+  // Garantir que Dois Córregos (origem) está sempre na lista
+  if (origin && origin.name && !destinationCityNames.includes(origin.name)) {
+    destinationCityNames.push(origin.name);
+  }
+  
+  // Verificar se Ribeirão Preto está presente nos endereços
+  const hasRibeiraoPreto = calculatedRoute ? calculatedRoute.some(location => 
+    location.address && location.address.includes("Ribeirão Preto")
+  ) : false;
+  
+  if (hasRibeiraoPreto && !destinationCityNames.includes("Ribeirão Preto")) {
+    destinationCityNames.push("Ribeirão Preto");
+  }
+  
+  console.log("Cidades detectadas para eventos:", destinationCityNames);
   
   // Consultar eventos para as cidades do trajeto
   const { data: cityEvents } = useQuery({ 
