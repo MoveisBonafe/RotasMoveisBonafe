@@ -541,25 +541,7 @@ export default function MapViewSimple({
         </div>
       )}
       
-      {/* Adicionar legenda do mapa */}
-      <div className="absolute bottom-4 left-4 bg-white p-2 rounded-md shadow-md z-10 text-sm">
-        <div className="flex items-center mb-1">
-          <div className="w-4 h-4 rounded-full bg-green-500 mr-2"></div>
-          <span>Origem</span>
-        </div>
-        <div className="flex items-center mb-1">
-          <div className="w-4 h-4 rounded-full bg-blue-500 mr-2"></div>
-          <span>Destino</span>
-        </div>
-        <div className="flex items-center mb-1">
-          <div className="w-4 h-4 rounded-full bg-red-500 mr-2"></div>
-          <span>Pedágio</span>
-        </div>
-        <div className="flex items-center">
-          <div className="w-4 h-4 rounded-full bg-orange-500 mr-2"></div>
-          <span>Balança</span>
-        </div>
-      </div>
+      {/* Legenda removida conforme solicitado */}
     </div>
   );
 }
