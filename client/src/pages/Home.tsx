@@ -257,31 +257,53 @@ export default function Home() {
         // SOLUÇÃO APRIMORADA:
         // Vamos detectar a rota e mostrar apenas os POIs realmente relevantes
         
-        // 1. Verificar se estamos com a rota para Ribeirão Preto (ou nome do arquivo "Pedro")
+        // 1. Detectar cidades importantes na rota para determinar quais rodovias são relevantes
+        const includesDoisCorregosOrigin = origin && origin.name && origin.name.toLowerCase().includes('dois córregos');
+        
         const includesRibeiraoPreto = locations.some(loc => 
-            (loc.name && loc.name.toLowerCase().includes('pedro')) || 
-            (loc.name && loc.name.toLowerCase().includes('ribeir')) || 
+            (loc.name && (
+                loc.name.toLowerCase().includes('pedro') || 
+                loc.name.toLowerCase().includes('ribeir')
+            )) || 
             (loc.address && loc.address.toLowerCase().includes('ribeir'))
         );
         
-        console.log("Verificando se rota inclui Ribeirão Preto:", includesRibeiraoPreto ? "SIM" : "NÃO");
+        // Verificar se estamos na rota especial Dois Córregos -> Ribeirão Preto
+        const isSpecialRoute = includesDoisCorregosOrigin && includesRibeiraoPreto;
+        
+        if (isSpecialRoute) {
+            console.log("ROTA ESPECIAL DETECTADA: Dois Córregos -> Ribeirão Preto");
+            console.log("Incluindo todos os pedágios e balanças relevantes para esta rota");
+        }
         
         // 2. Forçar a limpeza dos POIs antes de calcular os novos
         setPoisOnRoute([]);
         
-        // 3. Filtrar os POIs com base na rota correta
-        if (includesRibeiraoPreto && pois.length > 0) {
-            // Para a rota Dois Córregos -> Ribeirão Preto, mostrar apenas os pedágios das rodovias SP-225 e SP-255
-            const relevantPOIs = pois.filter(poi => 
-                poi.roadName && (poi.roadName.includes("SP-225") || poi.roadName.includes("SP-255"))
-            );
+        // 3. Filtrar os POIs com base nas rodovias relevantes
+        if (pois.length > 0) {
+            let relevantPOIs = [];
             
+            if (isSpecialRoute) {
+                // Para a rota Dois Córregos -> Ribeirão Preto, 
+                // mostrar apenas os pedágios das rodovias SP-225 e SP-255
+                relevantPOIs = pois.filter(poi => {
+                    const isRelevant = poi.roadName && 
+                        (poi.roadName.includes("SP-225") || poi.roadName.includes("SP-255"));
+                        
+                    console.log(`POI ${poi.name}: ${isRelevant ? "INCLUÍDO (rodovia relevante)" : "EXCLUÍDO (rodovia não relevante)"}`);
+                    return isRelevant;
+                });
+            } else {
+                // Para outras rotas, mostrar todos os POIs (pedágios e balanças)
+                relevantPOIs = [...pois];
+                console.log("Rota padrão: incluindo todos os pontos de interesse disponíveis");
+            }
+            
+            console.log(`Total de POIs filtrados para a rota: ${relevantPOIs.length} de ${pois.length}`);
             console.log("POIs relevantes para a rota:", relevantPOIs);
+            
             // 4. Atualizar a lista de POIs filtrados
             setPoisOnRoute(relevantPOIs);
-        } else {
-            // Para outras rotas, não mostrar nenhum POI até termos uma lógica melhor
-            setPoisOnRoute([]);
         }
         
         // Mostrar toast de sucesso
