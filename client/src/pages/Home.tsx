@@ -390,13 +390,14 @@ export default function Home() {
             setPoisOnRoute(relevantPOIs);
         }
         
-        // Mostrar toast de sucesso com a distância real
-        const distanciaEmKm = Math.round(routeMetrics.totalDistance / 100) / 10;
+        // Mostrar toast de sucesso com o número de paradas
         toast({
           title: "Rota calculada com sucesso",
-          description: `${locations.length} paradas (${distanciaEmKm}km total)`,
+          description: `${locations.length} paradas`,
         });
         
+        // Calcular distância para logging (não usado na UI)
+        const distanciaEmKm = Math.round(routeMetrics.totalDistance / 100) / 10;
         console.log(`Rota calculada com sucesso: ${routeResult.waypoints.length} pontos totais, distância: ${distanciaEmKm}km`);
       } catch (error) {
         console.error("Erro ao calcular rota:", error);
