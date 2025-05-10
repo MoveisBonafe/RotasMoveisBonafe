@@ -219,6 +219,44 @@ export default function MapViewSimple({
           
           console.log("Rota calculada! Adicionando marcadores...");
           
+          // ===== NOVO: Integração com API AILOG para obter pedágios precisos na rota =====
+          // Usar a API AILOG para obter pedágios preciso ao invés de estimá-los por proximidade
+          const vehicleType = localStorage.getItem('selectedVehicleType') || 'car';
+          
+          // Para garantir que a função assíncrona não bloqueie a renderização da rota
+          (async () => {
+            try {
+              // Chamar a API AILOG para obter pedágios precisos desta rota
+              const ailogTolls = await fetchTollsFromAilog(origin, waypoints, vehicleType);
+              console.log('Pedágios identificados pela API AILOG:', ailogTolls);
+              
+              // Limpar marcadores existentes de POIs
+              markers.forEach(marker => {
+                if (marker.get('isPOI')) {
+                  marker.setMap(null);
+                }
+              });
+              
+              // Adicionar os novos marcadores de pedágio com base nos dados PRECISOS da API
+              ailogTolls.forEach(poi => {
+                addPOIMarker(poi);
+              });
+              
+              // Atualizar o callback de rota calculada para informar pedágios precisos
+              if (onRouteCalculated) {
+                // Adicionar os pedágios ao resultado
+                const resultWithTolls = {
+                  ...result,
+                  tollPoints: ailogTolls
+                };
+                onRouteCalculated(resultWithTolls);
+              }
+            } catch (error) {
+              console.error('Erro ao obter pedágios da API AILOG:', error);
+              // Em caso de falha, continuar com a detecção tradicional por proximidade
+            }
+          })();
+          
           // 1. Adicionar marcador para a origem - também mais destacado
           const originMarker = new google.maps.Marker({
             position: originPoint,

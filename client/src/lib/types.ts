@@ -25,6 +25,7 @@ export interface PointOfInterest {
   cost?: number | null; // in cents, null para balanças
   restrictions?: string;
   roadName?: string;
+  city?: string; // cidade onde está localizado o pedágio
 }
 
 export interface CityEvent {
