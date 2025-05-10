@@ -42,6 +42,16 @@ export default function MapViewSimple({
   
   // Usar o hook para trabalhar com a API Routes Preferred
   const { calculateRouteSegments } = useRoutesPreferred(); // Não usamos mais extractTollPoints
+  
+  // Função para determinar a cor do marcador de pedágio com base no tipo
+  const getTollColor = (type: string, isFromAPI: boolean): string => {
+    if (type.includes('api-toll')) return "#FF9800"; // Pedágio da API (laranja)
+    if (type.includes('important-toll')) return "#FF5722"; // Pedágio importante (laranja escuro)
+    if (type.includes('special-toll')) return "#F44336"; // Pedágio especial (vermelho)
+    if (type.includes('highway-toll')) return "#FFC107"; // Pedágio de rodovia (amarelo)
+    if (type.includes('toll')) return "#8BC34A"; // Outros pedágios (verde)
+    return "#9C27B0"; // Outros POIs (roxo)
+  };
 
   // Inicializar o mapa quando o componente montar
   useEffect(() => {
@@ -322,7 +332,7 @@ export default function MapViewSimple({
                     title: poi.name,
                     icon: {
                       path: google.maps.SymbolPath.CIRCLE,
-                      fillColor: poi.type.includes('toll') ? (isFromAPI ? "#FF9800" : "#FFC107") : "#F44336", // Cores diferentes para pedágios da API vs. predefinidos
+                      fillColor: getTollColor(poi.type, isFromAPI), // Cores diferentes para diferentes tipos de pedágios
                       fillOpacity: 1,
                       strokeWeight: 2,
                       strokeColor: "#000000",

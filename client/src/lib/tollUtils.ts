@@ -356,7 +356,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
               name: toll.name,
               lat: toll.lat.toString(),
               lng: toll.lng.toString(),
-              type: 'toll',
+              type: 'highway-toll',
               cost: 0,
               roadName: toll.roadName,
               restrictions: ""
@@ -385,7 +385,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
         name: boaEsperancaToll.name,
         lat: boaEsperancaToll.lat.toString(),
         lng: boaEsperancaToll.lng.toString(),
-        type: 'toll',
+        type: 'important-toll',
         cost: 0,
         roadName: boaEsperancaToll.roadName,
         restrictions: "Pedágio importante"
@@ -449,7 +449,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
             name: boaEsperancaToll.name,
             lat: boaEsperancaToll.lat.toString(),
             lng: boaEsperancaToll.lng.toString(),
-            type: 'toll',
+            type: 'special-toll',
             cost: 0,
             roadName: boaEsperancaToll.roadName,
             restrictions: "Rota específica"
