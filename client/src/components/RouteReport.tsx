@@ -91,32 +91,7 @@ export default function RouteReport({
     enabled: !!calculatedRoute && calculatedRoute.length > 1
   });
 
-  // Buscar eventos das cidades - melhorado para enviar os parâmetros de data
-  const { data: cityEvents = [] } = useQuery({ 
-    queryKey: ['/api/city-events', startDate, endDate],
-    queryFn: async () => {
-      if (!startDate || !endDate) return [];
-      
-      try {
-        console.log("Buscando eventos para datas:", startDate, "até", endDate);
-        
-        // Enviar parâmetros de data para a API
-        const queryParams = new URLSearchParams();
-        if (startDate) queryParams.append('startDate', startDate);
-        if (endDate) queryParams.append('endDate', endDate);
-        
-        const response = await fetch(`/api/city-events?${queryParams.toString()}`);
-        console.log("Resposta do servidor:", response.status);
-        const data = await response.json();
-        console.log("Eventos recebidos:", data.length, data);
-        return data;
-      } catch (error) {
-        console.error("Erro ao buscar eventos:", error);
-        return [];
-      }
-    },
-    enabled: !!startDate && !!endDate
-  });
+
 
   // Buscar restrições de caminhões
   const { data: truckRestrictions = [] } = useQuery({ 
