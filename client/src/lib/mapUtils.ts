@@ -479,7 +479,8 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
         'SP-255': [
           {nome: 'Balança SP-255 (km 122)', lat: '-22.2153', lng: '-48.1887', restricoes: 'Veículos acima de 1 eixo'},
           {nome: 'Balança SP-255 (km 86)', lat: '-21.8901', lng: '-48.2305', restricoes: 'Veículos acima de 1 eixo'},
-          {nome: 'Balança SP-255 (km 150)', lat: '-21.5872', lng: '-48.0748', restricoes: 'Todos os veículos de carga'}
+          {nome: 'Balança SP-255 (km 150)', lat: '-21.5872', lng: '-48.0748', restricoes: 'Todos os veículos de carga'},
+          {nome: 'Balança Luís Antônio', lat: '-21.5502', lng: '-47.7770', restricoes: 'Veículos acima de 1 eixo'}
         ],
         'SP-310': [
           {nome: 'Balança SP-310 (km 173)', lat: '-21.9845', lng: '-47.8897', restricoes: 'Veículos acima de 1 eixo'},
@@ -572,6 +573,25 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
       cidadesNaRota = [...new Set(cidadesNaRota)];
       
       console.log("Cidades na rota:", cidadesNaRota);
+      
+      // Verificar se a rota passa por Luís Antônio para adicionar a balança
+      if (cidadesNaRota.includes('Luís Antônio') || cidadesNaRota.includes('Luis Antonio') || 
+          (cidadesNaRota.includes('Dois Córregos') && cidadesNaRota.includes('Ribeirão Preto'))) {
+        console.log('Rota passa por região que pode conter a balança de Luís Antônio');
+        const poi: PointOfInterest = {
+          id: tollId++,
+          name: 'Balança Luís Antônio',
+          type: 'weighing_station',
+          lat: '-21.5502',
+          lng: '-47.7770',
+          cost: null,
+          roadName: 'SP-255',
+          restrictions: 'Veículos acima de 1 eixo'
+        };
+        
+        tollPoints.push(poi);
+        console.log('Adicionando balança de Luís Antônio manualmente');
+      }
       
       // ID base para as balanças
       let balancaId = 20000;

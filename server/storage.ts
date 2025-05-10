@@ -207,12 +207,12 @@ export class MemStorage implements IStorage {
     
     const pois: Omit<PointOfInterest, 'id'>[] = [
       {
-        name: "Pedágio SP-255 (Brotas)",
+        name: "Pedágio SP-225 (Brotas)",
         type: "toll",
         lat: "-22.2982",
         lng: "-48.1157",
         cost: 1100, // R$11.00 (preço base para carros)
-        roadName: "SP-255",
+        roadName: "SP-225",
         restrictions: null
       },
       {
@@ -267,6 +267,15 @@ export class MemStorage implements IStorage {
         lng: "-48.0748",
         cost: null,
         restrictions: "Todos os veículos de carga",
+        roadName: "SP-255"
+      },
+      {
+        name: "Balança Luís Antônio",
+        type: "weighing_station",
+        lat: "-21.5502",
+        lng: "-47.7770",
+        cost: null,
+        restrictions: "Veículos acima de 1 eixo",
         roadName: "SP-255"
       },
       {
