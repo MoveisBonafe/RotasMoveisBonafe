@@ -246,6 +246,7 @@ export default function MapViewSimple({
             // Primeiro, tentar extrair pedágios da API Routes Preferred
             try {
               // Extrair pedágios da resposta da API Routes Preferred
+              // Extrair informações de pedágio da resposta da API Routes Preferred
               const tollPointsFromAPI = extractTollPoints(result);
               if (tollPointsFromAPI && tollPointsFromAPI.length > 0) {
                 console.log(`Encontrados ${tollPointsFromAPI.length} pedágios via API Routes Preferred`, tollPointsFromAPI);
@@ -254,24 +255,51 @@ export default function MapViewSimple({
                 const combinedPOIs = [...pointsOfInterest];
                 
                 // Adicionar apenas pedágios que não estão já incluídos nos POIs existentes (evitar duplicatas)
+                // Utilizamos uma tolerância maior para considerar pedágios próximos como duplicatas
                 tollPointsFromAPI.forEach(tollPoint => {
-                  // Verificar se esse pedágio já está incluído nos POIs existentes
-                  const isDuplicate = pointsOfInterest.some(existingPOI => 
-                    existingPOI.type === 'toll' && 
-                    Math.abs(parseFloat(existingPOI.lat) - parseFloat(tollPoint.lat)) < 0.01 &&
-                    Math.abs(parseFloat(existingPOI.lng) - parseFloat(tollPoint.lng)) < 0.01
-                  );
+                  // Verificar se esse pedágio já está incluído nos POIs existentes com base na proximidade geográfica
+                  const isDuplicate = pointsOfInterest.some(existingPOI => {
+                    // Se não for um pedágio, não é uma duplicata
+                    if (existingPOI.type !== 'toll') return false;
+                    
+                    // Calcular a distância aproximada em graus (1 grau ≈ 111km no equador)
+                    // Usamos uma tolerância menor para melhor precisão
+                    const latDiff = Math.abs(parseFloat(existingPOI.lat) - parseFloat(tollPoint.lat));
+                    const lngDiff = Math.abs(parseFloat(existingPOI.lng) - parseFloat(tollPoint.lng));
+                    
+                    // Se estiverem a menos de ~500 metros um do outro, considerar duplicata
+                    return latDiff < 0.005 && lngDiff < 0.005;
+                  });
                   
                   if (!isDuplicate) {
-                    combinedPOIs.push(tollPoint);
+                    // Adicionar o pedágio da API 
+                    combinedPOIs.push({
+                      ...tollPoint,
+                      // Garantir que a posição seja válida
+                      lat: tollPoint.lat || '0',
+                      lng: tollPoint.lng || '0'
+                    });
+                    console.log(`Adicionado pedágio da API: ${tollPoint.name} em ${tollPoint.lat},${tollPoint.lng}`);
+                  } else {
+                    console.log(`Ignorado pedágio duplicado: ${tollPoint.name}`);
                   }
                 });
                 
                 // Atualizar POIs com os pedágios encontrados
                 pointsOfInterest = combinedPOIs;
                 
-                // Armazenar os pontos de pedágio encontrados
+                // Armazenar os pontos de pedágio encontrados para referência
                 setApiTollPoints(tollPointsFromAPI);
+                
+                // Notificar o componente pai sobre os pedágios encontrados, se necessário
+                if (onRouteCalculated) {
+                  onRouteCalculated({
+                    ...result,
+                    poisAlongRoute: combinedPOIs
+                  });
+                }
+              } else {
+                console.log("Nenhum pedágio encontrado na API Routes Preferred para esta rota");
               }
             } catch (error) {
               console.error("Erro ao extrair pedágios da API Routes Preferred:", error);
