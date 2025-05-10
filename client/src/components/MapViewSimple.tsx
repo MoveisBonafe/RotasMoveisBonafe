@@ -371,16 +371,41 @@ export default function MapViewSimple({
                 if (onRouteCalculated) {
                   onRouteCalculated({
                     ...result,
-                    poisAlongRoute: tollPointsFromAPI
+                    poisAlongRoute: allPOIs
                   });
                 }
               }, 200);
             }
             
-            // Adicionar pedágios e POIs como marcadores no mapa
-            console.log(`Adicionando ${tollPointsFromAPI.length} POIs ao mapa`);
+            // Combinar os POIs da API com os do backend
+            let allPOIs = [...tollPointsFromAPI];
             
-            tollPointsFromAPI.forEach(poi => {
+            // Adicionar os POIs do backend que são relevantes para a rota
+            if (pointsOfInterest && pointsOfInterest.length > 0) {
+              console.log(`ROTA ESPECIAL DETECTADA: ${origin?.name} -> ${calculatedRoute?.[calculatedRoute.length-1]?.name || 'Destino'}`);
+              console.log("Incluindo todos os pedágios e balanças relevantes para esta rota");
+              
+              // Filtrar apenas os POIs relevantes para a rota SP-255
+              const relevantPOIs = pointsOfInterest.filter(poi => {
+                const isRelevant = poi.roadName?.includes("SP-255") || 
+                                   cities.some(city => poi.name?.includes(city));
+                
+                console.log(`POI ${poi.name}: ${isRelevant ? 'INCLUÍDO' : 'EXCLUÍDO'} (${isRelevant ? 'rodovia relevante' : 'rodovia não relevante'})`);
+                
+                return isRelevant;
+              });
+              
+              // Adicionar os POIs relevantes à lista
+              allPOIs = [...allPOIs, ...relevantPOIs];
+              
+              console.log(`Total de POIs filtrados para a rota: ${relevantPOIs.length} de ${pointsOfInterest.length}`);
+            }
+            
+            // Adicionar pedágios e POIs como marcadores no mapa
+            console.log(`Adicionando ${allPOIs.length} POIs ao mapa`);
+            
+            allPOIs.forEach(poi => {
+              console.log(`POI adicionado: ${poi.name} (${poi.type})`);
               const poiPoint = {
                 lat: parseFloat(poi.lat),
                 lng: parseFloat(poi.lng)
