@@ -4,6 +4,7 @@ import { formatDistance, formatDuration, formatCurrency } from '@/lib/mapUtils';
 import { extractCityFromAddress } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
+import { FaWhatsapp } from 'react-icons/fa';
 
 interface RouteReportProps {
   origin: Location | null;
@@ -152,6 +153,41 @@ export default function RouteReport({
     // Restaurar o título original
     document.title = originalTitle;
   };
+  
+  // Função para compartilhar relatório via WhatsApp
+  const handleShareWhatsApp = () => {
+    // Criar texto do relatório para compartilhar
+    let text = "📍 *Relatório de Rota* 📍\n\n";
+    
+    // Adicionar origem
+    text += `*Origem:* ${origin?.name || 'Não definida'}\n\n`;
+    
+    // Adicionar destinos
+    if (calculatedRoute && calculatedRoute.length > 0) {
+      text += "*Destinos:*\n";
+      calculatedRoute.slice(1).forEach((location, index) => {
+        const locationName = location.name.startsWith("R.") || location.name.startsWith("Av.") 
+          ? extractCityFromAddress(location.address)
+          : location.name;
+        text += `${index + 1}. ${locationName}\n`;
+      });
+      text += "\n";
+    }
+    
+    // Adicionar veículo
+    if (vehicleType) {
+      text += `*Veículo:* ${vehicleType.name}\n\n`;
+    }
+    
+    // Adicionar datas se disponíveis
+    if (startDate && endDate) {
+      text += `*Data de viagem:* ${startDate === endDate ? startDate : `${startDate} - ${endDate}`}\n\n`;
+    }
+    
+    // Compartilhar via WhatsApp
+    const whatsappURL = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(whatsappURL, '_blank');
+  };
 
   // Log para debug
   console.log('RouteReport - Debug Info:', {
@@ -182,6 +218,16 @@ export default function RouteReport({
             className="h-6 text-xs py-0 px-2"
           >
             Imprimir
+          </Button>
+          <Button 
+            onClick={handleShareWhatsApp}
+            variant="outline" 
+            size="sm"
+            className="h-6 text-xs py-0 px-2 bg-green-600 hover:bg-green-700 text-white border-green-600 hover:border-green-700 flex items-center"
+          >
+            <FaWhatsapp className="mr-1 text-sm" /> 
+            <span className="hidden sm:inline">Compartilhar</span>
+            <span className="sm:hidden">WhatsApp</span>
           </Button>
         </div>
       </div>
