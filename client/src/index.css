@@ -40,7 +40,7 @@
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(15px);
   }
   to {
     opacity: 1;
@@ -48,13 +48,40 @@
   }
 }
 
+@keyframes floatAnimation {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes pulseAnimation {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 112, 243, 0.4);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 5px rgba(0, 112, 243, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 112, 243, 0);
+  }
+}
+
 @keyframes scaleIn {
   from {
-    transform: scale(0);
+    transform: scale(0) rotate(-90deg);
     opacity: 0;
   }
   to {
-    transform: scale(1);
+    transform: scale(1) rotate(0deg);
     opacity: 1;
   }
 }
@@ -62,25 +89,62 @@
 @keyframes drawLine {
   from {
     width: 0;
+    opacity: 0;
   }
   to {
     width: 100%;
+    opacity: 1;
   }
 }
 
+.route-sequence-container {
+  position: relative;
+  padding: 8px;
+  overflow: hidden;
+}
+
 .route-point {
-  animation: scaleIn 0.5s ease-out forwards;
+  animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   opacity: 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.route-point:hover {
+  animation: pulseAnimation 1.5s infinite;
+  transform: scale(1.1);
+  z-index: 10;
 }
 
 .route-connector {
-  animation: drawLine 0.8s ease-out forwards;
+  animation: drawLine 1s cubic-bezier(0.34, 0.64, 0.86, 1) forwards;
   width: 0;
+  height: 2px;
+  position: relative;
+  opacity: 0;
+  background: linear-gradient(90deg, #ccc, #90caf9);
+}
+
+.route-connector::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -2px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 3px 0 3px 4px;
+  border-color: transparent transparent transparent #90caf9;
 }
 
 .route-label {
-  animation: fadeInUp 0.5s ease-out forwards;
+  animation: fadeInUp 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
   opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.route-label:hover {
+  animation: floatAnimation 2s ease-in-out infinite;
 }
 
 :root {

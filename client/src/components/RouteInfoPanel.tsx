@@ -442,37 +442,39 @@ export default function RouteInfoPanel({
           
           {routeInfo ? (
             <div className="space-y-3">
-              {/* Sequência de Rota - Visualização Minimalista Animada */}
-              <div className="bg-white rounded p-2 border border-gray-100 col-span-1 sm:col-span-2 mb-1">
-                <h3 className="text-xs font-medium mb-2 text-primary">Sequência da Rota</h3>
-                <div className="flex items-center justify-start overflow-x-auto pb-1 max-w-full">
+              {/* Sequência de Rota - Visualização Ultra Minimalista e Fluida */}
+              <div className="bg-gradient-to-r from-blue-50 to-slate-50 rounded-lg p-3 border border-blue-100 col-span-1 sm:col-span-2 mb-2 route-sequence-container">
+                <h3 className="text-xs font-medium mb-3 text-blue-600">Sequência da Rota</h3>
+                <div className="flex items-center justify-start overflow-x-auto py-2 pr-4 max-w-full">
                   {calculatedRoute && calculatedRoute.map((location, index) => (
-                    <div key={index} className="flex items-center">
+                    <div key={index} className="flex items-center min-w-max">
                       {/* Local atual */}
-                      <div className="flex flex-col items-center">
+                      <div className="flex flex-col items-center z-10">
                         <div 
-                          className={`rounded-full w-6 h-6 flex items-center justify-center text-xs text-white route-point
-                            ${index === 0 ? 'bg-red-500' : 'bg-blue-500'}`}
-                          style={{ animationDelay: `${index * 0.2}s` }}
+                          className={`rounded-full w-7 h-7 flex items-center justify-center text-xs font-medium text-white route-point
+                            ${index === 0 ? 'bg-gradient-to-br from-red-400 to-red-600' : 'bg-gradient-to-br from-blue-400 to-blue-600'}`}
+                          style={{ 
+                            animationDelay: `${index * 0.15}s`,
+                            boxShadow: index === 0 ? '0 3px 6px rgba(244, 63, 94, 0.2)' : '0 3px 6px rgba(37, 99, 235, 0.2)'
+                          }}
                         >
                           {index}
                         </div>
                         <div 
-                          className="text-xs font-medium mt-1 max-w-[80px] truncate text-center route-label"
-                          style={{ animationDelay: `${index * 0.2 + 0.1}s` }}
+                          className="text-xs font-medium mt-2 max-w-[85px] truncate text-center route-label"
+                          style={{ animationDelay: `${index * 0.15 + 0.1}s` }}
                         >
                           {location.name || extractCityFromAddress(location.address || '')}
                         </div>
                       </div>
                       
-                      {/* Linha conectora (se não for o último) */}
+                      {/* Linha conectora com ponta de seta (se não for o último) */}
                       {index < calculatedRoute.length - 1 && (
                         <div 
-                          className="h-[2px] bg-gray-300 mx-1 route-connector"
+                          className="route-connector mx-1"
                           style={{ 
-                            width: '8rem', 
-                            animationDelay: `${index * 0.2 + 0.3}s`,
-                            transformOrigin: 'left center'
+                            width: '5rem', 
+                            animationDelay: `${index * 0.15 + 0.2}s`,
                           }}
                         ></div>
                       )}
