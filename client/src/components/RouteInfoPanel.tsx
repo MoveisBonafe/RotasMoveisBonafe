@@ -38,21 +38,42 @@ export default function RouteInfoPanel({
     if (activeTab === tab) {
       // Se a mesma tab for clicada, alterna entre expandido e recolhido
       if (isMinimized) {
-        // Se estiver completamente minimizado, mostrar conteúdo recolhido
+        // Se estiver completamente minimizado, mostrar conteúdo expandido para resumo e relatório
         setIsMinimized(false);
-        setIsExpanded(false);
+        
+        // Para aba resumo e relatório, expandir automaticamente ao clicar
+        if (tab === "summary" || tab === "report") {
+          setIsExpanded(true);
+        } else {
+          setIsExpanded(false);
+        }
       } else if (!isExpanded) {
-        // Se estiver mostrando conteúdo recolhido, minimizar completamente
-        setIsMinimized(true);
+        // Se estiver mostrando conteúdo recolhido, expandir para resumo e relatório, minimizar para outros
+        if (tab === "summary" || tab === "report") {
+          setIsExpanded(true);
+        } else {
+          setIsMinimized(true);
+        }
       } else {
-        // Se estiver expandido, recolher primeiro
-        setIsExpanded(false);
+        // Se estiver expandido, recolher (resumo minimiza completamente, relatório apenas recolhe)
+        if (tab === "summary") {
+          setIsMinimized(true);
+          setIsExpanded(false);
+        } else {
+          setIsExpanded(false);
+        }
       }
     } else {
-      // Se for uma tab diferente, ativa essa tab e mostra conteúdo (não expandido)
+      // Se for uma tab diferente, ativa essa tab e mostra conteúdo de acordo com o tipo
       setActiveTab(tab);
       setIsMinimized(false);
-      setIsExpanded(false);
+      
+      // Expandir automaticamente para resumo e relatório
+      if (tab === "summary" || tab === "report") {
+        setIsExpanded(true);
+      } else {
+        setIsExpanded(false);
+      }
     }
   };
   
@@ -844,15 +865,21 @@ export default function RouteInfoPanel({
       )}
 
       {/* Vehicle Restrictions Tab */}
-      {activeTab === "restrictions" && (
-        <div className={`p-2 ${isExpanded ? 'expanded-tab' : ''}`}>
-          <div className="flex justify-end mb-1">
+      {activeTab === "restrictions" && !isMinimized && (
+        <div className={`p-2 ${isExpanded ? 'expanded-tab' : 'collapsed-tab'}`}>
+          <div className="flex justify-between mb-1">
             <button
-              onClick={() => setIsExpanded(!isExpanded)}
+              onClick={minimizeTab}
+              className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+            >
+              <X className="h-3 w-3" /> Ocultar
+            </button>
+            <button
+              onClick={isExpanded ? collapseTab : expandTab}
               className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
             >
               {isExpanded ? 
-                <><Minimize2 className="h-3 w-3" /> Minimizar</> : 
+                <><Minimize2 className="h-3 w-3" /> Recolher</> : 
                 <><Maximize2 className="h-3 w-3" /> Expandir</>
               }
             </button>
@@ -943,17 +970,42 @@ export default function RouteInfoPanel({
       )}
 
       {/* Detailed Report Tab */}
-      {activeTab === "report" && (
+      {activeTab === "report" && !isMinimized && (
         <div className={`tab-panel ${isExpanded ? 'report-expanded' : 'p-2'}`}>
           {isExpanded && (
             <div className="report-header">
               <h2 className="text-lg font-semibold">Relatório Completo de Rota</h2>
+              <div className="flex gap-2">
+                <button
+                  onClick={minimizeTab}
+                  className="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-gray-900 px-3 py-1 rounded text-sm transition-colors"
+                >
+                  <span>Ocultar</span>
+                  <X className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={collapseTab}
+                  className="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-gray-900 px-3 py-1 rounded text-sm transition-colors"
+                >
+                  <span>Recolher</span>
+                  <Minimize2 className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          )}
+          {!isExpanded && (
+            <div className="flex justify-between mb-1">
               <button
-                onClick={() => setIsExpanded(false)}
-                className="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-gray-900 px-3 py-1 rounded text-sm transition-colors"
+                onClick={minimizeTab}
+                className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
               >
-                <span>Fechar</span>
-                <X className="h-4 w-4" />
+                <X className="h-3 w-3" /> Ocultar
+              </button>
+              <button
+                onClick={expandTab}
+                className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+              >
+                <Maximize2 className="h-3 w-3" /> Expandir
               </button>
             </div>
           )}
