@@ -52,6 +52,17 @@ export default function DateRangeSelector({
   // Obter a data atual formatada como YYYY-MM-DD para min attribute
   const today = new Date().toISOString().split('T')[0];
   
+  // Função para obter a data atual formatada como YYYY-MM-DD
+  const getCurrentDate = () => {
+    return new Date().toISOString().split('T')[0];
+  };
+  
+  // Handler para definir a data de hoje na data de início
+  const setToday = () => {
+    const todayDate = getCurrentDate();
+    handleStartDateChange(todayDate);
+  };
+  
   return (
     <div className="w-full">
       <div className="mb-2">
@@ -61,7 +72,16 @@ export default function DateRangeSelector({
       
       <div className="grid grid-cols-2 gap-2">
         <div className="flex flex-col">
-          <label className="text-xs text-gray-600 mb-1">Data início:</label>
+          <div className="flex items-center justify-between mb-1">
+            <label className="text-xs text-gray-600">Data início:</label>
+            <button 
+              type="button"
+              onClick={setToday}
+              className="text-xs text-primary hover:text-primary-dark"
+            >
+              Hoje
+            </button>
+          </div>
           <input 
             type="date" 
             className="border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary w-full"
