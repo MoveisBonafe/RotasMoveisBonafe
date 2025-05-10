@@ -95,25 +95,20 @@ export default function MapViewNative({
       lng: parseFloat(origin.lng)
     };
 
-    // IMPORTANTE: Criar marcador para origem com estilo destacado
+    // IMPORTANTE: Criar marcador para origem com o pino vermelho tradicional do Google Maps
     const originMarker = new google.maps.Marker({
       position: originPosition,
       map,
       title: origin.name,
-      icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        fillColor: "#DB4437", // Vermelho para destacar a origem
-        fillOpacity: 1,
-        strokeWeight: 2,
-        strokeColor: "#FFFFFF",
-        scale: 12 // Tamanho maior para ser bem visível
-      },
+      // Usando o pino padrão do Google Maps (vermelho)
+      // sem especificar 'icon' para ter o pino vermelho padrão
       label: {
-        text: "0", // SEMPRE usar "0" para a origem (não "A")
+        text: "0", // SEMPRE usar "0" para a origem
         color: "#FFFFFF",
         fontWeight: "bold",
-        fontSize: "14px" // Fonte maior
+        fontSize: "14px" // Fonte maior para melhor visibilidade
       },
+      animation: google.maps.Animation.DROP, // Adicionar uma animação de queda ao marcador
       zIndex: 1000 // Garantir que fique em cima de outros marcadores
     });
     newMarkers.push(originMarker);
@@ -129,19 +124,14 @@ export default function MapViewNative({
         position,
         map,
         title: waypoint.name,
-        icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          fillColor: "#DB4437",
-          fillOpacity: 1,
-          strokeWeight: 1,
-          strokeColor: "#FFFFFF",
-          scale: 10
-        },
+        // Usando o pino padrão do Google Maps (vermelho)
+        // sem especificar 'icon' para ter o pino vermelho padrão
         label: {
           text: `${index + 1}`,
           color: "#FFFFFF",
           fontWeight: "bold"
-        }
+        },
+        animation: google.maps.Animation.DROP // Adicionar animação para pontos intermediários
       });
       newMarkers.push(marker);
     });
@@ -357,29 +347,24 @@ export default function MapViewNative({
               const bounds = new google.maps.LatLngBounds();
               
               // IMPORTANTE: Sempre adicionar marcador da origem com número 0
+              // Usando o marcador padrão do Google (pino vermelho)
               const originMarker = new google.maps.Marker({
                 position: originPoint,
                 map,
                 title: origin.name,
-                icon: {
-                  path: google.maps.SymbolPath.CIRCLE,
-                  fillColor: "#4285F4", // Azul Google
-                  fillOpacity: 1,
-                  strokeWeight: 2,
-                  strokeColor: "#FFFFFF",
-                  scale: 12
-                },
+                // Sem especificar 'icon' para ter o pino vermelho padrão do Google Maps
                 label: {
-                  text: "0", // Origem é o ponto 0
-                  color: "#FFFFFF",
+                  text: "0", // Origem é sempre o ponto 0
+                  color: "#FFFFFF", 
                   fontWeight: "bold",
-                  fontSize: "12px"
+                  fontSize: "14px" // Fonte maior para melhor visibilidade
                 },
-                zIndex: 1000 // Maior zIndex para ficar em cima de outros marcadores
+                animation: google.maps.Animation.DROP, // Animação de queda
+                zIndex: 1000 // Maior zIndex para garantir que fique por cima de outros elementos
               });
+              
               bounds.extend(originPoint);
               newMarkers.push(originMarker);
-              bounds.extend(originPoint);
               
               // Adicionar marcadores para cada ponto intermediário e destino
               calculatedRoute.slice(1).forEach((point, index) => {
@@ -394,19 +379,14 @@ export default function MapViewNative({
                   position: pointPos,
                   map,
                   title: point.name,
-                  icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    fillColor: "#DB4437",
-                    fillOpacity: 1,
-                    strokeWeight: 1,
-                    strokeColor: "#FFFFFF",
-                    scale: 10
-                  },
+                  // Sem definir 'icon' para usar o pino vermelho padrão do Google Maps
                   label: {
                     text: `${index + 1}`,
                     color: "#FFFFFF",
                     fontWeight: "bold"
-                  }
+                  },
+                  // Adicionando animação com delay baseado no índice para criar efeito sequencial
+                  animation: google.maps.Animation.DROP
                 });
                 
                 newMarkers.push(marker);
@@ -514,24 +494,19 @@ export default function MapViewNative({
         bounds.extend(originPoint);
         
         // IMPORTANTE: Marcador para origem no modo de FALLBACK
+        // Usando o pino vermelho padrão do Google Maps
         const originMarker = new google.maps.Marker({
           position: originPoint,
           map,
           title: origin.name,
-          icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            fillColor: "#DB4437", // Vermelho para destacar a origem
-            fillOpacity: 1,
-            strokeWeight: 2,
-            strokeColor: "#FFFFFF",
-            scale: 12 // Tamanho maior
-          },
+          // Sem definir 'icon' para usar o pino vermelho padrão
           label: {
             text: "0", // Sempre usar 0 para a origem
             color: "#FFFFFF",
             fontWeight: "bold",
             fontSize: "14px" // Fonte maior
           },
+          animation: google.maps.Animation.DROP, // Animação
           zIndex: 1000 // Garantir que fique em cima de outros marcadores
         });
         newMarkers.push(originMarker);
@@ -549,19 +524,14 @@ export default function MapViewNative({
             position: pointPos,
             map,
             title: point.name,
-            icon: {
-              path: google.maps.SymbolPath.CIRCLE,
-              fillColor: "#DB4437",
-              fillOpacity: 1,
-              strokeWeight: 1,
-              strokeColor: "#FFFFFF",
-              scale: 10
-            },
+            // Sem definir 'icon' para usar o pino vermelho padrão do Google Maps
             label: {
               text: `${index + 1}`,
               color: "#FFFFFF",
               fontWeight: "bold"
-            }
+            },
+            // Adicionar uma pequena animação com um atraso baseado no índice
+            animation: google.maps.Animation.DROP
           });
           
           newMarkers.push(marker);
