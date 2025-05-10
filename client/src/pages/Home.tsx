@@ -341,7 +341,7 @@ export default function Home() {
             waypoints={locations}
             calculatedRoute={calculatedRoute}
             onRouteCalculated={handleRouteCalculated}
-            pointsOfInterest={poisOnRoute}
+            pointsOfInterest={poisOnRoute} // Usar os POIs filtrados
           />
         </div>
       </div>

@@ -167,7 +167,13 @@ export default function MapViewNative({
 
   // Renderizar os pontos de interesse (pedágios e balanças)
   const renderPointsOfInterest = (map: any, bounds: any) => {
-    if (!pointsOfInterest || pointsOfInterest.length === 0) return [];
+    // Adicionar logs de depuração
+    console.log("Pontos de interesse recebidos:", pointsOfInterest);
+    
+    if (!pointsOfInterest || pointsOfInterest.length === 0) {
+      console.log("Nenhum ponto de interesse para exibir");
+      return [];
+    }
     
     const google = window.google;
     const poiMarkers: any[] = [];
