@@ -247,59 +247,10 @@ export default function RouteInfoPanel({
   
   // Algoritmo otimizado para garantir inclusão dos pedágios corretos
   
-  // Para a rota específica Dois Córregos -> Ribeirão Preto
-  if (isRibeiraoPretoRoute) {
-    // Lista de TODOS os pedágios obrigatórios na SP-255
-    const requiredPedagiosSP255 = [
-      "Pedágio Boa Esperança do Sul",
-      "Pedágio SP-255 (Guatapará)",
-      "Pedágio SP-255 (Ribeirão Preto)"
-    ];
-    
-    // Verificação síncrona para garantir todos os pedágios importantes
-    fetch('/api/points-of-interest')
-      .then(response => response.json())
-      .then(allPois => {
-        // Resetar filteredPOIs para a rota SP-255
-        filteredPOIs = [];
-        
-        // 1. Adicionar todos os pedágios obrigatórios da SP-255
-        allPois.forEach(poi => {
-          if (poi.type === "toll" && poi.roadName === "SP-255") {
-            if (requiredPedagiosSP255.some(reqName => 
-              poi.name.includes(reqName.split(" ").pop() || "") || // Compara com a última parte do nome
-              (reqName.includes("Guatapará") && poi.name.includes("Guatapará")) ||
-              (reqName.includes("Boa Esperança") && poi.name.includes("Boa Esperança")) ||
-              (reqName.includes("Ribeirão") && poi.name.includes("Ribeirão"))
-            )) {
-              // É um pedágio obrigatório da rota - adicionar
-              filteredPOIs.push(poi);
-            }
-          }
-        });
-        
-        // 2. Adicionar qualquer balança que já estava presente no mapa
-        poisAlongRoute.forEach(poi => {
-          if (poi.type === "weighing_station" && !filteredPOIs.some(p => p.id === poi.id)) {
-            filteredPOIs.push(poi);
-          }
-        });
-        
-        // Log dos pedágios que foram incluídos
-        console.log("Pedágios garantidos na rota SP-255:", filteredPOIs.map(p => p.name));
-      })
-      .catch(error => {
-        console.error("Erro ao garantir pedágios:", error);
-        // Em caso de erro, apenas usar os POIs já detectados
-        filteredPOIs = poisAlongRoute;
-      });
-  } else {
-    // Para outras rotas, manter apenas os POIs relevantes por rodovia 
-    filteredPOIs = poisAlongRoute.filter(poi => {
-      // Verificar se o POI está em uma das rodovias da rota
-      return poi.roadName && roadsInRoute.has(poi.roadName);
-    });
-  }
+  // USAR EXCLUSIVAMENTE os POIs que vieram da API AILOG
+  // Não precisamos de processamento extra - a API AILOG já retorna os pedágios corretos
+  console.log("POIs filtrados diretamente da API AILOG:", filteredPOIs.map(p => p.name));
+  console.log("Usando EXCLUSIVAMENTE pedágios da API AILOG");
   
   // Remover duplicatas dos POIs filtrados
   const uniquePOIs: PointOfInterest[] = [];
@@ -318,21 +269,7 @@ export default function RouteInfoPanel({
   // Não temos áreas de descanso implementadas ainda
   const restAreasOnRoute: typeof poisAlongRoute = [];
   
-  // Forçar inclusão do pedágio de Ribeirão Preto se estamos nessa rota e ele não apareceu
-  if (isRibeiraoPretoRoute && !uniquePOIs.some(poi => poi.name.includes("Ribeirão Preto"))) {
-    fetch('/api/points-of-interest')
-      .then(response => response.json())
-      .then(allPois => {
-        const rpPoi = allPois.find(poi => poi.name.includes("Ribeirão Preto"));
-        if (rpPoi && !tollsOnRoute.some(t => t.name.includes("Ribeirão Preto"))) {
-          // Adicionar ao array de pedágios
-          tollsOnRoute.push(rpPoi);
-          // E também à lista principal
-          uniquePOIs.push(rpPoi);
-        }
-      })
-      .catch(error => console.error("Erro ao buscar pedágio de Ribeirão Preto:", error));
-  }
+  // NÃO forçamos mais a inclusão de pedágios - confiamos exclusivamente nos dados da API AILOG
   
   // Calcular consumo de combustível
   const fuelConsumption = routeInfo && vehicleType
