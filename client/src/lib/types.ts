@@ -59,6 +59,8 @@ export interface RouteInfo {
   totalDuration: number;     // in seconds
   tollCost: number;          // in cents
   fuelCost: number;          // in cents
+  totalCost: number;         // in cents (tollCost + fuelCost)
+  fuelConsumption: number;   // in liters
 }
 
 export interface MapOptions {

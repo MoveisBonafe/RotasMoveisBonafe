@@ -73,12 +73,17 @@ export function calculateRouteCosts(
   const tollCost = calculateTollCost(tolls, vehicleType);
   const fuelCost = calculateFuelCost(route.totalDistance, vehicleType);
   
+  const fuelConsumption = calculateFuelConsumption(route.totalDistance, vehicleType);
+  const totalCost = tollCost + fuelCost;
+  
   return {
     waypoints: [],      // This should be filled by the caller
     destinations: [],   // This should be filled by the caller
     totalDistance: route.totalDistance,
     totalDuration: route.totalDuration,
     tollCost,
-    fuelCost
+    fuelCost,
+    totalCost,
+    fuelConsumption
   };
 }
