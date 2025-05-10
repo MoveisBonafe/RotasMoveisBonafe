@@ -396,43 +396,81 @@ export default function MapViewSimple({
             
             // Adicionar os POIs do backend que são relevantes para a rota
             if (pointsOfInterest && pointsOfInterest.length > 0) {
-              console.log(`ROTA ESPECIAL DETECTADA: ${origin?.name} -> ${calculatedRoute?.[calculatedRoute.length-1]?.name || 'Destino'}`);
-              console.log("Incluindo todos os pedágios e balanças relevantes para esta rota");
+              console.log(`ANALISANDO ROTA: ${origin?.name} -> ${calculatedRoute?.[calculatedRoute.length-1]?.name || 'Destino'}`);
               
-              // Filtrar apenas os POIs relevantes para a rota atual
+              // Identificar as rodovias presentes na rota
+              const roadsInRoute = new Set<string>();
+              const citiesInRoute = new Set<string>(cities);
+              let destinationCity = "";
+              
+              // Extrair nome da cidade de destino
+              if (calculatedRoute && calculatedRoute.length > 0) {
+                const lastLocation = calculatedRoute[calculatedRoute.length - 1];
+                if (lastLocation.address) {
+                  const match = lastLocation.address.match(/([A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú][a-zà-ú]+)*)\s*-\s*([A-Z]{2})/);
+                  if (match && match[1]) {
+                    destinationCity = match[1];
+                    citiesInRoute.add(destinationCity);
+                  }
+                }
+                
+                if (lastLocation.name) {
+                  // Extrair cidade do nome também
+                  const cityNameParts = lastLocation.name.split(",");
+                  if (cityNameParts.length > 0) {
+                    const cityName = cityNameParts[0].trim();
+                    citiesInRoute.add(cityName);
+                  }
+                }
+              }
+              
+              console.log("Analisando cidades na rota:", Array.from(citiesInRoute));
+              
+              // Detectar rodovias com base nos destinos e cidades na rota
+              const hasRibeiraoPreto = Array.from(citiesInRoute).some(city => 
+                city.includes("Ribeirão") || city.includes("Preto"));
+              const hasBauru = Array.from(citiesInRoute).some(city => 
+                city.includes("Bauru") || city.includes("Jaú") || city.includes("Botucatu"));
+              
+              // Inferir as rodovias baseado nas cidades detectadas
+              if (hasRibeiraoPreto) {
+                roadsInRoute.add("SP-255");
+              }
+              
+              if (hasBauru) {
+                roadsInRoute.add("SP-225");
+                roadsInRoute.add("SP-300");
+              }
+              
+              // Adicionar logicamente todas as rodovias que conectam Dois Córregos ao destino
+              console.log("Rodovias detectadas na rota:", Array.from(roadsInRoute));
+              
+              // ALGORITMO UNIVERSAL: Filtrar POIs baseado em rodovias e proximidade às cidades na rota
               const relevantPOIs = pointsOfInterest.filter(poi => {
-                // Identificar se o destino é Ribeirão Preto ou proximidades
-                const destinoRibeiraoPreto = cities.some(city => 
-                  city.includes("Ribeirão") || city.includes("Pedro") || city.includes("Preto"));
+                // Critério 1: POI está em uma rodovia presente na rota
+                const onRelevantRoad = poi.roadName && roadsInRoute.has(poi.roadName);
                 
-                // Identificar casos especiais
-                let isRelevant = poi.roadName?.includes("SP-255") || false;
+                // Critério 2: POI está em uma cidade presente na rota
+                const inRelevantCity = Array.from(citiesInRoute).some(city => 
+                  poi.name.includes(city)
+                );
                 
-                // Exclusões específicas
-                if (poi.name === "Pedágio SP-225 (Brotas)" || poi.name.includes("SP-225")) {
-                  console.log(`POI ${poi.name}: EXCLUÍDO (Fora da rota para Ribeirão Preto)`);
-                  return false;
+                // Critério 3: Casos específicos conhecidos
+                const isSpecialCase = (hasRibeiraoPreto && poi.name.includes("Boa Esperança")) || 
+                                    (hasRibeiraoPreto && poi.name.includes("Luís Antônio"));
+                
+                const isRelevant = onRelevantRoad || inRelevantCity || isSpecialCase;
+                
+                // Informações para debug
+                if (isRelevant) {
+                  console.log(`POI INCLUÍDO: ${poi.name} - Motivo: ${
+                    onRelevantRoad ? 'Rodovia relevante' : 
+                    inRelevantCity ? 'Cidade relevante' : 
+                    'Caso especial'
+                  }`);
+                } else if (poi.type === "toll" || poi.type === "weighing_station") {
+                  console.log(`POI EXCLUÍDO: ${poi.name} - Não relevante para esta rota`);
                 }
-                
-                // Exclusão de Balança SP-255 (km 122) para esta rota específica
-                if (poi.name === "Balança SP-255 (km 122)") {
-                  console.log(`POI ${poi.name}: EXCLUÍDO (Fora do trajeto atual)`);
-                  return false;
-                }
-                
-                // Verificar se o ponto está na rota para Ribeirão Preto
-                if (destinoRibeiraoPreto) {
-                  // Incluir apenas pedágios/balanças entre Dois Córregos e Ribeirão
-                  isRelevant = isRelevant && 
-                    !poi.name.includes("Brotas") && 
-                    (poi.name.includes("Guatapará") || 
-                     poi.name.includes("Luís Antônio") || 
-                     poi.name.includes("Ribeirão") ||
-                     poi.name.includes("(km 150)") ||
-                     poi.name.includes("Boa Esperança"));
-                }
-                
-                console.log(`POI ${poi.name}: ${isRelevant ? 'INCLUÍDO' : 'EXCLUÍDO'} (${isRelevant ? 'rodovia relevante' : 'rodovia não relevante'})`);
                 
                 return isRelevant;
               });

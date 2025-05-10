@@ -148,71 +148,85 @@ export default function RouteInfoPanel({
   }
   
   // Vamos filtrar os POIs para incluir apenas os que realmente estão na rota
-  // Esse filtro será baseado em nome das rodovias, cidades e destino final
+  // Utilizando um algoritmo universal que funciona para qualquer rota
   
-  // Verificar destino para determinar a rota
-  const isBauruRoute = calculatedRoute?.some(loc => 
-    loc.name.includes("Bauru") || 
-    (loc.address && loc.address.includes("Bauru"))
-  ) || false;
-
-  console.log("Destino Bauru detectado?", isBauruRoute);
+  // Extrair cidades da rota atual
+  const citiesInRoute = new Set<string>();
   
-  // Primeiro, vamos identificar as rodovias presentes na rota calculada
-  const routeRoads = new Set<string>();
-  
-  // Para a rota Bauru (usando SP-300 e SP-225)
-  if (isBauruRoute) {
-    routeRoads.add("SP-300");
-    routeRoads.add("SP-225");
-  } else {
-    // Rota para Ribeirão Preto (usando SP-255)
-    routeRoads.add("SP-255");
+  // Identificar origem 
+  if (origin) {
+    const cityMatch = origin.address.match(/([A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú][a-zà-ú]+)*)\s*-\s*([A-Z]{2})/);
+    if (cityMatch && cityMatch[1]) {
+      citiesInRoute.add(cityMatch[1]);
+    }
+    if (origin.name) citiesInRoute.add(origin.name.split(',')[0].trim());
   }
   
-  console.log("Rodovias relevantes para a rota:", Array.from(routeRoads));
+  // Identificar cidades de destino na rota
+  if (calculatedRoute && calculatedRoute.length > 0) {
+    calculatedRoute.forEach(loc => {
+      // Extrair do endereço, formato "Cidade - UF, Brasil"
+      if (loc.address) {
+        const cityMatch = loc.address.match(/([A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú][a-zà-ú]+)*)\s*-\s*([A-Z]{2})/);
+        if (cityMatch && cityMatch[1]) {
+          citiesInRoute.add(cityMatch[1]);
+        }
+      }
+      
+      // Extrair do nome, que pode conter cidade
+      if (loc.name) {
+        // Tentar extrair o nome da cidade da primeira parte antes da vírgula
+        const cityName = loc.name.split(',')[0].trim();
+        citiesInRoute.add(cityName);
+      }
+    });
+  }
   
-  // Filtrar POIs para incluir apenas os que estão nas rodovias relevantes
+  console.log("Cidades detectadas para eventos:", Array.from(citiesInRoute));
+  
+  // Determinar automaticamente as rodovias com base nas cidades
+  const roadsInRoute = new Set<string>();
+  
+  // Detectar as principais rotas
+  const isRibeiraoPretoRoute = Array.from(citiesInRoute).some(city => 
+    city.includes("Ribeirão") || city.includes("Preto"));
+  const isBauruRoute = Array.from(citiesInRoute).some(city => 
+    city.includes("Bauru") || city.includes("Jaú") || city.includes("Botucatu"));
+    
+  // Inferir as rodovias baseado nas cidades detectadas
+  if (isRibeiraoPretoRoute) {
+    roadsInRoute.add("SP-255");
+  }
+  
+  if (isBauruRoute) {
+    roadsInRoute.add("SP-225");
+    roadsInRoute.add("SP-300");
+  }
+  
+  // Se não detectamos nenhuma rodovia específica, adicionar a rodovia padrão
+  if (roadsInRoute.size === 0) {
+    roadsInRoute.add("SP-255"); // Rodovia padrão de Dois Córregos
+  }
+  
+  console.log("Rodovias relevantes para a rota:", Array.from(roadsInRoute));
+  
+  // ALGORITMO UNIVERSAL: Filtrar POIs baseado nas mesmas regras do mapa
   const filteredPOIs = poisAlongRoute.filter(poi => {
-    // Verificar se o POI tem uma rodovia associada e se ela faz parte da rota
-    if (poi.roadName && routeRoads.has(poi.roadName)) {
-      // Regras específicas para cada rodovia
-      if (poi.roadName === "SP-255" && !isBauruRoute) {
-        // A balança do km 122 está fora do trajeto atual
-        if (poi.name === "Balança SP-255 (km 122)") {
-          console.log("Excluindo Balança SP-255 (km 122) - fora do trajeto atual");
-          return false;
-        }
-        return true;
-      }
-      
-      // Regras para rota de Bauru
-      if (isBauruRoute) {
-        if (poi.roadName === "SP-300") {
-          console.log("Incluindo POI da SP-300 para rota de Bauru:", poi.name);
-          return true;
-        }
-        if (poi.roadName === "SP-225") {
-          console.log("Incluindo POI da SP-225 para rota de Bauru:", poi.name);
-          return true;
-        }
-      }
-      
-      return true;
-    }
+    // Critério 1: POI está em uma rodovia presente na rota
+    const onRelevantRoad = poi.roadName && roadsInRoute.has(poi.roadName);
     
-    // Incluir pontos por cidade
-    if (isBauruRoute && poi.name && poi.name.includes("Bauru")) {
-      console.log("Incluindo POI de Bauru:", poi.name);
-      return true;
-    }
+    // Critério 2: POI está em uma cidade presente na rota
+    const inRelevantCity = Array.from(citiesInRoute).some(city => 
+      poi.name.includes(city)
+    );
     
-    // Incluir o pedágio de Boa Esperança do Sul para rota de Ribeirão
-    if (!isBauruRoute && poi.name && poi.name.includes("Boa Esperança") && poi.type === "toll") {
-      return true;
-    }
+    // Critério 3: Casos específicos conhecidos
+    const isSpecialCase = (isRibeiraoPretoRoute && poi.name.includes("Boa Esperança")) || 
+                         (isRibeiraoPretoRoute && poi.name.includes("Luís Antônio"));
     
-    return false;
+    const isRelevant = onRelevantRoad || inRelevantCity || isSpecialCase;
+    
+    return isRelevant;
   });
   
   // Remover duplicatas dos POIs filtrados
