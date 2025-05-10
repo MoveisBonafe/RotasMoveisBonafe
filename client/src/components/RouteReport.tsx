@@ -128,11 +128,13 @@ export default function RouteReport({
     document.title = originalTitle;
   };
 
+  // Variável vazia para eventos (funcionalidade removida)
+  const cityEvents: CityEvent[] = [];
+  
   // Log para debug
   console.log('RouteReport - Debug Info:', {
     routeInfo,
     destinationCityNames,
-    cityEvents,
     truckRestrictions,
     poisAlongRoute
   });
