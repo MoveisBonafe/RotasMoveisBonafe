@@ -306,8 +306,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         cityName: "Jaú",
         eventName: "Festa do Peão",
         eventType: "festival",
-        startDate: formattedToday,
-        endDate: formattedToday,
+        startDate: "2025-05-10", // Dia atual da simulação
+        endDate: "2025-05-15",
         description: "Tradicional festa com rodeio e shows"
       },
       {
@@ -327,15 +327,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
         startDate: "2025-06-19",
         endDate: "2025-06-19",
         description: "Comemoração dos 169 anos da cidade (fundada em 19 de junho de 1856)"
+      },
+      {
+        id: 5,
+        cityName: "Ribeirão Preto",
+        eventName: "Feira Agropecuária",
+        eventType: "festival",
+        startDate: "2025-05-10", // Dia atual da simulação
+        endDate: "2025-05-20",
+        description: "Evento de agronegócio com exposições e leilões"
+      },
+      {
+        id: 6,
+        cityName: "Dois Córregos",
+        eventName: "Festival Gastronômico",
+        eventType: "festival",
+        startDate: "2025-05-08", // Próximo da data atual da simulação
+        endDate: "2025-05-12",
+        description: "Festival com pratos típicos da região e atrações culturais"
       }
     ];
     
     try {
-      // Log para debug
-      console.log("API de eventos chamada, retornando:", events.length, "eventos");
+      // Datas passadas como parâmetros
+      const { startDate, endDate, cities } = req.query;
       
-      // Sempre retorna todos os eventos, ignorando filtros
-      return res.json(events);
+      // Implementar filtragem baseada nas datas atuais
+      const today = new Date();
+      // Simulamos estar hoje no dia 10 de maio de 2025
+      const simulatedToday = new Date('2025-05-10');
+      
+      // Filtrar eventos relevantes para o período atual
+      // Se um evento tem data FIXA (como aniversários), só mostramos se estamos perto da data
+      const filteredEvents = events.filter(event => {
+        // Se for um evento de aniversário de cidade, verificamos se está próximo do dia atual
+        if (event.eventType === 'anniversary') {
+          const eventDate = new Date(event.startDate);
+          // Usamos a data simulada para fins de demonstração
+          const dayDiff = Math.abs((eventDate.getTime() - simulatedToday.getTime()) / (1000 * 3600 * 24));
+          
+          // Considere próximo se estiver a 7 dias de distância (antes ou depois)
+          return dayDiff <= 7;
+        }
+        
+        // Para eventos de festival, verificar se a data atual está dentro do período do evento
+        if (event.eventType === 'festival') {
+          const eventStartDate = new Date(event.startDate);
+          const eventEndDate = new Date(event.endDate);
+          
+          // Verificar se a data simulada está dentro do período do evento
+          return simulatedToday >= eventStartDate && simulatedToday <= eventEndDate;
+        }
+        
+        // Para outros tipos de eventos, mostra todos
+        return true;
+      });
+      
+      console.log("API de eventos chamada, retornando:", filteredEvents.length, "eventos");
+      
+      return res.json(filteredEvents);
     } catch (error) {
       console.error("Erro ao processar eventos:", error);
       // Em caso de erro, retorna um array vazio em vez de 500
