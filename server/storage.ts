@@ -259,6 +259,24 @@ export class MemStorage implements IStorage {
         cost: null,
         restrictions: "Veículos acima de 1 eixo",
         roadName: "SP-255"
+      },
+      {
+        name: "Balança SP-255 (km 150)",
+        type: "weighing_station",
+        lat: "-21.5872",
+        lng: "-48.0748",
+        cost: null,
+        restrictions: "Todos os veículos de carga",
+        roadName: "SP-255"
+      },
+      {
+        name: "Pedágio SP-255 (Guatapará)", 
+        type: "toll",
+        lat: "-21.4955",
+        lng: "-48.0355",
+        cost: 1050, // R$10.50 (preço base para carros)
+        roadName: "SP-255",
+        restrictions: null
       }
     ];
     

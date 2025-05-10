@@ -423,6 +423,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
           {nome: 'Pedágio SP-255 (Barra Bonita)', lat: '-22.5123', lng: '-48.5566', custo: 950},
           {nome: 'Pedágio SP-255 (Boa Esperança do Sul)', lat: '-21.9927', lng: '-48.3926', custo: 1050},
           {nome: 'Pedágio SP-255 (Araraquara)', lat: '-21.7925', lng: '-48.2067', custo: 970},
+          {nome: 'Pedágio SP-255 (Guatapará)', lat: '-21.4955', lng: '-48.0355', custo: 1050},
           {nome: 'Pedágio SP-255 (Ribeirão Preto)', lat: '-21.2112', lng: '-47.7875', custo: 950}
         ],
         'SP-225': [
@@ -477,7 +478,8 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
       const balancasPorRodovia: {[key: string]: {nome: string, lat: string, lng: string, restricoes?: string}[]} = {
         'SP-255': [
           {nome: 'Balança SP-255 (km 122)', lat: '-22.2153', lng: '-48.1887', restricoes: 'Veículos acima de 1 eixo'},
-          {nome: 'Balança SP-255 (km 86)', lat: '-21.8901', lng: '-48.2305', restricoes: 'Veículos acima de 1 eixo'}
+          {nome: 'Balança SP-255 (km 86)', lat: '-21.8901', lng: '-48.2305', restricoes: 'Veículos acima de 1 eixo'},
+          {nome: 'Balança SP-255 (km 150)', lat: '-21.5872', lng: '-48.0748', restricoes: 'Todos os veículos de carga'}
         ],
         'SP-310': [
           {nome: 'Balança SP-310 (km 173)', lat: '-21.9845', lng: '-47.8897', restricoes: 'Veículos acima de 1 eixo'},
