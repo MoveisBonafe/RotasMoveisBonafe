@@ -321,46 +321,49 @@ export default function RouteReport({
           <div className="space-y-1">
             {cityEvents && cityEvents.length > 0 ? (
               (() => {
-                // Definir a sequência de cidades pela ordem em que aparecem na rota
-                const routeSequence = Array.isArray(calculatedRoute) 
-                  ? calculatedRoute.map(loc => loc.name || "").filter(Boolean)
-                  : [];
-                
-                // Extrair o nome exato das cidades da rota
+                // Extrair o nome exato das cidades da rota usando a nova função de extração
                 const citiesInRoute = new Set<string>();
-                routeSequence.forEach(city => {
-                  // Considerar a origem (Dois Córregos)
-                  if (city === "Dois Córregos") {
-                    citiesInRoute.add("Dois Córregos");
-                  } else {
-                    // Para destinos, verificar nome completo ou parte do nome
-                    citiesInRoute.add(city);
-                    
-                    // Extrair nome da cidade do endereço (caso tenha cidade no endereço)
-                    const cityParts = city.split(",");
-                    if (cityParts.length > 1) {
-                      const cityName = cityParts[0].trim();
-                      citiesInRoute.add(cityName);
+                
+                // Adicionar a origem (Dois Córregos)
+                citiesInRoute.add("Dois Córregos");
+                
+                // Adicionar cidades dos destinos usando a função extractCityFromAddress
+                if (Array.isArray(calculatedRoute)) {
+                  calculatedRoute.forEach(location => {
+                    if (location.address) {
+                      const cityName = extractCityFromAddress(location.address);
+                      if (cityName) {
+                        citiesInRoute.add(cityName);
+                      }
                     }
-                  }
-                });
+                  });
+                }
+                
+                // Forçar incluir Ribeirão Preto na lista se estiver no endereço
+                const hasRibeiraoPreto = calculatedRoute ? calculatedRoute.some(location => 
+                  location.address && location.address.includes("Ribeirão Preto")
+                ) : false;
+                
+                if (hasRibeiraoPreto) {
+                  citiesInRoute.add("Ribeirão Preto");
+                }
+                
+                // Log para debug
+                console.log("Eventos disponíveis:", JSON.stringify(cityEvents));
+                console.log("Cidades extraídas da rota:", JSON.stringify(Array.from(citiesInRoute)));
                 
                 // Criar um mapa para saber a posição de cada cidade na rota
                 const cityPositionMap = new Map();
-                routeSequence.forEach((city, index) => {
-                  if (!cityPositionMap.has(city)) {
-                    cityPositionMap.set(city, index);
+                
+                // Preencher o mapa com posições de cidades
+                Array.isArray(calculatedRoute) && calculatedRoute.forEach((location, index) => {
+                  const cityName = extractCityFromAddress(location.address);
+                  if (cityName && !cityPositionMap.has(cityName)) {
+                    cityPositionMap.set(cityName, index);
                   }
                 });
                 
-                // TEMPORÁRIO: Mostrar todos os eventos sem filtro para debug
-                console.log("Eventos disponíveis:", JSON.stringify(cityEvents));
-                console.log("Cidades na rota:", JSON.stringify(Array.from(citiesInRoute)));
-                
-                // Forçar incluir Ribeirão Preto na lista
-                citiesInRoute.add("Ribeirão Preto");
-                
-                // Filtrar eventos das cidades na rota
+                // Filtrar e ordenar eventos das cidades na rota
                 const filteredAndSortedEvents = [...cityEvents]
                   .sort((a, b) => {
                     // Primeiro critério: posição da cidade na rota
@@ -425,29 +428,32 @@ export default function RouteReport({
             <h3 className="text-xs font-semibold mb-1 text-primary">Restrições para Caminhões</h3>
             <div className="space-y-1">
               {(() => {
-                // Definir a sequência de cidades pela ordem em que aparecem na rota
-                const routeSequence = Array.isArray(calculatedRoute) 
-                  ? calculatedRoute.map(loc => loc.name || "").filter(Boolean)
-                  : [];
-                
-                // Extrair o nome exato das cidades da rota
+                // Extrair o nome exato das cidades da rota usando a função extractCityFromAddress
                 const citiesInRoute = new Set<string>();
-                routeSequence.forEach(city => {
-                  // Considerar a origem (Dois Córregos)
-                  if (city === "Dois Córregos") {
-                    citiesInRoute.add("Dois Córregos");
-                  } else {
-                    // Para destinos, verificar nome completo ou parte do nome
-                    citiesInRoute.add(city);
-                    
-                    // Extrair nome da cidade do endereço (caso tenha cidade no endereço)
-                    const cityParts = city.split(",");
-                    if (cityParts.length > 1) {
-                      const cityName = cityParts[0].trim();
-                      citiesInRoute.add(cityName);
+                
+                // Adicionar a origem (Dois Córregos)
+                citiesInRoute.add("Dois Córregos");
+                
+                // Adicionar cidades dos destinos usando a função extractCityFromAddress
+                if (Array.isArray(calculatedRoute)) {
+                  calculatedRoute.forEach(location => {
+                    if (location.address) {
+                      const cityName = extractCityFromAddress(location.address);
+                      if (cityName) {
+                        citiesInRoute.add(cityName);
+                      }
                     }
-                  }
-                });
+                  });
+                }
+                
+                // Forçar incluir Ribeirão Preto na lista se estiver no endereço
+                const hasRibeiraoPreto = calculatedRoute ? calculatedRoute.some(location => 
+                  location.address && location.address.includes("Ribeirão Preto")
+                ) : false;
+                
+                if (hasRibeiraoPreto) {
+                  citiesInRoute.add("Ribeirão Preto");
+                }
                 
                 // Filtrar apenas restrições das cidades que estão na rota
                 const filteredRestrictions = [...truckRestrictions]
