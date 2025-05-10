@@ -70,7 +70,8 @@ export default function MapViewSimple({
           fullscreenControl: true,
           fullscreenControlOptions: {
             position: window.google.maps.ControlPosition.RIGHT_TOP
-          }
+          },
+          gestureHandling: 'greedy' // Permite dar zoom com scroll sem precisar segurar Ctrl
         };
         
         // Criar mapa e guardar referência
