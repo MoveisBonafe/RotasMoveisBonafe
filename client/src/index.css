@@ -2,49 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Estilos para minimização da aba de resumo */
-.route-info-panel {
-  transition: all 0.3s ease;
-}
-
-.route-tab-collapsed {
-  max-height: 40px !important;
-  overflow: hidden !important;
-  padding: 0 !important;
-  margin-bottom: 0 !important;
-  visibility: visible !important;
-  position: relative !important;
-}
-
-/* Quando o painel está minimizado */
-.route-info-panel.collapsed {
-  max-height: 48px !important;
-  overflow: hidden !important;
-}
-
-/* Conteúdo da aba */
-.tab-content {
-  transition: all 0.3s ease;
-}
-
-.route-info-summary {
-  opacity: 1;
-  max-height: 1000px;
-  transition: opacity 0.2s ease, max-height 0.3s ease;
-}
-
-.route-info-summary.hidden {
-  opacity: 0;
-  max-height: 0;
-  overflow: hidden;
-}
-
-/* Estilos expandidos */
-.expanded-tab {
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
 /* Melhorias para o mapa do Google */
 .touch-manipulation {
   touch-action: manipulation;
