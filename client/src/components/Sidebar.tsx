@@ -12,6 +12,7 @@ interface SidebarProps {
   locations: Location[];
   selectedVehicleType: string;
   onVehicleSelect: (vehicleType: VehicleType) => void;
+  onOpenFuelSettings?: () => void; // Propriedade para abrir o diálogo de configurações
   onSelectLocation: (location: GeocodingResult | GeocodingResult[]) => void;
   onRemoveLocation: (index: number) => void;
   onMoveLocationUp: (index: number) => void;
@@ -31,6 +32,7 @@ export default function Sidebar({
   locations,
   selectedVehicleType,
   onVehicleSelect,
+  onOpenFuelSettings,
   onSelectLocation,
   onRemoveLocation,
   onMoveLocationUp,
@@ -216,6 +218,7 @@ export default function Sidebar({
         <VehicleSelector 
           selectedVehicleType={selectedVehicleType}
           onVehicleSelect={onVehicleSelect}
+          onOpenFuelSettings={onOpenFuelSettings}
         />
 
         {/* Botão de calcular rota */}
