@@ -21,7 +21,7 @@ interface MapViewProps {
 // Definições para TypeScript
 declare global {
   interface Window {
-    google: typeof google;
+    google: any;
     initMap: () => void;
   }
 }
@@ -257,242 +257,107 @@ export default function MapViewSimple({
           newInfoWindows.push(infoWindow);
         });
         
-        // Implementação simplificada: Adicionar os pontos de interesse
-        const allPOIs: PointOfInterest[] = [...pointsOfInterest];
-        
-        // PASSO 1: Buscar pedágios via API AILOG (principal fonte)
-        fetchTollsFromAilog(origin, waypoints, localStorage.getItem('selectedVehicleType') || 'car')
-          .then(ailogTolls => {
-            console.log("Resultado AILOG:", ailogTolls ? ailogTolls.length : 0, "pedágios encontrados");
-            
-            if (ailogTolls && ailogTolls.length > 0) {
-              // Adicionar pedágios da AILOG
-              ailogTolls.forEach(toll => {
-                allPOIs.push({
-                  ...toll,
-                  source: 'ailog' // Marcar a origem
-                });
-              });
-            } else {
-              console.log("Nenhum pedágio encontrado via AILOG, buscando alternativas...");
+        // PARTE MODIFICADA: Adicionar pedágios e outros POIs
+        if (pointsOfInterest && pointsOfInterest.length > 0) {
+          pointsOfInterest.forEach(poi => {
+            if (poi.lat && poi.lng) {
+              const position = {
+                lat: parseFloat(poi.lat),
+                lng: parseFloat(poi.lng)
+              };
               
-              // PASSO 2: Se AILOG falhar, buscar com Google Places
-              findTollsUsingGooglePlaces(map, result)
-                .then(googleTolls => {
-                  console.log("Google Places encontrou:", googleTolls.length, "pedágios");
-                  
-                  if (googleTolls && googleTolls.length > 0) {
-                    // Adicionar pedágios do Google
-                    googleTolls.forEach(toll => {
-                      allPOIs.push({
-                        ...toll,
-                        source: 'google' // Marcar a origem
-                      });
-                    });
-                  } else {
-                    console.log("Google Places também não encontrou pedágios, usando banco de rodovias conhecidas");
-                    
-                    // PASSO 3: Último recurso - usar banco de dados de rodovias conhecidas
-                    const knownTolls = findTollsFromKnownHighways(result);
-                    console.log("Pedágios de rodovias conhecidas:", knownTolls.length);
-                    
-                    knownTolls.forEach(toll => {
-                      allPOIs.push({
-                        ...toll,
-                        source: 'known_highway' // Marcar a origem
-                      });
-                    });
-                  }
-                  
-                  // Adicionar os POIs ao mapa
-                  addPOIsToMap();
-                })
-                .catch(error => {
-                  console.error("Erro ao buscar pedágios via Google Places:", error);
-                  
-                  // Usar banco de rodovias conhecidas como fallback
-                  const knownTolls = findTollsFromKnownHighways(result);
-                  knownTolls.forEach(toll => {
-                    allPOIs.push({
-                      ...toll,
-                      source: 'known_highway' // Marcar a origem
-                    });
-                  });
-                  
-                  // Adicionar os POIs ao mapa
-                  addPOIsToMap();
-                });
-            }
-          })
-          .catch(error => {
-            console.error("Erro ao buscar pedágios via AILOG:", error);
-            
-            // PASSO 2: Se AILOG falhar, buscar com Google Places
-            findTollsUsingGooglePlaces(map, result)
-              .then(googleTolls => {
-                if (googleTolls && googleTolls.length > 0) {
-                  googleTolls.forEach(toll => {
-                    allPOIs.push({
-                      ...toll,
-                      source: 'google'
-                    });
-                  });
-                } else {
-                  // PASSO 3: Último recurso
-                  const knownTolls = findTollsFromKnownHighways(result);
-                  knownTolls.forEach(toll => {
-                    allPOIs.push({
-                      ...toll,
-                      source: 'known_highway'
-                    });
-                  });
-                }
-                
-                // Adicionar os POIs ao mapa
-                addPOIsToMap();
-              })
-              .catch(err => {
-                console.error("Erro ao buscar pedágios via Google Places:", err);
-                
-                // Usar banco de rodovias conhecidas como fallback
-                const knownTolls = findTollsFromKnownHighways(result);
-                knownTolls.forEach(toll => {
-                  allPOIs.push({
-                    ...toll,
-                    source: 'known_highway'
-                  });
-                });
-                
-                // Adicionar os POIs ao mapa
-                addPOIsToMap();
-              });
-          });
-          
-        // Função para adicionar os POIs ao mapa
-        function addPOIsToMap() {
-          console.log(`Adicionando ${allPOIs.length} POIs ao mapa`);
-          
-          // Adicionar POIs ao mapa (pedágios, balanças)
-          allPOIs.forEach(poi => {
-            const poiPosition = {
-              lat: parseFloat(poi.lat),
-              lng: parseFloat(poi.lng)
-            };
-            
-            // Determinar a cor do ícone com base no tipo e fonte
-            let fillColor = '#FF0000'; // Vermelho default
-            
-            if (poi.type === 'toll') {
-              if (poi.source === 'ailog') {
-                fillColor = '#FF5722'; // Laranja para AILOG (principal)
-              } else if (poi.source === 'google') {
-                fillColor = '#9C27B0'; // Roxo para Google Places
-              } else if (poi.source === 'known_highway') {
-                fillColor = '#795548'; // Marrom para banco de rodovias
-              } else {
-                fillColor = '#F44336'; // Vermelho para outros
+              // Determinar a cor com base no tipo
+              let fillColor = '#FF0000';
+              
+              if (poi.type === 'toll') {
+                fillColor = '#FF5722'; // Laranja para pedágios
+              } else if (poi.type === 'weighing_station') {
+                fillColor = '#4CAF50'; // Verde para balanças
               }
-            } else if (poi.type === 'weighing_station') {
-              fillColor = '#4CAF50'; // Verde para balanças
-            }
-            
-            // Criar e adicionar marcador
-            const poiMarker = new window.google.maps.Marker({
-              position: poiPosition,
-              map,
-              title: poi.name,
-              icon: {
-                path: window.google.maps.SymbolPath.CIRCLE,
-                fillColor: fillColor,
-                fillOpacity: 1,
-                strokeWeight: 2,
-                strokeColor: '#FFFFFF',
-                scale: 12
-              },
-              zIndex: 10
-            });
-            
-            console.log(`Adicionado marcador para ${poi.name} em ${poiPosition.lat}, ${poiPosition.lng}`);
-            
-            // Criar janela de informação
-            let infoContent = `
-              <div style="padding: 10px; max-width: 300px;">
-                <h3 style="margin: 0 0 5px; color: #333; font-size: 16px;">${poi.name}</h3>
-            `;
-            
-            if (poi.type === 'toll') {
-              infoContent += `
-                <div>Tipo: Pedágio</div>
-                <div>Valor: ${poi.cost ? formatCurrency(poi.cost) : 'Não disponível'}</div>
-                <div>Fonte: ${poi.source === 'ailog' ? 'AILOG' : 
-                              poi.source === 'google' ? 'Google Maps' : 
-                              poi.source === 'known_highway' ? 'Rodovia conhecida' : 
-                              'Desconhecida'}</div>
+              
+              // Criar marcador com maior visibilidade
+              const poiMarker = new window.google.maps.Marker({
+                position,
+                map,
+                title: poi.name,
+                icon: {
+                  path: window.google.maps.SymbolPath.CIRCLE,
+                  fillColor: fillColor,
+                  fillOpacity: 1,
+                  strokeWeight: 2,
+                  strokeColor: '#FFFFFF',
+                  scale: 12 // Aumentado para melhor visibilidade
+                },
+                zIndex: 10 // Prioridade no z-index
+              });
+              
+              console.log(`Adicionado POI: ${poi.name} em ${position.lat}, ${position.lng}`);
+              
+              // Criar janela de informação
+              let infoContent = `
+                <div style="padding: 10px; max-width: 300px;">
+                  <h3 style="margin: 0 0 5px; color: #333; font-size: 16px;">${poi.name}</h3>
               `;
               
-              if (poi.roadName) {
-                infoContent += `<div>Rodovia: ${poi.roadName}</div>`;
+              if (poi.type === 'toll') {
+                infoContent += `
+                  <div>Tipo: Pedágio</div>
+                  <div>Valor: ${poi.cost ? formatCurrency(poi.cost) : 'Não disponível'}</div>
+                `;
+                
+                if (poi.roadName) {
+                  infoContent += `<div>Rodovia: ${poi.roadName}</div>`;
+                }
+              } else if (poi.type === 'weighing_station') {
+                infoContent += `<div>Tipo: Balança</div>`;
+                if (poi.restrictions) {
+                  infoContent += `<div>Restrições: ${poi.restrictions}</div>`;
+                }
               }
-            } else if (poi.type === 'weighing_station') {
-              infoContent += `<div>Tipo: Balança</div>`;
-              if (poi.restrictions) {
-                infoContent += `<div>Restrições: ${poi.restrictions}</div>`;
-              }
+              
+              infoContent += `</div>`;
+              
+              const infoWindow = new window.google.maps.InfoWindow({
+                content: infoContent
+              });
+              
+              // Adicionar evento de clique
+              poiMarker.addListener('click', () => {
+                // Fechar todas as janelas de informação abertas
+                newInfoWindows.forEach(iw => iw.close());
+                infoWindow.open(map, poiMarker);
+              });
+              
+              // Adicionar às listas
+              newMarkers.push(poiMarker);
+              newInfoWindows.push(infoWindow);
+              bounds.extend(position);
             }
-            
-            infoContent += `</div>`;
-            
-            const infoWindow = new window.google.maps.InfoWindow({
-              content: infoContent
-            });
-            
-            // Adicionar evento de clique
-            poiMarker.addListener('click', () => {
-              // Fechar todas as janelas de informação abertas
-              newInfoWindows.forEach(iw => iw.close());
-              infoWindow.open(map, poiMarker);
-            });
-            
-            // Adicionar às listas
-            newMarkers.push(poiMarker);
-            newInfoWindows.push(infoWindow);
-            
-            // Estender os bounds para incluir o POI
-            bounds.extend(poiPosition);
           });
-          
-          // Ajustar visualização para mostrar todos os pontos
-          map.fitBounds(bounds);
-          
-          // Definir um zoom máximo para evitar aproximação excessiva
-          const listener = window.google.maps.event.addListener(map, 'idle', () => {
-            if (map.getZoom() > 15) map.setZoom(15);
-            window.google.maps.event.removeListener(listener);
-          });
-          
-          // Armazenar todos os marcadores e infoWindows
-          setMarkers(newMarkers);
-          setInfoWindows(newInfoWindows);
-          
-          console.log(`Total de ${newMarkers.length} marcadores adicionados ao mapa`);
-          
-          // Chamar o callback com as informações da rota
-          if (onRouteCalculated) {
-            onRouteCalculated({
-              ...result,
-              poisAlongRoute: allPOIs
-            });
-          }
         }
         
-        // Se API AILOG falhar completamente, ainda assim mostrar POIs padrão
-        setTimeout(() => {
-          if (newMarkers.length <= sequence.length) {
-            console.log("Timeout: adicionando POIs básicos do banco de dados");
-            addPOIsToMap();
-          }
-        }, 5000);
+        // Ajustar visualização para mostrar todos os pontos
+        map.fitBounds(bounds);
         
+        // Definir um zoom máximo para evitar aproximação excessiva
+        const listener = window.google.maps.event.addListener(map, 'idle', () => {
+          if (map.getZoom() > 15) map.setZoom(15);
+          window.google.maps.event.removeListener(listener);
+        });
+        
+        // Armazenar todos os marcadores e infoWindows
+        setMarkers(newMarkers);
+        setInfoWindows(newInfoWindows);
+        
+        console.log(`Total de ${newMarkers.length} marcadores adicionados ao mapa`);
+        
+        // Chamar o callback com as informações da rota
+        if (onRouteCalculated) {
+          onRouteCalculated({
+            ...result,
+            poisAlongRoute: pointsOfInterest
+          });
+        }
       } else {
         console.error("Erro ao calcular rota:", status);
         setError(`Não foi possível calcular a rota. Erro: ${status}`);
@@ -501,7 +366,7 @@ export default function MapViewSimple({
       // Sempre resetar a flag ao final
       isProcessingRoute.current = false;
     });
-  }, [origin, waypoints, map, directionsRenderer, markers, infoWindows]);
+  }, [origin, waypoints, map, directionsRenderer, markers, infoWindows, pointsOfInterest]);
   
   return (
     <div className="h-full w-full flex flex-col">
