@@ -487,6 +487,8 @@ export default function Home() {
         poisAlongRoute={poisOnRoute}
         origin={origin}
         calculatedRoute={calculatedRoute}
+        routeName={routeName}
+        onRouteNameChange={setRouteName}
       />
       
       {/* Add Location Modal */}

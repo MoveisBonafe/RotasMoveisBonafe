@@ -16,6 +16,8 @@ interface RouteInfoPanelProps {
   origin: LocationType | null;
   calculatedRoute: LocationType[] | null;
   initialTab?: TabType; // Tab inicial a ser mostrada
+  routeName?: string;
+  onRouteNameChange?: (name: string) => void;
 }
 
 export default function RouteInfoPanel({
