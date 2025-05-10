@@ -19,6 +19,37 @@ interface RouteInfoPanelProps {
   initialTab?: TabType; // Tab inicial a ser mostrada
 }
 
+// Funções auxiliares para formatação de eventos
+function getEventTypeColor(eventType: string): string {
+  switch (eventType) {
+    case 'holiday':
+      return 'bg-red-100 text-red-700';
+    case 'festival':
+      return 'bg-blue-100 text-blue-700';
+    case 'construction':
+      return 'bg-orange-100 text-orange-700';
+    case 'fair':
+      return 'bg-green-100 text-green-700';
+    default:
+      return 'bg-gray-100 text-gray-700';
+  }
+}
+
+function getEventTypeLabel(eventType: string): string {
+  switch (eventType) {
+    case 'holiday':
+      return 'Feriado';
+    case 'festival':
+      return 'Festival';
+    case 'construction':
+      return 'Obras';
+    case 'fair':
+      return 'Feira';
+    default:
+      return 'Evento';
+  }
+}
+
 export default function RouteInfoPanel({
   routeInfo,
   vehicleType,
@@ -616,7 +647,7 @@ export default function RouteInfoPanel({
                 </div>
               )}
 
-              <div className={`grid grid-cols-1 ${isExpanded ? 'lg:grid-cols-3' : 'md:grid-cols-2'} gap-2`}>
+              <div className={`grid grid-cols-1 ${isExpanded ? 'lg:grid-cols-3 gap-4' : 'md:grid-cols-2 gap-2'}`}>
                 {/* Route Info Card - Version compacta */}
                 <div className="bg-white rounded p-2 border border-gray-100">
                   <h3 className="text-xs font-medium mb-1 text-primary">{vehicleType?.name || "Veículo"}</h3>
@@ -733,7 +764,7 @@ export default function RouteInfoPanel({
                 {/* Eventos da rota (integrados no resumo) - Visível apenas quando há eventos */}
                 {isExpanded && Array.isArray(cityEvents) && cityEvents.length > 0 && (
                   <div className="bg-white rounded p-2 border border-gray-100">
-                    <div className="flex items-center gap-1 mb-1">
+                    <div className="flex items-center gap-1 mb-2 border-b border-gray-100 pb-1">
                       <Calendar className="h-3 w-3 text-primary" />
                       <h3 className="text-xs font-medium text-primary">Eventos nas Cidades da Rota</h3>
                     </div>
@@ -785,8 +816,8 @@ export default function RouteInfoPanel({
                           }
                           
                           // Segundo critério: data do evento
-                          const dateA = new Date(a.eventDate);
-                          const dateB = new Date(b.eventDate);
+                          const dateA = new Date(a.startDate);
+                          const dateB = new Date(b.startDate);
                           return dateA.getTime() - dateB.getTime();
                         });
                         
@@ -810,7 +841,7 @@ export default function RouteInfoPanel({
                             </div>
                             <div className="text-right">
                               <p className="text-xxs font-medium text-gray-600">
-                                {new Date(event.eventDate).toLocaleDateString('pt-BR')}
+                                {new Date(event.startDate).toLocaleDateString('pt-BR')}
                               </p>
                               <span className={`text-xxs px-1 rounded ${getEventTypeColor(event.eventType)}`}>
                                 {getEventTypeLabel(event.eventType)}
@@ -826,7 +857,7 @@ export default function RouteInfoPanel({
                 {/* Restrições para caminhões (integradas no resumo) - Visível apenas com veículo caminhão e quando expandido */}
                 {isExpanded && vehicleType?.type.includes("truck") && truckRestrictions && Array.isArray(truckRestrictions) && truckRestrictions.length > 0 && (
                   <div className="bg-white rounded p-2 border border-gray-100">
-                    <div className="flex items-center gap-1 mb-1">
+                    <div className="flex items-center gap-1 mb-2 border-b border-gray-100 pb-1">
                       <Truck className="h-3 w-3 text-red-600" />
                       <h3 className="text-xs font-medium text-primary">Restrições para Caminhões</h3>
                     </div>
@@ -858,18 +889,18 @@ export default function RouteInfoPanel({
                           <div className="flex items-start">
                             <div className="flex-1">
                               <div className="flex items-center gap-1">
-                                <Badge variant="outline" className="text-xxs py-0 border-red-200 text-red-700">
-                                  {restriction.restrictionType}
-                                </Badge>
+                                <div className="text-xxs py-0 border border-red-200 text-red-700 rounded px-1">
+                                  {restriction.restriction}
+                                </div>
                                 <p className="text-xs font-medium">{restriction.cityName}</p>
                               </div>
                               <p className="text-xxs text-gray-600 mt-0.5">
-                                {restriction.description}
+                                {restriction.description || 'Restrição para tráfego de caminhões'}
                               </p>
                               <div className="flex items-center gap-1 mt-0.5">
                                 <Clock className="h-2 w-2 text-gray-400" />
                                 <p className="text-xxs text-gray-500">
-                                  {restriction.timeRestriction}
+                                  {restriction.startTime || '00:00'}-{restriction.endTime || '23:59'}
                                 </p>
                               </div>
                             </div>
