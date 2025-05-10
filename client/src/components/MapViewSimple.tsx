@@ -99,12 +99,7 @@ export default function MapViewSimple({
             icon: {
               url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
             },
-            label: {
-              text: "0",
-              color: "#FFFFFF",
-              fontSize: "14px",
-              fontWeight: "bold"
-            },
+            label: null, // Sem numeração até calcular rota
             zIndex: 100
           });
           
@@ -136,15 +131,14 @@ export default function MapViewSimple({
     }
   }, [mapRef, origin]);
 
-  // Efeito para atualizar a rota quando os waypoints mudarem ou quando a rota for calculada
+  // Efeito para mostrar os marcadores iniciais (sem números e sem rota)
   useEffect(() => {
-    // Só processamos a rota quando temos todos os dados necessários
-    // E quando a rota foi calculada pelo usuário (calculatedRoute existe)
-    if (map && directionsRenderer && origin && waypoints.length > 0) {
-      // Verificar se devemos processar a rota
+    // Só processamos quando temos o mapa e a origem
+    if (map && directionsRenderer && origin) {
+      // Verificar se devemos processar a rota completa ou só mostrar marcadores
       const shouldProcessRoute = calculatedRoute && calculatedRoute.length > 0;
       
-      // Se não temos uma rota calculada, apenas adicionamos marcadores sem mostrar rotas
+      // Se não é para processar a rota completa, mostramos apenas os marcadores simples
       if (!shouldProcessRoute) {
         console.log("Adicionando marcadores sem calcular rota...");
         
@@ -188,30 +182,32 @@ export default function MapViewSimple({
         }
         
         // Adicionar marcadores para cada waypoint (sem números)
-        waypoints.forEach((point, index) => {
-          const waypointMarker = new window.google.maps.Marker({
-            position: { lat: parseFloat(point.lat), lng: parseFloat(point.lng) },
-            map: map,
-            title: point.name || `Destino ${index + 1}`,
-            icon: {
-              url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
-            },
-            zIndex: 100
+        if (waypoints && waypoints.length > 0) {
+          waypoints.forEach((point, index) => {
+            const waypointMarker = new window.google.maps.Marker({
+              position: { lat: parseFloat(point.lat), lng: parseFloat(point.lng) },
+              map: map,
+              title: point.name || `Destino ${index + 1}`,
+              icon: {
+                url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+              },
+              zIndex: 100
+            });
+            
+            // Criar janela de informação
+            const infoWindow = new window.google.maps.InfoWindow({
+              content: `<div class="info-window"><strong>${point.name || `Destino ${index + 1}`}</strong><br>${point.address || ""}</div>`
+            });
+            
+            // Adicionar evento para mostrar janela ao clicar
+            waypointMarker.addListener("click", () => {
+              infoWindow.open(map, waypointMarker);
+            });
+            
+            newMarkers.push(waypointMarker);
+            newInfoWindows.push(infoWindow);
           });
-          
-          // Criar janela de informação
-          const infoWindow = new window.google.maps.InfoWindow({
-            content: `<div class="info-window"><strong>${point.name || `Destino ${index + 1}`}</strong><br>${point.address || ""}</div>`
-          });
-          
-          // Adicionar evento para mostrar janela ao clicar
-          waypointMarker.addListener("click", () => {
-            infoWindow.open(map, waypointMarker);
-          });
-          
-          newMarkers.push(waypointMarker);
-          newInfoWindows.push(infoWindow);
-        });
+        }
         
         // Atualizar o estado com os novos marcadores
         setMarkers(newMarkers);
@@ -228,11 +224,15 @@ export default function MapViewSimple({
         if (newMarkers.length > 0) {
           map.fitBounds(bounds);
         }
-        
-        return;
       }
-      
-      // Agora processamos a rota quando temos calculatedRoute
+    }
+  }, [map, directionsRenderer, origin, waypoints, calculatedRoute]);
+  
+  // Efeito para calcular a rota quando o usuário clicar em Calcular Melhor Rota
+  useEffect(() => {
+    // Só processamos a rota quando temos todos os dados necessários
+    // E quando a rota foi calculada pelo usuário (calculatedRoute existe)
+    if (map && directionsRenderer && origin && waypoints.length > 0 && calculatedRoute && calculatedRoute.length > 0) {
       // Evitar execuções repetidas e tremulação
       if (isProcessingRoute.current) return;
       isProcessingRoute.current = true;
@@ -249,8 +249,11 @@ export default function MapViewSimple({
         });
       }
       
-      // Não limpar marcadores existentes ainda - faremos isso apenas quando tivermos os novos prontos
-      // Isso evita a piscagem na tela
+      // Limpar marcadores existentes
+      markers.forEach(marker => marker.setMap(null));
+      
+      // Fechar janelas de informação
+      infoWindows.forEach(infoWindow => infoWindow.close());
       
       // Preparar arrays para os novos marcadores e infoWindows
       const newMarkers = [];
@@ -321,7 +324,7 @@ export default function MapViewSimple({
                   url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
                 },
                 label: {
-                  text: "0",
+                  text: "1", // Marcador da origem é #1 na rota
                   color: "#FFFFFF",
                   fontSize: "14px",
                   fontWeight: "bold"
