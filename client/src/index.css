@@ -181,37 +181,67 @@ iframe {
   transition: all 0.3s ease;
 }
 
-/* Classe especial para a aba de relatório */
-.report-expanded {
-  position: fixed;
-  top: 110px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100vw;
-  height: calc(100vh - 110px);
-  max-height: unset;
-  max-width: 100vw;
+/* Estilos para os painéis de abas (comum) */
+.tab-panel {
   overflow-y: auto;
   transition: all 0.3s ease;
-  z-index: 999;
-  background-color: white;
-  padding: 16px;
-  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
-  border-top: 2px solid var(--primary);
 }
 
-/* Ajuste para o layout do relatório quando expandido */
+/* Classe para a aba expandida normal */
+.expanded-tab {
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+/* Classe especial para a aba de relatório em modo expandido */
+.report-expanded {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+  transition: all 0.3s ease !important;
+  z-index: 9999 !important;
+  background-color: white !important;
+  padding: 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Cabeçalho do relatório em tela cheia */
+.report-expanded .report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 10;
+}
+
+/* Container de conteúdo do relatório em tela cheia */
 .report-expanded .report-container {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 60px;
+  margin: 0 auto;
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
-  padding-bottom: 80px;
 }
 
 /* Grid para o relatório em tela cheia */
 .report-expanded .report-container > div {
-  margin-bottom: 16px;
+  margin-bottom: 24px;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 /* Layout em grid no modo expandido */

@@ -181,6 +181,17 @@ export default function RouteInfoPanel({
       {/* Summary Tab */}
       {activeTab === "summary" && (
         <div className={`p-2 ${isExpanded ? 'expanded-tab' : ''}`}>
+          <div className="flex justify-end mb-1">
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+            >
+              {isExpanded ? 
+                <><Minimize2 className="h-3 w-3" /> Minimizar</> : 
+                <><Maximize2 className="h-3 w-3" /> Expandir</>
+              }
+            </button>
+          </div>
           {!routeInfo ? (
             <div className="text-center p-3 text-gray-500 text-xs">
               Calcule uma rota para ver o resumo.
@@ -315,6 +326,17 @@ export default function RouteInfoPanel({
       {/* City Events Tab */}
       {activeTab === "events" && (
         <div className={`p-2 ${isExpanded ? 'expanded-tab' : ''}`}>
+          <div className="flex justify-end mb-1">
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+            >
+              {isExpanded ? 
+                <><Minimize2 className="h-3 w-3" /> Minimizar</> : 
+                <><Maximize2 className="h-3 w-3" /> Expandir</>
+              }
+            </button>
+          </div>
           {!startDate || !endDate ? (
             <div className="bg-blue-50 text-blue-700 p-2 rounded-md text-xs">
               Selecione as datas de início e fim para ver os eventos nas cidades do trajeto.
@@ -436,6 +458,17 @@ export default function RouteInfoPanel({
       {/* Vehicle Restrictions Tab */}
       {activeTab === "restrictions" && (
         <div className={`p-2 ${isExpanded ? 'expanded-tab' : ''}`}>
+          <div className="flex justify-end mb-1">
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+            >
+              {isExpanded ? 
+                <><Minimize2 className="h-3 w-3" /> Minimizar</> : 
+                <><Maximize2 className="h-3 w-3" /> Expandir</>
+              }
+            </button>
+          </div>
           {vehicleType?.type.includes("truck") ? (
             truckRestrictions && Array.isArray(truckRestrictions) && truckRestrictions.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -523,16 +556,16 @@ export default function RouteInfoPanel({
 
       {/* Detailed Report Tab */}
       {activeTab === "report" && (
-        <div className={`p-2 ${isExpanded ? 'report-expanded' : ''}`}>
+        <div className={`tab-panel ${isExpanded ? 'report-expanded' : 'p-2'}`}>
           {isExpanded && (
-            <div className="sticky top-0 z-20 w-full flex justify-end">
+            <div className="report-header">
+              <h2 className="text-lg font-semibold">Relatório Completo de Rota</h2>
               <button
                 onClick={() => setIsExpanded(false)}
-                className="bg-white text-gray-600 hover:text-gray-900 p-1 rounded-full shadow-sm"
+                className="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-gray-900 px-3 py-1 rounded text-sm transition-colors"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
+                <span>Fechar</span>
+                <X className="h-4 w-4" />
               </button>
             </div>
           )}
