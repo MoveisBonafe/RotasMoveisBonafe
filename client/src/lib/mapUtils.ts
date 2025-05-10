@@ -207,6 +207,29 @@ export function formatRouteSequence(locations: Location[]): string {
 }
 
 /**
+ * Extrai o nome da cidade de um endereço completo brasileiro
+ */
+function extractCityName(address: string): string | null {
+  // Padrão para endereços brasileiros - a cidade geralmente vem antes do estado (UF)
+  const cityPattern = /([A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú][a-zà-ú]+)*)\s*-\s*([A-Z]{2})/;
+  const match = address.match(cityPattern);
+  
+  if (match && match[1]) {
+    return match[1].trim();
+  }
+  
+  // Tenta um padrão alternativo para endereços sem o formato padrão
+  const altPattern = /(?:em|para|de|por)\s+([A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú][a-zà-ú]+)*)/;
+  const altMatch = address.match(altPattern);
+  
+  if (altMatch && altMatch[1]) {
+    return altMatch[1].trim();
+  }
+  
+  return null;
+}
+
+/**
  * Decodifica um polyline do Google Maps em uma série de coordenadas
  * https://developers.google.com/maps/documentation/utilities/polylinealgorithm
  */
@@ -396,21 +419,109 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
       const pedagiosPorRodovia: {[key: string]: {nome: string, lat: string, lng: string}[]} = {
         'SP-255': [
           {nome: 'Pedágio SP-255 (Jaú)', lat: '-22.1856', lng: '-48.6087'},
-          {nome: 'Pedágio SP-255 (Barra Bonita)', lat: '-22.5123', lng: '-48.5566'}
+          {nome: 'Pedágio SP-255 (Barra Bonita)', lat: '-22.5123', lng: '-48.5566'},
+          {nome: 'Pedágio SP-255 (Boa Esperança do Sul)', lat: '-21.9927', lng: '-48.3926'}
         ],
         'SP-225': [
           {nome: 'Pedágio SP-225 (Brotas)', lat: '-22.2794', lng: '-48.1257'},
-          {nome: 'Pedágio SP-225 (Dois Córregos)', lat: '-22.3673', lng: '-48.2823'}
+          {nome: 'Pedágio SP-225 (Dois Córregos)', lat: '-22.3673', lng: '-48.2823'},
+          {nome: 'Pedágio SP-225 (Jaú)', lat: '-22.3006', lng: '-48.5584'}
         ],
         'SP-310': [
           {nome: 'Pedágio SP-310 (Itirapina)', lat: '-22.2449', lng: '-47.8278'},
-          {nome: 'Pedágio SP-310 (São Carlos)', lat: '-22.0105', lng: '-47.9107'}
+          {nome: 'Pedágio SP-310 (São Carlos)', lat: '-22.0105', lng: '-47.9107'},
+          {nome: 'Pedágio SP-310 (Araraquara)', lat: '-21.7950', lng: '-48.1758'}
         ],
         'SP-330': [
           {nome: 'Pedágio SP-330 (Ribeirão Preto)', lat: '-21.2089', lng: '-47.8651'},
           {nome: 'Pedágio SP-330 (Sertãozinho)', lat: '-21.0979', lng: '-47.9959'}
+        ],
+        'SP-333': [
+          {nome: 'Pedágio SP-333 (Jaú)', lat: '-22.3211', lng: '-48.5584'},
+          {nome: 'Pedágio SP-333 (Borborema)', lat: '-21.6214', lng: '-49.0741'}
+        ],
+        'SP-304': [
+          {nome: 'Pedágio SP-304 (Jaú/Bariri)', lat: '-22.1472', lng: '-48.6795'},
+          {nome: 'Pedágio SP-304 (Torrinha)', lat: '-22.4238', lng: '-48.1701'}
         ]
       };
+      
+      // Adicionar pedágios importantes por cidade (independente da rodovia)
+      const pedagogiosPorCidade: {[key: string]: {nome: string, lat: string, lng: string}[]} = {
+        'Dois Córregos': [
+          {nome: 'Pedágio Dois Córregos/Brotas', lat: '-22.3191', lng: '-48.1605'}
+        ],
+        'Ribeirão Preto': [
+          {nome: 'Pedágio Ribeirão Preto/Pradópolis', lat: '-21.2556', lng: '-48.0039'}
+        ],
+        'Boa Esperança do Sul': [
+          {nome: 'Pedágio Boa Esperança do Sul', lat: '-21.9901', lng: '-48.3923'}
+        ],
+        'Jaú': [
+          {nome: 'Pedágio Jaú/Bocaina', lat: '-22.1434', lng: '-48.4863'}
+        ],
+        'Araraquara': [
+          {nome: 'Pedágio Araraquara/Américo Brasiliense', lat: '-21.6822', lng: '-48.1038'}
+        ]
+      };
+      
+      // Adicionar pedágios por cidades na rota
+      let cidadesNaRota = legs.flatMap(leg => 
+        leg.steps?.flatMap(step => {
+          const text = step.html_instructions?.replace(/<[^>]*>/g, '') || '';
+          // Pegar nomes de cidades brasileiras mencionadas
+          const matches = text.match(/(?:passar por|entrar em|chegar em|chegar a|pegar|sair de)\s+([A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú][a-zà-ú]+)*)/g);
+          if (matches) {
+            return matches.map(m => m.replace(/(?:passar por|entrar em|chegar em|chegar a|pegar|sair de)\s+/, ''));
+          }
+          return [];
+        }) || []
+      );
+      
+      // Adicionar cidades de início e fim da rota
+      if (legs.length > 0) {
+        const firstLeg = legs[0];
+        const lastLeg = legs[legs.length - 1];
+        
+        if (firstLeg.start_address) {
+          const startCity = extractCityName(firstLeg.start_address);
+          if (startCity) cidadesNaRota.push(startCity);
+        }
+        
+        if (lastLeg.end_address) {
+          const endCity = extractCityName(lastLeg.end_address);
+          if (endCity) cidadesNaRota.push(endCity);
+        }
+      }
+      
+      // Remover duplicatas de cidades
+      cidadesNaRota = [...new Set(cidadesNaRota)];
+      
+      console.log("Cidades na rota:", cidadesNaRota);
+      
+      // Adicionar pedágios de cidades na rota
+      cidadesNaRota.forEach(cidade => {
+        const pedagogios = pedagogiosPorCidade[cidade];
+        if (pedagogios) {
+          pedagogios.forEach(pedagio => {
+            console.log(`Adicionando pedágio por cidade ${cidade}: ${pedagio.nome}`);
+            
+            const poi: PointOfInterest = {
+              id: tollId++,
+              name: pedagio.nome,
+              lat: pedagio.lat,
+              lng: pedagio.lng,
+              type: 'toll',
+              cost: 0,
+              roadName: `Próximo a ${cidade}`,
+              restrictions: 'Pedágio por cidade'
+            };
+            
+            tollPoints.push(poi);
+            tollsAdded = true;
+          });
+        }
+      });
       
       // Adicionar pedágios para as rodovias detectadas
       rodovias.forEach(rodovia => {
