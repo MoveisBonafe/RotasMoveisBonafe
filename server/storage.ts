@@ -71,6 +71,19 @@ export class MemStorage implements IStorage {
     this.poiId = 1;
     this.eventId = 1;
     this.restrictionId = 1;
+    
+    // Inicializar dados base imediatamente para garantir disponibilidade
+    this.initializeBaseData();
+  }
+  
+  // Método para inicialização automática dos dados base
+  private async initializeBaseData() {
+    console.log("Inicializando dados base...");
+    this.seedOrigin();
+    this.seedVehicleTypes();
+    this.seedPointsOfInterest();
+    this.seedTruckRestrictions();
+    console.log("Dados base inicializados com sucesso");
   }
 
   async getUser(id: number): Promise<User | undefined> {
