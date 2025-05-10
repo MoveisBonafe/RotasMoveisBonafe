@@ -1008,12 +1008,13 @@ export default function MapViewSimple({
               if (poi.type === "toll") {
                 // Pedágio - Símbolo $ em fundo verde
                 poiIcon = {
-                  path: google.maps.SymbolPath.CIRCLE,
-                  fillColor: '#22C55E', // Verde esmeralda vibrante
+                  // Usar um QUADRADO em vez de círculo para diferenciar claramente dos marcadores de origem/destino
+                  path: google.maps.SymbolPath.SQUARE,
+                  fillColor: '#16A34A', // Verde mais vivo
                   fillOpacity: 1,
                   strokeColor: '#FFFFFF',
-                  strokeWeight: 2,
-                  scale: 11
+                  strokeWeight: 2.5,
+                  scale: 10
                 };
                 // Usar o símbolo $ como texto
                 labelText = "$";
