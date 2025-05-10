@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Location, PointOfInterest } from "@/lib/types";
 import { useRoutesPreferred } from "@/hooks/useRoutesPreferred";
 import { fetchTollsFromAilog } from "@/lib/ailogApi";
+import MapLayersControl from "./MapLayersControl";
 import { 
   formatCurrency, 
   formatDistance, 
@@ -1114,6 +1115,7 @@ export default function MapViewSimple({
     <div className="map-container" style={{ width: "100%", height: "100%" }}>
       {error && <div className="map-error">{error}</div>}
       <div ref={mapRef} style={{ width: "100%", height: "100%" }} />
+      {map && <MapLayersControl map={map} />}
     </div>
   );
 }
