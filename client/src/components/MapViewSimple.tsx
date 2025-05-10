@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Location, PointOfInterest } from "@/lib/types";
 import { useRoutesPreferred } from "@/hooks/useRoutesPreferred";
-import { extractTollsFromRoute } from "@/lib/tollUtils";
-import MapControls from "./MapControls";
+import { extractTollsFromRoute } from "@/lib/mapUtils";
 
 interface MapViewProps {
   origin: Location | null;
@@ -38,78 +37,9 @@ export default function MapViewSimple({
   const [directionsRenderer, setDirectionsRenderer] = useState<google.maps.DirectionsRenderer | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [apiTollPoints, setApiTollPoints] = useState<PointOfInterest[]>([]);
-  const [mapType, setMapType] = useState<string>("roadmap");
-  const [streetViewPanorama, setStreetViewPanorama] = useState<google.maps.StreetViewPanorama | null>(null);
-  const [isStreetViewActive, setIsStreetViewActive] = useState<boolean>(false);
   
   // Usar o hook para trabalhar com a API Routes Preferred
   const { calculateRouteSegments } = useRoutesPreferred(); // Não usamos mais extractTollPoints
-  
-  // Função para determinar a cor do marcador de pedágio com base no tipo
-  const getTollColor = (type: string, isFromAPI: boolean): string => {
-    if (type.includes('api-toll')) return "#FF9800"; // Pedágio da API (laranja)
-    if (type.includes('important-toll')) return "#FF5722"; // Pedágio importante (laranja escuro)
-    if (type.includes('special-toll')) return "#F44336"; // Pedágio especial (vermelho)
-    if (type.includes('highway-toll')) return "#FFC107"; // Pedágio de rodovia (amarelo)
-    if (type.includes('toll')) return "#8BC34A"; // Outros pedágios (verde)
-    return "#9C27B0"; // Outros POIs (roxo)
-  };
-  
-  // Função para alternar o Street View
-  const toggleStreetView = useCallback(() => {
-    if (!map || !mapRef.current) return;
-    
-    if (isStreetViewActive) {
-      // Desativar Street View
-      if (streetViewPanorama) {
-        streetViewPanorama.setVisible(false);
-      }
-      setIsStreetViewActive(false);
-      
-      // Restaurar o mapa normal
-      map.setMapTypeId(mapType as google.maps.MapTypeId);
-    } else {
-      // Ativar Street View
-      try {
-        // Usar a posição atual ou a origem como posição inicial do Street View
-        const position = map.getCenter();
-        
-        // Criar serviço de Street View
-        const streetViewService = new google.maps.StreetViewService();
-        
-        streetViewService.getPanorama({
-          location: position,
-          radius: 50,
-          source: google.maps.StreetViewSource.OUTDOOR
-        }, (data, status) => {
-          if (status === google.maps.StreetViewStatus.OK && mapRef.current) {
-            // Criar panorama de Street View
-            const panorama = new google.maps.StreetViewPanorama(
-              mapRef.current,
-              {
-                position: data.location!.latLng!,
-                pov: {
-                  heading: 270,
-                  pitch: 0
-                },
-                visible: true,
-                zoom: 1
-              }
-            );
-            
-            map.setStreetView(panorama);
-            setStreetViewPanorama(panorama);
-            setIsStreetViewActive(true);
-          } else {
-            console.error("Street View não disponível nesta localização");
-            alert("Street View não disponível nesta localização. Tente outro ponto no mapa.");
-          }
-        });
-      } catch (error) {
-        console.error("Erro ao iniciar Street View:", error);
-      }
-    }
-  }, [map, mapType, isStreetViewActive, streetViewPanorama]);
 
   // Inicializar o mapa quando o componente montar
   useEffect(() => {
@@ -121,16 +51,16 @@ export default function MapViewSimple({
         const mapOptions = {
           center: { lat: -22.36752, lng: -48.38016 }, // Dois Córregos-SP
           zoom: 12,
-          mapTypeId: mapType === "roadmap" ? google.maps.MapTypeId.ROADMAP :
-                    mapType === "satellite" ? google.maps.MapTypeId.SATELLITE :
-                    mapType === "hybrid" ? google.maps.MapTypeId.HYBRID :
-                    google.maps.MapTypeId.TERRAIN,
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
           fullscreenControl: true,
           scrollwheel: true,
           gestureHandling: "greedy",
-          // Desabilitar controles nativos que vamos substituir com nossos próprios widgets
-          mapTypeControl: false, // Desativamos para usar nosso próprio widget
-          zoomControl: false, // Usaremos nossos próprios controles de zoom
+          mapTypeControl: true,
+          mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+            position: google.maps.ControlPosition.TOP_RIGHT,
+          },
+          zoomControl: true,
           streetViewControl: true
         };
 
@@ -390,7 +320,7 @@ export default function MapViewSimple({
                     title: poi.name,
                     icon: {
                       path: google.maps.SymbolPath.CIRCLE,
-                      fillColor: getTollColor(poi.type, isFromAPI), // Cores diferentes para diferentes tipos de pedágios
+                      fillColor: poi.type === 'toll' ? (isFromAPI ? "#FF9800" : "#FFC107") : "#F44336", // Cores diferentes para pedágios da API vs. predefinidos
                       fillOpacity: 1,
                       strokeWeight: 2,
                       strokeColor: "#000000",
@@ -475,15 +405,13 @@ export default function MapViewSimple({
               path: google.maps.SymbolPath.CIRCLE,
               fillColor: "#4285F4",
               fillOpacity: 1,
-              strokeWeight: 2,
+              strokeWeight: 1,
               strokeColor: "#FFFFFF",
-              scale: 12
+              scale: 10
             },
             label: {
-              text: "0",
-              color: "#FFFFFF",
-              fontSize: "11px",
-              fontWeight: "bold"
+              text: "A",
+              color: "#FFFFFF"
             }
           });
           
@@ -528,15 +456,13 @@ export default function MapViewSimple({
               path: google.maps.SymbolPath.CIRCLE,
               fillColor: "#DB4437",
               fillOpacity: 1,
-              strokeWeight: 2,
+              strokeWeight: 1,
               strokeColor: "#FFFFFF",
-              scale: 12
+              scale: 10
             },
             label: {
               text: `${index + 1}`,
-              color: "#FFFFFF",
-              fontSize: "11px",
-              fontWeight: "bold"
+              color: "#FFFFFF"
             }
           });
           
@@ -638,50 +564,6 @@ export default function MapViewSimple({
     }
   }, [map, directionsRenderer, origin, calculatedRoute, pointsOfInterest]);
 
-  // Funções de controle do mapa
-  const handleZoomIn = useCallback(() => {
-    if (map) {
-      const currentZoom = map.getZoom() || 0;
-      map.setZoom(currentZoom + 1);
-    }
-  }, [map]);
-
-  const handleZoomOut = useCallback(() => {
-    if (map) {
-      const currentZoom = map.getZoom() || 0;
-      map.setZoom(Math.max(1, currentZoom - 1));
-    }
-  }, [map]);
-
-  const handleToggleStreetView = useCallback(() => {
-    if (map) {
-      const panorama = map.getStreetView();
-      const position = map.getCenter();
-      
-      if (panorama) {
-        if (panorama.getVisible()) {
-          panorama.setVisible(false);
-        } else {
-          panorama.setPosition(position);
-          panorama.setVisible(true);
-        }
-      }
-    }
-  }, [map]);
-
-  const handleChangeMapType = useCallback((type: string) => {
-    setMapType(type);
-    
-    if (map) {
-      map.setMapTypeId(
-        type === "roadmap" ? google.maps.MapTypeId.ROADMAP :
-        type === "satellite" ? google.maps.MapTypeId.SATELLITE :
-        type === "hybrid" ? google.maps.MapTypeId.HYBRID :
-        google.maps.MapTypeId.TERRAIN
-      );
-    }
-  }, [map]);
-
   return (
     <div className="flex-1 relative h-full">
       <div 
@@ -689,17 +571,6 @@ export default function MapViewSimple({
         className="h-full w-full rounded-xl overflow-hidden shadow-xl border border-blue-100" 
         style={{ minHeight: '500px' }}
       >
-        {/* Componente de controles do mapa */}
-        {map && (
-          <MapControls
-            onZoomIn={handleZoomIn}
-            onZoomOut={handleZoomOut}
-            onToggleStreetView={handleToggleStreetView}
-            onChangeMapType={handleChangeMapType}
-            mapType={mapType}
-          />
-        )}
-        
         {/* Mostrar mensagem de erro se necessário */}
         {error && (
           <div className="absolute inset-0 flex items-center justify-center flex-col bg-white bg-opacity-90 p-4 z-50">

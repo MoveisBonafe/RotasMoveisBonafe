@@ -19,12 +19,12 @@ export interface VehicleType {
 export interface PointOfInterest {
   id: number;
   name: string;
-  type: string; // Ampliando para aceitar qualquer tipo de POI
+  type: 'toll' | 'weighing_station';
   lat: string;
   lng: string;
-  cost?: number | null; // in cents, aceitando null ou undefined
-  restrictions?: string | null;
-  roadName?: string | null;
+  cost?: number; // in cents
+  restrictions?: string;
+  roadName?: string;
 }
 
 export interface CityEvent {
@@ -71,7 +71,7 @@ export interface MapOptions {
 
 export type TabType = 'summary' | 'events' | 'restrictions' | 'report';
 
-export type IconType = string; // Tipo amplo para aceitar qualquer string
+export type IconType = 'toll' | 'weighing_station' | 'origin' | 'destination' | 'waypoint';
 
 export interface ParsedCepFile {
   locations: Array<{

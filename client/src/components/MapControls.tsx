@@ -1,12 +1,3 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { 
-  MapPin, 
-  ZoomIn, 
-  ZoomOut, 
-  Layers,
-  X
-} from 'lucide-react';
-
 interface MapControlsProps {
   onZoomIn: () => void;
   onZoomOut: () => void;
@@ -15,6 +6,14 @@ interface MapControlsProps {
   mapType: string;
 }
 
+// Define map type constants to avoid direct references to google.maps
+const MAP_TYPES = {
+  ROADMAP: "roadmap",
+  SATELLITE: "satellite", 
+  HYBRID: "hybrid",
+  TERRAIN: "terrain"
+};
+
 export default function MapControls({
   onZoomIn,
   onZoomOut,
@@ -22,140 +21,97 @@ export default function MapControls({
   onChangeMapType,
   mapType
 }: MapControlsProps) {
-  const [layersOpen, setLayersOpen] = useState(false);
-  const layersRef = useRef<HTMLDivElement>(null);
-  
-  const toggleLayers = () => {
-    setLayersOpen(!layersOpen);
-  };
-
-  // Fechar o painel de camadas quando clicar fora dele
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (layersRef.current && !layersRef.current.contains(event.target as Node)) {
-        setLayersOpen(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-  
   return (
-    <div className="absolute right-4 top-4 flex flex-col gap-2 z-10">
-      {/* Controles principais */}
-      <div className="bg-white rounded-lg shadow-lg p-1 border border-gray-200">
+    <>
+      {/* Zoom Controls */}
+      <div className="absolute top-4 right-4 zoom-controls flex flex-col bg-white rounded-md shadow-md overflow-hidden">
         <button 
-          onClick={onZoomIn} 
-          className="p-2 rounded-md hover:bg-gray-100 transition-colors"
-          title="Aumentar zoom"
+          className="p-2 hover:bg-gray-100 focus:outline-none"
+          onClick={onZoomIn}
         >
-          <ZoomIn size={18} />
+          <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+          </svg>
         </button>
+        <div className="border-t border-gray-200"></div>
         <button 
+          className="p-2 hover:bg-gray-100 focus:outline-none"
           onClick={onZoomOut}
-          className="p-2 rounded-md hover:bg-gray-100 transition-colors" 
-          title="Diminuir zoom"
         >
-          <ZoomOut size={18} />
-        </button>
-        <button 
-          onClick={() => window.google?.maps?.StreetViewService && onToggleStreetView()}
-          className="p-2 rounded-md hover:bg-gray-100 transition-colors" 
-          title="Street View"
-        >
-          <MapPin size={18} />
-        </button>
-        <button 
-          onClick={toggleLayers}
-          className={`p-2 rounded-md transition-colors ${layersOpen ? 'bg-blue-100' : 'hover:bg-gray-100'}`}
-          title="Camadas do Mapa"
-        >
-          <Layers size={18} />
+          <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+          </svg>
         </button>
       </div>
 
-      {/* Widget de minimapa para tipos de mapa - exibido apenas quando layersOpen é true */}
-      {layersOpen && (
-        <div 
-          ref={layersRef}
-          className="bg-white rounded-lg shadow-lg p-2 border border-gray-200 w-60"
-        >
-          <div className="flex justify-between items-center mb-2 border-b pb-1">
-            <h3 className="text-sm font-medium">Estilo do mapa</h3>
-            <button 
-              onClick={() => setLayersOpen(false)}
-              className="p-1 rounded hover:bg-gray-100"
-            >
-              <X size={14} />
-            </button>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={() => onChangeMapType('roadmap')}
-              className={`flex flex-col items-center rounded p-1 transition-all ${
-                mapType === 'roadmap' ? 'ring-2 ring-blue-500' : 'hover:bg-gray-100'
-              }`}
-              title="Mapa"
-            >
-              <div className="h-12 w-full rounded overflow-hidden border border-gray-300">
-                <div className="h-full w-full bg-[#e5e3df] flex items-center justify-center">
-                  <div className="w-8 h-1 bg-white"></div>
-                </div>
-              </div>
-              <span className="text-xs mt-1">Mapa</span>
-            </button>
-            
-            <button
-              onClick={() => onChangeMapType('satellite')}
-              className={`flex flex-col items-center rounded p-1 transition-all ${
-                mapType === 'satellite' ? 'ring-2 ring-blue-500' : 'hover:bg-gray-100'
-              }`}
-              title="Satélite"
-            >
-              <div className="h-12 w-full rounded overflow-hidden border border-gray-300">
-                <div className="h-full w-full bg-[#143d6b] flex items-center justify-center">
-                  <div className="w-full h-full bg-[#1f5c99] opacity-70"></div>
-                </div>
-              </div>
-              <span className="text-xs mt-1">Satélite</span>
-            </button>
-            
-            <button
-              onClick={() => onChangeMapType('hybrid')}
-              className={`flex flex-col items-center rounded p-1 transition-all ${
-                mapType === 'hybrid' ? 'ring-2 ring-blue-500' : 'hover:bg-gray-100'
-              }`}
-              title="Híbrido"
-            >
-              <div className="h-12 w-full rounded overflow-hidden border border-gray-300">
-                <div className="h-full w-full bg-[#143d6b] flex items-center justify-center">
-                  <div className="w-8 h-1 bg-white"></div>
-                </div>
-              </div>
-              <span className="text-xs mt-1">Híbrido</span>
-            </button>
-            
-            <button
-              onClick={() => onChangeMapType('terrain')}
-              className={`flex flex-col items-center rounded p-1 transition-all ${
-                mapType === 'terrain' ? 'ring-2 ring-blue-500' : 'hover:bg-gray-100'
-              }`}
-              title="Relevo"
-            >
-              <div className="h-12 w-full rounded overflow-hidden border border-gray-300">
-                <div className="h-full w-full bg-[#e5e3df] flex items-center justify-center">
-                  <div className="w-8 h-3 bg-[#c4deb3]"></div>
-                </div>
-              </div>
-              <span className="text-xs mt-1">Relevo</span>
-            </button>
-          </div>
+      {/* Street View Toggle */}
+      <div 
+        className="absolute top-20 right-4 p-2 bg-white rounded-md shadow-md cursor-pointer hover:bg-gray-50"
+        onClick={onToggleStreetView}
+        title="Street View"
+      >
+        <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+          <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+        </svg>
+      </div>
+
+      {/* Map Type Selector */}
+      <div className="absolute bottom-4 left-4 bg-white rounded-md shadow-md p-2">
+        <div className="text-sm font-medium mb-1 px-2">Camadas</div>
+        <div className="flex flex-col space-y-1">
+          <label className="flex items-center px-2 py-1 hover:bg-gray-100 rounded cursor-pointer">
+            <input 
+              type="radio" 
+              name="map-type" 
+              value="roadmap" 
+              checked={mapType === MAP_TYPES.ROADMAP}
+              onChange={() => onChangeMapType(MAP_TYPES.ROADMAP)}
+              className="mr-2" 
+            />
+            <span className="text-sm">Mapa</span>
+          </label>
+          <label className="flex items-center px-2 py-1 hover:bg-gray-100 rounded cursor-pointer">
+            <input 
+              type="radio" 
+              name="map-type" 
+              value="satellite" 
+              checked={mapType === MAP_TYPES.SATELLITE}
+              onChange={() => onChangeMapType(MAP_TYPES.SATELLITE)}
+              className="mr-2" 
+            />
+            <span className="text-sm">Satélite</span>
+          </label>
+          <label className="flex items-center px-2 py-1 hover:bg-gray-100 rounded cursor-pointer">
+            <input 
+              type="radio" 
+              name="map-type" 
+              value="hybrid" 
+              checked={mapType === MAP_TYPES.HYBRID}
+              onChange={() => onChangeMapType(MAP_TYPES.HYBRID)}
+              className="mr-2" 
+            />
+            <span className="text-sm">Híbrido</span>
+          </label>
+          <label className="flex items-center px-2 py-1 hover:bg-gray-100 rounded cursor-pointer">
+            <input 
+              type="radio" 
+              name="map-type" 
+              value="terrain" 
+              checked={mapType === MAP_TYPES.TERRAIN}
+              onChange={() => onChangeMapType(MAP_TYPES.TERRAIN)}
+              className="mr-2" 
+            />
+            <span className="text-sm">Terreno</span>
+          </label>
         </div>
-      )}
-    </div>
+      </div>
+
+      {/* Scale */}
+      <div className="absolute bottom-4 right-4 flex items-center bg-white px-2 py-1 rounded-md shadow-md">
+        <span className="text-xs text-gray-500 mr-1">100 m</span>
+        <div className="w-16 h-1 bg-black"></div>
+      </div>
+    </>
   );
 }
