@@ -31,6 +31,7 @@ export interface IStorage {
   // Points of interest methods
   getAllPointsOfInterest(): Promise<PointOfInterest[]>;
   getPointsOfInterestByType(type: string): Promise<PointOfInterest[]>;
+  addPointOfInterest(poi: Omit<PointOfInterest, 'id'>): Promise<PointOfInterest>;
   seedPointsOfInterest(): Promise<PointOfInterest[]>;
   
   // City events methods
