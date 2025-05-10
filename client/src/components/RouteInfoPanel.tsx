@@ -233,7 +233,7 @@ export default function RouteInfoPanel({
                       </div>
                       <div className="text-right">
                         <div className="text-gray-500">Total:</div>
-                        <div className="font-bold text-primary">{formatCurrency(routeInfo.tollCost + routeInfo.fuelCost)}</div>
+                        <div className="font-bold text-primary">{formatCurrency(routeInfo.totalCost)}</div>
                       </div>
                     </div>
                     {vehicleType && vehicleType.type !== 'car' && (
