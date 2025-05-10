@@ -249,29 +249,38 @@ export default function MapViewSimple({
               newInfoWindows.push(infoWindow);
             }
             
-            // 2. Adicionar marcadores para cada waypoint (copiando a mesma ordem da interface)
+            // 2. Adicionar marcadores para cada waypoint (numerados conforme sequência da rota)
             if (waypoints && waypoints.length > 0) {
-              // Usar os waypoints na mesma ordem que foram fornecidos
-              // Isso garantirá que a numeração corresponde à sequência exibida no painel
+              // Criar array com pontos na ordem correta da rota conforme calculado pela API
+              const orderedWaypoints = [...waypoints];
               
-              // Identificar a ordem atual dos pontos pela lista de waypoints
-              const finalIndex = waypoints.length - 1;
-              
-              // Marcar origem como 0 e para os demais pontos usar índices a partir de 1
-              waypoints.forEach((point, index) => {
-                // Cada ponto terá etiqueta de 1 a N (origem já é 0)
-                const displayNumber = (index + 1).toString();
+              // Se temos uma ordem otimizada da API, reorganizar os waypoints
+              if (waypointOrder.length > 0 && waypointOrder.length === waypoints.length - 1) {
+                // A API retorna a ordem sem incluir o destino final, pois ele já está separado
+                // Reorganizamos todos exceto o último
+                const tempPoints = [...waypoints];
+                tempPoints.pop(); // Remover o último (destino)
                 
+                // Reorganizar pontos intermediários
+                for (let i = 0; i < waypointOrder.length; i++) {
+                  orderedWaypoints[i] = tempPoints[waypointOrder[i]];
+                }
+                
+                // Manter o último ponto como destino final
+                orderedWaypoints[orderedWaypoints.length - 1] = waypoints[waypoints.length - 1];
+              }
+                
+              orderedWaypoints.forEach((point, index) => {
                 const waypointMarker = new window.google.maps.Marker({
                   position: { lat: parseFloat(point.lat), lng: parseFloat(point.lng) },
                   map: map,
-                  title: point.name || `Destino ${displayNumber}`,
+                  title: point.name || `Destino ${index + 1}`,
                   icon: {
                     url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
                   },
                   label: {
-                    text: displayNumber,
-                    color: "#FFFFFF", 
+                    text: (index + 1).toString(),
+                    color: "#FFFFFF",
                     fontSize: "14px",
                     fontWeight: "bold"
                   },
@@ -471,14 +480,14 @@ export default function MapViewSimple({
             
             // Informar o componente pai sobre a rota calculada
             if (onRouteCalculated) {
-              // Mantemos a sequência original para manter a numeração consistente
-              // Não passamos uma sequência reordenada, vamos usar a original
+              // Se usamos waypoints ordenados, passamos essa ordem atualizada para o componente pai
+              const orderedSequence = [origin, ...orderedWaypoints];
               
               onRouteCalculated({
                 ...result,
                 tollPoints: tollPoints,
-                googleSource: true
-                // Não incluímos sequência reordenada para garantir que os números permaneçam consistentes
+                googleSource: true,
+                orderedSequence: orderedSequence // Incluir a sequência ordenada
               });
             }
             
