@@ -118,9 +118,40 @@ export default function RouteInfoPanel({
       && vehicleType?.type.includes('truck') // Só buscar restrições para caminhões
   });
   
-  // Separar os pontos de interesse por tipo
-  const tollsOnRoute = poisAlongRoute.filter(poi => poi.type === 'toll');
-  const balancesOnRoute = poisAlongRoute.filter(poi => poi.type === 'weighing_station');
+  // Função auxiliar para detectar POIs duplicados
+  function isDuplicatePOI(poi1: PointOfInterest, poi2: PointOfInterest): boolean {
+    // Se for o mesmo ID ou mesmo nome, é duplicado
+    if (poi1.id === poi2.id || poi1.name === poi2.name) return true;
+    
+    // Verificar duplicação específica para balanças (km 150 e Luís Antônio são a mesma)
+    if ((poi1.name.includes("Luís Antônio") && poi2.name.includes("km 150")) ||
+        (poi1.name.includes("km 150") && poi2.name.includes("Luís Antônio"))) {
+      return true;
+    }
+    
+    // Verificar duplicação específica para pedágios de SP-255
+    if (poi1.type === 'toll' && poi2.type === 'toll' &&
+        poi1.roadName === poi2.roadName &&
+        Math.abs(Number(poi1.lat) - Number(poi2.lat)) < 0.01 &&
+        Math.abs(Number(poi1.lng) - Number(poi2.lng)) < 0.01) {
+      return true;
+    }
+    
+    return false;
+  }
+  
+  // Remover duplicatas dos POIs
+  const uniquePOIs: PointOfInterest[] = [];
+  poisAlongRoute.forEach(poi => {
+    const isDuplicate = uniquePOIs.some(existingPoi => isDuplicatePOI(existingPoi, poi));
+    if (!isDuplicate) {
+      uniquePOIs.push(poi);
+    }
+  });
+  
+  // Separar os pontos de interesse DEDUPLUCADOS por tipo
+  const tollsOnRoute = uniquePOIs.filter(poi => poi.type === 'toll');
+  const balancesOnRoute = uniquePOIs.filter(poi => poi.type === 'weighing_station');
   // Não temos áreas de descanso implementadas ainda
   const restAreasOnRoute: typeof poisAlongRoute = [];
   
