@@ -1009,11 +1009,11 @@ export default function MapViewSimple({
                 // Pedágio - Símbolo $ em fundo verde
                 poiIcon = {
                   path: google.maps.SymbolPath.CIRCLE,
-                  fillColor: '#38B000', // Verde vivo mais brilhante
+                  fillColor: '#22C55E', // Verde esmeralda vibrante
                   fillOpacity: 1,
                   strokeColor: '#FFFFFF',
-                  strokeWeight: 1.5,
-                  scale: 10
+                  strokeWeight: 2,
+                  scale: 11
                 };
                 // Usar o símbolo $ como texto
                 labelText = "$";
@@ -1032,7 +1032,7 @@ export default function MapViewSimple({
                 label: labelText ? {
                   text: labelText,
                   color: "#FFFFFF",
-                  fontSize: poi.type === "toll" ? "14px" : "12px", // Tamanho maior para o símbolo $
+                  fontSize: poi.type === "toll" ? "16px" : "12px", // Tamanho maior para o símbolo $
                   fontWeight: "bold",
                   className: "marker-label-centered"
                 } : null,
