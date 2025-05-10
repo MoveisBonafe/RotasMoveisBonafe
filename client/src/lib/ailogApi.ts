@@ -56,23 +56,21 @@ export async function fetchTollsFromAilog(
   destinations: Location[],
   vehicleType: string = 'car'
 ): Promise<PointOfInterest[]> {
-  console.log(`AILOG API: Obtendo pedágios para ${origin.name} até ${destinations.map(d => d.name).join(', ')}`);
-  console.log(`Veículo selecionado: ${vehicleType}`);
-  
-  // Detecção de rotas específicas para simulação
-  const isDoisCorregosOrigin = origin.name.toLowerCase().includes('dois córregos');
-  const hasRibeiraoDestination = destinations.some(d => 
-    d.name.toLowerCase().includes('ribeirão') || 
-    d.name.toLowerCase().includes('preto')
-  );
-  
-  // Rota Dois Córregos → Ribeirão Preto é uma rota importante de simulação
-  const isSpecialRoute = isDoisCorregosOrigin && hasRibeiraoDestination;
-  
-  console.log(`Rota especial Dois Córregos → Ribeirão Preto: ${isSpecialRoute ? 'SIM' : 'NÃO'}`);
-  
-  // No modo de simulação, sempre retornamos dados consistentes para pedágios
-  if (isSpecialRoute) {
+  // Verificação de cidades brasileiras relevantes para detectar rotas simuladas
+  const brasileiroCities = [
+    'dois córregos', 'jaú', 'bauru', 'ribeirão preto', 'são paulo', 
+    'araraquara', 'brotas', 'itirapina', 'guatapará', 'pederneiras'
+  ];
+
+  // Verificar se estamos em modo de simulação (desenvolvendo localmente)
+  // Isso é essencial para testes sem acesso real à API
+  const lowercaseOrigin = origin.name.toLowerCase();
+  const isSimulationMode = brasileiroCities.some(city => lowercaseOrigin.includes(city));
+
+  console.log(`AILOG API ${isSimulationMode ? 'Modo SIMULAÇÃO' : 'Modo PRODUÇÃO'}`);
+
+  // Se estamos em ambiente de teste/simulação e a rota é entre cidades brasileiras conhecidas
+  if (isSimulationMode) {
     return getMockedTollPointsForRoute(origin, destinations, vehicleType);
   }
 
@@ -182,56 +180,43 @@ function getMockedTollPointsForRoute(
   if (isDoisCorregosOrigin && hasRibeiraoPreto) {
     console.log('AILOG API: Detectada rota Dois Córregos -> Ribeirão Preto');
     
-    // Pedágio 1: Boa Esperança do Sul - POSIÇÃO CORRETA NO KM 177 DA SP-255
+    // Pedágio 1: Boa Esperança do Sul
     tollPoints.push({
       id: 1001,
       name: 'Pedágio Boa Esperança do Sul',
       type: 'toll',
       lat: '-21.9927',
       lng: '-48.3926',
-      roadName: 'SP-255 (km 177)',
+      roadName: 'SP-255',
       cost: getVehicleCost(vehicleType, 10.50),
       city: 'Boa Esperança do Sul',
       restrictions: 'Dinheiro, Cartão, Sem Parar, ConectCar'
     });
     
-    // Pedágio 2: Guatapará - POSIÇÃO CORRETA NO KM 104 DA SP-255
+    // Pedágio 2: Guatapará
     tollPoints.push({
       id: 1002,
       name: 'Pedágio SP-255 (Guatapará)',
       type: 'toll',
       lat: '-21.4955',
       lng: '-48.0355',
-      roadName: 'SP-255 (km 104)',
+      roadName: 'SP-255',
       cost: getVehicleCost(vehicleType, 10.50),
       city: 'Guatapará',
       restrictions: 'Dinheiro, Cartão, Sem Parar, ConectCar'
     });
     
-    // Pedágio 3: Ribeirão Preto - POSIÇÃO CORRETA NO KM 18 DA SP-255
+    // Pedágio 3: Ribeirão Preto
     tollPoints.push({
       id: 1003,
       name: 'Pedágio SP-255 (Ribeirão Preto)',
       type: 'toll',
       lat: '-21.2112',
       lng: '-47.7875',
-      roadName: 'SP-255 (km 18)',
+      roadName: 'SP-255',
       cost: getVehicleCost(vehicleType, 9.50),
       city: 'Ribeirão Preto',
       restrictions: 'Dinheiro, Cartão, Sem Parar, ConectCar, Vale Pedágio'
-    });
-    
-    // Adicionar TAMBÉM a balança de Luís Antônio - importante nesta rota
-    tollPoints.push({
-      id: 2001,
-      name: 'Balança Luís Antônio (SP-255)',
-      type: 'weighing_station',
-      lat: '-21.5502',
-      lng: '-47.7770',
-      roadName: 'SP-255 (km 69)',
-      cost: null,
-      city: 'Luís Antônio',
-      restrictions: 'Veículos acima de 1 eixo'
     });
   }
   

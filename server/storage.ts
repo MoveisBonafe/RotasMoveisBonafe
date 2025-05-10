@@ -31,7 +31,6 @@ export interface IStorage {
   // Points of interest methods
   getAllPointsOfInterest(): Promise<PointOfInterest[]>;
   getPointsOfInterestByType(type: string): Promise<PointOfInterest[]>;
-  addPointOfInterest(poi: Omit<PointOfInterest, 'id'>): Promise<PointOfInterest>;
   seedPointsOfInterest(): Promise<PointOfInterest[]>;
   
   // City events methods
@@ -297,13 +296,6 @@ export class MemStorage implements IStorage {
     });
     
     return Array.from(this.pointsOfInterest.values());
-  }
-  
-  async addPointOfInterest(poi: Omit<PointOfInterest, 'id'>): Promise<PointOfInterest> {
-    const id = this.poiId++;
-    const newPoi: PointOfInterest = { ...poi, id };
-    this.pointsOfInterest.set(id, newPoi);
-    return newPoi;
   }
   
   // City events methods
