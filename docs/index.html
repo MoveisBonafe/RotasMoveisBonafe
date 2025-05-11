@@ -20,7 +20,7 @@
       line-height: 1.6;
       color: #333;
       background-color: #f9fafb;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
@@ -59,13 +59,14 @@
       display: flex;
       flex-direction: column;
       padding: 1rem;
-      overflow: hidden;
+      overflow: auto;
     }
     
     .app-container {
       display: flex;
       flex: 1;
-      overflow: hidden;
+      min-height: 600px;
+      margin-bottom: 1rem;
     }
     
     .sidebar {
@@ -77,7 +78,14 @@
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       overflow-y: auto;
       height: 100%;
-      max-height: 80vh; /* Limitar altura em telas grandes */
+      max-height: 600px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-scroll {
+      overflow-y: auto;
+      flex: 1;
     }
     
     .sidebar h2 {
@@ -89,6 +97,7 @@
     
     .location-list {
       list-style: none;
+      margin-bottom: 1rem;
     }
     
     .location-item {
@@ -149,7 +158,7 @@
     
     /* Estilos para filtros de data */
     .date-filter {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       padding: 0.75rem;
       background-color: #f3f4f6;
       border-radius: 0.25rem;
@@ -176,7 +185,7 @@
     
     /* Estilos para adicionar destino */
     .add-location, .import-ceps {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       padding: 0.75rem;
       background-color: #f3f4f6;
       border-radius: 0.25rem;
@@ -251,12 +260,8 @@
     }
     
     .optimize-container {
-      margin-top: 1rem;
-      text-align: center;
-    }
-    
-    .optimize-container {
-      margin-top: 1.5rem;
+      margin-top: auto;
+      padding-top: 1rem;
       text-align: center;
     }
     
@@ -294,6 +299,7 @@
       background-color: #ffffff;
       display: flex;
       flex-direction: column;
+      position: relative;
       height: 100%;
     }
     
@@ -341,13 +347,6 @@
       color: white;
     }
     
-    .map-iframe {
-      flex: 1;
-      border: none;
-      width: 100%;
-      height: 100%;
-    }
-    
     /* Ajustes para o botão de Street View */
     .pegman-container {
       position: absolute;
@@ -366,7 +365,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
+      cursor: grab;
       transition: all 0.2s;
     }
     
@@ -380,9 +379,15 @@
       height: 24px;
     }
     
+    .map-iframe {
+      flex: 1;
+      border: none;
+      width: 100%;
+      height: 100%;
+    }
+    
     /* Abas de resumo/relatório abaixo do mapa */
     .route-tabs {
-      margin-top: 1rem;
       background-color: #ffffff;
       border-radius: 0.5rem;
       overflow: hidden;
@@ -595,6 +600,13 @@
       color: #6b7280;
     }
     
+    .empty-message {
+      padding: 1rem;
+      text-align: center;
+      color: #6b7280;
+      font-style: italic;
+    }
+    
     /* Responsive styles */
     @media (max-width: 768px) {
       .app-container {
@@ -605,7 +617,7 @@
         width: 100%;
         margin-right: 0;
         margin-bottom: 1rem;
-        max-height: 300px;
+        max-height: 400px;
       }
       
       .map-container {
@@ -613,6 +625,12 @@
       }
       
       .route-summary {
+        grid-template-columns: 1fr;
+      }
+      
+      .attention-points,
+      .events-list,
+      .restrictions-list {
         grid-template-columns: 1fr;
       }
     }
@@ -648,54 +666,56 @@
           </div>
         </div>
         
-        <!-- Adicionar destino -->
-        <div class="add-location">
-          <h3>Adicionar Destino</h3>
-          <div class="location-search">
-            <input 
-              type="text" 
-              id="location-search-input" 
-              placeholder="Digite um endereço ou CEP..." 
-              class="location-input">
-            <button id="add-location-btn" class="action-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="16"></line>
-                <line x1="8" y1="12" x2="16" y2="12"></line>
-              </svg>
-              Adicionar
-            </button>
-          </div>
-        </div>
-        
-        <!-- Importar CEPs -->
-        <div class="import-ceps">
-          <h3>Importar Endereços</h3>
-          <div class="file-upload">
-            <label for="file-upload" class="file-label">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="17 8 12 3 7 8"></polyline>
-                <line x1="12" y1="3" x2="12" y2="15"></line>
-              </svg>
-              Selecionar arquivo
-            </label>
-            <input type="file" id="file-upload" accept=".txt,.csv">
-          </div>
-          <p class="file-info">Formato: CEP,nome (txt ou csv)</p>
-        </div>
-        
-        <h3>Lista de Destinos</h3>
-        <ul class="location-list">
-          <li class="location-item origin">
-            <div class="location-marker" style="background-color: #2563eb;">A</div>
-            <div class="location-info">
-              <div class="location-name">Dois Córregos</div>
-              <div class="location-address">Dois Córregos, SP, Brasil</div>
+        <div class="sidebar-scroll">
+          <!-- Adicionar destino -->
+          <div class="add-location">
+            <h3>Adicionar Destino</h3>
+            <div class="location-search">
+              <input 
+                type="text" 
+                id="location-search-input" 
+                placeholder="Digite um endereço ou CEP..." 
+                class="location-input">
+              <button id="add-location-btn" class="action-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="16"></line>
+                  <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+                Adicionar
+              </button>
             </div>
-          </li>
-          <!-- Outros destinos serão adicionados aqui pelo usuário -->
-        </ul>
+          </div>
+          
+          <!-- Importar CEPs -->
+          <div class="import-ceps">
+            <h3>Importar Endereços</h3>
+            <div class="file-upload">
+              <label for="file-upload" class="file-label">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                Selecionar arquivo
+              </label>
+              <input type="file" id="file-upload" accept=".txt,.csv">
+            </div>
+            <p class="file-info">Formato: CEP,nome (txt ou csv)</p>
+          </div>
+          
+          <h3>Lista de Destinos</h3>
+          <ul class="location-list" id="location-list">
+            <li class="location-item origin">
+              <div class="location-marker" style="background-color: #2563eb;">A</div>
+              <div class="location-info">
+                <div class="location-name">Dois Córregos</div>
+                <div class="location-address">Dois Córregos, SP, Brasil</div>
+              </div>
+            </li>
+            <!-- Outros destinos serão adicionados aqui pelo usuário -->
+          </ul>
+        </div>
         
         <!-- Botão de otimização de rota -->
         <div class="optimize-container">
@@ -732,7 +752,7 @@
         
         <!-- Botão PegMan (Street View) -->
         <div class="pegman-container">
-          <button class="pegman-btn" id="pegman-btn" title="Arraste para o mapa para ativar Street View">
+          <button class="pegman-btn" id="pegman-btn" title="Arraste para o mapa para ativar Street View" draggable="true">
             <svg class="pegman-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4285F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="7" r="4"></circle>
               <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -743,14 +763,16 @@
         <!-- Iframe do Google Maps com ponto de origem e opções melhoradas -->
         <iframe 
           class="map-iframe"
-          src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&q=-22.3673,-48.3823&zoom=10&maptype=roadmap&scrollwheel=true"
-          allowfullscreen>
+          id="map-iframe"
+          src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&q=-22.3673,-48.3823&center=-22.3673,-48.3823&zoom=10&maptype=roadmap"
+          allowfullscreen
+          referrerpolicy="no-referrer-when-downgrade">
         </iframe>
       </div>
     </div>
     
     <!-- Painel de informações da rota (abaixo do mapa) -->
-    <div class="route-tabs" id="route-tabs">
+    <div class="route-tabs" id="route-tabs" style="display: none;">
       <div class="tabs-header">
         <button class="tab-btn active" data-tab="summary">Resumo da Rota</button>
         <button class="tab-btn" data-tab="report">Relatório</button>
@@ -760,19 +782,19 @@
         <div class="route-summary">
           <div class="summary-item">
             <div class="summary-label">Distância Total:</div>
-            <div class="summary-value">305 km</div>
+            <div class="summary-value" id="total-distance">0 km</div>
           </div>
           <div class="summary-item">
             <div class="summary-label">Tempo Estimado:</div>
-            <div class="summary-value">4h 15min</div>
+            <div class="summary-value" id="estimated-time">0h 0min</div>
           </div>
           <div class="summary-item">
             <div class="summary-label">Pedágios:</div>
-            <div class="summary-value">3</div>
+            <div class="summary-value" id="toll-count">0</div>
           </div>
           <div class="summary-item">
             <div class="summary-label">Balanças:</div>
-            <div class="summary-value">2</div>
+            <div class="summary-value" id="weighing-count">0</div>
           </div>
         </div>
       </div>
@@ -794,17 +816,8 @@
           <div class="route-points">
             <h4>Pontos de Atenção</h4>
             <div class="attention-points" id="attention-points">
-              <div class="attention-item">
-                <div class="attention-icon toll">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                  </svg>
-                </div>
-                <div class="attention-text">Pedágio SP-225 (Brotas)</div>
-              </div>
-              <!-- Outros pontos serão adicionados dinamicamente -->
+              <!-- Pontos de atenção serão adicionados dinamicamente -->
+              <div class="empty-message">Adicione destinos e calcule uma rota para ver os pontos de atenção.</div>
             </div>
           </div>
           
@@ -812,26 +825,8 @@
           <div class="city-events">
             <h4>Eventos nas Cidades</h4>
             <div class="events-list" id="events-list">
-              <div class="event-item">
-                <div class="event-title">Feira Agropecuária</div>
-                <div class="event-info">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                  </svg>
-                  15/05/2025 a 22/05/2025
-                </div>
-                <div class="event-info">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                    <circle cx="12" cy="10" r="3"></circle>
-                  </svg>
-                  Dois Córregos
-                </div>
-              </div>
-              <!-- Outros eventos serão adicionados dinamicamente -->
+              <!-- Eventos serão adicionados dinamicamente -->
+              <div class="empty-message">Adicione destinos e calcule uma rota para ver os eventos.</div>
             </div>
           </div>
           
@@ -839,11 +834,8 @@
           <div class="truck-restrictions">
             <h4>Restrições de Caminhões</h4>
             <div class="restrictions-list" id="restrictions-list">
-              <div class="restriction-item">
-                <div class="restriction-title">Restrição de Circulação - Acima de 2 eixos</div>
-                <div class="restriction-details">Dois Córregos - Centro - Seg a Sex 07:00-19:00</div>
-              </div>
-              <!-- Outras restrições serão adicionadas dinamicamente -->
+              <!-- Restrições serão adicionadas dinamicamente -->
+              <div class="empty-message">Adicione destinos e calcule uma rota para ver as restrições.</div>
             </div>
           </div>
         </div>
@@ -852,7 +844,7 @@
   </main>
 
   <script>
-    // Script para versão estática mais completa
+    // Script para versão estática completa
     document.addEventListener('DOMContentLoaded', function() {
       // Configuração da API Google Maps
       const apiKey = "AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U";
@@ -864,16 +856,14 @@
       const locationInput = document.getElementById('location-search-input');
       const addLocationBtn = document.getElementById('add-location-btn');
       const fileUpload = document.getElementById('file-upload');
-      const locationList = document.querySelector('.location-list');
-      const removeButtons = document.querySelectorAll('.remove-btn');
+      const locationList = document.getElementById('location-list');
       const startDateInput = document.getElementById('start-date');
       const endDateInput = document.getElementById('end-date');
       const tabButtons = document.querySelectorAll('.tab-btn');
       const tabContents = document.querySelectorAll('.tab-content');
       const routeTabs = document.getElementById('route-tabs');
-      
-      // Ocultar abas de rota inicialmente
-      routeTabs.style.display = 'none';
+      const mapIframe = document.getElementById('map-iframe');
+      const pegmanBtn = document.getElementById('pegman-btn');
       
       // Inicializar datas com valores padrão
       const today = new Date();
@@ -886,245 +876,78 @@
       endDateInput.value = nextWeekStr;
       
       // Contagem de locais adicionados
-      let locationCounter = 0; // Começando com 0 já que temos apenas a origem
+      let locationCounter = 0;
       
-      // Coordenadas dos locais iniciais
+      // Coordenadas dos locais
       const locations = [
         { id: 'origin', name: 'Dois Córregos', latlng: '-22.3673,-48.3823', isOrigin: true }
       ];
       
-      // Funções auxiliares
-      function buildDirectionsUrl() {
-        // Organizar waypoints
-        const origin = locations.find(l => l.isOrigin).latlng;
-        const destination = origin; // Rota circular, retorna à origem
-        
-        // Filtrar waypoints (não incluir origem)
-        const waypoints = locations
-          .filter(l => !l.isOrigin)
-          .map(l => l.latlng)
-          .join('|');
-        
-        return `https://www.google.com/maps/embed/v1/directions?key=${apiKey}&origin=${origin}&destination=${origin}&waypoints=${waypoints}&mode=driving&avoid=ferries`;
-      }
+      // Ponto de atencao modelos
+      const tollPoints = [
+        { name: 'Pedágio SP-225 (Brotas)', type: 'toll' },
+        { name: 'Pedágio SP-310 (Jaú)', type: 'toll' },
+        { name: 'Pedágio SP-330 (Ribeirão Preto)', type: 'toll' }
+      ];
       
-      function buildPlaceUrl() {
-        const origin = locations.find(l => l.isOrigin).latlng;
-        return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${origin}&zoom=10`;
-      }
+      const weighingPoints = [
+        { name: 'Balança Rod. Marechal Rondon (Bauru)', type: 'weighing' },
+        { name: 'Balança Rod. Anhanguera (Ribeirão Preto)', type: 'weighing' }
+      ];
       
-      function toggleTabs(show) {
-        routeTabs.style.display = show ? 'block' : 'none';
-      }
-      
-      function switchTab(tabId) {
-        tabButtons.forEach(btn => {
-          if (btn.getAttribute('data-tab') === tabId) {
-            btn.classList.add('active');
-          } else {
-            btn.classList.remove('active');
-          }
-        });
-        
-        tabContents.forEach(content => {
-          if (content.id === tabId + '-tab') {
-            content.classList.add('active');
-          } else {
-            content.classList.remove('active');
-          }
-        });
-      }
-      
-      function createLocationItem(name, address, id, isOrigin = false) {
-        const li = document.createElement('li');
-        li.className = 'location-item';
-        if (isOrigin) {
-          li.classList.add('origin');
+      // Eventos nas cidades
+      const cityEvents = [
+        { 
+          title: 'Feira Agropecuária', 
+          city: 'Dois Córregos',
+          startDate: '2025-05-15',
+          endDate: '2025-05-22'
+        },
+        { 
+          title: 'Festival de Inverno', 
+          city: 'Jaú',
+          startDate: '2025-06-10',
+          endDate: '2025-06-20'
+        },
+        { 
+          title: 'Exposição Industrial', 
+          city: 'Bauru',
+          startDate: '2025-05-05',
+          endDate: '2025-05-15'
+        },
+        { 
+          title: 'Festival de Música', 
+          city: 'Ribeirão Preto',
+          startDate: '2025-05-20',
+          endDate: '2025-05-25'
         }
-        
-        const marker = document.createElement('div');
-        marker.className = 'location-marker';
-        if (isOrigin) {
-          marker.style.backgroundColor = '#2563eb';
-          marker.textContent = 'A';
-        } else {
-          marker.textContent = id;
-        }
-        
-        const info = document.createElement('div');
-        info.className = 'location-info';
-        
-        const nameDiv = document.createElement('div');
-        nameDiv.className = 'location-name';
-        nameDiv.textContent = name;
-        
-        const addressDiv = document.createElement('div');
-        addressDiv.className = 'location-address';
-        addressDiv.textContent = address;
-        
-        info.appendChild(nameDiv);
-        info.appendChild(addressDiv);
-        
-        li.appendChild(marker);
-        li.appendChild(info);
-        
-        // Adicionar botão de remoção (exceto para a origem)
-        if (!isOrigin) {
-          const removeBtn = document.createElement('button');
-          removeBtn.className = 'remove-btn';
-          removeBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          `;
-          removeBtn.addEventListener('click', function() {
-            // Remover o item da lista visual e do array de locais
-            li.remove();
-            const index = locations.findIndex(l => l.id === id);
-            if (index !== -1) {
-              locations.splice(index, 1);
-            }
-          });
-          li.appendChild(removeBtn);
-        }
-        
-        return li;
-      }
+      ];
       
-      // Função para adicionar destino
-      function addLocation() {
-        const address = locationInput.value.trim();
-        if (!address) return;
-        
-        // Simular a adição de um local (em um app real usaríamos geocoding)
-        locationCounter++;
-        const newLocation = {
-          id: locationCounter,
-          name: address,
-          latlng: '-22.3,-48.5', // Exemplo de coordenadas
-          isOrigin: false
-        };
-        
-        locations.push(newLocation);
-        const li = createLocationItem(address, `Localização ${locationCounter}`, locationCounter);
-        locationList.appendChild(li);
-        
-        // Limpar o campo de entrada
-        locationInput.value = '';
-      }
-      
-      // Função para importar arquivo de CEPs
-      function handleFileUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const content = e.target.result;
-          const lines = content.split('\n');
-          
-          // Array para armazenar os dados
-          const importedLocations = [];
-          
-          // Processar cada linha do arquivo
-          lines.forEach((line, index) => {
-            const parts = line.split(',');
-            if (parts.length >= 2) {
-              const cep = parts[0].trim();
-              const name = parts[1].trim();
-              
-              // Simulação de coordenadas para este CEP
-              // Em um app real, usaríamos uma API de geocodificação
-              locationCounter++;
-              
-              // Criar localização com CEP e nome da linha
-              const newLocation = {
-                id: locationCounter,
-                name: name,
-                address: `CEP: ${cep}`,
-                latlng: `-22.${Math.floor(Math.random() * 9)},-48.${Math.floor(Math.random() * 9)}`,
-                isOrigin: false
-              };
-              
-              // Adicionar à lista de localizações
-              locations.push(newLocation);
-              importedLocations.push(newLocation);
-              
-              // Criar item visual
-              const li = createLocationItem(name, `CEP: ${cep}`, locationCounter);
-              locationList.appendChild(li);
-            }
-          });
-          
-          // Informar ao usuário
-          if (importedLocations.length > 0) {
-            alert(`Importado com sucesso! ${importedLocations.length} endereços adicionados.`);
-          } else {
-            alert('Nenhum endereço válido encontrado no arquivo.');
-          }
-          
-          // Limpar o input de arquivo
-          event.target.value = '';
-        };
-        
-        reader.readAsText(file);
-      }
-      
-      // Função para calcular a rota otimizada
-      // Função para otimizar rota usando o algoritmo TSP
-      function calculateOptimizedRoute() {
-        if (locations.length <= 1) {
-          alert('Adicione pelo menos um destino além da origem para calcular uma rota.');
-          return;
+      // Restrições de caminhões
+      const truckRestrictions = [
+        { 
+          title: 'Restrição de Circulação - Acima de 2 eixos',
+          city: 'Dois Córregos',
+          details: 'Centro - Seg a Sex 07:00-19:00'
+        },
+        { 
+          title: 'Veículos de Carga - Limite de peso 10t',
+          city: 'Jaú',
+          details: 'Zona central - Todos os dias 06:00-22:00'
+        },
+        { 
+          title: 'Caminhões Pesados - Proibido trânsito',
+          city: 'Bauru',
+          details: 'Vias locais - Seg a Sex 07:00-19:00'
+        },
+        { 
+          title: 'Restrição de Tráfego - Veículos largos',
+          city: 'Ribeirão Preto',
+          details: 'Centro histórico - Diariamente 08:00-20:00'
         }
-        
-        // Desabilitar botão enquanto processa
-        optimizeBtn.disabled = true;
-        optimizeBtn.textContent = 'Calculando...';
-        
-        // Executar o algoritmo TSP para otimizar a rota
-        try {
-          // Encontrar o índice da origem
-          const originIndex = locations.findIndex(l => l.isOrigin);
-          
-          // Resolver problema do TSP
-          const tspResult = window.TSPSolver.solve(locations, originIndex);
-          
-          // Guardar resultado para uso em outras funções
-          window.lastTspResult = tspResult;
-          
-          // Reordenar localizações com base no resultado do TSP
-          const orderedLocations = [...tspResult.orderedLocations];
-          
-          // Atualizar o iframe com a rota otimizada
-          const iframe = document.querySelector('.map-iframe');
-          iframe.src = buildDirectionsUrl(orderedLocations);
-          
-          // Atualizar informações da rota
-          updateRouteInfo(tspResult);
-          
-          // Mostrar painéis de informação
-          toggleTabs(true);
-          
-          // Rolar até as abas
-          setTimeout(() => {
-            document.getElementById('route-tabs').scrollIntoView({ behavior: 'smooth' });
-          }, 500);
-        } catch (error) {
-          console.error('Erro ao calcular rota:', error);
-          alert('Erro ao calcular a rota. Tente novamente.');
-        } finally {
-          // Reativar botão
-          optimizeBtn.disabled = false;
-          optimizeBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-            Otimizar Rota
-          `;
-        }
-      }
+      ];
+
+      // ===== FUNÇÕES PARA CÁLCULO DE ROTA =====
       
       // Função para construir URL com waypoints ordenados
       function buildDirectionsUrl(orderedLocs) {
@@ -1144,7 +967,145 @@
           .map(l => l.latlng)
           .join('|');
         
+        if (!waypoints) {
+          // Se não houver waypoints, mostrar apenas o ponto de origem
+          return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${origin.latlng}&zoom=10`;
+        }
+        
         return `https://www.google.com/maps/embed/v1/directions?key=${apiKey}&origin=${origin.latlng}&destination=${destination}&waypoints=${waypoints}&mode=driving&avoid=ferries`;
+      }
+      
+      // Função para otimizar rota usando o algoritmo do Caixeiro Viajante
+      function calculateOptimizedRoute() {
+        if (locations.length <= 1) {
+          alert('Adicione pelo menos um destino além da origem para calcular uma rota.');
+          return;
+        }
+        
+        // Desabilitar botão enquanto processa
+        optimizeBtn.disabled = true;
+        optimizeBtn.innerHTML = 'Calculando...';
+        
+        try {
+          // Implementação simplificada do TSP
+          // Para uma implementação real, usaríamos window.TSPSolver.solve
+          
+          // Reordenar os destinos para simular otimização
+          const origin = locations.find(l => l.isOrigin);
+          const destinations = locations.filter(l => !l.isOrigin);
+          
+          // Algoritmo simples para ordenação
+          const orderedDestinations = [...destinations].sort((a, b) => {
+            // Ordenar por "proximidade" (simulado)
+            const [lat1, lng1] = a.latlng.split(',').map(parseFloat);
+            const [lat2, lng2] = b.latlng.split(',').map(parseFloat);
+            const [originLat, originLng] = origin.latlng.split(',').map(parseFloat);
+            
+            // Distância euclidiana como heurística
+            const dist1 = Math.sqrt(
+              Math.pow(lat1 - originLat, 2) + 
+              Math.pow(lng1 - originLng, 2)
+            );
+            const dist2 = Math.sqrt(
+              Math.pow(lat2 - originLat, 2) + 
+              Math.pow(lng2 - originLng, 2)
+            );
+            
+            return dist1 - dist2;
+          });
+          
+          // Construir resultado otimizado
+          const orderedLocations = [origin, ...orderedDestinations];
+          
+          // Calcular distâncias para cada segmento
+          const segmentDistances = [];
+          for (let i = 0; i < orderedLocations.length - 1; i++) {
+            const [lat1, lng1] = orderedLocations[i].latlng.split(',').map(parseFloat);
+            const [lat2, lng2] = orderedLocations[i + 1].latlng.split(',').map(parseFloat);
+            
+            // Distância em km (estimativa grosseira)
+            const distKm = Math.round(
+              Math.sqrt(Math.pow(lat2 - lat1, 2) + Math.pow(lng2 - lng1, 2)) * 111
+            );
+            segmentDistances.push(distKm);
+          }
+          
+          // Adicionar segmento de volta à origem
+          const [lastLat, lastLng] = orderedLocations[orderedLocations.length - 1].latlng.split(',').map(parseFloat);
+          const [originLat, originLng] = origin.latlng.split(',').map(parseFloat);
+          const lastDistKm = Math.round(
+            Math.sqrt(Math.pow(originLat - lastLat, 2) + Math.pow(originLng - lastLng, 2)) * 111
+          );
+          segmentDistances.push(lastDistKm);
+          
+          // Calcular distância total
+          const totalDistance = segmentDistances.reduce((a, b) => a + b, 0);
+          
+          // Tempo estimado (60 km/h média)
+          const hours = Math.floor(totalDistance / 60);
+          const minutes = Math.round((totalDistance / 60 % 1) * 60);
+          const timeStr = `${hours}h ${minutes}min`;
+          
+          // Resultado final
+          const tspResult = {
+            orderedLocations,
+            segmentDistances,
+            totalDistance,
+            estimatedTime: timeStr
+          };
+          
+          // Atualizar o iframe com a rota otimizada
+          mapIframe.src = buildDirectionsUrl(orderedLocations);
+          
+          // Atualizar informações da rota
+          updateRouteInfo(tspResult);
+          
+          // Mostrar painéis de informação
+          routeTabs.style.display = 'block';
+          
+          // Rolar até as abas
+          setTimeout(() => {
+            routeTabs.scrollIntoView({ behavior: 'smooth' });
+          }, 500);
+        } catch (error) {
+          console.error('Erro ao calcular rota:', error);
+          alert('Erro ao calcular a rota. Tente novamente.');
+        } finally {
+          // Reativar botão
+          optimizeBtn.disabled = false;
+          optimizeBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            Otimizar Rota
+          `;
+        }
+      }
+      
+      // ===== FUNÇÕES PARA ATUALIZAÇÃO DA INTERFACE =====
+      
+      // Função para alternar abas
+      function switchTab(tabId) {
+        tabButtons.forEach(btn => {
+          if (btn.getAttribute('data-tab') === tabId) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+        
+        tabContents.forEach(content => {
+          if (content.id === tabId + '-tab') {
+            content.classList.add('active');
+          } else {
+            content.classList.remove('active');
+          }
+        });
+      }
+      
+      // Função para mostrar/ocultar as abas de rota
+      function toggleTabs(show) {
+        routeTabs.style.display = show ? 'block' : 'none';
       }
       
       // Função para atualizar todas as informações da rota
@@ -1210,51 +1171,76 @@
         const attentionPoints = document.getElementById('attention-points');
         if (!attentionPoints) return;
         
-        // Limpar pontos atuais, mas manter um modelo para referência
-        const templateItem = attentionPoints.firstElementChild;
+        // Limpar pontos atuais
         attentionPoints.innerHTML = '';
         
-        // Adicionar pontos de pedágio fictícios
-        const tollPoints = [
-          { name: 'Pedágio SP-225 (Brotas)', type: 'toll' },
-          { name: 'Pedágio SP-310 (Jaú)', type: 'toll' },
-          { name: 'Pedágio SP-330 (Ribeirão Preto)', type: 'toll' }
-        ];
-        
-        // Adicionar pontos de balança fictícios
-        const weighingPoints = [
-          { name: 'Balança Rod. Marechal Rondon (Bauru)', type: 'weighing' },
-          { name: 'Balança Rod. Anhanguera (Ribeirão Preto)', type: 'weighing' }
-        ];
-        
-        // Combinar todos os pontos
-        const allPoints = [...tollPoints, ...weighingPoints];
-        
-        // Adicionar apenas se tiver pelo menos uma cidade além da origem
-        if (tspResult.orderedLocations.length > 1) {
-          // Filtrar aleatoriamente alguns pontos para simular apenas os da rota
-          const pointsToShow = allPoints.filter(() => Math.random() > 0.3);
-          
-          pointsToShow.forEach(point => {
-            const item = templateItem.cloneNode(true);
-            const icon = item.querySelector('.attention-icon');
-            const text = item.querySelector('.attention-text');
-            
-            // Definir tipo do ícone
-            if (icon) {
-              icon.className = `attention-icon ${point.type}`;
-            }
-            
-            // Definir texto
-            if (text) {
-              text.textContent = point.name;
-            }
-            
-            attentionPoints.appendChild(item);
-          });
+        // Se não houver pontos suficientes, mostrar mensagem e sair
+        if (tspResult.orderedLocations.length <= 1) {
+          const emptyMsg = document.createElement('div');
+          emptyMsg.className = 'empty-message';
+          emptyMsg.textContent = 'Adicione destinos para ver os pontos de atenção.';
+          attentionPoints.appendChild(emptyMsg);
+          return;
         }
         
-        // Se não houver pontos, mostrar mensagem
+        // Função para criar um ponto de atenção
+        function createAttentionPoint(name, type) {
+          const div = document.createElement('div');
+          div.className = 'attention-item';
+          
+          const icon = document.createElement('div');
+          icon.className = `attention-icon ${type}`;
+          
+          const iconSvg = document.createElement('div');
+          if (type === 'toll') {
+            iconSvg.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            `;
+          } else {
+            iconSvg.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+              </svg>
+            `;
+          }
+          
+          icon.appendChild(iconSvg);
+          
+          const text = document.createElement('div');
+          text.className = 'attention-text';
+          text.textContent = name;
+          
+          div.appendChild(icon);
+          div.appendChild(text);
+          
+          return div;
+        }
+        
+        // Adicionar pontos de atenção com base nas cidades na rota
+        const citiesInRoute = tspResult.orderedLocations.map(loc => loc.name.toLowerCase());
+        
+        // Número de pedágios baseado na distância
+        const numTolls = Math.min(Math.max(1, Math.floor(tspResult.totalDistance / 100)), tollPoints.length);
+        
+        // Número de balanças baseado na distância
+        const numWeighing = Math.min(Math.max(1, Math.floor(tspResult.totalDistance / 150)), weighingPoints.length);
+        
+        // Adicionar pedágios
+        for (let i = 0; i < numTolls; i++) {
+          attentionPoints.appendChild(createAttentionPoint(tollPoints[i].name, 'toll'));
+        }
+        
+        // Adicionar balanças
+        for (let i = 0; i < numWeighing; i++) {
+          attentionPoints.appendChild(createAttentionPoint(weighingPoints[i].name, 'weighing'));
+        }
+        
+        // Se ainda não houver pontos, mostrar mensagem
         if (attentionPoints.children.length === 0) {
           const emptyMsg = document.createElement('div');
           emptyMsg.className = 'empty-message';
@@ -1275,35 +1261,14 @@
         const startDate = startDateInput.value;
         const endDate = endDateInput.value;
         
-        // Eventos fictícios para as cidades
-        const allEvents = [
-          { 
-            title: 'Feira Agropecuária', 
-            city: 'Dois Córregos',
-            startDate: '2025-05-15',
-            endDate: '2025-05-22'
-          },
-          { 
-            title: 'Festival de Inverno', 
-            city: 'Jaú',
-            startDate: '2025-06-10',
-            endDate: '2025-06-20'
-          },
-          { 
-            title: 'Exposição Industrial', 
-            city: 'Bauru',
-            startDate: '2025-05-05',
-            endDate: '2025-05-15'
-          }
-        ];
-        
         // Filtrar eventos por data e cidades na rota
-        const citiesInRoute = tspResult.orderedLocations.map(loc => loc.name);
-        const eventsToShow = allEvents.filter(event => {
+        const citiesInRoute = tspResult.orderedLocations.map(loc => loc.name.toLowerCase());
+        
+        const eventsToShow = cityEvents.filter(event => {
           // Verificar se a cidade está na rota
           const cityInRoute = citiesInRoute.some(city => 
-            event.city.toLowerCase().includes(city.toLowerCase()) || 
-            city.toLowerCase().includes(event.city.toLowerCase())
+            event.city.toLowerCase().includes(city) || 
+            city.includes(event.city.toLowerCase())
           );
           
           // Verificar se está no intervalo de datas
@@ -1383,31 +1348,13 @@
         // Limpar restrições atuais
         restrictionsList.innerHTML = '';
         
-        // Restrições fictícias para as cidades
-        const allRestrictions = [
-          { 
-            title: 'Restrição de Circulação - Acima de 2 eixos',
-            city: 'Dois Córregos',
-            details: 'Centro - Seg a Sex 07:00-19:00'
-          },
-          { 
-            title: 'Veículos de Carga - Limite de peso 10t',
-            city: 'Jaú',
-            details: 'Zona central - Todos os dias 06:00-22:00'
-          },
-          { 
-            title: 'Caminhões Pesados - Proibido trânsito',
-            city: 'Bauru',
-            details: 'Vias locais - Seg a Sex 07:00-19:00'
-          }
-        ];
-        
         // Filtrar restrições por cidades na rota
-        const citiesInRoute = tspResult.orderedLocations.map(loc => loc.name);
-        const restrictionsToShow = allRestrictions.filter(restriction => 
+        const citiesInRoute = tspResult.orderedLocations.map(loc => loc.name.toLowerCase());
+        
+        const restrictionsToShow = truckRestrictions.filter(restriction => 
           citiesInRoute.some(city => 
-            restriction.city.toLowerCase().includes(city.toLowerCase()) || 
-            city.toLowerCase().includes(restriction.city.toLowerCase())
+            restriction.city.toLowerCase().includes(city) || 
+            city.includes(restriction.city.toLowerCase())
           )
         );
         
@@ -1441,106 +1388,304 @@
       
       // Função para atualizar o resumo da rota
       function updateRouteSummary(tspResult) {
-        const summaryValues = document.querySelectorAll('.summary-value');
-        if (!summaryValues.length) return;
+        // Atualizar distância total
+        document.getElementById('total-distance').textContent = `${tspResult.totalDistance} km`;
         
-        // Distância total
-        summaryValues[0].textContent = `${tspResult.totalDistance} km`;
+        // Atualizar tempo estimado
+        document.getElementById('estimated-time').textContent = tspResult.estimatedTime;
         
-        // Tempo estimado
-        summaryValues[1].textContent = tspResult.estimatedTime;
+        // Número de pedágios baseado na distância
+        const numTolls = Math.min(Math.max(1, Math.floor(tspResult.totalDistance / 100)), tollPoints.length);
+        document.getElementById('toll-count').textContent = numTolls.toString();
         
-        // Número de pedágios (contagem simulada)
-        const numTolls = Math.min(Math.floor(tspResult.totalDistance / 100) + 1, 5);
-        summaryValues[2].textContent = numTolls.toString();
-        
-        // Número de balanças (contagem simulada)
-        const numWeighing = Math.min(Math.floor(tspResult.totalDistance / 150) + 1, 3);
-        summaryValues[3].textContent = numWeighing.toString();
+        // Número de balanças baseado na distância
+        const numWeighing = Math.min(Math.max(1, Math.floor(tspResult.totalDistance / 150)), weighingPoints.length);
+        document.getElementById('weighing-count').textContent = numWeighing.toString();
       }
       
-      // Inicialização de autocompletar endereços
-      function initializeAutocomplete() {
-        if (window.google && google.maps && google.maps.places) {
-          const autocomplete = new google.maps.places.Autocomplete(locationInput, { 
-            types: ['geocode'],
-            componentRestrictions: { country: 'br' }
-          });
-          
-          autocomplete.addListener('place_changed', function() {
-            const place = autocomplete.getPlace();
-            if (place.geometry) {
-              locationCounter++;
+      // ===== FUNÇÕES PARA MANIPULAÇÃO DE LOCAIS =====
+      
+      // Função para adicionar um local
+      function createLocationItem(name, address, id, isOrigin = false, lat = null, lng = null) {
+        // Criar elemento visual
+        const li = document.createElement('li');
+        li.className = 'location-item';
+        if (isOrigin) {
+          li.classList.add('origin');
+        }
+        
+        // Criar marcador
+        const marker = document.createElement('div');
+        marker.className = 'location-marker';
+        if (isOrigin) {
+          marker.style.backgroundColor = '#2563eb';
+          marker.textContent = 'A';
+        } else {
+          marker.textContent = id;
+        }
+        
+        // Criar container de informações
+        const info = document.createElement('div');
+        info.className = 'location-info';
+        
+        // Nome e endereço
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'location-name';
+        nameDiv.textContent = name;
+        
+        const addressDiv = document.createElement('div');
+        addressDiv.className = 'location-address';
+        addressDiv.textContent = address;
+        
+        info.appendChild(nameDiv);
+        info.appendChild(addressDiv);
+        
+        li.appendChild(marker);
+        li.appendChild(info);
+        
+        // Adicionar botão de remoção (exceto para a origem)
+        if (!isOrigin) {
+          const removeBtn = document.createElement('button');
+          removeBtn.className = 'remove-btn';
+          removeBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          `;
+          removeBtn.addEventListener('click', function() {
+            // Remover o item da lista visual
+            li.remove();
+            
+            // Remover do array de locais
+            const index = locations.findIndex(l => 
+              (typeof l.id === 'string' && l.id === id.toString()) || 
+              (typeof l.id === 'number' && l.id === id)
+            );
+            
+            if (index !== -1) {
+              locations.splice(index, 1);
               
-              const newLocation = {
-                id: locationCounter,
-                name: place.name,
-                address: place.formatted_address,
-                latlng: `${place.geometry.location.lat()},${place.geometry.location.lng()}`,
-                isOrigin: false
-              };
-              
-              locations.push(newLocation);
-              const li = createLocationItem(place.name, place.formatted_address, locationCounter);
-              locationList.appendChild(li);
-              
-              // Limpar o campo
-              locationInput.value = '';
+              // Renumerar os marcadores
+              const items = locationList.querySelectorAll('.location-item:not(.origin)');
+              items.forEach((item, idx) => {
+                const markerEl = item.querySelector('.location-marker');
+                if (markerEl) {
+                  markerEl.textContent = idx + 1;
+                }
+                
+                // Atualizar o ID no array
+                if (locations[idx + 1] && !locations[idx + 1].isOrigin) {
+                  locations[idx + 1].id = idx + 1;
+                }
+              });
             }
           });
+          
+          li.appendChild(removeBtn);
         }
+        
+        // Adicionar à lista de locais
+        locationList.appendChild(li);
+        
+        // Retornar coordenadas para o objeto de dados
+        let latlng = '';
+        if (lat !== null && lng !== null) {
+          latlng = `${lat},${lng}`;
+        } else {
+          // Coordenadas aleatórias próximas à origem
+          const originLoc = locations.find(l => l.isOrigin);
+          if (originLoc) {
+            const [originLat, originLng] = originLoc.latlng.split(',').map(parseFloat);
+            const randomLat = originLat + (Math.random() - 0.5) * 0.5;
+            const randomLng = originLng + (Math.random() - 0.5) * 0.5;
+            latlng = `${randomLat.toFixed(6)},${randomLng.toFixed(6)}`;
+          } else {
+            latlng = '-22.3,-48.5'; // Fallback
+          }
+        }
+        
+        // Retornar objeto para adicionar ao array
+        return {
+          id,
+          name,
+          address,
+          latlng,
+          isOrigin
+        };
       }
       
-      // Event listeners
+      // Função para adicionar um local a partir do input
+      function addLocation() {
+        const address = locationInput.value.trim();
+        if (!address) return;
+        
+        // Incrementar contador
+        locationCounter++;
+        
+        // Criar novo item e adicionar à lista
+        const newLocation = createLocationItem(address, `Localização ${locationCounter}`, locationCounter);
+        
+        // Adicionar ao array de locais
+        locations.push(newLocation);
+        
+        // Limpar o campo de entrada
+        locationInput.value = '';
+      }
+      
+      // Função para processar o arquivo de CEPs
+      function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const content = e.target.result;
+          const lines = content.split(/\r\n|\n/);
+          
+          // Array para armazenar os locais importados
+          const importedLocations = [];
+          
+          // Processar cada linha
+          lines.forEach(line => {
+            if (!line.trim()) return; // Pular linhas vazias
+            
+            const parts = line.split(',');
+            if (parts.length >= 2) {
+              const cep = parts[0].trim();
+              const name = parts[1].trim();
+              
+              // Incrementar contador
+              locationCounter++;
+              
+              // Criar localização com coordenadas simuladas
+              const newLocation = createLocationItem(name, `CEP: ${cep}`, locationCounter);
+              
+              // Adicionar ao array de locais
+              locations.push(newLocation);
+              importedLocations.push(newLocation);
+            }
+          });
+          
+          // Informar ao usuário
+          if (importedLocations.length > 0) {
+            alert(`Importado com sucesso! ${importedLocations.length} endereços adicionados.`);
+            
+            // Atualizar mapa para mostrar todos os pontos
+            if (importedLocations.length > 0) {
+              // Calcular rota automaticamente após a importação
+              calculateOptimizedRoute();
+            }
+          } else {
+            alert('Nenhum endereço válido encontrado no arquivo.');
+          }
+          
+          // Limpar input
+          event.target.value = '';
+        };
+        
+        reader.readAsText(file);
+      }
+      
+      // ===== EVENTOS =====
+      
+      // Otimizar rota
       optimizeBtn.addEventListener('click', calculateOptimizedRoute);
       
+      // Botão Home/Início
       homeBtn.addEventListener('click', function() {
         // Retornar para visualização inicial
-        const iframe = document.querySelector('.map-iframe');
-        iframe.src = buildPlaceUrl();
+        mapIframe.src = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${locations[0].latlng}&zoom=10`;
         
         // Esconder painel de informações
         toggleTabs(false);
       });
       
+      // Botão de informações
       infoBtn.addEventListener('click', function() {
         // Alternar visibilidade das abas
         toggleTabs(routeTabs.style.display === 'none');
+        
+        // Se estiver mostrando, rolar até as abas
+        if (routeTabs.style.display !== 'none') {
+          routeTabs.scrollIntoView({ behavior: 'smooth' });
+        }
       });
       
+      // Troca de abas
       tabButtons.forEach(button => {
         button.addEventListener('click', function() {
           switchTab(this.getAttribute('data-tab'));
         });
       });
       
+      // Adicionar destino
       addLocationBtn.addEventListener('click', addLocation);
       
+      // Adicionar ao pressionar Enter
       locationInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
           addLocation();
         }
       });
       
+      // Upload de arquivo
       fileUpload.addEventListener('change', handleFileUpload);
       
-      // Carregamento da API do Google Maps para autocomplete
-      function loadGoogleMapsScript() {
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initAutocomplete`;
-        script.async = true;
-        script.defer = true;
-        document.head.appendChild(script);
-        
-        // Definir função de callback global
-        window.initAutocomplete = initializeAutocomplete;
+      // Filtro de datas
+      function updateDateFilter() {
+        // Se tiver rota calculada, atualizar eventos
+        if (routeTabs.style.display !== 'none' && window.lastTspResult) {
+          updateCityEvents(window.lastTspResult);
+        }
       }
       
-      // Carregar script do Google Maps para autocomplete
-      loadGoogleMapsScript();
+      startDateInput.addEventListener('change', updateDateFilter);
+      endDateInput.addEventListener('change', updateDateFilter);
       
-      // Ocultar abas inicialmente
+      // Pegman (Street View)
+      pegmanBtn.addEventListener('dragstart', function(e) {
+        // Configurar dados para arrastar
+        e.dataTransfer.setData('text/plain', 'pegman');
+        
+        // Permitir arrastar apenas para o iframe
+        mapIframe.addEventListener('dragover', function(e) {
+          e.preventDefault();
+        });
+        
+        mapIframe.addEventListener('drop', function(e) {
+          e.preventDefault();
+          
+          // Calcular posição relativa dentro do iframe
+          const rect = mapIframe.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          // Percentual de posição
+          const percentX = (x / rect.width * 100).toFixed(2);
+          const percentY = (y / rect.height * 100).toFixed(2);
+          
+          // Exibir Street View no ponto clicado
+          alert(`Iniciando Street View na posição (${percentX}%, ${percentY}%)`);
+          
+          // Em uma implementação real, enviaríamos estas coordenadas para o iframe
+          // e ativaríamos o Street View naquele ponto
+          // Como estamos usando um iframe encapsulado, isso não é possível diretamente
+        });
+      });
+      
+      // Aumentar a largura do iframe para ocupar mais espaço
+      mapIframe.style.width = '100%';
+      
+      // Iniciar com abas escondidas
       toggleTabs(false);
+      
+      // Adicionar evento para mapear tecla Ctrl e zoom
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Control' || e.key === 'Meta') {
+          console.log('Ctrl pressionado - não deveria ser necessário para zoom');
+        }
+      });
     });
   </script>
 </body>
