@@ -652,7 +652,8 @@ export default function MapView({
               size: new window.google.maps.Size(32, 32),
               scaledSize: new window.google.maps.Size(32, 32)
             },
-            animation: window.google.maps.Animation.DROP
+            animation: window.google.maps.Animation.DROP,
+            zIndex: 1000 // Garantir que o marcador de origem tenha prioridade
           });
           
           // Adicionar janela de informações para origem
@@ -714,7 +715,27 @@ export default function MapView({
       const bounds = new window.google.maps.LatLngBounds();
       
       // Decidir quais pontos mostrar (rota calculada tem prioridade se existir)
-      const pointsToShow = calculatedRoute || (waypoints.length > 0 ? [origin, ...waypoints] : [origin]);
+      // Sempre garantir que a origem esteja incluída nos pontos, mesmo se a rota calculada não a incluir
+      let pointsToShow;
+      if (calculatedRoute && calculatedRoute.length > 0) {
+        // Verificar se a origem já está incluída na rota calculada
+        const originIncluded = calculatedRoute.some(point => 
+          point.id === origin.id || 
+          (point.lat === origin.lat && point.lng === origin.lng)
+        );
+        
+        if (!originIncluded) {
+          // Adicionar a origem no início se não estiver incluída
+          pointsToShow = [origin, ...calculatedRoute];
+          console.log("Origem adicionada manualmente à rota para exibição no mapa");
+        } else {
+          pointsToShow = calculatedRoute;
+        }
+      } else {
+        // Se não tiver rota calculada, usar origem + waypoints
+        pointsToShow = waypoints.length > 0 ? [origin, ...waypoints] : [origin];
+      }
+      
       console.log(`Exibindo ${pointsToShow.length} pontos no mapa: origem + ${pointsToShow.length - 1} waypoints`);
       
       // Adicionar cada ponto ao mapa com marcadores sequenciais
