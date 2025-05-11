@@ -39,29 +39,23 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
+  // Register all API routes first
+  app.use('/api', (req, res, next) => {
+    res.setHeader('Content-Type', 'application/json');
+    next();
+  });
+
+  const server = await registerRoutes(app);
+
+  // Then handle errors
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
-
     res.status(status).json({ message });
     throw err;
   });
 
-  // Setup API routes first
-  app.use('/api/*', (req, res, next) => {
-    if (!res.headersSent) {
-      res.format({
-        'application/json': () => {
-          next();
-        },
-        'default': () => {
-          res.status(406).json({ error: 'API endpoints only accept JSON' });
-        }
-      });
-    }
-  });
-
-  // Then setup Vite/static files
+  // Finally setup static/Vite after API routes
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
