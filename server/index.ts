@@ -64,11 +64,11 @@ app.use((req, res, next) => {
     await setupVite(app, server);
   } else {
     // Serve static files from the dist directory
-    app.use(express.static(path.join(__dirname, "..")));
+    app.use(express.static(path.join(__dirname, "../public")));
     
     // Handle SPA routes by serving index.html
     app.get('*', (req, res) => {
-      if (!res.headersSent) {
+      if (!res.headersSent && !req.path.startsWith('/api')) {
         res.sendFile(path.join(__dirname, "../public/index.html"));
       }
     });
