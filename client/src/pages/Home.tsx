@@ -536,7 +536,7 @@ export default function Home() {
               </div>
             </div>
           ) : (
-            <MapView 
+            <MapViewSimple 
               key={`map-${locations.length}-${Date.now()}`} // Força recriação do componente após importação
               origin={origin}
               waypoints={locations}
