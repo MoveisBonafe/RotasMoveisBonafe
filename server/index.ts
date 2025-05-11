@@ -63,13 +63,13 @@ app.use((req, res, next) => {
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
-    // Serve static files from the dist directory
-    app.use(express.static(path.join(__dirname, "public")));
+    // Serve static files from the dist/public directory
+    app.use(express.static(path.join(__dirname, "../public")));
     
     // Handle SPA routes by serving index.html
     app.get('*', (req, res) => {
       if (!res.headersSent) {
-        res.sendFile(path.join(__dirname, "public", "index.html"));
+        res.sendFile(path.join(__dirname, "../public/index.html"));
       }
     });
   }
