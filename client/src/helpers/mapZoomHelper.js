@@ -22,19 +22,63 @@ export function enableSmartZoom() {
       
       // Verificar se o elemento é realmente o mapa do Google
       if (gmStyleNode && gmStyleNode.addEventListener) {
-        // Aplicar o comportamento de zoom sem Ctrl
+        // Abordagem 1: Interceptar eventos de roda e simular Ctrl
         gmStyleNode.addEventListener('wheel', (event) => {
-          // Evitar o comportamento padrão que exige Ctrl
+          // Se não estiver segurando Ctrl, simular como se estivesse
+          // para permitir zoom sem Ctrl
           if (!event.ctrlKey) {
+            // Criar novo evento com a tecla Ctrl "pressionada"
+            const newEvent = new WheelEvent('wheel', {
+              bubbles: true,
+              cancelable: true,
+              composed: true,
+              deltaMode: event.deltaMode,
+              deltaX: event.deltaX,
+              deltaY: event.deltaY,
+              deltaZ: event.deltaZ,
+              ctrlKey: true  // Simular Ctrl pressionado
+            });
+            
+            // Disparar o novo evento
+            event.target.dispatchEvent(newEvent);
+            
+            // Impedir o comportamento padrão do evento original
+            event.preventDefault();
             event.stopPropagation();
           }
         }, { passive: false });
         
         // Marcar como aplicado
         gmStyleNode.setAttribute('data-zoom-helper-applied', 'true');
-        console.log("Helper de zoom aplicado com sucesso a um elemento .gm-style");
+        console.log("Helper de zoom aprimorado aplicado com sucesso a um elemento .gm-style");
       }
     });
+    
+    // Abordagem 2: Adicionalmente, tentar com MutationObserver para mapas carregados dinamicamente
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        // Verificar se novos nós foram adicionados
+        if (mutation.addedNodes.length) {
+          // Verificar se algum dos nós adicionados contém um mapa
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === 1) { // ELEMENT_NODE
+              const mapElements = node.querySelectorAll('.gm-style');
+              if (mapElements.length > 0) {
+                console.log("Novo mapa detectado, aplicando helper de zoom...");
+                enableSmartZoom();
+              }
+            }
+          });
+        }
+      });
+    });
+    
+    // Iniciar observação do DOM
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+    
   } catch (error) {
     console.error("Erro ao aplicar helper de zoom:", error);
   }
