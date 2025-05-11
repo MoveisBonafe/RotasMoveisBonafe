@@ -118,6 +118,127 @@
       color: #6b7280;
     }
     
+    /* Estilos para os botões de remoção */
+    .remove-btn {
+      background: none;
+      border: none;
+      color: #ef4444;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem;
+      border-radius: 50%;
+      margin-left: 0.5rem;
+    }
+    
+    .remove-btn:hover {
+      background-color: #fee2e2;
+    }
+    
+    /* Estilos para filtros de data */
+    .date-filter {
+      margin-bottom: 1.5rem;
+      padding: 0.75rem;
+      background-color: #f3f4f6;
+      border-radius: 0.25rem;
+    }
+    
+    .date-group {
+      margin-bottom: 0.5rem;
+    }
+    
+    .date-group label {
+      display: block;
+      font-size: 0.8rem;
+      margin-bottom: 0.25rem;
+      color: #4b5563;
+    }
+    
+    .date-input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+    }
+    
+    /* Estilos para adicionar destino */
+    .add-location, .import-ceps {
+      margin-bottom: 1.5rem;
+      padding: 0.75rem;
+      background-color: #f3f4f6;
+      border-radius: 0.25rem;
+    }
+    
+    .add-location h3, .import-ceps h3 {
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      color: #374151;
+    }
+    
+    .location-search {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .location-input {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+    }
+    
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.5rem 0.75rem;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    
+    .action-btn:hover {
+      background-color: #2563eb;
+    }
+    
+    /* Estilos para importação de arquivo */
+    .file-upload {
+      margin-bottom: 0.5rem;
+    }
+    
+    .file-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background-color: #e5e7eb;
+      color: #4b5563;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      cursor: pointer;
+      width: fit-content;
+    }
+    
+    .file-label:hover {
+      background-color: #d1d5db;
+    }
+    
+    #file-upload {
+      display: none;
+    }
+    
+    .file-info {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-top: 0.25rem;
+    }
+    
     .map-container {
       flex: 1;
       border-radius: 0.5rem;
@@ -167,6 +288,132 @@
       color: #4b5563;
     }
     
+    .info-btn {
+      background-color: #10b981;
+      color: white;
+    }
+    
+    /* Painel de informações da rota */
+    .route-info {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      width: 300px;
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+      max-height: 80%;
+      overflow-y: auto;
+    }
+    
+    .route-info-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .route-info-header h3 {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #111827;
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      color: #6b7280;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem;
+      border-radius: 0.25rem;
+    }
+    
+    .close-btn:hover {
+      background-color: #f3f4f6;
+    }
+    
+    .route-details {
+      padding: 0.75rem;
+    }
+    
+    .route-summary {
+      margin-bottom: 1rem;
+      background-color: #f9fafb;
+      padding: 0.75rem;
+      border-radius: 0.25rem;
+    }
+    
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    
+    .summary-label {
+      font-size: 0.875rem;
+      color: #4b5563;
+    }
+    
+    .summary-value {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #111827;
+    }
+    
+    .route-points h4 {
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #111827;
+    }
+    
+    .attention-points {
+      background-color: #f9fafb;
+      padding: 0.75rem;
+      border-radius: 0.25rem;
+    }
+    
+    .attention-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      background-color: white;
+      border-radius: 0.25rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .attention-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      margin-right: 0.75rem;
+      flex-shrink: 0;
+    }
+    
+    .toll {
+      background-color: #fef3c7;
+      color: #d97706;
+    }
+    
+    .weighing {
+      background-color: #e0e7ff;
+      color: #4f46e5;
+    }
+    
+    .attention-text {
+      font-size: 0.8rem;
+      color: #374151;
+    }
+    
     .map-iframe {
       flex: 1;
       border: none;
@@ -205,6 +452,57 @@
   <main>
     <aside class="sidebar">
       <h2>Destinos</h2>
+      
+      <!-- Filtros de data -->
+      <div class="date-filter">
+        <div class="date-group">
+          <label for="start-date">Data Início:</label>
+          <input type="date" id="start-date" class="date-input">
+        </div>
+        <div class="date-group">
+          <label for="end-date">Data Fim:</label>
+          <input type="date" id="end-date" class="date-input">
+        </div>
+      </div>
+      
+      <!-- Adicionar destino -->
+      <div class="add-location">
+        <h3>Adicionar Destino</h3>
+        <div class="location-search">
+          <input 
+            type="text" 
+            id="location-search-input" 
+            placeholder="Digite um endereço ou CEP..." 
+            class="location-input">
+          <button id="add-location-btn" class="action-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+            Adicionar
+          </button>
+        </div>
+      </div>
+      
+      <!-- Importar CEPs -->
+      <div class="import-ceps">
+        <h3>Importar Endereços</h3>
+        <div class="file-upload">
+          <label for="file-upload" class="file-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            Selecionar arquivo
+          </label>
+          <input type="file" id="file-upload" accept=".txt,.csv">
+        </div>
+        <p class="file-info">Formato: CEP,nome (txt ou csv)</p>
+      </div>
+      
+      <h3>Lista de Destinos</h3>
       <ul class="location-list">
         <li class="location-item origin">
           <div class="location-marker" style="background-color: #2563eb;">A</div>
@@ -219,6 +517,12 @@
             <div class="location-name">Ribeirão Preto</div>
             <div class="location-address">Ribeirão Preto, SP, Brasil</div>
           </div>
+          <button class="remove-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </li>
         <li class="location-item">
           <div class="location-marker">2</div>
@@ -226,13 +530,25 @@
             <div class="location-name">Jaú</div>
             <div class="location-address">Jaú, SP, Brasil</div>
           </div>
+          <button class="remove-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </li>
         <li class="location-item">
-          <div class="location-marker" style="background-color: #10b981;">B</div>
+          <div class="location-marker">3</div>
           <div class="location-info">
             <div class="location-name">Bauru</div>
             <div class="location-address">Bauru, SP, Brasil</div>
           </div>
+          <button class="remove-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </li>
       </ul>
     </aside>
@@ -241,19 +557,94 @@
       <div class="map-header">
         <div class="map-title">Visualização do Mapa</div>
         <div class="map-actions">
-          <button class="map-btn secondary-btn">
+          <button class="map-btn secondary-btn" id="home-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
               <polyline points="9 22 9 12 15 12 15 22"></polyline>
             </svg>
             Inicio
           </button>
-          <button class="map-btn primary-btn">
+          <button class="map-btn primary-btn" id="optimize-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
             Otimizar Rota
           </button>
+          <button class="map-btn info-btn" id="show-info-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            Detalhes
+          </button>
+        </div>
+      </div>
+      
+      <!-- Painel de informações da rota (inicialmente oculto) -->
+      <div class="route-info" id="route-info-panel" style="display: none;">
+        <div class="route-info-header">
+          <h3>Informações da Rota</h3>
+          <button class="close-btn" id="close-info-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="route-details">
+          <div class="route-summary">
+            <div class="summary-item">
+              <div class="summary-label">Distância Total:</div>
+              <div class="summary-value">305 km</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Tempo Estimado:</div>
+              <div class="summary-value">4h 15min</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Pedágios:</div>
+              <div class="summary-value">3</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Balanças:</div>
+              <div class="summary-value">2</div>
+            </div>
+          </div>
+          <div class="route-points">
+            <h4>Pontos de Atenção</h4>
+            <div class="attention-points">
+              <div class="attention-item">
+                <div class="attention-icon toll">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                </div>
+                <div class="attention-text">Pedágio SP-225 (Brotas)</div>
+              </div>
+              <div class="attention-item">
+                <div class="attention-icon toll">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                </div>
+                <div class="attention-text">Pedágio SP-310 (Jaú)</div>
+              </div>
+              <div class="attention-item">
+                <div class="attention-icon weighing">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                  </svg>
+                </div>
+                <div class="attention-text">Balança Rod. Marechal Rondon (Bauru)</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       
@@ -267,23 +658,238 @@
   </main>
 
   <script>
-    // Script simplificado para demo
+    // Script para versão estática mais completa
     document.addEventListener('DOMContentLoaded', function() {
-      const optimizeBtn = document.querySelector('.primary-btn');
-      const homeBtn = document.querySelector('.secondary-btn');
+      // Configuração da API Google Maps (será substituída pela chave real)
+      const apiKey = "YOUR_API_KEY";  // Placeholder - será substituído pela chave real
       
-      optimizeBtn.addEventListener('click', function() {
-        // Simular otimização de rota (atualizar iframe)
-        const iframe = document.querySelector('.map-iframe');
-        iframe.src = "https://www.google.com/maps/embed/v1/directions?key=AIzaSyAlLtYTpFGFdV-0NlY1QvI_r2Xi_gHGhXY&origin=-22.3673,-48.3823&destination=-22.3031,-49.0791&waypoints=-22.3156,-48.7783|-21.1785,-47.8057&mode=driving&avoid=ferries";
+      // Referências dos elementos
+      const optimizeBtn = document.getElementById('optimize-btn');
+      const homeBtn = document.getElementById('home-btn');
+      const infoBtn = document.getElementById('show-info-btn');
+      const closeInfoBtn = document.getElementById('close-info-btn');
+      const infoPanel = document.getElementById('route-info-panel');
+      const addLocationBtn = document.getElementById('add-location-btn');
+      const locationInput = document.getElementById('location-search-input');
+      const fileUpload = document.getElementById('file-upload');
+      const locationList = document.querySelector('.location-list');
+      const removeButtons = document.querySelectorAll('.remove-btn');
+      const startDateInput = document.getElementById('start-date');
+      const endDateInput = document.getElementById('end-date');
+      
+      // Inicializar datas com valores padrão
+      const today = new Date();
+      const todayStr = today.toISOString().split('T')[0];
+      const nextWeek = new Date(today);
+      nextWeek.setDate(today.getDate() + 7);
+      const nextWeekStr = nextWeek.toISOString().split('T')[0];
+      
+      startDateInput.value = todayStr;
+      endDateInput.value = nextWeekStr;
+      
+      // Contagem de locais adicionados
+      let locationCounter = 3; // Começando com 3 pois já temos destinos iniciais
+      
+      // Coordenadas dos locais iniciais
+      const locations = [
+        { id: 'origin', name: 'Dois Córregos', latlng: '-22.3673,-48.3823', isOrigin: true },
+        { id: 1, name: 'Ribeirão Preto', latlng: '-21.1785,-47.8057', isOrigin: false },
+        { id: 2, name: 'Jaú', latlng: '-22.3156,-48.7783', isOrigin: false },
+        { id: 3, name: 'Bauru', latlng: '-22.3031,-49.0791', isOrigin: false }
+      ];
+      
+      // Funções auxiliares
+      function buildDirectionsUrl() {
+        // Organizar waypoints
+        const origin = locations.find(l => l.isOrigin).latlng;
+        const destination = origin; // Rota circular, retorna à origem
         
-        alert('Rota otimizada com sucesso!');
+        // Filtrar waypoints (não incluir origem)
+        const waypoints = locations
+          .filter(l => !l.isOrigin)
+          .map(l => l.latlng)
+          .join('|');
+        
+        return `https://www.google.com/maps/embed/v1/directions?key=${apiKey}&origin=${origin}&destination=${origin}&waypoints=${waypoints}&mode=driving&avoid=ferries`;
+      }
+      
+      function buildPlaceUrl() {
+        const origin = locations.find(l => l.isOrigin).latlng;
+        return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${origin}&zoom=10`;
+      }
+      
+      function showInfoPanel() {
+        infoPanel.style.display = 'block';
+      }
+      
+      function hideInfoPanel() {
+        infoPanel.style.display = 'none';
+      }
+      
+      function createLocationItem(name, address, id, isOrigin = false) {
+        const li = document.createElement('li');
+        li.className = 'location-item';
+        if (isOrigin) {
+          li.classList.add('origin');
+        }
+        
+        const marker = document.createElement('div');
+        marker.className = 'location-marker';
+        if (isOrigin) {
+          marker.style.backgroundColor = '#2563eb';
+          marker.textContent = 'A';
+        } else {
+          marker.textContent = id;
+        }
+        
+        const info = document.createElement('div');
+        info.className = 'location-info';
+        
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'location-name';
+        nameDiv.textContent = name;
+        
+        const addressDiv = document.createElement('div');
+        addressDiv.className = 'location-address';
+        addressDiv.textContent = address;
+        
+        info.appendChild(nameDiv);
+        info.appendChild(addressDiv);
+        
+        li.appendChild(marker);
+        li.appendChild(info);
+        
+        // Adicionar botão de remoção (exceto para a origem)
+        if (!isOrigin) {
+          const removeBtn = document.createElement('button');
+          removeBtn.className = 'remove-btn';
+          removeBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          `;
+          removeBtn.addEventListener('click', function() {
+            // Remover o item da lista visual e do array de locais
+            li.remove();
+            const index = locations.findIndex(l => l.id === id);
+            if (index !== -1) {
+              locations.splice(index, 1);
+            }
+          });
+          li.appendChild(removeBtn);
+        }
+        
+        return li;
+      }
+      
+      function addLocation() {
+        const address = locationInput.value.trim();
+        if (!address) return;
+        
+        // Simular a adição de um local (em uma app real usaríamos geocoding)
+        locationCounter++;
+        const newLocation = {
+          id: locationCounter,
+          name: address,
+          latlng: '-22.3,-48.5', // Coordenadas fictícias
+          isOrigin: false
+        };
+        
+        locations.push(newLocation);
+        const li = createLocationItem(address, `Localização ${locationCounter}`, locationCounter);
+        locationList.appendChild(li);
+        
+        // Limpar o campo de entrada
+        locationInput.value = '';
+      }
+      
+      function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        // Simular leitura de arquivo (na versão real usaríamos FileReader)
+        setTimeout(() => {
+          // Adicionar endereços fictícios
+          const mockAddresses = [
+            'São Carlos, SP',
+            'Araraquara, SP',
+            'Botucatu, SP'
+          ];
+          
+          mockAddresses.forEach(address => {
+            locationCounter++;
+            const newLocation = {
+              id: locationCounter,
+              name: address,
+              latlng: '-22.3,-48.5', // Coordenadas fictícias
+              isOrigin: false
+            };
+            
+            locations.push(newLocation);
+            const li = createLocationItem(address, `CEP importado`, locationCounter);
+            locationList.appendChild(li);
+          });
+          
+          // Feedback
+          alert('Arquivo importado com sucesso! 3 endereços adicionados.');
+          
+          // Limpar input
+          event.target.value = '';
+        }, 500);
+      }
+      
+      // Eventos
+      optimizeBtn.addEventListener('click', function() {
+        if (locations.length < 2) {
+          alert('Adicione pelo menos um destino além da origem para calcular uma rota.');
+          return;
+        }
+        
+        // Atualizar o iframe com a rota otimizada
+        const iframe = document.querySelector('.map-iframe');
+        iframe.src = buildDirectionsUrl();
+        
+        // Mostrar painel de informações
+        showInfoPanel();
       });
       
       homeBtn.addEventListener('click', function() {
         // Retornar para visualização inicial
         const iframe = document.querySelector('.map-iframe');
-        iframe.src = "https://www.google.com/maps/embed/v1/place?key=AIzaSyAlLtYTpFGFdV-0NlY1QvI_r2Xi_gHGhXY&q=-22.3673,-48.3823&zoom=10";
+        iframe.src = buildPlaceUrl();
+        
+        // Esconder painel de informações
+        hideInfoPanel();
+      });
+      
+      infoBtn.addEventListener('click', function() {
+        // Toggle painel de informações
+        if (infoPanel.style.display === 'none') {
+          showInfoPanel();
+        } else {
+          hideInfoPanel();
+        }
+      });
+      
+      closeInfoBtn.addEventListener('click', hideInfoPanel);
+      
+      addLocationBtn.addEventListener('click', addLocation);
+      
+      locationInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          addLocation();
+        }
+      });
+      
+      fileUpload.addEventListener('change', handleFileUpload);
+      
+      // Configuração inicial
+      removeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const item = button.closest('.location-item');
+          item.remove();
+        });
       });
     });
   </script>
