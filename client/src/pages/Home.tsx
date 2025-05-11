@@ -314,13 +314,20 @@ export default function Home() {
 
   // Handle calculate route button click
   const handleCalculateRoute = () => {
-    if (!origin || !vehicleTypeObj || locations.length === 0) {
+    if (!origin || locations.length === 0) {
       toast({
         title: "Não é possível calcular a rota",
-        description: "Selecione pelo menos um destino e um tipo de veículo.",
+        description: "Selecione pelo menos um destino para continuar.",
         variant: "destructive",
       });
       return;
+    }
+    
+    // Garantir que um tipo de veículo padrão (caminhão 1 eixo) seja sempre usado
+    if (!vehicleTypeObj && vehicleTypes && Array.isArray(vehicleTypes) && vehicleTypes.length > 0) {
+      // Selecionar automaticamente o primeiro caminhão
+      const defaultTruck = vehicleTypes.find((vt: VehicleType) => vt.type === "truck1") || vehicleTypes[0];
+      setVehicleTypeObj(defaultTruck);
     }
 
     // Mostrar toast de carregamento para feedback imediato
@@ -343,10 +350,20 @@ export default function Home() {
         console.log("Usando métricas reais da rota:", routeMetrics);
 
         // Optimize the route locally com os valores reais de distância e duração
+        // Garantir que temos um tipo de veículo mesmo que seja null
+        const safeVehicleTypeObj = vehicleTypeObj || {
+          id: 1,
+          name: "Caminhão 1 eixo",
+          type: "truck1",
+          fuelEfficiency: 3.5,
+          tollMultiplier: 1.0,
+          fuelCostPerLiter: 5.0
+        };
+        
         const routeResult = optimizeRouteLocally(
           origin, 
           locations, 
-          vehicleTypeObj, 
+          safeVehicleTypeObj, 
           pois, 
           routeMetrics.totalDistance > 0 ? routeMetrics : undefined // Usar métricas reais se disponíveis
         );
@@ -462,7 +479,6 @@ export default function Home() {
           endDate={endDate}
           onStartDateChange={setStartDate}
           onEndDateChange={setEndDate}
-
         />
 
         {/* Área principal com o mapa */}
