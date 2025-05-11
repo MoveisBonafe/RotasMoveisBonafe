@@ -47,21 +47,30 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // Serve static files first
-  if (app.get("env") !== "development") {
+  // Setup API routes first
+  app.use('/api/*', (req, res, next) => {
+    if (!res.headersSent) {
+      res.format({
+        'application/json': () => {
+          next();
+        },
+        'default': () => {
+          res.status(406).json({ error: 'API endpoints only accept JSON' });
+        }
+      });
+    }
+  });
+
+  // Then setup Vite/static files
+  if (app.get("env") === "development") {
+    await setupVite(app, server);
+  } else {
     app.use(express.static(path.resolve(import.meta.dirname, "public")));
   }
 
-  // Setup Vite for development
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  }
-
-  // Fallback route for SPA
+  // Finally, handle SPA routes
   app.get('*', (req, res) => {
-    if (req.path.startsWith('/api')) {
-      res.status(404).json({ error: 'API endpoint not found' });
-    } else {
+    if (!res.headersSent) {
       if (app.get("env") === "development") {
         res.sendFile(path.resolve(import.meta.dirname, "..", "client", "index.html"));
       } else {
