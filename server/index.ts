@@ -63,19 +63,16 @@ app.use((req, res, next) => {
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
-    app.use(express.static(path.join(__dirname, "..", "public")));
-  }
-
-  // Finally, handle SPA routes
-  app.get('*', (req, res) => {
-    if (!res.headersSent) {
-      if (app.get("env") === "development") {
-        res.sendFile(path.resolve(import.meta.dirname, "..", "client", "index.html"));
-      } else {
-        res.sendFile(path.resolve(import.meta.dirname, "public", "index.html"));
+    // Serve static files from the dist directory
+    app.use(express.static(path.join(__dirname, "public")));
+    
+    // Handle SPA routes by serving index.html
+    app.get('*', (req, res) => {
+      if (!res.headersSent) {
+        res.sendFile(path.join(__dirname, "public", "index.html"));
       }
-    }
-  });
+    });
+  }
 
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client.
