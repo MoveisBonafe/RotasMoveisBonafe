@@ -65,6 +65,7 @@ app.use((req, res, next) => {
   } else {
     // Serve static files from the dist/public directory
     app.use(express.static(path.join(__dirname, "../public")));
+    app.use(express.static(path.join(__dirname, "..")));
     
     // Handle SPA routes by serving index.html
     app.get('*', (req, res) => {
