@@ -9,7 +9,8 @@ declare global {
 }
 
 // Construção de URL para o mapa estático
-const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
+// Usamos uma chave fixa para o GitHub Pages, que será substituída pela variável de ambiente em ambiente de desenvolvimento
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "AIzaSyAlLtYTpFGFdV-0NlY1QvI_r2Xi_gHGhXY";
 
 interface MapViewSimpleProps {
   origin: Location | null;
@@ -92,45 +93,73 @@ export default function MapViewSimple({
           if (maxDiff > 2) zoom = 8;
           if (maxDiff > 4) zoom = 7;
           
-          // Criar URL para direções
-          const baseUrl = "https://www.google.com/maps/embed/v1/directions";
-          
-          // Primeiro, montar a URL com origem e destino
-          const originParam = `${origin.lat},${origin.lng}`;
-          
-          // O último waypoint é o destino quando temos rota calculada
-          const destinationWaypoint = calculatedRoute && calculatedRoute.length > 1 
-            ? calculatedRoute[calculatedRoute.length - 1] 
-            : waypoints[waypoints.length - 1];
+          try {
+            // Tentar usar a API de direções (preferencial)
+            // Criar URL para direções
+            const baseUrl = "https://www.google.com/maps/embed/v1/directions";
             
-          const destinationParam = `${destinationWaypoint.lat},${destinationWaypoint.lng}`;
-          
-          // Pontos intermediários - excluir o último que já é o destino
-          const waypointsParams = calculatedRoute && calculatedRoute.length > 2
-            ? calculatedRoute.slice(1, -1).map(wp => `${wp.lat},${wp.lng}`).join('|')
-            : waypoints.slice(0, -1).map(wp => `${wp.lat},${wp.lng}`).join('|');
+            // Primeiro, montar a URL com origem e destino
+            const originParam = `${origin.lat},${origin.lng}`;
             
-          // Montar parâmetros
-          const params = new URLSearchParams({
-            key: GOOGLE_MAPS_API_KEY,
-            origin: originParam,
-            destination: destinationParam,
-            mode: "driving",
-            avoid: "ferries"
-          });
-          
-          // Adicionar waypoints se tivermos
-          if (waypointsParams) {
-            params.append("waypoints", waypointsParams);
+            // O último waypoint é o destino quando temos rota calculada
+            const destinationWaypoint = calculatedRoute && calculatedRoute.length > 1 
+              ? calculatedRoute[calculatedRoute.length - 1] 
+              : waypoints[waypoints.length - 1];
+              
+            const destinationParam = `${destinationWaypoint.lat},${destinationWaypoint.lng}`;
+            
+            // Pontos intermediários - excluir o último que já é o destino
+            const waypointsParams = calculatedRoute && calculatedRoute.length > 2
+              ? calculatedRoute.slice(1, -1).map(wp => `${wp.lat},${wp.lng}`).join('|')
+              : waypoints.slice(0, -1).map(wp => `${wp.lat},${wp.lng}`).join('|');
+              
+            // Montar parâmetros
+            const params = new URLSearchParams({
+              key: GOOGLE_MAPS_API_KEY,
+              origin: originParam,
+              destination: destinationParam,
+              mode: "driving",
+              avoid: "ferries"
+            });
+            
+            // Adicionar waypoints se tivermos
+            if (waypointsParams) {
+              params.append("waypoints", waypointsParams);
+            }
+            
+            // Montar a URL final
+            const directionsUrl = `${baseUrl}?${params.toString()}`;
+            setMapSrc(directionsUrl);
+            
+            console.log("Mapa configurado para mostrar rota calculada (iframe)");
+          } catch (directionsError) {
+            console.error("Erro ao usar API de direções, usando fallback para view:", directionsError);
+            
+            // Fallback: se a API de direções falhar, usar o modo "view" que é mais simples
+            const baseUrl = "https://www.google.com/maps/embed/v1/view";
+            const params = new URLSearchParams({
+              key: GOOGLE_MAPS_API_KEY,
+              center: `${centerLat},${centerLng}`,
+              zoom: zoom.toString(),
+              maptype: "roadmap"
+            });
+            
+            setMapSrc(`${baseUrl}?${params.toString()}`);
+            console.log("Usando fallback para view map");
           }
-          
-          // Montar a URL final
-          const directionsUrl = `${baseUrl}?${params.toString()}`;
-          setMapSrc(directionsUrl);
-          
-          console.log("Mapa configurado para mostrar rota calculada (iframe)");
         } catch (error) {
           console.error("Erro ao atualizar mapa iframe:", error);
+          
+          // Fallback final: apenas mostrar a origem
+          const baseUrl = "https://www.google.com/maps/embed/v1/place";
+          const params = new URLSearchParams({
+            key: GOOGLE_MAPS_API_KEY,
+            q: `${origin.lat},${origin.lng}`,
+            zoom: "13",
+            maptype: "roadmap"
+          });
+          
+          setMapSrc(`${baseUrl}?${params.toString()}`);
         }
       } else {
         // Se não tivermos destinos, apenas mostrar a origem
