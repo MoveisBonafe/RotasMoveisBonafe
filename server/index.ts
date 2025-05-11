@@ -63,13 +63,20 @@ app.use((req, res, next) => {
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
-    // Serve static files from the dist directory
-    app.use(express.static(path.join(__dirname, "../public")));
+    // Serve static files from the dist/public directory (Vite output)
+    app.use(express.static(path.join(__dirname, "..", "public")));
     
+    // Handle API routes
+    app.use('/api', (req, res, next) => {
+      if (!res.headersSent) {
+        next();
+      }
+    });
+
     // Handle SPA routes by serving index.html
     app.get('*', (req, res) => {
       if (!res.headersSent && !req.path.startsWith('/api')) {
-        res.sendFile(path.join(__dirname, "../public/index.html"));
+        res.sendFile(path.join(__dirname, "..", "public", "index.html"));
       }
     });
   }
