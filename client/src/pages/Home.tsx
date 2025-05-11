@@ -16,7 +16,7 @@ export default function Home() {
   const [locations, setLocations] = useState<Location[]>([]);
   // Definindo caminhão 1 eixo como padrão (truck-1-axle)
   const [selectedVehicleType, setSelectedVehicleType] = useState<string>("truck1");
-  const [vehicleTypeObj, setVehicleTypeObj = useState<VehicleType | null>(null);
+  const [vehicleTypeObj, setVehicleTypeObj] = useState<VehicleType | null>(null);
   const [isAddLocationModalOpen, setIsAddLocationModalOpen] = useState(false);
   // Estado para o diálogo de configurações de combustível
   const [isFuelSettingsOpen, setIsFuelSettingsOpen] = useState(false);
