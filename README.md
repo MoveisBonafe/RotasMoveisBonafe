@@ -29,9 +29,11 @@ Aplicação para planejamento e otimização de rotas para transportadoras, util
 
 ## Deploy no GitHub Pages
 
-A aplicação pode ser implantada no GitHub Pages usando o script de deploy fornecido, que criará uma versão estática usando dados simulados em vez de depender do backend Express.
+A aplicação pode ser implantada no GitHub Pages de duas maneiras diferentes:
 
-### Pré-requisitos para o Deploy
+### Opção 1: Usando o Script de Deploy (Recomendado para implantação completa)
+
+#### Pré-requisitos para o Deploy
 
 - Chave de API do Google Maps. Você pode obtê-la no [Google Cloud Console](https://console.cloud.google.com/) com o seguinte serviço ativado:
   - Maps JavaScript API
@@ -39,9 +41,9 @@ A aplicação pode ser implantada no GitHub Pages usando o script de deploy forn
   - Geocoding API
   - Directions API
 
-### Passos para Deploy
+#### Passos para Deploy
 
-1. Edite o arquivo `.env.github` e substitua `YOUR_GOOGLE_MAPS_API_KEY` pela sua chave de API do Google Maps.
+1. A chave API já está configurada no arquivo `.env.github`. Caso precise atualizar, substitua o valor existente pela sua chave.
 
 2. Torne o script de deploy executável:
    ```bash
@@ -66,6 +68,28 @@ A aplicação pode ser implantada no GitHub Pages usando o script de deploy forn
    - Settings > Pages > Source > "Deploy from a branch" > Branch: main, Folder: /docs
 
 7. Após alguns minutos, seu site estará disponível em `https://seu-usuario.github.io/seu-repositorio/`.
+
+### Opção 2: Usando a Versão Estática Simplificada (Garantidamente funcional)
+
+Se encontrar problemas com a versão completa no GitHub Pages (como erros 404 para arquivos CSS), use a versão simplificada:
+
+1. Uma versão estática HTML totalmente funcional já está preparada na pasta `static_github_version`.
+
+2. Para usar esta versão no GitHub Pages:
+   ```bash
+   # Copie a versão estática para a pasta docs
+   rm -rf docs
+   cp -r static_github_version docs
+   
+   # Faça commit e envie para o GitHub
+   git add docs/
+   git commit -m "Add static GitHub Pages version"
+   git push
+   ```
+
+3. Configure o GitHub Pages para usar a pasta `/docs` conforme o passo 6 acima.
+
+Esta versão estática é um único arquivo HTML com todo o necessário embutido e garante compatibilidade máxima com GitHub Pages.
 
 ## Limitações da versão GitHub Pages
 
