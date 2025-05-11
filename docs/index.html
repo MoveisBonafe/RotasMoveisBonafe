@@ -511,45 +511,7 @@
             <div class="location-address">Dois Córregos, SP, Brasil</div>
           </div>
         </li>
-        <li class="location-item">
-          <div class="location-marker">1</div>
-          <div class="location-info">
-            <div class="location-name">Ribeirão Preto</div>
-            <div class="location-address">Ribeirão Preto, SP, Brasil</div>
-          </div>
-          <button class="remove-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </li>
-        <li class="location-item">
-          <div class="location-marker">2</div>
-          <div class="location-info">
-            <div class="location-name">Jaú</div>
-            <div class="location-address">Jaú, SP, Brasil</div>
-          </div>
-          <button class="remove-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </li>
-        <li class="location-item">
-          <div class="location-marker">3</div>
-          <div class="location-info">
-            <div class="location-name">Bauru</div>
-            <div class="location-address">Bauru, SP, Brasil</div>
-          </div>
-          <button class="remove-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </li>
+        <!-- Outros destinos serão adicionados aqui pelo usuário -->
       </ul>
     </aside>
 
@@ -582,7 +544,7 @@
       </div>
       
       <!-- Painel de informações da rota (inicialmente oculto) -->
-      <div class="route-info" id="route-info-panel" style="display: none;">
+      <div class="route-info" id="route-info-panel">
         <div class="route-info-header">
           <h3>Informações da Rota</h3>
           <button class="close-btn" id="close-info-btn">
@@ -660,8 +622,8 @@
   <script>
     // Script para versão estática mais completa
     document.addEventListener('DOMContentLoaded', function() {
-      // Configuração da API Google Maps (será substituída pela chave real)
-      const apiKey = "YOUR_API_KEY";  // Placeholder - será substituído pela chave real
+      // Configuração da API Google Maps
+      const apiKey = "AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U";
       
       // Referências dos elementos
       const optimizeBtn = document.getElementById('optimize-btn');
@@ -688,14 +650,11 @@
       endDateInput.value = nextWeekStr;
       
       // Contagem de locais adicionados
-      let locationCounter = 3; // Começando com 3 pois já temos destinos iniciais
+      let locationCounter = 0; // Começando com 0 já que temos apenas a origem
       
       // Coordenadas dos locais iniciais
       const locations = [
-        { id: 'origin', name: 'Dois Córregos', latlng: '-22.3673,-48.3823', isOrigin: true },
-        { id: 1, name: 'Ribeirão Preto', latlng: '-21.1785,-47.8057', isOrigin: false },
-        { id: 2, name: 'Jaú', latlng: '-22.3156,-48.7783', isOrigin: false },
-        { id: 3, name: 'Bauru', latlng: '-22.3031,-49.0791', isOrigin: false }
+        { id: 'origin', name: 'Dois Córregos', latlng: '-22.3673,-48.3823', isOrigin: true }
       ];
       
       // Funções auxiliares
@@ -719,11 +678,23 @@
       }
       
       function showInfoPanel() {
-        infoPanel.style.display = 'block';
+        if (infoPanel) {
+          infoPanel.style.display = 'block';
+        }
       }
       
       function hideInfoPanel() {
-        infoPanel.style.display = 'none';
+        if (infoPanel) {
+          infoPanel.style.display = 'none';
+        }
+      }
+      
+      // Garantir que o painel esteja visível ao carregar a página
+      function initializeInfoPanel() {
+        // Esconder inicialmente
+        if (infoPanel) {
+          infoPanel.style.display = 'none';
+        }
       }
       
       function createLocationItem(name, address, id, isOrigin = false) {
@@ -891,6 +862,9 @@
           item.remove();
         });
       });
+      
+      // Garantir visibilidade correta dos painéis inicialmente
+      initializeInfoPanel();
     });
   </script>
 </body>
