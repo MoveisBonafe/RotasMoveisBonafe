@@ -5,8 +5,16 @@ import "./index.css";
 // Get the Google Maps API key from environment variables
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 
+console.log("Using mock data:", import.meta.env.VITE_USE_MOCK_DATA === "true");
+
 if (!GOOGLE_MAPS_API_KEY) {
   console.error("Google Maps API key não encontrada. Funcionalidade do mapa será limitada.");
+  // Em produção, isso vai gerar um erro mais visível
+  if (import.meta.env.PROD) {
+    setTimeout(() => {
+      alert("Erro: Chave da API do Google Maps não encontrada. Entre em contato com o suporte.");
+    }, 1000);
+  }
 }
 
 // Status tracking for Google Maps loading
@@ -38,6 +46,22 @@ const loadGoogleMaps = () => {
   script.onerror = (e) => {
     console.error("Falha ao carregar Google Maps API:", e);
     loadAttempted = false; // Reset para permitir outra tentativa
+    
+    // Em produção, exibir um erro mais visível ao usuário
+    if (import.meta.env.PROD) {
+      const errorMsg = document.createElement('div');
+      errorMsg.style.position = 'fixed';
+      errorMsg.style.top = '0';
+      errorMsg.style.left = '0';
+      errorMsg.style.right = '0';
+      errorMsg.style.padding = '10px';
+      errorMsg.style.backgroundColor = '#f44336';
+      errorMsg.style.color = 'white';
+      errorMsg.style.textAlign = 'center';
+      errorMsg.style.zIndex = '9999';
+      errorMsg.innerText = 'Erro ao carregar o Google Maps. Verifique sua conexão ou entre em contato com o suporte.';
+      document.body.appendChild(errorMsg);
+    }
   };
   
   document.head.appendChild(script);
