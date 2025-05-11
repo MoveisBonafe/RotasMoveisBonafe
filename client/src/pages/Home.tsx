@@ -426,7 +426,7 @@ export default function Home() {
             </svg>
             <div>
               <h1 className="text-xl font-bold text-blue-700">Otimizador de Rotas</h1>
-              <p className="text-xs text-gray-500">Cálculo de rotas a partir de Dois Córregos-SP</p>
+              <p className="text-xs text-gray-500">Planejamento de entregas a partir de Dois Córregos-SP</p>
             </div>
           </div>
         </div>
