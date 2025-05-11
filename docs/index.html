@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Planejador de Rotas - Versão GitHub Pages</title>
+  <!-- API Google Maps com Places para autocomplete e função de zoom melhorada -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places"></script>
   <!-- Carregador do script TSP para otimização de rotas -->
   <script src="./tsp.js"></script>
   <style>
@@ -65,12 +67,12 @@
     .app-container {
       display: flex;
       flex: 1;
-      min-height: 600px;
+      min-height: 80vh;
       margin-bottom: 1rem;
     }
     
     .sidebar {
-      width: 320px;
+      width: 340px;
       background-color: #ffffff;
       border-radius: 0.5rem;
       padding: 1rem;
@@ -78,7 +80,7 @@
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       overflow-y: auto;
       height: 100%;
-      max-height: 600px;
+      max-height: 80vh;
       display: flex;
       flex-direction: column;
     }
@@ -301,6 +303,7 @@
       flex-direction: column;
       position: relative;
       height: 100%;
+      min-height: 80vh;
     }
     
     .map-header {
@@ -764,7 +767,7 @@
         <iframe 
           class="map-iframe"
           id="map-iframe"
-          src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&q=-22.3673,-48.3823&center=-22.3673,-48.3823&zoom=10&maptype=roadmap"
+          src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&q=-22.3673,-48.3823&center=-22.3673,-48.3823&zoom=10&maptype=roadmap&gestureHandling=greedy"
           allowfullscreen
           referrerpolicy="no-referrer-when-downgrade">
         </iframe>
@@ -987,75 +990,15 @@
         optimizeBtn.innerHTML = 'Calculando...';
         
         try {
-          // Implementação simplificada do TSP
-          // Para uma implementação real, usaríamos window.TSPSolver.solve
+          // Usar a implementação real do TSP
+          // Encontrar o índice da origem
+          const originIndex = locations.findIndex(l => l.isOrigin);
           
-          // Reordenar os destinos para simular otimização
-          const origin = locations.find(l => l.isOrigin);
-          const destinations = locations.filter(l => !l.isOrigin);
-          
-          // Algoritmo simples para ordenação
-          const orderedDestinations = [...destinations].sort((a, b) => {
-            // Ordenar por "proximidade" (simulado)
-            const [lat1, lng1] = a.latlng.split(',').map(parseFloat);
-            const [lat2, lng2] = b.latlng.split(',').map(parseFloat);
-            const [originLat, originLng] = origin.latlng.split(',').map(parseFloat);
-            
-            // Distância euclidiana como heurística
-            const dist1 = Math.sqrt(
-              Math.pow(lat1 - originLat, 2) + 
-              Math.pow(lng1 - originLng, 2)
-            );
-            const dist2 = Math.sqrt(
-              Math.pow(lat2 - originLat, 2) + 
-              Math.pow(lng2 - originLng, 2)
-            );
-            
-            return dist1 - dist2;
-          });
-          
-          // Construir resultado otimizado
-          const orderedLocations = [origin, ...orderedDestinations];
-          
-          // Calcular distâncias para cada segmento
-          const segmentDistances = [];
-          for (let i = 0; i < orderedLocations.length - 1; i++) {
-            const [lat1, lng1] = orderedLocations[i].latlng.split(',').map(parseFloat);
-            const [lat2, lng2] = orderedLocations[i + 1].latlng.split(',').map(parseFloat);
-            
-            // Distância em km (estimativa grosseira)
-            const distKm = Math.round(
-              Math.sqrt(Math.pow(lat2 - lat1, 2) + Math.pow(lng2 - lng1, 2)) * 111
-            );
-            segmentDistances.push(distKm);
-          }
-          
-          // Adicionar segmento de volta à origem
-          const [lastLat, lastLng] = orderedLocations[orderedLocations.length - 1].latlng.split(',').map(parseFloat);
-          const [originLat, originLng] = origin.latlng.split(',').map(parseFloat);
-          const lastDistKm = Math.round(
-            Math.sqrt(Math.pow(originLat - lastLat, 2) + Math.pow(originLng - lastLng, 2)) * 111
-          );
-          segmentDistances.push(lastDistKm);
-          
-          // Calcular distância total
-          const totalDistance = segmentDistances.reduce((a, b) => a + b, 0);
-          
-          // Tempo estimado (60 km/h média)
-          const hours = Math.floor(totalDistance / 60);
-          const minutes = Math.round((totalDistance / 60 % 1) * 60);
-          const timeStr = `${hours}h ${minutes}min`;
-          
-          // Resultado final
-          const tspResult = {
-            orderedLocations,
-            segmentDistances,
-            totalDistance,
-            estimatedTime: timeStr
-          };
+          // Resolver o problema do caixeiro viajante
+          const tspResult = window.TSPSolver.solve(locations, originIndex);
           
           // Atualizar o iframe com a rota otimizada
-          mapIframe.src = buildDirectionsUrl(orderedLocations);
+          mapIframe.src = buildDirectionsUrl(tspResult.orderedLocations);
           
           // Atualizar informações da rota
           updateRouteInfo(tspResult);
@@ -1619,6 +1562,57 @@
         });
       });
       
+      // Implementar sugestões de busca no campo de localização
+      function setupAutocomplete() {
+        // Verificar se a API do Google Places está carregada
+        if (window.google && window.google.maps && window.google.maps.places) {
+          try {
+            const autocompleteService = new google.maps.places.AutocompleteService();
+            
+            // Variável para armazenar o timeout de digitação
+            let typingTimer;
+            
+            // Evento de digitação no campo de busca
+            locationInput.addEventListener('input', function() {
+              // Limpar timeout anterior
+              clearTimeout(typingTimer);
+              
+              // Configurar novo timeout (aguardar 300ms após parar de digitar)
+              typingTimer = setTimeout(function() {
+                const query = locationInput.value.trim();
+                if (query.length > 2) {
+                  // Buscar sugestões
+                  autocompleteService.getPlacePredictions({
+                    input: query,
+                    componentRestrictions: { country: 'br' }
+                  }, function(predictions, status) {
+                    if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+                      // Exibir sugestões (implementação simplificada para o GitHub Pages)
+                      const firstResult = predictions[0];
+                      if (firstResult) {
+                        console.log('Sugestão:', firstResult.description);
+                        // Em uma implementação completa, mostraríamos um dropdown com as sugestões
+                      }
+                    }
+                  });
+                }
+              }, 300);
+            });
+          } catch (error) {
+            console.error('Erro ao configurar autocompletar:', error);
+          }
+        } else {
+          console.warn('API do Google Places não disponível');
+        }
+      }
+      
+      // Tentar configurar o autocomplete quando o script for carregado
+      if (document.readyState === 'complete') {
+        setupAutocomplete();
+      } else {
+        window.addEventListener('load', setupAutocomplete);
+      }
+      
       // Adicionar destino
       addLocationBtn.addEventListener('click', addLocation);
       
@@ -1644,6 +1638,23 @@
       endDateInput.addEventListener('change', updateDateFilter);
       
       // Pegman (Street View)
+      // Como estamos usando um iframe, não podemos acessar diretamente o Street View
+      // Vamos implementar uma simulação que abre o Street View em uma nova aba
+      
+      // Adicionar evento de clique no pegman (alternativa ao drag and drop para o GitHub Pages)
+      pegmanBtn.addEventListener('click', function() {
+        // Obter o centro atual do mapa - usando as coordenadas de Dois Córregos
+        const centerLat = -22.3673;
+        const centerLng = -48.3823;
+        
+        // Construir URL do Street View
+        const streetViewUrl = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${centerLat},${centerLng}`;
+        
+        // Abrir em nova aba
+        window.open(streetViewUrl, '_blank');
+      });
+      
+      // Implementação de drag para funcionar com iframe (para compatibilidade)
       pegmanBtn.addEventListener('dragstart', function(e) {
         // Configurar dados para arrastar
         e.dataTransfer.setData('text/plain', 'pegman');
@@ -1661,16 +1672,18 @@
           const x = e.clientX - rect.left;
           const y = e.clientY - rect.top;
           
-          // Percentual de posição
-          const percentX = (x / rect.width * 100).toFixed(2);
-          const percentY = (y / rect.height * 100).toFixed(2);
+          // Usar percentagem para estimar lat/lng relativa (simplificado)
+          const percentX = x / rect.width;
+          const percentY = y / rect.height;
           
-          // Exibir Street View no ponto clicado
-          alert(`Iniciando Street View na posição (${percentX}%, ${percentY}%)`);
+          // Estimar lat/lng (simplificado, não é preciso mas dá uma experiência básica)
+          // Usando uma margem de 0.1 graus em torno de Dois Córregos
+          const lat = -22.3673 + (0.2 * (percentY - 0.5));
+          const lng = -48.3823 + (0.2 * (percentX - 0.5));
           
-          // Em uma implementação real, enviaríamos estas coordenadas para o iframe
-          // e ativaríamos o Street View naquele ponto
-          // Como estamos usando um iframe encapsulado, isso não é possível diretamente
+          // Abrir Street View nesse ponto
+          const streetViewUrl = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat},${lng}`;
+          window.open(streetViewUrl, '_blank');
         });
       });
       
