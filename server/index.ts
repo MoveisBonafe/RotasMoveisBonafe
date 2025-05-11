@@ -45,8 +45,6 @@ app.use((req, res, next) => {
     next();
   });
 
-  const server = await registerRoutes(app);
-
   // Then handle errors
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
