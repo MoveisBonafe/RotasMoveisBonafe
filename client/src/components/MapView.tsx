@@ -271,68 +271,100 @@ export default function MapView({
     }
   };
 
-  // Quando waypoints mudam, mas não há rota calculada ainda
+  // Quando waypoints mudam, atualizar o mapa e marcadores
   useEffect(() => {
-    if (origin && waypoints.length > 0 && !calculatedRoute) {
-      try {
-        // Centralizar o mapa para incluir todos os pontos
-        let sumLat = parseFloat(origin.lat);
-        let sumLng = parseFloat(origin.lng);
-        let minLat = parseFloat(origin.lat);
-        let maxLat = parseFloat(origin.lat);
-        let minLng = parseFloat(origin.lng);
-        let maxLng = parseFloat(origin.lng);
-        
-        // Calcular centro e limites
-        waypoints.forEach(wp => {
-          const lat = parseFloat(wp.lat);
-          const lng = parseFloat(wp.lng);
+    if (origin) {
+      if (waypoints.length > 0) {
+        // Se o mapa JavaScript já estiver inicializado, atualize os marcadores
+        if (directMapRef.current) {
+          console.log("Waypoints mudaram, atualizando marcadores no mapa...");
+          updateMarkersOnMap();
           
-          sumLat += lat;
-          sumLng += lng;
+          // Ajustar visualização para incluir todos os pontos
+          try {
+            const bounds = new window.google.maps.LatLngBounds();
+            
+            // Adicionar origem e todos os waypoints aos limites
+            bounds.extend({lat: parseFloat(origin.lat), lng: parseFloat(origin.lng)});
+            
+            waypoints.forEach(wp => {
+              bounds.extend({lat: parseFloat(wp.lat), lng: parseFloat(wp.lng)});
+            });
+            
+            // Aplicar limites para ajustar visualização
+            directMapRef.current.fitBounds(bounds);
+            
+            // Verificar se estamos com zoom muito próximo (caso de pontos muito próximos)
+            const currentZoom = directMapRef.current.getZoom();
+            if (currentZoom && currentZoom > 15) {
+              directMapRef.current.setZoom(14);
+            }
+          } catch (err) {
+            console.error("Erro ao ajustar visualização do mapa:", err);
+          }
           
-          minLat = Math.min(minLat, lat);
-          maxLat = Math.max(maxLat, lat);
-          minLng = Math.min(minLng, lng);
-          maxLng = Math.max(maxLng, lng);
-        });
+          return;
+        }
         
-        // Calcular o centro médio
-        const centerLat = sumLat / (waypoints.length + 1);
-        const centerLng = sumLng / (waypoints.length + 1);
-        
-        // Calcular zoom baseado na diferença
-        const latDiff = maxLat - minLat;
-        const lngDiff = maxLng - minLng;
-        const maxDiff = Math.max(latDiff, lngDiff);
-        
-        // Ajustar zoom conforme a distância
-        let zoom = 12;
-        if (maxDiff > 0.5) zoom = 10;
-        if (maxDiff > 1) zoom = 9;
-        if (maxDiff > 2) zoom = 8;
-        if (maxDiff > 4) zoom = 7;
-        
-        // Criar URL para o mapa
-        const baseUrl = "https://www.google.com/maps/embed/v1/place";
-        const params = new URLSearchParams({
-          key: GOOGLE_MAPS_API_KEY,
-          q: `${centerLat},${centerLng}`,
-          zoom: zoom.toString(),
-          maptype: "roadmap"
-        });
-        
-        // Infelizmente, Google Maps Embed API não permite múltiplos marcadores
-        // em modo place, então não podemos mostrar todos os waypoints de uma vez
-        // Vamos mostrar pelo menos o centro do mapa
-        
-        setMapSrc(`${baseUrl}?${params.toString()}`);
-        console.log("Mapa centralizado para mostrar todos os pontos");
-      } catch (error) {
-        console.error("Erro ao atualizar mapa:", error);
+        // Fallback para iframe se o mapa JavaScript não estiver disponível
+        if (origin && waypoints.length > 0 && !calculatedRoute) {
+          try {
+            // Centralizar o mapa para incluir todos os pontos
+            let sumLat = parseFloat(origin.lat);
+            let sumLng = parseFloat(origin.lng);
+            let minLat = parseFloat(origin.lat);
+            let maxLat = parseFloat(origin.lat);
+            let minLng = parseFloat(origin.lng);
+            let maxLng = parseFloat(origin.lng);
+            
+            // Calcular centro e limites
+            waypoints.forEach(wp => {
+              const lat = parseFloat(wp.lat);
+              const lng = parseFloat(wp.lng);
+              
+              sumLat += lat;
+              sumLng += lng;
+              
+              minLat = Math.min(minLat, lat);
+              maxLat = Math.max(maxLat, lat);
+              minLng = Math.min(minLng, lng);
+              maxLng = Math.max(maxLng, lng);
+            });
+            
+            // Calcular o centro médio
+            const centerLat = sumLat / (waypoints.length + 1);
+            const centerLng = sumLng / (waypoints.length + 1);
+            
+            // Calcular zoom baseado na diferença
+            const latDiff = maxLat - minLat;
+            const lngDiff = maxLng - minLng;
+            const maxDiff = Math.max(latDiff, lngDiff);
+            
+            // Ajustar zoom conforme a distância
+            let zoom = 12;
+            if (maxDiff > 0.5) zoom = 10;
+            if (maxDiff > 1) zoom = 9;
+            if (maxDiff > 2) zoom = 8;
+            if (maxDiff > 4) zoom = 7;
+            
+            // Criar URL para o mapa
+            const baseUrl = "https://www.google.com/maps/embed/v1/place";
+            const params = new URLSearchParams({
+              key: GOOGLE_MAPS_API_KEY,
+              q: `${centerLat},${centerLng}`,
+              zoom: zoom.toString(),
+              maptype: "roadmap"
+            });
+            
+            setMapSrc(`${baseUrl}?${params.toString()}`);
+            console.log("Mapa centralizado para mostrar todos os pontos (iframe fallback)");
+          } catch (error) {
+            console.error("Erro ao atualizar mapa iframe:", error);
+          }
+        }
       }
     }
-  }, [waypoints, origin, calculatedRoute, GOOGLE_MAPS_API_KEY]);
+  }, [waypoints, origin, calculatedRoute]);
 
   // Estado para controlar a visualização Street View
   const [showStreetView, setShowStreetView] = useState(false);
@@ -473,9 +505,29 @@ export default function MapView({
 
   // Efeito para carregar o mapa diretamente usando a Google Maps JavaScript API
   useEffect(() => {
-    // Sempre inicializar o mapa quando tivermos origem e container, mesmo que já exista um mapa anterior
+    // Verifica se a origem está definida e se temos um container para o mapa
     if (origin && mapContainerRef.current) {
-      // Limpar mapa anterior se existir
+      console.log("Inicializando/atualizando mapa com origem:", origin.name);
+      
+      // Se o mapa já existir, apenas centralize na origem sem recriar todo o mapa
+      if (directMapRef.current) {
+        try {
+          // Atualizar o centro do mapa para a origem
+          directMapRef.current.setCenter({
+            lat: parseFloat(origin.lat),
+            lng: parseFloat(origin.lng)
+          });
+          
+          // Atualizar os marcadores sem recriar o mapa
+          updateMarkersOnMap();
+          return;
+        } catch (err) {
+          console.error("Erro ao atualizar mapa existente:", err);
+          // Continuar para recriar o mapa em caso de erro
+        }
+      }
+      
+      // Limpar mapa anterior se existir, mas algo deu errado na atualização
       if (directMapRef.current) {
         // Remover todos os marcadores
         if (markersRef.current.length > 0) {
@@ -640,13 +692,18 @@ export default function MapView({
   
   // Função para adicionar marcadores ao mapa
   const updateMarkersOnMap = () => {
-    if (!directMapRef.current || !origin) return;
+    if (!directMapRef.current || !origin) {
+      console.warn("Não é possível atualizar marcadores: mapa ou origem não disponíveis");
+      return;
+    }
     
     try {
+      console.log("Atualizando marcadores no mapa com origem:", origin.name);
       const map = directMapRef.current;
       
       // Limpar todos os marcadores existentes
       if (markersRef.current.length > 0) {
+        console.log(`Removendo ${markersRef.current.length} marcadores existentes`);
         for (let i = 0; i < markersRef.current.length; i++) {
           markersRef.current[i].setMap(null);
         }
@@ -658,7 +715,7 @@ export default function MapView({
       
       // Decidir quais pontos mostrar (rota calculada tem prioridade se existir)
       const pointsToShow = calculatedRoute || (waypoints.length > 0 ? [origin, ...waypoints] : [origin]);
-      console.log(`Exibindo ${pointsToShow.length} pontos no mapa...`);
+      console.log(`Exibindo ${pointsToShow.length} pontos no mapa: origem + ${pointsToShow.length - 1} waypoints`);
       
       // Adicionar cada ponto ao mapa com marcadores sequenciais
       pointsToShow.forEach((point, index) => {

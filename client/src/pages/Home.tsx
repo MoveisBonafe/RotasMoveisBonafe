@@ -150,20 +150,28 @@ export default function Home() {
           isOrigin: false
         }));
 
-        // Adiciona todas à lista de localizações atual - forçando re-renderização imediata
-        setTimeout(() => {
-          const updatedLocations = [...locations, ...newLocations];
-          setLocations(updatedLocations);
-          setCalculatedRoute(null); // Reset da rota calculada ao adicionar novas localizações
+        // Adiciona as localizações diretamente sem usar setTimeout que pode causar problemas
+        const updatedLocations = [...locations, ...newLocations];
+        setLocations(updatedLocations);
+        setCalculatedRoute(null); // Reset da rota calculada ao adicionar novas localizações
 
-          console.log(`Adicionadas ${newLocations.length} localizações. Total: ${updatedLocations.length}`, newLocations);
+        console.log(`Adicionadas ${newLocations.length} localizações. Total: ${updatedLocations.length}`, newLocations);
 
-          // Notifica o usuário do sucesso
-          toast({
-            title: "Localizações adicionadas",
-            description: `${newLocations.length} CEPs importados com sucesso`,
-          });
-        }, 100); // Pequeno delay para garantir que o DOM seja atualizado
+        // Notifica o usuário do sucesso
+        toast({
+          title: "Localizações adicionadas",
+          description: `${newLocations.length} CEPs importados com sucesso`,
+        });
+        
+        // Agenda o cálculo automático da rota após a importação
+        if (updatedLocations.length > 0) {
+          console.log("Agendando cálculo automático de rota após importação");
+          // Esperar um pouco para os pontos serem atualizados corretamente no mapa
+          setTimeout(() => {
+            console.log("Executando cálculo automático da rota após importação de CEPs");
+            handleCalculateRoute();
+          }, 2000);
+        }
       } else {
         // Processamento de uma única localização (busca individual)
         console.log("Adicionando localização individual:", locationOrLocations);
