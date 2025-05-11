@@ -64,16 +64,16 @@ app.use((req, res, next) => {
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
-    // Serve static files from the dist/public directory
-    const distPath = path.join(__dirname, "../dist/public");
-    console.log(`Serving static files from: ${distPath}`);
-    
-    if (!fs.existsSync(distPath)) {
-      console.warn(`Build directory not found: ${distPath}`);
-      fs.mkdirSync(distPath, { recursive: true });
-    }
+      // Serve static files from the dist/public directory
+      const distPath = path.join(process.cwd(), "dist/public");
+      console.log(`Serving static files from: ${distPath}`);
 
-    app.use(express.static(distPath));
+      if (!fs.existsSync(distPath)) {
+        console.warn(`Build directory not found: ${distPath}`);
+        fs.mkdirSync(distPath, { recursive: true });
+      }
+
+      app.use(express.static(distPath));
 
     // Handle API routes first
     app.use('/api', (req, res, next) => {
