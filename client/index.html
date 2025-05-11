@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
+    <!-- Base tag para GitHub Pages (será adicionada/substituída dinamicamente) -->
+    <base href="./">
     <meta charset="UTF-8" />
     <!-- Atualizar viewport para permitir zoom e interações mais suaves -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -44,7 +46,24 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="./src/main.tsx"></script>
+    <!-- Base path para GitHub Pages -->
+    <script>
+      // Verifica se estamos no GitHub Pages
+      if (window.location.hostname.includes('github.io')) {
+        // Dynamically sets the base href for GitHub Pages
+        const baseTag = document.createElement('base');
+        
+        // Extrair o nome do repositório do path
+        const pathSegments = window.location.pathname.split('/');
+        const repoName = pathSegments[1] || '';
+        
+        baseTag.href = `/${repoName}/`;
+        document.head.appendChild(baseTag);
+        
+        console.log(`Configurado base href para GitHub Pages: /${repoName}/`);
+      }
+    </script>
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
     <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
     
