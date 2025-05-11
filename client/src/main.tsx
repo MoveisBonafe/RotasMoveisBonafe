@@ -4,12 +4,12 @@ import "./index.css";
 
 // Get the Google Maps API key from environment variables
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
+const isGitHubPages = window.location.hostname.includes('github.io') || import.meta.env.VITE_USE_MOCK_DATA === 'true';
 
-console.log("Using mock data:", import.meta.env.VITE_USE_MOCK_DATA === "true");
+console.log("Using mock data:", isGitHubPages);
 
-if (!GOOGLE_MAPS_API_KEY) {
+if (!GOOGLE_MAPS_API_KEY && !isGitHubPages) {
   console.error("Google Maps API key não encontrada. Funcionalidade do mapa será limitada.");
-  // Em produção, isso vai gerar um erro mais visível
   if (import.meta.env.PROD) {
     setTimeout(() => {
       alert("Erro: Chave da API do Google Maps não encontrada. Entre em contato com o suporte.");

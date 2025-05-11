@@ -12,6 +12,10 @@ import {
 const isGitHubPages = window.location.hostname.includes('github.io') || 
                        import.meta.env.VITE_USE_MOCK_DATA === 'true';
 
+if (isGitHubPages) {
+  console.log('Inicializando modo GitHub Pages com dados simulados');
+}
+
 console.log("Using mock data:", isGitHubPages);
 
 async function throwIfResNotOk(res: Response) {
