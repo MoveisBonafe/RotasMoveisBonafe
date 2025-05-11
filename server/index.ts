@@ -5,7 +5,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -53,7 +52,7 @@ app.use((req, res, next) => {
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
-    
+
     if (!res.headersSent) {
       res.status(status).json({ message, error: true });
     }
@@ -64,7 +63,7 @@ app.use((req, res, next) => {
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
-    app.use(express.static(path.join(__dirname, "public")));
+    app.use(express.static(path.join(__dirname, "..", "public")));
   }
 
   // Finally, handle SPA routes
