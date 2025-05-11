@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Location } from "@/lib/types";
 import { getMarkerIcon } from "@/lib/mapUtils";
 import { withGoogleMaps } from "@/main";
+import { setupZoomHelper } from "@/helpers/mapZoomHelper";
 
 // Declaração para o objeto global do Google Maps
 declare global {
@@ -933,6 +934,9 @@ export default function MapView({
     // Iniciar carregamento da API do Google Maps no mount do componente
     withGoogleMaps(() => {
       console.log("API do Google Maps carregada automaticamente durante montagem do componente");
+      
+      // Configurar helper para permitir zoom sem Ctrl
+      setupZoomHelper(15); // Tenta até 15 vezes para encontrar o mapa
     });
   }, []);
 
