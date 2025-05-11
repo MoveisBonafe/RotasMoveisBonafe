@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import { useEffect } from "react";
 import { apiRequest } from "./lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import MockDataDebug from "@/components/MockDataDebug";
 
 function Router() {
   return (
@@ -47,6 +48,7 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <Router />
+        <MockDataDebug />
       </TooltipProvider>
     </QueryClientProvider>
   );
