@@ -72,7 +72,7 @@
     }
     
     .sidebar {
-      width: 340px;
+      width: 380px;
       background-color: #ffffff;
       border-radius: 0.5rem;
       padding: 1rem;
@@ -1001,8 +1001,15 @@
           // Resolver o problema do caixeiro viajante
           const tspResult = window.TSPSolver.solve(locations, originIndex);
           
-          // Atualizar o iframe com a rota otimizada
-          mapIframe.src = buildDirectionsUrl(tspResult.orderedLocations);
+          // Guardar a última solução TSP
+          window.lastTspResult = tspResult;
+          
+          // Atualizar a ordem dos elementos visuais na lista para corresponder
+          // à ordem otimizada do TSP
+          updateLocationListVisualOrder(tspResult.orderedLocations);
+          
+          // Atualizar o mapa com a rota otimizada
+          buildDirectionsUrl(tspResult.orderedLocations);
           
           // Atualizar informações da rota
           updateRouteInfo(tspResult);
@@ -1027,6 +1034,66 @@
             Otimizar Rota
           `;
         }
+      }
+      
+      // Função para atualizar a ordem visual dos locais na lista
+      function updateLocationListVisualOrder(orderedLocations) {
+        // Guardar a nova ordem de IDs
+        const orderedIds = orderedLocations.map(loc => 
+          typeof loc.id === 'string' ? loc.id : loc.id.toString()
+        );
+        
+        // Obter todos os itens da lista, exceto a origem
+        const listItems = Array.from(locationList.querySelectorAll('.location-item:not(.origin)'));
+        
+        // Se não houver itens para reordenar, sair
+        if (listItems.length <= 1) return;
+        
+        // Reordenar os elementos DOM da lista
+        listItems.sort((a, b) => {
+          // Obter o ID de cada item (armazenado no marcador)
+          const aId = a.querySelector('.location-marker').textContent;
+          const bId = b.querySelector('.location-marker').textContent;
+          
+          // Se o ID não estiver na lista ordenada, colocar no final
+          if (!orderedIds.includes(aId) && !orderedIds.includes(bId)) return 0;
+          if (!orderedIds.includes(aId)) return 1;
+          if (!orderedIds.includes(bId)) return -1;
+          
+          // Ordenar de acordo com a lista ordenada
+          return orderedIds.indexOf(aId) - orderedIds.indexOf(bId);
+        });
+        
+        // Atualizar a ordem em que os elementos aparecem na UI
+        // Remover todos os itens não-origem
+        listItems.forEach(item => item.remove());
+        
+        // Adicionar os elementos na nova ordem
+        const originItem = locationList.querySelector('.location-item.origin');
+        listItems.forEach((item, index) => {
+          // Atualizar o número sequencial no marcador
+          const marker = item.querySelector('.location-marker');
+          if (marker) {
+            marker.textContent = (index + 1).toString();
+          }
+          
+          locationList.appendChild(item);
+        });
+        
+        // Atualizar a ordem no array de locais também
+        locations.sort((a, b) => {
+          if (a.isOrigin) return -1;
+          if (b.isOrigin) return 1;
+          
+          const aIdStr = a.id.toString();
+          const bIdStr = b.id.toString();
+          
+          if (!orderedIds.includes(aIdStr) && !orderedIds.includes(bIdStr)) return 0;
+          if (!orderedIds.includes(aIdStr)) return 1;
+          if (!orderedIds.includes(bIdStr)) return -1;
+          
+          return orderedIds.indexOf(aIdStr) - orderedIds.indexOf(bIdStr);
+        });
       }
       
       // ===== FUNÇÕES PARA ATUALIZAÇÃO DA INTERFACE =====
@@ -1540,8 +1607,19 @@
           const importedLocations = [];
           
           // Processar cada linha
-          lines.forEach(line => {
-            if (!line.trim()) return; // Pular linhas vazias
+          const processNext = (index) => {
+            if (index >= lines.length) {
+              // Concluído o processamento de todas as linhas
+              finishImport();
+              return;
+            }
+            
+            const line = lines[index];
+            if (!line.trim()) {
+              // Pular linha vazia e continuar
+              processNext(index + 1);
+              return;
+            }
             
             const parts = line.split(',');
             if (parts.length >= 2) {
@@ -1551,30 +1629,78 @@
               // Incrementar contador
               locationCounter++;
               
-              // Criar localização com coordenadas simuladas
-              const newLocation = createLocationItem(name, `CEP: ${cep}`, locationCounter);
+              // Obter coordenadas a partir do CEP (simulado para o GitHub Pages)
+              // Na aplicação real, usamos a API de Geocoding
+              // Aqui vamos usar coordenadas estratégicas em torno de Dois Córregos
+              
+              // Base: coordenadas de Dois Córregos
+              const baseLat = -22.3673;
+              const baseLng = -48.3823;
+              
+              // Gerar um deslocamento com base no ID/contador para garantir que pontos não se sobreponham
+              // e que fiquem relativamente próximos à Dois Córregos
+              const latOffset = (Math.sin(locationCounter * 0.5) * 0.2);
+              const lngOffset = (Math.cos(locationCounter * 0.5) * 0.2);
+              
+              const lat = baseLat + latOffset;
+              const lng = baseLng + lngOffset;
+              const latlng = `${lat.toFixed(6)},${lng.toFixed(6)}`;
+              
+              // Criar elemento visual
+              createLocationItem(name, `CEP: ${cep}`, locationCounter);
+              
+              // Criar objeto de localização
+              const location = {
+                id: locationCounter,
+                name: name,
+                address: `CEP: ${cep}`,
+                latlng: latlng,
+                isOrigin: false
+              };
+              
+              // Adicionar ao mapa se disponível
+              if (map) {
+                addMarkerToMap({lat, lng}, name, locationCounter.toString());
+              }
               
               // Adicionar ao array de locais
-              locations.push(newLocation);
-              importedLocations.push(newLocation);
+              locations.push(location);
+              importedLocations.push(location);
+              
+              // Processar próxima linha com um pequeno delay para não sobrecarregar
+              setTimeout(() => processNext(index + 1), 50);
+            } else {
+              // Formato inválido, pular para a próxima linha
+              processNext(index + 1);
             }
-          });
+          };
           
-          // Informar ao usuário
-          if (importedLocations.length > 0) {
-            alert(`Importado com sucesso! ${importedLocations.length} endereços adicionados.`);
-            
-            // Atualizar mapa para mostrar todos os pontos
+          // Função para finalizar a importação
+          const finishImport = () => {
+            // Informar ao usuário
             if (importedLocations.length > 0) {
-              // Calcular rota automaticamente após a importação
-              calculateOptimizedRoute();
+              alert(`Importado com sucesso! ${importedLocations.length} endereços adicionados.`);
+              
+              // Centralizar mapa para mostrar todos os pontos
+              if (map && importedLocations.length > 0) {
+                // Ajustar zoom para mostrar todos os pontos
+                const bounds = new google.maps.LatLngBounds();
+                markers.forEach(marker => bounds.extend(marker.getPosition()));
+                map.fitBounds(bounds);
+                
+                // Calcular rota automaticamente após a importação
+                calculateOptimizedRoute();
+              }
+            } else {
+              alert('Nenhum endereço válido encontrado no arquivo.');
             }
-          } else {
-            alert('Nenhum endereço válido encontrado no arquivo.');
-          }
+            
+            // Limpar input
+            event.target.value = '';
+          };
           
-          // Limpar input
-          event.target.value = '';
+          // Iniciar processamento
+          processNext(0);
         };
         
         reader.readAsText(file);
@@ -1859,8 +1985,11 @@
             const name = place.name || place.formatted_address;
             const address = place.formatted_address;
             
-            // Adicionar ao mapa
+            // Atualizar o valor do campo
             locationInput.value = name;
+            
+            // Adicionar automaticamente aos destinos quando um local é selecionado do autocomplete
+            addLocation();
           });
           
           console.log("Autocomplete configurado com sucesso");
