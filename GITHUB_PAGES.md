@@ -70,13 +70,25 @@ Se encontrar problemas:
 1. **Mapa não carrega**:
    - Verifique se a chave API do Google Maps está correta
    - Confirme que a chave não tem restrições que bloqueiam seu domínio
+   - A chave já está configurada no arquivo `.env.github`
 
 2. **Erro 404 ao navegar diretamente para uma rota**:
    - Verifique se o arquivo `404.html` foi criado corretamente na pasta `docs/`
+   - Este problema é automaticamente resolvido pelo script de deploy
 
 3. **Interface carrega, mas sem dados**:
    - Verifique o console do navegador para erros
    - Confirme que os dados simulados estão sendo carregados corretamente
+
+4. **Erro "Failed to load stylesheet"**:
+   - Este erro ocorre porque o Vite cria links absolutos para os arquivos CSS/JS
+   - O script de deploy corrige automaticamente todos os caminhos para serem relativos
+   - Se o erro persistir, siga estas etapas:
+     1. Navegue até a pasta `docs/`
+     2. Abra o arquivo `index.html` em um editor
+     3. Procure por referências como `href="/assets/..."` e mude para `href="./assets/..."`
+     4. Faça o mesmo com os arquivos CSS na pasta `docs/assets/`
+     5. Repita o processo para os atributos `src=` em scripts
 
 ---
 

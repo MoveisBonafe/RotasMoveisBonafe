@@ -43,6 +43,27 @@ MODE=github npm run build
 mkdir -p docs
 cp -r dist/* docs/
 
+# Corrigir caminhos relativos nos arquivos HTML e CSS
+echo "Corrigindo caminhos relativos para GitHub Pages..."
+
+# Encontrar todos os arquivos CSS e JS na pasta de assets
+ASSETS_FILES=$(find docs/assets -type f -name "*.css" -o -name "*.js")
+
+# Para cada arquivo CSS/JS, corrigir caminhos internos
+for file in $ASSETS_FILES; do
+  # Substituir referências a paths absolutos ("/assets/...") para relativos ("./assets/...")
+  sed -i 's|"/assets/|"./assets/|g' $file
+  echo "Corrigido $file"
+done
+
+# Corrigir index.html e 404.html
+for htmlfile in docs/index.html docs/404.html; do
+  # Substituir referências a assets
+  sed -i 's|href="/assets/|href="./assets/|g' $htmlfile
+  sed -i 's|src="/assets/|src="./assets/|g' $htmlfile
+  echo "Corrigido $htmlfile"
+done
+
 # Criar um arquivo 404.html para funcionar com rotas do SPA no GitHub Pages
 cp docs/index.html docs/404.html
 
