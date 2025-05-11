@@ -8,12 +8,17 @@ channel = "stable-24_05"
 [deployment]
 deploymentTarget = "static"
 build = ["sh", "-c", "NODE_ENV=production npm run build"]
-publicDir = "dist/public"
+publicDir = "dist"
 run = ["sh", "-c", ""]
 
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+
+[[deployment.rewrites]]
+from = "/*"
+to = "/index.html"
 
 [[deployment.rewrites]]
 from = "/*"
