@@ -149,6 +149,9 @@ export default function Home() {
           lng: location.lng,
           isOrigin: false
         }));
+        
+        // Força uma atualização completa para garantir que os marcadores sejam atualizados corretamente
+        setLocations([]);
 
         // Adiciona as localizações diretamente sem usar setTimeout que pode causar problemas
         const updatedLocations = [...locations, ...newLocations];
@@ -516,6 +519,7 @@ export default function Home() {
             </div>
           ) : (
             <MapView 
+              key={`map-${locations.length}-${Date.now()}`} // Força recriação do componente após importação
               origin={origin}
               waypoints={locations}
               calculatedRoute={calculatedRoute}
