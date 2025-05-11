@@ -63,20 +63,25 @@ app.use((req, res, next) => {
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
-    // Serve static files from the dist/public directory (Vite output)
-    app.use(express.static(path.join(__dirname, "..", "public")));
+    // Serve static files from the dist directory
+    app.use(express.static(path.join(__dirname, "../public")));
     
-    // Handle API routes
+    // Handle API routes first
     app.use('/api', (req, res, next) => {
       if (!res.headersSent) {
         next();
       }
     });
 
-    // Handle SPA routes by serving index.html
+    // Then serve index.html for all other routes (SPA)
     app.get('*', (req, res) => {
-      if (!res.headersSent && !req.path.startsWith('/api')) {
-        res.sendFile(path.join(__dirname, "..", "public", "index.html"));
+      if (!req.path.startsWith('/api')) {
+        res.sendFile(path.join(__dirname, "../public/index.html"), (err) => {
+          if (err) {
+            console.error('Error sending index.html:', err);
+            res.status(500).send('Error loading application');
+          }
+        });
       }
     });
   }
