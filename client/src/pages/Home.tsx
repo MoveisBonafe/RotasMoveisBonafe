@@ -150,11 +150,18 @@ export default function Home() {
           isOrigin: false
         }));
         
-        // Força uma atualização completa para garantir que os marcadores sejam atualizados corretamente
-        setLocations([]);
-
-        // Adiciona as localizações diretamente sem usar setTimeout que pode causar problemas
-        const updatedLocations = [...locations, ...newLocations];
+        // Mantém a origem e adiciona as novas localizações
+        // Garantimos que não perdemos a origem no processo
+        const existingOrigin = locations.find(loc => loc.isOrigin);
+        const nonOriginLocations = locations.filter(loc => !loc.isOrigin);
+        
+        // Combina: primeiro a origem (se existir), depois as localizações existentes (não origem), e por fim as novas
+        const updatedLocations = [
+          ...(existingOrigin ? [existingOrigin] : []),
+          ...nonOriginLocations,
+          ...newLocations
+        ];
+        
         setLocations(updatedLocations);
         setCalculatedRoute(null); // Reset da rota calculada ao adicionar novas localizações
 

@@ -73,6 +73,13 @@ export interface MapOptions {
   center: { lat: number; lng: number };
   zoom: number;
   mapTypeId: string;
+  scrollwheel?: boolean; 
+  gestureHandling?: 'cooperative' | 'greedy' | 'none' | 'auto';
+  styles?: Array<{
+    featureType?: string;
+    elementType?: string;
+    stylers: Array<Record<string, any>>;
+  }>;
 }
 
 export type TabType = 'summary' | 'report';
