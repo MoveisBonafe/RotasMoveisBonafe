@@ -25,7 +25,10 @@ type LatLng = any;
 const defaultMapOptions: MapOptions = {
   center: { lat: -22.3673, lng: -48.3823 }, // Dois Córregos-SP
   zoom: 13,
-  mapTypeId: MAP_TYPES.ROADMAP
+  mapTypeId: MAP_TYPES.ROADMAP,
+  // Configuração para permitir zoom sem precisar segurar Ctrl/Cmd
+  gestureHandling: 'cooperative',
+  scrollwheel: true
 };
 
 interface UseGoogleMapsProps {
