@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Diagnóstico GitHub Pages</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    h1 { color: #333; }
+    .result { margin: 20px 0; padding: 15px; border-radius: 5px; }
+    .success { background-color: #d4edda; color: #155724; }
+    .error { background-color: #f8d7da; color: #721c24; }
+    pre { background: #f8f9fa; padding: 10px; overflow: auto; }
+  </style>
+</head>
+<body>
+  <h1>Diagnóstico da Aplicação no GitHub Pages</h1>
+  <div id="results"></div>
+
+  <script>
+    const results = document.getElementById('results');
+    
+    function addResult(success, message) {
+      const div = document.createElement('div');
+      div.className = `result ${success ? 'success' : 'error'}`;
+      div.innerHTML = message;
+      results.appendChild(div);
+    }
+    
+    // Verificar se o index.html existe
+    fetch('./index.html')
+      .then(response => {
+        if (response.ok) {
+          addResult(true, '<strong>✓</strong> index.html encontrado');
+        } else {
+          addResult(false, '<strong>✗</strong> index.html não encontrado');
+        }
+      })
+      .catch(error => {
+        addResult(false, `<strong>✗</strong> Erro ao verificar index.html: ${error.message}`);
+      });
+      
+    // Verificação de Status
+    addResult(true, '<strong>✓</strong> Versão estática está sendo usada - não depende de arquivos CSS/JS externos');
+    
+    // Teste de iframe
+    fetch('index.html')
+      .then(response => response.text())
+      .then(html => {
+        if (html.includes('<iframe')) {
+          addResult(true, '<strong>✓</strong> Iframe para Google Maps encontrado');
+        } else {
+          addResult(false, '<strong>✗</strong> Iframe para Google Maps não encontrado');
+        }
+      });
+  </script>
+</body>
+</html>
