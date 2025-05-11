@@ -763,11 +763,15 @@
           </button>
         </div>
         
-        <!-- Iframe do Google Maps com ponto de origem e opções melhoradas -->
+        <!-- Div para mapa JavaScript API em vez de iframe para maior controle -->
+        <div id="map" class="map-iframe"></div>
+        
+        <!-- Placeholder iframe oculto para fallback -->
         <iframe 
           class="map-iframe"
           id="map-iframe"
-          src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&q=-22.3673,-48.3823&center=-22.3673,-48.3823&zoom=10&maptype=roadmap&gestureHandling=greedy"
+          style="display: none;"
+          src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&q=-22.3673,-48.3823&center=-22.3673,-48.3823&zoom=10&maptype=roadmap"
           allowfullscreen
           referrerpolicy="no-referrer-when-downgrade">
         </iframe>
@@ -1463,6 +1467,52 @@
         const address = locationInput.value.trim();
         if (!address) return;
         
+        // Se estamos usando Places API e temos um local selecionado
+        if (autocomplete && autocomplete.getPlace && autocomplete.getPlace()) {
+          const place = autocomplete.getPlace();
+          if (place.geometry) {
+            // Incrementar contador
+            locationCounter++;
+            
+            // Obter coordenadas do local selecionado
+            const lat = place.geometry.location.lat();
+            const lng = place.geometry.location.lng();
+            const latlng = `${lat},${lng}`;
+            
+            // Extrair nome e endereço
+            const name = place.name || place.formatted_address;
+            const fullAddress = place.formatted_address || address;
+            
+            // Criar novo item e adicionar à lista
+            const location = {
+              id: locationCounter,
+              name: name,
+              address: fullAddress,
+              latlng: latlng,
+              isOrigin: false
+            };
+            
+            // Criar elemento visual
+            createLocationItem(name, fullAddress, locationCounter);
+            
+            // Adicionar ao array
+            locations.push(location);
+            
+            // Atualizar mapa com novo marcador
+            if (map) {
+              const position = { lat, lng };
+              addMarkerToMap(position, name, locationCounter.toString());
+              map.setCenter(position);
+              map.setZoom(13);
+            }
+            
+            // Limpar campo
+            locationInput.value = '';
+            return;
+          }
+        }
+        
+        // Fallback para coordenadas simuladas quando Places API não está disponível
         // Incrementar contador
         locationCounter++;
         
@@ -1637,54 +1687,247 @@
       startDateInput.addEventListener('change', updateDateFilter);
       endDateInput.addEventListener('change', updateDateFilter);
       
-      // Pegman (Street View)
-      // Como estamos usando um iframe, não podemos acessar diretamente o Street View
-      // Vamos implementar uma simulação que abre o Street View em uma nova aba
+      // Variáveis para o mapa
+      let map = null;
+      let pegmanControlEnabled = false;
+      let directionsService = null;
+      let directionsRenderer = null;
+      let placesService = null;
+      let autocomplete = null;
+      let markers = [];
       
-      // Adicionar evento de clique no pegman (alternativa ao drag and drop para o GitHub Pages)
+      // Inicializar o mapa com a API do Google Maps
+      function initMap() {
+        try {
+          const doisCorregosCenterCoords = { lat: -22.3673, lng: -48.3823 };
+          
+          // Criar mapa
+          map = new google.maps.Map(document.getElementById("map"), {
+            center: doisCorregosCenterCoords,
+            zoom: 10,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            streetViewControl: true,
+            gestureHandling: 'greedy', // Permite zoom com scroll sem Ctrl
+            mapTypeControl: true,
+            mapTypeControlOptions: {
+              position: google.maps.ControlPosition.TOP_RIGHT,
+            },
+            fullscreenControl: true,
+            fullscreenControlOptions: {
+              position: google.maps.ControlPosition.RIGHT_TOP,
+            },
+          });
+          
+          // Adicionar serviços
+          directionsService = new google.maps.DirectionsService();
+          directionsRenderer = new google.maps.DirectionsRenderer({
+            map: map,
+            suppressMarkers: true,
+          });
+          
+          // Adicionar serviço de Places
+          placesService = new google.maps.places.PlacesService(map);
+          
+          // Adicionar marcador para Dois Córregos
+          addMarkerToMap(doisCorregosCenterCoords, "Dois Córregos (Origem)", "A", true);
+          
+          console.log("Mapa inicializado com sucesso");
+        } catch (error) {
+          console.error("Erro ao inicializar o mapa:", error);
+          document.getElementById("map").style.display = "none";
+          document.getElementById("map-iframe").style.display = "block";
+        }
+      }
+      
+      // Adicionar marcador ao mapa
+      function addMarkerToMap(position, title, label, isOrigin = false) {
+        if (!map) return null;
+        
+        const marker = new google.maps.Marker({
+          position: position,
+          map: map,
+          title: title,
+          label: label,
+          animation: google.maps.Animation.DROP,
+          icon: isOrigin ? {
+            path: google.maps.SymbolPath.CIRCLE,
+            fillColor: "#2563eb",
+            fillOpacity: 1,
+            strokeWeight: 1,
+            strokeColor: "#ffffff",
+            scale: 12
+          } : null
+        });
+        
+        markers.push(marker);
+        return marker;
+      }
+      
+      // Atualizar rota no mapa
+      function updateMapRoute(locations) {
+        if (!map || !directionsService || !directionsRenderer) {
+          console.error("Serviços de mapa não inicializados");
+          return;
+        }
+        
+        // Limpar marcadores existentes
+        markers.forEach(marker => marker.setMap(null));
+        markers = [];
+        
+        if (locations.length <= 1) {
+          // Se só tiver a origem, adicionar apenas o marcador da origem
+          const origin = locations[0];
+          const position = parseLatLng(origin.latlng);
+          addMarkerToMap(position, origin.name, "A", true);
+          return;
+        }
+        
+        // Adicionar marcadores para todos os pontos
+        locations.forEach((location, index) => {
+          const position = parseLatLng(location.latlng);
+          const label = location.isOrigin ? "A" : (index).toString();
+          addMarkerToMap(position, location.name, label, location.isOrigin);
+        });
+        
+        // Calcular rota
+        const originLocation = locations.find(loc => loc.isOrigin);
+        const waypoints = locations
+          .filter(loc => !loc.isOrigin)
+          .map(loc => {
+            const [lat, lng] = loc.latlng.split(',').map(parseFloat);
+            return {
+              location: new google.maps.LatLng(lat, lng),
+              stopover: true
+            };
+          });
+        
+        // Origem e destino são o mesmo ponto (rota circular)
+        const origin = parseLatLng(originLocation.latlng);
+        
+        // Configurar requisição de direções
+        const request = {
+          origin: origin,
+          destination: origin,
+          waypoints: waypoints,
+          optimizeWaypoints: false, // Já otimizamos a ordem com TSP
+          travelMode: google.maps.TravelMode.DRIVING,
+          avoidFerries: true
+        };
+        
+        // Fazer a requisição
+        directionsService.route(request, function(result, status) {
+          if (status === google.maps.DirectionsStatus.OK) {
+            directionsRenderer.setDirections(result);
+          } else {
+            console.error('Erro ao calcular rota:', status);
+            alert('Não foi possível calcular a rota. Por favor, tente novamente.');
+          }
+        });
+      }
+      
+      // Utilitário para converter string lat,lng em objeto LatLng
+      function parseLatLng(latlngStr) {
+        const [lat, lng] = latlngStr.split(',').map(parseFloat);
+        return { lat, lng };
+      }
+      
+      // Implementar autocomplete no campo de endereço
+      function setupAutocomplete() {
+        if (!google.maps.places) {
+          console.warn("API do Google Places não disponível");
+          return;
+        }
+        
+        try {
+          // Criar autocomplete no campo de entrada
+          autocomplete = new google.maps.places.Autocomplete(locationInput, {
+            componentRestrictions: { country: 'br' }
+          });
+          
+          // Evento de seleção de local
+          autocomplete.addListener('place_changed', function() {
+            const place = autocomplete.getPlace();
+            if (!place.geometry) {
+              console.log("Nenhum detalhe disponível para o local:", place.name);
+              return;
+            }
+            
+            // Obter dados do local selecionado
+            const lat = place.geometry.location.lat();
+            const lng = place.geometry.location.lng();
+            const latlng = `${lat},${lng}`;
+            const name = place.name || place.formatted_address;
+            const address = place.formatted_address;
+            
+            // Adicionar ao mapa
+            locationInput.value = name;
+          });
+          
+          console.log("Autocomplete configurado com sucesso");
+        } catch (error) {
+          console.error("Erro ao configurar autocomplete:", error);
+        }
+      }
+      
+      // Modificar a função buildDirectionsUrl para usar a API diretamente
+      function buildDirectionsUrl(orderedLocs) {
+        // Esta função agora atualiza o mapa diretamente em vez de retornar uma URL
+        if (map && directionsService) {
+          updateMapRoute(orderedLocs || locations);
+          return '';
+        }
+        
+        // Fallback para iframe se a API não estiver disponível
+        const locsToUse = orderedLocs || locations;
+        const origin = locsToUse.find(l => l.isOrigin);
+        if (!origin) return '';
+        
+        const destination = origin.latlng;
+        const waypoints = locsToUse
+          .filter(l => !l.isOrigin)
+          .map(l => l.latlng)
+          .join('|');
+        
+        return `https://www.google.com/maps/embed/v1/directions?key=${apiKey}&origin=${origin.latlng}&destination=${destination}&waypoints=${waypoints}&mode=driving&avoid=ferries`;
+      }
+      
+      // Inicializar o mapa quando a API carregar
+      if (window.google && window.google.maps) {
+        initMap();
+        setupAutocomplete();
+      } else {
+        window.addEventListener('load', function() {
+          if (window.google && window.google.maps) {
+            initMap();
+            setupAutocomplete();
+          } else {
+            console.error("API do Google Maps não carregada");
+            document.getElementById("map").style.display = "none";
+            document.getElementById("map-iframe").style.display = "block";
+          }
+        });
+      }
+      
+      // Configurar funcionalidade do Pegman
       pegmanBtn.addEventListener('click', function() {
-        // Obter o centro atual do mapa - usando as coordenadas de Dois Córregos
-        const centerLat = -22.3673;
-        const centerLng = -48.3823;
+        if (!map) {
+          // Fallback para abrir Street View em nova aba
+          const centerLat = -22.3673;
+          const centerLng = -48.3823;
+          window.open(`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${centerLat},${centerLng}`, '_blank');
+          return;
+        }
         
-        // Construir URL do Street View
-        const streetViewUrl = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${centerLat},${centerLng}`;
+        // Alternar modo Street View
+        const panorama = map.getStreetView();
+        const currentPosition = map.getCenter();
         
-        // Abrir em nova aba
-        window.open(streetViewUrl, '_blank');
-      });
-      
-      // Implementação de drag para funcionar com iframe (para compatibilidade)
-      pegmanBtn.addEventListener('dragstart', function(e) {
-        // Configurar dados para arrastar
-        e.dataTransfer.setData('text/plain', 'pegman');
-        
-        // Permitir arrastar apenas para o iframe
-        mapIframe.addEventListener('dragover', function(e) {
-          e.preventDefault();
-        });
-        
-        mapIframe.addEventListener('drop', function(e) {
-          e.preventDefault();
-          
-          // Calcular posição relativa dentro do iframe
-          const rect = mapIframe.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          
-          // Usar percentagem para estimar lat/lng relativa (simplificado)
-          const percentX = x / rect.width;
-          const percentY = y / rect.height;
-          
-          // Estimar lat/lng (simplificado, não é preciso mas dá uma experiência básica)
-          // Usando uma margem de 0.1 graus em torno de Dois Córregos
-          const lat = -22.3673 + (0.2 * (percentY - 0.5));
-          const lng = -48.3823 + (0.2 * (percentX - 0.5));
-          
-          // Abrir Street View nesse ponto
-          const streetViewUrl = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat},${lng}`;
-          window.open(streetViewUrl, '_blank');
-        });
+        if (panorama.getVisible()) {
+          panorama.setVisible(false);
+        } else {
+          panorama.setPosition(currentPosition);
+          panorama.setVisible(true);
+        }
       });
       
       // Aumentar a largura do iframe para ocupar mais espaço
