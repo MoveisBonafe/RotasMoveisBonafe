@@ -14,12 +14,25 @@ export default function Home() {
   // State for the application
   const [origin, setOrigin] = useState<Location | null>(null);
   const [locations, setLocations] = useState<Location[]>([]);
+  const [mapError, setMapError] = useState<string | null>(null);
   // Definindo caminhão 1 eixo como padrão (truck-1-axle)
   const [selectedVehicleType, setSelectedVehicleType] = useState<string>("truck1");
   const [vehicleTypeObj, setVehicleTypeObj] = useState<VehicleType | null>(null);
   const [isAddLocationModalOpen, setIsAddLocationModalOpen] = useState(false);
   // Estado para o diálogo de configurações de combustível
   const [isFuelSettingsOpen, setIsFuelSettingsOpen] = useState(false);
+
+  // Verify Google Maps initialization
+  useEffect(() => {
+    if (!window.google?.maps) {
+      setMapError("Erro ao carregar Google Maps. Aguarde ou recarregue a página.");
+      toast({
+        title: "Erro ao carregar o mapa",
+        description: "Recarregue a página se o problema persistir.",
+        variant: "destructive",
+      });
+    }
+  }, []);
   // Dados para filtragem por data
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
@@ -465,14 +478,27 @@ export default function Home() {
             </div>
           )}
 
-          {/* Google Maps mostrando apenas os POIs no percurso da rota incluindo pedágios da API Routes Preferred */}
-          <MapViewSimple 
-            origin={origin}
-            waypoints={locations}
-            calculatedRoute={calculatedRoute}
-            onRouteCalculated={handleRouteCalculated}
-            pointsOfInterest={poisOnRoute} // IMPORTANTE: Usar APENAS os POIs filtrados ao longo da rota
-          />
+          {mapError ? (
+            <div className="flex-1 flex items-center justify-center bg-gray-50">
+              <div className="text-center p-4">
+                <p className="text-red-600 mb-2">{mapError}</p>
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Recarregar página
+                </button>
+              </div>
+            </div>
+          ) : (
+            <MapViewSimple 
+              origin={origin}
+              waypoints={locations}
+              calculatedRoute={calculatedRoute}
+              onRouteCalculated={handleRouteCalculated}
+              pointsOfInterest={poisOnRoute}
+            />
+          )}
 
           {/* Removidos logs de debug que não eram mais necessários */}
         </div>
