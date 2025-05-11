@@ -348,6 +348,16 @@ export default function Home() {
       setVehicleTypeObj(defaultTruck);
     }
 
+    // Antes de iniciar, certificamos de que a origem está em primeiro lugar e preservada
+    const existingOrigin = locations.find(loc => loc.isOrigin);
+    if (existingOrigin && existingOrigin.id !== origin.id) {
+      console.log("Origem no state difere da origem atual, corrigindo...");
+      // Substituir a origem no state
+      const locationsWithoutOrigin = locations.filter(loc => !loc.isOrigin);
+      const updatedLocations = [origin, ...locationsWithoutOrigin];
+      setLocations(updatedLocations);
+    }
+
     // Mostrar toast de carregamento para feedback imediato
     toast({
       title: "Calculando rota otimizada",

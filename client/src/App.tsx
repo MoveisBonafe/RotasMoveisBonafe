@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { apiRequest } from "./lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import MockDataDebug from "@/components/MockDataDebug";
+import { setupZoomHelper } from "./helpers/mapZoomHelper";
 
 function Router() {
   return (
@@ -41,6 +42,11 @@ function App() {
     };
 
     seedData();
+    
+    // Configurar helper de zoom após o carregamento do Google Maps
+    // Observe que isso será executado mais de uma vez para garantir que o mapa 
+    // seja encontrado mesmo após recarregamentos dinâmicos
+    setupZoomHelper(20); // Tenta até 20 vezes (10s) para encontrar o mapa e aplicar o helper
   }, []);
 
   return (

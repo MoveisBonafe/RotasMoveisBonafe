@@ -7,9 +7,36 @@
   touch-action: manipulation;
 }
 
-/* Facilitar a manipulação do mapa */
+/* Facilitar a manipulação do mapa e zoom sem Ctrl */
 [class*='gm-style'] * {
   touch-action: manipulation !important;
+}
+
+/* Correções para melhorar o zoom sem CTRL no mapa */
+.gm-style {
+  touch-action: pan-x pan-y !important;
+}
+
+/* Garantir que os controles de zoom permaneçam clicáveis */
+.gm-control-active, 
+.gm-bundled-control, 
+.gmnoprint {
+  pointer-events: auto !important;
+}
+
+/* Aumentar a área dos controles de zoom para melhor UX */
+.gm-style .gm-control-active {
+  width: 40px !important;
+  height: 40px !important;
+}
+
+/* Garante que os marcadores permaneçam visíveis */
+.gm-style-iw,
+.gm-style-iw-c,
+.gm-style-iw-d,
+.gm-style img[src*="maps.gstatic.com"],
+.gm-style img[src*="maps.google.com"] {
+  z-index: 100 !important;
 }
 
 /* Estilos para marcadores personalizados */
