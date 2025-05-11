@@ -113,6 +113,33 @@ window.initMap = () => {
   // Ativar o scroll de zoom sem precisar do Ctrl
   enableScrollWheelZoom();
   
+  // Aplicar configurações específicas ao mapa para gestureHandling
+  if (window.google && window.google.maps) {
+    // Sobrescrever a função de gestureHandling padrão para permitir zoom sem Ctrl
+    try {
+      // Definir gesture handling diretamente nas opções padrão do mapa
+      const originalMapOptions = window.google.maps.Map.prototype.setOptions;
+      window.google.maps.Map.prototype.setOptions = function(options) {
+        if (options) {
+          // Forçar gestureHandling para 'greedy' se não estiver definido
+          if (!options.gestureHandling) {
+            options.gestureHandling = 'greedy';
+          }
+          
+          // Habilitar scrollwheel se não estiver definido
+          if (options.scrollwheel === undefined) {
+            options.scrollwheel = true;
+          }
+        }
+        return originalMapOptions.apply(this, [options]);
+      };
+      
+      console.log("Google Maps gesture handling modificado para permitir zoom sem Ctrl");
+    } catch (error) {
+      console.error("Erro ao modificar gesture handling:", error);
+    }
+  }
+  
   // Forçar carregamento das bibliotecas Places API
   if (window.google && window.google.maps) {
     try {

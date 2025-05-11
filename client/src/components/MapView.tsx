@@ -761,6 +761,35 @@ export default function MapView({
       // Limites para ajustar zoom
       const bounds = new window.google.maps.LatLngBounds();
       
+      // SEMPRE garantir que o marcador de origem está presente
+      // Criar um novo marcador de origem em todas as atualizações
+      if (origin) {
+        const originLatLng = {
+          lat: parseFloat(origin.lat),
+          lng: parseFloat(origin.lng)
+        };
+        
+        // Criar um marcador específico para a origem que será sempre mantido
+        const originMarker = new window.google.maps.Marker({
+          position: originLatLng,
+          map: directMapRef.current,
+          title: origin.name,
+          icon: {
+            url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+            scaledSize: new window.google.maps.Size(40, 40)
+          },
+          zIndex: 1000, // Alto z-index para ficar acima de outros elementos
+          optimized: false, // Força o marcador a ser renderizado como elemento DOM
+          animation: window.google.maps.Animation.DROP
+        });
+        
+        // Adicionar ao array de marcadores
+        markersRef.current.push(originMarker);
+        
+        // Adicionar ao bounds para ajuste de zoom
+        bounds.extend(originLatLng);
+      }
+      
       // Decidir quais pontos mostrar (rota calculada tem prioridade se existir)
       // Sempre garantir que a origem esteja incluída nos pontos, mesmo se a rota calculada não a incluir
       let pointsToShow;
@@ -950,7 +979,34 @@ export default function MapView({
   useEffect(() => {
     if (directMapRef.current) {
       console.log(`Atualizando marcadores no mapa. Waypoints: ${waypoints.length}, Rota calculada: ${calculatedRoute ? calculatedRoute.length : 0}`);
+      
+      // Primeira atualização imediata
       updateMarkersOnMap();
+      
+      // Segunda atualização após um delay para garantir que todos os marcadores sejam exibidos corretamente
+      setTimeout(() => {
+        console.log("Realizando atualização secundária de marcadores para garantir visibilidade");
+        updateMarkersOnMap();
+      }, 500);
+      
+      // Terceira atualização para garantir que nada fique faltando
+      setTimeout(() => {
+        console.log("Realizando atualização final de marcadores");
+        updateMarkersOnMap();
+        
+        // Forçar um ajuste de zoom no mapa para garantir que todos os marcadores estejam visíveis
+        if (directMapRef.current && markersRef.current.length > 0) {
+          const bounds = new window.google.maps.LatLngBounds();
+          
+          // Adicionar todas as posições ao bounds
+          markersRef.current.forEach(marker => {
+            bounds.extend(marker.getPosition());
+          });
+          
+          // Ajustar o mapa para mostrar todos os marcadores
+          directMapRef.current.fitBounds(bounds);
+        }
+      }, 1000);
     }
   }, [waypoints, calculatedRoute]);
   
