@@ -23,6 +23,7 @@ export default function MapView({
   origin, 
   waypoints,
   calculatedRoute,
+  onRouteCalculated,
   pointsOfInterest = []
 }: MapViewProps) {
   const [isMapReady, setIsMapReady] = useState(false);

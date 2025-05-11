@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Location, VehicleType, GeocodingResult, PointOfInterest } from "@/lib/types";
-import MapViewSimple from "@/components/MapViewSimple";
+import MapView from "@/components/MapView";
 import Sidebar from "@/components/Sidebar";
 import DateRangeSelector from "@/components/DateRangeSelector";
 import AddLocationModal from "@/components/AddLocationModal";
@@ -507,7 +507,7 @@ export default function Home() {
               </div>
             </div>
           ) : (
-            <MapViewSimple 
+            <MapView 
               origin={origin}
               waypoints={locations}
               calculatedRoute={calculatedRoute}
