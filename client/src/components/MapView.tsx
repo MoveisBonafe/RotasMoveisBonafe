@@ -58,8 +58,94 @@ export default function MapView({
     }
   }, [origin, GOOGLE_MAPS_API_KEY]);
   
-  // Quando uma rota for calculada, atualizar o iframe para mostrar a rota
+  // Quando uma rota for calculada, acionar o cálculo e exibição no mapa
   useEffect(() => {
+    if (origin && calculatedRoute && calculatedRoute.length > 0 && directMapRef.current) {
+      try {
+        console.log("Rota calculada recebida, atualizando mapa...");
+        
+        // Verificar se temos waypoints para a rota
+        if (calculatedRoute.length <= 1) {
+          console.warn("Rota calculada não tem waypoints suficientes");
+          return;
+        }
+        
+        // Usar a rota calculada para criar waypoints
+        // O primeiro ponto é a origem, o último é o destino
+        // Os intermediários são waypoints
+        const waypointsForAPI = calculatedRoute.slice(1, -1).map(location => ({
+          location: { lat: parseFloat(location.lat), lng: parseFloat(location.lng) },
+          stopover: true
+        }));
+        
+        // Configurar a solicitação para a API Directions
+        const directionsService = new window.google.maps.DirectionsService();
+        
+        // Criar um renderer se não existir
+        if (!directMapRef.current.directionsRenderer) {
+          const renderer = new window.google.maps.DirectionsRenderer({
+            map: directMapRef.current,
+            suppressMarkers: true, // Usamos nossos próprios marcadores
+            polylineOptions: {
+              strokeColor: '#2563eb', // azul
+              strokeOpacity: 0.8,
+              strokeWeight: 5
+            }
+          });
+          directMapRef.current.directionsRenderer = renderer;
+        }
+        
+        // Preparar origem e destino
+        const originLatLng = { 
+          lat: parseFloat(origin.lat), 
+          lng: parseFloat(origin.lng) 
+        };
+        
+        const destination = calculatedRoute[calculatedRoute.length - 1];
+        const destinationLatLng = {
+          lat: parseFloat(destination.lat),
+          lng: parseFloat(destination.lng)
+        };
+        
+        // Fazer a requisição
+        directionsService.route({
+          origin: originLatLng,
+          destination: destinationLatLng,
+          waypoints: waypointsForAPI,
+          travelMode: window.google.maps.TravelMode.DRIVING,
+          optimizeWaypoints: false // A rota já está otimizada
+        }, (result, status) => {
+          if (status === window.google.maps.DirectionsStatus.OK) {
+            // Exibir a rota no mapa
+            directMapRef.current.directionsRenderer.setDirections(result);
+            
+            // Atualizar marcadores
+            updateMarkersOnMap();
+            
+            // Chamar o callback com a resposta
+            if (onRouteCalculated) {
+              onRouteCalculated(result);
+            }
+            
+            console.log("✓ Rota exibida com sucesso via Google Maps Directions");
+          } else {
+            console.error("Erro ao exibir rota:", status);
+            
+            // Fallback para iframe se a API JavaScript falhar
+            fallbackToIframe();
+          }
+        });
+      } catch (error) {
+        console.error("Erro ao processar rota calculada:", error);
+        
+        // Fallback para iframe se tivermos qualquer erro
+        fallbackToIframe();
+      }
+    }
+  }, [calculatedRoute, origin]);
+  
+  // Função para fallback para iframe se necessário
+  const fallbackToIframe = () => {
     if (origin && calculatedRoute && calculatedRoute.length > 0) {
       // URL base para direções com versão específica
       const baseUrl = `https://www.google.com/maps/embed/v1/directions`;
@@ -100,9 +186,90 @@ export default function MapView({
       
       const routeUrl = `${baseUrl}?${params.toString()}`;
       setMapSrc(routeUrl);
-      console.log("Rota otimizada exibida usando a API de directions");
+      console.log("Fallback: Rota exibida usando iframe");
     }
-  }, [calculatedRoute, origin, GOOGLE_MAPS_API_KEY]);
+  };
+
+  // Função para calcular rota usando Google Directions API
+  const displayRoute = () => {
+    if (!origin || waypoints.length === 0 || !directMapRef.current) {
+      console.warn("Não é possível calcular rota: origem, destinos ou mapa não disponíveis");
+      return;
+    }
+
+    try {
+      // Criar um novo serviço de Directions
+      const directionsService = new window.google.maps.DirectionsService();
+      
+      // Criar um DirectionsRenderer se não existir
+      if (!directMapRef.current.directionsRenderer) {
+        const renderer = new window.google.maps.DirectionsRenderer({
+          map: directMapRef.current,
+          suppressMarkers: true, // Vamos usar nossos próprios marcadores customizados
+          polylineOptions: {
+            strokeColor: '#2563eb', // cor da linha da rota (azul)
+            strokeOpacity: 0.8,
+            strokeWeight: 5
+          }
+        });
+        directMapRef.current.directionsRenderer = renderer;
+      }
+      
+      // Preparar origem
+      const originLatLng = { 
+        lat: parseFloat(origin.lat), 
+        lng: parseFloat(origin.lng) 
+      };
+      
+      // Usar o último waypoint como destino
+      const destination = waypoints[waypoints.length - 1];
+      const destinationLatLng = {
+        lat: parseFloat(destination.lat),
+        lng: parseFloat(destination.lng)
+      };
+      
+      // Preparar waypoints intermediários (excluindo o último, que é destino)
+      const waypointsForAPI = waypoints.slice(0, -1).map(wp => ({
+        location: { lat: parseFloat(wp.lat), lng: parseFloat(wp.lng) },
+        stopover: true
+      }));
+      
+      // Configuração da requisição para o Google Directions API
+      const request = {
+        origin: originLatLng,
+        destination: destinationLatLng,
+        waypoints: waypointsForAPI,
+        optimizeWaypoints: false, // Não otimizamos aqui, já que nossa rota já vem otimizada
+        travelMode: window.google.maps.TravelMode.DRIVING,
+        avoidHighways: false,
+        avoidTolls: false
+      };
+      
+      console.log("Calculando rota via Google Directions API...");
+      
+      // Fazer a requisição para calcular a rota
+      directionsService.route(request, (result, status) => {
+        if (status === window.google.maps.DirectionsStatus.OK) {
+          // Exibir a rota no mapa
+          directMapRef.current.directionsRenderer.setDirections(result);
+          
+          // Atualizar marcadores no mapa
+          updateMarkersOnMap();
+          
+          // Se temos um callback de rota calculada, chamá-lo com o resultado
+          if (onRouteCalculated) {
+            onRouteCalculated(result);
+          }
+          
+          console.log("✓ Rota calculada e exibida com sucesso");
+        } else {
+          console.error("Erro ao calcular rota:", status);
+        }
+      });
+    } catch (error) {
+      console.error("Erro ao calcular rota:", error);
+    }
+  };
 
   // Quando waypoints mudam, mas não há rota calculada ainda
   useEffect(() => {
