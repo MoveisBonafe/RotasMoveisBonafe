@@ -1,95 +1,76 @@
-# Instruções para Deploy da Aplicação no GitHub Pages
+# Implantação no GitHub Pages
 
-Este documento fornece instruções detalhadas para implantar a aplicação de Planejamento de Rotas no GitHub Pages.
+Este projeto está configurado para ser implantado no GitHub Pages, fornecendo uma versão estática funcional do aplicativo de otimização de rotas.
 
-## Visão Geral
+## Conteúdo da Pasta `docs`
 
-A nossa aplicação combina um frontend React com um backend Express. No ambiente de produção do GitHub Pages, não podemos executar um servidor Node.js, então criamos uma versão especial da aplicação que:
+A pasta `docs` contém uma versão estática completa do aplicativo, incluindo:
 
-1. Usa dados simulados em vez de chamar o backend
-2. Mantém todas as funcionalidades principais do frontend
-3. Permite a visualização e interação com o mapa e rotas
+- `index.html` - Página principal com a interface completa
+- `404.html` - Página de erro para rotas não encontradas
+- `assets/` - Arquivos CSS e JavaScript compilados
+- `README.md` - Documentação da versão estática
+- `.nojekyll` - Arquivo para evitar processamento Jekyll
+- `test-locally.sh` - Script para testar a implantação localmente
+- `diagnostic.html` - Página de diagnóstico para verificar a implantação
 
-## Passos para Deploy
+## Como funciona
 
-### 1. Configurar a Chave de API do Google Maps
+A versão estática usa:
 
-Esta aplicação requer uma chave de API do Google Maps para funcionar. Você precisa:
+1. **Google Maps Embed API** (via iframe) para exibir mapas e rotas
+2. **JavaScript puro** para interações básicas
+3. **Dados mockados** para simular a funcionalidade do backend
+4. **CSS inline** para estilização sem dependências externas
 
-- Criar uma conta no Google Cloud Platform
-- Criar um projeto e habilitar a API do Google Maps
-- Gerar uma chave de API
-- Configurar a restrição HTTP para seu domínio (importante para segurança)
+## Configuração do GitHub Pages
 
-Após obter sua chave, edite o arquivo `.env.github` e substitua `YOUR_GOOGLE_MAPS_API_KEY` pela sua chave real.
+Para configurar o GitHub Pages:
 
-### 2. Executar o Script de Build
+1. No seu repositório GitHub, vá para **Settings > Pages**
+2. Em **Source**, selecione a branch `main` (ou `master`) e a pasta `/docs`
+3. Clique em **Save**
 
-O script `deploy-github.sh` automatiza todo o processo de build para o GitHub Pages:
+O site será publicado em `https://seu-usuario.github.io/nome-do-repo/`
 
-```bash
-# Torne o script executável
-chmod +x deploy-github.sh
+## Diferenças da Versão Completa
 
-# Execute o script
-./deploy-github.sh
-```
+A versão estática:
 
-Este script irá:
-- Configurar as variáveis de ambiente necessárias
-- Construir uma versão otimizada da aplicação
-- Copiar os arquivos para uma pasta `docs/`
-- Criar arquivos necessários para o GitHub Pages (como o 404.html para roteamento SPA)
+- Não requer servidor backend
+- Não permite persistência de dados (salvar rotas)
+- Usa rotas e dados pré-definidos
+- Não permite personalização avançada
+- Não tem dependência do React ou outras bibliotecas
 
-### 3. Configurar o Repositório GitHub
+## Testes e Diagnóstico
 
-Depois de executar o script e fazer commit dos arquivos no repositório:
+Para verificar se a implantação está funcionando corretamente:
 
-1. Vá para a página do seu repositório no GitHub
-2. Clique em "Settings"
-3. Role para baixo até encontrar a seção "GitHub Pages"
-4. Na seção "Source", selecione a branch principal (main ou master)
-5. Na dropdown ao lado, selecione a pasta `/docs`
-6. Clique em "Save"
+1. Acesse a URL do GitHub Pages
+2. Verifique se o mapa é carregado corretamente
+3. Teste os botões "Inicio" e "Otimizar Rota"
+4. Acesse a página `diagnostic.html` para relatórios detalhados
 
-Após alguns minutos, seu site estará disponível no URL fornecido pelo GitHub (geralmente `https://[seu-usuario].github.io/[nome-do-repositorio]/`).
+## Solução de Problemas
 
-### 4. Verificar a Implantação
+Se encontrar problemas com a implantação:
 
-Depois que o GitHub Pages terminar o deploy, visite o URL fornecido e verifique se:
+1. **Erro 404 nos assets**: Verifique se os caminhos em `index.html` e `404.html` estão usando `./assets/` em vez de `/assets/`
+2. **Mapa não carrega**: Verifique se a chave da API do Google Maps está válida
+3. **Problema de navegação**: Certifique-se de que a tag `<base href="./">` está presente no cabeçalho
 
-- O mapa carrega corretamente
-- Você pode adicionar localizações
-- Você pode calcular rotas
-- As funcionalidades principais estão operacionais
+## Atualizando a Versão Estática
 
-### Solução de Problemas Comuns
+Para atualizar a versão estática:
 
-Se encontrar problemas:
+1. Modifique os arquivos na pasta `docs` diretamente
+2. Ou execute o script de deploy (`deploy-github.sh`) para reconstruir tudo
 
-1. **Mapa não carrega**:
-   - Verifique se a chave API do Google Maps está correta
-   - Confirme que a chave não tem restrições que bloqueiam seu domínio
-   - A chave já está configurada no arquivo `.env.github`
+## Versão Local vs. GitHub Pages
 
-2. **Erro 404 ao navegar diretamente para uma rota**:
-   - Verifique se o arquivo `404.html` foi criado corretamente na pasta `docs/`
-   - Este problema é automaticamente resolvido pelo script de deploy
-
-3. **Interface carrega, mas sem dados**:
-   - Verifique o console do navegador para erros
-   - Confirme que os dados simulados estão sendo carregados corretamente
-
-4. **Erro "Failed to load stylesheet"**:
-   - Este erro ocorre porque o Vite cria links absolutos para os arquivos CSS/JS
-   - O script de deploy corrige automaticamente todos os caminhos para serem relativos
-   - Se o erro persistir, siga estas etapas:
-     1. Navegue até a pasta `docs/`
-     2. Abra o arquivo `index.html` em um editor
-     3. Procure por referências como `href="/assets/..."` e mude para `href="./assets/..."`
-     4. Faça o mesmo com os arquivos CSS na pasta `docs/assets/`
-     5. Repita o processo para os atributos `src=` em scripts
+A versão local do aplicativo oferece funcionalidade completa com backend Express, enquanto a versão GitHub Pages é uma demonstração limitada com dados mockados.
 
 ---
 
-Para qualquer dúvida adicional ou problemas, consulte a documentação completa no arquivo README.md ou abra uma issue no repositório GitHub.
+Desenvolvido com ❤️ - 2025
