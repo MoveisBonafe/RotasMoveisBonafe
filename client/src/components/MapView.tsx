@@ -508,8 +508,8 @@ export default function MapView({
             mapTypeControl: true,
             streetViewControl: true,
             zoomControl: true,
-            // Configurações para o zoom
-            gestureHandling: 'greedy',
+            // Permitir zoom sem precisar segurar Ctrl
+            gestureHandling: 'cooperative',
             scrollwheel: true,
             // Estilo visual personalizado para o mapa
             styles: [
