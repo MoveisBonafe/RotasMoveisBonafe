@@ -2,6 +2,7 @@ import { useState } from "react";
 import SearchBox from "./SearchBox";
 import LocationsList from "./LocationsList";
 import DateRangeSelector from "./DateRangeSelector";
+import VehicleSelector from "./VehicleSelector";
 import { Location, VehicleType, GeocodingResult } from "@/lib/types";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useToast } from "@/hooks/use-toast";
@@ -21,6 +22,9 @@ interface SidebarProps {
   endDate: string | null;
   onStartDateChange: (date: string | null) => void;
   onEndDateChange: (date: string | null) => void;
+  selectedVehicleType: string;
+  onVehicleSelect: (vehicleType: VehicleType) => void;
+  onOpenFuelSettings?: () => void;
 }
 
 export default function Sidebar({
@@ -37,7 +41,10 @@ export default function Sidebar({
   startDate,
   endDate,
   onStartDateChange,
-  onEndDateChange
+  onEndDateChange,
+  selectedVehicleType,
+  onVehicleSelect,
+  onOpenFuelSettings
 }: SidebarProps) {
   // Hook para uploads de arquivo
   const { 
@@ -158,6 +165,15 @@ export default function Sidebar({
           endDate={endDate}
           onStartDateChange={onStartDateChange}
           onEndDateChange={onEndDateChange}
+        />
+      </div>
+      
+      {/* Vehicle Selector - Para escolher o tipo de veículo */}
+      <div className="p-4 border-b border-gray-200">
+        <VehicleSelector
+          selectedVehicleType={selectedVehicleType}
+          onVehicleSelect={onVehicleSelect}
+          onOpenFuelSettings={onOpenFuelSettings}
         />
       </div>
 
