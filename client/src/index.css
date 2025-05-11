@@ -15,6 +15,13 @@
 /* Correções para melhorar o zoom sem CTRL no mapa */
 .gm-style {
   touch-action: pan-x pan-y !important;
+  -ms-touch-action: manipulation !important;
+  cursor: grab !important;
+}
+
+/* Aplicar "grabbing" ao mover o mapa */
+.gm-style.dragging {
+  cursor: grabbing !important;
 }
 
 /* Garantir que os controles de zoom permaneçam clicáveis */

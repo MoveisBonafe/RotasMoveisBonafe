@@ -120,8 +120,14 @@ export default function MapView({
             // Exibir a rota no mapa
             directMapRef.current.directionsRenderer.setDirections(result);
             
-            // Atualizar marcadores
+            // Atualizar marcadores com atraso para garantir visibilidade
             updateMarkersOnMap();
+            
+            // Segundo update após um atraso para garantir visibilidade dos marcadores
+            setTimeout(() => {
+              console.log("Forçando segunda atualização de marcadores após rota calculada");
+              updateMarkersOnMap();
+            }, 500);
             
             // Chamar o callback com a resposta
             if (onRouteCalculated) {
@@ -724,13 +730,32 @@ export default function MapView({
       console.log("Atualizando marcadores no mapa com origem:", origin.name);
       const map = directMapRef.current;
       
-      // Limpar todos os marcadores existentes
+      // Limpar todos os marcadores existentes - EXCETO o marcador de origem
+      // para garantir que ele permaneça sempre visível
       if (markersRef.current.length > 0) {
-        console.log(`Removendo ${markersRef.current.length} marcadores existentes`);
+        // Identificar e preservar o marcador de origem
+        const originMarker = markersRef.current.find(marker => {
+          // Verificamos se o marcador tem o mesmo título da origem
+          return marker.getTitle() === origin.name;
+        });
+        
+        console.log(`Removendo ${markersRef.current.length} marcadores (preservando origem)`);
+        
+        // Removemos apenas os marcadores que NÃO são de origem
         for (let i = 0; i < markersRef.current.length; i++) {
-          markersRef.current[i].setMap(null);
+          const marker = markersRef.current[i];
+          // Preservamos o marcador de origem
+          if (marker !== originMarker) {
+            marker.setMap(null);
+          }
         }
-        markersRef.current = []; // Limpar completamente o array
+        
+        // Se encontramos o marcador de origem, apenas mantemos ele no array
+        if (originMarker) {
+          markersRef.current = [originMarker];
+        } else {
+          markersRef.current = []; // Caso não encontremos o marcador de origem
+        }
       }
       
       // Limites para ajustar zoom

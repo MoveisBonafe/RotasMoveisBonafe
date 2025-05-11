@@ -1,4 +1,10 @@
 /**
+ * @fileoverview Helper para ajustar o zoom do Google Maps sem necessidade da tecla Ctrl
+ * @typedef {Object} GoogleMap Tipo para o mapa do Google Maps
+ * @typedef {Object} MapElement Tipo para elemento do DOM que contém o mapa
+ */
+
+/**
  * Helper para ajustar o zoom do Google Maps sem necessidade da tecla Ctrl
  * Esta função deve ser chamada após o carregamento do mapa para aplicar as configurações
  */
@@ -87,6 +93,7 @@ export function enableSmartZoom() {
 /**
  * Verifica a presença do mapa periodicamente e aplica o helper de zoom
  * quando o mapa for carregado
+ * @param {number} maxAttempts Número máximo de tentativas antes de desistir (cada tentativa dura 500ms)
  */
 export function setupZoomHelper(maxAttempts = 10) {
   let attempts = 0;
