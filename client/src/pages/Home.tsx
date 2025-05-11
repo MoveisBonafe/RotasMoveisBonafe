@@ -16,7 +16,7 @@ export default function Home() {
   const [locations, setLocations] = useState<Location[]>([]);
   // Definindo caminhão 1 eixo como padrão (truck-1-axle)
   const [selectedVehicleType, setSelectedVehicleType] = useState<string>("truck1");
-  const [vehicleTypeObj, setVehicleTypeObj] = useState<VehicleType | null>(null);
+  const [vehicleTypeObj, setVehicleTypeObj = useState<VehicleType | null>(null);
   const [isAddLocationModalOpen, setIsAddLocationModalOpen] = useState(false);
   // Estado para o diálogo de configurações de combustível
   const [isFuelSettingsOpen, setIsFuelSettingsOpen] = useState(false);
@@ -31,27 +31,27 @@ export default function Home() {
     totalDistance: 0,
     totalDuration: 0
   });
-  
+
   const { toast } = useToast();
-  
+
   // Fetch the origin (Dois Córregos) from the server
   const { data: originData, isLoading: isOriginLoading } = useQuery({
     queryKey: ['/api/origin'],
     staleTime: Infinity,
   });
-  
+
   // Fetch vehicle types from the server
   const { data: vehicleTypes, isLoading: isVehicleTypesLoading } = useQuery({
     queryKey: ['/api/vehicle-types'],
     staleTime: Infinity,
   });
-  
+
   // Fetch points of interest from the server
   const { data: pointsOfInterest, isLoading: isPoisLoading } = useQuery({
     queryKey: ['/api/points-of-interest'],
     staleTime: Infinity,
   });
-  
+
   // Setup route optimization hook
   const { 
     routeInfo, 
@@ -59,7 +59,7 @@ export default function Home() {
     poisAlongRoute,
     isCalculating 
   } = useRouteOptimization();
-  
+
   // Set the origin when data is loaded
   useEffect(() => {
     // Garante que originData seja um objeto válido com todas as propriedades necessárias
@@ -73,7 +73,7 @@ export default function Home() {
       setOrigin(originData as Location);
     }
   }, [originData]);
-  
+
   // Set the vehicle type object when the selected type changes or when vehicle types are loaded
   useEffect(() => {
     // Verifica se vehicleTypes é um array válido
@@ -82,7 +82,7 @@ export default function Home() {
       const selectedVehicle = vehicleTypes.find(
         (vt: VehicleType) => vt.type === selectedVehicleType
       );
-      
+
       if (selectedVehicle) {
         // Se encontrou o veículo, atualiza o objeto
         setVehicleTypeObj(selectedVehicle);
@@ -91,7 +91,7 @@ export default function Home() {
         const defaultTruck = vehicleTypes.find(
           (vt: VehicleType) => vt.type === "truck1"
         );
-        
+
         if (defaultTruck) {
           // Atualiza o tipo selecionado e o objeto
           setSelectedVehicleType(defaultTruck.type);
@@ -100,14 +100,14 @@ export default function Home() {
       }
     }
   }, [selectedVehicleType, vehicleTypes]);
-  
+
   // Handler para adicionar localizações (de busca ou importação de arquivo)
   const handleSelectLocation = (locationOrLocations: GeocodingResult | GeocodingResult[]) => {
     try {
       // Verifica se recebemos um array de localizações (importação de arquivo)
       if (Array.isArray(locationOrLocations)) {
         console.log(`Recebido um array com ${locationOrLocations.length} localizações para adicionar`);
-        
+
         if (locationOrLocations.length === 0) {
           toast({
             title: "Nenhuma localização encontrada",
@@ -116,16 +116,16 @@ export default function Home() {
           });
           return;
         }
-        
+
         // Mostrar toast de carregamento para feedback imediato
         toast({
           title: "Processando localizações",
           description: "Adicionando pontos ao mapa...",
         });
-        
+
         // Cria um timestamp base para usar nos IDs, garantindo que sejam únicos e sequenciais
         const baseTimestamp = Date.now();
-        
+
         // Processa todas as localizações recebidas
         const newLocations: Location[] = locationOrLocations.map((location, index) => ({
           id: baseTimestamp + index, // Cada localização ganha um ID único e sequencial
@@ -136,15 +136,15 @@ export default function Home() {
           lng: location.lng,
           isOrigin: false
         }));
-        
+
         // Adiciona todas à lista de localizações atual - forçando re-renderização imediata
         setTimeout(() => {
           const updatedLocations = [...locations, ...newLocations];
           setLocations(updatedLocations);
           setCalculatedRoute(null); // Reset da rota calculada ao adicionar novas localizações
-          
+
           console.log(`Adicionadas ${newLocations.length} localizações. Total: ${updatedLocations.length}`, newLocations);
-          
+
           // Notifica o usuário do sucesso
           toast({
             title: "Localizações adicionadas",
@@ -154,20 +154,20 @@ export default function Home() {
       } else {
         // Processamento de uma única localização (busca individual)
         console.log("Adicionando localização individual:", locationOrLocations);
-        
+
         // Verifica se recebemos dados válidos
         if (!locationOrLocations.name || !locationOrLocations.lat || !locationOrLocations.lng) {
           console.error("Dados de localização inválidos:", locationOrLocations);
-          
+
           toast({
             title: "Erro ao adicionar localização",
             description: "Os dados da localização são inválidos ou incompletos",
             variant: "destructive",
           });
-          
+
           return;
         }
-        
+
         // Cria um novo objeto de localização
         const newLocation: Location = {
           id: Date.now(), // ID com timestamp atual
@@ -178,14 +178,14 @@ export default function Home() {
           lng: locationOrLocations.lng,
           isOrigin: false
         };
-        
+
         // Adiciona à lista de localizações
         const updatedLocations = [...locations, newLocation];
         setLocations(updatedLocations);
         setCalculatedRoute(null); // Reset calculated route when adding a new location
-        
+
         console.log("Localização adicionada:", newLocation);
-        
+
         // Notifica o usuário
         toast({
           title: "Localização adicionada",
@@ -201,7 +201,7 @@ export default function Home() {
       });
     }
   };
-  
+
   // Handle location removal
   const handleRemoveLocation = (index: number) => {
     const newLocations = [...locations];
@@ -209,7 +209,7 @@ export default function Home() {
     setLocations(newLocations);
     setCalculatedRoute(null);
   };
-  
+
   // Handle moving a location up in the list
   const handleMoveLocationUp = (index: number) => {
     if (index === 0) return;
@@ -220,7 +220,7 @@ export default function Home() {
     setLocations(newLocations);
     setCalculatedRoute(null);
   };
-  
+
   // Handle moving a location down in the list
   const handleMoveLocationDown = (index: number) => {
     if (index === locations.length - 1) return;
@@ -231,16 +231,16 @@ export default function Home() {
     setLocations(newLocations);
     setCalculatedRoute(null);
   };
-  
+
   // Handle opening fuel settings dialog
   const handleOpenFuelSettings = () => {
     setIsFuelSettingsOpen(true);
   };
-  
+
   // Update vehicle fuel efficiency
   const handleUpdateVehicleEfficiency = (vehicleType: VehicleType, newEfficiency: number) => {
     if (!vehicleTypes || !Array.isArray(vehicleTypes)) return;
-    
+
     // Create a copy of the vehicle types array
     const updatedVehicleTypes = vehicleTypes.map((vt: VehicleType) => {
       if (vt.id === vehicleType.id) {
@@ -249,37 +249,37 @@ export default function Home() {
       }
       return vt;
     });
-    
+
     // Update the vehicle type object if currently selected
     if (vehicleTypeObj && vehicleTypeObj.id === vehicleType.id) {
       setVehicleTypeObj({ ...vehicleTypeObj, fuelEfficiency: newEfficiency });
     }
-    
+
     // Recalculate the route if needed
     if (calculatedRoute && calculatedRoute.length > 0) {
       setCalculatedRoute(null);
       setTimeout(() => handleCalculateRoute(), 100);
     }
-    
+
     toast({
       title: "Configurações atualizadas",
       description: "Os novos valores serão usados para os cálculos de rota.",
     });
   };
-  
+
   // Callback para processar os dados de rota retornados pelo Google Maps API
   const handleRouteCalculated = (routeResponse: any) => {
     console.log("Rota calculada pelo Google Maps, processando resposta:", routeResponse);
-    
+
     // Extrair a distância total e duração da rota a partir da resposta do Google Maps
     if (routeResponse && routeResponse.routes && routeResponse.routes.length > 0) {
       // A resposta contém dados úteis que podemos usar para mostrar informações adicionais
       console.log("Rota contém pedágios:", routeResponse.routes[0].legs.some((leg: any) => leg.toll_info));
-      
+
       // Extrair distância e duração total da rota
       let totalDistance = 0;
       let totalDuration = 0;
-      
+
       routeResponse.routes[0].legs.forEach((leg: any) => {
         if (leg.distance && leg.distance.value) {
           totalDistance += leg.distance.value; // em metros
@@ -288,9 +288,9 @@ export default function Home() {
           totalDuration += leg.duration.value; // em segundos
         }
       });
-      
+
       console.log(`Distância real da rota: ${totalDistance}m, Duração: ${totalDuration}s`);
-      
+
       // Atualizar o estado com os valores reais
       setRouteMetrics({
         totalDistance,
@@ -309,26 +309,26 @@ export default function Home() {
       });
       return;
     }
-    
+
     // Mostrar toast de carregamento para feedback imediato
     toast({
       title: "Calculando rota otimizada",
       description: "Por favor, aguarde enquanto calculamos a melhor rota...",
     });
-    
+
     // Garante que pointsOfInterest seja um array válido
     const pois = Array.isArray(pointsOfInterest) ? pointsOfInterest : [];
-    
+
     // Verificar os dados recebidos da API
     console.log("Dados de POI recebidos da API:", pointsOfInterest);
     console.log("POIs processados para a rota:", pois);
-    
+
     // Adicionar um pequeno atraso para simular o processamento e mostrar o efeito visual
     setTimeout(() => {
       try {
         // Usar as métricas reais da rota (distância e duração) obtidas do Google Maps
         console.log("Usando métricas reais da rota:", routeMetrics);
-        
+
         // Optimize the route locally com os valores reais de distância e duração
         const routeResult = optimizeRouteLocally(
           origin, 
@@ -337,15 +337,15 @@ export default function Home() {
           pois, 
           routeMetrics.totalDistance > 0 ? routeMetrics : undefined // Usar métricas reais se disponíveis
         );
-        
+
         setCalculatedRoute(routeResult.waypoints);
-        
+
         // SOLUÇÃO APRIMORADA:
         // Vamos detectar a rota e mostrar apenas os POIs realmente relevantes
-        
+
         // 1. Detectar cidades importantes na rota para determinar quais rodovias são relevantes
         const includesDoisCorregosOrigin = origin && origin.name && origin.name.toLowerCase().includes('dois córregos');
-        
+
         const includesRibeiraoPreto = locations.some(loc => 
             (loc.name && (
                 loc.name.toLowerCase().includes('pedro') || 
@@ -353,29 +353,29 @@ export default function Home() {
             )) || 
             (loc.address && loc.address.toLowerCase().includes('ribeir'))
         );
-        
+
         // Verificar se estamos na rota especial Dois Córregos -> Ribeirão Preto
         const isSpecialRoute = includesDoisCorregosOrigin && includesRibeiraoPreto;
-        
+
         if (isSpecialRoute) {
             console.log("ROTA ESPECIAL DETECTADA: Dois Córregos -> Ribeirão Preto");
             console.log("Incluindo todos os pedágios e balanças relevantes para esta rota");
         }
-        
+
         // 2. Forçar a limpeza dos POIs antes de calcular os novos
         setPoisOnRoute([]);
-        
+
         // 3. Filtrar os POIs com base nas rodovias relevantes
         if (pois.length > 0) {
             let relevantPOIs = [];
-            
+
             if (isSpecialRoute) {
                 // Para a rota Dois Córregos -> Ribeirão Preto, 
                 // mostrar apenas os pedágios das rodovias SP-225 e SP-255
                 relevantPOIs = pois.filter(poi => {
                     const isRelevant = poi.roadName && 
                         (poi.roadName.includes("SP-225") || poi.roadName.includes("SP-255"));
-                        
+
                     console.log(`POI ${poi.name}: ${isRelevant ? "INCLUÍDO (rodovia relevante)" : "EXCLUÍDO (rodovia não relevante)"}`);
                     return isRelevant;
                 });
@@ -384,25 +384,25 @@ export default function Home() {
                 relevantPOIs = [...pois];
                 console.log("Rota padrão: incluindo todos os pontos de interesse disponíveis");
             }
-            
+
             console.log(`Total de POIs filtrados para a rota: ${relevantPOIs.length} de ${pois.length}`);
             console.log("POIs relevantes para a rota:", relevantPOIs);
-            
+
             // 4. Atualizar a lista de POIs filtrados
             setPoisOnRoute(relevantPOIs);
         }
-        
+
         // Mostrar toast de sucesso com a distância real
         const distanciaEmKm = Math.round(routeMetrics.totalDistance / 100) / 10;
         toast({
           title: "Rota calculada com sucesso",
           description: `${locations.length} paradas (${distanciaEmKm}km total)`,
         });
-        
+
         console.log(`Rota calculada com sucesso: ${routeResult.waypoints.length} pontos totais, distância: ${distanciaEmKm}km`);
       } catch (error) {
         console.error("Erro ao calcular rota:", error);
-        
+
         // Exibir mensagem de erro
         toast({
           title: "Erro ao calcular rota",
@@ -412,9 +412,9 @@ export default function Home() {
       }
     }, 800); // Delay para um efeito visual melhor
   };
-  
+
   // Função antiga substituída pela implementação acima
-  
+
   return (
     <div className="flex flex-col h-screen">
       {/* Header */}
@@ -431,7 +431,7 @@ export default function Home() {
           </div>
         </div>
       </header>
-      
+
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar com lista de destinos e numeração sequencial */}
         <Sidebar
@@ -451,7 +451,7 @@ export default function Home() {
           onEndDateChange={setEndDate}
 
         />
-        
+
         {/* Área principal com o mapa */}
         <div className="flex flex-col flex-1">
           {/* Status do carregamento */}
@@ -464,7 +464,7 @@ export default function Home() {
               Carregando dados...
             </div>
           )}
-          
+
           {/* Google Maps mostrando apenas os POIs no percurso da rota incluindo pedágios da API Routes Preferred */}
           <MapViewSimple 
             origin={origin}
@@ -473,11 +473,11 @@ export default function Home() {
             onRouteCalculated={handleRouteCalculated}
             pointsOfInterest={poisOnRoute} // IMPORTANTE: Usar APENAS os POIs filtrados ao longo da rota
           />
-          
+
           {/* Removidos logs de debug que não eram mais necessários */}
         </div>
       </div>
-      
+
       {/* Route Info Panel */}
       <RouteInfoPanel
         routeInfo={routeInfo}
@@ -490,14 +490,14 @@ export default function Home() {
         routeName={routeName}
         onRouteNameChange={setRouteName}
       />
-      
+
       {/* Add Location Modal */}
       <AddLocationModal
         isOpen={isAddLocationModalOpen}
         onClose={() => setIsAddLocationModalOpen(false)}
         onAddLocation={handleSelectLocation}
       />
-      
+
       {/* Fuel Settings Dialog */}
       <FuelSettingsDialog
         open={isFuelSettingsOpen}
@@ -511,6 +511,33 @@ export default function Home() {
           }
         }}
       />
+
+<button 
+            className={`w-full py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center justify-center ${
+              locations.length > 0 && !isCalculating
+                ? "bg-primary text-white hover:bg-blue-600 transition"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+            onClick={handleCalculateRoute}
+            disabled={locations.length === 0 || isCalculating}
+          >
+            {isCalculating ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Calculando melhor rota...
+              </>
+            ) : (
+              <>
+                <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+                Calcular melhor rota
+              </>
+            )}
+          </button>
     </div>
   );
 }

@@ -47,26 +47,26 @@ export default function Sidebar({
     isLoading: isFileLoading,
     error: fileError
   } = useFileUpload();
-  
+
   // Hook para notificações toast
   const { toast } = useToast();
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     // Log e limpa mensagens de erro anteriores
     console.log("Iniciando upload de arquivo:", e.target.files?.[0]?.name);
-    
+
     try {
       // Processa o arquivo
       const result = await handleFileChange(e);
       console.log("Resultado do processamento de arquivo:", result);
-      
+
       // Verifica se temos localizações válidas
       if (result && result.locations && result.locations.length > 0) {
         console.log(`Recebidos ${result.locations.length} CEPs para importar`);
-        
+
         // Array para armazenar localizações processadas
         const allGeocodingResults: GeocodingResult[] = [];
-        
+
         // Processa cada localização retornada pelo servidor
         for (const loc of result.locations) {
           try {
@@ -80,7 +80,7 @@ export default function Sidebar({
                 lat: loc.lat,
                 lng: loc.lng
               };
-              
+
               // Adiciona ao array de resultados
               allGeocodingResults.push(geocodingResult);
               console.log(`Processado CEP: ${loc.cep}, Nome: ${loc.name}`);
@@ -91,24 +91,24 @@ export default function Sidebar({
             console.error(`Erro ao processar o CEP ${loc.cep}:`, err);
           }
         }
-        
+
         // Verifica se temos resultados para adicionar
         if (allGeocodingResults.length > 0) {
           console.log(`Adicionando ${allGeocodingResults.length} localizações ao mapa`);
-          
+
           // Envia todos os resultados para serem adicionados
           onSelectLocation(allGeocodingResults);
-          
+
           // Notifica o usuário
           toast({
             title: "Importação concluída",
             description: `${allGeocodingResults.length} localizações importadas com sucesso`,
           });
-          
+
           // Calcular automaticamente a rota após importação
           // Esperar um pouco mais para garantir que as localizações foram processadas
           console.log("Agendando cálculo automático de rota após importação");
-          
+
           // Usar um temporizador mais longo para garantir que todas as atualizações
           // de estado foram processadas antes de acionar o cálculo
           setTimeout(() => {
@@ -116,7 +116,7 @@ export default function Sidebar({
             if (allGeocodingResults.length > 0) {
               console.log("Executando cálculo automático da rota após importação de CEPs");
               onCalculateRoute();
-              
+
               // Notificar o usuário
               toast({
                 title: "Calculando rota",
@@ -160,10 +160,10 @@ export default function Sidebar({
           onEndDateChange={onEndDateChange}
         />
       </div>
-      
+
       {/* Search Box */}
       <SearchBox onSelectLocation={onSelectLocation} />
-      
+
       {/* Input Options */}
       <div className="p-4 border-b border-gray-200">
         {/* Upload e adicionar botões */}
@@ -199,7 +199,7 @@ export default function Sidebar({
               onChange={handleFileUpload}
             />
           </div>
-          
+
           {fileError && (
             <div className="mt-2 text-sm text-red-600">
               {fileError}
@@ -222,7 +222,7 @@ export default function Sidebar({
         onAddLocationClick={onAddLocationClick}
         calculatedRoute={calculatedRoute}
       />
-      
+
       {/* Botão de calcular rota após a lista de destinos */}
       <div className="p-4 border-t border-gray-200">
         <button 
