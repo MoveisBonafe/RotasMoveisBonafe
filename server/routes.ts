@@ -685,15 +685,3 @@ export async function registerRoutes(app: Express): Promise<Server> {
   return httpServer;
 }
 
-app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    // Ensure we haven't sent headers already
-    if (!res.headersSent) {
-      res.status(status);
-      // Always send JSON response
-      res.json({ message, error: true });
-    }
-    console.error("Server error:", err);
-  });
