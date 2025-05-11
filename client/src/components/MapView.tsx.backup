@@ -582,7 +582,7 @@ export default function MapView({
             streetViewControl: true,
             zoomControl: true,
             // Permitir zoom sem precisar segurar Ctrl
-            gestureHandling: 'greedy', // 'greedy' é mais permissivo que 'cooperative'
+            gestureHandling: 'cooperative',
             scrollwheel: true,
             // Estilo visual personalizado para o mapa
             styles: [
