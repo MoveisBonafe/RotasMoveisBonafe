@@ -1261,19 +1261,27 @@
         // Limpar o array de marcadores
         markers = [];
         
-        // Converter IDs para objetos de localização
-        const pathLocations = optimizedPathIds.map(id => locations.find(loc => loc.id === id));
+        // Converter IDs para objetos de localização com comparação segura
+        const pathLocations = optimizedPathIds.map(id => {
+            // Garantir que a comparação de IDs seja feita como string
+            const idStr = String(id);
+            return locations.find(loc => String(loc.id) === idStr);
+        });
         
         // Verificar se todos os IDs foram encontrados
         if (pathLocations.some(loc => !loc)) {
-            console.error("Algumas localizações não foram encontradas:", optimizedPathIds);
-            return;
+            console.error("Algumas localizações não foram encontradas.",
+                "IDs da rota:", optimizedPathIds.map(id => String(id)));
+            // Continuar mesmo com algumas localizações faltando
+            // return;
         }
         
-        // Adicionar marcadores novamente na ordem otimizada
-        pathLocations.forEach((location, index) => {
-            addMarkerForLocation(location, index);
-        });
+        // Adicionar marcadores novamente na ordem otimizada (ignorar localizações não encontradas)
+        pathLocations
+            .filter(loc => loc) // Remover localizações nulas
+            .forEach((location, index) => {
+                addMarkerForLocation(location, index);
+            });
         
         // Atualizar a lista de locais
         updateLocationsList();
@@ -1342,11 +1350,11 @@
         const pathLocations = [];
         for (let i = 0; i < pathIds.length; i++) {
             const id = pathIds[i];
-            // Verificação se o ID é um objeto em vez de um valor simples
-            const lookupId = typeof id === 'object' ? (id.id || id.toString()) : id;
+            // Garantir que a comparação de IDs seja feita como string
+            const lookupId = String(typeof id === 'object' ? (id.id || id) : id);
             console.log("Procurando localização com ID:", lookupId, "Tipo:", typeof lookupId);
             
-            const location = locations.find(loc => loc.id === lookupId);
+            const location = locations.find(loc => String(loc.id) === lookupId);
             if (!location) {
                 console.error(`Localização ID ${lookupId} não encontrada!`);
             } else {
