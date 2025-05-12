@@ -1402,16 +1402,29 @@
         const eventsListContainer = document.getElementById('events-list');
         eventsListContainer.innerHTML = '';
         
+        // Limpar marcadores anteriores
+        clearEventMarkers();
+        
         // Extrair nomes das cidades na rota
         const citiesOnRoute = pathLocations.map(loc => {
             const parts = loc.address.split(',');
             return parts[0].trim();
         });
         
+        // Listar cidades na rota para debug
+        console.log("Procurando eventos nas cidades:", citiesOnRoute);
+        
         // Obter datas do filtro
         const startDate = document.getElementById('start-date').value;
         const endDate = document.getElementById('end-date').value;
+        console.log("Intervalo de datas:", startDate, "a", endDate);
         
+        // Se não tiver cidades na rota, mostrar mensagem
+        if (citiesOnRoute.length === 0) {
+            eventsListContainer.innerHTML = '<p class="text-muted">Adicione locais e calcule uma rota para ver eventos.</p>';
+            return;
+        }
+    
         // Filtrar eventos que estão nas cidades da rota e no período selecionado
         let eventsOnRoute = mockData.cityEvents.filter(event => {
             const eventCity = event.cityName;
@@ -1420,9 +1433,21 @@
             const filterStart = startDate ? new Date(startDate) : new Date(0); // Se não tiver data início, considerar desde sempre
             const filterEnd = endDate ? new Date(endDate) : new Date(9999, 11, 31); // Se não tiver data fim, considerar até o futuro distante
             
-            return citiesOnRoute.some(city => eventCity.includes(city)) && 
-                   eventStart <= filterEnd && 
-                   eventEnd >= filterStart;
+            // Verificar se a cidade do evento está na rota (comparação mais flexível)
+            const isInCity = citiesOnRoute.some(city => 
+                eventCity.toLowerCase().includes(city.toLowerCase()) || 
+                city.toLowerCase().includes(eventCity.toLowerCase())
+            );
+            
+            // Verificar se está dentro do intervalo de datas
+            const isInDateRange = eventStart <= filterEnd && eventEnd >= filterStart;
+            
+            // Para debug
+            if (isInCity && isInDateRange) {
+                console.log(`Evento qualificado: ${event.name} em ${eventCity} (${event.startDate} a ${event.endDate})`);
+            }
+            
+            return isInCity && isInDateRange;
         });
         
         // Se não houver eventos, mostrar mensagem
@@ -1634,8 +1659,14 @@
         // Se tivermos uma rota ativa, atualizar os eventos mostrados
         const activeRoute = directionsRenderer.getDirections();
         if (activeRoute) {
+            // Obter o tipo de veículo selecionado
+            const vehicleType = document.querySelector('input[name="vehicle-type"]:checked').value;
+            
             // Mostrar eventos para as cidades da rota ativa
             showEventsForCitiesOnRoute(locations);
+            
+            // Também atualizar restrições de caminhões
+            showTruckRestrictionsForCitiesOnRoute(locations, vehicleType);
         } else {
             alert("Calcule uma rota primeiro para ver os eventos nas cidades do percurso.");
         }
