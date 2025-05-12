@@ -2115,37 +2115,41 @@
             return;
         }
         
-        // SOLUÇÃO FUNDAMENTAL: Extrair APENAS as cidades que realmente estão na rota
+        // EXTRAÇÃO MELHORADA DE CIDADES DO PERCURSO
         // Array para armazenar os nomes das cidades que estão REALMENTE na rota
         const citiesOnRoute = [];
         
-        // Incluir apenas o destino e a origem
-        const destinoFinal = pathLocations[pathLocations.length - 1];
-        const origem = mockData.origin;
+        // Cidade de origem (sempre incluir Dois Córregos)
+        citiesOnRoute.push("Dois Córregos");
+        console.log(`[ROTA] Adicionada cidade de origem: Dois Córregos`);
         
-        // Adicionar a origem
-        if (!citiesOnRoute.includes(origem.name)) {
-            citiesOnRoute.push(origem.name);
-            console.log(`Origem adicionada à rota: ${origem.name}`);
-        }
-        
-        // Adicionar o destino
-        if (destinoFinal && destinoFinal.address) {
-            const destinoParts = destinoFinal.address.split(',');
-            if (destinoParts.length > 0) {
-                const destinoCity = destinoParts[0].trim();
-                if (!citiesOnRoute.includes(destinoCity)) {
-                    citiesOnRoute.push(destinoCity);
-                    console.log(`Destino adicionado à rota: ${destinoCity}`);
+        // Processar CADA destino na rota para extrair nomes de cidades
+        for (const location of pathLocations) {
+            // Apenas adicionar se tivermos um nome válido
+            if (location && location.name) {
+                // Verificar se o nome é uma cidade conhecida (estratégia 1)
+                const knownCities = [
+                    "Dois Córregos", "Jaú", "Botucatu", "Bauru", "Ribeirão Preto", 
+                    "São Paulo", "Campinas", "São Carlos", "Piracicaba", "Araraquara",
+                    "Americana", "Sorocaba", "Limeira", "Rio Claro"
+                ];
+                
+                // Se o nome exato da localização é uma cidade conhecida
+                if (knownCities.includes(location.name) && !citiesOnRoute.includes(location.name)) {
+                    citiesOnRoute.push(location.name);
+                    console.log(`[ROTA] Adicionada cidade conhecida: ${location.name}`);
+                    continue; // Ir para o próximo local
+                }
+                
+                // Estratégia 2: Usar o nome da localização diretamente
+                if (!citiesOnRoute.includes(location.name)) {
+                    citiesOnRoute.push(location.name);
+                    console.log(`[ROTA] Adicionado local como possível cidade: ${location.name}`);
                 }
             }
         }
         
-        // Adicionar também o nome do destino se for uma cidade
-        if (destinoFinal && destinoFinal.name && !citiesOnRoute.includes(destinoFinal.name)) {
-            citiesOnRoute.push(destinoFinal.name);
-            console.log(`Nome do destino adicionado: ${destinoFinal.name}`);
-        }
+        console.log(`[ROTA] Cidades encontradas no percurso (${citiesOnRoute.length}): ${citiesOnRoute.join(', ')}`);
         
         console.log("APENAS ESTAS CIDADES ESTÃO NA ROTA REAL:", citiesOnRoute);
         
@@ -2153,82 +2157,111 @@
         const startDate = document.getElementById('start-date').value;
         const endDate = document.getElementById('end-date').value;
         
-        // Filtrar eventos que estão nas cidades da rota e no período selecionado
-        console.log("Filtrando eventos entre", startDate || "qualquer data", "e", endDate || "qualquer data");
+        // NOVA IMPLEMENTAÇÃO DE FILTRAGEM DE EVENTOS
+        console.log("NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data");
+        console.log(`Filtrando eventos para cidades: ${citiesOnRoute.join(', ')}`);
+        console.log(`Filtro de data: ${startDate || 'sem data inicial'} a ${endDate || 'sem data final'}`);
         
-        // Não definimos datas padrão - os campos devem permanecer vazios
-        console.log("Usando filtro de eventos sem datas padrão - mostrar todos os eventos para cidades na rota");
+        // Array para armazenar eventos filtrados
+        let eventsOnRoute = [];
         
-        // Filtragem melhorada para eventos com correspondência bidirecional de cidades
-        let eventsOnRoute = mockData.cityEvents.filter(event => {
-            const eventCity = event.cityName;
+        // Para cada evento nos dados...
+        mockData.cityEvents.forEach(event => {
+            let includeEvent = false;
             
-            // Filtragem de datas APENAS se as datas forem fornecidas
-            let dateMatch = true;
-            if (startDate || endDate) {
+            // ETAPA 1: FILTRAR POR CIDADE - CORRESPONDÊNCIA EXATA APENAS
+            const cityMatch = citiesOnRoute.includes(event.cityName);
+            
+            // Se a cidade não estiver no percurso, não inclua este evento
+            if (!cityMatch) {
+                console.log(`[CIDADE] Evento '${event.name}' em '${event.cityName}' REJEITADO - cidade não está no percurso`);
+                return; // Pular para o próximo evento
+            }
+            
+            // ETAPA 2: FILTRAR POR DATA (apenas se um filtro de data foi especificado)
+            if (!startDate && !endDate) {
+                // Nenhum filtro de data especificado, incluir o evento
+                console.log(`[DATA] Evento '${event.name}' em '${event.cityName}' ACEITO - nenhum filtro de data especificado`);
+                includeEvent = true;
+            } 
+            else {
+                // Filtro de data especificado, verificar se o evento está dentro do intervalo
                 try {
-                    // Converter strings de data para objetos Date
-                    const eventStartDate = new Date(event.startDate);
-                    const eventEndDate = new Date(event.endDate);
+                    // Criar objetos de data para comparação
+                    const eventStartObj = new Date(event.startDate);
+                    const eventEndObj = new Date(event.endDate);
                     
-                    // Certifique-se de que as datas de filtro são objetos Date
-                    const filterStartDate = startDate ? new Date(startDate) : null;
-                    const filterEndDate = endDate ? new Date(endDate) : null;
+                    // Formatação para diagnóstico
+                    const eventStartStr = eventStartObj.toLocaleDateString('pt-BR');
+                    const eventEndStr = eventEndObj.toLocaleDateString('pt-BR');
                     
-                    console.log(`Filtrando evento: ${event.name}:`);
-                    console.log(`- Evento data: ${eventStartDate.toLocaleDateString('pt-BR')} até ${eventEndDate.toLocaleDateString('pt-BR')}`);
-                    console.log(`- Filtro data: ${filterStartDate ? filterStartDate.toLocaleDateString('pt-BR') : 'não definido'} até ${filterEndDate ? filterEndDate.toLocaleDateString('pt-BR') : 'não definido'}`);
-                    
-                    // Se ambas as datas do filtro foram fornecidas
-                    if (filterStartDate && filterEndDate) {
+                    // Se ambas as datas do filtro foram especificadas
+                    if (startDate && endDate) {
+                        const filterStartObj = new Date(startDate);
+                        const filterEndObj = new Date(endDate);
+                        
+                        const filterStartStr = filterStartObj.toLocaleDateString('pt-BR');
+                        const filterEndStr = filterEndObj.toLocaleDateString('pt-BR');
+                        
+                        console.log(`[DATA] Verificando se evento ${event.name} (${eventStartStr} a ${eventEndStr}) está no período ${filterStartStr} a ${filterEndStr}`);
+                        
                         // Um evento corresponde se:
-                        // 1. Começa dentro do intervalo de filtro, OU
-                        // 2. Termina dentro do intervalo de filtro, OU
-                        // 3. Abrange o intervalo de filtro completo
-                        dateMatch = (
-                            (eventStartDate >= filterStartDate && eventStartDate <= filterEndDate) || // começa dentro do filtro
-                            (eventEndDate >= filterStartDate && eventEndDate <= filterEndDate) ||     // termina dentro do filtro
-                            (eventStartDate <= filterStartDate && eventEndDate >= filterEndDate)      // abrange todo o filtro
-                        );
-                    } 
-                    // Se apenas a data inicial do filtro foi fornecida
-                    else if (filterStartDate) {
-                        dateMatch = eventEndDate >= filterStartDate; // evento termina depois/na data inicial do filtro
-                    } 
-                    // Se apenas a data final do filtro foi fornecida
-                    else if (filterEndDate) {
-                        dateMatch = eventStartDate <= filterEndDate; // evento começa antes/na data final do filtro
+                        // 1. O evento começa dentro do intervalo do filtro, OU
+                        // 2. O evento termina dentro do intervalo do filtro, OU
+                        // 3. O evento abrange completamente o intervalo do filtro
+                        if (
+                            // Começa no intervalo
+                            (eventStartObj >= filterStartObj && eventStartObj <= filterEndObj) ||
+                            // Termina no intervalo
+                            (eventEndObj >= filterStartObj && eventEndObj <= filterEndObj) ||
+                            // Abrange o intervalo completo
+                            (eventStartObj <= filterStartObj && eventEndObj >= filterEndObj)
+                        ) {
+                            console.log(`[DATA] Evento '${event.name}' ACEITO - está no intervalo de datas especificado`);
+                            includeEvent = true;
+                        } else {
+                            console.log(`[DATA] Evento '${event.name}' REJEITADO - fora do intervalo de datas especificado`);
+                        }
                     }
-                    
-                    console.log(`- Resultado da filtragem de data: ${dateMatch ? 'INCLUIR' : 'EXCLUIR'}`);
+                    // Se apenas a data inicial foi especificada
+                    else if (startDate) {
+                        const filterStartObj = new Date(startDate);
+                        const filterStartStr = filterStartObj.toLocaleDateString('pt-BR');
+                        
+                        console.log(`[DATA] Verificando se evento ${event.name} (${eventStartStr} a ${eventEndStr}) ocorre após ${filterStartStr}`);
+                        
+                        if (eventEndObj >= filterStartObj) {
+                            console.log(`[DATA] Evento '${event.name}' ACEITO - termina após a data inicial especificada`);
+                            includeEvent = true;
+                        } else {
+                            console.log(`[DATA] Evento '${event.name}' REJEITADO - termina antes da data inicial especificada`);
+                        }
+                    }
+                    // Se apenas a data final foi especificada
+                    else if (endDate) {
+                        const filterEndObj = new Date(endDate);
+                        const filterEndStr = filterEndObj.toLocaleDateString('pt-BR');
+                        
+                        console.log(`[DATA] Verificando se evento ${event.name} (${eventStartStr} a ${eventEndStr}) ocorre antes de ${filterEndStr}`);
+                        
+                        if (eventStartObj <= filterEndObj) {
+                            console.log(`[DATA] Evento '${event.name}' ACEITO - começa antes da data final especificada`);
+                            includeEvent = true;
+                        } else {
+                            console.log(`[DATA] Evento '${event.name}' REJEITADO - começa após a data final especificada`);
+                        }
+                    }
                 } catch (e) {
-                    console.error("Erro ao comparar datas:", e);
-                    dateMatch = true; // em caso de erro, incluir o evento (erro para o lado de mostrar mais)
+                    console.error(`[ERRO] Falha ao processar datas para evento ${event.name}:`, e);
+                    includeEvent = false; // Em caso de erro, não incluir o evento
                 }
             }
             
-            // CORRESPONDÊNCIA EXATA DE CIDADE - apenas correspondência exata
-            // Não queremos São Paulo correspondendo a São Pedro ou outras combinações parciais
-            const cityMatch = citiesOnRoute.some(city => {
-                // Só fazemos comparações para cidades não vazias
-                if (!city || !event.cityName) return false;
-                
-                // Normalizar nomes (remover acentos, espaços extras, minúsculas)
-                const normalizedRouteCity = city.toLowerCase().trim();
-                const normalizedEventCity = event.cityName.toLowerCase().trim();
-                
-                // Primeiro tentar correspondência exata
-                if (normalizedRouteCity === normalizedEventCity) {
-                    console.log(`Correspondência exata: '${city}' = '${event.cityName}'`);
-                    return true;
-                }
-                
-                return false;
-            });
-            
-            console.log(`Evento: ${event.name}, Cidade: ${eventCity}, Data: ${event.startDate}-${event.endDate}, Cidade Corresponde: ${cityMatch}, Data Corresponde: ${dateMatch}`);
-            
-            return cityMatch && dateMatch;
+            // Se passou por todos os filtros, incluir o evento
+            if (includeEvent) {
+                console.log(`[FINAL] Evento '${event.name}' em '${event.cityName}' - INCLUÍDO NA LISTA FINAL`);
+                eventsOnRoute.push(event);
+            }
         });
         
         // Se não houver eventos, mostrar mensagem
