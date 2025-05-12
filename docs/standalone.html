@@ -591,15 +591,46 @@
     let showPOIs = true;
     let customTooltip = null;
 
+    // Verificar se a API do Google Maps carregou
+    function isGoogleMapsLoaded() {
+        return typeof google !== 'undefined' && google.maps;
+    }
+    
     // Inicialização
     document.addEventListener("DOMContentLoaded", function() {
-        initMap();
-        initAutocomplete();
-        initTabNavigation();
-        initEventListeners();
-        
-        // Exibir a origem no mapa
-        addMarkerForLocation(mockData.origin, 0);
+        // Tentar inicializar ou configurar para tentar novamente mais tarde
+        if (isGoogleMapsLoaded()) {
+            console.log("Google Maps API carregada com sucesso");
+            initMap();
+            initAutocomplete();
+            initTabNavigation();
+            initEventListeners();
+        } else {
+            console.log("Google Maps API não carregada, tentando novamente...");
+            const maxRetries = 5;
+            let retries = 0;
+            
+            function tryInit() {
+                if (isGoogleMapsLoaded()) {
+                    console.log("Google Maps API carregada com sucesso após tentativa " + retries);
+                    initMap();
+                    initAutocomplete();
+                    initTabNavigation();
+                    initEventListeners();
+                } else {
+                    retries++;
+                    if (retries < maxRetries) {
+                        console.log("Tentando carregar Google Maps API novamente... Tentativa " + retries);
+                        setTimeout(tryInit, 1000);
+                    } else {
+                        console.error("Não foi possível carregar a API do Google Maps após " + maxRetries + " tentativas");
+                        alert("Não foi possível carregar o mapa. Por favor, recarregue a página.");
+                    }
+                }
+            }
+            
+            setTimeout(tryInit, 1000);
+        }
         
         // Inicializar datas para o filtro de eventos
         const today = new Date();
@@ -660,6 +691,9 @@
         
         // Criar o tooltip personalizado
         createCustomTooltip();
+        
+        // Exibir a origem no mapa
+        addMarkerForLocation(mockData.origin, 0);
     }
 
     // Inicializa o autocomplete
@@ -837,7 +871,10 @@
         const markerColor = index === 0 ? '#FF0000' : '#1976D2';
         
         const marker = new google.maps.Marker({
-            position: { lat: location.latitude, lng: location.longitude },
+            position: { 
+                lat: parseFloat(location.latitude || location.lat), 
+                lng: parseFloat(location.longitude || location.lng) 
+            },
             map: map,
             title: location.name,
             label: {
