@@ -117,6 +117,16 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
     
+    // Contar corretamente o número de linhas válidas para a mensagem inicial
+    const validLines = lines.filter(line => {
+      if (!line.trim()) return false;
+      const parts = line.split(',');
+      return parts.length >= 2 && parts[0].trim() && parts[1].trim();
+    }).length;
+    
+    // Mostrar mensagem com contagem correta de locais sendo importados
+    alert(`${validLines} locais sendo importados! Os locais conhecidos aparecerão imediatamente, enquanto os demais serão geocodificados automaticamente.`);
+    
     // Array para armazenar os locais importados
     const importedLocations = [];
     
@@ -140,12 +150,14 @@ document.addEventListener('DOMContentLoaded', function() {
           window.createLocationItem(name, `CEP: ${cep} (${geocode.city}, ${geocode.state})`, window.locationCounter);
         }
         
-        // Criar objeto de localização
+        // Criar objeto de localização com formato completo para o TSP
         const location = {
           id: window.locationCounter,
           name: name,
           address: `CEP: ${cep} (${geocode.city}, ${geocode.state})`,
-          latlng: `${geocode.lat},${geocode.lng}`,
+          zipCode: cep,
+          latitude: geocode.lat,
+          longitude: geocode.lng,
           isOrigin: false
         };
         
