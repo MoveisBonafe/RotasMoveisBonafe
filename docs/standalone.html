@@ -1608,20 +1608,28 @@
         const eventsListContainer = document.getElementById('events-list');
         eventsListContainer.innerHTML = '';
         
-        // Converter IDs para objetos de localização
-        const pathLocations = pathIds.map(id => locations.find(loc => loc.id === id));
+        // Converter IDs para objetos de localização com comparação segura
+        const pathLocations = pathIds.map(id => {
+            // Garantir que a comparação de IDs seja feita como string
+            const idStr = String(id);
+            return locations.find(loc => String(loc.id) === idStr);
+        });
         
         // Verificar se todos os IDs foram encontrados
         if (pathLocations.some(loc => !loc)) {
-            console.error("Algumas localizações não foram encontradas:", pathIds);
-            return;
+            console.error("Algumas localizações não foram encontradas.",
+                "IDs da rota:", pathIds.map(id => String(id)));
+            // Continuar mesmo com algumas localizações faltando
+            // return;
         }
         
-        // Extrair nomes das cidades na rota
-        const citiesOnRoute = pathLocations.map(loc => {
-            const parts = loc.address.split(',');
-            return parts[0].trim();
-        });
+        // Extrair nomes das cidades na rota (ignorar localizações não encontradas)
+        const citiesOnRoute = pathLocations
+            .filter(loc => loc) // Remover localizações nulas
+            .map(loc => {
+                const parts = loc.address.split(',');
+                return parts[0].trim();
+            });
         
         // Obter datas do filtro
         const startDate = document.getElementById('start-date').value;
