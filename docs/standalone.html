@@ -554,18 +554,22 @@
         
         // Eventos de cidades
         cityEvents: [
-            { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2023-05-24", endDate: "2023-05-24", isHoliday: true, description: "Feriado municipal do aniversário de Dois Córregos", restrictionLevel: "low" },
-            { id: 2, cityName: "Jaú", name: "Festa do Rodeio", startDate: "2023-06-10", endDate: "2023-06-20", isHoliday: false, description: "Evento com grande circulação de veículos", restrictionLevel: "medium" },
-            { id: 3, cityName: "Botucatu", name: "Festival de Inverno", startDate: "2023-07-15", endDate: "2023-07-30", isHoliday: false, description: "Evento cultural e gastronômico", restrictionLevel: "low" },
-            { id: 4, cityName: "Bauru", name: "Exposição Agropecuária", startDate: "2023-08-05", endDate: "2023-08-15", isHoliday: false, description: "Feira agropecuária com shows", restrictionLevel: "high" }
+            { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", date: "2025-05-17", isHoliday: true, description: "Feriado municipal do aniversário de Dois Córregos", restrictionLevel: "low" },
+            { id: 2, cityName: "Jaú", name: "Festa do Rodeio", date: "2025-06-10", isHoliday: false, description: "Evento com grande circulação de veículos", restrictionLevel: "medium" },
+            { id: 3, cityName: "Botucatu", name: "Festival de Inverno", date: "2025-07-15", isHoliday: false, description: "Evento cultural e gastronômico", restrictionLevel: "low" },
+            { id: 4, cityName: "Bauru", name: "Exposição Agropecuária", date: "2025-08-05", isHoliday: false, description: "Feira agropecuária com shows", restrictionLevel: "high" },
+            { id: 5, cityName: "Dois Córregos", name: "Dia do Trabalhador", date: "2025-05-01", isHoliday: true, description: "Feriado nacional", restrictionLevel: "low" },
+            { id: 6, cityName: "Brotas", name: "Corpus Christi", date: "2025-06-19", isHoliday: true, description: "Feriado religioso", restrictionLevel: "medium" },
+            { id: 7, cityName: "Brotas", name: "Festa de São João", date: "2025-06-24", isHoliday: false, description: "Festa tradicional", restrictionLevel: "low" }
         ],
         
         // Restrições para caminhões
         truckRestrictions: [
-            { id: 1, cityName: "Dois Córregos", dayType: "weekday", startTime: "07:00", endTime: "09:00", restrictionType: "partial", description: "Restrição parcial para caminhões de grande porte no centro", affectedVehicles: ["truck5", "truck6", "truck7", "truck9"] },
-            { id: 2, cityName: "Jaú", dayType: "weekday", startTime: "17:00", endTime: "20:00", restrictionType: "partial", description: "Restrição parcial para todos os caminhões no centro", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] },
-            { id: 3, cityName: "Botucatu", dayType: "weekend", startTime: "08:00", endTime: "18:00", restrictionType: "total", description: "Proibição total para caminhões na área central", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] },
-            { id: 4, cityName: "Bauru", dayType: "all", startTime: "07:00", endTime: "22:00", restrictionType: "rodizio", description: "Sistema de rodízio para todos os caminhões", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] }
+            { id: 1, cityName: "Dois Córregos", restriction: "partial", startTime: "07:00", endTime: "09:00", description: "Restrição parcial para caminhões de grande porte no centro", applicableVehicles: "truck5" },
+            { id: 2, cityName: "Jaú", restriction: "partial", startTime: "17:00", endTime: "20:00", description: "Restrição parcial para todos os caminhões no centro", applicableVehicles: "truck1,truck2,truck3,truck5" },
+            { id: 3, cityName: "Botucatu", restriction: "total", startTime: "08:00", endTime: "18:00", description: "Proibição total para caminhões na área central", applicableVehicles: "truck1,truck2,truck3,truck5" },
+            { id: 4, cityName: "Bauru", restriction: "rodizio", startTime: "07:00", endTime: "22:00", description: "Sistema de rodízio para todos os caminhões", applicableVehicles: "truck1,truck2,truck3,truck5" },
+            { id: 5, cityName: "São Paulo", restriction: "rodizio", startTime: "07:00", endTime: "10:00", description: "Rodízio municipal durante horário de pico", applicableVehicles: "truck1,truck2,truck3,truck5" }
         ]
     };
 
@@ -1208,10 +1212,15 @@
     }
 
     // Mostrar eventos para as cidades na rota
-    function showEventsForCitiesOnRoute(pathLocations) {
-        // Limpar a lista de eventos
+    function showEventsForCitiesOnRoute(pathLocations, filteredEvents = null) {
+        // Limpar a lista de eventos e remover marcadores antigos
+        cityEventMarkers.forEach(marker => marker.setMap(null));
+        cityEventMarkers = [];
+        
         const eventsListContainer = document.getElementById('events-list');
-        eventsListContainer.innerHTML = '';
+        if (eventsListContainer) {
+            eventsListContainer.innerHTML = '';
+        }
         
         // Extrair nomes das cidades na rota
         const citiesOnRoute = pathLocations.map(loc => {
@@ -1219,21 +1228,27 @@
             return parts[0].trim();
         });
         
-        // Obter datas do filtro
-        const startDate = document.getElementById('start-date').value;
-        const endDate = document.getElementById('end-date').value;
+        // Usar eventos filtrados passados como parâmetro ou filtrar novamente
+        let eventsToShow = filteredEvents;
         
-        // Filtrar eventos que estão nas cidades da rota e no período selecionado
-        let eventsOnRoute = mockData.cityEvents.filter(event => {
-            const eventCity = event.cityName;
-            const eventStart = new Date(event.startDate);
-            const eventEnd = new Date(event.endDate);
-            const filterStart = startDate ? new Date(startDate) : new Date(0); // Se não tiver data início, considerar desde sempre
-            const filterEnd = endDate ? new Date(endDate) : new Date(9999, 11, 31); // Se não tiver data fim, considerar até o futuro distante
+        // Se não foram passados eventos filtrados, criar filtro agora
+        if (!eventsToShow) {
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
             
-            return citiesOnRoute.some(city => eventCity.includes(city)) && 
-                   eventStart <= filterEnd && 
-                   eventEnd >= filterStart;
+            eventsToShow = mockData.cityEvents.filter(event => {
+                const eventDate = new Date(event.date);
+                const filterStart = startDate ? new Date(startDate) : new Date(0);
+                const filterEnd = endDate ? new Date(endDate) : new Date(9999, 11, 31);
+                
+                return eventDate >= filterStart && eventDate <= filterEnd;
+            });
+        }
+        
+        // Filtrar só eventos das cidades na rota
+        const eventsOnRoute = eventsToShow.filter(event => {
+            const eventCity = event.cityName;
+            return citiesOnRoute.some(city => eventCity.includes(city));
         });
         
         // Se não houver eventos, mostrar mensagem
