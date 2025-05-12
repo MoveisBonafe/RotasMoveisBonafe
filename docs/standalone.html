@@ -2088,7 +2088,11 @@
                 
                 // Adicionar pontos da cidade ao caminho
                 for (const dest of city.destinations) {
-                    path.push(dest.id);
+                    // Converter o ID para string para consistência
+                    const destId = String(dest.id);
+                    console.log(`Adicionando destino ${dest.name} com ID:`, destId, "Tipo:", typeof destId);
+                    
+                    path.push(destId);
                     const dist = calculateDistance(
                         currentLocation.latitude, currentLocation.longitude,
                         dest.latitude, dest.longitude
