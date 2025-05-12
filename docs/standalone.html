@@ -564,12 +564,18 @@
             { id: 8, name: "Borracharia 24h (Botucatu)", type: "mechanic", latitude: -22.8900, longitude: -48.4500, highway: "SP-300", cityName: "Botucatu", services: ["tire"] }
         ],
         
-        // Eventos de cidades
+        // Eventos de cidades (com aniversários atualizados para 2025)
         cityEvents: [
+            // Aniversários das principais cidades (eventos fixos - feriados municipais)
             { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2025-05-24", endDate: "2025-05-24", isHoliday: true, description: "Feriado municipal do aniversário de Dois Córregos", restrictionLevel: "low" },
-            { id: 2, cityName: "Jaú", name: "Festa do Rodeio", startDate: "2025-06-10", endDate: "2025-06-20", isHoliday: false, description: "Evento com grande circulação de veículos", restrictionLevel: "medium" },
-            { id: 3, cityName: "Botucatu", name: "Festival de Inverno", startDate: "2025-07-15", endDate: "2025-07-30", isHoliday: false, description: "Evento cultural e gastronômico", restrictionLevel: "low" },
-            { id: 4, cityName: "Bauru", name: "Exposição Agropecuária", startDate: "2025-08-05", endDate: "2025-08-15", isHoliday: false, description: "Feira agropecuária com shows", restrictionLevel: "high" }
+            { id: 2, cityName: "Jaú", name: "Aniversário da Cidade", startDate: "2025-08-15", endDate: "2025-08-15", isHoliday: true, description: "Feriado municipal do aniversário de Jaú", restrictionLevel: "low" },
+            { id: 3, cityName: "Botucatu", name: "Aniversário da Cidade", startDate: "2025-04-14", endDate: "2025-04-14", isHoliday: true, description: "Feriado municipal do aniversário de Botucatu", restrictionLevel: "low" },
+            { id: 4, cityName: "Bauru", name: "Aniversário da Cidade", startDate: "2025-08-01", endDate: "2025-08-01", isHoliday: true, description: "Feriado municipal do aniversário de Bauru", restrictionLevel: "low" },
+            
+            // Eventos regulares
+            { id: 5, cityName: "Jaú", name: "Festa do Rodeio", startDate: "2025-06-10", endDate: "2025-06-20", isHoliday: false, description: "Evento com grande circulação de veículos", restrictionLevel: "medium" },
+            { id: 6, cityName: "Botucatu", name: "Festival de Inverno", startDate: "2025-07-15", endDate: "2025-07-30", isHoliday: false, description: "Evento cultural e gastronômico", restrictionLevel: "low" },
+            { id: 7, cityName: "Bauru", name: "Exposição Agropecuária", startDate: "2025-08-05", endDate: "2025-08-15", isHoliday: false, description: "Feira agropecuária com shows", restrictionLevel: "high" }
         ],
         
         // Restrições para caminhões
@@ -611,16 +617,12 @@
         // Exibir a origem no mapa
         addMarkerForLocation(mockData.origin, 0);
         
-        // Inicializar datas para o filtro de eventos
-        // Definir datas para cobrir eventos de 2025 (atualizado)
-        const today = new Date('2025-05-01'); // Começar a partir de maio de 2025
-        const endOfYear = new Date('2025-12-31'); // Até o final de 2025
-        
-        document.getElementById('start-date').valueAsDate = today;
-        document.getElementById('end-date').valueAsDate = endOfYear;
+        // Inicializar datas vazias para o filtro de eventos conforme solicitado
+        document.getElementById('start-date').value = '';
+        document.getElementById('end-date').value = '';
         
         // Mostrar mensagem de ajuda
-        console.log("Datas padrão ajustadas para mostrar eventos de 2025");
+        console.log("Campos de data inicializados vazios conforme solicitado");
     });
 
     // Inicializa o mapa
@@ -2069,32 +2071,29 @@
         // Filtrar eventos que estão nas cidades da rota e no período selecionado
         console.log("Filtrando eventos entre", startDate || "qualquer data", "e", endDate || "qualquer data");
         
-        // Se nenhuma data estiver definida, usar período de 2025 (maio a dezembro)
-        const defaultStart = '2025-05-01';
-        const defaultEnd = '2025-12-31';
+        // Não definimos datas padrão - os campos devem permanecer vazios
+        console.log("Usando filtro de eventos sem datas padrão - mostrar todos os eventos para cidades na rota");
         
-        // Se o usuário não selecionou datas, forçar o período padrão
-        if (!startDate && !endDate) {
-            console.log("Nenhuma data selecionada, usando período padrão de maio a dezembro de 2025");
-            document.getElementById('start-date').value = defaultStart;
-            document.getElementById('end-date').value = defaultEnd;
-        }
-        
-        // Usar as datas definidas ou as padrão
-        const useStartDate = startDate || defaultStart;
-        const useEndDate = endDate || defaultEnd;
-        
+        // Filtragem melhorada para eventos com correspondência bidirecional de cidades
         let eventsOnRoute = mockData.cityEvents.filter(event => {
             const eventCity = event.cityName;
-            const eventStart = new Date(event.startDate);
-            const eventEnd = new Date(event.endDate);
-            const filterStart = new Date(useStartDate);
-            const filterEnd = new Date(useEndDate);
             
-            const cityMatch = citiesOnRoute.some(city => eventCity.includes(city));
-            const dateMatch = eventStart <= filterEnd && eventEnd >= filterStart;
+            // Filtragem de datas somente se datas forem fornecidas
+            let dateMatch = true;
+            if (startDate || endDate) {
+                const eventStart = new Date(event.startDate);
+                const eventEnd = new Date(event.endDate);
+                const filterStart = startDate ? new Date(startDate) : new Date(0);
+                const filterEnd = endDate ? new Date(endDate) : new Date(9999, 11, 31);
+                dateMatch = eventStart <= filterEnd && eventEnd >= filterStart;
+            }
             
-            console.log(`Evento: ${event.name}, Cidade: ${eventCity}, Data: ${event.startDate}-${event.endDate}, Corresponde: ${cityMatch && dateMatch}`);
+            // Melhorar correspondência da cidade - verificar nos dois sentidos
+            const cityMatch = citiesOnRoute.some(city => 
+                eventCity.includes(city) || city.includes(eventCity)
+            );
+            
+            console.log(`Evento: ${event.name}, Cidade: ${eventCity}, Data: ${event.startDate}-${event.endDate}, Cidade Corresponde: ${cityMatch}, Data Corresponde: ${dateMatch}`);
             
             return cityMatch && dateMatch;
         });
@@ -2243,19 +2242,19 @@
         
         console.log("Cidades na rota para restrições (com adições manuais):", citiesOnRoute);
         
-        // Filtrar restrições que afetam o tipo de veículo selecionado e estão nas cidades da rota
-        console.log(`Filtrando restrições para veículo: ${vehicleType || "truck1"} (padrão se não definido)`);
-        
-        // Usar truck1 como tipo padrão se nenhum for informado
-        const useVehicleType = vehicleType || "truck1";
+        // Filtrar restrições para cidades na rota - para TODOS os tipos de caminhões
+        console.log(`Filtrando restrições para cidades na rota - exibindo para todos os caminhões`);
         
         const restrictionsOnRoute = mockData.truckRestrictions.filter(restriction => {
-            const cityMatch = citiesOnRoute.some(city => restriction.cityName.includes(city));
-            const vehicleMatch = restriction.affectedVehicles.includes(useVehicleType);
+            // Verificamos apenas se a restrição está em alguma cidade da rota
+            // Removemos o filtro por tipo de veículo para mostrar todas as restrições
+            const cityMatch = citiesOnRoute.some(city => 
+                restriction.cityName.includes(city) || city.includes(restriction.cityName)
+            );
             
-            console.log(`Restrição: ${restriction.description}, Cidade: ${restriction.cityName}, Afeta ${useVehicleType}: ${vehicleMatch}, Corresponde: ${cityMatch && vehicleMatch}`);
+            console.log(`Restrição: ${restriction.description}, Cidade: ${restriction.cityName}, Corresponde: ${cityMatch}`);
             
-            return cityMatch && vehicleMatch;
+            return cityMatch;
         });
         
         // Se não houver restrições, mostrar mensagem
