@@ -1235,6 +1235,16 @@
         console.log("Iniciando cálculo de rota otimizada");
         
         try {
+            // Verificar o número mínimo de destinos
+            if (locations.length < 2) {
+                throw new Error("Você precisa adicionar pelo menos um destino além da origem");
+            }
+            
+            // Na versão GitHub Pages, tentar usar a implementação mais simples
+            // para evitar problemas de compatibilidade
+            const isGitHubPages = window.location.href.includes('github.io');
+            console.log("Ambiente detectado:", isGitHubPages ? "GitHub Pages" : "Aplicação normal");
+            
             // Primeiro vamos resolver o TSP para encontrar a ordem ideal dos pontos
             const origin = locations.find(loc => loc.isOrigin);
             if (!origin) {
@@ -1253,9 +1263,18 @@
                 }
             }
             
-            // Resolver o TSP (implementação avançada)
+            // Resolver o TSP usando algoritmo apropriado para a plataforma
             console.log("Resolvendo TSP");
-            const tspResult = solveAdvancedTSP(origin, destinations, includeOriginReturn);
+            
+            // Usar o algoritmo mais simples no GitHub Pages
+            let tspResult;
+            if (window.location.href.includes('github.io')) {
+                console.log("Usando algoritmo simples para GitHub Pages");
+                tspResult = solveBasicTSP(origin, destinations, includeOriginReturn);
+            } else {
+                tspResult = solveAdvancedTSP(origin, destinations, includeOriginReturn);
+            }
+            
             console.log("Resultado do TSP:", tspResult);
             
             // Reordenar os marcadores visualmente para corresponder à nova sequência
@@ -1409,24 +1428,56 @@
             
             console.log("Solicitação directions:", request);
             
-            // Adicionar timeout para evitar problemas de API
-            const timeoutPromise = new Promise((_, reject) => {
-                setTimeout(() => reject(new Error("Timeout ao solicitar rota do Google Maps")), 10000);
-            });
-            
-            // Converter o callback do Google Maps em Promise para poder usar com timeout
-            const directionsPromise = new Promise((resolve, reject) => {
+            // Versão GitHub Pages usa uma abordagem simplificada para evitar problemas
+            if (window.location.href.includes('github.io')) {
+                console.log("Usando método simplificado de rota para GitHub Pages");
+                
+                // No GitHub Pages, tentar um método mais direto com tolerância a falhas
                 directionsService.route(request, (result, status) => {
                     if (status === google.maps.DirectionsStatus.OK) {
-                        resolve(result);
+                        console.log("Rota obtida com sucesso");
+                        directionsRenderer.setDirections(result);
+                        
+                        // Animar a rota (opcional)
+                        animateRoute(result.routes[0].overview_path);
+                        
+                        // Ajustar o mapa para mostrar toda a rota
+                        const bounds = new google.maps.LatLngBounds();
+                        pathLocations.forEach(location => {
+                            bounds.extend(new google.maps.LatLng(location.latitude, location.longitude));
+                        });
+                        map.fitBounds(bounds);
                     } else {
-                        reject(new Error(`Erro ao traçar rota: ${status}`));
+                        console.error("Erro ao traçar rota:", status);
+                        
+                        // Restaurar o botão de otimizar
+                        const optimizeBtn = document.getElementById('optimize-route');
+                        optimizeBtn.innerHTML = 'Otimizar Rota';
+                        optimizeBtn.disabled = false;
+                        
+                        alert(`Não foi possível calcular a rota (${status}). Tente novamente com outros locais.`);
                     }
                 });
-            });
-            
-            // Usar Promise.race para implementar o timeout
-            Promise.race([directionsPromise, timeoutPromise])
+            } else {
+                // Versão normal com timeout e Promise
+                // Adicionar timeout para evitar problemas de API
+                const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => reject(new Error("Timeout ao solicitar rota do Google Maps")), 10000);
+                });
+                
+                // Converter o callback do Google Maps em Promise para poder usar com timeout
+                const directionsPromise = new Promise((resolve, reject) => {
+                    directionsService.route(request, (result, status) => {
+                        if (status === google.maps.DirectionsStatus.OK) {
+                            resolve(result);
+                        } else {
+                            reject(new Error(`Erro ao traçar rota: ${status}`));
+                        }
+                    });
+                });
+                
+                // Usar Promise.race para implementar o timeout
+                Promise.race([directionsPromise, timeoutPromise])
                 .then(result => {
                     console.log("Rota obtida com sucesso");
                     directionsRenderer.setDirections(result);
