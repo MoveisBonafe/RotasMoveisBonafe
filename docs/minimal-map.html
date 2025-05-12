@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otimizador de Rotas - Mapa Mínimo</title>
+    <style>
+        html, body, #map {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #error-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            text-align: center;
+            max-width: 80%;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4285F4;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        #back-link {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            background-color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Indicador de carregamento -->
+    <div id="loading">
+        <div class="spinner"></div>
+        <p>Carregando o mapa... Por favor aguarde.</p>
+    </div>
+    
+    <!-- Container do mapa -->
+    <div id="map"></div>
+    
+    <!-- Link de volta -->
+    <a href="index.html" id="back-link">← Voltar</a>
+    
+    <!-- Mensagem de erro -->
+    <div id="error-message">
+        <h3>Erro ao carregar o mapa</h3>
+        <p id="error-details">Ocorreu um erro ao carregar o Google Maps API.</p>
+        <a href="javascript:window.location.reload()" class="btn">Tentar novamente</a>
+    </div>
+
+    <script>
+        // Variável global para o mapa
+        let map;
+        
+        // Função de inicialização chamada pelo callback do Google Maps
+        function initMap() {
+            try {
+                console.log("Função initMap chamada");
+                
+                // Coordenadas de Dois Córregos, SP, Brasil
+                const doisCorregosSP = { lat: -22.3673, lng: -48.3800 };
+                
+                // Criar o mapa
+                map = new google.maps.Map(document.getElementById("map"), {
+                    center: doisCorregosSP,
+                    zoom: 12,
+                    mapTypeControl: true,
+                    fullscreenControl: true,
+                    streetViewControl: true,
+                    zoomControl: true,
+                    gestureHandling: 'greedy' // Permite zoom com scroll sem pressionar Ctrl
+                });
+                
+                // Adicionar marcador para a origem
+                const marker = new google.maps.Marker({
+                    position: doisCorregosSP,
+                    map: map,
+                    title: "Dois Córregos, SP",
+                    animation: google.maps.Animation.DROP,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: '#FF0000',
+                        fillOpacity: 0.9,
+                        strokeColor: 'white',
+                        strokeWeight: 2,
+                        scale: 12
+                    },
+                    label: {
+                        text: 'O',
+                        color: 'white',
+                        fontSize: '12px',
+                        fontWeight: 'bold'
+                    }
+                });
+                
+                // Esconder o indicador de carregamento
+                document.getElementById("loading").style.display = "none";
+                
+                console.log("Mapa inicializado com sucesso!");
+            } catch (error) {
+                console.error("Erro ao inicializar o mapa:", error);
+                showError("Erro ao inicializar o mapa: " + error.message);
+            }
+        }
+        
+        // Função para mostrar erro
+        function showError(message) {
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("error-details").textContent = message;
+            document.getElementById("error-message").style.display = "block";
+        }
+        
+        // Função para lidar com erros de autenticação da API
+        function gm_authFailure() {
+            showError("Falha na autenticação do Google Maps API. Verifique a chave de API.");
+        }
+    </script>
+    
+    <!-- Carregamento da API do Google Maps após definição das funções -->
+    <script 
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&callback=initMap" 
+        async 
+        defer
+        onerror="showError('Não foi possível carregar o script do Google Maps.')">
+    </script>
+</body>
+</html>
