@@ -1342,7 +1342,7 @@
         }
       }
       
-      // Função para atualizar eventos das cidades (versão simplificada)
+      // Função para atualizar eventos das cidades
       function updateCityEvents(tspResult) {
         const eventsList = document.getElementById('events-list');
         if (!eventsList) return;
@@ -1910,8 +1910,6 @@
       let placesService = null;
       let autocomplete = null;
       let markers = [];
-      let eventMarkers = [];
-      let infoWindows = [];
       
       // Inicializar o mapa com a API do Google Maps
       function initMap() {
