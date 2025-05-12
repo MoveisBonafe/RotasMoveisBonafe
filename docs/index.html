@@ -568,6 +568,14 @@
       border-radius: 0.25rem;
       padding: 0.75rem;
       border: 1px solid #e5e7eb;
+      transition: background-color 0.2s, transform 0.1s;
+      cursor: pointer;
+    }
+    
+    .event-item:hover {
+      background-color: #f3f4f6;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
     
     .event-title {
@@ -589,6 +597,19 @@
       width: 12px;
       height: 12px;
       margin-right: 0.25rem;
+    }
+    
+    /* Estilos para janela de informações do evento */
+    .event-info-window h3 {
+      color: #3b82f6;
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+    
+    .event-info-window p {
+      margin: 4px 0;
+      font-size: 13px;
     }
     
     /* Seção de restrições de caminhões */
@@ -879,6 +900,10 @@
       const routeTabs = document.getElementById('route-tabs');
       const mapIframe = document.getElementById('map-iframe');
       const pegmanBtn = document.getElementById('pegman-btn');
+      
+      // Arrays para armazenar marcadores e infowindows
+      let eventMarkers = [];
+      let infoWindows = [];
       
       // Inicializar datas com valores padrão
       const today = new Date();
