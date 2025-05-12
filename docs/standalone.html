@@ -1031,8 +1031,12 @@
                 console.log("Selecionando rota alternativa:", selectedIndex);
                 console.log("Caminho da rota selecionada:", selectedRoute.path);
                 
-                // Limpar todos os elementos da rota atual
-                console.log("Alternando para rota: " + selectedIndex + ", limpando elementos atuais...");
+                // Informar sobre a troca de rota
+                console.log("Alternando para rota: " + selectedIndex + ", reconstruindo elementos...");
+                showNotification("Alternando para rota " + (selectedIndex + 1) + "...", "info");
+                
+                // Salvar o caminho selecionado para uso após a limpeza
+                const pathToUse = selectedRoute.path;
                 
                 // Parar qualquer animação em andamento
                 if (routeAnimationTimeout) {
@@ -1040,28 +1044,67 @@
                     routeAnimationTimeout = null;
                 }
                 
-                // Limpar rota atual e todas as polilíneas do mapa
+                // Limpar TUDO - todas as rotas, marcadores, eventos, e estado
                 clearRoute();
-                
-                // Limpar todos os marcadores de POIs e eventos
+                clearAllPolylines();
                 clearPOIMarkers();
                 clearEventMarkers();
                 
-                // Pequena pausa para garantir que todas as limpezas foram concluídas
+                // Resetar o mapa para forçar atualização
+                if (map) {
+                    try {
+                        const mapCenter = map.getCenter();
+                        map.setCenter(mapCenter);
+                    } catch (e) {
+                        console.error("Erro ao recentrar mapa:", e);
+                    }
+                }
+                
+                // Delay maior para garantir limpeza completa antes de reconstruir
                 setTimeout(() => {
-                    // Reordenar marcadores
-                    reorderMarkers(selectedRoute.path);
+                    console.log("Reconstruindo a rota...");
                     
-                    // Desenhar nova rota com pequeno atraso para garantir que as limpezas foram concluídas
+                    // Resetar DirectionsRenderer para garantir um estado limpo
+                    if (directionsRenderer) {
+                        try {
+                            directionsRenderer.setMap(null);
+                            directionsRenderer = new google.maps.DirectionsRenderer({
+                                suppressMarkers: true,
+                                preserveViewport: true,
+                                polylineOptions: {
+                                    strokeColor: '#1976D2',
+                                    strokeOpacity: 0.7,
+                                    strokeWeight: 4
+                                }
+                            });
+                            directionsRenderer.setMap(map);
+                            directionsRenderer.setDirections({routes: []});
+                        } catch (e) {
+                            console.error("Erro ao resetar directionsRenderer:", e);
+                        }
+                    }
+                    
+                    // Reordenar marcadores
+                    reorderMarkers(pathToUse);
+                    
+                    // Desenhar nova rota com delay adicional para garantir que o mapa está pronto
                     setTimeout(() => {
                         console.log("Desenhando nova rota: ", selectedIndex);
-                        drawRouteOnMap(selectedRoute.path, "truck1");
+                        
+                        // Atualizar índice atual de rota
+                        currentRouteIndex = selectedIndex;
+                        currentDisplayedRoute = pathToUse;
+                        
+                        // Desenhar nova rota
+                        drawRouteOnMap(pathToUse, "truck1");
                         
                         // Mostrar pontos de interesse e eventos somente após desenhar a rota
-                        showPointsOfInterestOnRoute(selectedRoute.path);
-                        showEventsForCitiesOnRoute(selectedRoute.path);
-                    }, 100);
-                }, 200);
+                        setTimeout(() => {
+                            showPointsOfInterestOnRoute(pathToUse);
+                            showEventsForCitiesOnRoute(pathToUse);
+                        }, 200);
+                    }, 200);
+                }, 400);
                 
                 // Atualizar restrições
                 showTruckRestrictionsForCitiesOnRoute(selectedRoute.path, null); // null para mostrar todos os tipos
@@ -2245,6 +2288,9 @@
         };
         
         directionsService.route(request, (result, status) => {
+            // Esconder indicador de progresso
+            document.getElementById('loading-spinner').style.display = 'none';
+            
             if (status === google.maps.DirectionsStatus.OK) {
                 // Verificar se o DirectionsRenderer foi inicializado corretamente
                 if (!directionsRendererInitialized || !directionsRenderer) {
@@ -2252,6 +2298,9 @@
                     showNotification("Erro no serviço de rotas. Tente recarregar a página.", "danger");
                     return;
                 }
+                
+                // Limpar todas as polylines antigas para evitar sobreposições
+                clearAllPolylines();
                 
                 try {
                     // Limpar renderizador antes de aplicar novas direções
@@ -2410,6 +2459,9 @@
             return;
         }
         
+        // Limpar todas as polylines anteriores antes de criar nova
+        clearAllPolylines();
+        
         // Criar uma nova polyline para a rota
         routePath = new google.maps.Polyline({
             path: [],
@@ -2419,6 +2471,9 @@
             strokeWeight: 5,
             map: map
         });
+        
+        // Registrar esta polyline para limpeza futura
+        allRoutePolylines.push(routePath);
         
         console.log(`Animando rota com ${path.length} pontos...`);
         
