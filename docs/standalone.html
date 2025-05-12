@@ -625,10 +625,10 @@
 
     // Inicializa o mapa
     function initMap() {
-        // Definir datas padrão para mostrar eventos de 2025
-        document.getElementById('start-date').value = '2025-05-01';
-        document.getElementById('end-date').value = '2025-12-31';
-        console.log("Datas ajustadas na inicialização do mapa para mostrar eventos de 2025");
+        // Inicializar sem datas - usuário deve selecionar conforme necessário
+        document.getElementById('start-date').value = '';
+        document.getElementById('end-date').value = '';
+        console.log("Datas removidas na inicialização do mapa conforme solicitado");
         
         // Opções do mapa
         const mapOptions = {
