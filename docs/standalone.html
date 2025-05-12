@@ -2234,8 +2234,8 @@
                 </div>
                 
                 <div class="form-group mt-3">
-                    <label for="report-route-name">Nome da rota:</label>
-                    <input type="text" id="report-route-name" class="form-control" placeholder="Ex: Entrega Região Sul">
+                    <label for="route-name-modal">Nome da rota:</label>
+                    <input type="text" id="route-name-modal" class="form-control" placeholder="Ex: Entrega Região Sul">
                 </div>
             `;
             
@@ -2273,7 +2273,14 @@
 
     // Salvar a rota
     function saveRoute() {
-        const routeName = document.getElementById('report-route-name').value;
+        // Verificar primeiro o campo no relatório principal
+        let routeName = document.getElementById('report-route-name').value;
+        
+        // Se estiver vazio, verificar o campo no modal
+        if (!routeName) {
+            routeName = document.getElementById('route-name-modal').value;
+        }
+        
         if (!routeName) {
             alert("Por favor, dê um nome para a rota antes de salvar.");
             return;
