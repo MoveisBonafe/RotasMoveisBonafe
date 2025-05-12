@@ -1340,8 +1340,21 @@
     
     // Traçar a rota no mapa
     function drawRouteOnMap(pathLocations, vehicleType) {
-        // Verificar e destacar pontos na mesma cidade da origem
-        const origin = locations.find(loc => loc.isOrigin);
+        console.log("Iniciando drawRouteOnMap com", pathLocations.length, "locais");
+        
+        if (pathLocations.length < 2) {
+            console.error("Pelo menos 2 pontos são necessários para traçar uma rota");
+            // Restaurar o botão de otimizar
+            const optimizeBtn = document.getElementById('optimize-route');
+            optimizeBtn.innerHTML = 'Otimizar Rota';
+            optimizeBtn.disabled = false;
+            alert("Não há locais suficientes para traçar uma rota. Adicione mais locais.");
+            return;
+        }
+        
+        try {
+            // Verificar e destacar pontos na mesma cidade da origem
+            const origin = locations.find(loc => loc.isOrigin);
         
         if (origin) {
             pathLocations.forEach(location => {
@@ -1364,21 +1377,29 @@
             });
         }
         
+        // Fechar o try aqui para corrigir a indentação
+        }
+            
         // Criar waypoints para o serviço de direções
-        const waypoints = pathLocations.slice(1, -1).map(location => ({
-            location: new google.maps.LatLng(location.latitude, location.longitude),
-            stopover: true
-        }));
+        const waypoints = pathLocations.slice(1, -1).map(location => {
+            console.log(`Waypoint: ${location.name}, Lat: ${location.latitude}, Lng: ${location.longitude}`);
+            return {
+                location: new google.maps.LatLng(location.latitude, location.longitude),
+                stopover: true
+            };
+        });
         
         const originPoint = new google.maps.LatLng(
             pathLocations[0].latitude,
             pathLocations[0].longitude
         );
+        console.log(`Origem: Lat: ${pathLocations[0].latitude}, Lng: ${pathLocations[0].longitude}`);
         
         const destinationPoint = new google.maps.LatLng(
             pathLocations[pathLocations.length - 1].latitude,
             pathLocations[pathLocations.length - 1].longitude
         );
+        console.log(`Destino: Lat: ${pathLocations[pathLocations.length - 1].latitude}, Lng: ${pathLocations[pathLocations.length - 1].longitude}`);
         
         const request = {
             origin: originPoint,
@@ -1389,8 +1410,28 @@
             avoidTolls: false
         };
         
-        directionsService.route(request, (result, status) => {
-            if (status === google.maps.DirectionsStatus.OK) {
+        console.log("Solicitação directions:", request);
+        
+        // Adicionar timeout para evitar problemas de API
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error("Timeout ao solicitar rota do Google Maps")), 10000);
+        });
+        
+        // Converter o callback do Google Maps em Promise para poder usar com timeout
+        const directionsPromise = new Promise((resolve, reject) => {
+            directionsService.route(request, (result, status) => {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    resolve(result);
+                } else {
+                    reject(new Error(`Erro ao traçar rota: ${status}`));
+                }
+            });
+        });
+        
+        // Usar Promise.race para implementar o timeout
+        Promise.race([directionsPromise, timeoutPromise])
+            .then(result => {
+                console.log("Rota obtida com sucesso");
                 directionsRenderer.setDirections(result);
                 
                 // Animar a rota (opcional)
@@ -1402,11 +1443,44 @@
                     bounds.extend(new google.maps.LatLng(location.latitude, location.longitude));
                 });
                 map.fitBounds(bounds);
-            } else {
-                alert("Não foi possível calcular a rota: " + status);
-                console.error("Directions request failed due to " + status);
-            }
-        });
+            })
+            .catch(error => {
+                console.error("Erro ao traçar rota:", error);
+                
+                // Limpar estado de carregamento
+                const optimizeBtn = document.getElementById('optimize-route');
+                optimizeBtn.innerHTML = 'Otimizar Rota';
+                optimizeBtn.disabled = false;
+                
+                // Mostrar mensagem amigável
+                alert("Não foi possível calcular a rota. Por favor, tente novamente ou adicione outros destinos.");
+                
+                // Reverter para a visualização normal dos marcadores
+                markers.forEach(markerObj => {
+                    const idx = locations.findIndex(loc => loc.id === markerObj.location.id);
+                    const isOrigin = markerObj.location.isOrigin;
+                    
+                    if (idx >= 0) {
+                        const markerLabel = isOrigin ? 'O' : (idx).toString();
+                        const markerColor = isOrigin ? '#FF0000' : '#1976D2';
+                        
+                        markerObj.marker.setIcon({
+                            path: google.maps.SymbolPath.CIRCLE,
+                            fillColor: markerColor,
+                            fillOpacity: 1,
+                            strokeWeight: 0,
+                            scale: 12
+                        });
+                        
+                        markerObj.marker.setLabel({
+                            text: markerLabel,
+                            color: 'white',
+                            fontSize: '14px',
+                            fontWeight: 'bold'
+                        });
+                    }
+                });
+            });
     }
 
     // Animar a rota desenhando progressivamente
