@@ -405,8 +405,18 @@
                 
                 <!-- Aba de Locais -->
                 <div class="tab-content active" id="locations-tab">
-                    <!-- Origem fixa -->
+                    <!-- Filtro de data para eventos -->
                     <div class="form-group">
+                        <label>Filtrar eventos por data:</label>
+                        <div class="date-range-container">
+                            <input type="date" id="start-date" class="form-control">
+                            <input type="date" id="end-date" class="form-control">
+                        </div>
+                        <button id="filter-events" class="btn btn-outline-primary btn-sm mt-2">Filtrar</button>
+                    </div>
+                    
+                    <!-- Origem fixa -->
+                    <div class="form-group mt-3">
                         <label for="origin">Origem:</label>
                         <input type="text" id="origin" class="form-control" value="Dois Córregos, SP" readonly>
                     </div>
@@ -415,29 +425,6 @@
                     <div class="form-group">
                         <label for="location-search">Adicionar local:</label>
                         <input type="text" id="location-search" class="form-control" placeholder="Digite um endereço">
-                    </div>
-                    
-                    <!-- Opções de veículo -->
-                    <div class="form-group">
-                        <label>Tipo de veículo:</label>
-                        <div id="vehicle-options">
-                            <div class="truck-type">
-                                <input type="radio" name="vehicle-type" id="truck1" value="truck1" checked>
-                                <label for="truck1">Caminhão 1 eixo</label>
-                            </div>
-                            <div class="truck-type">
-                                <input type="radio" name="vehicle-type" id="truck2" value="truck2">
-                                <label for="truck2">Caminhão 2 eixos</label>
-                            </div>
-                            <div class="truck-type">
-                                <input type="radio" name="vehicle-type" id="truck3" value="truck3">
-                                <label for="truck3">Caminhão 3 eixos</label>
-                            </div>
-                            <div class="truck-type">
-                                <input type="radio" name="vehicle-type" id="truck5" value="truck5">
-                                <label for="truck5">Caminhão 5 eixos</label>
-                            </div>
-                        </div>
                     </div>
                     
                     <!-- Upload de arquivo -->
@@ -463,16 +450,7 @@
                 
                 <!-- Aba de Eventos -->
                 <div class="tab-content" id="events-tab">
-                    <div class="form-group">
-                        <label>Filtrar eventos por data:</label>
-                        <div class="date-range-container">
-                            <input type="date" id="start-date" class="form-control">
-                            <input type="date" id="end-date" class="form-control">
-                        </div>
-                        <button id="filter-events" class="btn btn-outline-primary btn-sm mt-2">Filtrar</button>
-                    </div>
-                    
-                    <h5 class="mt-3">Eventos na rota:</h5>
+                    <h5>Eventos na rota:</h5>
                     <div class="events-list" id="events-list">
                         <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
                     </div>
@@ -1125,7 +1103,7 @@
     }
 
     // Calcular rota otimizada pelo algoritmo TSP
-    function calculateOptimizedRoute(vehicleType, includeOriginReturn) {
+    function calculateOptimizedRoute(includeOriginReturn) {
         // Primeiro vamos resolver o TSP para encontrar a ordem ideal dos pontos
         const origin = locations.find(loc => loc.isOrigin);
         const destinations = locations.filter(loc => !loc.isOrigin);
@@ -1137,7 +1115,7 @@
         reorderMarkers(tspResult.path);
         
         // Traçar a rota usando o Google Directions Service
-        drawRouteOnMap(tspResult.path, vehicleType);
+        drawRouteOnMap(tspResult.path);
         
         // Mostrar pontos de interesse ao longo da rota
         showPointsOfInterestOnRoute(tspResult.path);
@@ -1146,10 +1124,10 @@
         showEventsForCitiesOnRoute(tspResult.path);
         
         // Mostrar restrições para caminhões nas cidades da rota
-        showTruckRestrictionsForCitiesOnRoute(tspResult.path, vehicleType);
+        showTruckRestrictionsForCitiesOnRoute(tspResult.path);
         
         // Atualizar o resumo da rota
-        updateRouteSummary(tspResult, vehicleType);
+        updateRouteSummary(tspResult);
         
         // Habilitar botões de salvar e imprimir
         document.getElementById('save-route').disabled = false;
@@ -1568,21 +1546,10 @@
     }
 
     // Atualizar o resumo da rota
-    function updateRouteSummary(tspResult, vehicleType) {
-        // Obter os dados do veículo selecionado
-        const selectedVehicle = mockData.vehicleTypes.find(v => v.type === vehicleType);
-        
-        // Calcular custos
-        const tollCost = mockData.pointsOfInterest
-            .filter(poi => poi.type === 'toll')
-            .reduce((sum, toll) => sum + (toll.cost || 0), 0);
-        
-        const fuelConsumption = tspResult.distance * selectedVehicle.fuelConsumption / 100; // L/100km
-        const fuelCost = fuelConsumption * 5.0; // Preço médio do diesel: R$ 5,00/L
-        const totalCost = fuelCost + tollCost + (tspResult.distance * selectedVehicle.costPerKm);
-        
-        // Tempo estimado (baseado na velocidade média do veículo)
-        const estimatedTime = tspResult.distance / selectedVehicle.averageSpeed; // em horas
+    function updateRouteSummary(tspResult) {
+        // Tempo estimado (usando velocidade média padrão de 70 km/h)
+        const averageSpeed = 70; // km/h
+        const estimatedTime = tspResult.distance / averageSpeed; // em horas
         
         // Atualizar o conteúdo do resumo
         const summaryContainer = document.getElementById('route-summary');
@@ -1608,15 +1575,10 @@
         summaryContainer.innerHTML = `
             <div class="summary-header">Resumo da Rota Otimizada</div>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <p><strong>Distância total:</strong> ${tspResult.distance.toFixed(1)} km</p>
                     <p><strong>Tempo estimado:</strong> ${timeFormatted}</p>
-                    <p><strong>Consumo de combustível:</strong> ${fuelConsumption.toFixed(1)} litros</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Custo de combustível:</strong> R$ ${fuelCost.toFixed(2)}</p>
-                    <p><strong>Custo de pedágios:</strong> R$ ${tollCost.toFixed(2)} (${tollsOnRoute.length} pedágios)</p>
-                    <p><strong>Custo total estimado:</strong> R$ ${totalCost.toFixed(2)}</p>
+                    <p><strong>Número de pedágios:</strong> ${tollsOnRoute.length}</p>
                 </div>
             </div>
             
