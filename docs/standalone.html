@@ -1940,8 +1940,11 @@
             };
         } catch (error) {
             console.error("Erro ao resolver TSP por proximidade à origem:", error);
+            // Garantir que o ID da origem seja uma string
+            const originId = String(origin.id);
+            console.log("Fallback: retornando rota com ID de origem:", originId, "Tipo:", typeof originId);
             return {
-                path: [origin.id],
+                path: [originId],
                 distance: 0,
                 estimatedTime: 0
             };
@@ -2029,8 +2032,11 @@
             };
         } catch (error) {
             console.error("Erro ao resolver TSP em padrão espiral:", error);
+            // Garantir que o ID da origem seja uma string
+            const originId = String(origin.id);
+            console.log("Fallback: retornando rota com ID de origem:", originId, "Tipo:", typeof originId);
             return {
-                path: [origin.id],
+                path: [originId],
                 distance: 0,
                 estimatedTime: 0
             };
