@@ -978,7 +978,18 @@
         }).length;
         
         // Feedback para o usuário com a contagem correta
-        alert(`${validLines} locais sendo importados! Os locais conhecidos aparecerão imediatamente, enquanto os demais serão geocodificados automaticamente.`);
+        // Substituir o alert por uma notificação inline mais suave
+        const notify = document.createElement('div');
+        notify.className = 'alert alert-success mt-2';
+        notify.innerHTML = `${validLines} locais adicionados com sucesso!`;
+        document.querySelector('.file-upload').appendChild(notify);
+        
+        // Remover a notificação após alguns segundos
+        setTimeout(() => {
+            if (notify && notify.parentNode) {
+                notify.parentNode.removeChild(notify);
+            }
+        }, 5000);
     }
 
     // Função para extrair CEP de um objeto Place
@@ -2562,11 +2573,25 @@
             
             // Verificar se temos path válido
             if (tspResult.path && tspResult.path.length > 0) {
-                // Criar a lista de cidades formatada
-                locationsList = tspResult.path.map((location, index) => {
+                // Criar a lista de locais na ordem da rota
+                // Primeiro, obter objetos completos de location para cada ID no path
+                const orderedLocations = [];
+                tspResult.path.forEach(locationId => {
+                    const id = String(locationId);
+                    const location = locations.find(loc => String(loc.id) === id);
+                    if (location) {
+                        orderedLocations.push(location);
+                    } else {
+                        console.error(`Localização não encontrada para ID: ${id}`);
+                    }
+                });
+                
+                // Agora criar a lista formatada com as localizações ordenadas
+                locationsList = orderedLocations.map(location => {
                     // Garantir que os nomes estão formatados corretamente
                     const locationName = formatLocationName(location.name || '');
                     const locationAddress = formatLocationName(location.address || '');
+                    
                     // Verificar se é origem para destacar
                     if (location.isOrigin) {
                         return `<li class="origin-point"><strong>${locationName}</strong> ${locationAddress ? `(${locationAddress})` : ''} (Origem)</li>`;
