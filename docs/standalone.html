@@ -1303,15 +1303,25 @@
             // Criar um novo array para os marcadores reordenados
             const reorderedMarkers = [];
             
+            // Verificar e corrigir possíveis problemas com os IDs da rota
+            const fixedPath = tspResult.path.map(locationId => {
+                if (typeof locationId === 'object' && locationId !== null) {
+                    // Se for um objeto, extrair o ID
+                    return locationId.id || locationId;
+                }
+                return locationId;
+            });
+            
+            // Substituir o caminho original pelo caminho com IDs corrigidos
+            tspResult.path = fixedPath;
+            
+            console.log("Caminho da rota após correção:", tspResult.path);
+            
             // Processar a rota em ordem correta
             tspResult.path.forEach((locationId, index) => {
-                // Lidar com o caso em que locationId é um objeto em vez de um ID simples
-                const rawId = typeof locationId === 'object' && locationId !== null 
-                    ? (locationId.id || locationId)
-                    : locationId;
-                    
-                const locationIdStr = String(rawId);
-                console.log(`Processando ID: ${locationIdStr}, tipo original: ${typeof locationId}, valor bruto:`, locationId);
+                // Garantir que o ID é uma string para comparação
+                const locationIdStr = String(locationId);
+                console.log(`Processando ID: ${locationIdStr}, tipo original: ${typeof locationId}, valor:`, locationId);
                 
                 const location = locations.find(loc => String(loc.id) === locationIdStr);
                 
@@ -1358,14 +1368,27 @@
             // Verificar se temos localizações suficientes para desenhar a rota
             if (tspResult.path.length >= 2) {
                 // Coletar localizações na ordem da rota para desenhar no mapa
-                const pathLocations = tspResult.path.map(id => {
+                // Usamos os IDs já normalizados
+                const pathLocations = [];
+                
+                // Adicionar cada localização verificando antes
+                tspResult.path.forEach(id => {
                     const idStr = String(id);
+                    
+                    // Verificar que não é um objeto antes de pesquisar
+                    if (typeof id === 'object') {
+                        console.warn(`ID de tipo objeto encontrado: ${JSON.stringify(id)}`);
+                        return; // pular este ID
+                    }
+                    
                     const location = locations.find(loc => String(loc.id) === idStr);
                     if (!location) {
                         console.error(`Localização não encontrada para ID: ${idStr} durante o desenho da rota`);
+                    } else {
+                        // Só adicionar se encontrou a localização
+                        pathLocations.push(location);
                     }
-                    return location;
-                }).filter(loc => loc !== undefined);
+                });
                 
                 // Desenhar a rota no mapa usando as direções do Google
                 // Usamos drawRouteOnMap que é a função correta definida no código
@@ -1376,8 +1399,57 @@
                 showEventsForCitiesOnRoute(tspResult.path);
                 showTruckRestrictionsForCitiesOnRoute(tspResult.path);
                 
-                // Atualizar o sumário da rota
-                updateRouteInfo(tspResult);
+                // Atualizar a sequência de rota no relatório
+                // A função não existe, então implementamos diretamente aqui
+                const routeSequenceElement = document.getElementById('route-sequence');
+                if (routeSequenceElement) {
+                    // Limpar qualquer conteúdo anterior
+                    routeSequenceElement.innerHTML = '';
+                    
+                    // Obter localizações na ordem da rota
+                    // Garantir que todos os IDs já foram normalizados na etapa anterior
+                    const routeLocations = tspResult.path.map(id => {
+                        const idStr = String(id);
+                        const location = locations.find(loc => String(loc.id) === idStr);
+                        if (!location) {
+                            console.error(`Localização não encontrada para ID: ${idStr} ao montar sequência`);
+                        }
+                        return location;
+                    }).filter(loc => loc !== undefined);
+                    
+                    // Criar lista com a sequência de locais
+                    const sequenceList = document.createElement('ol');
+                    sequenceList.className = 'route-sequence-list';
+                    
+                    routeLocations.forEach((location, index) => {
+                        const item = document.createElement('li');
+                        // Destacar a origem
+                        if (location.isOrigin) {
+                            item.className = 'origin-point';
+                            item.innerHTML = `<strong>${location.name}</strong> (Origem)`;
+                        } else {
+                            item.innerHTML = location.name;
+                        }
+                        sequenceList.appendChild(item);
+                    });
+                    
+                    routeSequenceElement.appendChild(sequenceList);
+                }
+                
+                // Adicionar também informações de distância e tempo estimado ao relatório
+                const routeInfoElement = document.getElementById('route-summary');
+                if (routeInfoElement) {
+                    const distance = tspResult.distance ? tspResult.distance.toFixed(1) : "N/A";
+                    const hours = Math.floor(tspResult.time / 60);
+                    const minutes = Math.round(tspResult.time % 60);
+                    const timeStr = hours > 0 ? `${hours}h ${minutes}min` : `${minutes}min`;
+                    
+                    routeInfoElement.innerHTML = `
+                        <h3>Resumo da Rota</h3>
+                        <p><strong>Distância total:</strong> ${distance} km</p>
+                        <p><strong>Tempo estimado:</strong> ${timeStr}</p>
+                    `;
+                }
                 
                 // Imprimir diagnóstico de marcadores após o processamento
                 console.log(`Após processar rota: ${markers.length} marcadores principais, ${reorderedMarkers.length} marcadores reordenados`);
