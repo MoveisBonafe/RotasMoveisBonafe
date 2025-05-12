@@ -654,6 +654,11 @@
         
         // Atualizar os eventos para garantir que estejam com datas do ano corrente
         updateEventDates(currentYear);
+        
+        // Debug
+        console.log("Versão do GitHub Pages - Inicialização concluída");
+        console.log("Eventos disponíveis:", mockData.cityEvents.length);
+        console.log("Restrições disponíveis:", mockData.truckRestrictions.length);
     });
     
     // Função para atualizar datas de eventos para o ano atual
@@ -1476,12 +1481,21 @@
 
     // Mostrar eventos para as cidades na rota
     function showEventsForCitiesOnRoute(pathLocations) {
+        console.log("Exibindo eventos para locais na rota");
+        
         // Limpar a lista de eventos
         const eventsListContainer = document.getElementById('events-list');
         eventsListContainer.innerHTML = '';
         
         // Limpar marcadores anteriores
         clearEventMarkers();
+        
+        // Verificar se há eventos disponíveis
+        if (!mockData.cityEvents || mockData.cityEvents.length === 0) {
+            console.error("Dados de eventos não disponíveis!");
+            eventsListContainer.innerHTML = '<p class="text-muted">Erro: Dados de eventos não disponíveis.</p>';
+            return;
+        }
         
         // Ajustar as datas para o formato atual (maio de 2025 mencionado no cabeçalho)
         const currentYear = 2025;
@@ -1821,9 +1835,18 @@
 
     // Mostrar restrições para caminhões nas cidades da rota
     function showTruckRestrictionsForCitiesOnRoute(pathLocations, vehicleType) {
+        console.log("Exibindo restrições para veículo:", vehicleType);
+        
         // Limpar a lista de restrições
         const restrictionsListContainer = document.getElementById('restrictions-list');
         restrictionsListContainer.innerHTML = '';
+        
+        // Verificar se há restrições disponíveis
+        if (!mockData.truckRestrictions || mockData.truckRestrictions.length === 0) {
+            console.error("Dados de restrições não disponíveis!");
+            restrictionsListContainer.innerHTML = '<p class="text-muted">Erro: Dados de restrições não disponíveis.</p>';
+            return;
+        }
         
         // Extrair nomes das cidades na rota
         const citiesOnRoute = pathLocations.map(loc => {
@@ -1964,7 +1987,8 @@
     // Filtrar eventos por data - agora aplicado a todas as cidades conhecidas
     function filterEventsByDate() {
         // Obter o tipo de veículo selecionado
-        const vehicleType = document.querySelector('input[name="vehicle-type"]:checked').value;
+        const vehicleType = document.querySelector('input[name="vehicle-type"]:checked')?.value || 'truck1';
+        console.log("Filtrando eventos por data para veículo:", vehicleType);
             
         // Sempre tentamos mostrar eventos, mesmo sem uma rota calculada
         if (locations && locations.length > 0) {
@@ -1982,11 +2006,27 @@
             
             console.log(`Filtrando eventos no período: ${startDate} até ${endDate}`);
             
-            // Mostrar eventos para as cidades da rota ativa ou todas as cidades
-            showEventsForCitiesOnRoute(locations);
-            
-            // Também atualizar restrições de caminhões
-            showTruckRestrictionsForCitiesOnRoute(locations, vehicleType);
+            try {
+                // Preparar dados de mockData para verificar se estão corretos
+                if (!mockData.cityEvents || !Array.isArray(mockData.cityEvents)) {
+                    console.error("Dados de eventos inválidos:", mockData.cityEvents);
+                    mockData.cityEvents = []; // Redefine para evitar erros
+                }
+                
+                if (!mockData.truckRestrictions || !Array.isArray(mockData.truckRestrictions)) {
+                    console.error("Dados de restrições inválidos:", mockData.truckRestrictions);
+                    mockData.truckRestrictions = []; // Redefine para evitar erros
+                }
+                
+                // Mostrar eventos para as cidades da rota ativa ou todas as cidades
+                showEventsForCitiesOnRoute(locations);
+                
+                // Também atualizar restrições de caminhões
+                showTruckRestrictionsForCitiesOnRoute(locations, vehicleType);
+            } catch (error) {
+                console.error("Erro ao filtrar eventos por data:", error);
+                alert("Ocorreu um erro ao filtrar os eventos. Veja o console para detalhes.");
+            }
         } else {
             alert("Adicione ao menos um local para ver eventos nas cidades.");
         }
