@@ -1372,7 +1372,88 @@
             activeInfoWindow = infoWindow;
         });
         
-        // Conteúdo do tooltip
+        }
+    
+    // Função para formatar datas para exibição no padrão brasileiro
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('pt-BR');
+    }
+    
+    // Função para adicionar marcador de restrição no mapa
+    function addRestrictionMarker(restriction, citiesOnRoute) {
+        // Buscar uma cidade correspondente nos locais da rota
+        const city = locations.find(loc => loc.address.includes(restriction.cityName));
+        if (!city) return; // Se não encontrar a cidade na rota atual, não adiciona o marcador
+        
+        // Obter coordenadas da cidade
+        const position = {
+            lat: parseFloat(city.latitude || city.lat), 
+            lng: parseFloat(city.longitude || city.lng)
+        };
+        
+        // Adicionar pequeno offset para não sobrepor outros marcadores
+        position.lat += Math.random() * 0.008 - 0.004;
+        position.lng += Math.random() * 0.008 - 0.004;
+        
+        // Seletor de ícone com base no tipo de restrição
+        let markerColor = '#e91e63'; // rosa para restrição padrão
+        
+        if (restriction.restriction.toLowerCase().includes('proibido')) {
+            markerColor = '#d32f2f'; // vermelho para proibição
+        } else if (restriction.restriction.toLowerCase().includes('velocidade')) {
+            markerColor = '#ff9800'; // laranja para limite de velocidade
+        }
+        
+        const markerIcon = {
+            path: google.maps.SymbolPath.CIRCLE,
+            fillColor: markerColor,
+            fillOpacity: 0.8,
+            strokeWeight: 2,
+            strokeColor: '#000',
+            scale: 9
+        };
+        
+        // Criar o marcador
+        const marker = new google.maps.Marker({
+            position: position,
+            map: map,
+            icon: markerIcon,
+            title: restriction.description || restriction.restriction,
+            animation: google.maps.Animation.DROP,
+            zIndex: 35
+        });
+        
+        // Armazenar o marcador para poder removê-lo mais tarde
+        restrictionMarkers.push(marker);
+        
+        // Adicionar tooltip/info window ao marcador com informações da restrição
+        const infoContent = `
+            <div class="restriction-info">
+                <h5>${restriction.cityName}</h5>
+                <p><strong>Restrição:</strong> ${restriction.restriction}</p>
+                ${restriction.description ? `<p>${restriction.description}</p>` : ''}
+                <p><strong>Horário:</strong> ${restriction.startTime && restriction.endTime ? 
+                    `${restriction.startTime} às ${restriction.endTime}` : 'Integral'}</p>
+                <p><strong>Veículos:</strong> ${restriction.applicableVehicles}</p>
+            </div>
+        `;
+        
+        const infoWindow = new google.maps.InfoWindow({
+            content: infoContent
+        });
+        
+        marker.addListener('click', () => {
+            // Fechar qualquer info window aberta
+            if (activeInfoWindow) {
+                activeInfoWindow.close();
+            }
+            infoWindow.open(map, marker);
+            activeInfoWindow = infoWindow;
+        });
+    }
+    
+    // Conteúdo do tooltip
         const tooltipContent = `
             <div class="tooltip-title">${event.name}</div>
             <div>${event.cityName}</div>
@@ -1417,6 +1498,11 @@
             restrictionsListContainer.innerHTML = '<p class="text-muted">Nenhuma restrição encontrada para o tipo de veículo selecionado nas cidades da rota.</p>';
             return;
         }
+        
+        // Adicionar marcadores para restrições na rota
+        restrictionsOnRoute.forEach(restriction => {
+            addRestrictionMarker(restriction, citiesOnRoute);
+        });
         
         // Adicionar cada restrição à lista
         restrictionsOnRoute.forEach(restriction => {
