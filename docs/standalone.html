@@ -779,11 +779,25 @@
         
         // Inicializar o serviço de direções
         directionsService = new google.maps.DirectionsService();
-        directionsRenderer = new google.maps.DirectionsRenderer({
-            suppressMarkers: true, // Não mostrar marcadores padrão do Google
-            preserveViewport: true
-        });
-        directionsRenderer.setMap(map);
+        
+        try {
+            console.log("Inicializando DirectionsRenderer...");
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                suppressMarkers: true, // Não mostrar marcadores padrão do Google
+                preserveViewport: true,
+                polylineOptions: {
+                    strokeColor: '#1976D2',
+                    strokeOpacity: 0.7,
+                    strokeWeight: 4
+                }
+            });
+            directionsRenderer.setMap(map);
+            directionsRendererInitialized = true;
+            console.log("DirectionsRenderer inicializado com sucesso");
+        } catch (err) {
+            console.error("Erro ao inicializar DirectionsRenderer:", err);
+            showNotification("Erro ao inicializar o sistema de rotas. Recarregue a página.", "danger");
+        }
         
         // Criar o tooltip personalizado
         createCustomTooltip();
@@ -1408,10 +1422,14 @@
     function clearRoute() {
         console.log("Limpando rota atual...");
         
-        if (directionsRenderer) {
-            directionsRenderer.setDirections({ routes: [] });
+        if (directionsRendererInitialized && directionsRenderer) {
+            try {
+                directionsRenderer.setDirections({ routes: [] });
+            } catch (err) {
+                console.error("Erro ao limpar direções:", err);
+            }
         } else {
-            console.warn("directionsRenderer não está disponível");
+            console.warn("directionsRenderer não está disponível ou não inicializado");
         }
         
         // Limpar timeout de animação se existir
@@ -2120,7 +2138,22 @@
         
         directionsService.route(request, (result, status) => {
             if (status === google.maps.DirectionsStatus.OK) {
-                directionsRenderer.setDirections(result);
+                // Verificar se o DirectionsRenderer foi inicializado corretamente
+                if (!directionsRendererInitialized || !directionsRenderer) {
+                    console.error("DirectionsRenderer não está disponível ou inicializado");
+                    showNotification("Erro no serviço de rotas. Tente recarregar a página.", "danger");
+                    return;
+                }
+                
+                try {
+                    // Aplicar as direções ao renderizador
+                    directionsRenderer.setDirections(result);
+                    console.log("Direções aplicadas com sucesso");
+                } catch (err) {
+                    console.error("Erro ao aplicar direções:", err);
+                    showNotification("Erro ao exibir rota no mapa: " + err.message, "warning");
+                    return;
+                }
                 
                 // Animar a rota (opcional)
                 console.log("Resultado da rota:", result);
@@ -2137,7 +2170,7 @@
                             console.error("Erro ao animar rota:", err);
                             showNotification("Não foi possível animar a rota: " + err.message, "warning");
                         }
-                    }, 500);
+                    }, 800);
                     
                 } else {
                     console.error("Dados da rota incompletos, não é possível animar:", result);
@@ -3564,10 +3597,22 @@
 
     // Criar tooltip personalizado
     function createCustomTooltip() {
-        customTooltip = document.createElement('div');
-        customTooltip.className = 'custom-tooltip';
-        customTooltip.style.display = 'none';
-        document.body.appendChild(customTooltip);
+        try {
+            // Criar elemento de tooltip
+            customTooltip = document.createElement('div');
+            customTooltip.className = 'custom-tooltip';
+            customTooltip.style.display = 'none';
+            
+            // Verificar se o body existe antes de adicionar
+            if (document.body) {
+                document.body.appendChild(customTooltip);
+                console.log("Tooltip personalizado criado com sucesso");
+            } else {
+                console.error("document.body não está disponível para adicionar o tooltip");
+            }
+        } catch (err) {
+            console.error("Erro ao criar tooltip personalizado:", err);
+        }
     }
 
     // Mostrar tooltip
