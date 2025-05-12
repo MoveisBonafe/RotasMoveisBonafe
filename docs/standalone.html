@@ -1405,17 +1405,24 @@
 
     // Limpar rota atual e marcadores relacionados
     function clearRoute() {
+        console.log("Limpando rota atual...");
+        
         if (directionsRenderer) {
             directionsRenderer.setDirections({ routes: [] });
+        } else {
+            console.warn("directionsRenderer não está disponível");
         }
         
         // Limpar timeout de animação se existir
         if (routeAnimationTimeout) {
             clearTimeout(routeAnimationTimeout);
+            routeAnimationTimeout = null;
+            console.log("Animação de rota interrompida");
         }
         
         // Limpar caminho da rota se existir
         if (routePath) {
+            console.log("Removendo polyline da rota");
             routePath.setMap(null);
             routePath = null;
         }
@@ -1426,8 +1433,11 @@
         // Limpar marcadores de eventos
         clearEventMarkers();
         
-        // Resetar o resumo da rota
-        document.getElementById('route-summary').style.display = 'none';
+        // Resetar o resumo da rota - com verificação de segurança
+        const routeSummary = document.getElementById('route-summary');
+        if (routeSummary) {
+            routeSummary.style.display = 'none';
+        }
         document.getElementById('save-route').disabled = true;
         document.getElementById('print-route').disabled = true;
     }
@@ -2121,9 +2131,24 @@
 
     // Animar a rota desenhando progressivamente
     function animateRoute(path) {
+        console.log("Iniciando animação da rota...");
+        
+        // Limpar qualquer animação existente
+        if (routeAnimationTimeout) {
+            clearTimeout(routeAnimationTimeout);
+            routeAnimationTimeout = null;
+        }
+        
         // Se já existir uma rota, removê-la
         if (routePath) {
             routePath.setMap(null);
+            routePath = null;
+        }
+        
+        // Verificar se o caminho é válido
+        if (!path || !Array.isArray(path) || path.length === 0) {
+            console.error("Caminho inválido para animação:", path);
+            return;
         }
         
         // Criar uma nova polyline para a rota
@@ -2136,18 +2161,33 @@
             map: map
         });
         
+        console.log(`Animando rota com ${path.length} pontos...`);
+        
         // Animação step-by-step
         let index = 0;
         const interval = 20; // ms entre cada ponto
+        const batchSize = 3; // número de pontos a adicionar por vez (para animação mais suave)
         
         function animate() {
             if (index < path.length) {
-                routePath.getPath().push(path[index]);
-                index++;
+                // Adicionar um lote de pontos por vez para animação mais suave
+                for (let i = 0; i < batchSize && index < path.length; i++) {
+                    if (routePath && routePath.getPath) {
+                        routePath.getPath().push(path[index]);
+                    } else {
+                        console.error("routePath foi removido durante a animação");
+                        return; // Sair para evitar erros
+                    }
+                    index++;
+                }
+                
                 routeAnimationTimeout = setTimeout(animate, interval);
+            } else {
+                console.log("Animação da rota concluída.");
             }
         }
         
+        // Iniciar animação
         animate();
     }
 
