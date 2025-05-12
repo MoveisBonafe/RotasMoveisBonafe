@@ -644,9 +644,9 @@
         const today = new Date();
         const formattedToday = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
         
-        // Calcular a data final (hoje + 30 dias)
+        // Calcular a data final (hoje + 7 dias)
         const endDate = new Date();
-        endDate.setDate(today.getDate() + 30);
+        endDate.setDate(today.getDate() + 7);
         const formattedEndDate = endDate.toISOString().split('T')[0];
         
         // Definir os valores dos campos de data
