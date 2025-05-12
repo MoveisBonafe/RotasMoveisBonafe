@@ -1499,21 +1499,32 @@
         // Se a opção de mostrar POIs estiver desativada, retornar
         if (!showPOIs) return;
         
-        // Converter IDs para objetos de localização
-        const pathLocations = pathIds.map(id => locations.find(loc => loc.id === id));
+        console.log("showPointsOfInterestOnRoute recebeu IDs:", pathIds);
+        
+        // Converter IDs para objetos de localização com comparação segura
+        const pathLocations = pathIds.map(id => {
+            // Garantir que a comparação de IDs seja feita como string
+            const idStr = String(id);
+            return locations.find(loc => String(loc.id) === idStr);
+        });
         
         // Verificar se todos os IDs foram encontrados
         if (pathLocations.some(loc => !loc)) {
-            console.error("Algumas localizações não foram encontradas:", pathIds);
-            return;
+            console.error("Algumas localizações não foram encontradas.", 
+                "IDs da rota:", pathIds.map(id => String(id)),
+                "Localizações:", locations);
+            // Continuar mesmo com algumas localizações faltando
+            // return;
         }
         
-        // Extrair nomes das cidades na rota
-        const citiesOnRoute = pathLocations.map(loc => {
-            // Extrair nome da cidade do endereço
-            const parts = loc.address.split(',');
-            return parts[0].trim();
-        });
+        // Extrair nomes das cidades na rota (ignorar localizações não encontradas)
+        const citiesOnRoute = pathLocations
+            .filter(loc => loc) // Remover localizações nulas
+            .map(loc => {
+                // Extrair nome da cidade do endereço
+                const parts = loc.address.split(',');
+                return parts[0].trim();
+            });
         
         // Filtrar POIs que estão nas cidades da rota
         const poisOnRoute = mockData.pointsOfInterest.filter(poi => 
@@ -1728,20 +1739,28 @@
         const restrictionsListContainer = document.getElementById('restrictions-list');
         restrictionsListContainer.innerHTML = '';
         
-        // Converter IDs para objetos de localização
-        const pathLocations = pathIds.map(id => locations.find(loc => loc.id === id));
+        // Converter IDs para objetos de localização com comparação segura
+        const pathLocations = pathIds.map(id => {
+            // Garantir que a comparação de IDs seja feita como string
+            const idStr = String(id);
+            return locations.find(loc => String(loc.id) === idStr);
+        });
         
         // Verificar se todos os IDs foram encontrados
         if (pathLocations.some(loc => !loc)) {
-            console.error("Algumas localizações não foram encontradas:", pathIds);
-            return;
+            console.error("Algumas localizações não foram encontradas.",
+                "IDs da rota:", pathIds.map(id => String(id)));
+            // Continuar mesmo com algumas localizações faltando
+            // return;
         }
         
-        // Extrair nomes das cidades na rota
-        const citiesOnRoute = pathLocations.map(loc => {
-            const parts = loc.address.split(',');
-            return parts[0].trim();
-        });
+        // Extrair nomes das cidades na rota (ignorar localizações não encontradas)
+        const citiesOnRoute = pathLocations
+            .filter(loc => loc) // Remover localizações nulas
+            .map(loc => {
+                const parts = loc.address.split(',');
+                return parts[0].trim();
+            });
         
         // Filtrar restrições que afetam o tipo de veículo selecionado e estão nas cidades da rota
         const restrictionsOnRoute = mockData.truckRestrictions.filter(restriction => {
