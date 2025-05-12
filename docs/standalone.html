@@ -640,26 +640,47 @@
         // Exibir a origem no mapa
         addMarkerForLocation(mockData.origin, 0);
         
-        // Inicializar datas vazias para o filtro de eventos conforme solicitado
-        document.getElementById('start-date').value = '';
-        document.getElementById('end-date').value = '';
+        // Definir data inicial como a data atual por padrão
+        const today = new Date();
+        const formattedToday = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+        
+        // Calcular a data final (hoje + 30 dias)
+        const endDate = new Date();
+        endDate.setDate(today.getDate() + 30);
+        const formattedEndDate = endDate.toISOString().split('T')[0];
+        
+        // Definir os valores dos campos de data
+        document.getElementById('start-date').value = formattedToday;
+        document.getElementById('end-date').value = formattedEndDate;
+        
+        console.log(`Datas definidas automaticamente: de ${formattedToday} até ${formattedEndDate}`);
         
         // Inicializar currentOptimizedPath com a origem para mostrar eventos/restrições iniciais
         currentOptimizedPath = [mockData.origin.id];
         
-        // Chamar funções para mostrar eventos e restrições para a origem
+        // Chamar funções para mostrar eventos e restrições para a origem com base nas datas atuais
         filterEventsByDate();
         
         // Mostrar mensagem de ajuda
-        console.log("Campos de data inicializados vazios e eventos/restrições para origem configurados");
+        console.log("Campos de data inicializados com datas atuais e eventos/restrições para origem configurados");
     });
 
     // Inicializa o mapa
     function initMap() {
-        // Inicializar sem datas - usuário deve selecionar conforme necessário
-        document.getElementById('start-date').value = '';
-        document.getElementById('end-date').value = '';
-        console.log("Datas removidas na inicialização do mapa conforme solicitado");
+        // Inicializar com a data atual e data atual + 30 dias
+        const today = new Date();
+        const formattedToday = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+        
+        // Calcular a data final (hoje + 30 dias)
+        const endDate = new Date();
+        endDate.setDate(today.getDate() + 30);
+        const formattedEndDate = endDate.toISOString().split('T')[0];
+        
+        // Definir os valores dos campos de data
+        document.getElementById('start-date').value = formattedToday;
+        document.getElementById('end-date').value = formattedEndDate;
+        
+        console.log(`Datas definidas automaticamente na inicialização do mapa: de ${formattedToday} até ${formattedEndDate}`);
         
         // Opções do mapa
         const mapOptions = {
