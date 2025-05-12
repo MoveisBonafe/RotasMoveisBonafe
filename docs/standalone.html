@@ -469,7 +469,7 @@
                     </div>
                     
                     <h5 class="mt-3">Restrições para caminhões do percurso:</h5>
-                    <p class="small text-muted mb-2">Filtrando para: caminhão de 1 eixo, 2 eixos, truck e comercial</p>
+                    <p class="small text-muted mb-2">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
                     <div class="restrictions-list" id="restrictions-list">
                         <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
                     </div>
@@ -552,8 +552,9 @@
         vehicleTypes: [
             { id: 1, name: "Caminhão 1 eixo", type: "truck1", costPerKm: 3.5, fuelConsumption: 4.5, averageSpeed: 75 },
             { id: 2, name: "Caminhão 2 eixos", type: "truck2", costPerKm: 4.2, fuelConsumption: 5.2, averageSpeed: 70 },
-            { id: 3, name: "Caminhão 3 eixos", type: "truck3", costPerKm: 5.0, fuelConsumption: 6.0, averageSpeed: 65 },
-            { id: 4, name: "Caminhão 5 eixos", type: "truck5", costPerKm: 6.5, fuelConsumption: 8.0, averageSpeed: 55 }
+            { id: 3, name: "Caminhão truck", type: "truck3", costPerKm: 5.0, fuelConsumption: 6.0, averageSpeed: 65 },
+            { id: 4, name: "Caminhão comercial", type: "truck4", costPerKm: 4.0, fuelConsumption: 5.0, averageSpeed: 80 },
+            { id: 5, name: "Caminhão toco", type: "truck5", costPerKm: 6.5, fuelConsumption: 8.0, averageSpeed: 55 }
         ],
         
         // Pontos de interesse
@@ -2385,7 +2386,7 @@
         console.log("Usando APENAS cidades realmente detectadas no percurso, sem adições forçadas.");
         
         // Verificar tipos de caminhões específicos a serem filtrados
-        const tiposCaminhoesFiltrar = ['truck1', 'truck2', 'truck3', 'truck4']; // Caminhão 1 eixo, 2 eixos, truck, comercial
+        const tiposCaminhoesFiltrar = ['truck1', 'truck2', 'truck3', 'truck4', 'truck5']; // Caminhão 1 eixo, 2 eixos, truck, comercial, toco
         
         // Filtrar restrições APENAS para cidades na rota E que afetem os tipos de caminhões especificados
         const restrictionsOnRoute = mockData.truckRestrictions.filter(restriction => {
@@ -2447,7 +2448,8 @@
                 'caminhão de 1 eixo', 
                 'caminhão de 2 eixos', 
                 'caminhão truck',
-                'caminhão comercial'
+                'caminhão comercial',
+                'caminhão toco'
             ].join(', ');
             
             const mensagem = `<p class="text-muted">Nenhuma restrição encontrada para ${tiposCaminhoesTexto} nas cidades detectadas no percurso.</p>`;
