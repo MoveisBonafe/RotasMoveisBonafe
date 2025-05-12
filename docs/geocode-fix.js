@@ -298,6 +298,8 @@ document.addEventListener('DOMContentLoaded', function() {
       { name: "araçatuba", state: "SP", lat: -21.2076, lng: -50.4401 },
       { name: "limeira", state: "SP", lat: -22.5641, lng: -47.4014 },
       { name: "taubaté", state: "SP", lat: -23.0268, lng: -45.5591 },
+      { name: "vera cruz", state: "SP", lat: -22.2234, lng: -49.8219 },
+      { name: "pompéia", state: "SP", lat: -22.1074, lng: -50.1766 },
       { name: "dois córregos", state: "SP", lat: -22.3673, lng: -48.3823 },
       { name: "botucatu", state: "SP", lat: -22.8837, lng: -48.4437 },
       { name: "araraquara", state: "SP", lat: -21.7845, lng: -48.1780 },
