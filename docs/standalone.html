@@ -1059,14 +1059,22 @@
 
     // Remove um local da lista e do mapa
     function removeLocation(id) {
-        // Remover o local da lista
-        locations = locations.filter(loc => loc.id !== id);
+        console.log("Removendo localização com ID:", id, "Tipo:", typeof id);
         
-        // Remover o marcador do mapa
-        const markerIndex = markers.findIndex(m => m.location.id === id);
+        // Converter para string para garantir consistência na comparação
+        const idStr = String(id);
+        
+        // Remover o local da lista
+        locations = locations.filter(loc => String(loc.id) !== idStr);
+        
+        // Remover o marcador do mapa - usar String para garantir comparação consistente
+        const markerIndex = markers.findIndex(m => String(m.location.id) === idStr);
         if (markerIndex !== -1) {
+            console.log(`Marcador encontrado no índice ${markerIndex} e será removido`);
             markers[markerIndex].marker.setMap(null);
             markers.splice(markerIndex, 1);
+        } else {
+            console.warn(`Nenhum marcador encontrado para o ID ${idStr}`);
         }
         
         // Atualizar a lista e reindexar os marcadores
@@ -1349,8 +1357,13 @@
         
         // Verificar se todos os ids foram encontrados
         if (pathLocations.length !== pathIds.length) {
-            console.error("Algumas localizações não foram encontradas:", 
-                         pathIds.filter(id => !pathLocations.find(loc => loc.id === id)));
+            // Usar String para garantir comparação consistente
+            const missingIds = pathIds.filter(id => {
+                const idStr = String(id);
+                return !pathLocations.find(loc => String(loc.id) === idStr);
+            });
+            
+            console.error("Algumas localizações não foram encontradas:", missingIds);
             alert("Erro ao traçar rota: algumas localizações não foram encontradas");
             return;
         }
@@ -2056,7 +2069,11 @@
             cities.sort((a, b) => a.avgDistanceToOrigin - b.avgDistanceToOrigin);
             
             // Construir caminho visitando todas as cidades em ordem de proximidade
-            const path = [origin.id];
+            // Garantir que o ID da origem seja uma string
+            const originId = String(origin.id);
+            console.log("ID de origem usado no caminho:", originId, "Tipo:", typeof originId);
+            
+            const path = [originId];
             let totalDistance = 0;
             let currentLocation = origin;
             
