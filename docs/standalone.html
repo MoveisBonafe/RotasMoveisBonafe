@@ -1093,7 +1093,8 @@
             '17040-001': {name: 'Bauru', lat: -22.3246, lng: -49.0871},
             '17400-000': {name: 'Garça', lat: -22.2132, lng: -49.6546},
             '17480-000': {name: 'Marília', lat: -22.2171, lng: -49.9501},
-            '17300-000': {name: 'Dois Córregos', lat: -22.3673, lng: -48.3822}
+            '17300-000': {name: 'Dois Córregos', lat: -22.3673, lng: -48.3822},
+            '18430-035': {name: 'Ribeirão Branco', lat: -24.2231, lng: -48.7635} // Coordenadas corretas para Ribeirão Branco-SP
         };
         
         // Geocodificador para CEPs desconhecidos
@@ -1113,10 +1114,17 @@
             name = formatLocationName(name);
             
             if (cep && name) {
-                // Verificar se é um CEP conhecido
-                if (knownCEPs[cep]) {
-                    const knownLocation = knownCEPs[cep];
+                // Formatar CEP para garantir consistência no formato xxxxx-xxx
+                const formattedCEP = formatCEP(cep);
+                
+                // Verificar se é um CEP conhecido (tentando com o formato fornecido ou com formato padronizado)
+                if (knownCEPs[cep] || knownCEPs[formattedCEP]) {
+                    // Usar o CEP que for encontrado no banco de dados
+                    const knownLocation = knownCEPs[cep] || knownCEPs[formattedCEP];
                     const formattedCityName = formatLocationName(knownLocation.name);
+                    
+                    // Log para depuração
+                    console.log(`CEP ${cep} encontrado na base de dados: ${knownLocation.name}, coordenadas: ${knownLocation.lat}, ${knownLocation.lng}`);
                     
                     newLocations.push({
                         id: locationId++,
