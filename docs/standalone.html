@@ -1216,11 +1216,21 @@
         // Mostrar pontos de interesse ao longo da rota
         showPointsOfInterestOnRoute(tspResult.path);
         
-        // Mostrar eventos nas cidades da rota
+        // Mostrar eventos nas cidades da rota - atualizado para exibir corretamente
+        console.log("Mostrando eventos para todas as cidades na rota calculada");
         showEventsForCitiesOnRoute(tspResult.path);
         
-        // Mostrar restrições para caminhões nas cidades da rota
+        // Mostrar restrições para caminhões nas cidades da rota - atualizado para usar veículo correto
+        console.log("Mostrando restrições para caminhões do tipo", vehicleType, "nas cidades da rota");
         showTruckRestrictionsForCitiesOnRoute(tspResult.path, vehicleType);
+        
+        // Garantir que essas informações também apareçam na aba de eventos
+        setTimeout(() => {
+            // Atualizar a aba de eventos após um breve atraso para garantir que tudo esteja pronto
+            document.querySelector('.tab-button[data-tab="events"]').click();
+            // Voltar para a aba de relatório após um breve momento
+            setTimeout(() => document.querySelector('.tab-button[data-tab="report"]').click(), 300);
+        }, 500);
         
         // Atualizar o resumo da rota
         updateRouteSummary(tspResult, vehicleType);
@@ -1470,7 +1480,7 @@
         });
     }
 
-    // Mostrar eventos para as cidades na rota
+    // Mostrar eventos para as cidades na rota - versão melhorada
     function showEventsForCitiesOnRoute(pathLocations) {
         // Limpar a lista de eventos
         const eventsListContainer = document.getElementById('events-list');
@@ -1485,7 +1495,24 @@
             return;
         }
         
-        console.log("Procurando eventos para os locais:", pathLocations.length);
+        // Obter datas do filtro primeiro
+        const startDateStr = document.getElementById('start-date').value;
+        const endDateStr = document.getElementById('end-date').value;
+        
+        // Verificar se as datas estão disponíveis
+        if (!startDateStr || !endDateStr) {
+            eventsListContainer.innerHTML = '<p class="text-warning">Por favor selecione datas de início e fim no filtro acima.</p>';
+            return;
+        }
+        
+        // Converter para objetos Date
+        const startDate = new Date(startDateStr);
+        const endDate = new Date(endDateStr);
+        
+        // Ajustar a data final para incluir todo o dia
+        endDate.setHours(23, 59, 59, 999);
+        
+        console.log(`Procurando eventos para ${pathLocations.length} locais no período de ${startDateStr} até ${endDateStr}`);
         
         // Extrair nomes das cidades na rota
         const citiesOnRoute = pathLocations.map(loc => {
