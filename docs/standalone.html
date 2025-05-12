@@ -2249,14 +2249,24 @@
                 return cityName;
             });
         
-        // Adicionar manualmente "Dois Córregos", "Jaú", "Botucatu" e "Bauru" para 
-        // garantir que eventos e restrições apareçam na demonstração
+        // CORREÇÃO: Adicionar apenas a origem (Dois Córregos) e o destino
+        // NÃO adicionar mais cidades manualmente para a demonstração
         if (!citiesOnRoute.includes("Dois Córregos")) citiesOnRoute.push("Dois Córregos");
-        if (!citiesOnRoute.includes("Jaú")) citiesOnRoute.push("Jaú");
-        if (!citiesOnRoute.includes("Botucatu")) citiesOnRoute.push("Botucatu");
-        if (!citiesOnRoute.includes("Bauru")) citiesOnRoute.push("Bauru");
         
-        console.log("Cidades na rota para restrições (com adições manuais):", citiesOnRoute);
+        // Extrair o destino final corretamente
+        const destinoFinal = pathLocations[pathLocations.length - 1];
+        if (destinoFinal && destinoFinal.address) {
+            const destinoParts = destinoFinal.address.split(',');
+            if (destinoParts.length > 0) {
+                const destinoCity = destinoParts[0].trim();
+                if (destinoCity && !citiesOnRoute.includes(destinoCity)) {
+                    citiesOnRoute.push(destinoCity);
+                    console.log(`Destino adicionado à lista de restrições: ${destinoCity}`);
+                }
+            }
+        }
+        
+        console.log("APENAS ESTAS CIDADES ESTÃO NA ROTA PARA RESTRIÇÕES:", citiesOnRoute);
         
         // Filtrar restrições para cidades na rota - para TODOS os tipos de caminhões
         console.log(`Filtrando restrições para cidades na rota - exibindo para todos os caminhões`);
