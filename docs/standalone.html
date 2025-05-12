@@ -601,36 +601,6 @@
     let routeAnimationTimeout = null;
     let showPOIs = true;
     let customTooltip = null;
-    
-    // Função para formatar data do evento com segurança
-    function formatarDataEvento(dataString) {
-        try {
-            // Se for uma string, tenta converter para Date
-            let dataObj;
-            if (typeof dataString === 'string') {
-                // Garantir que temos uma data ISO válida
-                if (dataString.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                    dataObj = new Date(dataString + "T00:00:00");
-                } else {
-                    dataObj = new Date(dataString);
-                }
-            } else {
-                dataObj = new Date(dataString);
-            }
-            
-            // Verificar se a data é válida
-            if (isNaN(dataObj.getTime())) {
-                console.warn("Data inválida:", dataString);
-                return "Data inválida";
-            }
-            
-            // Formatar como DD/MM/AAAA
-            return dataObj.toLocaleDateString('pt-BR');
-        } catch (e) {
-            console.error("Erro ao formatar data:", dataString, e);
-            return "Data indisponível";
-        }
-    }
 
     // Inicialização
     document.addEventListener("DOMContentLoaded", function() {
@@ -1541,56 +1511,16 @@
             console.log("Datas dos eventos atualizadas para", currentYear);
         }
     
-        // Verificar datas do filtro
-        let filterStart = null;
-        let filterEnd = null;
-        
-        // Se houver datas no filtro, usá-las, senão usar maio como padrão
-        if (startDate) {
-            filterStart = new Date(startDate);
-            console.log("Data de início do filtro:", filterStart);
-        } else {
-            filterStart = new Date(currentYear, 4, 1); // Maio (mês 4)
-            console.log("Usando data de início padrão (1º de maio):", filterStart);
-        }
-        
-        if (endDate) {
-            filterEnd = new Date(endDate);
-            console.log("Data de fim do filtro:", filterEnd);
-        } else {
-            filterEnd = new Date(currentYear, 4, 31); // 31 de maio
-            console.log("Usando data de fim padrão (31 de maio):", filterEnd);
-        }
-        
-        // Adicionar 1 dia ao final para inclusão completa
-        filterEnd.setDate(filterEnd.getDate() + 1);
-        
-        // Debug das datas
-        console.log("Período de filtro aplicado:", 
-                    filterStart.toLocaleDateString('pt-BR'), 
-                    "a", 
-                    (new Date(filterEnd - 86400000)).toLocaleDateString('pt-BR'));
-        
         // Filtrar eventos que estão nas cidades da rota e no período selecionado
         let eventsOnRoute = mockData.cityEvents.filter(event => {
             const eventCity = event.cityName;
+            const eventStart = new Date(event.startDate);
+            const eventEnd = new Date(event.endDate);
+            const filterStart = startDate ? new Date(startDate) : new Date(currentYear, currentMonth-1, 1); // Primeiro dia do mês atual
+            const filterEnd = endDate ? new Date(endDate) : new Date(currentYear, currentMonth+1, 0); // Último dia do mês seguinte
             
-            // Garantir que as datas dos eventos estão corretas (formato string YYYY-MM-DD)
-            if (typeof event.startDate === 'string' && event.startDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                var eventStart = new Date(event.startDate + "T00:00:00");
-            } else {
-                console.warn(`Data de início inválida para o evento ${event.name}:`, event.startDate);
-                return false;
-            }
-            
-            if (typeof event.endDate === 'string' && event.endDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                var eventEnd = new Date(event.endDate + "T23:59:59");
-            } else {
-                console.warn(`Data de fim inválida para o evento ${event.name}:`, event.endDate);
-                return false;
-            }
-            
-            console.log(`Avaliando evento: ${event.name}, ${eventCity}, ${event.startDate} - ${event.endDate}`);
+            // Adicionar 1 dia ao final para inclusão completa
+            filterEnd.setDate(filterEnd.getDate() + 1);
             
             // Verificar se a cidade do evento está na rota (comparação mais flexível)
             const isInCity = citiesOnRoute.some(city => {
@@ -1601,9 +1531,6 @@
             
             // Verificar se está dentro do intervalo de datas
             const isInDateRange = eventStart <= filterEnd && eventEnd >= filterStart;
-            
-            // Depuração detalhada
-            console.log(`Evento ${event.name} - Na rota: ${isInCity ? 'SIM' : 'NÃO'}, No período: ${isInDateRange ? 'SIM' : 'NÃO'}`);
             
             // Para debug
             if (isInCity && isInDateRange) {
@@ -1630,42 +1557,14 @@
             const eventItem = document.createElement('div');
             eventItem.className = 'event-item';
             
-            // Garantir que as datas são objetos Date válidos
-            let startDate, endDate;
-            
-            try {
-                // Tentar criar objetos Date a partir das strings de data
-                if (typeof event.startDate === 'string') {
-                    startDate = new Date(event.startDate + "T00:00:00");
-                } else {
-                    startDate = new Date(event.startDate);
-                }
-                
-                if (typeof event.endDate === 'string') {
-                    endDate = new Date(event.endDate + "T00:00:00");
-                } else {
-                    endDate = new Date(event.endDate);
-                }
-                
-                // Verificar se as datas são válidas
-                if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-                    throw new Error("Data inválida");
-                }
-            } catch (e) {
-                console.error("Erro ao processar data para o evento:", event.name, e);
-                // Usar a data atual como fallback
-                startDate = new Date();
-                endDate = new Date();
-            }
-            
-            // Formatar para exibição usando o locale pt-BR
+            // Formatar datas
+            const startDate = new Date(event.startDate);
+            const endDate = new Date(event.endDate);
             const formattedStartDate = startDate.toLocaleDateString('pt-BR');
             const formattedEndDate = endDate.toLocaleDateString('pt-BR');
             const dateText = formattedStartDate === formattedEndDate ? 
                             formattedStartDate : 
                             `${formattedStartDate} - ${formattedEndDate}`;
-                            
-            console.log(`Evento listado: ${event.name}, Datas: ${event.startDate} -> ${formattedStartDate}`);
             
             // Definir classe baseada no tipo de evento
             const eventTypeClass = event.isHoliday ? 'holiday' : 'event';
@@ -1800,7 +1699,7 @@
         const tooltipContent = `
             <div class="tooltip-title">${event.name}</div>
             <div>${eventCity}</div>
-            <div>${formatarDataEvento(event.startDate)} - ${formatarDataEvento(event.endDate)}</div>
+            <div>${new Date(event.startDate).toLocaleDateString('pt-BR')} - ${new Date(event.endDate).toLocaleDateString('pt-BR')}</div>
             <div>${event.description}</div>
             <div>Nível de restrição: ${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</div>
             ${isHoliday ? '<div class="holiday-badge">Feriado/Aniversário da Cidade</div>' : ''}
