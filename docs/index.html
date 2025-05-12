@@ -80,7 +80,7 @@
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       overflow-y: auto;
       height: 100%;
-      max-height: 80vh;
+      min-height: 80vh;
       display: flex;
       flex-direction: column;
     }
@@ -753,17 +753,7 @@
           </div>
         </div>
         
-        <!-- Botão PegMan (Street View) -->
-        <div class="pegman-container">
-          <button class="pegman-btn" id="pegman-btn" title="Arraste para o mapa para ativar Street View" draggable="true">
-            <svg class="pegman-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4285F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="7" r="4"></circle>
-              <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            </svg>
-          </button>
-        </div>
-        
-        <!-- Div para mapa JavaScript API em vez de iframe para maior controle -->
+        <!-- Div para mapa JavaScript API (permite maior controle e opções como pegman) -->
         <div id="map" class="map-iframe"></div>
         
         <!-- Placeholder iframe oculto para fallback -->
@@ -902,7 +892,7 @@
         { name: 'Balança Rod. Anhanguera (Ribeirão Preto)', type: 'weighing' }
       ];
       
-      // Eventos nas cidades
+      // Eventos nas cidades (incluindo feriados e aniversários)
       const cityEvents = [
         { 
           title: 'Feira Agropecuária', 
@@ -911,10 +901,22 @@
           endDate: '2025-05-22'
         },
         { 
+          title: 'Aniversário da Cidade', 
+          city: 'Dois Córregos',
+          startDate: '2025-08-03',
+          endDate: '2025-08-03'
+        },
+        { 
           title: 'Festival de Inverno', 
           city: 'Jaú',
           startDate: '2025-06-10',
           endDate: '2025-06-20'
+        },
+        { 
+          title: 'Aniversário da Cidade', 
+          city: 'Jaú',
+          startDate: '2025-08-15',
+          endDate: '2025-08-15'
         },
         { 
           title: 'Exposição Industrial', 
@@ -923,10 +925,52 @@
           endDate: '2025-05-15'
         },
         { 
+          title: 'Aniversário da Cidade', 
+          city: 'Bauru',
+          startDate: '2025-08-01',
+          endDate: '2025-08-01'
+        },
+        { 
           title: 'Festival de Música', 
           city: 'Ribeirão Preto',
           startDate: '2025-05-20',
           endDate: '2025-05-25'
+        },
+        { 
+          title: 'Aniversário da Cidade', 
+          city: 'Ribeirão Preto',
+          startDate: '2025-06-19',
+          endDate: '2025-06-19'
+        },
+        { 
+          title: 'Aniversário da Cidade', 
+          city: 'Brotas',
+          startDate: '2025-05-03',
+          endDate: '2025-05-03'
+        },
+        { 
+          title: 'Aniversário da Cidade', 
+          city: 'Barra Bonita',
+          startDate: '2025-07-14',
+          endDate: '2025-07-14'
+        },
+        { 
+          title: 'Aniversário da Cidade', 
+          city: 'Bocaina',
+          startDate: '2025-04-21',
+          endDate: '2025-04-21'
+        },
+        { 
+          title: 'Feriado Municipal', 
+          city: 'Mineiros do Tietê',
+          startDate: '2025-05-13',
+          endDate: '2025-05-13'
+        },
+        { 
+          title: 'Festa da Colheita', 
+          city: 'Pederneiras',
+          startDate: '2025-06-15',
+          endDate: '2025-06-20'
         }
       ];
       
@@ -1142,7 +1186,7 @@
         updateRouteSummary(tspResult);
       }
       
-      // Função para atualizar a sequência da rota
+      // Função para atualizar a sequência da rota (apenas ida, sem retorno)
       function updateRouteSequence(tspResult) {
         const sequenceList = document.getElementById('sequence-list');
         if (!sequenceList) return;
@@ -1153,7 +1197,7 @@
         // Obter localizações ordenadas e distâncias
         const { orderedLocations, segmentDistances } = tspResult;
         
-        // Adicionar cada local na sequência
+        // Adicionar cada local na sequência (apenas destinos, sem retorno)
         orderedLocations.forEach((location, index) => {
           const li = document.createElement('li');
           
@@ -1169,15 +1213,7 @@
           sequenceList.appendChild(li);
         });
         
-        // Adicionar retorno à origem, se houver mais de um local
-        if (orderedLocations.length > 1) {
-          const origin = orderedLocations.find(l => l.isOrigin);
-          const lastDistance = segmentDistances[segmentDistances.length - 1] || 0;
-          
-          const li = document.createElement('li');
-          li.textContent = `${origin.name} (Retorno) - ${lastDistance} km`;
-          sequenceList.appendChild(li);
-        }
+        // Não adicionar retorno à origem - apenas ida
       }
       
       // Função para atualizar pontos de atenção
@@ -1629,21 +1665,32 @@
               // Incrementar contador
               locationCounter++;
               
-              // Obter coordenadas a partir do CEP (simulado para o GitHub Pages)
-              // Na aplicação real, usamos a API de Geocoding
-              // Aqui vamos usar coordenadas estratégicas em torno de Dois Córregos
+              // Cidades predefinidas ao redor de Dois Córregos para simular coordenadas reais
+              // Isso garante uma boa representação visual no mapa
+              const predefinedCities = [
+                { name: "Jaú", lat: -22.2936, lng: -48.5592 },
+                { name: "Brotas", lat: -22.2792, lng: -48.1250 },
+                { name: "Mineiros do Tietê", lat: -22.4119, lng: -48.4511 },
+                { name: "Torrinha", lat: -22.4269, lng: -48.1731 },
+                { name: "Barra Bonita", lat: -22.4910, lng: -48.5583 },
+                { name: "São Manuel", lat: -22.7320, lng: -48.5714 },
+                { name: "Igaraçu do Tietê", lat: -22.5089, lng: -48.5597 },
+                { name: "Bocaina", lat: -22.1361, lng: -48.5230 },
+                { name: "Bauru", lat: -22.3246, lng: -49.0871 },
+                { name: "Pederneiras", lat: -22.3511, lng: -48.7782 }
+              ];
               
-              // Base: coordenadas de Dois Córregos
-              const baseLat = -22.3673;
-              const baseLng = -48.3823;
+              // Escolher uma cidade próxima com base no índice para uma representação mais realista
+              const cityIndex = (locationCounter - 1) % predefinedCities.length;
+              const selectedCity = predefinedCities[cityIndex];
               
-              // Gerar um deslocamento com base no ID/contador para garantir que pontos não se sobreponham
-              // e que fiquem relativamente próximos à Dois Córregos
-              const latOffset = (Math.sin(locationCounter * 0.5) * 0.2);
-              const lngOffset = (Math.cos(locationCounter * 0.5) * 0.2);
+              // Adicionar uma pequena variação para cada ponto para que não fiquem exatamente no mesmo lugar
+              const variationFactor = 0.01; // aproximadamente 1km
+              const latVariation = (Math.random() - 0.5) * variationFactor;
+              const lngVariation = (Math.random() - 0.5) * variationFactor;
               
-              const lat = baseLat + latOffset;
-              const lng = baseLng + lngOffset;
+              const lat = selectedCity.lat + latVariation;
+              const lng = selectedCity.lng + lngVariation;
               const latlng = `${lat.toFixed(6)},${lng.toFixed(6)}`;
               
               // Criar elemento visual
@@ -1832,7 +1879,7 @@
             center: doisCorregosCenterCoords,
             zoom: 10,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
-            streetViewControl: true,
+            streetViewControl: true, // Mantém o Pegman ativo para Street View
             gestureHandling: 'greedy', // Permite zoom com scroll sem Ctrl
             mapTypeControl: true,
             mapTypeControlOptions: {
@@ -1930,10 +1977,14 @@
         // Origem e destino são o mesmo ponto (rota circular)
         const origin = parseLatLng(originLocation.latlng);
         
-        // Configurar requisição de direções
+        // Selecionar o último ponto como destino (sem retorno à origem)
+        const lastPoint = orderedLocations[orderedLocations.length - 1];
+        const destination = lastPoint.isOrigin ? origin : parseLatLng(lastPoint.latlng);
+        
+        // Configurar requisição de direções (apenas ida)
         const request = {
           origin: origin,
-          destination: origin,
+          destination: destination, // O último ponto da lista, não a origem
           waypoints: waypoints,
           optimizeWaypoints: false, // Já otimizamos a ordem com TSP
           travelMode: google.maps.TravelMode.DRIVING,
@@ -2037,27 +2088,8 @@
         });
       }
       
-      // Configurar funcionalidade do Pegman
-      pegmanBtn.addEventListener('click', function() {
-        if (!map) {
-          // Fallback para abrir Street View em nova aba
-          const centerLat = -22.3673;
-          const centerLng = -48.3823;
-          window.open(`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${centerLat},${centerLng}`, '_blank');
-          return;
-        }
-        
-        // Alternar modo Street View
-        const panorama = map.getStreetView();
-        const currentPosition = map.getCenter();
-        
-        if (panorama.getVisible()) {
-          panorama.setVisible(false);
-        } else {
-          panorama.setPosition(currentPosition);
-          panorama.setVisible(true);
-        }
-      });
+      // O pegman já está habilitado no mapa através da API JavaScript do Google Maps
+      // Não é necessário um botão separado, pois o pegman padrão já está disponível no mapa
       
       // Aumentar a largura do iframe para ocupar mais espaço
       mapIframe.style.width = '100%';
