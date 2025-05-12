@@ -711,6 +711,19 @@
     let currentRouteIndex = 0;
     let tspSolver = null; // Instância do solver TSP
     
+    // Função para processar CEP em formato x.y.z.w-abcd
+    function formatCEP(cep) {
+        // Remover qualquer caracter não numérico
+        let numericCEP = cep.replace(/\D/g, '');
+        
+        // Formatar como xxxxx-xxx
+        if (numericCEP.length >= 8) {
+            return numericCEP.substring(0, 5) + '-' + numericCEP.substring(5, 8);
+        }
+        
+        return cep; // Retornar original se não for possível formatar
+    }
+    
     // Função global auxiliar para exibir notificações de forma segura
     function showNotification(message, type = 'info', targetSelector = '.route-controls', autoRemove = true, duration = 5000) {
         console.log(`Notificação [${type}]: ${message}`);
