@@ -654,6 +654,23 @@
         
         // Atualizar os eventos para garantir que estejam com datas do ano corrente
         updateEventDates(currentYear);
+        
+        // Carregar eventos e restrições iniciais (sem esperar pela rota)
+        setTimeout(function() {
+            console.log("Carregando eventos e restrições iniciais...");
+            
+            // Mostrar eventos para a cidade de origem (Dois Córregos)
+            showEventsForCitiesOnRoute([mockData.origin]);
+            
+            // Obter o tipo de veículo padrão (primeiro da lista)
+            const vehicleTypeElement = document.querySelector('input[name="vehicle-type"]:checked');
+            const vehicleType = vehicleTypeElement ? vehicleTypeElement.value : 'truck1';
+            
+            // Mostrar restrições para a cidade de origem
+            showTruckRestrictionsForCitiesOnRoute([mockData.origin], vehicleType);
+            
+            console.log("Eventos e restrições iniciais carregados");
+        }, 1000);
     });
     
     // Função para atualizar datas de eventos para o ano atual
@@ -1964,31 +1981,41 @@
     // Filtrar eventos por data - agora aplicado a todas as cidades conhecidas
     function filterEventsByDate() {
         // Obter o tipo de veículo selecionado
-        const vehicleType = document.querySelector('input[name="vehicle-type"]:checked').value;
+        const vehicleTypeElement = document.querySelector('input[name="vehicle-type"]:checked');
+        const vehicleType = vehicleTypeElement ? vehicleTypeElement.value : 'truck1';
+        
+        console.log("Filtrando eventos por data, veículo:", vehicleType);
             
         // Sempre tentamos mostrar eventos, mesmo sem uma rota calculada
-        if (locations && locations.length > 0) {
-            console.log("Atualizando eventos com novas datas...");
+        // Usar pelo menos a cidade de origem se não houver outras
+        const locationsToUse = (locations && locations.length > 0) ? locations : [mockData.origin];
             
-            // Obter datas do filtro
-            const startDate = document.getElementById('start-date').value;
-            const endDate = document.getElementById('end-date').value;
-            
-            // Verificar se ambas as datas estão presentes
-            if (!startDate || !endDate) {
-                alert("Por favor selecione as datas de início e fim para filtrar os eventos.");
-                return;
+        console.log("Atualizando eventos com novas datas...");
+        
+        // Obter datas do filtro
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
+        
+        // Verificar se ambas as datas estão presentes
+        if (!startDate || !endDate) {
+            alert("Por favor selecione as datas de início e fim para filtrar os eventos.");
+            return;
+        }
+        
+        console.log(`Filtrando eventos no período: ${startDate} até ${endDate}`);
+        
+        // Mostrar eventos para as cidades da rota ativa ou todas as cidades
+        showEventsForCitiesOnRoute(locationsToUse);
+        
+        // Também atualizar restrições de caminhões
+        showTruckRestrictionsForCitiesOnRoute(locationsToUse, vehicleType);
+        
+        // Mostrar a aba de eventos se não estiver visível
+        if (document.getElementById('events-tab').style.display !== 'block') {
+            const eventTabButton = document.querySelector('.tab-button[data-tab="events"]');
+            if (eventTabButton) {
+                eventTabButton.click();
             }
-            
-            console.log(`Filtrando eventos no período: ${startDate} até ${endDate}`);
-            
-            // Mostrar eventos para as cidades da rota ativa ou todas as cidades
-            showEventsForCitiesOnRoute(locations);
-            
-            // Também atualizar restrições de caminhões
-            showTruckRestrictionsForCitiesOnRoute(locations, vehicleType);
-        } else {
-            alert("Adicione ao menos um local para ver eventos nas cidades.");
         }
     }
 
