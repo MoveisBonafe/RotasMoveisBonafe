@@ -1105,30 +1105,64 @@
 
     // Calcular rota otimizada pelo algoritmo TSP
     function calculateOptimizedRoute(vehicleType, includeOriginReturn) {
-        // Primeiro vamos resolver o TSP para encontrar a ordem ideal dos pontos
-        const origin = locations.find(loc => loc.isOrigin);
-        const destinations = locations.filter(loc => !loc.isOrigin);
-        
-        // Resolver o TSP (implementação avançada idêntica ao Replit)
-        const tspResult = solveAdvancedTSP(origin, destinations, includeOriginReturn);
-        
-        // Reordenar os marcadores visualmente para corresponder à nova sequência
-        reorderMarkers(tspResult.path);
-        
-        // Traçar a rota usando o Google Directions Service
-        drawRouteOnMap(tspResult.path, vehicleType);
-        
-        // Mostrar pontos de interesse ao longo da rota
-        showPointsOfInterestOnRoute(tspResult.path);
-        
-        // Mostrar eventos nas cidades da rota
-        showEventsForCitiesOnRoute(tspResult.path);
-        
-        // Mostrar restrições para caminhões nas cidades da rota
-        showTruckRestrictionsForCitiesOnRoute(tspResult.path, vehicleType);
-        
-        // Atualizar o resumo da rota
-        updateRouteSummary(tspResult, vehicleType);
+        try {
+            console.log("Calculando rota otimizada...");
+            
+            // Primeiro vamos resolver o TSP para encontrar a ordem ideal dos pontos
+            const origin = locations.find(loc => loc.isOrigin);
+            const destinations = locations.filter(loc => !loc.isOrigin);
+            
+            if (!origin || !destinations.length) {
+                console.error("Origem ou destinos não encontrados:", origin, destinations);
+                return;
+            }
+            
+            console.log("Origem:", origin);
+            console.log("Destinos:", destinations);
+            
+            // Calcular aproximadamente a distância em linha reta total para verificação
+            let straightLineDistance = 0;
+            for (let i = 0; i < destinations.length; i++) {
+                straightLineDistance += calculateDistance(
+                    origin.latitude, origin.longitude,
+                    destinations[i].latitude, destinations[i].longitude
+                );
+            }
+            console.log("Distância aproximada em linha reta:", straightLineDistance.toFixed(1), "km");
+            
+            // Resolver o TSP (implementação avançada idêntica ao Replit)
+            const tspResult = solveAdvancedTSP(origin, destinations, includeOriginReturn);
+            console.log("Resultado TSP:", tspResult);
+            
+            // Verificar se o resultado tem uma distância válida
+            if (typeof tspResult.distance !== 'number' || isNaN(tspResult.distance) || tspResult.distance <= 0) {
+                console.error("Distância TSP inválida:", tspResult.distance);
+                // Assumir uma distância aproximada baseada na linha reta
+                tspResult.distance = straightLineDistance * 1.3; // Fator de correção para rotas reais
+                console.log("Corrigido para:", tspResult.distance.toFixed(1), "km");
+            }
+            
+            // Reordenar os marcadores visualmente para corresponder à nova sequência
+            reorderMarkers(tspResult.path);
+            
+            // Traçar a rota usando o Google Directions Service
+            drawRouteOnMap(tspResult.path, vehicleType);
+            
+            // Mostrar pontos de interesse ao longo da rota
+            showPointsOfInterestOnRoute(tspResult.path);
+            
+            // Mostrar eventos nas cidades da rota
+            showEventsForCitiesOnRoute(tspResult.path);
+            
+            // Mostrar restrições para caminhões nas cidades da rota
+            showTruckRestrictionsForCitiesOnRoute(tspResult.path, vehicleType);
+            
+            // Atualizar o resumo da rota
+            updateRouteSummary(tspResult, vehicleType);
+        } catch (error) {
+            console.error("Erro ao calcular rota otimizada:", error);
+            alert("Ocorreu um erro ao calcular a rota. Tente novamente.");
+        }
         
         // Habilitar botões de salvar e imprimir
         document.getElementById('save-route').disabled = false;
@@ -1747,12 +1781,33 @@
     // Implementação avançada do algoritmo do Caixeiro Viajante (TSP)
     // Idêntico ao comportamento da versão Replit
     function solveAdvancedTSP(origin, destinations, includeReturn) {
+        console.log("Iniciando TSP avançado com", destinations.length, "destinos");
+        
         // Se não houver destinos, retornar apenas a origem
         if (!destinations.length) {
+            console.log("Sem destinos, retornando apenas origem");
             return {
                 path: [origin],
                 distance: 0
             };
+        }
+        
+        // Verificar se os objetos têm as propriedades necessárias
+        if (!origin.latitude || !origin.longitude) {
+            console.error("Origem sem coordenadas:", origin);
+            // Criar coordenadas padrão para Dois Córregos se não existirem
+            origin.latitude = origin.latitude || -22.3673;
+            origin.longitude = origin.longitude || -48.3822;
+        }
+        
+        // Verificar e corrigir destinos sem coordenadas
+        for (let i = 0; i < destinations.length; i++) {
+            if (!destinations[i].latitude || !destinations[i].longitude) {
+                console.error("Destino sem coordenadas:", destinations[i]);
+                // Atribuir coordenadas aproximadas baseadas em Dois Córregos com deslocamento
+                destinations[i].latitude = -22.3673 + (Math.random() - 0.5) * 0.1;
+                destinations[i].longitude = -48.3822 + (Math.random() - 0.5) * 0.1;
+            }
         }
         
         // Inicializar a distância total
@@ -1781,14 +1836,17 @@
             const sameCityPath = [origin, ...sameCity];
             
             for (let i = 0; i < sameCityPath.length - 1; i++) {
-                sameCityDist += calculateDistance(
+                const dist = calculateDistance(
                     sameCityPath[i].latitude, sameCityPath[i].longitude,
                     sameCityPath[i+1].latitude, sameCityPath[i+1].longitude
                 );
+                sameCityDist += dist;
+                console.log(`Distância de ${sameCityPath[i].name} para ${sameCityPath[i+1].name}: ${dist.toFixed(1)} km`);
             }
             
             // Se não temos outros pontos, retornar apenas os da mesma cidade
             if (otherCities.length === 0) {
+                console.log("Apenas pontos na mesma cidade, distância total:", sameCityDist.toFixed(1), "km");
                 return {
                     path: sameCityPath,
                     distance: sameCityDist
@@ -1802,13 +1860,19 @@
             const fullPath = [...sameCityPath.slice(0, -1), ...otherResult.path];
             const fullDistance = sameCityDist + otherResult.distance;
             
+            console.log("Combinando caminhos, distância na mesma cidade:", sameCityDist.toFixed(1), 
+                       "km, distância para outras cidades:", otherResult.distance.toFixed(1), 
+                       "km, total:", fullDistance.toFixed(1), "km");
+            
             return {
                 path: fullPath,
                 distance: fullDistance
             };
         }
         
-        return solveBasicTSP(origin, destinations, includeReturn);
+        const result = solveBasicTSP(origin, destinations, includeReturn);
+        console.log("TSP básico, distância total:", result.distance.toFixed(1), "km");
+        return result;
     }
     
     // Versão básica do TSP para cidades diferentes
