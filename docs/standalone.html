@@ -1248,17 +1248,24 @@
                 console.log("Corrigido para:", tspResult.distance.toFixed(1), "km");
             }
             
-            // Reordenar os marcadores visualmente para corresponder à nova sequência
-            reorderMarkers(tspResult.path);
-            
-            // Traçar a rota usando o Google Directions Service
-            drawRouteOnMap(tspResult.path, vehicleType);
-            
-            // Mostrar pontos de interesse ao longo da rota
-            showPointsOfInterestOnRoute(tspResult.path);
-            
-            // Mostrar eventos nas cidades da rota
-            showEventsForCitiesOnRoute(tspResult.path);
+            // Selecionar explicitamente a primeira rota através do seletor
+            // para garantir que o mesmo código seja executado para todas as rotas
+            const alternativeSelect = document.getElementById('alternative-routes');
+            if (alternativeSelect && alternativeSelect.options.length > 0) {
+                alternativeSelect.selectedIndex = 0;
+                
+                // Disparar o evento "change" para ativar o handler que exibe a rota
+                const changeEvent = new Event('change');
+                alternativeSelect.dispatchEvent(changeEvent);
+            } else {
+                console.error("Seletor de rotas alternativas não encontrado ou vazio");
+                
+                // Fallback para o comportamento original se o seletor não funcionar
+                reorderMarkers(tspResult.path);
+                drawRouteOnMap(tspResult.path, vehicleType);
+                showPointsOfInterestOnRoute(tspResult.path);
+                showEventsForCitiesOnRoute(tspResult.path);
+            }
             
             // Mostrar restrições para caminhões nas cidades da rota
             showTruckRestrictionsForCitiesOnRoute(tspResult.path, vehicleType);
@@ -1937,7 +1944,10 @@
                     console.log("Gerando rota alternativa 2: Padrão espiral...");
                     const spiralRoute = solveSpiralTSP(origin, destinations, includeOriginReturn);
                     alternativeRoutes.push(spiralRoute);
-                    alternativeSelect.innerHTML += '<option value="2">Rota Alternativa 2 (Padrão Espiral)</option>';
+                    const option2 = document.createElement('option');
+                    option2.value = "2";
+                    option2.text = "Rota Alternativa 2 (Padrão Espiral)";
+                    alternativeSelect.appendChild(option2);
                 }
             } catch (error) {
                 console.error("Erro ao gerar rota em espiral:", error);
@@ -1950,7 +1960,10 @@
                     const cityPriorityRoute = solveCityPriorityTSP(origin, destinations, includeOriginReturn);
                     alternativeRoutes.push(cityPriorityRoute);
                     const routeIndex = alternativeRoutes.length - 1;
-                    alternativeSelect.innerHTML += `<option value="${routeIndex}">Rota Alternativa ${routeIndex} (Agrupamento por Cidade)</option>`;
+                    const cityOption = document.createElement('option');
+                    cityOption.value = routeIndex.toString();
+                    cityOption.text = `Rota Alternativa ${routeIndex} (Agrupamento por Cidade)`;
+                    alternativeSelect.appendChild(cityOption);
                 }
             } catch (error) {
                 console.error("Erro ao gerar rota por cidade:", error);
