@@ -738,30 +738,16 @@
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const tabId = button.getAttribute('data-tab');
-                selectTab(tabId);
+                
+                // Desativar todas as abas
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Ativar a aba clicada
+                button.classList.add('active');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
             });
         });
-    }
-    
-    // Função para selecionar uma aba específica (pode ser chamada programaticamente)
-    function selectTab(tabId) {
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabContents = document.querySelectorAll('.tab-content');
-        
-        // Desativar todas as abas
-        tabButtons.forEach(btn => btn.classList.remove('active'));
-        tabContents.forEach(content => content.classList.remove('active'));
-        
-        // Ativar a aba selecionada
-        const targetButton = document.querySelector(`.tab-button[data-tab="${tabId}"]`);
-        if (targetButton) {
-            targetButton.classList.add('active');
-        }
-        
-        const targetContent = document.getElementById(`${tabId}-tab`);
-        if (targetContent) {
-            targetContent.classList.add('active');
-        }
     }
 
     // Configura todos os event listeners
@@ -782,17 +768,8 @@
         // Botão para otimizar rota
         document.getElementById('optimize-route').addEventListener('click', optimizeRoute);
         
-        // Filtrar eventos por data - atualizado para também mostrar restrições
-        document.getElementById('filter-events').addEventListener('click', function() {
-            filterEventsByDate();
-            
-            // Também atualizar restrições para caminhões
-            const vehicleType = document.querySelector('input[name="vehicle-type"]:checked').value;
-            showTruckRestrictionsForCitiesOnRoute(locations, vehicleType);
-            
-            // Mudar para a aba de eventos
-            selectTab('events');
-        });
+        // Filtrar eventos por data
+        document.getElementById('filter-events').addEventListener('click', filterEventsByDate);
         
         // Botões de controle do mapa
         document.getElementById('zoom-to-fit').addEventListener('click', zoomToFitAllMarkers);
@@ -1204,9 +1181,6 @@
         // Resolver o TSP (implementação avançada idêntica ao Replit)
         const tspResult = solveAdvancedTSP(origin, destinations, includeOriginReturn);
         
-        // Debug
-        console.log("TSP resolvido, calculando rota com", tspResult.path.length, "pontos");
-        
         // Reordenar os marcadores visualmente para corresponder à nova sequência
         reorderMarkers(tspResult.path);
         
@@ -1216,21 +1190,11 @@
         // Mostrar pontos de interesse ao longo da rota
         showPointsOfInterestOnRoute(tspResult.path);
         
-        // Mostrar eventos nas cidades da rota - atualizado para exibir corretamente
-        console.log("Mostrando eventos para todas as cidades na rota calculada");
+        // Mostrar eventos nas cidades da rota
         showEventsForCitiesOnRoute(tspResult.path);
         
-        // Mostrar restrições para caminhões nas cidades da rota - atualizado para usar veículo correto
-        console.log("Mostrando restrições para caminhões do tipo", vehicleType, "nas cidades da rota");
+        // Mostrar restrições para caminhões nas cidades da rota
         showTruckRestrictionsForCitiesOnRoute(tspResult.path, vehicleType);
-        
-        // Garantir que essas informações também apareçam na aba de eventos
-        setTimeout(() => {
-            // Atualizar a aba de eventos após um breve atraso para garantir que tudo esteja pronto
-            document.querySelector('.tab-button[data-tab="events"]').click();
-            // Voltar para a aba de relatório após um breve momento
-            setTimeout(() => document.querySelector('.tab-button[data-tab="report"]').click(), 300);
-        }, 500);
         
         // Atualizar o resumo da rota
         updateRouteSummary(tspResult, vehicleType);
@@ -1480,7 +1444,7 @@
         });
     }
 
-    // Mostrar eventos para as cidades na rota - versão melhorada
+    // Mostrar eventos para as cidades na rota
     function showEventsForCitiesOnRoute(pathLocations) {
         // Limpar a lista de eventos
         const eventsListContainer = document.getElementById('events-list');
@@ -1489,30 +1453,9 @@
         // Limpar marcadores anteriores
         clearEventMarkers();
         
-        // Se não houver localizações, mostrar mensagem e retornar
-        if (!pathLocations || pathLocations.length === 0) {
-            eventsListContainer.innerHTML = '<p class="text-muted">Adicione locais para ver eventos nas cidades do percurso.</p>';
-            return;
-        }
-        
-        // Obter datas do filtro primeiro
-        const startDateStr = document.getElementById('start-date').value;
-        const endDateStr = document.getElementById('end-date').value;
-        
-        // Verificar se as datas estão disponíveis
-        if (!startDateStr || !endDateStr) {
-            eventsListContainer.innerHTML = '<p class="text-warning">Por favor selecione datas de início e fim no filtro acima.</p>';
-            return;
-        }
-        
-        // Converter para objetos Date
-        const startDate = new Date(startDateStr);
-        const endDate = new Date(endDateStr);
-        
-        // Ajustar a data final para incluir todo o dia
-        endDate.setHours(23, 59, 59, 999);
-        
-        console.log(`Procurando eventos para ${pathLocations.length} locais no período de ${startDateStr} até ${endDateStr}`);
+        // Ajustar as datas para o formato atual (maio de 2025 mencionado no cabeçalho)
+        const currentYear = 2025;
+        const currentMonth = 5; // maio
         
         // Extrair nomes das cidades na rota
         const citiesOnRoute = pathLocations.map(loc => {
@@ -1780,20 +1723,6 @@
         // Limpar a lista de restrições
         const restrictionsListContainer = document.getElementById('restrictions-list');
         restrictionsListContainer.innerHTML = '';
-        
-        // Se o tipo de veículo não foi especificado, usar o padrão
-        if (!vehicleType) {
-            vehicleType = document.querySelector('input[name="vehicle-type"]:checked').value;
-            console.log("Tipo de veículo padrão usado:", vehicleType);
-        }
-        
-        // Se não houver localizações, mostrar mensagem e retornar
-        if (!pathLocations || pathLocations.length === 0) {
-            restrictionsListContainer.innerHTML = '<p class="text-muted">Adicione locais para ver restrições nas cidades do percurso.</p>';
-            return;
-        }
-        
-        console.log("Procurando restrições para o veículo:", vehicleType, "nos locais:", pathLocations.length);
         
         // Extrair nomes das cidades na rota
         const citiesOnRoute = pathLocations.map(loc => {
