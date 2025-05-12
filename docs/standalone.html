@@ -417,28 +417,7 @@
                         <input type="text" id="location-search" class="form-control" placeholder="Digite um endereço">
                     </div>
                     
-                    <!-- Opções de veículo -->
-                    <div class="form-group">
-                        <label>Tipo de veículo:</label>
-                        <div id="vehicle-options">
-                            <div class="truck-type">
-                                <input type="radio" name="vehicle-type" id="truck1" value="truck1" checked>
-                                <label for="truck1">Caminhão 1 eixo</label>
-                            </div>
-                            <div class="truck-type">
-                                <input type="radio" name="vehicle-type" id="truck2" value="truck2">
-                                <label for="truck2">Caminhão 2 eixos</label>
-                            </div>
-                            <div class="truck-type">
-                                <input type="radio" name="vehicle-type" id="truck3" value="truck3">
-                                <label for="truck3">Caminhão 3 eixos</label>
-                            </div>
-                            <div class="truck-type">
-                                <input type="radio" name="vehicle-type" id="truck5" value="truck5">
-                                <label for="truck5">Caminhão 5 eixos</label>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Seleção de veículo removida, agora usa caminhão padrão automaticamente -->
                     
                     <!-- Upload de arquivo -->
                     <div class="file-upload">
@@ -1117,8 +1096,8 @@
         optimizeBtn.innerHTML = '<span class="spinner-border" role="status" aria-hidden="true"></span> Calculando...';
         optimizeBtn.disabled = true;
         
-        // Obter o tipo de veículo selecionado
-        const vehicleType = document.querySelector('input[name="vehicle-type"]:checked').value;
+        // Usar caminhão padrão como veículo
+        const vehicleType = "truck1"; // Caminhão 1 eixo como padrão
         
         // Calcular a rota otimizada (versão simplificada do TSP)
         calculateOptimizedRoute(vehicleType, false);
@@ -1604,13 +1583,9 @@
         summaryContainer.innerHTML = `
             <div class="summary-header">Resumo da Rota Otimizada</div>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-12">
                     <p><strong>Distância total:</strong> ${tspResult.distance.toFixed(1)} km</p>
                     <p><strong>Tempo estimado:</strong> ${timeFormatted}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Veículo selecionado:</strong> ${selectedVehicle.name}</p>
-                    <p><strong>Pedágios no percurso:</strong> ${tollsOnRoute.length} pedágios</p>
                 </div>
             </div>
             
