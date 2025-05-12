@@ -587,6 +587,10 @@
     let routeAnimationTimeout = null;
     let showPOIs = true;
     let customTooltip = null;
+    // Variáveis para rotas alternativas
+    let alternativeRoutes = [];
+    let currentRouteIndex = 0;
+    let tspSolver = null; // Instância do solver TSP
 
     // Inicialização
     document.addEventListener("DOMContentLoaded", function() {
@@ -1156,6 +1160,10 @@
         try {
             console.log("Calculando rota otimizada...");
             
+            // Limpar rotas alternativas existentes
+            alternativeRoutes = [];
+            currentRouteIndex = 0;
+            
             // Primeiro vamos resolver o TSP para encontrar a ordem ideal dos pontos
             const origin = locations.find(loc => loc.isOrigin);
             const destinations = locations.filter(loc => !loc.isOrigin);
@@ -1178,8 +1186,11 @@
             }
             console.log("Distância aproximada em linha reta:", straightLineDistance.toFixed(1), "km");
             
-            // Resolver o TSP (implementação avançada idêntica ao Replit)
-            const tspResult = solveAdvancedTSP(origin, destinations, includeOriginReturn);
+            // Gerar rotas alternativas usando diferentes algoritmos
+            generateAlternativeRoutes(origin, destinations, includeOriginReturn);
+            
+            // Usar a primeira rota (otimizada) como padrão
+            const tspResult = alternativeRoutes[0];
             console.log("Resultado TSP:", tspResult);
             
             // Verificar se o resultado tem uma distância válida
