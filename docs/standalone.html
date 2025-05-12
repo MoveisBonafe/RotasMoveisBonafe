@@ -979,8 +979,17 @@
 
     // Limpar marcadores de eventos
     function clearEventMarkers() {
+        // Limpar marcadores de eventos regulares
         eventMarkers.forEach(marker => marker.setMap(null));
         eventMarkers = [];
+        
+        // Limpar também os marcadores de eventos da cidade
+        cityEventMarkers.forEach(marker => marker.setMap(null));
+        cityEventMarkers = [];
+        
+        // Limpar marcadores de restrições
+        restrictionMarkers.forEach(marker => marker.setMap(null));
+        restrictionMarkers = [];
     }
 
     // Otimizar a rota
@@ -1047,18 +1056,21 @@
     function drawRouteOnMap(pathLocations, vehicleType) {
         // Criar waypoints para o serviço de direções
         const waypoints = pathLocations.slice(1, -1).map(location => ({
-            location: new google.maps.LatLng(location.latitude, location.longitude),
+            location: new google.maps.LatLng(
+                parseFloat(location.latitude || location.lat), 
+                parseFloat(location.longitude || location.lng)
+            ),
             stopover: true
         }));
         
         const origin = new google.maps.LatLng(
-            pathLocations[0].latitude,
-            pathLocations[0].longitude
+            parseFloat(pathLocations[0].latitude || pathLocations[0].lat),
+            parseFloat(pathLocations[0].longitude || pathLocations[0].lng)
         );
         
         const destination = new google.maps.LatLng(
-            pathLocations[pathLocations.length - 1].latitude,
-            pathLocations[pathLocations.length - 1].longitude
+            parseFloat(pathLocations[pathLocations.length - 1].latitude || pathLocations[pathLocations.length - 1].lat),
+            parseFloat(pathLocations[pathLocations.length - 1].longitude || pathLocations[pathLocations.length - 1].lng)
         );
         
         const request = {
@@ -1080,7 +1092,10 @@
                 // Ajustar o mapa para mostrar toda a rota
                 const bounds = new google.maps.LatLngBounds();
                 pathLocations.forEach(location => {
-                    bounds.extend(new google.maps.LatLng(location.latitude, location.longitude));
+                    bounds.extend(new google.maps.LatLng(
+                        parseFloat(location.latitude || location.lat), 
+                        parseFloat(location.longitude || location.lng)
+                    ));
                 });
                 map.fitBounds(bounds);
             } else {
