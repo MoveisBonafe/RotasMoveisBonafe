@@ -589,7 +589,16 @@
             { id: 3, cityName: "Botucatu", dayType: "weekend", startTime: "08:00", endTime: "18:00", restrictionType: "total", description: "Proibição total para caminhões na área central", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] },
             { id: 4, cityName: "Bauru", dayType: "all", startTime: "07:00", endTime: "22:00", restrictionType: "rodizio", description: "Sistema de rodízio para todos os caminhões", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] },
             { id: 5, cityName: "Campinas", dayType: "all", startTime: "06:00", endTime: "20:00", restrictionType: "total", description: "Zona de Máxima Restrição de Circulação (ZMRC) - proibição total para caminhões", affectedVehicles: ["truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] },
-            { id: 6, cityName: "Campinas", dayType: "weekday", startTime: "07:00", endTime: "10:00", restrictionType: "partial", description: "Restrição adicional para todos os tipos de caminhões nas vias principais", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] }
+            { id: 6, cityName: "Campinas", dayType: "weekday", startTime: "07:00", endTime: "10:00", restrictionType: "partial", description: "Restrição adicional para todos os tipos de caminhões nas vias principais", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] },
+            { id: 7, cityName: "São Paulo", dayType: "all", startTime: "04:00", endTime: "22:00", restrictionType: "total", description: "Zona de Máxima Restrição de Circulação - proibição total", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] },
+            { id: 8, cityName: "Ribeirão Preto", dayType: "weekday", startTime: "07:00", endTime: "19:00", restrictionType: "partial", description: "Restrição de circulação no centro expandido", affectedVehicles: ["truck2", "truck3", "truck4", "truck5"] },
+            { id: 9, cityName: "Piracicaba", dayType: "weekday", startTime: "08:00", endTime: "18:00", restrictionType: "partial", description: "Restrição na região central", affectedVehicles: ["truck3", "truck4", "truck5", "truck7"] },
+            { id: 10, cityName: "São Carlos", dayType: "all", startTime: "07:00", endTime: "19:00", restrictionType: "partial", description: "Restrição no centro comercial", affectedVehicles: ["truck3", "truck4", "truck5"] },
+            { id: 11, cityName: "Sorocaba", dayType: "weekday", startTime: "08:00", endTime: "17:00", restrictionType: "partial", description: "Restrição para veículos pesados na área central", affectedVehicles: ["truck2", "truck3", "truck4", "truck5"] },
+            { id: 12, cityName: "Americana", dayType: "weekday", startTime: "07:00", endTime: "19:00", restrictionType: "partial", description: "Restrição na zona comercial", affectedVehicles: ["truck3", "truck4", "truck5"] },
+            { id: 13, cityName: "Limeira", dayType: "weekday", startTime: "08:00", endTime: "18:00", restrictionType: "partial", description: "Restrição no perímetro central", affectedVehicles: ["truck2", "truck3", "truck4", "truck5"] },
+            { id: 14, cityName: "Rio Claro", dayType: "weekday", startTime: "07:30", endTime: "18:30", restrictionType: "partial", description: "Restrição na área central", affectedVehicles: ["truck3", "truck4", "truck5"] },
+            { id: 15, cityName: "Araraquara", dayType: "weekday", startTime: "08:00", endTime: "18:00", restrictionType: "partial", description: "Restrição para veículos pesados no centro", affectedVehicles: ["truck2", "truck3", "truck4", "truck5"] }
         ]
     };
 
@@ -1942,14 +1951,54 @@
             // return;
         }
         
-        // Extrair nomes das cidades na rota (ignorar localizações não encontradas)
-        const citiesOnRoute = pathLocations
-            .filter(loc => loc) // Remover localizações nulas
-            .map(loc => {
-                // Extrair nome da cidade do endereço
-                const parts = loc.address.split(',');
-                return parts[0].trim();
+        // Extrair nomes das cidades na rota (versão melhorada)
+        const citiesOnRoute = []; // Array para armazenar as cidades detectadas
+        
+        // Lista de cidades importantes para melhor detecção
+        const knownCities = [
+            "Campinas", "Ribeirão Preto", "São Carlos", "Piracicaba", "São Paulo", 
+            "Sorocaba", "Americana", "Limeira", "Rio Claro", "Araraquara", "Bauru", 
+            "Botucatu", "Jaú", "Dois Córregos", "Santos", "Guarulhos", "Osasco",
+            "Jundiaí", "Franca", "Marília", "Presidente Prudente", "Araçatuba"
+        ];
+        
+        // Para cada localização na rota
+        pathLocations.filter(loc => loc).forEach(loc => {
+            if (!loc.address) {
+                // Se não tiver endereço, usar o nome da localização
+                if (loc.name && !citiesOnRoute.includes(loc.name)) {
+                    citiesOnRoute.push(loc.name);
+                }
+                return;
+            }
+            
+            // 1. Verificar se o endereço contém alguma cidade conhecida
+            const addressLower = loc.address.toLowerCase();
+            let cityFound = false;
+            
+            knownCities.forEach(city => {
+                if (addressLower.includes(city.toLowerCase())) {
+                    if (!citiesOnRoute.includes(city)) {
+                        console.log(`Cidade conhecida encontrada: ${city} em "${loc.address}"`);
+                        citiesOnRoute.push(city);
+                        cityFound = true;
+                    }
+                }
             });
+            
+            // 2. Se não encontrou nenhuma cidade conhecida, extrair a primeira parte do endereço
+            if (!cityFound) {
+                const parts = loc.address.split(',');
+                const extractedCity = parts[0].trim();
+                
+                if (extractedCity && !citiesOnRoute.includes(extractedCity)) {
+                    console.log(`Cidade extraída do endereço: ${extractedCity}`);
+                    citiesOnRoute.push(extractedCity);
+                }
+            }
+        });
+        
+        console.log("Cidades detectadas no percurso:", citiesOnRoute);
         
         // Filtrar POIs que estão nas cidades da rota
         const poisOnRoute = mockData.pointsOfInterest.filter(poi => 
@@ -2282,11 +2331,19 @@
                     const addressParts = loc.address.split(',');
                     cityName = addressParts[0].trim();
                     
-                    // Verificar se temos palavras como "Campinas", "Rua", "Avenida" no endereço
+                    // Verificar se temos nome de cidades conhecidas no endereço
                     const lowerAddress = loc.address.toLowerCase();
-                    ["campinas", "ribeirão preto", "são carlos", "piracicaba"].forEach(cityToCheck => {
+                    const knownCities = [
+                        "campinas", "ribeirão preto", "são carlos", "piracicaba", "são paulo", 
+                        "sorocaba", "americana", "limeira", "rio claro", "araraquara", "bauru", 
+                        "botucatu", "jaú", "dois córregos"
+                    ];
+                    
+                    knownCities.forEach(cityToCheck => {
                         if (lowerAddress.includes(cityToCheck)) {
-                            cityName = cityToCheck.charAt(0).toUpperCase() + cityToCheck.slice(1);
+                            cityName = cityToCheck.split(' ').map(word => 
+                                word.charAt(0).toUpperCase() + word.slice(1)
+                            ).join(' ');
                             console.log(`Cidade específica detectada no endereço: ${cityName}`);
                         }
                     });
