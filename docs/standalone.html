@@ -829,7 +829,9 @@
         let newLocations = [];
         
         // CEPs com coordenadas conhecidas para as principais cidades paulistas
+        // Banco de dados ampliado e corrigido para otimizador de rotas
         const knownCEPs = {
+            // Cidades principais - ceps básicos
             '14020-260': {name: 'Ribeirão Preto', lat: -21.1767, lng: -47.8208},
             '17560-000': {name: 'Vera Cruz', lat: -22.2205, lng: -49.8233},
             '17580-000': {name: 'Pompéia', lat: -22.1075, lng: -50.1764},
@@ -844,7 +846,20 @@
             '17040-001': {name: 'Bauru', lat: -22.3246, lng: -49.0871},
             '17400-000': {name: 'Garça', lat: -22.2132, lng: -49.6546},
             '17480-000': {name: 'Marília', lat: -22.2171, lng: -49.9501},
-            '17300-000': {name: 'Dois Córregos', lat: -22.3673, lng: -48.3822}
+            '17300-000': {name: 'Dois Córregos', lat: -22.3673, lng: -48.3822},
+            
+            // CEPs problemáticos (adicionados ou corrigidos)
+            '18430-000': {name: 'Paranapanema', lat: -23.3862, lng: -48.7214},
+            '18430-035': {name: 'Paranapanema', lat: -23.3865, lng: -48.7240}, // CEP específico de Paranapanema corrigido
+            
+            // CEPs adicionais
+            '13560-000': {name: 'São Carlos', lat: -22.0169, lng: -47.8908},
+            '13610-000': {name: 'Leme', lat: -22.1809, lng: -47.3959},
+            '14940-000': {name: 'Ibitinga', lat: -21.7573, lng: -48.8292},
+            '18650-000': {name: 'São Manuel', lat: -22.7321, lng: -48.5712},
+            '18674-000': {name: 'Pardinho', lat: -23.0844, lng: -48.3679},
+            '18682-000': {name: 'Lençóis Paulista', lat: -22.6032, lng: -48.8007},
+            '18130-000': {name: 'São Roque', lat: -23.5329, lng: -47.1356}
         };
         
         // Geocodificador para CEPs desconhecidos
@@ -959,18 +974,25 @@
                         // CORREÇÃO: Não adicionar CEPs que não puderam ser geocodificados
                         console.warn(`CEP não encontrado: ${item.cep} - ${item.name}. Este local não será adicionado.`);
                         
-                        // Mostrar notificação para o usuário sobre o CEP não encontrado
+                        // Melhor tratamento de erro - Mostrar notificação mais clara para o usuário
                         const notifyError = document.createElement('div');
                         notifyError.className = 'alert alert-warning mt-2';
-                        notifyError.innerHTML = `CEP não encontrado: ${item.cep} - ${item.name}`;
+                        notifyError.innerHTML = `
+                            <strong>Atenção!</strong> CEP "${item.cep}" não encontrado para "${item.name}".
+                            <br>Este local não foi adicionado ao mapa.
+                            <br><small>Sugestão: Verifique o CEP ou tente adicionar manualmente pelo formulário.</small>
+                        `;
                         document.querySelector('.file-upload').appendChild(notifyError);
+                        
+                        // Registrar o CEP problemático para depuração
+                        console.error(`CEP problemático: ${item.cep} - ${item.name}`);
                         
                         // Remover a notificação após alguns segundos
                         setTimeout(() => {
                             if (notifyError && notifyError.parentNode) {
                                 notifyError.parentNode.removeChild(notifyError);
                             }
-                        }, 5000);
+                        }, 8000);
                         
                         // Atualizar o status sem adicionar o local
                         
