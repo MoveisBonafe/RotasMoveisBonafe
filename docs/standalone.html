@@ -710,6 +710,69 @@
     let alternativeRoutes = [];
     let currentRouteIndex = 0;
     let tspSolver = null; // Instância do solver TSP
+    
+    // Função global auxiliar para exibir notificações de forma segura
+    function showNotification(message, type = 'info', targetSelector = '.route-controls', autoRemove = true, duration = 5000) {
+        console.log(`Notificação [${type}]: ${message}`);
+        
+        // Criar elemento de notificação
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} mt-2`;
+        notification.innerHTML = message;
+        
+        // Tentar diferentes locais na ordem de prioridade
+        const possibleTargets = [
+            targetSelector,
+            '.route-controls',
+            '#sidebar',
+            '.sidebar-content',
+            '.tab-content:first-child',
+            'body'
+        ];
+        
+        let targetElement = null;
+        
+        // Tentar cada seletor até encontrar um elemento válido
+        for (const selector of possibleTargets) {
+            try {
+                const element = document.querySelector(selector);
+                if (element) {
+                    targetElement = element;
+                    break;
+                }
+            } catch (err) {
+                console.warn(`Erro ao buscar seletor ${selector}:`, err);
+            }
+        }
+        
+        // Anexar notificação se encontrou um elemento válido
+        if (targetElement) {
+            try {
+                targetElement.appendChild(notification);
+                
+                // Auto-remover após um tempo, se solicitado
+                if (autoRemove) {
+                    setTimeout(() => {
+                        try {
+                            if (notification && notification.parentNode) {
+                                notification.parentNode.removeChild(notification);
+                            }
+                        } catch (err) {
+                            console.warn("Erro ao remover notificação:", err);
+                        }
+                    }, duration);
+                }
+                
+                return notification;
+            } catch (err) {
+                console.error("Erro ao adicionar notificação:", err);
+            }
+        } else {
+            console.warn("Não foi possível exibir notificação, nenhum elemento alvo encontrado");
+        }
+        
+        return null;
+    }
 
     // Inicialização
     document.addEventListener("DOMContentLoaded", function() {
@@ -1901,68 +1964,7 @@
             return result;
         }
         
-    // Função auxiliar para exibir notificações de forma segura
-    function showNotification(message, type = 'info', targetSelector = '.route-controls', autoRemove = true, duration = 5000) {
-        console.log(`Notificação [${type}]: ${message}`);
-        
-        // Criar elemento de notificação
-        const notification = document.createElement('div');
-        notification.className = `alert alert-${type} mt-2`;
-        notification.innerHTML = message;
-        
-        // Tentar diferentes locais na ordem de prioridade
-        const possibleTargets = [
-            targetSelector,
-            '.route-controls',
-            '#sidebar',
-            '.sidebar-content',
-            '.tab-content:first-child',
-            'body'
-        ];
-        
-        let targetElement = null;
-        
-        // Tentar cada seletor até encontrar um elemento válido
-        for (const selector of possibleTargets) {
-            try {
-                const element = document.querySelector(selector);
-                if (element) {
-                    targetElement = element;
-                    break;
-                }
-            } catch (err) {
-                console.warn(`Erro ao buscar seletor ${selector}:`, err);
-            }
-        }
-        
-        // Anexar notificação se encontrou um elemento válido
-        if (targetElement) {
-            try {
-                targetElement.appendChild(notification);
-                
-                // Auto-remover após um tempo, se solicitado
-                if (autoRemove) {
-                    setTimeout(() => {
-                        try {
-                            if (notification && notification.parentNode) {
-                                notification.parentNode.removeChild(notification);
-                            }
-                        } catch (err) {
-                            console.warn("Erro ao remover notificação:", err);
-                        }
-                    }, duration);
-                }
-                
-                return notification;
-            } catch (err) {
-                console.error("Erro ao adicionar notificação:", err);
-            }
-        } else {
-            console.warn("Não foi possível exibir notificação, nenhum elemento alvo encontrado");
-        }
-        
-        return null;
-    }
+
         
         // Extrair cidade dos endereços (normalmente o primeiro componente após o nome)
         const address1Parts = loc1.address ? loc1.address.split(',') : [];
@@ -2187,8 +2189,25 @@
                 // Substituir alert por notificação inline mais suave
                 console.error(`Erro ao calcular rota: ${status}`);
                 
+                // Preparar mensagem de erro mais amigável baseada no tipo de erro
+                let errorMsg = '';
+                
+                if (status === 'ZERO_RESULTS') {
+                    errorMsg = 'Não foi possível encontrar uma rota entre os pontos selecionados. ' +
+                              'Isto pode ocorrer se um dos pontos estiver em uma área inacessível ' +
+                              'ou se houver uma grande barreira natural (como um rio ou oceano) entre eles.';
+                } else if (status === 'MAX_WAYPOINTS_EXCEEDED') {
+                    errorMsg = 'Número máximo de destinos excedido. Tente dividir sua rota em partes menores.';
+                } else if (status === 'MAX_ROUTE_LENGTH_EXCEEDED') {
+                    errorMsg = 'A rota é muito longa. Tente dividir sua rota em partes menores.';
+                } else if (status === 'OVER_QUERY_LIMIT') {
+                    errorMsg = 'Limite de consultas excedido. Aguarde alguns minutos e tente novamente.';
+                } else {
+                    errorMsg = `Não foi possível calcular a rota: ${status}`;
+                }
+                
                 // Usar função auxiliar para exibir notificação
-                showNotification(`Não foi possível calcular a rota: ${status}`, 'danger');
+                showNotification(errorMsg, 'danger');
                 console.error("Directions request failed due to " + status);
             }
         });
@@ -2198,26 +2217,43 @@
     function animateRoute(path) {
         console.log("Iniciando animação da rota...");
         
-        // Limpar qualquer animação existente
-        if (routeAnimationTimeout) {
-            clearTimeout(routeAnimationTimeout);
-            routeAnimationTimeout = null;
-        }
-        
-        // Se já existir uma rota, removê-la
-        if (routePath) {
-            try {
-                routePath.setMap(null);
-            } catch (err) {
-                console.error("Erro ao limpar rota anterior:", err);
+        try {
+            // Limpar qualquer animação existente
+            if (routeAnimationTimeout) {
+                clearTimeout(routeAnimationTimeout);
+                routeAnimationTimeout = null;
             }
-            routePath = null;
-        }
-        
-        // Verificar se o caminho é válido
-        if (!path || !Array.isArray(path) || path.length === 0) {
-            console.error("Caminho inválido para animação:", path);
-            showNotification("Não foi possível animar a rota: dados inválidos", "warning");
+            
+            // Se já existir uma rota, removê-la
+            if (routePath) {
+                try {
+                    routePath.setMap(null);
+                } catch (err) {
+                    console.error("Erro ao limpar rota anterior:", err);
+                }
+                routePath = null;
+            }
+            
+            // Verificar se o caminho é válido
+            if (!path) {
+                console.error("Caminho nulo para animação");
+                showNotification("Não foi possível animar a rota: dados ausentes", "warning");
+                return;
+            }
+            
+            if (!Array.isArray(path)) {
+                console.error("Tipo de caminho inválido para animação:", typeof path);
+                showNotification("Não foi possível animar a rota: formato de dados incorreto", "warning");
+                return;
+            }
+            
+            if (path.length === 0) {
+                console.error("Caminho vazio para animação");
+                showNotification("Não foi possível animar a rota: caminho vazio", "warning");
+                return;
+            }
+        } catch (err) {
+            console.error("Erro na inicialização da animação:", err);
             return;
         }
         
