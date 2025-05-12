@@ -587,7 +587,9 @@
             { id: 1, cityName: "Dois Córregos", dayType: "weekday", startTime: "07:00", endTime: "09:00", restrictionType: "partial", description: "Restrição parcial para caminhões de grande porte no centro", affectedVehicles: ["truck1", "truck5", "truck6", "truck7", "truck9"] },
             { id: 2, cityName: "Jaú", dayType: "weekday", startTime: "17:00", endTime: "20:00", restrictionType: "partial", description: "Restrição parcial para todos os caminhões no centro", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] },
             { id: 3, cityName: "Botucatu", dayType: "weekend", startTime: "08:00", endTime: "18:00", restrictionType: "total", description: "Proibição total para caminhões na área central", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] },
-            { id: 4, cityName: "Bauru", dayType: "all", startTime: "07:00", endTime: "22:00", restrictionType: "rodizio", description: "Sistema de rodízio para todos os caminhões", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] }
+            { id: 4, cityName: "Bauru", dayType: "all", startTime: "07:00", endTime: "22:00", restrictionType: "rodizio", description: "Sistema de rodízio para todos os caminhões", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] },
+            { id: 5, cityName: "Campinas", dayType: "all", startTime: "06:00", endTime: "20:00", restrictionType: "total", description: "Zona de Máxima Restrição de Circulação (ZMRC) - proibição total para caminhões", affectedVehicles: ["truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] },
+            { id: 6, cityName: "Campinas", dayType: "weekday", startTime: "07:00", endTime: "10:00", restrictionType: "partial", description: "Restrição adicional para todos os tipos de caminhões nas vias principais", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] }
         ]
     };
 
@@ -2108,11 +2110,29 @@
             // Filtragem de datas somente se datas forem fornecidas
             let dateMatch = true;
             if (startDate || endDate) {
+                // Para resolver o problema de exibir eventos fora das datas selecionadas
+                // Se tanto a data inicial quanto a final forem fornecidas, filtrar estritamente nessas datas
                 const eventStart = new Date(event.startDate);
                 const eventEnd = new Date(event.endDate);
-                const filterStart = startDate ? new Date(startDate) : new Date(0);
-                const filterEnd = endDate ? new Date(endDate) : new Date(9999, 11, 31);
-                dateMatch = eventStart <= filterEnd && eventEnd >= filterStart;
+                
+                // Converter para formato YYYY-MM-DD para comparação
+                const eventStartStr = event.startDate.split("T")[0];
+                const eventEndStr = event.endDate.split("T")[0];
+                
+                // Se ambas as datas foram fornecidas, usar filtro estrito
+                if (startDate && endDate) {
+                    console.log(`Filtro estrito de datas: Evento ${event.name} (${eventStartStr} a ${eventEndStr}) vs Filtro (${startDate} a ${endDate})`);
+                    dateMatch = (eventStartStr >= startDate && eventStartStr <= endDate) || 
+                               (eventEndStr >= startDate && eventEndStr <= endDate) ||
+                               (eventStartStr <= startDate && eventEndStr >= endDate);
+                } else {
+                    // Caso contrário, filtro mais flexível (apenas uma data fornecida)
+                    const filterStart = startDate ? new Date(startDate) : new Date(0);
+                    const filterEnd = endDate ? new Date(endDate) : new Date(9999, 11, 31);
+                    dateMatch = eventStart <= filterEnd && eventEnd >= filterStart;
+                }
+                
+                console.log(`Evento: ${event.name}, Cidade: ${event.cityName}, Datas: ${eventStartStr}-${eventEndStr}, Incluir: ${dateMatch}`);
             }
             
             // Melhorar correspondência da cidade - verificar nos dois sentidos
@@ -2256,8 +2276,25 @@
                     return loc.name || "Desconhecido";
                 }
                 // Extrair cidade do endereço ou usar nome da localização
-                const parts = loc.address.split(',');
-                const cityName = parts[0].trim();
+                let cityName;
+                if (loc.address) {
+                    // Melhorar extração da cidade para funcionar com mais formatos
+                    const addressParts = loc.address.split(',');
+                    cityName = addressParts[0].trim();
+                    
+                    // Verificar se temos palavras como "Campinas", "Rua", "Avenida" no endereço
+                    const lowerAddress = loc.address.toLowerCase();
+                    ["campinas", "ribeirão preto", "são carlos", "piracicaba"].forEach(cityToCheck => {
+                        if (lowerAddress.includes(cityToCheck)) {
+                            cityName = cityToCheck.charAt(0).toUpperCase() + cityToCheck.slice(1);
+                            console.log(`Cidade específica detectada no endereço: ${cityName}`);
+                        }
+                    });
+                } else {
+                    cityName = loc.name.trim();
+                }
+                
+                console.log(`DEBUG - Localização: ${loc.name}, Endereço: ${loc.address}, Cidade extraída: ${cityName}`);
                 console.log(`Cidade detectada: ${cityName} de endereço ${loc.address}`);
                 return cityName;
             });
@@ -2283,16 +2320,23 @@
         
         // Filtrar restrições APENAS por cidades na rota, sem filtrar por tipo de veículo
         console.log(`Filtrando restrições APENAS por cidades na rota, ignorando completamente o tipo de veículo`);
+        console.log("Todas as cidades na rota:", JSON.stringify(citiesOnRoute));
+        console.log("Todas as restrições disponíveis:", JSON.stringify(mockData.truckRestrictions.map(r => r.cityName)));
         
         // Obtemos TODAS as restrições para TODAS as cidades da rota
         const restrictionsOnRoute = mockData.truckRestrictions.filter(restriction => {
-            // Verificamos apenas se a restrição está em alguma cidade da rota
-            const cityMatch = citiesOnRoute.some(city => 
-                restriction.cityName.includes(city) || city.includes(restriction.cityName)
-            );
+            // Comparação mais flexível para nomes de cidades
+            const restrictionCity = restriction.cityName.toLowerCase().trim();
             
-            // Log detalhado
-            console.log(`Restrição: ${restriction.description}, Cidade: ${restriction.cityName}, Caminhões: ${restriction.affectedVehicles ? restriction.affectedVehicles.join(',') : 'todos'}, Corresponde: ${cityMatch}`);
+            // Verificamos se a restrição está em alguma cidade da rota
+            const cityMatch = citiesOnRoute.some(city => {
+                const routeCity = city.toLowerCase().trim();
+                return restrictionCity.includes(routeCity) || routeCity.includes(restrictionCity);
+            });
+            
+            // Log detalhado para debug
+            console.log(`DEBUG - Restrição: ${restriction.cityName}, Corresponde a alguma cidade na rota? ${cityMatch}`);
+            console.log(`Detalhes: ${restriction.description}, Caminhões afetados: ${restriction.affectedVehicles ? restriction.affectedVehicles.join(',') : 'todos'}`);
             
             // Retorna true se a cidade está na rota, ignorando o tipo de veículo
             return cityMatch;
