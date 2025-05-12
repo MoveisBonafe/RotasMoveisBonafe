@@ -1237,7 +1237,7 @@
     }
     
     // Reordenar os marcadores para corresponder à sequência otimizada
-    function reorderMarkers(optimizedPath) {
+    function reorderMarkers(optimizedPathIds) {
         // Remover os marcadores existentes do mapa
         markers.forEach(markerObj => {
             markerObj.marker.setMap(null);
@@ -1246,8 +1246,17 @@
         // Limpar o array de marcadores
         markers = [];
         
+        // Converter IDs para objetos de localização
+        const pathLocations = optimizedPathIds.map(id => locations.find(loc => loc.id === id));
+        
+        // Verificar se todos os IDs foram encontrados
+        if (pathLocations.some(loc => !loc)) {
+            console.error("Algumas localizações não foram encontradas:", optimizedPathIds);
+            return;
+        }
+        
         // Adicionar marcadores novamente na ordem otimizada
-        optimizedPath.forEach((location, index) => {
+        pathLocations.forEach((location, index) => {
             addMarkerForLocation(location, index);
         });
         
@@ -1523,10 +1532,19 @@
     }
 
     // Mostrar eventos para as cidades na rota
-    function showEventsForCitiesOnRoute(pathLocations) {
+    function showEventsForCitiesOnRoute(pathIds) {
         // Limpar a lista de eventos
         const eventsListContainer = document.getElementById('events-list');
         eventsListContainer.innerHTML = '';
+        
+        // Converter IDs para objetos de localização
+        const pathLocations = pathIds.map(id => locations.find(loc => loc.id === id));
+        
+        // Verificar se todos os IDs foram encontrados
+        if (pathLocations.some(loc => !loc)) {
+            console.error("Algumas localizações não foram encontradas:", pathIds);
+            return;
+        }
         
         // Extrair nomes das cidades na rota
         const citiesOnRoute = pathLocations.map(loc => {
@@ -1645,10 +1663,19 @@
     }
 
     // Mostrar restrições para caminhões nas cidades da rota
-    function showTruckRestrictionsForCitiesOnRoute(pathLocations, vehicleType) {
+    function showTruckRestrictionsForCitiesOnRoute(pathIds, vehicleType) {
         // Limpar a lista de restrições
         const restrictionsListContainer = document.getElementById('restrictions-list');
         restrictionsListContainer.innerHTML = '';
+        
+        // Converter IDs para objetos de localização
+        const pathLocations = pathIds.map(id => locations.find(loc => loc.id === id));
+        
+        // Verificar se todos os IDs foram encontrados
+        if (pathLocations.some(loc => !loc)) {
+            console.error("Algumas localizações não foram encontradas:", pathIds);
+            return;
+        }
         
         // Extrair nomes das cidades na rota
         const citiesOnRoute = pathLocations.map(loc => {
