@@ -862,6 +862,13 @@
         
         // Processar a fila de geocodificação para CEPs desconhecidos
         if (geocodeQueue.length > 0) {
+            // Primeiro remover qualquer status element existente para evitar duplicação
+            const existingStatus = document.getElementById('geocode-status');
+            if (existingStatus) {
+                existingStatus.remove();
+            }
+            
+            // Criar novo elemento de status
             const statusElement = document.createElement('div');
             statusElement.className = 'alert alert-info mt-3';
             statusElement.id = 'geocode-status';
@@ -874,7 +881,24 @@
             function processGeocodingQueue() {
                 if (geocodeQueue.length === 0) {
                     // Todos os geocodes foram processados
-                    document.getElementById('geocode-status').remove();
+                    const statusElement = document.getElementById('geocode-status');
+                    if (statusElement) {
+                        statusElement.remove();
+                    }
+                    console.log("Geocodificação completa");
+                    return;
+                }
+                
+                // Limitar o número de tentativas para evitar loops infinitos
+                const MAX_ATTEMPTS = 20;
+                
+                if (processedCount > MAX_ATTEMPTS && geocodeQueue.length > 0) {
+                    console.warn("Número máximo de tentativas (" + MAX_ATTEMPTS + ") atingido. Desistindo.");
+                    alert("Alguns endereços não puderam ser geocodificados. Verifique os CEPs e tente novamente.");
+                    const statusElement = document.getElementById('geocode-status');
+                    if (statusElement) {
+                        statusElement.remove();
+                    }
                     return;
                 }
                 
@@ -953,15 +977,28 @@
         // Limpar o campo de upload
         document.getElementById('file-upload').value = '';
         
-        // Contar as linhas válidas do arquivo original
-        const validLines = lines.filter(line => {
-            if (!line.trim()) return false;
-            const parts = line.split(',');
-            return parts.length >= 2 && parts[0].trim() && parts[1].trim();
-        }).length;
+        // Verificar se algum local foi processado
+        const totalProcessed = newLocations.length + geocodeQueue.length;
         
-        // Feedback para o usuário com a contagem correta
-        alert(`${validLines} locais sendo importados! Os locais conhecidos aparecerão imediatamente, enquanto os demais serão geocodificados automaticamente.`);
+        if (totalProcessed === 0) {
+            // Se não conseguimos processar nenhum local, mostrar mensagem de erro
+            alert("Nenhum endereço válido encontrado no arquivo. Verifique se o formato está correto: CEP,Nome do Local");
+            console.error("Nenhum local processado. Formato esperado: CEP,Nome");
+        } else {
+            // Mostrar apenas uma mensagem de feedback com a contagem de locais reconhecidos
+            let mensagem = `${totalProcessed} locais sendo importados!`;
+            
+            if (newLocations.length > 0) {
+                mensagem += ` ${newLocations.length} locais conhecidos já foram adicionados`;
+            }
+            
+            if (geocodeQueue.length > 0) {
+                mensagem += `${newLocations.length > 0 ? " e" : ""} ${geocodeQueue.length} locais serão geocodificados automaticamente.`;
+            }
+            
+            alert(mensagem);
+            console.log(mensagem);
+        }
     }
 
     // Função para extrair CEP de um objeto Place
