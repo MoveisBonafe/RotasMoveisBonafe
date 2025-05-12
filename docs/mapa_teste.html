@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste do Google Maps</title>
+    <style>
+        html, body, #map {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script>
+        // Função de inicialização do mapa
+        function initMap() {
+            console.log("Função initMap executada");
+            
+            // Coordenadas de Dois Córregos, SP
+            const doisCorregosSP = {
+                lat: -22.3673, 
+                lng: -48.3800
+            };
+            
+            // Criar o mapa
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 12,
+                center: doisCorregosSP,
+            });
+            
+            // Adicionar um marcador
+            const marker = new google.maps.Marker({
+                position: doisCorregosSP,
+                map: map,
+                title: "Dois Córregos, SP"
+            });
+            
+            console.log("Mapa criado com sucesso");
+        }
+        
+        // Função para verificar erros de carregamento da API
+        function handleGoogleMapsError() {
+            console.error("Erro ao carregar Google Maps API");
+            document.body.innerHTML = '<div style="text-align: center; padding: 20px; color: red;">Erro ao carregar o Google Maps. Verifique o console para mais detalhes.</div>';
+        }
+    </script>
+    
+    <!-- Carregando o Google Maps API -->
+    <script 
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&callback=initMap" 
+        async 
+        defer
+        onerror="handleGoogleMapsError()">
+    </script>
+</body>
+</html>
