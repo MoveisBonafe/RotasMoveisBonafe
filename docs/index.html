@@ -1449,6 +1449,28 @@
           eventItem.appendChild(eventDate);
           eventItem.appendChild(eventCity);
           
+          // Armazenar dados do evento no elemento para usar quando clicado
+          eventItem.dataset.eventTitle = event.title;
+          eventItem.dataset.eventCity = event.city;
+          
+          // Adicionar evento de clique para centralizar o mapa no evento
+          eventItem.addEventListener('click', () => {
+            // Encontrar marcador correspondente e acionar clique
+            for (let i = 0; i < eventMarkers.length; i++) {
+              const marker = eventMarkers[i];
+              if (marker.getTitle().includes(event.title) && 
+                  marker.getTitle().includes(event.city)) {
+                // Centralizar mapa no evento
+                map.setCenter(marker.getPosition());
+                map.setZoom(13);
+                
+                // Simular clique no marcador para mostrar o infowindow
+                google.maps.event.trigger(marker, 'click');
+                break;
+              }
+            }
+          });
+          
           eventsList.appendChild(eventItem);
           
           // 2. Adicionar ao mapa se as coordenadas da cidade estiverem disponíveis
