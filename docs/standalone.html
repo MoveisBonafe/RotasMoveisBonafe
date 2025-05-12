@@ -1334,11 +1334,15 @@
         const pathLocations = [];
         for (let i = 0; i < pathIds.length; i++) {
             const id = pathIds[i];
-            const location = locations.find(loc => loc.id === id);
+            // Verificação se o ID é um objeto em vez de um valor simples
+            const lookupId = typeof id === 'object' ? (id.id || id.toString()) : id;
+            console.log("Procurando localização com ID:", lookupId, "Tipo:", typeof lookupId);
+            
+            const location = locations.find(loc => loc.id === lookupId);
             if (!location) {
-                console.error(`Localização ID ${id} não encontrada!`);
+                console.error(`Localização ID ${lookupId} não encontrada!`);
             } else {
-                console.log(`Localização ID ${id} encontrada:`, location);
+                console.log(`Localização ID ${lookupId} encontrada:`, location);
                 pathLocations.push(location);
             }
         }
