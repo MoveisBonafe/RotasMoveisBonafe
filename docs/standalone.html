@@ -581,6 +581,8 @@
     let markers = [];
     let poiMarkers = [];
     let eventMarkers = [];
+    let cityEventMarkers = [];
+    let restrictionMarkers = [];
     let locationId = 2; // Começa em 2 porque 1 é reservado para a origem
     let locations = [mockData.origin];
     let activeInfoWindow = null;
@@ -1251,6 +1253,11 @@
             return citiesOnRoute.some(city => eventCity.includes(city));
         });
         
+        // Adicionar marcadores para eventos na rota e atualizar lista
+        eventsOnRoute.forEach(event => {
+            addCityEventMarker(event);
+        });
+        
         // Se não houver eventos, mostrar mensagem
         if (eventsOnRoute.length === 0) {
             eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado para o período e cidades selecionados.</p>';
@@ -1300,8 +1307,22 @@
         });
     }
 
-    // Adicionar marcador para um evento
-    function addEventMarker(event, location) {
+    // Função para adicionar marcador de evento na cidade
+    function addCityEventMarker(event) {
+        // Buscar uma cidade correspondente nos locais da rota
+        const city = locations.find(loc => loc.address.includes(event.cityName));
+        if (!city) return; // Se não encontrar a cidade na rota atual, não adiciona o marcador
+        
+        // Obter coordenadas da cidade
+        const position = {
+            lat: parseFloat(city.latitude || city.lat), 
+            lng: parseFloat(city.longitude || city.lng)
+        };
+        
+        // Adicionar pequeno offset para não sobrepor outros marcadores
+        position.lat += Math.random() * 0.01 - 0.005;
+        position.lng += Math.random() * 0.01 - 0.005;
+        
         // Seletor de ícone com base no tipo de evento
         const markerColor = event.isHoliday ? '#f44336' : '#ff9800';
         const markerIcon = {
@@ -1315,11 +1336,40 @@
         
         // Criar o marcador
         const marker = new google.maps.Marker({
-            position: { lat: location.latitude, lng: location.longitude },
+            position: position,
             map: map,
-            title: event.name,
             icon: markerIcon,
+            title: event.name,
+            animation: google.maps.Animation.DROP,
             zIndex: 30
+            
+        });
+        
+        // Armazenar o marcador para poder removê-lo mais tarde
+        cityEventMarkers.push(marker);
+        
+        // Adicionar tooltip/info window ao marcador com informações do evento
+        const infoContent = `
+            <div class="event-info">
+                <h5>${event.name}</h5>
+                <p><strong>Data:</strong> ${formatDate(event.date)}</p>
+                <p><strong>Cidade:</strong> ${event.cityName}</p>
+                <p><strong>Tipo:</strong> ${event.isHoliday ? 'Feriado' : 'Evento'}</p>
+                ${event.description ? `<p>${event.description}</p>` : ''}
+            </div>
+        `;
+        
+        const infoWindow = new google.maps.InfoWindow({
+            content: infoContent
+        });
+        
+        marker.addListener('click', () => {
+            // Fechar qualquer info window aberta
+            if (activeInfoWindow) {
+                activeInfoWindow.close();
+            }
+            infoWindow.open(map, marker);
+            activeInfoWindow = infoWindow;
         });
         
         // Conteúdo do tooltip
