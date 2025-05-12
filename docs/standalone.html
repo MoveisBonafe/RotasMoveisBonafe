@@ -484,8 +484,8 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="route-name">Nome da rota:</label>
-                        <input type="text" id="route-name" class="form-control" placeholder="Ex: Entrega Região Sul">
+                        <label for="report-route-name">Nome da rota:</label>
+                        <input type="text" id="report-route-name" class="form-control" placeholder="Ex: Entrega Região Sul">
                     </div>
                     
                     <button id="save-route" class="btn btn-outline-success mt-2" disabled>Salvar Rota</button>
@@ -2181,8 +2181,8 @@
                 </div>
                 
                 <div class="form-group mt-3">
-                    <label for="route-name">Nome da rota:</label>
-                    <input type="text" id="route-name" class="form-control" placeholder="Ex: Entrega Região Sul">
+                    <label for="report-route-name">Nome da rota:</label>
+                    <input type="text" id="report-route-name" class="form-control" placeholder="Ex: Entrega Região Sul">
                 </div>
             `;
             
@@ -2220,7 +2220,7 @@
 
     // Salvar a rota
     function saveRoute() {
-        const routeName = document.getElementById('route-name').value;
+        const routeName = document.getElementById('report-route-name').value;
         if (!routeName) {
             alert("Por favor, dê um nome para a rota antes de salvar.");
             return;
