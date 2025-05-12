@@ -1310,7 +1310,17 @@
     }
     
     // Traçar a rota no mapa
-    function drawRouteOnMap(pathLocations, vehicleType) {
+    function drawRouteOnMap(pathIds, vehicleType) {
+        // Converter ids para objetos de localização
+        const pathLocations = pathIds.map(id => locations.find(loc => loc.id === id));
+        
+        // Verificar se todos os ids foram encontrados
+        if (pathLocations.some(loc => !loc)) {
+            console.error("Algumas localizações não foram encontradas:", pathIds);
+            alert("Erro ao traçar rota: algumas localizações não foram encontradas");
+            return;
+        }
+        
         // Verificar e destacar pontos na mesma cidade da origem
         const origin = locations.find(loc => loc.isOrigin);
         
@@ -1413,12 +1423,21 @@
     }
 
     // Mostrar pontos de interesse ao longo da rota
-    function showPointsOfInterestOnRoute(pathLocations) {
+    function showPointsOfInterestOnRoute(pathIds) {
         // Limpar marcadores anteriores
         clearPOIMarkers();
         
         // Se a opção de mostrar POIs estiver desativada, retornar
         if (!showPOIs) return;
+        
+        // Converter IDs para objetos de localização
+        const pathLocations = pathIds.map(id => locations.find(loc => loc.id === id));
+        
+        // Verificar se todos os IDs foram encontrados
+        if (pathLocations.some(loc => !loc)) {
+            console.error("Algumas localizações não foram encontradas:", pathIds);
+            return;
+        }
         
         // Extrair nomes das cidades na rota
         const citiesOnRoute = pathLocations.map(loc => {
