@@ -1,39 +1,56 @@
 # Otimizador de Rotas - Versão GitHub Pages
 
-Este diretório contém a versão do Otimizador de Rotas otimizada para hospedagem no GitHub Pages.
+Este diretório contém a versão otimizada do Otimizador de Rotas para deploy no GitHub Pages.
 
-## Arquivos principais
+## Conteúdo
 
-- `index.html` - Página principal com menu de seleção de versões
-- `minimal-map.html` - Versão simplificada com apenas o mapa básico e ponto de origem
-- `github_pages_map.html` - Versão completa com todas as funcionalidades
-- `maps_test.html` - Arquivo de teste para diagnóstico da API do Google Maps
+1. `index.html` - Página inicial com navegação para as versões
+2. `standalone.html` - Versão completa da aplicação sem dependências externas
+3. `test.html` - Versão simplificada para teste do Google Maps API
 
-## Solucionando problemas com o GitHub Pages
+## Instruções para teste local
 
-Devido às restrições do GitHub Pages ao trabalhar com APIs externas como o Google Maps, criamos diferentes versões do aplicativo para garantir compatibilidade:
+### Opção 1: Servidor Python
 
-1. A versão `minimal-map.html` é altamente simplificada e possui apenas o carregamento do mapa básico, o que a torna mais robusta para ambientes com restrições.
+```bash
+cd docs
+python3 -m http.server 8000
+```
 
-2. A versão `github_pages_map.html` contém a funcionalidade completa, mas foi adaptada especificamente para o GitHub Pages com:
-   - Carregamento otimizado de scripts
-   - Tratamento robusto de erros
-   - Feedback visual do status de carregamento
+Acesse em seu navegador: `http://localhost:8000`
 
-Se o mapa não estiver carregando em nenhuma versão, pode ser devido a:
-- Restrições da chave da API do Google Maps
-- Bloqueio de acesso à API por parte do navegador
-- Configurações de segurança específicas do GitHub Pages
+### Opção 2: Abrir arquivos diretamente
 
-## Dicas para desenvolvedores
+Você também pode abrir os arquivos HTML diretamente no navegador:
 
-Ao modificar este código:
-- Mantenha o carregamento assíncrono dos scripts (async, defer)
-- Sempre inclua tratamento de erros para APIs externas
-- Use o arquivo `maps_test.html` para testar mudanças no carregamento do mapa antes de implementá-las
+```
+docs/index.html
+docs/standalone.html
+docs/test.html
+```
 
-## Recursos utilizados
+## Recursos da versão standalone
 
-- Google Maps JavaScript API
-- Google Places API
-- Bootstrap 5.3.0
+- Implementação completa de todas as funcionalidades sem dependências externas
+- Interface idêntica à versão React, mas sem necessidade de servidor
+- Suporte total a:
+  - Adição de múltiplos destinos manualmente ou via arquivo
+  - Cálculo de rota otimizada (algoritmo do caixeiro viajante)
+  - Visualização de eventos e restrições em cidades
+  - Relatório detalhado com custos e tempos
+  - Marcadores sequenciais e animação da rota
+  - Street View (Pegman) funcional
+  - Zoom com scroll sem precionar CTRL
+
+## Recursos do mapa
+
+- Marcadores numerados para sequência da rota
+- Pedágios e balanças de pesagem ao longo da rota
+- Eventos em cidades destacados com ícones coloridos
+- Relatório detalhado com custos estimados
+
+## Notas técnicas
+
+- A versão standalone utiliza JavaScript puro e Google Maps API
+- Dados de exemplo estão incorporados diretamente no HTML
+- A página não requer conexão com banco de dados

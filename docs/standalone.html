@@ -26,13 +26,13 @@
         }
         .sidebar {
             width: 380px;
-            min-width: 380px;
             height: 100%;
             background-color: #f8f9fa;
             padding: 20px;
             overflow-y: auto;
             z-index: 10;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
         }
         .map-container {
             flex: 1;
@@ -42,6 +42,18 @@
         #map {
             height: 100%;
             width: 100%;
+        }
+        .toggle-sidebar {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 100;
+            background: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            cursor: pointer;
         }
         .form-group {
             margin-bottom: 15px;
@@ -133,19 +145,33 @@
             display: inline-block;
             margin-bottom: 10px;
         }
+        /* Botão para fechar o sidebar em telas pequenas */
+        .sidebar-close {
+            display: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        /* Estilo quando o sidebar está fechado */
+        .sidebar-hidden {
+            transform: translateX(-100%);
+        }
         /* Responsividade */
         @media (max-width: 768px) {
             .sidebar {
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 1000;
                 width: 100%;
-                min-width: 320px;
-                max-width: 100%;
+                max-width: 320px;
             }
-            .app-container {
-                flex-direction: column;
-                height: auto;
+            .sidebar-close {
+                display: block;
             }
-            .map-container {
-                height: 60vh;
+            .toggle-sidebar {
+                display: block;
             }
         }
         /* Estilo para os marcadores de pontos de interesse */
@@ -367,6 +393,7 @@
         <!-- Sidebar para controles e informações -->
         <div class="sidebar" id="sidebar">
             <h2 class="mb-4">Otimizador de Rotas</h2>
+            <button type="button" class="btn-close sidebar-close" aria-label="Close"></button>
             
             <!-- Container de abas -->
             <div class="tab-container">
@@ -378,15 +405,6 @@
                 
                 <!-- Aba de Locais -->
                 <div class="tab-content active" id="locations-tab">
-                    <!-- Filtro de datas -->
-                    <div class="form-group">
-                        <label>Filtrar eventos por data:</label>
-                        <div class="date-range-container">
-                            <input type="date" id="locations-start-date" class="form-control">
-                            <input type="date" id="locations-end-date" class="form-control">
-                        </div>
-                    </div>
-                    
                     <!-- Origem fixa -->
                     <div class="form-group">
                         <label for="origin">Origem:</label>
@@ -402,34 +420,22 @@
                     <!-- Opções de veículo -->
                     <div class="form-group">
                         <label>Tipo de veículo:</label>
-                        <div id="vehicle-options" style="display: flex; flex-wrap: wrap; gap: 5px;">
-                            <div class="vehicle-option" style="flex: 1; min-width: 80px; max-width: 80px; text-align: center; padding: 5px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer;">
-                                <img src="https://cdn-icons-png.flaticon.com/128/2432/2432774.png" style="width: 32px; height: 32px; margin-bottom: 3px;">
-                                <div>
-                                    <input type="radio" name="vehicle-type" id="car" value="car">
-                                    <label for="car">Carro</label>
-                                </div>
+                        <div id="vehicle-options">
+                            <div class="truck-type">
+                                <input type="radio" name="vehicle-type" id="truck1" value="truck1" checked>
+                                <label for="truck1">Caminhão 1 eixo</label>
                             </div>
-                            <div class="vehicle-option" style="flex: 1; min-width: 80px; max-width: 80px; text-align: center; padding: 5px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer;">
-                                <img src="https://cdn-icons-png.flaticon.com/128/2906/2906910.png" style="width: 32px; height: 32px; margin-bottom: 3px;">
-                                <div>
-                                    <input type="radio" name="vehicle-type" id="motorcycle" value="motorcycle">
-                                    <label for="motorcycle">Moto</label>
-                                </div>
+                            <div class="truck-type">
+                                <input type="radio" name="vehicle-type" id="truck2" value="truck2">
+                                <label for="truck2">Caminhão 2 eixos</label>
                             </div>
-                            <div class="vehicle-option" style="flex: 1; min-width: 80px; max-width: 80px; text-align: center; padding: 5px; border: 2px solid #1976D2; border-radius: 8px; cursor: pointer; background-color: #e3f2fd;">
-                                <img src="https://cdn-icons-png.flaticon.com/128/3774/3774289.png" style="width: 32px; height: 32px; margin-bottom: 3px;">
-                                <div>
-                                    <input type="radio" name="vehicle-type" id="truck1" value="truck1" checked>
-                                    <label for="truck1">1 eixo</label>
-                                </div>
+                            <div class="truck-type">
+                                <input type="radio" name="vehicle-type" id="truck3" value="truck3">
+                                <label for="truck3">Caminhão 3 eixos</label>
                             </div>
-                            <div class="vehicle-option" style="flex: 1; min-width: 80px; max-width: 80px; text-align: center; padding: 5px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer;">
-                                <img src="https://cdn-icons-png.flaticon.com/128/819/819489.png" style="width: 32px; height: 32px; margin-bottom: 3px;">
-                                <div>
-                                    <input type="radio" name="vehicle-type" id="truck2" value="truck2">
-                                    <label for="truck2">2 eixos</label>
-                                </div>
+                            <div class="truck-type">
+                                <input type="radio" name="vehicle-type" id="truck5" value="truck5">
+                                <label for="truck5">Caminhão 5 eixos</label>
                             </div>
                         </div>
                     </div>
@@ -460,8 +466,8 @@
                     <div class="form-group">
                         <label>Filtrar eventos por data:</label>
                         <div class="date-range-container">
-                            <input type="date" id="events-start-date" class="form-control">
-                            <input type="date" id="events-end-date" class="form-control">
+                            <input type="date" id="start-date" class="form-control">
+                            <input type="date" id="end-date" class="form-control">
                         </div>
                         <button id="filter-events" class="btn btn-outline-primary btn-sm mt-2">Filtrar</button>
                     </div>
@@ -496,6 +502,7 @@
         
         <!-- Container do mapa -->
         <div class="map-container">
+            <button class="toggle-sidebar" id="toggle-sidebar">☰</button>
             <div id="map"></div>
             
             <!-- Controles do mapa -->
@@ -515,25 +522,8 @@
     </div>
 
     <!-- Script do Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Função para lidar com erros no carregamento da API do Google Maps
-        function handleGoogleMapsError() {
-            console.error("Erro ao carregar Google Maps API");
-            document.getElementById('map').innerHTML = 
-                '<div style="text-align: center; padding: 20px; color: red; background-color: #ffe6e6; border-radius: 5px;">' +
-                '<h3>Erro ao carregar o Google Maps</h3>' +
-                '<p>Verifique sua conexão com a internet ou recarregue a página.</p>' +
-                '<button class="btn btn-danger mt-3" onclick="window.location.reload()">Recarregar Página</button>' +
-                '</div>';
-        }
-    </script>
-    <script 
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places,geometry&callback=initMapCallback" 
-        async 
-        defer
-        onerror="handleGoogleMapsError()">
-    </script>
     
     <script>
     // Dados de amostra para a aplicação standalone
@@ -571,22 +561,18 @@
         
         // Eventos de cidades
         cityEvents: [
-            { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", date: "2025-05-17", isHoliday: true, description: "Feriado municipal do aniversário de Dois Córregos", restrictionLevel: "low" },
-            { id: 2, cityName: "Jaú", name: "Festa do Rodeio", date: "2025-06-10", isHoliday: false, description: "Evento com grande circulação de veículos", restrictionLevel: "medium" },
-            { id: 3, cityName: "Botucatu", name: "Festival de Inverno", date: "2025-07-15", isHoliday: false, description: "Evento cultural e gastronômico", restrictionLevel: "low" },
-            { id: 4, cityName: "Bauru", name: "Exposição Agropecuária", date: "2025-08-05", isHoliday: false, description: "Feira agropecuária com shows", restrictionLevel: "high" },
-            { id: 5, cityName: "Dois Córregos", name: "Dia do Trabalhador", date: "2025-05-01", isHoliday: true, description: "Feriado nacional", restrictionLevel: "low" },
-            { id: 6, cityName: "Brotas", name: "Corpus Christi", date: "2025-06-19", isHoliday: true, description: "Feriado religioso", restrictionLevel: "medium" },
-            { id: 7, cityName: "Brotas", name: "Festa de São João", date: "2025-06-24", isHoliday: false, description: "Festa tradicional", restrictionLevel: "low" }
+            { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2023-05-24", endDate: "2023-05-24", isHoliday: true, description: "Feriado municipal do aniversário de Dois Córregos", restrictionLevel: "low" },
+            { id: 2, cityName: "Jaú", name: "Festa do Rodeio", startDate: "2023-06-10", endDate: "2023-06-20", isHoliday: false, description: "Evento com grande circulação de veículos", restrictionLevel: "medium" },
+            { id: 3, cityName: "Botucatu", name: "Festival de Inverno", startDate: "2023-07-15", endDate: "2023-07-30", isHoliday: false, description: "Evento cultural e gastronômico", restrictionLevel: "low" },
+            { id: 4, cityName: "Bauru", name: "Exposição Agropecuária", startDate: "2023-08-05", endDate: "2023-08-15", isHoliday: false, description: "Feira agropecuária com shows", restrictionLevel: "high" }
         ],
         
         // Restrições para caminhões
         truckRestrictions: [
-            { id: 1, cityName: "Dois Córregos", restriction: "partial", startTime: "07:00", endTime: "09:00", description: "Restrição parcial para caminhões de grande porte no centro", applicableVehicles: "truck5" },
-            { id: 2, cityName: "Jaú", restriction: "partial", startTime: "17:00", endTime: "20:00", description: "Restrição parcial para todos os caminhões no centro", applicableVehicles: "truck1,truck2,truck3,truck5" },
-            { id: 3, cityName: "Botucatu", restriction: "total", startTime: "08:00", endTime: "18:00", description: "Proibição total para caminhões na área central", applicableVehicles: "truck1,truck2,truck3,truck5" },
-            { id: 4, cityName: "Bauru", restriction: "rodizio", startTime: "07:00", endTime: "22:00", description: "Sistema de rodízio para todos os caminhões", applicableVehicles: "truck1,truck2,truck3,truck5" },
-            { id: 5, cityName: "São Paulo", restriction: "rodizio", startTime: "07:00", endTime: "10:00", description: "Rodízio municipal durante horário de pico", applicableVehicles: "truck1,truck2,truck3,truck5" }
+            { id: 1, cityName: "Dois Córregos", dayType: "weekday", startTime: "07:00", endTime: "09:00", restrictionType: "partial", description: "Restrição parcial para caminhões de grande porte no centro", affectedVehicles: ["truck5", "truck6", "truck7", "truck9"] },
+            { id: 2, cityName: "Jaú", dayType: "weekday", startTime: "17:00", endTime: "20:00", restrictionType: "partial", description: "Restrição parcial para todos os caminhões no centro", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] },
+            { id: 3, cityName: "Botucatu", dayType: "weekend", startTime: "08:00", endTime: "18:00", restrictionType: "total", description: "Proibição total para caminhões na área central", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] },
+            { id: 4, cityName: "Bauru", dayType: "all", startTime: "07:00", endTime: "22:00", restrictionType: "rodizio", description: "Sistema de rodízio para todos os caminhões", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] }
         ]
     };
 
@@ -598,8 +584,6 @@
     let markers = [];
     let poiMarkers = [];
     let eventMarkers = [];
-    let cityEventMarkers = [];
-    let restrictionMarkers = [];
     let locationId = 2; // Começa em 2 porque 1 é reservado para a origem
     let locations = [mockData.origin];
     let activeInfoWindow = null;
@@ -608,86 +592,24 @@
     let showPOIs = true;
     let customTooltip = null;
 
-    // Verificar se a API do Google Maps carregou
-    function isGoogleMapsLoaded() {
-        return typeof google !== 'undefined' && google.maps;
-    }
-    
     // Inicialização
-    // Função global para ser chamada quando o Google Maps API estiver carregado
-    window.initMapCallback = function() {
-        console.log("Google Maps API carregada");
+    document.addEventListener("DOMContentLoaded", function() {
         initMap();
         initAutocomplete();
         initTabNavigation();
         initEventListeners();
-    };
-    
-    document.addEventListener("DOMContentLoaded", function() {
-        console.log("Documento carregado, verificando Google Maps API...");
         
-        // Tentar inicializar ou configurar para tentar novamente mais tarde
-        if (typeof google !== 'undefined' && google.maps) {
-            console.log("Google Maps API já está carregada");
-            window.initMapCallback();
-        } else {
-            console.log("Google Maps API não carregada, configurando para tentar novamente...");
-            const maxRetries = 10;
-            let retries = 0;
-            
-            function tryInit() {
-                if (typeof google !== 'undefined' && google.maps) {
-                    console.log("Google Maps API carregada com sucesso após tentativa " + retries);
-                    window.initMapCallback();
-                } else {
-                    retries++;
-                    if (retries < maxRetries) {
-                        console.log("Tentando novamente... Tentativa " + retries);
-                        setTimeout(tryInit, 1000);
-                    } else {
-                        console.error("Não foi possível carregar a API do Google Maps após " + maxRetries + " tentativas");
-                        alert("Não foi possível carregar o mapa. Por favor, recarregue a página.");
-                    }
-                }
-            }
-            
-            setTimeout(tryInit, 1000);
-        }
+        // Exibir a origem no mapa
+        addMarkerForLocation(mockData.origin, 0);
         
         // Inicializar datas para o filtro de eventos
         const today = new Date();
         const nextMonth = new Date();
         nextMonth.setMonth(today.getMonth() + 1);
         
-        document.getElementById('locations-start-date').valueAsDate = today;
-        document.getElementById('locations-end-date').valueAsDate = nextMonth;
-        document.getElementById('events-start-date').valueAsDate = today;
-        document.getElementById('events-end-date').valueAsDate = nextMonth;
-        
-        // Adicionar eventos para selecionar o tipo de veículo nos cards
-        setupVehicleOptions();
+        document.getElementById('start-date').valueAsDate = today;
+        document.getElementById('end-date').valueAsDate = nextMonth;
     });
-    
-    // Configurar as opções de veículo
-    function setupVehicleOptions() {
-        document.querySelectorAll('.vehicle-option').forEach(option => {
-            option.addEventListener('click', function() {
-                // Selecionar o radio button dentro deste card
-                const radio = this.querySelector('input[type="radio"]');
-                radio.checked = true;
-                
-                // Atualizar aparência de todos os cards
-                document.querySelectorAll('.vehicle-option').forEach(opt => {
-                    opt.style.borderColor = '#e0e0e0';
-                    opt.style.backgroundColor = '#ffffff';
-                });
-                
-                // Destacar o card selecionado
-                this.style.borderColor = '#1976D2';
-                this.style.backgroundColor = '#e3f2fd';
-            });
-        });
-    }
 
     // Inicializa o mapa
     function initMap() {
@@ -715,9 +637,6 @@
         
         // Criar o tooltip personalizado
         createCustomTooltip();
-        
-        // Exibir a origem no mapa
-        addMarkerForLocation(mockData.origin, 0);
     }
 
     // Inicializa o autocomplete
@@ -725,129 +644,40 @@
         const input = document.getElementById('location-search');
         const options = {
             types: ['geocode'],
-            componentRestrictions: { country: 'br' },
-            fields: ['address_components', 'formatted_address', 'geometry', 'name', 'place_id']
+            componentRestrictions: { country: 'br' }
         };
         
-        try {
-            // Criar o autocomplete
-            autocomplete = new google.maps.places.Autocomplete(input, options);
-            
-            // Adicionar um contêiner para as sugestões de autocomplete
-            const autoCompleteContainer = document.createElement('div');
-            autoCompleteContainer.id = 'autocomplete-suggestions';
-            autoCompleteContainer.className = 'autocomplete-suggestions';
-            autoCompleteContainer.style.display = 'none';
-            autoCompleteContainer.style.position = 'absolute';
-            autoCompleteContainer.style.zIndex = '1000';
-            autoCompleteContainer.style.background = '#fff';
-            autoCompleteContainer.style.width = '100%';
-            autoCompleteContainer.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-            autoCompleteContainer.style.borderRadius = '4px';
-            autoCompleteContainer.style.maxHeight = '200px';
-            autoCompleteContainer.style.overflowY = 'auto';
-            input.parentNode.style.position = 'relative';
-            input.parentNode.appendChild(autoCompleteContainer);
-            
-            // Quando um local é selecionado no autocomplete
-            autocomplete.addListener('place_changed', function() {
-                const place = autocomplete.getPlace();
-                console.log("Local selecionado:", place);
-                
-                if (!place.geometry) {
-                    alert("Não foi possível encontrar o endereço selecionado.");
-                    return;
-                }
-                
-                // Adicionar o local à lista
-                const newLocation = {
-                    id: locationId++,
-                    name: place.name || "Local",
-                    address: place.formatted_address,
-                    zipCode: getZipCodeFromPlace(place),
-                    latitude: place.geometry.location.lat(),
-                    longitude: place.geometry.location.lng(),
-                    isOrigin: false
-                };
-                
-                locations.push(newLocation);
-                addMarkerForLocation(newLocation, locations.length - 1);
-                updateLocationsList();
-                
-                // Limpar o campo de busca
-                input.value = '';
-                autoCompleteContainer.style.display = 'none';
-            });
-            
-            // Implementar busca manual se o autocomplete falhar
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    const address = input.value.trim();
-                    if (address && !autocomplete.getPlace) {
-                        // Se pressionou Enter mas não selecionou um item do autocomplete
-                        geocodeAddress(address);
-                    }
-                }
-            });
-            
-            console.log("Google Places Autocomplete inicializado com sucesso");
-        } catch (error) {
-            console.error("Erro ao inicializar o autocomplete:", error);
-            
-            // Implementar fallback para busca manual
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    const address = input.value.trim();
-                    if (address) {
-                        geocodeAddress(address);
-                    }
-                }
-            });
-        }
-    }
-    
-    // Função para geocodificar um endereço manualmente (fallback)
-    function geocodeAddress(address) {
-        console.log("Geocodificando endereço:", address);
-        const geocoder = new google.maps.Geocoder();
+        autocomplete = new google.maps.places.Autocomplete(input, options);
         
-        geocoder.geocode({ 'address': address + ', Brasil' }, function(results, status) {
-            if (status === google.maps.GeocoderStatus.OK && results[0]) {
-                const result = results[0];
-                
-                // Adicionar o local à lista
-                const newLocation = {
-                    id: locationId++,
-                    name: address.split(',')[0], // Usar a primeira parte do endereço como nome
-                    address: result.formatted_address,
-                    zipCode: getZipCodeFromResult(result),
-                    latitude: result.geometry.location.lat(),
-                    longitude: result.geometry.location.lng(),
-                    isOrigin: false
-                };
-                
-                locations.push(newLocation);
-                addMarkerForLocation(newLocation, locations.length - 1);
-                updateLocationsList();
-                
-                // Limpar o campo de busca
-                document.getElementById('location-search').value = '';
-            } else {
-                alert("Não foi possível encontrar o endereço: " + address);
+        // Quando um local é selecionado no autocomplete
+        autocomplete.addListener('place_changed', function() {
+            const place = autocomplete.getPlace();
+            
+            if (!place.geometry) {
+                alert("Não foi possível encontrar o endereço selecionado.");
+                return;
             }
+            
+            // Adicionar o local à lista
+            const newLocation = {
+                id: locationId++,
+                name: place.name,
+                address: place.formatted_address,
+                zipCode: getZipCodeFromPlace(place),
+                latitude: place.geometry.location.lat(),
+                longitude: place.geometry.location.lng(),
+                isOrigin: false
+            };
+            
+            locations.push(newLocation);
+            
+            // Adicionar marcador e atualizar a lista
+            addMarkerForLocation(newLocation, locations.length - 1);
+            updateLocationsList();
+            
+            // Limpar o campo de busca
+            input.value = '';
         });
-    }
-    
-    // Função para extrair CEP de um resultado do geocoder
-    function getZipCodeFromResult(result) {
-        if (!result.address_components) return "";
-        
-        for (const component of result.address_components) {
-            if (component.types.includes('postal_code')) {
-                return component.long_name;
-            }
-        }
-        return "";
     }
 
     // Inicializa a navegação por abas
@@ -872,28 +702,24 @@
 
     // Configura todos os event listeners
     function initEventListeners() {
+        // Toggle para mostrar/esconder a sidebar
+        document.getElementById('toggle-sidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('sidebar-hidden');
+        });
+        
+        // Botão para fechar a sidebar em telas pequenas
+        document.querySelector('.sidebar-close').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.add('sidebar-hidden');
+        });
+        
         // Upload de arquivo
         document.getElementById('file-upload').addEventListener('change', handleFileUpload);
         
         // Botão para otimizar rota
         document.getElementById('optimize-route').addEventListener('click', optimizeRoute);
         
-        // Usar o filtro de datas para eventos (na aba locais)
-        document.getElementById('start-date').addEventListener('change', function() {
-            const startDate = document.getElementById('start-date').value;
-            const endDate = document.getElementById('end-date').value;
-            if (startDate && endDate) {
-                filterEventsByDate(startDate, endDate);
-            }
-        });
-        
-        document.getElementById('end-date').addEventListener('change', function() {
-            const startDate = document.getElementById('start-date').value;
-            const endDate = document.getElementById('end-date').value;
-            if (startDate && endDate) {
-                filterEventsByDate(startDate, endDate);
-            }
-        });
+        // Filtrar eventos por data
+        document.getElementById('filter-events').addEventListener('click', filterEventsByDate);
         
         // Botões de controle do mapa
         document.getElementById('zoom-to-fit').addEventListener('click', zoomToFitAllMarkers);
@@ -919,83 +745,37 @@
 
     // Função para processar o arquivo de CEPs
     function parseCEPFile(content) {
-        console.log("Processando arquivo:", content);
         const lines = content.split('\n');
         let newLocations = [];
-        let pendingGeocode = 0;
         
         for (const line of lines) {
             if (!line.trim()) continue;
             
-            const parts = line.split(',');
-            if (parts.length < 2) continue;
-            
-            const cep = parts[0];
-            // Se houver mais de um campo após a vírgula, junta-os como nome
-            const name = parts.slice(1).join(',');
+            const [cep, name] = line.split(',');
             
             if (cep && name) {
-                pendingGeocode++;
+                // Gerar coordenadas na região de São Paulo
+                const randomLat = -22.3 - Math.random() * 1.5;
+                const randomLng = -48.3 - Math.random() * 1.5;
                 
-                // Tentar geocodificar o CEP usando o Geocoder do Google Maps
-                geocodeCEP(cep.trim(), name.trim(), (geocoded) => {
-                    pendingGeocode--;
-                    
-                    if (geocoded) {
-                        console.log("CEP geocodificado:", geocoded);
-                        const newLocation = {
-                            id: locationId++,
-                            name: name.trim(),
-                            address: `${cep.trim()}, ${name.trim()}, Brasil`,
-                            zipCode: cep.trim(),
-                            latitude: geocoded.lat,
-                            longitude: geocoded.lng,
-                            isOrigin: false
-                        };
-                        
-                        locations.push(newLocation);
-                        newLocations.push(newLocation);
-                        addMarkerForLocation(newLocation, locations.length - 1);
-                        
-                        // Se esse for o último, mostrar alerta
-                        if (pendingGeocode === 0) {
-                            finishImport(newLocations.length);
-                        }
-                    } else {
-                        // Se a geocodificação falhar, usar coordenadas próximas à origem
-                        const offsetLat = (Math.random() - 0.5) * 0.5;
-                        const offsetLng = (Math.random() - 0.5) * 0.5;
-                        
-                        const newLocation = {
-                            id: locationId++,
-                            name: name.trim(),
-                            address: `${cep.trim()}, ${name.trim()}, Brasil`,
-                            zipCode: cep.trim(), 
-                            latitude: -22.3673 + offsetLat,
-                            longitude: -48.3822 + offsetLng,
-                            isOrigin: false
-                        };
-                        
-                        locations.push(newLocation);
-                        newLocations.push(newLocation);
-                        addMarkerForLocation(newLocation, locations.length - 1);
-                        
-                        if (pendingGeocode === 0) {
-                            finishImport(newLocations.length);
-                        }
-                    }
+                newLocations.push({
+                    id: locationId++,
+                    name: name.trim(),
+                    address: `${name.trim()}, SP, Brasil`,
+                    zipCode: cep.trim(),
+                    latitude: randomLat,
+                    longitude: randomLng,
+                    isOrigin: false
                 });
             }
         }
         
-        // Se não houver nenhuma linha válida no arquivo
-        if (pendingGeocode === 0) {
-            alert("Nenhum local encontrado no arquivo. O formato deve ser CEP,Nome");
-        }
-    }
-    
-    // Função para finalizar a importação
-    function finishImport(count) {
+        // Para cada novo local, adicionar à lista e ao mapa
+        newLocations.forEach((location, index) => {
+            locations.push(location);
+            addMarkerForLocation(location, locations.length - 1);
+        });
+        
         // Atualizar a lista de locais
         updateLocationsList();
         
@@ -1006,27 +786,7 @@
         zoomToFitAllMarkers();
         
         // Feedback para o usuário
-        alert(`${count} locais importados com sucesso!`);
-    }
-    
-    // Função para geocodificar CEP
-    function geocodeCEP(cep, name, callback) {
-        const geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ 
-            'address': cep + ', Brasil'
-        }, function(results, status) {
-            if (status === google.maps.GeocoderStatus.OK && results[0]) {
-                // Se encontrou, retorna as coordenadas
-                const location = results[0].geometry.location;
-                callback({ 
-                    lat: location.lat(), 
-                    lng: location.lng() 
-                });
-            } else {
-                console.warn("Não foi possível geocodificar o CEP:", cep, "- Status:", status);
-                callback(null);
-            }
-        });
+        alert(`${newLocations.length} locais importados com sucesso!`);
     }
 
     // Função para extrair CEP de um objeto Place
@@ -1050,10 +810,7 @@
         const markerColor = index === 0 ? '#FF0000' : '#1976D2';
         
         const marker = new google.maps.Marker({
-            position: { 
-                lat: parseFloat(location.latitude || location.lat), 
-                lng: parseFloat(location.longitude || location.lng) 
-            },
+            position: { lat: location.latitude, lng: location.longitude },
             map: map,
             title: location.name,
             label: {
@@ -1195,17 +952,8 @@
 
     // Limpar marcadores de eventos
     function clearEventMarkers() {
-        // Limpar marcadores de eventos regulares
         eventMarkers.forEach(marker => marker.setMap(null));
         eventMarkers = [];
-        
-        // Limpar também os marcadores de eventos da cidade
-        cityEventMarkers.forEach(marker => marker.setMap(null));
-        cityEventMarkers = [];
-        
-        // Limpar marcadores de restrições
-        restrictionMarkers.forEach(marker => marker.setMap(null));
-        restrictionMarkers = [];
     }
 
     // Otimizar a rota
@@ -1272,21 +1020,18 @@
     function drawRouteOnMap(pathLocations, vehicleType) {
         // Criar waypoints para o serviço de direções
         const waypoints = pathLocations.slice(1, -1).map(location => ({
-            location: new google.maps.LatLng(
-                parseFloat(location.latitude || location.lat), 
-                parseFloat(location.longitude || location.lng)
-            ),
+            location: new google.maps.LatLng(location.latitude, location.longitude),
             stopover: true
         }));
         
         const origin = new google.maps.LatLng(
-            parseFloat(pathLocations[0].latitude || pathLocations[0].lat),
-            parseFloat(pathLocations[0].longitude || pathLocations[0].lng)
+            pathLocations[0].latitude,
+            pathLocations[0].longitude
         );
         
         const destination = new google.maps.LatLng(
-            parseFloat(pathLocations[pathLocations.length - 1].latitude || pathLocations[pathLocations.length - 1].lat),
-            parseFloat(pathLocations[pathLocations.length - 1].longitude || pathLocations[pathLocations.length - 1].lng)
+            pathLocations[pathLocations.length - 1].latitude,
+            pathLocations[pathLocations.length - 1].longitude
         );
         
         const request = {
@@ -1308,10 +1053,7 @@
                 // Ajustar o mapa para mostrar toda a rota
                 const bounds = new google.maps.LatLngBounds();
                 pathLocations.forEach(location => {
-                    bounds.extend(new google.maps.LatLng(
-                        parseFloat(location.latitude || location.lat), 
-                        parseFloat(location.longitude || location.lng)
-                    ));
+                    bounds.extend(new google.maps.LatLng(location.latitude, location.longitude));
                 });
                 map.fitBounds(bounds);
             } else {
@@ -1445,15 +1187,10 @@
     }
 
     // Mostrar eventos para as cidades na rota
-    function showEventsForCitiesOnRoute(pathLocations, filteredEvents = null) {
-        // Limpar a lista de eventos e remover marcadores antigos
-        cityEventMarkers.forEach(marker => marker.setMap(null));
-        cityEventMarkers = [];
-        
+    function showEventsForCitiesOnRoute(pathLocations) {
+        // Limpar a lista de eventos
         const eventsListContainer = document.getElementById('events-list');
-        if (eventsListContainer) {
-            eventsListContainer.innerHTML = '';
-        }
+        eventsListContainer.innerHTML = '';
         
         // Extrair nomes das cidades na rota
         const citiesOnRoute = pathLocations.map(loc => {
@@ -1461,47 +1198,21 @@
             return parts[0].trim();
         });
         
-        // Usar eventos filtrados passados como parâmetro ou filtrar novamente
-        let eventsToShow = filteredEvents;
+        // Obter datas do filtro
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
         
-        // Se não foram passados eventos filtrados, criar filtro agora
-        if (!eventsToShow) {
-            const startDate = document.getElementById('events-start-date').value;
-            const endDate = document.getElementById('events-end-date').value;
-            
-            // Configurar também os campos de data da aba de locais para manter consistência
-            if (startDate) {
-                document.getElementById('locations-start-date').value = startDate;
-            }
-            if (endDate) {
-                document.getElementById('locations-end-date').value = endDate;
-            }
-            
-            eventsToShow = mockData.cityEvents.filter(event => {
-                const eventStartDate = new Date(event.startDate);
-                const eventEndDate = new Date(event.endDate);
-                const filterStart = startDate ? new Date(startDate) : new Date(0);
-                const filterEnd = endDate ? new Date(endDate) : new Date(9999, 11, 31);
-                
-                // Um evento está no período se:
-                // - começa durante o período de filtro, OU
-                // - termina durante o período de filtro, OU
-                // - começa antes e termina depois do período (abrange todo o período)
-                return (eventStartDate >= filterStart && eventStartDate <= filterEnd) || 
-                       (eventEndDate >= filterStart && eventEndDate <= filterEnd) ||
-                       (eventStartDate <= filterStart && eventEndDate >= filterEnd);
-            });
-        }
-        
-        // Filtrar só eventos das cidades na rota
-        const eventsOnRoute = eventsToShow.filter(event => {
+        // Filtrar eventos que estão nas cidades da rota e no período selecionado
+        let eventsOnRoute = mockData.cityEvents.filter(event => {
             const eventCity = event.cityName;
-            return citiesOnRoute.some(city => eventCity.includes(city));
-        });
-        
-        // Adicionar marcadores para eventos na rota e atualizar lista
-        eventsOnRoute.forEach(event => {
-            addCityEventMarker(event);
+            const eventStart = new Date(event.startDate);
+            const eventEnd = new Date(event.endDate);
+            const filterStart = startDate ? new Date(startDate) : new Date(0); // Se não tiver data início, considerar desde sempre
+            const filterEnd = endDate ? new Date(endDate) : new Date(9999, 11, 31); // Se não tiver data fim, considerar até o futuro distante
+            
+            return citiesOnRoute.some(city => eventCity.includes(city)) && 
+                   eventStart <= filterEnd && 
+                   eventEnd >= filterStart;
         });
         
         // Se não houver eventos, mostrar mensagem
@@ -1553,22 +1264,8 @@
         });
     }
 
-    // Função para adicionar marcador de evento na cidade
-    function addCityEventMarker(event) {
-        // Buscar uma cidade correspondente nos locais da rota
-        const city = locations.find(loc => loc.address.includes(event.cityName));
-        if (!city) return; // Se não encontrar a cidade na rota atual, não adiciona o marcador
-        
-        // Obter coordenadas da cidade
-        const position = {
-            lat: parseFloat(city.latitude || city.lat), 
-            lng: parseFloat(city.longitude || city.lng)
-        };
-        
-        // Adicionar pequeno offset para não sobrepor outros marcadores
-        position.lat += Math.random() * 0.01 - 0.005;
-        position.lng += Math.random() * 0.01 - 0.005;
-        
+    // Adicionar marcador para um evento
+    function addEventMarker(event, location) {
         // Seletor de ícone com base no tipo de evento
         const markerColor = event.isHoliday ? '#f44336' : '#ff9800';
         const markerIcon = {
@@ -1582,124 +1279,14 @@
         
         // Criar o marcador
         const marker = new google.maps.Marker({
-            position: position,
+            position: { lat: location.latitude, lng: location.longitude },
             map: map,
-            icon: markerIcon,
             title: event.name,
-            animation: google.maps.Animation.DROP,
-            zIndex: 30
-            
-        });
-        
-        // Armazenar o marcador para poder removê-lo mais tarde
-        cityEventMarkers.push(marker);
-        
-        // Adicionar tooltip/info window ao marcador com informações do evento
-        const infoContent = `
-            <div class="event-info">
-                <h5>${event.name}</h5>
-                <p><strong>Data:</strong> ${formatDate(event.date)}</p>
-                <p><strong>Cidade:</strong> ${event.cityName}</p>
-                <p><strong>Tipo:</strong> ${event.isHoliday ? 'Feriado' : 'Evento'}</p>
-                ${event.description ? `<p>${event.description}</p>` : ''}
-            </div>
-        `;
-        
-        const infoWindow = new google.maps.InfoWindow({
-            content: infoContent
-        });
-        
-        marker.addListener('click', () => {
-            // Fechar qualquer info window aberta
-            if (activeInfoWindow) {
-                activeInfoWindow.close();
-            }
-            infoWindow.open(map, marker);
-            activeInfoWindow = infoWindow;
-        });
-        
-        }
-    
-    // Função para formatar datas para exibição no padrão brasileiro
-    function formatDate(dateStr) {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('pt-BR');
-    }
-    
-    // Função para adicionar marcador de restrição no mapa
-    function addRestrictionMarker(restriction, citiesOnRoute) {
-        // Buscar uma cidade correspondente nos locais da rota
-        const city = locations.find(loc => loc.address.includes(restriction.cityName));
-        if (!city) return; // Se não encontrar a cidade na rota atual, não adiciona o marcador
-        
-        // Obter coordenadas da cidade
-        const position = {
-            lat: parseFloat(city.latitude || city.lat), 
-            lng: parseFloat(city.longitude || city.lng)
-        };
-        
-        // Adicionar pequeno offset para não sobrepor outros marcadores
-        position.lat += Math.random() * 0.008 - 0.004;
-        position.lng += Math.random() * 0.008 - 0.004;
-        
-        // Seletor de ícone com base no tipo de restrição
-        let markerColor = '#e91e63'; // rosa para restrição padrão
-        
-        if (restriction.restriction.toLowerCase().includes('proibido')) {
-            markerColor = '#d32f2f'; // vermelho para proibição
-        } else if (restriction.restriction.toLowerCase().includes('velocidade')) {
-            markerColor = '#ff9800'; // laranja para limite de velocidade
-        }
-        
-        const markerIcon = {
-            path: google.maps.SymbolPath.CIRCLE,
-            fillColor: markerColor,
-            fillOpacity: 0.8,
-            strokeWeight: 2,
-            strokeColor: '#000',
-            scale: 9
-        };
-        
-        // Criar o marcador
-        const marker = new google.maps.Marker({
-            position: position,
-            map: map,
             icon: markerIcon,
-            title: restriction.description || restriction.restriction,
-            animation: google.maps.Animation.DROP,
-            zIndex: 35
+            zIndex: 30
         });
         
-        // Armazenar o marcador para poder removê-lo mais tarde
-        restrictionMarkers.push(marker);
-        
-        // Adicionar tooltip/info window ao marcador com informações da restrição
-        const infoContent = `
-            <div class="restriction-info">
-                <h5>${restriction.cityName}</h5>
-                <p><strong>Restrição:</strong> ${restriction.restriction}</p>
-                ${restriction.description ? `<p>${restriction.description}</p>` : ''}
-                <p><strong>Horário:</strong> ${restriction.startTime && restriction.endTime ? 
-                    `${restriction.startTime} às ${restriction.endTime}` : 'Integral'}</p>
-                <p><strong>Veículos:</strong> ${restriction.applicableVehicles}</p>
-            </div>
-        `;
-        
-        const infoWindow = new google.maps.InfoWindow({
-            content: infoContent
-        });
-        
-        marker.addListener('click', () => {
-            // Fechar qualquer info window aberta
-            if (activeInfoWindow) {
-                activeInfoWindow.close();
-            }
-            infoWindow.open(map, marker);
-            activeInfoWindow = infoWindow;
-        });
-    }
-    
-    // Conteúdo do tooltip
+        // Conteúdo do tooltip
         const tooltipContent = `
             <div class="tooltip-title">${event.name}</div>
             <div>${event.cityName}</div>
@@ -1744,11 +1331,6 @@
             restrictionsListContainer.innerHTML = '<p class="text-muted">Nenhuma restrição encontrada para o tipo de veículo selecionado nas cidades da rota.</p>';
             return;
         }
-        
-        // Adicionar marcadores para restrições na rota
-        restrictionsOnRoute.forEach(restriction => {
-            addRestrictionMarker(restriction, citiesOnRoute);
-        });
         
         // Adicionar cada restrição à lista
         restrictionsOnRoute.forEach(restriction => {
@@ -1838,69 +1420,14 @@
     }
 
     // Filtrar eventos por data
-    function filterEventsByDate(startDateValue, endDateValue) {
-        const startDate = startDateValue || document.getElementById('start-date').value;
-        const endDate = endDateValue || document.getElementById('end-date').value;
-        
-        if (!startDate || !endDate) {
-            console.log('Datas não definidas para filtro de eventos');
-            return;
-        }
-        
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        
-        if (start > end) {
-            alert('A data de início deve ser anterior à data de fim.');
-            return;
-        }
-        
-        // Filtra eventos
-        const filteredEvents = mockData.cityEvents.filter(event => {
-            const eventDate = new Date(event.date);
-            return eventDate >= start && eventDate <= end;
-        });
-        
-        // Atualiza a lista de eventos na aba de eventos
-        updateEventsTab(filteredEvents);
-        
-        // Se tivermos uma rota ativa, atualizar os eventos mostrados no mapa
+    function filterEventsByDate() {
+        // Se tivermos uma rota ativa, atualizar os eventos mostrados
         const activeRoute = directionsRenderer.getDirections();
         if (activeRoute) {
             // Mostrar eventos para as cidades da rota ativa
-            showEventsForCitiesOnRoute(locations, filteredEvents);
+            showEventsForCitiesOnRoute(locations);
         } else {
-            console.log("Calcule uma rota para ver os eventos nas cidades do percurso no mapa.");
-        }
-        
-        console.log(`Filtrado ${filteredEvents.length} eventos entre ${startDate} e ${endDate}`);
-    }
-    
-    // Atualiza a lista de eventos na aba de eventos
-    function updateEventsTab(filteredEvents) {
-        const eventsList = document.getElementById('events-list');
-        if (!eventsList) return;
-        
-        eventsList.innerHTML = '';
-        
-        if (filteredEvents.length === 0) {
-            eventsList.innerHTML = '<p>Nenhum evento encontrado no período selecionado.</p>';
-        } else {
-            filteredEvents.forEach(event => {
-                const eventDate = new Date(event.date);
-                const formattedDate = eventDate.toLocaleDateString('pt-BR');
-                
-                const eventItem = document.createElement('div');
-                eventItem.className = 'event-item';
-                eventItem.innerHTML = `
-                    <h4>${event.name}</h4>
-                    <p><strong>Cidade:</strong> ${event.cityName}</p>
-                    <p><strong>Data:</strong> ${formattedDate}</p>
-                    <p><strong>Tipo:</strong> ${event.isHoliday ? 'Feriado' : 'Evento'}</p>
-                    <p>${event.description}</p>
-                `;
-                eventsList.appendChild(eventItem);
-            });
+            alert("Calcule uma rota primeiro para ver os eventos nas cidades do percurso.");
         }
     }
 
