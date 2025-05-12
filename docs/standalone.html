@@ -1458,18 +1458,8 @@
     function optimizeRoute() {
         // Verificar se há pelo menos um destino além da origem
         if (locations.length <= 1) {
-            // Substituir alert por notificação inline mais suave
-            const notifyError = document.createElement('div');
-            notifyError.className = 'alert alert-warning mt-2';
-            notifyError.innerHTML = `Adicione pelo menos um destino para calcular a rota.`;
-            document.querySelector('.route-controls').appendChild(notifyError);
-            
-            // Remover a notificação após alguns segundos
-            setTimeout(() => {
-                if (notifyError && notifyError.parentNode) {
-                    notifyError.parentNode.removeChild(notifyError);
-                }
-            }, 5000);
+            // Usar função auxiliar para mostrar notificação
+            showNotification('Adicione pelo menos um destino para calcular a rota.', 'warning', '.route-controls');
             return;
         }
         
@@ -1892,6 +1882,69 @@
             return result;
         }
         
+    // Função auxiliar para exibir notificações de forma segura
+    function showNotification(message, type = 'info', targetSelector = '.route-controls', autoRemove = true, duration = 5000) {
+        console.log(`Notificação [${type}]: ${message}`);
+        
+        // Criar elemento de notificação
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} mt-2`;
+        notification.innerHTML = message;
+        
+        // Tentar diferentes locais na ordem de prioridade
+        const possibleTargets = [
+            targetSelector,
+            '.route-controls',
+            '#sidebar',
+            '.sidebar-content',
+            '.tab-content:first-child',
+            'body'
+        ];
+        
+        let targetElement = null;
+        
+        // Tentar cada seletor até encontrar um elemento válido
+        for (const selector of possibleTargets) {
+            try {
+                const element = document.querySelector(selector);
+                if (element) {
+                    targetElement = element;
+                    break;
+                }
+            } catch (err) {
+                console.warn(`Erro ao buscar seletor ${selector}:`, err);
+            }
+        }
+        
+        // Anexar notificação se encontrou um elemento válido
+        if (targetElement) {
+            try {
+                targetElement.appendChild(notification);
+                
+                // Auto-remover após um tempo, se solicitado
+                if (autoRemove) {
+                    setTimeout(() => {
+                        try {
+                            if (notification && notification.parentNode) {
+                                notification.parentNode.removeChild(notification);
+                            }
+                        } catch (err) {
+                            console.warn("Erro ao remover notificação:", err);
+                        }
+                    }, duration);
+                }
+                
+                return notification;
+            } catch (err) {
+                console.error("Erro ao adicionar notificação:", err);
+            }
+        } else {
+            console.warn("Não foi possível exibir notificação, nenhum elemento alvo encontrado");
+        }
+        
+        return null;
+    }
+        
         // Extrair cidade dos endereços (normalmente o primeiro componente após o nome)
         const address1Parts = loc1.address ? loc1.address.split(',') : [];
         const address2Parts = loc2.address ? loc2.address.split(',') : [];
@@ -1971,18 +2024,8 @@
             });
             
             console.error("Algumas localizações não foram encontradas:", missingIds);
-            // Substituir alert por notificação inline mais suave
-            const notifyError = document.createElement('div');
-            notifyError.className = 'alert alert-danger mt-2';
-            notifyError.innerHTML = `Erro ao traçar rota: algumas localizações não foram encontradas`;
-            document.querySelector('.route-controls').appendChild(notifyError);
-            
-            // Remover a notificação após alguns segundos
-            setTimeout(() => {
-                if (notifyError && notifyError.parentNode) {
-                    notifyError.parentNode.removeChild(notifyError);
-                }
-            }, 5000);
+            // Usar função auxiliar para mostrar notificação
+            showNotification('Erro ao traçar rota: algumas localizações não foram encontradas', 'danger', '.route-controls');
             return;
         }
         
@@ -2084,9 +2127,20 @@
                 // Verificar se os dados da rota estão disponíveis
                 if (result && result.routes && result.routes.length > 0 && result.routes[0].overview_path) {
                     console.log("Iniciando animação da rota com", result.routes[0].overview_path.length, "pontos");
-                    animateRoute(result.routes[0].overview_path);
+                    
+                    // Pequeno atraso para garantir que o DirectionsRenderer esteja pronto
+                    setTimeout(() => {
+                        try {
+                            animateRoute(result.routes[0].overview_path);
+                        } catch (err) {
+                            console.error("Erro ao animar rota:", err);
+                            showNotification("Não foi possível animar a rota: " + err.message, "warning");
+                        }
+                    }, 500);
+                    
                 } else {
                     console.error("Dados da rota incompletos, não é possível animar:", result);
+                    showNotification("Não foi possível visualizar a rota animada. Tente novamente.", "warning");
                 }
                 
                 // Ajustar o mapa para mostrar toda a rota
@@ -2141,13 +2195,18 @@
         
         // Se já existir uma rota, removê-la
         if (routePath) {
-            routePath.setMap(null);
+            try {
+                routePath.setMap(null);
+            } catch (err) {
+                console.error("Erro ao limpar rota anterior:", err);
+            }
             routePath = null;
         }
         
         // Verificar se o caminho é válido
         if (!path || !Array.isArray(path) || path.length === 0) {
             console.error("Caminho inválido para animação:", path);
+            showNotification("Não foi possível animar a rota: dados inválidos", "warning");
             return;
         }
         
