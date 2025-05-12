@@ -985,7 +985,33 @@
     }
 
     // Adiciona um marcador no mapa para um local
-    function addMarkerForLocation(location, index) {
+    // targetArray permite especificar onde o marcador será armazenado (para reordenação segura)
+    function addMarkerForLocation(location, index, targetArray = null) {
+        // Verificar se o local já tem um marcador existente antes de criar um novo
+        const existingMarker = markers.find(m => String(m.location.id) === String(location.id));
+        
+        if (existingMarker) {
+            console.log(`Reutilizando marcador existente para ${location.name} (ID: ${location.id})`);
+            // Atualizar apenas o número de sequência no marcador existente
+            existingMarker.marker.setLabel({
+                text: index === 0 ? 'O' : (index).toString(),
+                color: 'white',
+                fontSize: '14px',
+                fontWeight: 'bold'
+            });
+            existingMarker.marker.setMap(map); // Garantir que está visível no mapa
+            
+            // Se for para adicionar a outro array, fazer isso
+            if (targetArray) {
+                targetArray.push(existingMarker);
+            }
+            
+            return existingMarker;
+        }
+        
+        // Caso não exista marcador, criar um novo
+        console.log(`Criando novo marcador para ${location.name} (ID: ${location.id})`);
+        
         // Verificar se está na mesma cidade da origem
         const origin = locations.find(loc => loc.isOrigin);
         const isSameCityAsOrigin = origin && isSameCity(location, origin);
@@ -1005,7 +1031,7 @@
         const animation = isSameCityAsOrigin && !location.isOrigin ? 
                          google.maps.Animation.BOUNCE : null;
         
-        console.log(`Adicionando marcador para ${location.name} - Mesma cidade da origem: ${isSameCityAsOrigin}`);
+        console.log(`Configurando marcador para ${location.name} - Mesma cidade da origem: ${isSameCityAsOrigin}`);
         
         const marker = new google.maps.Marker({
             position: { lat: location.latitude, lng: location.longitude },
@@ -1055,8 +1081,17 @@
             }
         });
         
-        // Armazenar o marcador na array
-        markers.push({ marker, location, infowindow });
+        // Criar objeto do marcador
+        const markerObj = { marker, location, infowindow };
+        
+        // Armazenar o marcador na array principal ou na array alvo, se fornecida
+        if (targetArray) {
+            targetArray.push(markerObj);
+        } else {
+            markers.push(markerObj);
+        }
+        
+        return markerObj;
     }
 
     // Atualiza a lista de locais no sidebar com base na ordem dos marcadores
