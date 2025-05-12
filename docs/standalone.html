@@ -1441,14 +1441,69 @@
     }
 
     // Filtrar eventos por data
-    function filterEventsByDate() {
-        // Se tivermos uma rota ativa, atualizar os eventos mostrados
+    function filterEventsByDate(startDateValue, endDateValue) {
+        const startDate = startDateValue || document.getElementById('start-date').value;
+        const endDate = endDateValue || document.getElementById('end-date').value;
+        
+        if (!startDate || !endDate) {
+            console.log('Datas não definidas para filtro de eventos');
+            return;
+        }
+        
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        
+        if (start > end) {
+            alert('A data de início deve ser anterior à data de fim.');
+            return;
+        }
+        
+        // Filtra eventos
+        const filteredEvents = mockData.cityEvents.filter(event => {
+            const eventDate = new Date(event.date);
+            return eventDate >= start && eventDate <= end;
+        });
+        
+        // Atualiza a lista de eventos na aba de eventos
+        updateEventsTab(filteredEvents);
+        
+        // Se tivermos uma rota ativa, atualizar os eventos mostrados no mapa
         const activeRoute = directionsRenderer.getDirections();
         if (activeRoute) {
             // Mostrar eventos para as cidades da rota ativa
-            showEventsForCitiesOnRoute(locations);
+            showEventsForCitiesOnRoute(locations, filteredEvents);
         } else {
-            alert("Calcule uma rota primeiro para ver os eventos nas cidades do percurso.");
+            console.log("Calcule uma rota para ver os eventos nas cidades do percurso no mapa.");
+        }
+        
+        console.log(`Filtrado ${filteredEvents.length} eventos entre ${startDate} e ${endDate}`);
+    }
+    
+    // Atualiza a lista de eventos na aba de eventos
+    function updateEventsTab(filteredEvents) {
+        const eventsList = document.getElementById('events-list');
+        if (!eventsList) return;
+        
+        eventsList.innerHTML = '';
+        
+        if (filteredEvents.length === 0) {
+            eventsList.innerHTML = '<p>Nenhum evento encontrado no período selecionado.</p>';
+        } else {
+            filteredEvents.forEach(event => {
+                const eventDate = new Date(event.date);
+                const formattedDate = eventDate.toLocaleDateString('pt-BR');
+                
+                const eventItem = document.createElement('div');
+                eventItem.className = 'event-item';
+                eventItem.innerHTML = `
+                    <h4>${event.name}</h4>
+                    <p><strong>Cidade:</strong> ${event.cityName}</p>
+                    <p><strong>Data:</strong> ${formattedDate}</p>
+                    <p><strong>Tipo:</strong> ${event.isHoliday ? 'Feriado' : 'Evento'}</p>
+                    <p>${event.description}</p>
+                `;
+                eventsList.appendChild(eventItem);
+            });
         }
     }
 
