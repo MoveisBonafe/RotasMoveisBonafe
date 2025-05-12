@@ -2044,15 +2044,29 @@
             return;
         }
         
-        // SOLUÇÃO FUNDAMENTAL: Extrair APENAS as cidades que realmente estão na rota
+        // SOLUÇÃO MELHORADA: Extrair TODAS as cidades que estão na rota (não apenas origem e destino)
         // Array para armazenar os nomes das cidades que estão REALMENTE na rota
         const citiesOnRoute = [];
         
-        // Incluir apenas o destino e a origem
-        const destinoFinal = pathLocations[pathLocations.length - 1];
-        const origem = mockData.origin;
+        // Incluir TODAS as cidades do percurso
+        pathLocations.forEach(location => {
+            if (location.address) {
+                const cityParts = location.address.split(',');
+                if (cityParts.length > 0) {
+                    const cityName = cityParts[0].trim();
+                    if (!citiesOnRoute.includes(cityName)) {
+                        citiesOnRoute.push(cityName);
+                        console.log(`Cidade adicionada à rota: ${cityName}`);
+                    }
+                }
+            } else if (location.name && !citiesOnRoute.includes(location.name)) {
+                citiesOnRoute.push(location.name);
+                console.log(`Localização sem endereço adicionada à rota: ${location.name}`);
+            }
+        });
         
-        // Adicionar a origem
+        // Garantir que a origem (Dois Córregos) esteja incluída
+        const origem = mockData.origin;
         if (!citiesOnRoute.includes(origem.name)) {
             citiesOnRoute.push(origem.name);
             console.log(`Origem adicionada à rota: ${origem.name}`);
@@ -2088,26 +2102,51 @@
         // Não definimos datas padrão - os campos devem permanecer vazios
         console.log("Usando filtro de eventos sem datas padrão - mostrar todos os eventos para cidades na rota");
         
-        // Filtragem melhorada para eventos com correspondência bidirecional de cidades
+        // Filtragem completa para eventos com correspondência bidirecional de cidades e MELHOR filtragem de datas
         let eventsOnRoute = mockData.cityEvents.filter(event => {
             const eventCity = event.cityName;
             
-            // Filtragem de datas somente se datas forem fornecidas
+            // Melhorada filtragem de datas para aniversários de cidades
             let dateMatch = true;
+            
             if (startDate || endDate) {
-                const eventStart = new Date(event.startDate);
-                const eventEnd = new Date(event.endDate);
+                // Data do evento (apenas dia e mês para aniversários anuais)
+                const eventDate = new Date(event.startDate);
+                
+                // Datas do filtro
                 const filterStart = startDate ? new Date(startDate) : new Date(0);
                 const filterEnd = endDate ? new Date(endDate) : new Date(9999, 11, 31);
-                dateMatch = eventStart <= filterEnd && eventEnd >= filterStart;
+                
+                // Para eventos que ocorrem todo ano (aniversários de cidades)
+                if (event.isAnnual) {
+                    console.log(`Verificando aniversário anual de ${eventCity} em ${event.startDate}`);
+                    
+                    // Extrair dia e mês do evento
+                    const eventDay = eventDate.getDate();
+                    const eventMonth = eventDate.getMonth();
+                    
+                    // Verificar se o dia/mês da data do evento está dentro do período do filtro
+                    // Considerando apenas o ano atual para simplificar
+                    const currentYear = new Date().getFullYear();
+                    const eventThisYear = new Date(currentYear, eventMonth, eventDay);
+                    
+                    dateMatch = eventThisYear >= filterStart && eventThisYear <= filterEnd;
+                    console.log(`Aniversário ${eventCity}: ${eventThisYear.toISOString().split('T')[0]}, Dentro do período: ${dateMatch}`);
+                } else {
+                    // Para eventos comuns, verificar sobreposição de períodos
+                    const eventEnd = new Date(event.endDate || event.startDate);
+                    dateMatch = eventDate <= filterEnd && eventEnd >= filterStart;
+                }
             }
             
-            // Melhorar correspondência da cidade - verificar nos dois sentidos
-            const cityMatch = citiesOnRoute.some(city => 
-                eventCity.includes(city) || city.includes(eventCity)
-            );
+            // Melhorar correspondência da cidade - verificar nos dois sentidos (case insensitive)
+            const cityMatch = citiesOnRoute.some(city => {
+                const cityLower = city.toLowerCase();
+                const eventCityLower = eventCity.toLowerCase();
+                return eventCityLower.includes(cityLower) || cityLower.includes(eventCityLower);
+            });
             
-            console.log(`Evento: ${event.name}, Cidade: ${eventCity}, Data: ${event.startDate}-${event.endDate}, Cidade Corresponde: ${cityMatch}, Data Corresponde: ${dateMatch}`);
+            console.log(`Evento: ${event.name}, Cidade: ${eventCity}, Data: ${event.startDate}, Anual: ${event.isAnnual}, Cidade Corresponde: ${cityMatch}, Data Corresponde: ${dateMatch}`);
             
             return cityMatch && dateMatch;
         });
