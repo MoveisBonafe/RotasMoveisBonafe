@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <!-- Base tag para GitHub Pages (será adicionada/substituída dinamicamente) -->
+    <base href="./">
+    <meta charset="UTF-8" />
+    <!-- Atualizar viewport para permitir zoom e interações mais suaves -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <!-- Meta tags para controle de interatividade em diversos navegadores -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <!-- Título da aplicação -->
+    <title>Planejador de Rotas - Logística Inteligente</title>
+    
+    <!-- CSS inline para sobrepor configurações do Google Maps -->
+    <style>
+      /* Garantir que elementos do Google Maps permitam zoom sem Ctrl */
+      .gm-style, 
+      .gm-style div, 
+      .gm-control-active, 
+      .gmnoprint {
+        touch-action: manipulation !important;
+      }
+      
+      /* Garantir que o scroll do mouse funcione para zoom em todos navegadores */
+      html, body {
+        touch-action: manipulation;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      
+      #root {
+        height: 100%;
+        overflow: auto;
+      }
+      
+      /* Força todas iframes a aceitarem interações touch sem limitações */
+      iframe {
+        touch-action: manipulation !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./src/main.tsx"></script>
+    <!-- Base path para GitHub Pages -->
+    <script>
+      // Verifica se estamos no GitHub Pages
+      if (window.location.hostname.includes('github.io')) {
+        // Dynamically sets the base href for GitHub Pages
+        const baseTag = document.createElement('base');
+        
+        // Extrair o nome do repositório do path
+        const pathSegments = window.location.pathname.split('/');
+        const repoName = pathSegments[1] || '';
+        
+        baseTag.href = `/${repoName}/`;
+        document.head.appendChild(baseTag);
+        
+        console.log(`Configurado base href para GitHub Pages: /${repoName}/`);
+      }
+    </script>
+    <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
+    <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
+    
+    <!-- Script para melhorar a interatividade do Google Maps -->
+    <script>
+      // Adicionar event listener quando o DOM estiver carregado
+      document.addEventListener('DOMContentLoaded', function() {
+        // Função para aplicar configurações de zoom a todos elementos relevantes
+        function applyZoomSettings() {
+          // Aplicar configurações a todos elementos do Google Maps na página
+          const gmElements = document.querySelectorAll('.gm-style, .gm-style *');
+          gmElements.forEach(function(el) {
+            if (el instanceof HTMLElement) {
+              el.style.touchAction = 'manipulation';
+            }
+          });
+          
+          // Verificar se há iframes
+          const iframes = document.querySelectorAll('iframe');
+          iframes.forEach(function(iframe) {
+            try {
+              // Tentar acessar o documento dentro do iframe se for da mesma origem
+              if (iframe.contentDocument) {
+                const iframeDoc = iframe.contentDocument;
+                const iframeGmElements = iframeDoc.querySelectorAll('.gm-style, .gm-style *');
+                iframeGmElements.forEach(function(el) {
+                  if (el instanceof HTMLElement) {
+                    el.style.touchAction = 'manipulation';
+                  }
+                });
+              }
+            } catch (e) {
+              // Ignorar erros de segurança de origem cruzada
+            }
+          });
+        }
+        
+        // Executar imediatamente
+        applyZoomSettings();
+        
+        // E também executar após carregar completamente
+        window.addEventListener('load', applyZoomSettings);
+        
+        // Executar periodicamente para capturar elementos adicionados dinamicamente
+        setInterval(applyZoomSettings, 2000);
+      });
+    </script>
+  </body>
+</html>
