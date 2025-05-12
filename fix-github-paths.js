@@ -1,9 +1,9 @@
 // Script para corrigir os caminhos no GitHub Pages
 // Salve este arquivo na pasta docs e execute com node
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+import * as fs from 'fs';
+import * as path from 'path';
+import { execSync } from 'child_process';
 
 // Garantir que estamos na pasta docs
 const currentDir = path.basename(process.cwd());

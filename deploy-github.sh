@@ -23,9 +23,10 @@ cp ../docs/fix-github.js ./js/
 cp ../docs/route-optimizer.js ./js/
 cp ../docs/map-controls.js ./js/
 cp ../docs/geocode-fix.js ./js/
+cp ../docs/cep-database.js ./js/
 
-# Copiar index.html otimizado
-cp ../docs/index.html ./
+# Copiar o novo arquivo standalone.html como index.html para GitHub Pages
+cp ../docs/standalone.html ./index.html
 
 # Adicionar uma meta tag para forçar recarregamento
 sed -i 's/<head>/<head>\n  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" \/>\n  <meta http-equiv="Pragma" content="no-cache" \/>\n  <meta http-equiv="Expires" content="0" \/>/' index.html
@@ -33,7 +34,7 @@ sed -i 's/<head>/<head>\n  <meta http-equiv="Cache-Control" content="no-cache, n
 # Verificar se precisamos corrigir caminhos
 if [[ -f ../fix-github-paths.js ]]; then
   echo "Executando correção de caminhos..."
-  node ../fix-github-paths.js
+  node --experimental-modules ../fix-github-paths.js || echo "Aviso: Erro ao executar correção de caminhos. Continuando..."
 fi
 
 # Mover tudo para a pasta docs
