@@ -1405,11 +1405,23 @@
         // Limpar marcadores anteriores
         clearEventMarkers();
         
+        // Ajustar as datas para o formato atual (maio de 2025 mencionado no cabeçalho)
+        const currentYear = 2025;
+        const currentMonth = 5; // maio
+        
         // Extrair nomes das cidades na rota
         const citiesOnRoute = pathLocations.map(loc => {
             const parts = loc.address.split(',');
-            return parts[0].trim();
-        });
+            if (parts.length > 0) {
+                // Limpar a parte do CEP se estiver presente
+                let city = parts[0].trim();
+                if (city.startsWith('CEP:')) {
+                    city = parts[1].trim();
+                }
+                return city;
+            }
+            return '';
+        }).filter(city => city !== '');
         
         // Listar cidades na rota para debug
         console.log("Procurando eventos nas cidades:", citiesOnRoute);
@@ -1424,20 +1436,50 @@
             eventsListContainer.innerHTML = '<p class="text-muted">Adicione locais e calcule uma rota para ver eventos.</p>';
             return;
         }
+        
+        // Criação de eventos para o ano atual se não existirem
+        if (mockData.cityEvents.length === 0 || 
+            (mockData.cityEvents[0].startDate && 
+             new Date(mockData.cityEvents[0].startDate).getFullYear() < currentYear)) {
+            
+            // Atualizar as datas dos eventos existentes para o ano atual
+            mockData.cityEvents.forEach(event => {
+                const oldStartDate = new Date(event.startDate);
+                const oldEndDate = new Date(event.endDate);
+                
+                event.startDate = new Date(
+                    currentYear,
+                    oldStartDate.getMonth(),
+                    oldStartDate.getDate()
+                ).toISOString().split('T')[0];
+                
+                event.endDate = new Date(
+                    currentYear,
+                    oldEndDate.getMonth(),
+                    oldEndDate.getDate()
+                ).toISOString().split('T')[0];
+            });
+            
+            console.log("Datas dos eventos atualizadas para", currentYear);
+        }
     
         // Filtrar eventos que estão nas cidades da rota e no período selecionado
         let eventsOnRoute = mockData.cityEvents.filter(event => {
             const eventCity = event.cityName;
             const eventStart = new Date(event.startDate);
             const eventEnd = new Date(event.endDate);
-            const filterStart = startDate ? new Date(startDate) : new Date(0); // Se não tiver data início, considerar desde sempre
-            const filterEnd = endDate ? new Date(endDate) : new Date(9999, 11, 31); // Se não tiver data fim, considerar até o futuro distante
+            const filterStart = startDate ? new Date(startDate) : new Date(currentYear, currentMonth-1, 1); // Primeiro dia do mês atual
+            const filterEnd = endDate ? new Date(endDate) : new Date(currentYear, currentMonth+1, 0); // Último dia do mês seguinte
+            
+            // Adicionar 1 dia ao final para inclusão completa
+            filterEnd.setDate(filterEnd.getDate() + 1);
             
             // Verificar se a cidade do evento está na rota (comparação mais flexível)
-            const isInCity = citiesOnRoute.some(city => 
-                eventCity.toLowerCase().includes(city.toLowerCase()) || 
-                city.toLowerCase().includes(eventCity.toLowerCase())
-            );
+            const isInCity = citiesOnRoute.some(city => {
+                if (!city || !eventCity) return false;
+                return eventCity.toLowerCase().includes(city.toLowerCase()) || 
+                       city.toLowerCase().includes(eventCity.toLowerCase());
+            });
             
             // Verificar se está dentro do intervalo de datas
             const isInDateRange = eventStart <= filterEnd && eventEnd >= filterStart;
@@ -1491,43 +1533,128 @@
             eventsListContainer.appendChild(eventItem);
             
             // Adicionar marcador no mapa para o evento
-            // Para simplificar, vamos usar a posição da cidade (primeiro local que corresponde ao nome da cidade)
-            const cityLocation = pathLocations.find(loc => loc.address.includes(event.cityName));
-            if (cityLocation) {
-                addEventMarker(event, cityLocation);
-            }
+            addEventMarker(event, eventsOnRoute.indexOf(event));
+            
+            // Criar linkagem visual - clicar no evento da lista centraliza o mapa no evento
+            eventItem.addEventListener('click', () => {
+                // Encontrar o marcador correspondente
+                const marker = eventMarkers.find(m => m.getTitle()?.includes(event.name));
+                if (marker) {
+                    // Centralizar o mapa no evento
+                    map.panTo(marker.getPosition());
+                    map.setZoom(13); // Aproximar o mapa
+                    
+                    // Simular um hover para mostrar o tooltip
+                    google.maps.event.trigger(marker, 'mouseover');
+                    
+                    // Piscar o marcador para chamar atenção
+                    const originalIcon = marker.getIcon();
+                    marker.setAnimation(google.maps.Animation.BOUNCE);
+                    
+                    // Parar a animação após um curto período
+                    setTimeout(() => {
+                        marker.setAnimation(null);
+                    }, 1500);
+                }
+            });
         });
     }
 
     // Adicionar marcador para um evento
-    function addEventMarker(event, location) {
-        // Seletor de ícone com base no tipo de evento
-        const markerColor = event.isHoliday ? '#f44336' : '#ff9800';
+    function addEventMarker(event, index) {
+        // Tentar obter as coordenadas do evento usando a função de geocodificação
+        const eventCity = event.cityName;
+        
+        // Se não tiver a cidade, não pode adicionar o marcador
+        if (!eventCity) {
+            console.warn(`Cidade não encontrada para o evento ${event.name}`);
+            return;
+        }
+        
+        // Verificar se já existe um marcador para este evento
+        const existingMarker = eventMarkers.find(m => 
+            m.getTitle && m.getTitle().includes(event.name)
+        );
+        
+        if (existingMarker) {
+            console.log(`Marcador para evento ${event.name} já existe. Ignorando duplicidade.`);
+            return;
+        }
+        
+        // Obter coordenadas da cidade usando a nossa função de geocodificação ou Replit
+        let position;
+        
+        // Usar findCityByName para localidades conhecidas
+        if (findCityByName) {
+            const cityCoords = findCityByName(eventCity.toLowerCase());
+            if (cityCoords) {
+                position = {
+                    lat: cityCoords.lat,
+                    lng: cityCoords.lng
+                };
+                console.log(`Encontrou coordenadas para ${eventCity} via findCityByName`);
+            }
+        }
+        
+        // Se não encontrou posição, tentar pelo objeto de localização
+        if (!position) {
+            const cityLocation = locations.find(loc => 
+                loc.address && 
+                loc.address.toLowerCase().includes(eventCity.toLowerCase())
+            );
+            
+            if (cityLocation && cityLocation.latitude && cityLocation.longitude) {
+                position = {
+                    lat: cityLocation.latitude,
+                    lng: cityLocation.longitude
+                };
+                console.log(`Encontrou coordenadas para ${eventCity} via objeto location`);
+            }
+        }
+        
+        // Se ainda não encontrou, usar uma aproximação baseada em Dois Córregos
+        if (!position) {
+            // Criar uma posição próxima a Dois Córregos
+            position = {
+                lat: -22.3673 + (Math.random() - 0.5) * 0.05,
+                lng: -48.3822 + (Math.random() - 0.5) * 0.05
+            };
+            console.log(`Usando posição aproximada para ${eventCity}`);
+        }
+        
+        // Escolher ícone baseado no tipo de evento
+        const isHoliday = event.isHoliday;
+        const markerColor = isHoliday ? '#f44336' : '#ff9800';
+        const markerPath = isHoliday 
+            ? 'M -8,0 L 0,-8 L 8,0 L 0,8 Z' // losango para feriados
+            : google.maps.SymbolPath.CIRCLE; // círculo para eventos
+        
         const markerIcon = {
-            path: google.maps.SymbolPath.CIRCLE,
+            path: markerPath,
             fillColor: markerColor,
             fillOpacity: 1,
             strokeWeight: 1,
             strokeColor: '#000',
-            scale: 8
+            scale: isHoliday ? 1.2 : 8
         };
         
         // Criar o marcador
         const marker = new google.maps.Marker({
-            position: { lat: location.latitude, lng: location.longitude },
+            position: position,
             map: map,
-            title: event.name,
+            title: `${event.name} (${eventCity})`,
             icon: markerIcon,
-            zIndex: 30
+            zIndex: isHoliday ? 50 : 30 // Feriados ficam acima
         });
         
-        // Conteúdo do tooltip
+        // Conteúdo do tooltip com informações detalhadas
         const tooltipContent = `
             <div class="tooltip-title">${event.name}</div>
-            <div>${event.cityName}</div>
+            <div>${eventCity}</div>
             <div>${new Date(event.startDate).toLocaleDateString('pt-BR')} - ${new Date(event.endDate).toLocaleDateString('pt-BR')}</div>
             <div>${event.description}</div>
             <div>Nível de restrição: ${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</div>
+            ${isHoliday ? '<div class="holiday-badge">Feriado/Aniversário da Cidade</div>' : ''}
         `;
         
         // Adicionar listener para mostrar tooltip ao passar o mouse
@@ -1552,13 +1679,44 @@
         // Extrair nomes das cidades na rota
         const citiesOnRoute = pathLocations.map(loc => {
             const parts = loc.address.split(',');
-            return parts[0].trim();
-        });
+            if (parts.length > 0) {
+                // Limpar a parte do CEP se estiver presente
+                let city = parts[0].trim();
+                if (city.startsWith('CEP:')) {
+                    city = parts[1].trim();
+                }
+                return city;
+            }
+            return '';
+        }).filter(city => city !== '');
+        
+        // Se não tiver cidades na rota, mostrar mensagem
+        if (citiesOnRoute.length === 0) {
+            restrictionsListContainer.innerHTML = '<p class="text-muted">Adicione locais e calcule uma rota para ver restrições de caminhões.</p>';
+            return;
+        }
+        
+        console.log("Verificando restrições para o veículo:", vehicleType, "nas cidades:", citiesOnRoute);
         
         // Filtrar restrições que afetam o tipo de veículo selecionado e estão nas cidades da rota
         const restrictionsOnRoute = mockData.truckRestrictions.filter(restriction => {
-            return citiesOnRoute.some(city => restriction.cityName.includes(city)) && 
-                   restriction.affectedVehicles.includes(vehicleType);
+            const restrictionCity = restriction.cityName;
+            
+            // Verificar se a cidade da restrição está na rota (comparação mais flexível)
+            const isInCity = citiesOnRoute.some(city => {
+                if (!city || !restrictionCity) return false;
+                return restrictionCity.toLowerCase().includes(city.toLowerCase()) || 
+                       city.toLowerCase().includes(restrictionCity.toLowerCase());
+            });
+            
+            const affectsVehicle = restriction.affectedVehicles.includes(vehicleType);
+            
+            // Debug
+            if (isInCity && affectsVehicle) {
+                console.log(`Restrição encontrada em ${restrictionCity} que afeta o veículo ${vehicleType}`);
+            }
+            
+            return isInCity && affectsVehicle;
         });
         
         // Se não houver restrições, mostrar mensagem
