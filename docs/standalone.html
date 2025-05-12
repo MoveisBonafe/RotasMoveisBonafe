@@ -642,8 +642,8 @@
             // Adicionar o local à lista
             const newLocation = {
                 id: locationId++,
-                name: place.name,
-                address: place.formatted_address,
+                name: formatLocationName(place.name),
+                address: formatLocationName(place.formatted_address),
                 zipCode: getZipCodeFromPlace(place),
                 latitude: place.geometry.location.lat(),
                 longitude: place.geometry.location.lng(),
@@ -1894,11 +1894,50 @@
     
     // Versão básica do TSP para cidades diferentes
     function solveBasicTSP(origin, destinations, includeReturn) {
+        console.log("Iniciando TSP básico com", destinations.length, "destinos");
+        
+        // Verificar se existem pontos na mesma cidade que o último ponto antes de iniciar
+        const sameCityPoints = destinations.filter(dest => isSameCity(dest, origin));
+        if (sameCityPoints.length > 0) {
+            console.log(`Encontrados ${sameCityPoints.length} pontos na mesma cidade que o ponto de partida (${origin.name}). Eles serão priorizados.`);
+        }
+        
+        // Ordenar os destinos por proximidade da origem para priorizar a ordem
+        let sortedDestinations = [...destinations].sort((a, b) => {
+            // Se um está na mesma cidade da origem e o outro não, o da mesma cidade vem primeiro
+            const aInSameCity = isSameCity(a, origin);
+            const bInSameCity = isSameCity(b, origin);
+            
+            if (aInSameCity && !bInSameCity) return -1;
+            if (!aInSameCity && bInSameCity) return 1;
+            
+            // Se ambos estão ou não na mesma cidade, ordenar por distância
+            const distA = calculateDistance(
+                origin.latitude, origin.longitude, 
+                a.latitude, a.longitude
+            );
+            
+            const distB = calculateDistance(
+                origin.latitude, origin.longitude, 
+                b.latitude, b.longitude
+            );
+            
+            return distA - distB;
+        });
+        
+        // Log da ordem pré-calculada
+        console.log("Destinos ordenados por proximidade:", 
+                   sortedDestinations.map((d, i) => 
+                                         `${i+1}. ${d.name} (${isSameCity(d, origin) ? "mesma cidade, " : ""}${calculateDistance(
+                                             origin.latitude, origin.longitude,
+                                             d.latitude, d.longitude
+                                         ).toFixed(1)} km)`).join(", "));
+        
         // Inicializar a distância total
         let totalDistance = 0;
         
         // Matriz de distâncias entre todos os pontos
-        const points = [origin, ...destinations];
+        const points = [origin, ...sortedDestinations];
         const numPoints = points.length;
         const distMatrix = Array(numPoints).fill().map(() => Array(numPoints).fill(0));
         
