@@ -922,7 +922,7 @@
                         // Atualizar o status
                         processedCount++;
                         document.getElementById('geocode-status').innerHTML = 
-                            `Geocodificando... ${processedCount}/${processedCount + geocodeQueue.length}`;
+                            `Processando... ${processedCount}/${processedCount + geocodeQueue.length}`;
                         
                         // Ajustar o zoom
                         zoomToFitAllMarkers();
@@ -956,7 +956,7 @@
                         // Atualizar o status
                         processedCount++;
                         document.getElementById('geocode-status').innerHTML = 
-                            `Geocodificando... ${processedCount}/${processedCount + geocodeQueue.length}`;
+                            `Processando... ${processedCount}/${processedCount + geocodeQueue.length}`;
                         
                         // Continuar com o próximo após um curto delay
                         setTimeout(processGeocodingQueue, 200);
@@ -1232,7 +1232,18 @@
     function optimizeRoute() {
         // Verificar se há pelo menos um destino além da origem
         if (locations.length <= 1) {
-            alert("Adicione pelo menos um destino para calcular a rota.");
+            // Substituir alert por notificação inline mais suave
+            const notifyError = document.createElement('div');
+            notifyError.className = 'alert alert-warning mt-2';
+            notifyError.innerHTML = `Adicione pelo menos um destino para calcular a rota.`;
+            document.querySelector('.route-controls').appendChild(notifyError);
+            
+            // Remover a notificação após alguns segundos
+            setTimeout(() => {
+                if (notifyError && notifyError.parentNode) {
+                    notifyError.parentNode.removeChild(notifyError);
+                }
+            }, 5000);
             return;
         }
         
@@ -1485,7 +1496,18 @@
             updateRouteSummary(tspResult, vehicleType);
         } catch (error) {
             console.error("Erro ao calcular rota otimizada:", error);
-            alert("Ocorreu um erro ao calcular a rota. Tente novamente.");
+            // Substituir alert por notificação inline mais suave
+            const notifyError = document.createElement('div');
+            notifyError.className = 'alert alert-danger mt-2';
+            notifyError.innerHTML = `Ocorreu um erro ao calcular a rota. Tente novamente.`;
+            document.querySelector('.route-controls').appendChild(notifyError);
+            
+            // Remover a notificação após alguns segundos
+            setTimeout(() => {
+                if (notifyError && notifyError.parentNode) {
+                    notifyError.parentNode.removeChild(notifyError);
+                }
+            }, 5000);
         }
         
         // Habilitar botões de salvar e imprimir
