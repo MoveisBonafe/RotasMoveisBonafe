@@ -57,12 +57,14 @@
     }
     
     .sidebar {
-      width: 380px;
+      width: 400px;
       background-color: white;
       border-radius: 0.5rem;
       padding: 1rem;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       z-index: 10;
+      height: calc(100vh - 200px);
+      overflow-y: auto;
     }
     
     .map-container {
@@ -70,7 +72,8 @@
       background-color: white;
       border-radius: 0.5rem;
       overflow: hidden;
-      height: 80vh;
+      height: calc(100vh - 200px);
+      min-height: 600px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       position: relative;
     }
@@ -308,6 +311,7 @@
     .map-iframe {
       width: 100%;
       height: calc(100% - 50px);
+      min-height: 550px;
       border: none;
     }
     
@@ -631,7 +635,8 @@
           id="map-iframe"
           src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&q=-22.3673,-48.3823&center=-22.3673,-48.3823&zoom=10&maptype=roadmap"
           allowfullscreen
-          referrerpolicy="no-referrer-when-downgrade">
+          referrerpolicy="no-referrer-when-downgrade"
+          style="border:0; width: 100%; height: 100%;">
         </iframe>
       </div>
     </div>
@@ -1292,41 +1297,60 @@
         // Incrementar contador
         locationCounter++;
         
-        // Cidades predefinidas ao redor de Dois Córregos
+        // Cidades do estado de São Paulo (coordenadas reais)
         const predefinedCities = [
+          { name: "Ribeirão Preto", lat: -21.1775, lng: -47.8103 },
           { name: "Jaú", lat: -22.2936, lng: -48.5592 },
           { name: "Brotas", lat: -22.2792, lng: -48.1250 },
-          { name: "Mineiros do Tietê", lat: -22.4119, lng: -48.4511 },
-          { name: "Torrinha", lat: -22.4269, lng: -48.1731 },
-          { name: "Barra Bonita", lat: -22.4910, lng: -48.5583 },
-          { name: "São Manuel", lat: -22.7320, lng: -48.5714 },
-          { name: "Igaraçu do Tietê", lat: -22.5089, lng: -48.5597 },
-          { name: "Bocaina", lat: -22.1361, lng: -48.5230 },
           { name: "Bauru", lat: -22.3246, lng: -49.0871 },
-          { name: "Pederneiras", lat: -22.3511, lng: -48.7782 }
+          { name: "São Carlos", lat: -22.0087, lng: -47.8909 },
+          { name: "Araraquara", lat: -21.7845, lng: -48.1780 },
+          { name: "Limeira", lat: -22.5641, lng: -47.4014 },
+          { name: "Campinas", lat: -22.9071, lng: -47.0628 },
+          { name: "Piracicaba", lat: -22.7338, lng: -47.6476 },
+          { name: "São Paulo", lat: -23.5505, lng: -46.6333 }
         ];
         
-        // Escolher uma cidade próxima com base no índice
-        const cityIndex = (locationCounter - 1) % predefinedCities.length;
-        const selectedCity = predefinedCities[cityIndex];
+        // Escolher uma cidade próxima com base no endereço ou contador
+        let selectedCity;
         
-        // Adicionar uma pequena variação para cada ponto
-        const variationFactor = 0.01; // aproximadamente 1km
-        const latVariation = (Math.random() - 0.5) * variationFactor;
-        const lngVariation = (Math.random() - 0.5) * variationFactor;
+        // Verificar se o endereço contém o nome de alguma cidade predefinida
+        const matchedCity = predefinedCities.find(city => 
+          address.toLowerCase().includes(city.name.toLowerCase())
+        );
         
-        const lat = selectedCity.lat + latVariation;
-        const lng = selectedCity.lng + lngVariation;
+        if (matchedCity) {
+          selectedCity = matchedCity;
+        } else {
+          // Se não encontrar correspondência, usa o contador para selecionar uma cidade
+          const cityIndex = (locationCounter - 1) % predefinedCities.length;
+          selectedCity = predefinedCities[cityIndex];
+        }
+        
+        // Pequena variação apenas se não houver correspondência exata
+        let lat = selectedCity.lat;
+        let lng = selectedCity.lng;
+        
+        if (!matchedCity) {
+          // Adicionar uma pequena variação para cada ponto
+          const variationFactor = 0.005; // aproximadamente 500m
+          const latVariation = (Math.random() - 0.5) * variationFactor;
+          const lngVariation = (Math.random() - 0.5) * variationFactor;
+          
+          lat = selectedCity.lat + latVariation;
+          lng = selectedCity.lng + lngVariation;
+        }
+        
         const latlng = `${lat},${lng}`;
         
         // Criar elemento visual
-        createLocationItem(address, `Localização fictícia`, locationCounter);
+        createLocationItem(address, `${selectedCity.name}, SP, Brasil`, locationCounter);
         
         // Criar objeto de localização
         const location = {
           id: locationCounter,
           name: address,
-          address: 'Localização fictícia',
+          address: `${selectedCity.name}, SP, Brasil`,
           latlng: latlng,
           isOrigin: false
         };
@@ -1358,6 +1382,47 @@
           // Array para armazenar os locais importados
           const importedLocations = [];
           
+          // Mapeamento de CEPs para coordenadas (simulado com base em cidades reais)
+          const cepCoordinates = {
+            // Interior SP
+            "14000": { city: "Ribeirão Preto", lat: -21.1775, lng: -47.8103 },
+            "14010": { city: "Ribeirão Preto", lat: -21.1790, lng: -47.8153 },
+            "14050": { city: "Ribeirão Preto", lat: -21.1750, lng: -47.8203 },
+            "14100": { city: "Ribeirão Preto", lat: -21.1755, lng: -47.8253 },
+            "14400": { city: "Franca", lat: -20.5390, lng: -47.4013 },
+            "17300": { city: "Dois Córregos", lat: -22.3673, lng: -48.3823 },
+            "17350": { city: "Jaú", lat: -22.2936, lng: -48.5592 },
+            "17380": { city: "Brotas", lat: -22.2792, lng: -48.1250 },
+            "17900": { city: "Dracena", lat: -21.4843, lng: -51.5352 },
+            "18000": { city: "Sorocaba", lat: -23.5015, lng: -47.4526 },
+            "19000": { city: "Presidente Prudente", lat: -22.1208, lng: -51.3882 },
+            // Capital
+            "01000": { city: "São Paulo", lat: -23.5505, lng: -46.6333 },
+            "01020": { city: "São Paulo", lat: -23.5515, lng: -46.6343 },
+            "04000": { city: "São Paulo", lat: -23.6216, lng: -46.6388 },
+            "05000": { city: "São Paulo", lat: -23.5329, lng: -46.7108 },
+            // Outras cidades
+            "13000": { city: "Campinas", lat: -22.9071, lng: -47.0628 },
+            "13300": { city: "Itu", lat: -23.2636, lng: -47.2992 },
+            "13500": { city: "Rio Claro", lat: -22.4065, lng: -47.5613 },
+            "13600": { city: "Araras", lat: -22.3572, lng: -47.3839 },
+            "15000": { city: "São José do Rio Preto", lat: -20.8113, lng: -49.3758 }
+          };
+          
+          // Cidades padrão para coordenadas (usadas quando um CEP não é encontrado)
+          const defaultCities = [
+            { name: "Ribeirão Preto", lat: -21.1775, lng: -47.8103 },
+            { name: "Jaú", lat: -22.2936, lng: -48.5592 },
+            { name: "Brotas", lat: -22.2792, lng: -48.1250 },
+            { name: "Bauru", lat: -22.3246, lng: -49.0871 },
+            { name: "São Carlos", lat: -22.0087, lng: -47.8909 },
+            { name: "Araraquara", lat: -21.7845, lng: -48.1780 },
+            { name: "Limeira", lat: -22.5641, lng: -47.4014 },
+            { name: "Campinas", lat: -22.9071, lng: -47.0628 },
+            { name: "Piracicaba", lat: -22.7338, lng: -47.6476 },
+            { name: "São Paulo", lat: -23.5505, lng: -46.6333 }
+          ];
+          
           // Processar cada linha
           lines.forEach(line => {
             if (!line.trim()) return; // Pular linhas vazias
@@ -1370,41 +1435,49 @@
               // Incrementar contador
               locationCounter++;
               
-              // Cidades predefinidas ao redor de Dois Córregos
-              const predefinedCities = [
-                { name: "Jaú", lat: -22.2936, lng: -48.5592 },
-                { name: "Brotas", lat: -22.2792, lng: -48.1250 },
-                { name: "Mineiros do Tietê", lat: -22.4119, lng: -48.4511 },
-                { name: "Torrinha", lat: -22.4269, lng: -48.1731 },
-                { name: "Barra Bonita", lat: -22.4910, lng: -48.5583 },
-                { name: "São Manuel", lat: -22.7320, lng: -48.5714 },
-                { name: "Igaraçu do Tietê", lat: -22.5089, lng: -48.5597 },
-                { name: "Bocaina", lat: -22.1361, lng: -48.5230 },
-                { name: "Bauru", lat: -22.3246, lng: -49.0871 },
-                { name: "Pederneiras", lat: -22.3511, lng: -48.7782 }
-              ];
+              // Tentar encontrar o CEP no mapeamento
+              let coordinates = null;
+              let cityName = "";
               
-              // Escolher uma cidade próxima com base no índice
-              const cityIndex = (locationCounter - 1) % predefinedCities.length;
-              const selectedCity = predefinedCities[cityIndex];
+              // Verificar CEP exato ou prefixo (primeiros 5 dígitos)
+              const cepPrefix = cep.replace(/[^0-9]/g, '').substring(0, 5);
               
-              // Adicionar uma pequena variação para cada ponto
-              const variationFactor = 0.01; // aproximadamente 1km
+              if (cepCoordinates[cep]) {
+                coordinates = cepCoordinates[cep];
+                cityName = coordinates.city;
+              } else if (cepCoordinates[cepPrefix]) {
+                coordinates = cepCoordinates[cepPrefix];
+                cityName = coordinates.city;
+              } else {
+                // Se não encontrou no mapeamento, usar uma cidade aleatória
+                const cityIndex = (locationCounter - 1) % defaultCities.length;
+                const selectedCity = defaultCities[cityIndex];
+                
+                coordinates = {
+                  city: selectedCity.name,
+                  lat: selectedCity.lat,
+                  lng: selectedCity.lng
+                };
+                cityName = selectedCity.name;
+              }
+              
+              // Adicionar pequena variação para evitar sobreposição
+              const variationFactor = 0.003; // ~300 metros
               const latVariation = (Math.random() - 0.5) * variationFactor;
               const lngVariation = (Math.random() - 0.5) * variationFactor;
               
-              const lat = selectedCity.lat + latVariation;
-              const lng = selectedCity.lng + lngVariation;
+              const lat = coordinates.lat + latVariation;
+              const lng = coordinates.lng + lngVariation;
               const latlng = `${lat},${lng}`;
               
               // Criar elemento visual
-              createLocationItem(name, `CEP: ${cep}`, locationCounter);
+              createLocationItem(name, `CEP: ${cep} (${cityName})`, locationCounter);
               
               // Criar objeto de localização
               const location = {
                 id: locationCounter,
                 name: name,
-                address: `CEP: ${cep}`,
+                address: `CEP: ${cep} (${cityName})`,
                 latlng: latlng,
                 isOrigin: false
               };
