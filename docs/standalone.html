@@ -1175,6 +1175,7 @@
             
             console.log("Origem:", origin);
             console.log("Destinos:", destinations);
+            console.log("Todas as localizações:", locations);
             
             // Calcular aproximadamente a distância em linha reta total para verificação
             let straightLineDistance = 0;
@@ -1188,6 +1189,12 @@
             
             // Gerar rotas alternativas usando diferentes algoritmos
             generateAlternativeRoutes(origin, destinations, includeOriginReturn);
+            
+            if (alternativeRoutes.length === 0) {
+                console.error("Nenhuma rota alternativa foi gerada!");
+                alert("Erro ao calcular a rota: nenhuma rota foi gerada");
+                return;
+            }
             
             // Usar a primeira rota (otimizada) como padrão
             const tspResult = alternativeRoutes[0];
@@ -1320,12 +1327,26 @@
     
     // Traçar a rota no mapa
     function drawRouteOnMap(pathIds, vehicleType) {
+        console.log("Desenhando rota para IDs:", pathIds);
+        console.log("Localizações disponíveis:", locations);
+        
         // Converter ids para objetos de localização
-        const pathLocations = pathIds.map(id => locations.find(loc => loc.id === id));
+        const pathLocations = [];
+        for (let i = 0; i < pathIds.length; i++) {
+            const id = pathIds[i];
+            const location = locations.find(loc => loc.id === id);
+            if (!location) {
+                console.error(`Localização ID ${id} não encontrada!`);
+            } else {
+                console.log(`Localização ID ${id} encontrada:`, location);
+                pathLocations.push(location);
+            }
+        }
         
         // Verificar se todos os ids foram encontrados
-        if (pathLocations.some(loc => !loc)) {
-            console.error("Algumas localizações não foram encontradas:", pathIds);
+        if (pathLocations.length !== pathIds.length) {
+            console.error("Algumas localizações não foram encontradas:", 
+                         pathIds.filter(id => !pathLocations.find(loc => loc.id === id)));
             alert("Erro ao traçar rota: algumas localizações não foram encontradas");
             return;
         }
@@ -1728,6 +1749,7 @@
         }
         
         console.log(`Alternando para rota alternativa ${routeIndex}`);
+        console.log("Rotas alternativas disponíveis:", alternativeRoutes);
         
         // Salvar o índice atual
         currentRouteIndex = routeIndex;
@@ -1737,6 +1759,14 @@
         
         // Usar a rota selecionada
         const tspResult = alternativeRoutes[routeIndex];
+        
+        if (!tspResult || !tspResult.path || !Array.isArray(tspResult.path)) {
+            console.error("Rota alternativa inválida:", tspResult);
+            alert("Erro: a rota selecionada é inválida");
+            return;
+        }
+        
+        console.log("Usando rota com caminhos:", tspResult.path);
         
         // Reordenar os marcadores visualmente para corresponder à nova sequência
         reorderMarkers(tspResult.path);
