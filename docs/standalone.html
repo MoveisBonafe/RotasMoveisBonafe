@@ -1029,14 +1029,17 @@
                 console.log("Selecionando rota alternativa:", selectedIndex);
                 console.log("Caminho da rota selecionada:", selectedRoute.path);
                 
-                // Limpar rota atual
+                // Limpar rota atual e todas as polilíneas do mapa
                 clearRoute();
                 
-                // Reordenar marcadores
-                reorderMarkers(selectedRoute.path);
-                
-                // Desenhar nova rota
-                drawRouteOnMap(selectedRoute.path, "truck1");
+                // Pequena pausa para garantir que todas as limpezas foram concluídas
+                setTimeout(() => {
+                    // Reordenar marcadores
+                    reorderMarkers(selectedRoute.path);
+                    
+                    // Desenhar nova rota
+                    drawRouteOnMap(selectedRoute.path, "truck1");
+                }, 100);
                 
                 // Mostrar pontos de interesse
                 showPointsOfInterestOnRoute(selectedRoute.path);
@@ -1506,9 +1509,25 @@
     function clearRoute() {
         console.log("Limpando rota atual...");
         
+        // Limpar o renderizador de direções
         if (directionsRendererInitialized && directionsRenderer) {
             try {
+                // Limpar rotas existentes
                 directionsRenderer.setDirections({ routes: [] });
+                
+                // Em alguns casos, pode ser necessário recriar o renderer
+                directionsRenderer.setMap(null);
+                directionsRenderer = new google.maps.DirectionsRenderer({
+                    suppressMarkers: true,
+                    preserveViewport: true,
+                    polylineOptions: {
+                        strokeColor: '#1976D2',
+                        strokeOpacity: 0.7,
+                        strokeWeight: 4
+                    }
+                });
+                directionsRenderer.setMap(map);
+                console.log("DirectionsRenderer recriado com sucesso");
             } catch (err) {
                 console.error("Erro ao limpar direções:", err);
             }
@@ -1526,8 +1545,23 @@
         // Limpar caminho da rota se existir
         if (routePath) {
             console.log("Removendo polyline da rota");
-            routePath.setMap(null);
+            try {
+                routePath.setMap(null);
+            } catch (err) {
+                console.error("Erro ao remover polyline:", err);
+            }
             routePath = null;
+        }
+        
+        // Limpar todas as polylines que possam ter ficado no mapa
+        try {
+            // Este é um "truque" para forçar a limpeza de todas as polylines
+            if (map) {
+                const mapCenter = map.getCenter();
+                map.setCenter(mapCenter);
+            }
+        } catch (err) {
+            console.error("Erro ao centralizar mapa:", err);
         }
         
         // Limpar marcadores de POI
@@ -2036,6 +2070,17 @@
         if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
             console.error("IDs de caminho inválidos ou vazios:", pathIds);
             return; // Interromper execução para evitar erros
+        }
+        
+        // Verificar se há uma rota já desenhada e removê-la para evitar sobreposições
+        if (routePath) {
+            console.log("Removendo rota anterior antes de desenhar nova rota");
+            try {
+                routePath.setMap(null);
+                routePath = null;
+            } catch (e) {
+                console.error("Erro ao remover rota anterior:", e);
+            }
         }
         
         console.log("Localizações disponíveis:", locations);
