@@ -1342,12 +1342,22 @@
                 }
             });
             
+            // Atualizar o array principal de marcadores com os reordenados
+            if (reorderedMarkers.length > 0) {
+                console.log(`Substituindo array de marcadores (${markers.length}) pelos reordenados (${reorderedMarkers.length})`);
+                markers = [...reorderedMarkers];
+            }
+            
             // Verificar se temos localizações suficientes para desenhar a rota
             if (tspResult.path.length >= 2) {
                 // Coletar localizações na ordem da rota para desenhar no mapa
                 const pathLocations = tspResult.path.map(id => {
                     const idStr = String(id);
-                    return locations.find(loc => String(loc.id) === idStr);
+                    const location = locations.find(loc => String(loc.id) === idStr);
+                    if (!location) {
+                        console.error(`Localização não encontrada para ID: ${idStr} durante o desenho da rota`);
+                    }
+                    return location;
                 }).filter(loc => loc !== undefined);
                 
                 // Desenhar a rota no mapa usando as direções do Google
@@ -1631,6 +1641,13 @@
         }
         
         // Criar waypoints para o serviço de direções
+        console.log("Criando waypoints para o serviço de direções com " + pathLocations.length + " pontos");
+        
+        // Debug para verificar que temos todos os pontos necessários
+        pathLocations.forEach((location, idx) => {
+            console.log(`Ponto ${idx}: ${location.name} (${location.latitude}, ${location.longitude}) - isOrigin: ${location.isOrigin}`);
+        });
+        
         const waypoints = pathLocations.slice(1, -1).map(location => ({
             location: new google.maps.LatLng(location.latitude, location.longitude),
             stopover: true
