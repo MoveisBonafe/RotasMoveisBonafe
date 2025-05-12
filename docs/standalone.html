@@ -405,6 +405,16 @@
                 
                 <!-- Aba de Locais -->
                 <div class="tab-content active" id="locations-tab">
+                    <!-- Filtro de datas - movido da aba Eventos para cá -->
+                    <div class="form-group">
+                        <label>Filtrar eventos por data:</label>
+                        <div class="date-range-container">
+                            <input type="date" id="start-date" class="form-control">
+                            <input type="date" id="end-date" class="form-control">
+                        </div>
+                        <button id="filter-events" class="btn btn-outline-primary btn-sm mt-2 mb-3">Filtrar</button>
+                    </div>
+                    
                     <!-- Origem fixa -->
                     <div class="form-group">
                         <label for="origin">Origem:</label>
@@ -463,14 +473,6 @@
                 
                 <!-- Aba de Eventos -->
                 <div class="tab-content" id="events-tab">
-                    <div class="form-group">
-                        <label>Filtrar eventos por data:</label>
-                        <div class="date-range-container">
-                            <input type="date" id="start-date" class="form-control">
-                            <input type="date" id="end-date" class="form-control">
-                        </div>
-                        <button id="filter-events" class="btn btn-outline-primary btn-sm mt-2">Filtrar</button>
-                    </div>
                     
                     <h5 class="mt-3">Eventos na rota:</h5>
                     <div class="events-list" id="events-list">
@@ -561,20 +563,26 @@
             { id: 8, name: "Borracharia 24h (Botucatu)", type: "mechanic", latitude: -22.8900, longitude: -48.4500, highway: "SP-300", cityName: "Botucatu", services: ["tire"] }
         ],
         
-        // Eventos de cidades
+        // Eventos de cidades - atualizados para 2025
         cityEvents: [
-            { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2023-05-24", endDate: "2023-05-24", isHoliday: true, description: "Feriado municipal do aniversário de Dois Córregos", restrictionLevel: "low" },
-            { id: 2, cityName: "Jaú", name: "Festa do Rodeio", startDate: "2023-06-10", endDate: "2023-06-20", isHoliday: false, description: "Evento com grande circulação de veículos", restrictionLevel: "medium" },
-            { id: 3, cityName: "Botucatu", name: "Festival de Inverno", startDate: "2023-07-15", endDate: "2023-07-30", isHoliday: false, description: "Evento cultural e gastronômico", restrictionLevel: "low" },
-            { id: 4, cityName: "Bauru", name: "Exposição Agropecuária", startDate: "2023-08-05", endDate: "2023-08-15", isHoliday: false, description: "Feira agropecuária com shows", restrictionLevel: "high" }
+            { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2025-05-24", endDate: "2025-05-24", isHoliday: true, description: "Feriado municipal do aniversário de Dois Córregos", restrictionLevel: "low" },
+            { id: 2, cityName: "Jaú", name: "Festa do Rodeio", startDate: "2025-06-10", endDate: "2025-06-20", isHoliday: false, description: "Evento com grande circulação de veículos", restrictionLevel: "medium" },
+            { id: 3, cityName: "Botucatu", name: "Festival de Inverno", startDate: "2025-07-15", endDate: "2025-07-30", isHoliday: false, description: "Evento cultural e gastronômico", restrictionLevel: "low" },
+            { id: 4, cityName: "Bauru", name: "Exposição Agropecuária", startDate: "2025-08-05", endDate: "2025-08-15", isHoliday: false, description: "Feira agropecuária com shows", restrictionLevel: "high" },
+            { id: 5, cityName: "Vera Cruz", name: "Exposição Agrícola", startDate: "2025-05-01", endDate: "2025-05-10", isHoliday: false, description: "Evento agrícola regional", restrictionLevel: "medium" },
+            { id: 6, cityName: "Pompéia", name: "Aniversário da Cidade", startDate: "2025-05-15", endDate: "2025-05-15", isHoliday: true, description: "Feriado municipal de Pompéia", restrictionLevel: "low" },
+            { id: 7, cityName: "Ribeirão Preto", name: "Agrishow", startDate: "2025-04-27", endDate: "2025-05-01", isHoliday: false, description: "Maior feira de tecnologia agrícola da América Latina", restrictionLevel: "high" }
         ],
         
         // Restrições para caminhões
         truckRestrictions: [
-            { id: 1, cityName: "Dois Córregos", dayType: "weekday", startTime: "07:00", endTime: "09:00", restrictionType: "partial", description: "Restrição parcial para caminhões de grande porte no centro", affectedVehicles: ["truck5", "truck6", "truck7", "truck9"] },
-            { id: 2, cityName: "Jaú", dayType: "weekday", startTime: "17:00", endTime: "20:00", restrictionType: "partial", description: "Restrição parcial para todos os caminhões no centro", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] },
-            { id: 3, cityName: "Botucatu", dayType: "weekend", startTime: "08:00", endTime: "18:00", restrictionType: "total", description: "Proibição total para caminhões na área central", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] },
-            { id: 4, cityName: "Bauru", dayType: "all", startTime: "07:00", endTime: "22:00", restrictionType: "rodizio", description: "Sistema de rodízio para todos os caminhões", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] }
+            { id: 1, cityName: "Dois Córregos", dayType: "weekday", startTime: "07:00", endTime: "09:00", restrictionType: "partial", description: "Restrição parcial para caminhões de grande porte no centro", affectedVehicles: ["truck5"] },
+            { id: 2, cityName: "Jaú", dayType: "weekday", startTime: "17:00", endTime: "20:00", restrictionType: "partial", description: "Restrição parcial para todos os caminhões no centro", affectedVehicles: ["truck1", "truck2", "truck3", "truck5"] },
+            { id: 3, cityName: "Botucatu", dayType: "weekend", startTime: "08:00", endTime: "18:00", restrictionType: "total", description: "Proibição total para caminhões na área central", affectedVehicles: ["truck1", "truck2", "truck3", "truck5"] },
+            { id: 4, cityName: "Bauru", dayType: "all", startTime: "07:00", endTime: "22:00", restrictionType: "rodizio", description: "Sistema de rodízio para todos os caminhões", affectedVehicles: ["truck1", "truck2", "truck3", "truck5"] },
+            { id: 5, cityName: "Vera Cruz", dayType: "weekday", startTime: "06:00", endTime: "20:00", restrictionType: "partial", description: "Restrição para caminhões de médio e grande porte", affectedVehicles: ["truck3", "truck5"] },
+            { id: 6, cityName: "Pompéia", dayType: "weekday", startTime: "08:00", endTime: "17:00", restrictionType: "partial", description: "Restrição nas áreas centrais para caminhões", affectedVehicles: ["truck2", "truck3", "truck5"] },
+            { id: 7, cityName: "Ribeirão Preto", dayType: "all", startTime: "07:00", endTime: "20:00", restrictionType: "rodizio", description: "Sistema de rodízio em toda área urbana", affectedVehicles: ["truck1", "truck2", "truck3", "truck5"] }
         ]
     };
 
@@ -604,14 +612,54 @@
         // Exibir a origem no mapa
         addMarkerForLocation(mockData.origin, 0);
         
-        // Inicializar datas para o filtro de eventos
-        const today = new Date();
-        const nextMonth = new Date();
-        nextMonth.setMonth(today.getMonth() + 1);
+        // Inicializar datas para o filtro de eventos - utilizando o ano atual (2025)
+        const currentYear = 2025;
+        const currentMonth = 4; // maio = 4 (0-based)
+        
+        const today = new Date(currentYear, currentMonth, 1);
+        const nextMonth = new Date(currentYear, currentMonth + 1, 0);
         
         document.getElementById('start-date').valueAsDate = today;
         document.getElementById('end-date').valueAsDate = nextMonth;
+        
+        // Atualizar os eventos para garantir que estejam com datas do ano corrente
+        updateEventDates(currentYear);
     });
+    
+    // Função para atualizar datas de eventos para o ano atual
+    function updateEventDates(year) {
+        if (!mockData.cityEvents) return;
+        
+        mockData.cityEvents.forEach(event => {
+            // Verificar se as datas já estão no ano correto
+            const eventYear = new Date(event.startDate).getFullYear();
+            
+            if (eventYear !== year) {
+                // Extrair mês e dia das datas originais
+                const startDate = new Date(event.startDate);
+                const endDate = new Date(event.endDate);
+                
+                // Criar novas datas com o ano atual
+                const newStartDate = new Date(
+                    year,
+                    startDate.getMonth(),
+                    startDate.getDate()
+                );
+                
+                const newEndDate = new Date(
+                    year,
+                    endDate.getMonth(),
+                    endDate.getDate()
+                );
+                
+                // Atualizar as datas no formato ISO string (YYYY-MM-DD)
+                event.startDate = newStartDate.toISOString().split('T')[0];
+                event.endDate = newEndDate.toISOString().split('T')[0];
+            }
+        });
+        
+        console.log("Datas de eventos atualizadas para", year);
+    }
 
     // Inicializa o mapa
     function initMap() {
@@ -1812,21 +1860,34 @@
         `;
     }
 
-    // Filtrar eventos por data
+    // Filtrar eventos por data - agora aplicado a todas as cidades conhecidas
     function filterEventsByDate() {
-        // Se tivermos uma rota ativa, atualizar os eventos mostrados
-        const activeRoute = directionsRenderer.getDirections();
-        if (activeRoute) {
-            // Obter o tipo de veículo selecionado
-            const vehicleType = document.querySelector('input[name="vehicle-type"]:checked').value;
+        // Obter o tipo de veículo selecionado
+        const vehicleType = document.querySelector('input[name="vehicle-type"]:checked').value;
             
-            // Mostrar eventos para as cidades da rota ativa
+        // Sempre tentamos mostrar eventos, mesmo sem uma rota calculada
+        if (locations && locations.length > 0) {
+            console.log("Atualizando eventos com novas datas...");
+            
+            // Obter datas do filtro
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            
+            // Verificar se ambas as datas estão presentes
+            if (!startDate || !endDate) {
+                alert("Por favor selecione as datas de início e fim para filtrar os eventos.");
+                return;
+            }
+            
+            console.log(`Filtrando eventos no período: ${startDate} até ${endDate}`);
+            
+            // Mostrar eventos para as cidades da rota ativa ou todas as cidades
             showEventsForCitiesOnRoute(locations);
             
             // Também atualizar restrições de caminhões
             showTruckRestrictionsForCitiesOnRoute(locations, vehicleType);
         } else {
-            alert("Calcule uma rota primeiro para ver os eventos nas cidades do percurso.");
+            alert("Adicione ao menos um local para ver eventos nas cidades.");
         }
     }
 
