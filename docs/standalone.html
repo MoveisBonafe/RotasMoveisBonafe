@@ -1112,8 +1112,11 @@
         const origin = locations.find(loc => loc.isOrigin);
         const destinations = locations.filter(loc => !loc.isOrigin);
         
-        // Resolver o TSP (implementação simplificada)
-        const tspResult = solveTSP(origin, destinations, includeOriginReturn);
+        // Resolver o TSP (implementação avançada idêntica ao Replit)
+        const tspResult = solveAdvancedTSP(origin, destinations, includeOriginReturn);
+        
+        // Reordenar os marcadores visualmente para corresponder à nova sequência
+        reorderMarkers(tspResult.path);
         
         // Traçar a rota usando o Google Directions Service
         drawRouteOnMap(tspResult.path, vehicleType);
@@ -1141,6 +1144,25 @@
         
         // Navegar para a aba de relatório
         document.querySelector('.tab-button[data-tab="report"]').click();
+    }
+    
+    // Reordenar os marcadores para corresponder à sequência otimizada
+    function reorderMarkers(optimizedPath) {
+        // Remover os marcadores existentes do mapa
+        markers.forEach(markerObj => {
+            markerObj.marker.setMap(null);
+        });
+        
+        // Limpar o array de marcadores
+        markers = [];
+        
+        // Adicionar marcadores novamente na ordem otimizada
+        optimizedPath.forEach((location, index) => {
+            addMarkerForLocation(location, index);
+        });
+        
+        // Atualizar a lista de locais
+        updateLocationsList();
     }
 
     // Traçar a rota no mapa
@@ -1674,8 +1696,9 @@
         return services.map(s => serviceNames[s] || s).join(', ');
     }
 
-    // Implementação simplificada do algoritmo do Caixeiro Viajante
-    function solveTSP(origin, destinations, includeReturn) {
+    // Implementação avançada do algoritmo do Caixeiro Viajante (TSP)
+    // Idêntico ao comportamento da versão Replit
+    function solveAdvancedTSP(origin, destinations, includeReturn) {
         // Se não houver destinos, retornar apenas a origem
         if (!destinations.length) {
             return {
@@ -1684,61 +1707,128 @@
             };
         }
         
-        // Nearest Neighbor heuristic
-        let currentPoint = origin;
-        let unvisited = [...destinations];
-        let path = [origin];
+        // Inicializar a distância total
         let totalDistance = 0;
         
-        // Enquanto houver pontos não visitados
-        while (unvisited.length > 0) {
-            // Encontrar o ponto mais próximo
-            let closestIdx = 0;
-            let closestDistance = calculateDistance(
-                currentPoint.latitude, currentPoint.longitude,
-                unvisited[0].latitude, unvisited[0].longitude
-            );
-            
-            for (let i = 1; i < unvisited.length; i++) {
-                const distance = calculateDistance(
-                    currentPoint.latitude, currentPoint.longitude,
-                    unvisited[i].latitude, unvisited[i].longitude
+        // Matriz de distâncias entre todos os pontos
+        const points = [origin, ...destinations];
+        const numPoints = points.length;
+        const distMatrix = Array(numPoints).fill().map(() => Array(numPoints).fill(0));
+        
+        // Preencher a matriz de distâncias
+        for (let i = 0; i < numPoints; i++) {
+            for (let j = i + 1; j < numPoints; j++) {
+                const dist = calculateDistance(
+                    points[i].latitude, points[i].longitude,
+                    points[j].latitude, points[j].longitude
                 );
+                distMatrix[i][j] = dist;
+                distMatrix[j][i] = dist; // A matriz é simétrica
+            }
+        }
+        
+        // Método Nearest Insertion: começamos com a rota origem -> ponto mais próximo -> origem
+        // e iterativamente adicionamos o melhor ponto para inserir na rota atual
+        
+        // Inicializar com o ponto mais próximo da origem
+        let bestDist = Infinity;
+        let bestIdx = -1;
+        
+        for (let i = 1; i < numPoints; i++) {
+            if (distMatrix[0][i] < bestDist) {
+                bestDist = distMatrix[0][i];
+                bestIdx = i;
+            }
+        }
+        
+        // Rota inicial: origem -> ponto mais próximo
+        let tour = [0, bestIdx];
+        let remaining = Array.from({length: numPoints - 1}, (_, i) => i + 1);
+        remaining.splice(remaining.indexOf(bestIdx), 1);
+        
+        // Calcular a distância inicial
+        totalDistance = bestDist;
+        
+        // Enquanto houver pontos não visitados
+        while (remaining.length > 0) {
+            let bestInsertion = {
+                point: -1,
+                position: -1,
+                cost: Infinity
+            };
+            
+            // Para cada ponto restante
+            for (let i = 0; i < remaining.length; i++) {
+                const point = remaining[i];
                 
-                if (distance < closestDistance) {
-                    closestDistance = distance;
-                    closestIdx = i;
+                // Para cada possível posição de inserção no tour atual
+                for (let j = 1; j <= tour.length; j++) {
+                    const prev = tour[j-1];
+                    const next = j < tour.length ? tour[j] : tour[0]; // Se estamos no final, o próximo é o início
+                    
+                    // Calcular o custo de inserção = dist(prev, point) + dist(point, next) - dist(prev, next)
+                    const insertionCost = distMatrix[prev][point] + 
+                                         distMatrix[point][next] -
+                                         distMatrix[prev][next];
+                    
+                    if (insertionCost < bestInsertion.cost) {
+                        bestInsertion = {
+                            point: point,
+                            position: j,
+                            cost: insertionCost
+                        };
+                    }
                 }
             }
             
-            // Adicionar o ponto mais próximo ao caminho
-            const nextPoint = unvisited[closestIdx];
-            path.push(nextPoint);
+            // Inserir o melhor ponto na melhor posição
+            tour.splice(bestInsertion.position, 0, bestInsertion.point);
+            remaining.splice(remaining.indexOf(bestInsertion.point), 1);
             
-            // Adicionar a distância ao total
-            totalDistance += closestDistance;
-            
-            // Atualizar o ponto atual e remover o ponto visitado da lista
-            currentPoint = nextPoint;
-            unvisited.splice(closestIdx, 1);
+            // Atualizar a distância total
+            totalDistance += bestInsertion.cost;
         }
         
-        // Se for para incluir retorno à origem, adicionar a origem ao final e calcular a distância adicional
-        if (includeReturn) {
-            const lastPoint = path[path.length - 1];
-            const returnDistance = calculateDistance(
-                lastPoint.latitude, lastPoint.longitude,
-                origin.latitude, origin.longitude
-            );
-            
-            path.push(origin);
-            totalDistance += returnDistance;
+        // Se não for para incluir retorno, remover o último link (do último ponto de volta à origem)
+        if (!includeReturn && tour.length > 1) {
+            const last = tour[tour.length - 1];
+            totalDistance -= distMatrix[last][0];
+            // Não removemos a origem do início porque a rota deve começar na origem
+        }
+        
+        // Converter os índices de tour de volta para os pontos reais
+        const path = tour.map(idx => points[idx]);
+        
+        // Ajustar a rota se não for para incluir retorno à origem
+        if (!includeReturn) {
+            // Garante que a rota não termine voltando para a origem
+            if (path[path.length - 1] === origin) {
+                path.pop();
+            }
+        } else {
+            // Garante que a rota termine na origem
+            if (path[path.length - 1] !== origin) {
+                path.push(origin);
+                
+                // Adicionar a distância de retorno
+                const lastPoint = path[path.length - 2];
+                const returnDistance = calculateDistance(
+                    lastPoint.latitude, lastPoint.longitude,
+                    origin.latitude, origin.longitude
+                );
+                totalDistance += returnDistance;
+            }
         }
         
         return {
             path: path,
             distance: totalDistance
         };
+    }
+    
+    // Manteremos a versão simples para compatibilidade
+    function solveTSP(origin, destinations, includeReturn) {
+        return solveAdvancedTSP(origin, destinations, includeReturn);
     }
 
     // Calcular distância entre dois pontos usando a fórmula de Haversine
