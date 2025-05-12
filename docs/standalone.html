@@ -626,8 +626,14 @@
         document.getElementById('start-date').value = '';
         document.getElementById('end-date').value = '';
         
+        // Inicializar currentOptimizedPath com a origem para mostrar eventos/restrições iniciais
+        currentOptimizedPath = [mockData.origin.id];
+        
+        // Chamar funções para mostrar eventos e restrições para a origem
+        filterEventsByDate();
+        
         // Mostrar mensagem de ajuda
-        console.log("Campos de data inicializados vazios conforme solicitado");
+        console.log("Campos de data inicializados vazios e eventos/restrições para origem configurados");
     });
 
     // Inicializa o mapa
@@ -790,7 +796,7 @@
                 showEventsForCitiesOnRoute(selectedRoute.path);
                 
                 // Atualizar restrições
-                showTruckRestrictionsForCitiesOnRoute(selectedRoute.path, "truck1");
+                showTruckRestrictionsForCitiesOnRoute(selectedRoute.path, null); // null para mostrar todos os tipos
                 
                 // Atualizar rota atual
                 currentRouteIndex = selectedIndex;
@@ -1462,7 +1468,7 @@
                 // Mostrar pontos de interesse e eventos ao longo da rota
                 showPointsOfInterestOnRoute(tspResult.path);
                 showEventsForCitiesOnRoute(tspResult.path);
-                showTruckRestrictionsForCitiesOnRoute(tspResult.path);
+                showTruckRestrictionsForCitiesOnRoute(tspResult.path, null); // null para mostrar todos os tipos
                 
                 // Atualizar a sequência de rota no relatório
                 // A função não existe, então implementamos diretamente aqui
@@ -1523,7 +1529,7 @@
             }
             
             // Mostrar restrições para caminhões nas cidades da rota
-            showTruckRestrictionsForCitiesOnRoute(tspResult.path, vehicleType);
+            showTruckRestrictionsForCitiesOnRoute(tspResult.path, null); // null para mostrar todos os tipos
             
             // Atualizar o resumo da rota
             updateRouteSummary(tspResult, vehicleType);
@@ -2294,9 +2300,8 @@
         
         // Se não houver restrições, mostrar mensagem
         if (restrictionsOnRoute.length === 0) {
-            const mensagem = vehicleType === null
-                ? '<p class="text-muted">Nenhuma restrição encontrada para caminhões nas cidades da rota.</p>'
-                : '<p class="text-muted">Nenhuma restrição encontrada para o tipo de veículo selecionado nas cidades da rota.</p>';
+            // Sempre mostrar a mensagem para todos os tipos de caminhões
+            const mensagem = '<p class="text-muted">Nenhuma restrição encontrada para caminhões nas cidades da rota.</p>';
             restrictionsListContainer.innerHTML = mensagem;
             return;
         }
@@ -2392,7 +2397,7 @@
         showEventsForCitiesOnRoute(tspResult.path);
             
         // Mostrar restrições para caminhões nas cidades da rota
-        showTruckRestrictionsForCitiesOnRoute(tspResult.path, "truck1");
+        showTruckRestrictionsForCitiesOnRoute(tspResult.path, null); // null para mostrar todos os tipos
             
         // Atualizar o resumo da rota
         updateRouteSummary(tspResult, "truck1", routeIndex);
