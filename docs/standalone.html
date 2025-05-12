@@ -1603,9 +1603,30 @@
             console.log("Atualizando resumo da rota com:", tspResult);
             
             // Verificar se temos resultados válidos
-            if (!tspResult || typeof tspResult.distance === 'undefined') {
-                console.error("Dados incompletos do TSP:", tspResult);
-                return;
+            if (!tspResult || typeof tspResult.distance !== 'number' || isNaN(tspResult.distance)) {
+                console.error("Dados incompletos ou inválidos do TSP:", tspResult);
+                
+                // Adicionar um valor padrão para distância se não for válido
+                if (!tspResult.distance || isNaN(tspResult.distance)) {
+                    console.log("Corrigindo valor de distância");
+                    
+                    // Calcular uma distância aproximada com base nos pontos
+                    let approxDistance = 0;
+                    if (tspResult && tspResult.path && tspResult.path.length > 1) {
+                        for (let i = 0; i < tspResult.path.length - 1; i++) {
+                            const p1 = tspResult.path[i];
+                            const p2 = tspResult.path[i+1];
+                            approxDistance += calculateDistance(
+                                p1.latitude, p1.longitude,
+                                p2.latitude, p2.longitude
+                            );
+                        }
+                        tspResult.distance = approxDistance;
+                        console.log("Distância recalculada:", approxDistance, "km");
+                    } else {
+                        tspResult.distance = 0;
+                    }
+                }
             }
             
             // Veículo fixo (caminhão 1 eixo)
@@ -1629,22 +1650,28 @@
             // Formatar o tempo em horas e minutos
             const hours = Math.floor(estimatedTime);
             const minutes = Math.round((estimatedTime - hours) * 60);
-            const timeFormatted = `${hours}h ${minutes}min`;
+            const timeFormatted = hours > 0 ? 
+                                `${hours}h ${minutes}min` : 
+                                `${minutes}min`;
             
             console.log("Distância calculada:", tspResult.distance.toFixed(1), "km");
             console.log("Tempo estimado:", timeFormatted);
             
             // Construir a lista de cidades na rota
-            const citiesOnRoute = tspResult.path.map(loc => {
-                const parts = loc.address.split(',');
-                return parts[0].trim();
-            });
-            const uniqueCities = [...new Set(citiesOnRoute)];
+            let locationsList = '';
             
-            // Contar pedágios na rota
-            const tollsOnRoute = mockData.pointsOfInterest.filter(poi => 
-                poi.type === 'toll' && uniqueCities.some(city => poi.cityName.includes(city))
-            );
+            // Verificar se temos path válido
+            if (tspResult.path && tspResult.path.length > 0) {
+                // Criar a lista de cidades formatada
+                locationsList = tspResult.path.map((location, index) => {
+                    // Garantir que os nomes estão formatados corretamente
+                    const locationName = formatLocationName(location.name || '');
+                    const locationAddress = formatLocationName(location.address || '');
+                    return `<li>${index+1}. <strong>${locationName}</strong> ${locationAddress ? `(${locationAddress})` : ''}</li>`;
+                }).join('');
+            } else {
+                locationsList = '<li>Nenhum local encontrado na rota</li>';
+            }
         
             summaryContainer.innerHTML = `
                 <div class="summary-header">Resumo da Rota Otimizada</div>
@@ -1656,14 +1683,35 @@
                 </div>
                 
                 <div class="mt-3">
-                    <div class="summary-header">Sequência de Cidades</div>
+                    <div class="summary-header">Sequência da Rota</div>
                     <ol id="route-steps">
-                        ${tspResult.path.map(location => `<li>${location.name} (${location.address})</li>`).join('')}
+                        ${locationsList}
                     </ol>
                 </div>
+                
+                <div class="form-group mt-3">
+                    <label for="route-name">Nome da rota:</label>
+                    <input type="text" id="route-name" class="form-control" placeholder="Ex: Entrega Região Sul">
+                </div>
             `;
+            
+            // Habilitar botões de salvar e imprimir
+            document.getElementById('save-route').disabled = false;
+            document.getElementById('print-route').disabled = false;
+            
         } catch (error) {
-            console.error("Erro ao atualizar resumo da rota:", error);
+            console.error("Erro ao atualizar resumo da rota:", error, error.stack);
+            
+            // Em caso de erro, mostrar mensagem simplificada
+            const summaryContainer = document.getElementById('route-summary');
+            if (summaryContainer) {
+                summaryContainer.innerHTML = `
+                    <div class="alert alert-danger">
+                        Ocorreu um erro ao processar o resumo da rota. Por favor, tente novamente.
+                    </div>
+                `;
+                summaryContainer.style.display = 'block';
+            }
         }
     }
 
