@@ -1428,9 +1428,11 @@
             return parts[0].trim();
         });
         
-        // Obter datas do filtro
+        // Obter datas do filtro (agora na aba de locais)
         const startDate = document.getElementById('start-date').value;
         const endDate = document.getElementById('end-date').value;
+        
+        console.log("Filtro de datas aplicado:", startDate || "Sem data inicial", "até", endDate || "Sem data final");
         
         // Filtrar eventos que estão nas cidades da rota e no período selecionado
         let eventsOnRoute = mockData.cityEvents.filter(event => {
