@@ -1,35 +1,56 @@
-# Versão GitHub Pages do Otimizador de Rotas
+# Otimizador de Rotas - Versão GitHub Pages
 
-Esta é uma versão estática do aplicativo de otimização de rotas, desenvolvida especificamente para hospedar no GitHub Pages.
+Este diretório contém a versão otimizada do Otimizador de Rotas para deploy no GitHub Pages.
 
-## Características
-- Todos os dados são carregados a partir de dados mock embutidos
-- Não é necessário backend
-- Google Maps carregado a partir do iframe
-- Completamente funcional sem servidor
+## Conteúdo
 
-## Como usar
-1. Acesse a aplicação pela URL do GitHub Pages
-2. Adicione destinos usando o botão "Adicionar Destino" na barra lateral
-3. Clique em "Calcular Rota" para executar o algoritmo TSP
-4. Veja as informações da rota, incluindo pedágios e balanças de pesagem
+1. `index.html` - Página inicial com navegação para as versões
+2. `standalone.html` - Versão completa da aplicação sem dependências externas
+3. `test.html` - Versão simplificada para teste do Google Maps API
 
-## Testar localmente
-Execute o script `test-locally.sh` para iniciar um servidor web local:
+## Instruções para teste local
+
+### Opção 1: Servidor Python
+
 ```bash
-./test-locally.sh
+cd docs
+python3 -m http.server 8000
 ```
 
-## Diagnóstico
-Para verificar se a aplicação está funcionando corretamente, acesse a página de diagnóstico:
+Acesse em seu navegador: `http://localhost:8000`
+
+### Opção 2: Abrir arquivos diretamente
+
+Você também pode abrir os arquivos HTML diretamente no navegador:
+
 ```
-diagnostic.html
+docs/index.html
+docs/standalone.html
+docs/test.html
 ```
 
-## Limitações
-Esta versão estática não permite:
-- Salvar ou exportar rotas
-- Sincronizar com banco de dados
-- Funcionalidades que dependem do backend
+## Recursos da versão standalone
 
-Desenvolvido com ❤️ usando React e Google Maps.
+- Implementação completa de todas as funcionalidades sem dependências externas
+- Interface idêntica à versão React, mas sem necessidade de servidor
+- Suporte total a:
+  - Adição de múltiplos destinos manualmente ou via arquivo
+  - Cálculo de rota otimizada (algoritmo do caixeiro viajante)
+  - Visualização de eventos e restrições em cidades
+  - Relatório detalhado com custos e tempos
+  - Marcadores sequenciais e animação da rota
+  - Street View (Pegman) funcional
+  - Zoom com scroll sem precionar CTRL
+
+## Recursos do mapa
+
+- Marcadores numerados para sequência da rota
+- Pedágios e balanças de pesagem ao longo da rota
+- Eventos em cidades destacados com ícones coloridos
+- Relatório detalhado com custos estimados
+
+## Notas técnicas
+
+- A versão standalone utiliza JavaScript puro e Google Maps API
+- Dados de exemplo estão incorporados diretamente no HTML
+- A página não requer conexão com banco de dados

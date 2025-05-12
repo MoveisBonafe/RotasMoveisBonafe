@@ -1,0 +1,61 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build React app for GitHub Pages
+        run: |
+          # Criar variáveis de ambiente para o build
+          echo "VITE_USE_MOCK_DATA=true" >> .env
+          echo "VITE_GOOGLE_MAPS_API_KEY=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U" >> .env
+          
+          # Configurar build para GitHub Pages
+          mkdir -p docs
+          
+          # Configuração específica para build de GitHub Pages
+          npx vite build --outDir=docs --base="./"
+          
+          # Criar arquivo 404.html para roteamento no GitHub Pages
+          cp docs/index.html docs/404.html
+          
+          # Criar arquivo .nojekyll para evitar processamento Jekyll
+          touch docs/.nojekyll
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './docs'
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
