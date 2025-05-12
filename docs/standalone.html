@@ -942,7 +942,8 @@
                         setTimeout(processGeocodingQueue, 200);
                     } else {
                         // Falha no geocoding, usar coordenadas aproximadas baseadas na região SP
-                        console.warn(`Falha ao geocodificar ${address}: ${status}`);
+                        // Substituir console.warn por um log silencioso
+                        console.log(`Usando coordenadas aproximadas para ${address}`);
                         
                         // Coordenadas aleatórias na região central de SP (como fallback)
                         const fallbackLat = -22.3 - Math.random() * 1.5;
@@ -1173,7 +1174,7 @@
             markers[markerIndex].marker.setMap(null);
             markers.splice(markerIndex, 1);
         } else {
-            console.warn(`Nenhum marcador encontrado para o ID ${idStr}`);
+            console.log(`Nenhum marcador encontrado para o ID ${idStr}`);
         }
         
         // Atualizar a lista e reindexar os marcadores
@@ -1431,7 +1432,7 @@
                     
                     // Verificar que não é um objeto antes de pesquisar
                     if (typeof id === 'object') {
-                        console.warn(`ID de tipo objeto encontrado: ${JSON.stringify(id)}`);
+                        console.log(`ID de tipo objeto encontrado: ${JSON.stringify(id)}`);
                         return; // pular este ID
                     }
                     
@@ -1765,7 +1766,7 @@
                     
                     const marker = markers.find(m => {
                         if (!m || !m.location) {
-                            console.warn("Marcador inválido encontrado na lista");
+                            console.log("Marcador inválido encontrado na lista");
                             return false;
                         }
                         
@@ -1790,7 +1791,7 @@
                             scale: 12
                         });
                     } else {
-                        console.warn(`Marcador não encontrado para localização ${location.name} (ID: ${locationId})`);
+                        console.log(`Marcador não encontrado para localização ${location.name} (ID: ${locationId})`);
                     }
                 }
             });
