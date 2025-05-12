@@ -738,16 +738,30 @@
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const tabId = button.getAttribute('data-tab');
-                
-                // Desativar todas as abas
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                tabContents.forEach(content => content.classList.remove('active'));
-                
-                // Ativar a aba clicada
-                button.classList.add('active');
-                document.getElementById(`${tabId}-tab`).classList.add('active');
+                selectTab(tabId);
             });
         });
+    }
+    
+    // Função para selecionar uma aba específica (pode ser chamada programaticamente)
+    function selectTab(tabId) {
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // Desativar todas as abas
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabContents.forEach(content => content.classList.remove('active'));
+        
+        // Ativar a aba selecionada
+        const targetButton = document.querySelector(`.tab-button[data-tab="${tabId}"]`);
+        if (targetButton) {
+            targetButton.classList.add('active');
+        }
+        
+        const targetContent = document.getElementById(`${tabId}-tab`);
+        if (targetContent) {
+            targetContent.classList.add('active');
+        }
     }
 
     // Configura todos os event listeners
@@ -1190,6 +1204,9 @@
         // Resolver o TSP (implementação avançada idêntica ao Replit)
         const tspResult = solveAdvancedTSP(origin, destinations, includeOriginReturn);
         
+        // Debug
+        console.log("TSP resolvido, calculando rota com", tspResult.path.length, "pontos");
+        
         // Reordenar os marcadores visualmente para corresponder à nova sequência
         reorderMarkers(tspResult.path);
         
@@ -1462,9 +1479,13 @@
         // Limpar marcadores anteriores
         clearEventMarkers();
         
-        // Ajustar as datas para o formato atual (maio de 2025 mencionado no cabeçalho)
-        const currentYear = 2025;
-        const currentMonth = 5; // maio
+        // Se não houver localizações, mostrar mensagem e retornar
+        if (!pathLocations || pathLocations.length === 0) {
+            eventsListContainer.innerHTML = '<p class="text-muted">Adicione locais para ver eventos nas cidades do percurso.</p>';
+            return;
+        }
+        
+        console.log("Procurando eventos para os locais:", pathLocations.length);
         
         // Extrair nomes das cidades na rota
         const citiesOnRoute = pathLocations.map(loc => {
@@ -1732,6 +1753,20 @@
         // Limpar a lista de restrições
         const restrictionsListContainer = document.getElementById('restrictions-list');
         restrictionsListContainer.innerHTML = '';
+        
+        // Se o tipo de veículo não foi especificado, usar o padrão
+        if (!vehicleType) {
+            vehicleType = document.querySelector('input[name="vehicle-type"]:checked').value;
+            console.log("Tipo de veículo padrão usado:", vehicleType);
+        }
+        
+        // Se não houver localizações, mostrar mensagem e retornar
+        if (!pathLocations || pathLocations.length === 0) {
+            restrictionsListContainer.innerHTML = '<p class="text-muted">Adicione locais para ver restrições nas cidades do percurso.</p>';
+            return;
+        }
+        
+        console.log("Procurando restrições para o veículo:", vehicleType, "nos locais:", pathLocations.length);
         
         // Extrair nomes das cidades na rota
         const citiesOnRoute = pathLocations.map(loc => {
