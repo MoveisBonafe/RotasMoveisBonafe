@@ -829,9 +829,7 @@
         let newLocations = [];
         
         // CEPs com coordenadas conhecidas para as principais cidades paulistas
-        // Banco de dados ampliado e corrigido para otimizador de rotas
         const knownCEPs = {
-            // Cidades principais - ceps básicos
             '14020-260': {name: 'Ribeirão Preto', lat: -21.1767, lng: -47.8208},
             '17560-000': {name: 'Vera Cruz', lat: -22.2205, lng: -49.8233},
             '17580-000': {name: 'Pompéia', lat: -22.1075, lng: -50.1764},
@@ -846,20 +844,7 @@
             '17040-001': {name: 'Bauru', lat: -22.3246, lng: -49.0871},
             '17400-000': {name: 'Garça', lat: -22.2132, lng: -49.6546},
             '17480-000': {name: 'Marília', lat: -22.2171, lng: -49.9501},
-            '17300-000': {name: 'Dois Córregos', lat: -22.3673, lng: -48.3822},
-            
-            // CEPs problemáticos (adicionados ou corrigidos)
-            '18430-000': {name: 'Paranapanema', lat: -23.3862, lng: -48.7214},
-            '18430-035': {name: 'Paranapanema', lat: -23.3865, lng: -48.7240}, // CEP específico de Paranapanema corrigido
-            
-            // CEPs adicionais
-            '13560-000': {name: 'São Carlos', lat: -22.0169, lng: -47.8908},
-            '13610-000': {name: 'Leme', lat: -22.1809, lng: -47.3959},
-            '14940-000': {name: 'Ibitinga', lat: -21.7573, lng: -48.8292},
-            '18650-000': {name: 'São Manuel', lat: -22.7321, lng: -48.5712},
-            '18674-000': {name: 'Pardinho', lat: -23.0844, lng: -48.3679},
-            '18682-000': {name: 'Lençóis Paulista', lat: -22.6032, lng: -48.8007},
-            '18130-000': {name: 'São Roque', lat: -23.5329, lng: -47.1356}
+            '17300-000': {name: 'Dois Córregos', lat: -22.3673, lng: -48.3822}
         };
         
         // Geocodificador para CEPs desconhecidos
@@ -974,25 +959,18 @@
                         // CORREÇÃO: Não adicionar CEPs que não puderam ser geocodificados
                         console.warn(`CEP não encontrado: ${item.cep} - ${item.name}. Este local não será adicionado.`);
                         
-                        // Melhor tratamento de erro - Mostrar notificação mais clara para o usuário
+                        // Mostrar notificação para o usuário sobre o CEP não encontrado
                         const notifyError = document.createElement('div');
                         notifyError.className = 'alert alert-warning mt-2';
-                        notifyError.innerHTML = `
-                            <strong>Atenção!</strong> CEP "${item.cep}" não encontrado para "${item.name}".
-                            <br>Este local não foi adicionado ao mapa.
-                            <br><small>Sugestão: Verifique o CEP ou tente adicionar manualmente pelo formulário.</small>
-                        `;
+                        notifyError.innerHTML = `CEP não encontrado: ${item.cep} - ${item.name}`;
                         document.querySelector('.file-upload').appendChild(notifyError);
-                        
-                        // Registrar o CEP problemático para depuração
-                        console.error(`CEP problemático: ${item.cep} - ${item.name}`);
                         
                         // Remover a notificação após alguns segundos
                         setTimeout(() => {
                             if (notifyError && notifyError.parentNode) {
                                 notifyError.parentNode.removeChild(notifyError);
                             }
-                        }, 8000);
+                        }, 5000);
                         
                         // Atualizar o status sem adicionar o local
                         
@@ -2066,29 +2044,15 @@
             return;
         }
         
-        // SOLUÇÃO MELHORADA: Extrair TODAS as cidades que estão na rota (não apenas origem e destino)
+        // SOLUÇÃO FUNDAMENTAL: Extrair APENAS as cidades que realmente estão na rota
         // Array para armazenar os nomes das cidades que estão REALMENTE na rota
         const citiesOnRoute = [];
         
-        // Incluir TODAS as cidades do percurso
-        pathLocations.forEach(location => {
-            if (location.address) {
-                const cityParts = location.address.split(',');
-                if (cityParts.length > 0) {
-                    const cityName = cityParts[0].trim();
-                    if (!citiesOnRoute.includes(cityName)) {
-                        citiesOnRoute.push(cityName);
-                        console.log(`Cidade adicionada à rota: ${cityName}`);
-                    }
-                }
-            } else if (location.name && !citiesOnRoute.includes(location.name)) {
-                citiesOnRoute.push(location.name);
-                console.log(`Localização sem endereço adicionada à rota: ${location.name}`);
-            }
-        });
-        
-        // Garantir que a origem (Dois Córregos) esteja incluída
+        // Incluir apenas o destino e a origem
+        const destinoFinal = pathLocations[pathLocations.length - 1];
         const origem = mockData.origin;
+        
+        // Adicionar a origem
         if (!citiesOnRoute.includes(origem.name)) {
             citiesOnRoute.push(origem.name);
             console.log(`Origem adicionada à rota: ${origem.name}`);
@@ -2124,51 +2088,26 @@
         // Não definimos datas padrão - os campos devem permanecer vazios
         console.log("Usando filtro de eventos sem datas padrão - mostrar todos os eventos para cidades na rota");
         
-        // Filtragem completa para eventos com correspondência bidirecional de cidades e MELHOR filtragem de datas
+        // Filtragem melhorada para eventos com correspondência bidirecional de cidades
         let eventsOnRoute = mockData.cityEvents.filter(event => {
             const eventCity = event.cityName;
             
-            // Melhorada filtragem de datas para aniversários de cidades
+            // Filtragem de datas somente se datas forem fornecidas
             let dateMatch = true;
-            
             if (startDate || endDate) {
-                // Data do evento (apenas dia e mês para aniversários anuais)
-                const eventDate = new Date(event.startDate);
-                
-                // Datas do filtro
+                const eventStart = new Date(event.startDate);
+                const eventEnd = new Date(event.endDate);
                 const filterStart = startDate ? new Date(startDate) : new Date(0);
                 const filterEnd = endDate ? new Date(endDate) : new Date(9999, 11, 31);
-                
-                // Para eventos que ocorrem todo ano (aniversários de cidades)
-                if (event.isAnnual) {
-                    console.log(`Verificando aniversário anual de ${eventCity} em ${event.startDate}`);
-                    
-                    // Extrair dia e mês do evento
-                    const eventDay = eventDate.getDate();
-                    const eventMonth = eventDate.getMonth();
-                    
-                    // Verificar se o dia/mês da data do evento está dentro do período do filtro
-                    // Considerando apenas o ano atual para simplificar
-                    const currentYear = new Date().getFullYear();
-                    const eventThisYear = new Date(currentYear, eventMonth, eventDay);
-                    
-                    dateMatch = eventThisYear >= filterStart && eventThisYear <= filterEnd;
-                    console.log(`Aniversário ${eventCity}: ${eventThisYear.toISOString().split('T')[0]}, Dentro do período: ${dateMatch}`);
-                } else {
-                    // Para eventos comuns, verificar sobreposição de períodos
-                    const eventEnd = new Date(event.endDate || event.startDate);
-                    dateMatch = eventDate <= filterEnd && eventEnd >= filterStart;
-                }
+                dateMatch = eventStart <= filterEnd && eventEnd >= filterStart;
             }
             
-            // Melhorar correspondência da cidade - verificar nos dois sentidos (case insensitive)
-            const cityMatch = citiesOnRoute.some(city => {
-                const cityLower = city.toLowerCase();
-                const eventCityLower = eventCity.toLowerCase();
-                return eventCityLower.includes(cityLower) || cityLower.includes(eventCityLower);
-            });
+            // Melhorar correspondência da cidade - verificar nos dois sentidos
+            const cityMatch = citiesOnRoute.some(city => 
+                eventCity.includes(city) || city.includes(eventCity)
+            );
             
-            console.log(`Evento: ${event.name}, Cidade: ${eventCity}, Data: ${event.startDate}, Anual: ${event.isAnnual}, Cidade Corresponde: ${cityMatch}, Data Corresponde: ${dateMatch}`);
+            console.log(`Evento: ${event.name}, Cidade: ${eventCity}, Data: ${event.startDate}-${event.endDate}, Cidade Corresponde: ${cityMatch}, Data Corresponde: ${dateMatch}`);
             
             return cityMatch && dateMatch;
         });
@@ -2294,7 +2233,6 @@
         // Extrair nomes das cidades na rota (ignorar localizações não encontradas)
         console.log("Detectando cidades na rota para restrições de caminhões...");
         
-        // Incluir TODAS as cidades na rota (não apenas origem e destino)
         const citiesOnRoute = pathLocations
             .filter(loc => loc) // Remover localizações nulas
             .map(loc => {
@@ -2309,11 +2247,9 @@
                 return cityName;
             });
         
-        // Garantir que a origem (Dois Córregos) está incluída mesmo que não esteja no caminho
-        if (!citiesOnRoute.includes("Dois Córregos")) {
-            citiesOnRoute.push("Dois Córregos");
-            console.log("Adicionando Dois Córregos à lista de cidades para restrições");
-        }
+        // CORREÇÃO: Adicionar apenas a origem (Dois Córregos) e o destino
+        // NÃO adicionar mais cidades manualmente para a demonstração
+        if (!citiesOnRoute.includes("Dois Córregos")) citiesOnRoute.push("Dois Córregos");
         
         // Extrair o destino final corretamente
         const destinoFinal = pathLocations[pathLocations.length - 1];
@@ -2333,40 +2269,17 @@
         // Filtrar restrições para cidades na rota - para TODOS os tipos de caminhões
         console.log(`Filtrando restrições para cidades na rota - exibindo para todos os caminhões`);
         
-        // Exibir sempre TODAS as restrições para TODOS os tipos de caminhões nas cidades da rota
-        let restrictionsOnRoute = [];
-        
-        // Para cada cidade na rota, adicionar todas as restrições disponíveis
-        for (let city of citiesOnRoute) {
-            const cityRestrictions = mockData.truckRestrictions.filter(restriction => {
-                const cityNameLower = city.toLowerCase();
-                const restrictionCityLower = restriction.cityName.toLowerCase();
-                
-                // Verificar correspondência de nome de cidade
-                const cityMatch = restrictionCityLower.includes(cityNameLower) || 
-                                 cityNameLower.includes(restrictionCityLower);
-                
-                console.log(`Comparando cidade "${city}" com restrição em "${restriction.cityName}" - Corresponde: ${cityMatch}`);
-                
-                return cityMatch;
-            });
+        // Ignorar filtro por tipo de veículo (vehicleType) para mostrar TODAS as restrições
+        const restrictionsOnRoute = mockData.truckRestrictions.filter(restriction => {
+            // Verificamos apenas se a restrição está em alguma cidade da rota
+            const cityMatch = citiesOnRoute.some(city => 
+                restriction.cityName.includes(city) || city.includes(restriction.cityName)
+            );
             
-            console.log(`Cidade ${city} tem ${cityRestrictions.length} restrições`);
+            // Não importa qual veículo - mostrar todas as restrições das cidades na rota
+            console.log(`Restrição: ${restriction.description}, Cidade: ${restriction.cityName}, Caminhões: ${restriction.affectedVehicles.join(',')}, Corresponde: ${cityMatch}`);
             
-            // Adicionar restrições desta cidade ao array geral
-            restrictionsOnRoute = [...restrictionsOnRoute, ...cityRestrictions];
-        }
-        
-        // Remover duplicatas baseado no ID da restrição
-        restrictionsOnRoute = restrictionsOnRoute.filter((restriction, index, self) =>
-            index === self.findIndex((r) => r.id === restriction.id)
-        );
-        
-        console.log(`Total de ${restrictionsOnRoute.length} restrições distintas encontradas na rota`);
-        
-        // Debug para verificar quais restrições serão exibidas
-        restrictionsOnRoute.forEach(restriction => {
-            console.log(`Exibindo restrição: ${restriction.description}, Cidade: ${restriction.cityName}, Caminhões afetados: ${restriction.affectedVehicles.join(',')}`);
+            return cityMatch; // Não filtramos por vehicleType, mostramos tudo
         });
         
         // Se não houver restrições, mostrar mensagem
