@@ -2069,7 +2069,15 @@
                 directionsRenderer.setDirections(result);
                 
                 // Animar a rota (opcional)
-                animateRoute(result.routes[0].overview_path);
+                console.log("Resultado da rota:", result);
+                
+                // Verificar se os dados da rota estão disponíveis
+                if (result && result.routes && result.routes.length > 0 && result.routes[0].overview_path) {
+                    console.log("Iniciando animação da rota com", result.routes[0].overview_path.length, "pontos");
+                    animateRoute(result.routes[0].overview_path);
+                } else {
+                    console.error("Dados da rota incompletos, não é possível animar:", result);
+                }
                 
                 // Ajustar o mapa para mostrar toda a rota
                 const bounds = new google.maps.LatLngBounds();
@@ -2079,10 +2087,26 @@
                 map.fitBounds(bounds);
             } else {
                 // Substituir alert por notificação inline mais suave
+                console.error(`Erro ao calcular rota: ${status}`);
+                
+                // Criar elemento de notificação
                 const notifyError = document.createElement('div');
                 notifyError.className = 'alert alert-danger mt-2';
                 notifyError.innerHTML = `Não foi possível calcular a rota: ${status}`;
-                document.querySelector('.route-controls').appendChild(notifyError);
+                
+                // Verificar se o elemento pai existe antes de anexar
+                const routeControlsElement = document.querySelector('.route-controls');
+                if (routeControlsElement) {
+                    routeControlsElement.appendChild(notifyError);
+                } else {
+                    // Fallback: tentar adicionar ao sidebar ou exibir apenas no console
+                    const sidebarElement = document.getElementById('sidebar');
+                    if (sidebarElement) {
+                        sidebarElement.appendChild(notifyError);
+                    } else {
+                        console.warn("Não foi possível exibir notificação de erro na interface, elementos não encontrados");
+                    }
+                }
                 
                 // Remover a notificação após alguns segundos
                 setTimeout(() => {
