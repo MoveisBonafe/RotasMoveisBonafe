@@ -1307,13 +1307,19 @@
     
     // Reordenar os marcadores para corresponder à sequência otimizada
     function reorderMarkers(optimizedPathIds) {
-        // Remover os marcadores existentes do mapa
+        console.log("Reordenando marcadores para caminho:", optimizedPathIds);
+        console.log("Quantidade de marcadores antes:", markers.length);
+        
+        // Preservar os marcadores originais
+        const originalMarkers = [...markers];
+        
+        // Remover os marcadores existentes do mapa (sem destruí-los)
         markers.forEach(markerObj => {
             markerObj.marker.setMap(null);
         });
         
-        // Limpar o array de marcadores
-        markers = [];
+        // Criar uma cópia vazia para novos marcadores
+        const newMarkers = [];
         
         // Converter IDs para objetos de localização com comparação segura
         const pathLocations = optimizedPathIds.map(id => {
@@ -1330,12 +1336,53 @@
             // return;
         }
         
-        // Adicionar marcadores novamente na ordem otimizada (ignorar localizações não encontradas)
-        pathLocations
-            .filter(loc => loc) // Remover localizações nulas
-            .forEach((location, index) => {
-                addMarkerForLocation(location, index);
-            });
+        // Verificar se é possível reutilizar marcadores existentes
+        if (originalMarkers.length > 0) {
+            console.log("Tentando reutilizar marcadores existentes");
+            
+            // Tentar reutilizar marcadores originais na nova ordem
+            pathLocations
+                .filter(loc => loc) // Remover localizações nulas
+                .forEach((location, index) => {
+                    // Encontrar o marcador original correspondente a esta localização
+                    const originalMarker = originalMarkers.find(m => 
+                        String(m.location.id) === String(location.id));
+                    
+                    if (originalMarker) {
+                        // Reutilizar o marcador, atualizando apenas seu número de sequência
+                        const marker = originalMarker.marker;
+                        marker.setLabel({
+                            text: (index + 1).toString(),
+                            color: "#FFFFFF"
+                        });
+                        marker.setMap(map);
+                        
+                        // Adicionar à nova lista de marcadores
+                        newMarkers.push({
+                            marker: marker,
+                            location: location
+                        });
+                    } else {
+                        // Se não encontrou o marcador original, criar um novo
+                        addMarkerForLocation(location, index, newMarkers);
+                    }
+                });
+                
+            // Substituir o array de marcadores pelo novo
+            markers = newMarkers;
+        } else {
+            // Fallback para o comportamento original
+            console.log("Não há marcadores originais para reutilizar, criando novos");
+            
+            // Adicionar marcadores novamente na ordem otimizada
+            pathLocations
+                .filter(loc => loc) // Remover localizações nulas
+                .forEach((location, index) => {
+                    addMarkerForLocation(location, index);
+                });
+        }
+        
+        console.log("Quantidade de marcadores após reordenação:", markers.length);
         
         // Atualizar a lista de locais
         updateLocationsList();
