@@ -1674,6 +1674,338 @@
         });
     }
 
+    // Alternar entre as rotas alternativas
+    function switchAlternativeRoute(routeIndex) {
+        if (routeIndex < 0 || routeIndex >= alternativeRoutes.length) {
+            console.error("Índice de rota inválido:", routeIndex);
+            return;
+        }
+        
+        console.log(`Alternando para rota alternativa ${routeIndex}`);
+        
+        // Salvar o índice atual
+        currentRouteIndex = routeIndex;
+        
+        // Limpar rota atual
+        clearRoute();
+        
+        // Usar a rota selecionada
+        const tspResult = alternativeRoutes[routeIndex];
+        
+        // Reordenar os marcadores visualmente para corresponder à nova sequência
+        reorderMarkers(tspResult.path);
+            
+        // Traçar a rota usando o Google Directions Service
+        drawRouteOnMap(tspResult.path, "truck1");
+            
+        // Mostrar pontos de interesse ao longo da rota
+        showPointsOfInterestOnRoute(tspResult.path);
+            
+        // Mostrar eventos nas cidades da rota
+        showEventsForCitiesOnRoute(tspResult.path);
+            
+        // Mostrar restrições para caminhões nas cidades da rota
+        showTruckRestrictionsForCitiesOnRoute(tspResult.path, "truck1");
+            
+        // Atualizar o resumo da rota
+        updateRouteSummary(tspResult, "truck1", routeIndex);
+        
+        // Habilitar botões de salvar e imprimir
+        document.getElementById('save-route').disabled = false;
+        document.getElementById('print-route').disabled = false;
+    }
+    
+    // Função para gerar rotas alternativas
+    function generateAlternativeRoutes(origin, destinations, includeOriginReturn) {
+        // Limpar o array de rotas alternativas
+        alternativeRoutes = [];
+        
+        // Limpar o seletor de rotas alternativas
+        const alternativeSelect = document.getElementById('alternative-routes');
+        alternativeSelect.innerHTML = '';
+        alternativeSelect.innerHTML = '<option value="0">Rota Otimizada (Padrão)</option>';
+        
+        // 1. Rota principal (otimizada pelo algoritmo principal)
+        console.log("Gerando rota principal otimizada...");
+        const mainRoute = solveAdvancedTSP(origin, destinations, includeOriginReturn);
+        alternativeRoutes.push(mainRoute);
+        
+        // Só criar rotas alternativas se houver mais de 2 destinos
+        if (destinations.length >= 2) {
+            try {
+                // 2. Rota alternativa - Proximidade à origem
+                console.log("Gerando rota alternativa 1: Proximidade à origem...");
+                const originProximityRoute = solveOriginProximityTSP(origin, destinations, includeOriginReturn);
+                alternativeRoutes.push(originProximityRoute);
+                alternativeSelect.innerHTML += '<option value="1">Rota Alternativa 1 (Proximidade à Origem)</option>';
+            } catch (error) {
+                console.error("Erro ao gerar rota por proximidade:", error);
+            }
+            
+            try {
+                // 3. Rota alternativa - Caminho em espiral (se tiver 3+ destinos)
+                if (destinations.length >= 3) {
+                    console.log("Gerando rota alternativa 2: Padrão espiral...");
+                    const spiralRoute = solveSpiralTSP(origin, destinations, includeOriginReturn);
+                    alternativeRoutes.push(spiralRoute);
+                    alternativeSelect.innerHTML += '<option value="2">Rota Alternativa 2 (Padrão Espiral)</option>';
+                }
+            } catch (error) {
+                console.error("Erro ao gerar rota em espiral:", error);
+            }
+            
+            try {
+                // 4. Rota alternativa - Prioridade por cidade (se tiver 4+ destinos)
+                if (destinations.length >= 3) {
+                    console.log("Gerando rota alternativa 3: Agrupamento por cidade...");
+                    const cityPriorityRoute = solveCityPriorityTSP(origin, destinations, includeOriginReturn);
+                    alternativeRoutes.push(cityPriorityRoute);
+                    const routeIndex = alternativeRoutes.length - 1;
+                    alternativeSelect.innerHTML += `<option value="${routeIndex}">Rota Alternativa ${routeIndex} (Agrupamento por Cidade)</option>`;
+                }
+            } catch (error) {
+                console.error("Erro ao gerar rota por cidade:", error);
+            }
+        }
+        
+        // Mostrar o seletor de rotas alternativas se houver mais de uma rota
+        document.getElementById('route-alternatives').style.display = alternativeRoutes.length > 1 ? 'block' : 'none';
+        
+        // Configurar o evento para alternar entre as rotas
+        alternativeSelect.onchange = function() {
+            switchAlternativeRoute(parseInt(this.value));
+        };
+        
+        // Retornar a rota principal (a primeira no array)
+        return alternativeRoutes[0];
+    }
+    
+    // Algoritmo TSP baseado em proximidade à origem
+    function solveOriginProximityTSP(origin, destinations, includeOriginReturn) {
+        try {
+            // Ordenar destinos por distância à origem (do mais próximo ao mais distante)
+            const sortedDestinations = [...destinations].sort((a, b) => {
+                const distA = calculateDistance(origin.latitude, origin.longitude, a.latitude, a.longitude);
+                const distB = calculateDistance(origin.latitude, origin.longitude, b.latitude, b.longitude);
+                return distA - distB;
+            });
+            
+            // Construir o caminho
+            const path = [origin.id];
+            let totalDistance = 0;
+            let currentLocation = origin;
+            
+            // Adicionar destinos em ordem de proximidade à origem
+            for (const dest of sortedDestinations) {
+                path.push(dest.id);
+                const dist = calculateDistance(
+                    currentLocation.latitude, currentLocation.longitude,
+                    dest.latitude, dest.longitude
+                );
+                totalDistance += dist;
+                currentLocation = dest;
+            }
+            
+            // Adicionar retorno à origem se solicitado
+            if (includeOriginReturn) {
+                path.push(origin.id);
+                totalDistance += calculateDistance(
+                    currentLocation.latitude, currentLocation.longitude,
+                    origin.latitude, origin.longitude
+                );
+            }
+            
+            // Estimar tempo (60 km/h em média)
+            const estimatedTime = totalDistance / 60;
+            
+            return {
+                path: path,
+                distance: totalDistance,
+                estimatedTime: estimatedTime
+            };
+        } catch (error) {
+            console.error("Erro ao resolver TSP por proximidade à origem:", error);
+            return {
+                path: [origin.id],
+                distance: 0,
+                estimatedTime: 0
+            };
+        }
+    }
+    
+    // Algoritmo TSP em padrão espiral (norte, leste, sul, oeste)
+    function solveSpiralTSP(origin, destinations, includeOriginReturn) {
+        try {
+            // Agrupar destinos por quadrante em relação à origem
+            const northEast = [];
+            const southEast = [];
+            const southWest = [];
+            const northWest = [];
+            
+            for (const dest of destinations) {
+                if (dest.latitude >= origin.latitude) {
+                    // Norte
+                    if (dest.longitude >= origin.longitude) {
+                        // Leste
+                        northEast.push(dest);
+                    } else {
+                        // Oeste
+                        northWest.push(dest);
+                    }
+                } else {
+                    // Sul
+                    if (dest.longitude >= origin.longitude) {
+                        // Leste
+                        southEast.push(dest);
+                    } else {
+                        // Oeste
+                        southWest.push(dest);
+                    }
+                }
+            }
+            
+            // Ordenar cada quadrante pela distância à origem
+            const sortByDistanceToOrigin = (a, b) => {
+                const distA = calculateDistance(origin.latitude, origin.longitude, a.latitude, a.longitude);
+                const distB = calculateDistance(origin.latitude, origin.longitude, b.latitude, b.longitude);
+                return distA - distB;
+            };
+            
+            northEast.sort(sortByDistanceToOrigin);
+            southEast.sort(sortByDistanceToOrigin);
+            southWest.sort(sortByDistanceToOrigin);
+            northWest.sort(sortByDistanceToOrigin);
+            
+            // Construir caminho em espiral: NE -> SE -> SW -> NW
+            const sortedDestinations = [...northEast, ...southEast, ...southWest, ...northWest];
+            
+            // Construir o caminho
+            const path = [origin.id];
+            let totalDistance = 0;
+            let currentLocation = origin;
+            
+            // Adicionar destinos em ordem espiral
+            for (const dest of sortedDestinations) {
+                path.push(dest.id);
+                const dist = calculateDistance(
+                    currentLocation.latitude, currentLocation.longitude,
+                    dest.latitude, dest.longitude
+                );
+                totalDistance += dist;
+                currentLocation = dest;
+            }
+            
+            // Adicionar retorno à origem se solicitado
+            if (includeOriginReturn) {
+                path.push(origin.id);
+                totalDistance += calculateDistance(
+                    currentLocation.latitude, currentLocation.longitude,
+                    origin.latitude, origin.longitude
+                );
+            }
+            
+            // Estimar tempo (60 km/h em média)
+            const estimatedTime = totalDistance / 60;
+            
+            return {
+                path: path,
+                distance: totalDistance,
+                estimatedTime: estimatedTime
+            };
+        } catch (error) {
+            console.error("Erro ao resolver TSP em padrão espiral:", error);
+            return {
+                path: [origin.id],
+                distance: 0,
+                estimatedTime: 0
+            };
+        }
+    }
+    
+    // Algoritmo TSP com prioridade por cidade (agrupar pontos da mesma cidade)
+    function solveCityPriorityTSP(origin, destinations, includeOriginReturn) {
+        try {
+            // Agrupar destinos por cidade
+            const citiesMap = new Map();
+            
+            for (const dest of destinations) {
+                const cityName = dest.address.split(',')[0].trim();
+                if (!citiesMap.has(cityName)) {
+                    citiesMap.set(cityName, []);
+                }
+                citiesMap.get(cityName).push(dest);
+            }
+            
+            // Converter para array e ordenar cidades pela proximidade à origem
+            const cities = Array.from(citiesMap.entries()).map(([cityName, cityDests]) => {
+                // Calcular distância média da cidade à origem
+                const avgDistance = cityDests.reduce((sum, dest) => {
+                    return sum + calculateDistance(origin.latitude, origin.longitude, dest.latitude, dest.longitude);
+                }, 0) / cityDests.length;
+                
+                return {
+                    name: cityName,
+                    destinations: cityDests,
+                    avgDistanceToOrigin: avgDistance
+                };
+            });
+            
+            // Ordenar cidades pela distância média à origem
+            cities.sort((a, b) => a.avgDistanceToOrigin - b.avgDistanceToOrigin);
+            
+            // Construir caminho visitando todas as cidades em ordem de proximidade
+            const path = [origin.id];
+            let totalDistance = 0;
+            let currentLocation = origin;
+            
+            // Para cada cidade, visitar todos os seus pontos
+            for (const city of cities) {
+                // Ordenar pontos da cidade pelo mais próximo ao ponto atual
+                city.destinations.sort((a, b) => {
+                    const distA = calculateDistance(currentLocation.latitude, currentLocation.longitude, a.latitude, a.longitude);
+                    const distB = calculateDistance(currentLocation.latitude, currentLocation.longitude, b.latitude, b.longitude);
+                    return distA - distB;
+                });
+                
+                // Adicionar pontos da cidade ao caminho
+                for (const dest of city.destinations) {
+                    path.push(dest.id);
+                    const dist = calculateDistance(
+                        currentLocation.latitude, currentLocation.longitude,
+                        dest.latitude, dest.longitude
+                    );
+                    totalDistance += dist;
+                    currentLocation = dest;
+                }
+            }
+            
+            // Adicionar retorno à origem se solicitado
+            if (includeOriginReturn) {
+                path.push(origin.id);
+                totalDistance += calculateDistance(
+                    currentLocation.latitude, currentLocation.longitude,
+                    origin.latitude, origin.longitude
+                );
+            }
+            
+            // Estimar tempo (60 km/h em média)
+            const estimatedTime = totalDistance / 60;
+            
+            return {
+                path: path,
+                distance: totalDistance,
+                estimatedTime: estimatedTime
+            };
+        } catch (error) {
+            console.error("Erro ao resolver TSP com prioridade por cidade:", error);
+            return {
+                path: [origin.id],
+                distance: 0,
+                estimatedTime: 0
+            };
+        }
+    }
+    
     // Atualizar o resumo da rota
     function updateRouteSummary(tspResult, vehicleType, routeIndex = 0) {
         try {
@@ -1750,8 +2082,14 @@
                 locationsList = '<li>Nenhum local encontrado na rota</li>';
             }
         
+            // Determinar rótulo da rota alternativa
+            let routeLabel = "";
+            if (routeIndex > 0) {
+                routeLabel = ` (Alternativa ${routeIndex})`;
+            }
+            
             summaryContainer.innerHTML = `
-                <div class="summary-header">Resumo da Rota Otimizada</div>
+                <div class="summary-header">Resumo da Rota${routeLabel}</div>
                 <div class="row">
                     <div class="col-12">
                         <p><strong>Distância total:</strong> ${tspResult.distance.toFixed(1)} km</p>
