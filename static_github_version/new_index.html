@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Planejador de Rotas - Versão GitHub Pages</title>
+  <style>
+    /* Reset e estilos básicos */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f9fafb;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    header {
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    
+    main {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+    
+    .sidebar {
+      width: 300px;
+      background-color: #ffffff;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      overflow-y: auto;
+      padding: 1rem;
+    }
+    
+    .map-container {
+      flex: 1;
+      position: relative;
+    }
+    
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+    
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2563eb;
+    }
+    
+    h2 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: #4b5563;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 0.5rem;
+    }
+    
+    .location-list {
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+    
+    .location-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      border-radius: 0.375rem;
+      background-color: #f3f4f6;
+    }
+    
+    .location-item.origin {
+      background-color: #dbeafe;
+    }
+    
+    .location-marker {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background-color: #4b5563;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-right: 0.75rem;
+      flex-shrink: 0;
+    }
+    
+    .location-info {
+      overflow: hidden;
+    }
+    
+    .location-name {
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .location-address {
+      font-size: 0.8rem;
+      color: #6b7280;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    
+    .primary-btn {
+      padding: 0.625rem;
+      border: none;
+      border-radius: 0.375rem;
+      background-color: #2563eb;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .primary-btn:hover {
+      background-color: #1d4ed8;
+    }
+    
+    .secondary-btn {
+      padding: 0.625rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+      background-color: white;
+      color: #4b5563;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .secondary-btn:hover {
+      background-color: #f3f4f6;
+    }
+    
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      margin-right: 0.75rem;
+      background-color: #2563eb;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    
+    .logo-text h1 {
+      margin-bottom: 0;
+    }
+    
+    .logo-text p {
+      margin-top: 0;
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+    
+    /* Estilos para filtro de data */
+    .date-filter {
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      background-color: #f3f4f6;
+      border-radius: 0.375rem;
+    }
+    
+    .date-filter label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    
+    .date-filter input[type="date"] {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.25rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    /* Estilos para informações de rota */
+    .route-info {
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: #f3f4f6;
+      border-radius: 0.375rem;
+      display: none;
+    }
+    
+    .route-info.visible {
+      display: block;
+    }
+    
+    .route-info h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      color: #4b5563;
+    }
+    
+    .route-info-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+    
+    .route-info-item strong {
+      font-weight: 600;
+    }
+    
+    /* Estilo para aba de eventos */
+    .events-tab {
+      margin-top: 1rem;
+    }
+    
+    .events-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 0.5rem;
+    }
+    
+    .event-item {
+      padding: 0.5rem;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 0.875rem;
+    }
+    
+    .event-date {
+      font-weight: 600;
+      color: #2563eb;
+    }
+    
+    .event-location {
+      font-weight: 600;
+    }
+    
+    .event-description {
+      color: #6b7280;
+    }
+    
+    @media (max-width: 768px) {
+      main {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        max-height: 40vh;
+      }
+    }
+    
+    /* Estilos para o relatório da rota */
+    .route-report {
+      display: none;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      padding: 15px;
+      max-width: 350px;
+      z-index: 100;
+    }
+    
+    .route-report.visible {
+      display: block;
+    }
+    
+    .route-report h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 5px;
+    }
+    
+    .route-report-item {
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    
+    .route-report-item span {
+      font-weight: 600;
+    }
+    
+    .route-sequence {
+      margin-top: 15px;
+    }
+    
+    .route-sequence h4 {
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    
+    .sequence-item {
+      padding: 5px 0;
+      border-bottom: 1px dashed #e5e7eb;
+      font-size: 13px;
+    }
+    
+    .sequence-item:last-child {
+      border-bottom: none;
+    }
+
+    .toggle-report-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 99;
+      background: white;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 14px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    /* Estilos para o toast de notificação */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #333;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      display: none;
+    }
+    
+    .toast.visible {
+      display: block;
+      animation: fadeIn 0.3s, fadeOut 0.3s 2.7s;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(20px); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo-container">
+        <div class="logo-icon">R</div>
+        <div class="logo-text">
+          <h1>Otimizador de Rotas</h1>
+          <p>Planejamento de entregas a partir de Dois Córregos-SP</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <aside class="sidebar">
+      <div class="date-filter">
+        <label for="start-date">Data de Início:</label>
+        <input type="date" id="start-date">
+        <label for="end-date">Data de Fim:</label>
+        <input type="date" id="end-date">
+      </div>
+      
+      <h2>Destinos</h2>
+      <ul class="location-list">
+        <li class="location-item origin">
+          <div class="location-marker" style="background-color: #2563eb;">A</div>
+          <div class="location-info">
+            <div class="location-name">Dois Córregos</div>
+            <div class="location-address">Dois Córregos, SP, Brasil</div>
+          </div>
+        </li>
+        <li class="location-item">
+          <div class="location-marker">1</div>
+          <div class="location-info">
+            <div class="location-name">Jaú</div>
+            <div class="location-address">Jaú, SP, Brasil</div>
+          </div>
+        </li>
+        <li class="location-item">
+          <div class="location-marker">2</div>
+          <div class="location-info">
+            <div class="location-name">Bauru</div>
+            <div class="location-address">Bauru, SP, Brasil</div>
+          </div>
+        </li>
+        <li class="location-item">
+          <div class="location-marker">3</div>
+          <div class="location-info">
+            <div class="location-name">Ribeirão Preto</div>
+            <div class="location-address">Ribeirão Preto, SP, Brasil</div>
+          </div>
+        </li>
+      </ul>
+      <div class="button-container">
+        <button class="primary-btn" id="optimize-btn">Otimizar Rota</button>
+        <button class="secondary-btn" id="home-btn">Visualizar Origem</button>
+      </div>
+      
+      <div class="route-info" id="route-info">
+        <h3>Informações da Rota</h3>
+        <div class="route-info-item">
+          <strong>Distância Total:</strong>
+          <span id="total-distance">0 km</span>
+        </div>
+        <div class="route-info-item">
+          <strong>Tempo Estimado:</strong>
+          <span id="total-time">0 min</span>
+        </div>
+        <div class="route-info-item">
+          <strong>Velocidade Média:</strong>
+          <span>80 km/h</span>
+        </div>
+      </div>
+      
+      <div class="events-tab">
+        <h2>Eventos no Trajeto</h2>
+        <div class="events-list" id="events-list">
+          <!-- Os eventos serão adicionados via JavaScript -->
+        </div>
+      </div>
+    </aside>
+    <div class="map-container">
+      <button id="toggle-report" class="toggle-report-btn" style="display: none;">Mostrar Relatório</button>
+      <div id="map"></div>
+      <div class="route-report" id="route-report">
+        <h3>Relatório da Rota</h3>
+        <div class="route-report-item">
+          <span>Distância Total:</span> <span id="report-distance">0 km</span>
+        </div>
+        <div class="route-report-item">
+          <span>Tempo Estimado:</span> <span id="report-time">0 min</span>
+        </div>
+        <div class="route-sequence">
+          <h4>Sequência de Cidades:</h4>
+          <div id="report-sequence">
+            <!-- Sequência será adicionada via JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <div class="toast" id="toast-notification"></div>
+
+  <script>
+    // Dados da aplicação
+    const appData = {
+      origin: {
+        name: "Dois Córregos",
+        address: "Dois Córregos, SP, Brasil",
+        location: { lat: -22.3673, lng: -48.3823 }
+      },
+      locations: [
+        {
+          name: "Jaú",
+          address: "Jaú, SP, Brasil",
+          location: { lat: -22.3156, lng: -48.7783 }
+        },
+        {
+          name: "Bauru",
+          address: "Bauru, SP, Brasil",
+          location: { lat: -22.3031, lng: -49.0791 }
+        },
+        {
+          name: "Ribeirão Preto",
+          address: "Ribeirão Preto, SP, Brasil",
+          location: { lat: -21.1785, lng: -47.8057 }
+        }
+      ],
+      // Velocidade média do caminhão ajustada para 80km/h
+      averageSpeed: 80,
+      
+      // Eventos e feriados nas cidades
+      events: [
+        {
+          name: "Aniversário de Dois Córregos",
+          date: "2025-04-19",
+          location: "Dois Córregos",
+          description: "Comemoração dos 143 anos da cidade com desfile e shows"
+        },
+        {
+          name: "Aniversário de Jaú",
+          date: "2025-08-15",
+          location: "Jaú",
+          description: "Festividades pelos 172 anos da cidade"
+        },
+        {
+          name: "Aniversário de Bauru",
+          date: "2025-08-01",
+          location: "Bauru",
+          description: "Celebração dos 129 anos com eventos culturais"
+        },
+        {
+          name: "Aniversário de Ribeirão Preto",
+          date: "2025-06-19",
+          location: "Ribeirão Preto",
+          description: "Comemoração dos 167 anos da cidade"
+        },
+        {
+          name: "Carnaval",
+          date: "2025-03-04",
+          location: "Nacional",
+          description: "Feriado nacional"
+        },
+        {
+          name: "Sexta-feira Santa",
+          date: "2025-04-18",
+          location: "Nacional",
+          description: "Feriado nacional"
+        },
+        {
+          name: "Tiradentes",
+          date: "2025-04-21",
+          location: "Nacional",
+          description: "Feriado nacional"
+        },
+        {
+          name: "Dia do Trabalho",
+          date: "2025-05-01",
+          location: "Nacional",
+          description: "Feriado nacional"
+        },
+        {
+          name: "Corpus Christi",
+          date: "2025-06-19",
+          location: "Nacional",
+          description: "Feriado nacional"
+        },
+        {
+          name: "Independência do Brasil",
+          date: "2025-09-07",
+          location: "Nacional",
+          description: "Feriado nacional"
+        },
+        {
+          name: "Nossa Senhora Aparecida",
+          date: "2025-10-12",
+          location: "Nacional",
+          description: "Feriado nacional"
+        },
+        {
+          name: "Finados",
+          date: "2025-11-02",
+          location: "Nacional",
+          description: "Feriado nacional"
+        },
+        {
+          name: "Proclamação da República",
+          date: "2025-11-15",
+          location: "Nacional",
+          description: "Feriado nacional"
+        },
+        {
+          name: "Natal",
+          date: "2025-12-25",
+          location: "Nacional",
+          description: "Feriado nacional"
+        }
+      ],
+      
+      // Pontos de interesse (pedágios e balanças)
+      pointsOfInterest: [
+        {
+          name: "Pedágio SP-225 (Brotas)",
+          type: "toll",
+          location: { lat: -22.2797, lng: -48.1675 }
+        },
+        {
+          name: "Pedágio SP-225 (Jaú)",
+          type: "toll",
+          location: { lat: -22.2986, lng: -48.5583 }
+        },
+        {
+          name: "Pedágio SP-225 (Dois Córregos)",
+          type: "toll",
+          location: { lat: -22.3471, lng: -48.4483 }
+        },
+        {
+          name: "Balança SP-225 (Jaú)",
+          type: "weighStation",
+          location: { lat: -22.2869, lng: -48.6329 }
+        },
+        {
+          name: "Balança SP-330 (Ribeirão Preto)",
+          type: "weighStation",
+          location: { lat: -21.1523, lng: -47.7783 }
+        }
+      ],
+      
+      // Restrições para caminhões
+      truckRestrictions: [
+        {
+          cityName: "Dois Córregos",
+          description: "Restrição para veículos pesados em dias de chuva na rodovia SP-225"
+        },
+        {
+          cityName: "Jaú",
+          description: "Restrição para veículos acima de 2 eixos no centro histórico"
+        },
+        {
+          cityName: "Bauru",
+          description: "Proibido trânsito de caminhões nas avenidas principais das 7h às 9h e 17h às 19h"
+        },
+        {
+          cityName: "Ribeirão Preto",
+          description: "Circulação de caminhões restrita na região central de segunda a sexta das 8h às 18h"
+        }
+      ],
+      
+      calculatedRoute: null,
+      directionsRenderer: null,
+      markers: [],
+      poiMarkers: []
+    };
+    
+    let map;
+    let directionsService;
+    let directionsRenderer;
+    let reportVisible = false;
+    
+    // Função para inicializar o mapa
+    function initMap() {
+      // Criar o mapa
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: appData.origin.location,
+        zoom: 10,
+        gestureHandling: 'greedy' // Permite zoom com roda do mouse sem Ctrl
+      });
+      
+      // Inicializar serviços do Google Maps
+      directionsService = new google.maps.DirectionsService();
+      directionsRenderer = new google.maps.DirectionsRenderer({
+        map: map,
+        suppressMarkers: true // Suprimir marcadores padrão para usar personalizados
+      });
+      
+      appData.directionsRenderer = directionsRenderer;
+      
+      // Adicionar marcador de origem
+      addMarker(appData.origin.location, "A", "#2563eb", appData.origin.name);
+      
+      // Adicionar marcadores para os destinos
+      appData.locations.forEach((location, index) => {
+        addMarker(location.location, (index + 1).toString(), "#4b5563", location.name);
+      });
+      
+      // Configurar event listeners
+      setupEventListeners();
+      
+      // Atualizar lista de eventos baseado nas datas
+      updateEventsList();
+    }
+    
+    // Função para adicionar marcadores ao mapa
+    function addMarker(position, label, color, title) {
+      const marker = new google.maps.Marker({
+        position: position,
+        map: map,
+        label: {
+          text: label,
+          color: "white",
+          fontWeight: "bold"
+        },
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          fillColor: color,
+          fillOpacity: 1,
+          strokeWeight: 0,
+          scale: 14
+        },
+        title: title
+      });
+      
+      appData.markers.push(marker);
+      return marker;
+    }
+    
+    // Função para adicionar marcadores de pontos de interesse
+    function addPOIMarker(position, type, title) {
+      const iconUrl = type === 'toll' 
+        ? 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'  // Pedágio
+        : 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png'; // Balança
+      
+      const marker = new google.maps.Marker({
+        position: position,
+        map: map,
+        icon: {
+          url: iconUrl,
+          scaledSize: new google.maps.Size(32, 32)
+        },
+        title: title
+      });
+      
+      appData.poiMarkers.push(marker);
+      return marker;
+    }
+    
+    // Configurar event listeners
+    function setupEventListeners() {
+      document.getElementById('optimize-btn').addEventListener('click', calculateRoute);
+      document.getElementById('home-btn').addEventListener('click', resetMap);
+      document.getElementById('toggle-report').addEventListener('click', toggleRouteReport);
+      
+      // Event listeners para os inputs de data
+      document.getElementById('start-date').addEventListener('change', updateEventsList);
+      document.getElementById('end-date').addEventListener('change', updateEventsList);
+    }
+    
+    // Calcular e exibir a rota otimizada
+    function calculateRoute() {
+      // Limpar rota anterior e marcadores de POI
+      if (appData.directionsRenderer) {
+        appData.directionsRenderer.setMap(null);
+      }
+      
+      clearPOIMarkers();
+      
+      const origin = appData.origin.location;
+      const destinations = appData.locations.map(loc => loc.location);
+      
+      // Se não houver destinos, mostrar alerta
+      if (destinations.length === 0) {
+        showToast("Adicione pelo menos um destino para calcular a rota");
+        return;
+      }
+      
+      // Otimizar a rota usando algoritmo do caixeiro viajante (nearest neighbor)
+      const optimizedRoute = nearestNeighborTSP(origin, destinations);
+      
+      // Calcular e exibir rota usando Google Maps Directions API
+      calculateDirections(optimizedRoute);
+    }
+    
+    // Algoritmo do caixeiro viajante - Nearest Neighbor
+    function nearestNeighborTSP(origin, destinations) {
+      const visited = new Array(destinations.length).fill(false);
+      const route = [];
+      let current = origin;
+      
+      // Começar da origem e percorrer todos os destinos
+      while (route.length < destinations.length) {
+        let nearestIdx = -1;
+        let minDist = Infinity;
+        
+        // Encontrar o destino mais próximo não visitado
+        for (let i = 0; i < destinations.length; i++) {
+          if (!visited[i]) {
+            const dist = calculateDistance(current, destinations[i]);
+            if (dist < minDist) {
+              minDist = dist;
+              nearestIdx = i;
+            }
+          }
+        }
+        
+        if (nearestIdx !== -1) {
+          visited[nearestIdx] = true;
+          current = destinations[nearestIdx];
+          route.push(current);
+        }
+      }
+      
+      return route;
+    }
+    
+    // Calcular distância euclidiana entre dois pontos
+    function calculateDistance(point1, point2) {
+      return Math.sqrt(
+        Math.pow(point1.lat - point2.lat, 2) + 
+        Math.pow(point1.lng - point2.lng, 2)
+      );
+    }
+    
+    // Calcular e exibir direções usando Google Maps API
+    function calculateDirections(optimizedRoute) {
+      if (optimizedRoute.length === 0) return;
+      
+      const waypoints = optimizedRoute.slice(0, -1).map(point => ({
+        location: point,
+        stopover: true
+      }));
+      
+      const request = {
+        origin: appData.origin.location,
+        destination: optimizedRoute[optimizedRoute.length - 1],
+        waypoints: waypoints,
+        travelMode: google.maps.TravelMode.DRIVING,
+        optimizeWaypoints: false
+      };
+      
+      directionsService.route(request, (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          // Salvar a rota calculada
+          appData.calculatedRoute = result;
+          
+          // Exibir a rota no mapa
+          directionsRenderer.setDirections(result);
+          directionsRenderer.setMap(map);
+          
+          // Adicionar marcadores personalizados
+          addRouteMarkers(result);
+          
+          // Calcular e exibir informações da rota
+          displayRouteInfo(result);
+          
+          // Adicionar POIs ao longo da rota
+          addPOIsAlongRoute(result);
+          
+          // Mostrar relatório da rota
+          showRouteReport(result);
+          
+          // Exibir o botão de toggle do relatório
+          document.getElementById('toggle-report').style.display = 'block';
+          
+          // Exibir o painel de informações da rota
+          document.getElementById('route-info').classList.add('visible');
+          
+          showToast("Rota otimizada com sucesso!");
+        } else {
+          showToast("Erro ao calcular a rota: " + status);
+        }
+      });
+    }
+    
+    // Adicionar marcadores ao longo da rota
+    function addRouteMarkers(result) {
+      // Limpar marcadores anteriores
+      appData.markers.forEach(marker => marker.setMap(null));
+      appData.markers = [];
+      
+      // Adicionar marcador de origem
+      addMarker(appData.origin.location, "A", "#2563eb", appData.origin.name);
+      
+      // Obter a ordem das paradas na rota
+      const waypointOrder = result.routes[0].waypoint_order;
+      
+      // Adicionar marcadores para os destinos na ordem correta
+      for (let i = 0; i < waypointOrder.length; i++) {
+        const location = appData.locations[waypointOrder[i]];
+        addMarker(location.location, (i + 1).toString(), "#4b5563", location.name);
+      }
+      
+      // Adicionar marcador para o destino final
+      const lastLocation = appData.locations[appData.locations.length - 1];
+      addMarker(lastLocation.location, appData.locations.length.toString(), "#4b5563", lastLocation.name);
+    }
+    
+    // Exibir informações da rota
+    function displayRouteInfo(result) {
+      const route = result.routes[0];
+      let totalDistance = 0;
+      let totalDuration = 0;
+      
+      // Calcular distância e duração totais
+      route.legs.forEach(leg => {
+        totalDistance += leg.distance.value;
+        totalDuration += leg.duration.value;
+      });
+      
+      // Converter para km e horas
+      const distanceKm = (totalDistance / 1000).toFixed(1);
+      const durationHours = Math.floor(totalDuration / 3600);
+      const durationMinutes = Math.floor((totalDuration % 3600) / 60);
+      
+      // Atualizar elementos na interface
+      document.getElementById('total-distance').textContent = `${distanceKm} km`;
+      document.getElementById('total-time').textContent = 
+        `${durationHours}h ${durationMinutes}min`;
+        
+      // Atualizar também no relatório
+      document.getElementById('report-distance').textContent = `${distanceKm} km`;
+      document.getElementById('report-time').textContent = 
+        `${durationHours}h ${durationMinutes}min`;
+        
+      // Gerar sequência de cidades para o relatório
+      generateRouteSequence(result);
+    }
+    
+    // Gerar a sequência de cidades para o relatório
+    function generateRouteSequence(result) {
+      const sequence = document.getElementById('report-sequence');
+      sequence.innerHTML = '';
+      
+      // Adicionar origem
+      const originItem = document.createElement('div');
+      originItem.className = 'sequence-item';
+      originItem.textContent = `Origem: ${appData.origin.name}`;
+      sequence.appendChild(originItem);
+      
+      // Obter a ordem das paradas
+      const route = result.routes[0];
+      const waypointOrder = route.waypoint_order;
+      
+      // Adicionar cada parada na ordem correta
+      for (let i = 0; i < route.legs.length; i++) {
+        const leg = route.legs[i];
+        const item = document.createElement('div');
+        item.className = 'sequence-item';
+        
+        if (i < route.legs.length - 1) {
+          const locationIndex = waypointOrder[i];
+          item.textContent = `${i+1}: ${appData.locations[locationIndex].name} (${leg.distance.text})`;
+        } else {
+          // Último destino
+          const lastIndex = appData.locations.length - 1;
+          item.textContent = `${i+1}: ${appData.locations[lastIndex].name} (${leg.distance.text})`;
+        }
+        
+        sequence.appendChild(item);
+      }
+    }
+    
+    // Adicionar POIs ao longo da rota
+    function addPOIsAlongRoute(result) {
+      // Limpar marcadores anteriores
+      clearPOIMarkers();
+      
+      // Obter o traçado da rota
+      const route = result.routes[0];
+      const path = google.maps.geometry.encoding.decodePath(route.overview_polyline);
+      
+      // Verificar quais POIs estão próximos da rota
+      appData.pointsOfInterest.forEach(poi => {
+        if (isPointNearPath(poi.location, path, 0.01)) { // Aproximadamente 1km de tolerância
+          addPOIMarker(poi.location, poi.type, poi.name);
+        }
+      });
+    }
+    
+    // Verificar se um ponto está próximo de um traçado
+    function isPointNearPath(point, path, threshold) {
+      for (let i = 0; i < path.length - 1; i++) {
+        const segment = [path[i], path[i+1]];
+        if (distanceToSegment(point, segment) < threshold) {
+          return true;
+        }
+      }
+      return false;
+    }
+    
+    // Calcular distância de um ponto a um segmento
+    function distanceToSegment(point, segment) {
+      const [p1, p2] = segment;
+      
+      const d1 = calculateDistance(point, p1);
+      const d2 = calculateDistance(point, p2);
+      const segLen = calculateDistance(p1, p2);
+      
+      if (segLen === 0) return d1;
+      
+      const t = ((point.lng - p1.lng) * (p2.lng - p1.lng) + 
+                (point.lat - p1.lat) * (p2.lat - p1.lat)) / 
+                (segLen * segLen);
+                
+      if (t < 0) return d1;
+      if (t > 1) return d2;
+      
+      const proj = {
+        lat: p1.lat + t * (p2.lat - p1.lat),
+        lng: p1.lng + t * (p2.lng - p1.lng)
+      };
+      
+      return calculateDistance(point, proj);
+    }
+    
+    // Limpar marcadores de POI
+    function clearPOIMarkers() {
+      appData.poiMarkers.forEach(marker => marker.setMap(null));
+      appData.poiMarkers = [];
+    }
+    
+    // Mostrar relatório da rota
+    function showRouteReport(result) {
+      document.getElementById('route-report').classList.remove('visible');
+      reportVisible = false;
+    }
+    
+    // Alternar visibilidade do relatório da rota
+    function toggleRouteReport() {
+      const reportElement = document.getElementById('route-report');
+      reportVisible = !reportVisible;
+      
+      if (reportVisible) {
+        reportElement.classList.add('visible');
+        document.getElementById('toggle-report').textContent = 'Ocultar Relatório';
+      } else {
+        reportElement.classList.remove('visible');
+        document.getElementById('toggle-report').textContent = 'Mostrar Relatório';
+      }
+    }
+    
+    // Atualizar lista de eventos baseado nas datas selecionadas
+    function updateEventsList() {
+      const startDateInput = document.getElementById('start-date');
+      const endDateInput = document.getElementById('end-date');
+      const eventsList = document.getElementById('events-list');
+      
+      const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+      const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+      
+      // Limpar lista atual
+      eventsList.innerHTML = '';
+      
+      // Filtrar eventos pelas datas
+      let filteredEvents = appData.events;
+      
+      if (startDate && endDate) {
+        filteredEvents = appData.events.filter(event => {
+          const eventDate = new Date(event.date);
+          return eventDate >= startDate && eventDate <= endDate;
+        });
+      }
+      
+      // Se uma rota foi calculada, filtrar apenas eventos nas cidades da rota
+      if (appData.calculatedRoute) {
+        const citiesInRoute = getCitiesInRoute();
+        filteredEvents = filteredEvents.filter(event => 
+          event.location === "Nacional" || citiesInRoute.includes(event.location)
+        );
+      }
+      
+      // Adicionar eventos filtrados à lista
+      if (filteredEvents.length > 0) {
+        filteredEvents.forEach(event => {
+          const eventItem = document.createElement('div');
+          eventItem.className = 'event-item';
+          
+          const eventDate = new Date(event.date);
+          const formattedDate = eventDate.toLocaleDateString('pt-BR');
+          
+          eventItem.innerHTML = `
+            <div class="event-date">${formattedDate}</div>
+            <div class="event-location">${event.name}</div>
+            <div class="event-description">${event.description}</div>
+          `;
+          
+          eventsList.appendChild(eventItem);
+        });
+      } else {
+        const noEvents = document.createElement('div');
+        noEvents.className = 'event-item';
+        noEvents.textContent = 'Nenhum evento encontrado no período selecionado';
+        eventsList.appendChild(noEvents);
+      }
+    }
+    
+    // Obter cidades na rota calculada
+    function getCitiesInRoute() {
+      const cities = [appData.origin.name];
+      
+      if (appData.calculatedRoute) {
+        const waypointOrder = appData.calculatedRoute.routes[0].waypoint_order;
+        
+        for (let i = 0; i < waypointOrder.length; i++) {
+          cities.push(appData.locations[waypointOrder[i]].name);
+        }
+      }
+      
+      return cities;
+    }
+    
+    // Resetar o mapa para a visualização inicial
+    function resetMap() {
+      // Limpar direções
+      if (appData.directionsRenderer) {
+        appData.directionsRenderer.setMap(null);
+      }
+      
+      // Limpar marcadores de POI
+      clearPOIMarkers();
+      
+      // Limpar marcadores anteriores
+      appData.markers.forEach(marker => marker.setMap(null));
+      appData.markers = [];
+      
+      // Centralizar no ponto de origem
+      map.setCenter(appData.origin.location);
+      map.setZoom(10);
+      
+      // Adicionar marcador de origem
+      addMarker(appData.origin.location, "A", "#2563eb", appData.origin.name);
+      
+      // Adicionar marcadores para os destinos
+      appData.locations.forEach((location, index) => {
+        addMarker(location.location, (index + 1).toString(), "#4b5563", location.name);
+      });
+      
+      // Ocultar relatório da rota
+      document.getElementById('route-report').classList.remove('visible');
+      document.getElementById('toggle-report').style.display = 'none';
+      
+      // Ocultar informações da rota
+      document.getElementById('route-info').classList.remove('visible');
+      
+      // Resetar appData.calculatedRoute
+      appData.calculatedRoute = null;
+      
+      // Atualizar lista de eventos
+      updateEventsList();
+    }
+    
+    // Exibir toast de notificação
+    function showToast(message) {
+      const toast = document.getElementById('toast-notification');
+      toast.textContent = message;
+      toast.classList.add('visible');
+      
+      setTimeout(() => {
+        toast.classList.remove('visible');
+      }, 3000);
+    }
+    
+    // Inicializar o aplicativo quando o Google Maps API estiver carregado
+    function initializeApp() {
+      initMap();
+    }
+    
+    // Carregar Google Maps API
+    function loadGoogleMapsAPI() {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAlLtYTpFGFdV-0NlY1QvI_r2Xi_gHGhXY&libraries=places,geometry&callback=initializeApp`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    }
+    
+    // Executar quando o DOM estiver carregado
+    document.addEventListener('DOMContentLoaded', function() {
+      loadGoogleMapsAPI();
+    });
+    
+    // Expor função para callback do Google Maps API
+    window.initializeApp = initializeApp;
+  </script>
+</body>
+</html>
