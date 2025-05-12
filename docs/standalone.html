@@ -2269,16 +2269,17 @@
         // Filtrar restrições para cidades na rota - para TODOS os tipos de caminhões
         console.log(`Filtrando restrições para cidades na rota - exibindo para todos os caminhões`);
         
+        // Ignorar filtro por tipo de veículo (vehicleType) para mostrar TODAS as restrições
         const restrictionsOnRoute = mockData.truckRestrictions.filter(restriction => {
             // Verificamos apenas se a restrição está em alguma cidade da rota
-            // Removemos o filtro por tipo de veículo para mostrar todas as restrições
             const cityMatch = citiesOnRoute.some(city => 
                 restriction.cityName.includes(city) || city.includes(restriction.cityName)
             );
             
-            console.log(`Restrição: ${restriction.description}, Cidade: ${restriction.cityName}, Corresponde: ${cityMatch}`);
+            // Não importa qual veículo - mostrar todas as restrições das cidades na rota
+            console.log(`Restrição: ${restriction.description}, Cidade: ${restriction.cityName}, Caminhões: ${restriction.affectedVehicles.join(',')}, Corresponde: ${cityMatch}`);
             
-            return cityMatch;
+            return cityMatch; // Não filtramos por vehicleType, mostramos tudo
         });
         
         // Se não houver restrições, mostrar mensagem
@@ -2832,27 +2833,52 @@
         }
     }
 
-    // Filtrar eventos por data
+    // Filtrar eventos por data - atualiza automaticamente ao mudar datas
     function filterEventsByDate() {
-        // Se tivermos uma rota ativa, atualizar os eventos mostrados
-        const activeRoute = directionsRenderer.getDirections();
-        if (activeRoute) {
-            // Mostrar eventos para as cidades da rota ativa
-            showEventsForCitiesOnRoute(locations);
+        console.log("Filtrando eventos por datas e atualizando restrições para caminhões");
+        
+        // Obter valores atuais das datas para filtro
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
+        console.log(`Datas selecionadas: ${startDate || 'vazia'} até ${endDate || 'vazia'}`);
+        
+        let routeIds = [];
+        
+        // Se tivermos uma rota otimizada atual, usar os pontos dessa rota
+        if (currentOptimizedPath && currentOptimizedPath.length > 0) {
+            console.log("Usando rota otimizada atual:", currentOptimizedPath);
+            routeIds = [...currentOptimizedPath]; // Clonar para não modificar o original
+        } else if (directionsRenderer && directionsRenderer.getDirections()) {
+            // Se tivermos uma rota no renderer mas não otimizada, usar locais atuais
+            console.log("Usando locais atuais como rota");
+            routeIds = locations.map(loc => loc.id);
         } else {
-            // Substituir alert por notificação inline mais suave
+            // Se não tivermos rota, mostrar apenas para origem
+            console.log("Sem rota, mostrando apenas para origem");
+            // Mostrar notificação para indicar que é necessário calcular uma rota
             const notifyInfo = document.createElement('div');
             notifyInfo.className = 'alert alert-info mt-2';
-            notifyInfo.innerHTML = `Calcule uma rota primeiro para ver os eventos nas cidades do percurso.`;
-            document.querySelector('.route-controls').appendChild(notifyInfo);
+            notifyInfo.innerHTML = `Calcule uma rota primeiro para ver os eventos e restrições no percurso.`;
+            const tabContent = document.querySelector('.tab-content');
+            if (tabContent) {
+                tabContent.appendChild(notifyInfo);
+                // Remover a notificação após alguns segundos
+                setTimeout(() => {
+                    if (notifyInfo && notifyInfo.parentNode) {
+                        notifyInfo.parentNode.removeChild(notifyInfo);
+                    }
+                }, 5000);
+            }
             
-            // Remover a notificação após alguns segundos
-            setTimeout(() => {
-                if (notifyInfo && notifyInfo.parentNode) {
-                    notifyInfo.parentNode.removeChild(notifyInfo);
-                }
-            }, 5000);
+            routeIds = [mockData.origin.id];
         }
+        
+        // Mostrar eventos para as cidades da rota com filtro por data
+        showEventsForCitiesOnRoute(routeIds);
+        
+        // Mostrar restrições para TODOS os tipos de caminhões nas cidades da rota
+        // Passando null para indicar que queremos mostrar para todos os tipos
+        showTruckRestrictionsForCitiesOnRoute(routeIds, null);
     }
 
     // Salvar a rota
