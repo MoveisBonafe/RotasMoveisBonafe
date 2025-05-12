@@ -1508,7 +1508,14 @@
             
             // Adicionar marcador no mapa para o evento
             // Para simplificar, vamos usar a posição da cidade (primeiro local que corresponde ao nome da cidade)
-            const cityLocation = pathLocations.find(loc => loc.address.includes(event.cityName));
+            // Para eventos nacionais, colocar o marcador na origem
+            let cityLocation;
+            if (event.cityName === "Nacional") {
+                cityLocation = pathLocations.find(loc => loc.isOrigin);
+            } else {
+                cityLocation = pathLocations.find(loc => loc.address.includes(event.cityName));
+            }
+            
             if (cityLocation) {
                 addEventMarker(event, cityLocation);
             }
@@ -1566,10 +1573,12 @@
         restrictionsListContainer.innerHTML = '';
         
         // Extrair nomes das cidades na rota
-        const citiesOnRoute = pathLocations.map(loc => {
+        const citiesOnRoute = [...new Set(pathLocations.map(loc => {
             const parts = loc.address.split(',');
             return parts[0].trim();
-        });
+        }))];
+        
+        console.log("Cidades na rota para restrições:", citiesOnRoute);
         
         // Filtrar restrições que afetam o tipo de veículo selecionado e estão nas cidades da rota
         const restrictionsOnRoute = mockData.truckRestrictions.filter(restriction => {
