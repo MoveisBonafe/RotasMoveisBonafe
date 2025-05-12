@@ -26,13 +26,13 @@
         }
         .sidebar {
             width: 380px;
+            min-width: 380px;
             height: 100%;
             background-color: #f8f9fa;
             padding: 20px;
             overflow-y: auto;
             z-index: 10;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
         }
         .map-container {
             flex: 1;
@@ -42,18 +42,6 @@
         #map {
             height: 100%;
             width: 100%;
-        }
-        .toggle-sidebar {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 100;
-            background: white;
-            border: none;
-            border-radius: 4px;
-            padding: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-            cursor: pointer;
         }
         .form-group {
             margin-bottom: 15px;
@@ -145,33 +133,19 @@
             display: inline-block;
             margin-bottom: 10px;
         }
-        /* Botão para fechar o sidebar em telas pequenas */
-        .sidebar-close {
-            display: none;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-        /* Estilo quando o sidebar está fechado */
-        .sidebar-hidden {
-            transform: translateX(-100%);
-        }
         /* Responsividade */
         @media (max-width: 768px) {
             .sidebar {
-                position: absolute;
-                left: 0;
-                top: 0;
-                bottom: 0;
-                z-index: 1000;
                 width: 100%;
-                max-width: 320px;
+                min-width: 320px;
+                max-width: 100%;
             }
-            .sidebar-close {
-                display: block;
+            .app-container {
+                flex-direction: column;
+                height: auto;
             }
-            .toggle-sidebar {
-                display: block;
+            .map-container {
+                height: 60vh;
             }
         }
         /* Estilo para os marcadores de pontos de interesse */
@@ -393,7 +367,6 @@
         <!-- Sidebar para controles e informações -->
         <div class="sidebar" id="sidebar">
             <h2 class="mb-4">Otimizador de Rotas</h2>
-            <button type="button" class="btn-close sidebar-close" aria-label="Close"></button>
             
             <!-- Container de abas -->
             <div class="tab-container">
@@ -405,6 +378,15 @@
                 
                 <!-- Aba de Locais -->
                 <div class="tab-content active" id="locations-tab">
+                    <!-- Filtro de datas -->
+                    <div class="form-group">
+                        <label>Filtrar eventos por data:</label>
+                        <div class="date-range-container">
+                            <input type="date" id="start-date" class="form-control">
+                            <input type="date" id="end-date" class="form-control">
+                        </div>
+                    </div>
+                    
                     <!-- Origem fixa -->
                     <div class="form-group">
                         <label for="origin">Origem:</label>
@@ -420,22 +402,34 @@
                     <!-- Opções de veículo -->
                     <div class="form-group">
                         <label>Tipo de veículo:</label>
-                        <div id="vehicle-options">
-                            <div class="truck-type">
-                                <input type="radio" name="vehicle-type" id="truck1" value="truck1" checked>
-                                <label for="truck1">Caminhão 1 eixo</label>
+                        <div id="vehicle-options" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                            <div class="vehicle-option" style="flex: 1; min-width: 120px; text-align: center; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer;">
+                                <img src="https://cdn-icons-png.flaticon.com/128/744/744465.png" style="width: 40px; height: 40px; margin-bottom: 5px;">
+                                <div>
+                                    <input type="radio" name="vehicle-type" id="car" value="car">
+                                    <label for="car">Carro</label>
+                                </div>
                             </div>
-                            <div class="truck-type">
-                                <input type="radio" name="vehicle-type" id="truck2" value="truck2">
-                                <label for="truck2">Caminhão 2 eixos</label>
+                            <div class="vehicle-option" style="flex: 1; min-width: 120px; text-align: center; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer;">
+                                <img src="https://cdn-icons-png.flaticon.com/128/5501/5501873.png" style="width: 40px; height: 40px; margin-bottom: 5px;">
+                                <div>
+                                    <input type="radio" name="vehicle-type" id="motorcycle" value="motorcycle">
+                                    <label for="motorcycle">Moto</label>
+                                </div>
                             </div>
-                            <div class="truck-type">
-                                <input type="radio" name="vehicle-type" id="truck3" value="truck3">
-                                <label for="truck3">Caminhão 3 eixos</label>
+                            <div class="vehicle-option" style="flex: 1; min-width: 120px; text-align: center; padding: 10px; border: 2px solid #1976D2; border-radius: 8px; cursor: pointer; background-color: #e3f2fd;">
+                                <img src="https://cdn-icons-png.flaticon.com/128/3202/3202926.png" style="width: 40px; height: 40px; margin-bottom: 5px;">
+                                <div>
+                                    <input type="radio" name="vehicle-type" id="truck1" value="truck1" checked>
+                                    <label for="truck1">Caminhão 1 eixo</label>
+                                </div>
                             </div>
-                            <div class="truck-type">
-                                <input type="radio" name="vehicle-type" id="truck5" value="truck5">
-                                <label for="truck5">Caminhão 5 eixos</label>
+                            <div class="vehicle-option" style="flex: 1; min-width: 120px; text-align: center; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer;">
+                                <img src="https://cdn-icons-png.flaticon.com/128/2554/2554936.png" style="width: 40px; height: 40px; margin-bottom: 5px;">
+                                <div>
+                                    <input type="radio" name="vehicle-type" id="truck2" value="truck2">
+                                    <label for="truck2">Caminhão 2 eixos</label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -502,7 +496,6 @@
         
         <!-- Container do mapa -->
         <div class="map-container">
-            <button class="toggle-sidebar" id="toggle-sidebar">☰</button>
             <div id="map"></div>
             
             <!-- Controles do mapa -->
@@ -609,7 +602,31 @@
         
         document.getElementById('start-date').valueAsDate = today;
         document.getElementById('end-date').valueAsDate = nextMonth;
+        
+        // Adicionar eventos para selecionar o tipo de veículo nos cards
+        setupVehicleOptions();
     });
+    
+    // Configurar as opções de veículo
+    function setupVehicleOptions() {
+        document.querySelectorAll('.vehicle-option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Selecionar o radio button dentro deste card
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+                
+                // Atualizar aparência de todos os cards
+                document.querySelectorAll('.vehicle-option').forEach(opt => {
+                    opt.style.borderColor = '#e0e0e0';
+                    opt.style.backgroundColor = '#ffffff';
+                });
+                
+                // Destacar o card selecionado
+                this.style.borderColor = '#1976D2';
+                this.style.backgroundColor = '#e3f2fd';
+            });
+        });
+    }
 
     // Inicializa o mapa
     function initMap() {
@@ -702,24 +719,28 @@
 
     // Configura todos os event listeners
     function initEventListeners() {
-        // Toggle para mostrar/esconder a sidebar
-        document.getElementById('toggle-sidebar').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('sidebar-hidden');
-        });
-        
-        // Botão para fechar a sidebar em telas pequenas
-        document.querySelector('.sidebar-close').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.add('sidebar-hidden');
-        });
-        
         // Upload de arquivo
         document.getElementById('file-upload').addEventListener('change', handleFileUpload);
         
         // Botão para otimizar rota
         document.getElementById('optimize-route').addEventListener('click', optimizeRoute);
         
-        // Filtrar eventos por data
-        document.getElementById('filter-events').addEventListener('click', filterEventsByDate);
+        // Usar o filtro de datas para eventos (na aba locais)
+        document.getElementById('start-date').addEventListener('change', function() {
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            if (startDate && endDate) {
+                filterEventsByDate(startDate, endDate);
+            }
+        });
+        
+        document.getElementById('end-date').addEventListener('change', function() {
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            if (startDate && endDate) {
+                filterEventsByDate(startDate, endDate);
+            }
+        });
         
         // Botões de controle do mapa
         document.getElementById('zoom-to-fit').addEventListener('click', zoomToFitAllMarkers);
