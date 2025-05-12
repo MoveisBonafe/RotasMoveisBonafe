@@ -912,8 +912,15 @@
         // Limpar o campo de upload
         document.getElementById('file-upload').value = '';
         
-        // Feedback para o usuário
-        alert(`${newLocations.length + geocodeQueue.length} locais sendo importados! Os locais conhecidos aparecerão imediatamente, enquanto os demais serão geocodificados automaticamente.`);
+        // Contar as linhas válidas do arquivo original
+        const validLines = lines.filter(line => {
+            if (!line.trim()) return false;
+            const parts = line.split(',');
+            return parts.length >= 2 && parts[0].trim() && parts[1].trim();
+        }).length;
+        
+        // Feedback para o usuário com a contagem correta
+        alert(`${validLines} locais sendo importados! Os locais conhecidos aparecerão imediatamente, enquanto os demais serão geocodificados automaticamente.`);
     }
 
     // Função para extrair CEP de um objeto Place
@@ -1762,6 +1769,64 @@
         // Inicializar a distância total
         let totalDistance = 0;
         
+        // Verificar se há pontos na mesma cidade da origem
+        // Se houver, devem ser visitados primeiro
+        const sameCity = [];
+        const otherCities = [];
+        
+        destinations.forEach(dest => {
+            if (isSameCity(dest, origin)) {
+                sameCity.push(dest);
+            } else {
+                otherCities.push(dest);
+            }
+        });
+        
+        // Se há pontos na mesma cidade, priorizá-los
+        if (sameCity.length > 0) {
+            // Colocar os pontos da mesma cidade primeiro, depois resolver o restante
+            console.log(`Encontrado ${sameCity.length} pontos na mesma cidade da origem. Priorizando.`);
+            
+            // Calcular a distância para priorizar essa ordem
+            let sameCityDist = 0;
+            const sameCityPath = [origin, ...sameCity];
+            
+            for (let i = 0; i < sameCityPath.length - 1; i++) {
+                sameCityDist += calculateDistance(
+                    sameCityPath[i].latitude, sameCityPath[i].longitude,
+                    sameCityPath[i+1].latitude, sameCityPath[i+1].longitude
+                );
+            }
+            
+            // Se não temos outros pontos, retornar apenas os da mesma cidade
+            if (otherCities.length === 0) {
+                return {
+                    path: sameCityPath,
+                    distance: sameCityDist
+                };
+            }
+            
+            // Resolver o TSP para os outros pontos
+            const otherResult = solveBasicTSP(sameCityPath[sameCityPath.length-1], otherCities, includeReturn);
+            
+            // Combinar os caminhos
+            const fullPath = [...sameCityPath.slice(0, -1), ...otherResult.path];
+            const fullDistance = sameCityDist + otherResult.distance;
+            
+            return {
+                path: fullPath,
+                distance: fullDistance
+            };
+        }
+        
+        return solveBasicTSP(origin, destinations, includeReturn);
+    }
+    
+    // Versão básica do TSP para cidades diferentes
+    function solveBasicTSP(origin, destinations, includeReturn) {
+        // Inicializar a distância total
+        let totalDistance = 0;
+        
         // Matriz de distâncias entre todos os pontos
         const points = [origin, ...destinations];
         const numPoints = points.length;
@@ -1801,45 +1866,10 @@
         // Calcular a distância inicial
         totalDistance = bestDist;
         
-        // Enquanto houver pontos não visitados
-        while (remaining.length > 0) {
-            let bestInsertion = {
-                point: -1,
-                position: -1,
-                cost: Infinity
-            };
-            
-            // Para cada ponto restante
-            for (let i = 0; i < remaining.length; i++) {
-                const point = remaining[i];
-                
-                // Para cada possível posição de inserção no tour atual
-                for (let j = 1; j <= tour.length; j++) {
-                    const prev = tour[j-1];
-                    const next = j < tour.length ? tour[j] : tour[0]; // Se estamos no final, o próximo é o início
-                    
-                    // Calcular o custo de inserção = dist(prev, point) + dist(point, next) - dist(prev, next)
-                    const insertionCost = distMatrix[prev][point] + 
-                                         distMatrix[point][next] -
-                                         distMatrix[prev][next];
-                    
-                    if (insertionCost < bestInsertion.cost) {
-                        bestInsertion = {
-                            point: point,
-                            position: j,
-                            cost: insertionCost
-                        };
-                    }
-                }
-            }
-            
-            // Inserir o melhor ponto na melhor posição
-            tour.splice(bestInsertion.position, 0, bestInsertion.point);
-            remaining.splice(remaining.indexOf(bestInsertion.point), 1);
-            
-            // Atualizar a distância total
-            totalDistance += bestInsertion.cost;
-        }
+        // Usar a função auxiliar para completar o algoritmo
+        const result = finishSolveBasicTSP(tour, remaining, distMatrix, totalDistance, includeReturn);
+        tour = result.tour;
+        totalDistance = result.totalDistance;
         
         // Se não for para incluir retorno, remover o último link (do último ponto de volta à origem)
         if (!includeReturn && tour.length > 1) {
@@ -1881,6 +1911,51 @@
     // Manteremos a versão simples para compatibilidade
     function solveTSP(origin, destinations, includeReturn) {
         return solveAdvancedTSP(origin, destinations, includeReturn);
+    }
+    
+    // Função para finalizar o algoritmo TSP básico
+    function finishSolveBasicTSP(tour, remaining, distMatrix, totalDistance, includeReturn) {
+        // Enquanto houver pontos não visitados
+        while (remaining.length > 0) {
+            let bestInsertion = {
+                point: -1,
+                position: -1,
+                cost: Infinity
+            };
+            
+            // Para cada ponto restante
+            for (let i = 0; i < remaining.length; i++) {
+                const point = remaining[i];
+                
+                // Para cada possível posição de inserção no tour atual
+                for (let j = 1; j <= tour.length; j++) {
+                    const prev = tour[j-1];
+                    const next = j < tour.length ? tour[j] : tour[0]; // Se estamos no final, o próximo é o início
+                    
+                    // Calcular o custo de inserção = dist(prev, point) + dist(point, next) - dist(prev, next)
+                    const insertionCost = distMatrix[prev][point] + 
+                                         distMatrix[point][next] -
+                                         distMatrix[prev][next];
+                    
+                    if (insertionCost < bestInsertion.cost) {
+                        bestInsertion = {
+                            point: point,
+                            position: j,
+                            cost: insertionCost
+                        };
+                    }
+                }
+            }
+            
+            // Inserir o melhor ponto na melhor posição
+            tour.splice(bestInsertion.position, 0, bestInsertion.point);
+            remaining.splice(remaining.indexOf(bestInsertion.point), 1);
+            
+            // Atualizar a distância total
+            totalDistance += bestInsertion.cost;
+        }
+        
+        return { tour, totalDistance };
     }
 
     // Calcular distância entre dois pontos usando a fórmula de Haversine

@@ -1,6 +1,7 @@
 /**
  * Implementação de geocodificação para o GitHub Pages
  * Este script corrige os problemas com coordenadas erradas no mapa
+ * e implementa a priorização correta de pontos na mesma cidade da origem
  */
 
 document.addEventListener('DOMContentLoaded', function() {
