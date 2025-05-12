@@ -414,14 +414,14 @@
                 
                 <!-- Aba de Locais -->
                 <div class="tab-content active" id="locations-tab">
-                    <!-- Filtro de eventos por data (movido da aba Informações para aqui) -->
+                    <!-- Filtro de eventos por data (sem botão filtrar) -->
                     <div class="form-group">
                         <label>Filtrar eventos por data:</label>
                         <div class="date-range-container">
                             <input type="date" id="start-date" class="form-control">
                             <input type="date" id="end-date" class="form-control">
                         </div>
-                        <button id="filter-events" class="btn btn-outline-primary btn-sm mt-2">Filtrar</button>
+                        <!-- Botão de filtrar removido - filtro aplicado automaticamente -->
                     </div>
                 
                     <!-- Origem fixa -->
@@ -752,8 +752,9 @@
         // Botão para otimizar rota
         document.getElementById('optimize-route').addEventListener('click', optimizeRoute);
         
-        // Filtrar eventos por data
-        document.getElementById('filter-events').addEventListener('click', filterEventsByDate);
+        // Filtrar eventos automaticamente ao mudar as datas
+        document.getElementById('start-date').addEventListener('change', filterEventsByDate);
+        document.getElementById('end-date').addEventListener('change', filterEventsByDate);
         
         // Botões de controle do mapa
         document.getElementById('zoom-to-fit').addEventListener('click', zoomToFitAllMarkers);
@@ -955,29 +956,23 @@
                         // Continuar com o próximo após um curto delay (para evitar limites de API)
                         setTimeout(processGeocodingQueue, 200);
                     } else {
-                        // Falha no geocoding, usar coordenadas aproximadas baseadas na região SP
-                        // Substituir console.warn por um log silencioso
-                        console.log(`Usando coordenadas aproximadas para ${address}`);
+                        // CORREÇÃO: Não adicionar CEPs que não puderam ser geocodificados
+                        console.warn(`CEP não encontrado: ${item.cep} - ${item.name}. Este local não será adicionado.`);
                         
-                        // Coordenadas aleatórias na região central de SP (como fallback)
-                        const fallbackLat = -22.3 - Math.random() * 1.5;
-                        const fallbackLng = -48.3 - Math.random() * 1.5;
+                        // Mostrar notificação para o usuário sobre o CEP não encontrado
+                        const notifyError = document.createElement('div');
+                        notifyError.className = 'alert alert-warning mt-2';
+                        notifyError.innerHTML = `CEP não encontrado: ${item.cep} - ${item.name}`;
+                        document.querySelector('.file-upload').appendChild(notifyError);
                         
-                        const newLocation = {
-                            id: locationId++,
-                            name: item.name, // Já vem formatado de antes
-                            address: `${item.name}, Região Central, SP, Brasil`,
-                            zipCode: item.cep,
-                            latitude: fallbackLat,
-                            longitude: fallbackLng,
-                            isOrigin: false
-                        };
+                        // Remover a notificação após alguns segundos
+                        setTimeout(() => {
+                            if (notifyError && notifyError.parentNode) {
+                                notifyError.parentNode.removeChild(notifyError);
+                            }
+                        }, 5000);
                         
-                        locations.push(newLocation);
-                        addMarkerForLocation(newLocation, locations.length - 1);
-                        
-                        // Atualizar a lista de locais
-                        updateLocationsList();
+                        // Atualizar o status sem adicionar o local
                         
                         // Atualizar o status
                         processedCount++;
