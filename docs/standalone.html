@@ -728,6 +728,38 @@
         // Botões da aba de relatório
         document.getElementById('save-route').addEventListener('click', saveRoute);
         document.getElementById('print-route').addEventListener('click', printRoute);
+        
+        // Seletor de rotas alternativas
+        document.getElementById('alternative-routes').addEventListener('change', function(e) {
+            const selectedIndex = parseInt(e.target.value);
+            if (alternativeRoutes && alternativeRoutes.length > selectedIndex) {
+                const selectedRoute = alternativeRoutes[selectedIndex];
+                
+                console.log("Selecionando rota alternativa:", selectedIndex);
+                console.log("Caminho da rota selecionada:", selectedRoute.path);
+                
+                // Limpar rota atual
+                clearRoute();
+                
+                // Reordenar marcadores
+                reorderMarkers(selectedRoute.path);
+                
+                // Desenhar nova rota
+                drawRouteOnMap(selectedRoute.path, "truck1");
+                
+                // Mostrar pontos de interesse
+                showPointsOfInterestOnRoute(selectedRoute.path);
+                
+                // Mostrar eventos
+                showEventsForCitiesOnRoute(selectedRoute.path);
+                
+                // Atualizar restrições
+                showTruckRestrictionsForCitiesOnRoute(selectedRoute.path, "truck1");
+                
+                // Atualizar rota atual
+                currentRouteIndex = selectedIndex;
+            }
+        });
     }
 
     // Função para tratar o upload de arquivo
@@ -1873,7 +1905,11 @@
         // Limpar o seletor de rotas alternativas
         const alternativeSelect = document.getElementById('alternative-routes');
         alternativeSelect.innerHTML = '';
-        alternativeSelect.innerHTML = '<option value="0">Rota Otimizada (Padrão)</option>';
+        const defaultOption = document.createElement('option');
+        defaultOption.value = "0";
+        defaultOption.text = "Rota Otimizada (Padrão)";
+        defaultOption.selected = true;
+        alternativeSelect.appendChild(defaultOption);
         
         // 1. Rota principal (otimizada pelo algoritmo principal)
         console.log("Gerando rota principal otimizada...");
@@ -1887,7 +1923,10 @@
                 console.log("Gerando rota alternativa 1: Proximidade à origem...");
                 const originProximityRoute = solveOriginProximityTSP(origin, destinations, includeOriginReturn);
                 alternativeRoutes.push(originProximityRoute);
-                alternativeSelect.innerHTML += '<option value="1">Rota Alternativa 1 (Proximidade à Origem)</option>';
+                const option1 = document.createElement('option');
+                option1.value = "1";
+                option1.text = "Rota Alternativa 1 (Proximidade à Origem)";
+                alternativeSelect.appendChild(option1);
             } catch (error) {
                 console.error("Erro ao gerar rota por proximidade:", error);
             }
