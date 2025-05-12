@@ -468,6 +468,21 @@
                         <p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>
                     </div>
                     
+                    <!-- Seleção de Rota Alternativa -->
+                    <div id="route-alternatives" class="mb-3" style="display: none;">
+                        <h5>Rotas Alternativas</h5>
+                        <p class="text-muted">Selecione uma rota alternativa para visualizar diferentes ordenações de pontos:</p>
+                        <div class="form-group">
+                            <select id="alternative-routes" class="form-select">
+                                <option value="0">Rota Otimizada (Padrão)</option>
+                                <!-- Opções de rotas alternativas serão adicionadas dinamicamente -->
+                            </select>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">Cada rota usa um algoritmo diferente para ordenar os pontos, com diferentes trade-offs entre distância e tempo.</small>
+                        </div>
+                    </div>
+                    
                     <div class="form-group">
                         <label for="route-name">Nome da rota:</label>
                         <input type="text" id="route-name" class="form-control" placeholder="Ex: Entrega Região Sul">
