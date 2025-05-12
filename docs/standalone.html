@@ -1305,7 +1305,14 @@
             
             // Processar a rota em ordem correta
             tspResult.path.forEach((locationId, index) => {
-                const locationIdStr = String(locationId);
+                // Lidar com o caso em que locationId é um objeto em vez de um ID simples
+                const rawId = typeof locationId === 'object' && locationId !== null 
+                    ? (locationId.id || locationId)
+                    : locationId;
+                    
+                const locationIdStr = String(rawId);
+                console.log(`Processando ID: ${locationIdStr}, tipo original: ${typeof locationId}, valor bruto:`, locationId);
+                
                 const location = locations.find(loc => String(loc.id) === locationIdStr);
                 
                 if (!location) {
@@ -1361,7 +1368,8 @@
                 }).filter(loc => loc !== undefined);
                 
                 // Desenhar a rota no mapa usando as direções do Google
-                drawDirectionsRoute(pathLocations, vehicleType);
+                // Usamos drawRouteOnMap que é a função correta definida no código
+                drawRouteOnMap(tspResult.path, vehicleType);
                 
                 // Mostrar pontos de interesse e eventos ao longo da rota
                 showPointsOfInterestOnRoute(tspResult.path);
