@@ -196,7 +196,18 @@ document.addEventListener('DOMContentLoaded', function() {
         window.calculateOptimizedRoute();
       }
     } else {
-      alert('Nenhum endereço válido encontrado no arquivo.');
+      // Substituir alert por notificação inline mais suave
+      const notifyWarning = document.createElement('div');
+      notifyWarning.className = 'alert alert-warning mt-2';
+      notifyWarning.innerHTML = `Nenhum endereço válido encontrado no arquivo.`;
+      document.querySelector('.file-upload').appendChild(notifyWarning);
+      
+      // Remover a notificação após alguns segundos
+      setTimeout(() => {
+        if (notifyWarning && notifyWarning.parentNode) {
+          notifyWarning.parentNode.removeChild(notifyWarning);
+        }
+      }, 5000);
     }
     
     // Limpar input
