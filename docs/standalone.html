@@ -1180,23 +1180,26 @@
             return;
         }
         
-        // Limpar rota anterior
-        clearRoute();
-        
         // Mostrar loading no botão
         const optimizeBtn = document.getElementById('optimize-route');
         optimizeBtn.innerHTML = '<span class="spinner-border" role="status" aria-hidden="true"></span> Calculando...';
         optimizeBtn.disabled = true;
         
+        // IMPORTANTE: Assegurar que os marcadores originais sejam preservados antes de limpar
+        const currentMarkers = [...markers]; // Criar uma cópia dos marcadores atuais
+        
+        // Limpar rota anterior
+        clearRoute();
+        
         // Usar caminhão padrão como veículo
         const vehicleType = "truck1"; // Caminhão 1 eixo como padrão
         
         // Calcular a rota otimizada (versão simplificada do TSP)
-        calculateOptimizedRoute(vehicleType, false);
+        calculateOptimizedRoute(vehicleType, false, currentMarkers);
     }
 
     // Calcular rota otimizada pelo algoritmo TSP
-    function calculateOptimizedRoute(vehicleType, includeOriginReturn) {
+    function calculateOptimizedRoute(vehicleType, includeOriginReturn, savedMarkers = null) {
         try {
             console.log("Calculando rota otimizada...");
             
@@ -1254,6 +1257,13 @@
             if (alternativeSelect && alternativeSelect.options.length > 0) {
                 alternativeSelect.selectedIndex = 0;
                 
+                // Restaurar os marcadores originais, se fornecidos
+                if (savedMarkers && savedMarkers.length > 0) {
+                    console.log("Restaurando marcadores originais após otimização");
+                    // Usar uma cópia para não modificar o original
+                    markers = [...savedMarkers];
+                }
+            
                 // Disparar o evento "change" para ativar o handler que exibe a rota
                 const changeEvent = new Event('change');
                 alternativeSelect.dispatchEvent(changeEvent);
@@ -1261,6 +1271,11 @@
                 console.error("Seletor de rotas alternativas não encontrado ou vazio");
                 
                 // Fallback para o comportamento original se o seletor não funcionar
+                if (savedMarkers && savedMarkers.length > 0) {
+                    console.log("Restaurando marcadores originais (fallback)");
+                    markers = [...savedMarkers];
+                }
+                
                 reorderMarkers(tspResult.path);
                 drawRouteOnMap(tspResult.path, vehicleType);
                 showPointsOfInterestOnRoute(tspResult.path);
