@@ -2169,7 +2169,7 @@
         mockData.cityEvents.forEach(event => {
             let includeEvent = false;
             
-            // ETAPA 1: FILTRAR POR CIDADE - CORRESPONDÊNCIA EXATA APENAS
+            // ETAPA 1: FILTRAR POR CIDADE - CORRESPONDÊNCIA EXATA APENAS (REGRA RÍGIDA)
             const cityMatch = citiesOnRoute.includes(event.cityName);
             
             // Se a cidade não estiver no percurso, não inclua este evento
@@ -2178,9 +2178,9 @@
                 return; // Pular para o próximo evento
             }
             
-            // ETAPA 2: FILTRAR POR DATA (apenas se um filtro de data foi especificado)
+            // ETAPA 2: FILTRAR POR DATA (APÓS VERIFICAÇÃO DA CIDADE)
             if (!startDate && !endDate) {
-                // Nenhum filtro de data especificado, incluir o evento
+                // Nenhum filtro de data especificado, e a cidade já está verificada
                 console.log(`[DATA] Evento '${event.name}' em '${event.cityName}' ACEITO - nenhum filtro de data especificado`);
                 includeEvent = true;
             } 
