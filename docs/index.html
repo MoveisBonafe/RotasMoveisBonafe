@@ -1317,7 +1317,7 @@
         }
       }
       
-      // Função para atualizar eventos das cidades
+      // Função para atualizar eventos das cidades e adicionar ao mapa
       function updateCityEvents(tspResult) {
         const eventsList = document.getElementById('events-list');
         if (!eventsList) return;
@@ -1325,12 +1325,49 @@
         // Limpar eventos atuais
         eventsList.innerHTML = '';
         
+        // Limpar marcadores de eventos existentes no mapa
+        if (eventMarkers.length > 0) {
+          eventMarkers.forEach(marker => marker.setMap(null));
+          eventMarkers = [];
+        }
+        
+        // Fechar infowindows abertas
+        infoWindows.forEach(infoWindow => infoWindow.close());
+        infoWindows = [];
+        
         // Obter datas selecionadas
         const startDate = startDateInput.value;
         const endDate = endDateInput.value;
         
         // Filtrar eventos por data e cidades na rota
         const citiesInRoute = tspResult.orderedLocations.map(loc => loc.name.toLowerCase());
+        
+        // Coordenadas conhecidas das cidades
+        const cityCoordinates = {
+          'dois córregos': { lat: -22.3673, lng: -48.3823 },
+          'jaú': { lat: -22.2936, lng: -48.5592 },
+          'brotas': { lat: -22.2792, lng: -48.1250 },
+          'mineiros do tietê': { lat: -22.4119, lng: -48.4511 },
+          'torrinha': { lat: -22.4269, lng: -48.1731 },
+          'barra bonita': { lat: -22.4910, lng: -48.5583 },
+          'são manuel': { lat: -22.7320, lng: -48.5714 },
+          'igaraçu do tietê': { lat: -22.5089, lng: -48.5597 },
+          'bocaina': { lat: -22.1361, lng: -48.5230 },
+          'bauru': { lat: -22.3246, lng: -49.0871 },
+          'pederneiras': { lat: -22.3511, lng: -48.7782 },
+          'ribeirão preto': { lat: -21.1767, lng: -47.8208 }
+        };
+        
+        // Adicionar coordenadas das cidades da rota que não estão na lista
+        tspResult.orderedLocations.forEach(loc => {
+          if (!loc.isOrigin) {
+            const [lat, lng] = loc.latlng.split(',').map(parseFloat);
+            const cityName = loc.name.toLowerCase();
+            if (!cityCoordinates[cityName]) {
+              cityCoordinates[cityName] = { lat, lng };
+            }
+          }
+        });
         
         const eventsToShow = cityEvents.filter(event => {
           // Verificar se a cidade está na rota
@@ -1351,8 +1388,9 @@
           return cityInRoute && dateInRange;
         });
         
-        // Adicionar eventos filtrados à lista
+        // Adicionar eventos filtrados à lista e ao mapa
         eventsToShow.forEach(event => {
+          // 1. Adicionar ao painel lateral
           const eventItem = document.createElement('div');
           eventItem.className = 'event-item';
           
@@ -1387,6 +1425,66 @@
           eventItem.appendChild(eventCity);
           
           eventsList.appendChild(eventItem);
+          
+          // 2. Adicionar ao mapa se as coordenadas da cidade estiverem disponíveis
+          if (map && cityCoordinates[event.city.toLowerCase()]) {
+            const cityCoord = cityCoordinates[event.city.toLowerCase()];
+            
+            // Adicionar pequena variação para evitar sobreposição
+            const offsetFactor = 0.005; // ~500 metros
+            const offsetLat = (Math.random() - 0.5) * offsetFactor;
+            const offsetLng = (Math.random() - 0.5) * offsetFactor;
+            
+            const position = {
+              lat: cityCoord.lat + offsetLat,
+              lng: cityCoord.lng + offsetLng
+            };
+            
+            // Escolher o ícone baseado no tipo de evento (aniversário/feriado vs evento regular)
+            const isHoliday = event.title.toLowerCase().includes('aniversário') || 
+                             event.title.toLowerCase().includes('feriado');
+            
+            const iconPath = isHoliday ? './event-icons/holiday-icon.svg' : './event-icons/event-icon.svg';
+            
+            // Criar marcador para o evento
+            const marker = new google.maps.Marker({
+              position: position,
+              map: map,
+              title: `${event.title} - ${event.city}`,
+              icon: {
+                url: iconPath,
+                scaledSize: new google.maps.Size(30, 30),
+                anchor: new google.maps.Point(15, 15)
+              },
+              animation: google.maps.Animation.DROP
+            });
+            
+            // Criar janela de informação
+            const infoContent = `
+              <div style="padding: 10px; max-width: 200px;">
+                <h3 style="margin: 0 0 5px 0; color: #3b82f6;">${event.title}</h3>
+                <p style="margin: 5px 0;"><strong>Local:</strong> ${event.city}</p>
+                <p style="margin: 5px 0;"><strong>Data:</strong> ${formatDateRange(event.startDate, event.endDate)}</p>
+              </div>
+            `;
+            
+            const infoWindow = new google.maps.InfoWindow({
+              content: infoContent
+            });
+            
+            // Adicionar evento de clique para mostrar detalhes
+            marker.addListener('click', () => {
+              // Fechar outras janelas de informação
+              infoWindows.forEach(iw => iw.close());
+              
+              // Abrir esta janela
+              infoWindow.open(map, marker);
+            });
+            
+            // Guardar referências para limpar depois
+            eventMarkers.push(marker);
+            infoWindows.push(infoWindow);
+          }
         });
         
         // Se não houver eventos, mostrar mensagem
@@ -1886,6 +1984,8 @@
       let placesService = null;
       let autocomplete = null;
       let markers = [];
+      let eventMarkers = [];
+      let infoWindows = [];
       
       // Inicializar o mapa com a API do Google Maps
       function initMap() {
