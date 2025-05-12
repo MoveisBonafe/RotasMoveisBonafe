@@ -597,6 +597,7 @@
     let directionsRenderer;
     let autocomplete;
     let markers = [];
+    let currentOptimizedPath = []; // Array para armazenar os IDs do caminho otimizado atual
     let poiMarkers = [];
     let eventMarkers = [];
     let locationId = 2; // Começa em 2 porque 1 é reservado para a origem
@@ -1558,6 +1559,12 @@
     // Reordenar os marcadores para corresponder à sequência otimizada
     function reorderMarkers(optimizedPathIds) {
         console.log("Reordenando marcadores para caminho:", optimizedPathIds);
+        
+        // Atualizar a variável global com o caminho otimizado
+        currentOptimizedPath = [...optimizedPathIds];
+        
+        // Atualizar eventos e restrições para o novo caminho otimizado
+        filterEventsByDate(); // Isso também atualizará as restrições
         console.log("Quantidade de marcadores antes:", markers.length);
         
         // Preservar os marcadores originais
@@ -2207,7 +2214,9 @@
 
     // Mostrar restrições para caminhões nas cidades da rota
     function showTruckRestrictionsForCitiesOnRoute(pathIds, vehicleType) {
-        console.log("Mostrando restrições de caminhões para rota com IDs:", pathIds, "veículo:", vehicleType === null ? "TODOS OS TIPOS" : (vehicleType || "truck1"));
+        console.log("DEBUG: Acionando função para mostrar TODAS as restrições de caminhões, ignorando completamente o tipo de veículo");
+        console.log("Mostrando restrições de caminhões para rota com IDs:", pathIds);
+        console.log("Parâmetro vehicleType:", vehicleType, "- Isso será ignorado completamente");
         // Limpar a lista de restrições
         const restrictionsListContainer = document.getElementById('restrictions-list');
         restrictionsListContainer.innerHTML = '';
