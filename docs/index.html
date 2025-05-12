@@ -1096,7 +1096,15 @@
           updateLocationListVisualOrder(tspResult.orderedLocations);
           
           // Atualizar o mapa com a rota otimizada
-          buildDirectionsUrl(tspResult.orderedLocations);
+          if (map && directionsService && directionsRenderer) {
+            updateMapRoute(tspResult.orderedLocations);
+          } else {
+            const newUrl = buildDirectionsUrl(tspResult.orderedLocations);
+            if (mapIframe && newUrl) {
+              mapIframe.src = newUrl;
+              mapIframe.style.display = 'block';
+            }
+          }
           
           // Atualizar informações da rota
           updateRouteInfo(tspResult);
@@ -1727,13 +1735,13 @@
               const selectedCity = predefinedCities[cityIndex];
               
               // Adicionar uma pequena variação para cada ponto para que não fiquem exatamente no mesmo lugar
-              const variationFactor = 0.01; // aproximadamente 1km
+              const variationFactor = 0.005; // aproximadamente 500m (reduzido para melhor visualização)
               const latVariation = (Math.random() - 0.5) * variationFactor;
               const lngVariation = (Math.random() - 0.5) * variationFactor;
               
               const lat = selectedCity.lat + latVariation;
               const lng = selectedCity.lng + lngVariation;
-              const latlng = `${lat.toFixed(6)},${lng.toFixed(6)}`;
+              const latlng = `${lat},${lng}`; // Não arredondar para maior precisão
               
               // Criar elemento visual
               createLocationItem(name, `CEP: ${cep}`, locationCounter);
