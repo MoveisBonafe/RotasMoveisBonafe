@@ -879,10 +879,11 @@
         
         // Processar a fila de geocodificação para CEPs desconhecidos
         if (geocodeQueue.length > 0) {
+            // Adicionar uma notificação inline sobre o processo de geocodificação
             const statusElement = document.createElement('div');
             statusElement.className = 'alert alert-info mt-3';
             statusElement.id = 'geocode-status';
-            statusElement.innerHTML = `Geocodificando ${geocodeQueue.length} endereços adicionais...`;
+            statusElement.innerHTML = `Processando ${geocodeQueue.length} endereços adicionais...`;
             document.querySelector('.file-upload').appendChild(statusElement);
             
             let processedCount = 0;
@@ -2543,7 +2544,7 @@
             // Veículo fixo (caminhão 1 eixo)
             const selectedVehicle = {
                 name: "Caminhão",
-                averageSpeed: 70 // km/h - velocidade média
+                averageSpeed: 80 // km/h - velocidade média ajustada para 80km/h conforme solicitado
             };
             
             // Tempo estimado (baseado na velocidade média padrão do caminhão)
