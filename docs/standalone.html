@@ -654,11 +654,6 @@
         
         // Atualizar os eventos para garantir que estejam com datas do ano corrente
         updateEventDates(currentYear);
-        
-        // Debug
-        console.log("Versão do GitHub Pages - Inicialização concluída");
-        console.log("Eventos disponíveis:", mockData.cityEvents.length);
-        console.log("Restrições disponíveis:", mockData.truckRestrictions.length);
     });
     
     // Função para atualizar datas de eventos para o ano atual
@@ -1186,8 +1181,6 @@
 
     // Otimizar a rota
     function optimizeRoute() {
-        console.log("Função optimizeRoute iniciada");
-        
         // Verificar se há pelo menos um destino além da origem
         if (locations.length <= 1) {
             alert("Adicione pelo menos um destino para calcular a rota.");
@@ -1200,123 +1193,53 @@
         // Mostrar loading no botão
         const optimizeBtn = document.getElementById('optimize-route');
         optimizeBtn.innerHTML = '<span class="spinner-border" role="status" aria-hidden="true"></span> Calculando...';
+        optimizeBtn.disabled = true;
         
-        // Usar setTimeout para não bloquear a UI
-        setTimeout(() => {
-            try {
-                optimizeBtn.disabled = true;
-                
-                // Obter o tipo de veículo selecionado com fallback seguro
-                const vehicleTypeElement = document.querySelector('input[name="vehicle-type"]:checked');
-                const vehicleType = vehicleTypeElement ? vehicleTypeElement.value : 'truck1';
-                
-                console.log("Tipo de veículo selecionado:", vehicleType);
-                console.log("Número de locais:", locations.length);
-                
-                // Imprimir detalhes das localizações para debug
-                locations.forEach((loc, idx) => {
-                    console.log(`Local ${idx}: ${loc.name}, Lat: ${loc.latitude}, Lng: ${loc.longitude}`);
-                });
-                
-                // Calcular a rota otimizada (versão simplificada do TSP)
-                calculateOptimizedRoute(vehicleType, false);
-            } catch (error) {
-                console.error("Erro ao otimizar rota:", error);
-                // Restaurar o botão em caso de erro
-                optimizeBtn.innerHTML = 'Otimizar Rota';
-                optimizeBtn.disabled = false;
-                alert("Erro ao otimizar rota. Verifique o console para detalhes.");
-            }
-        }, 200);
+        // Obter o tipo de veículo selecionado
+        const vehicleType = document.querySelector('input[name="vehicle-type"]:checked').value;
+        
+        // Calcular a rota otimizada (versão simplificada do TSP)
+        calculateOptimizedRoute(vehicleType, false);
     }
 
     // Calcular rota otimizada pelo algoritmo TSP
     function calculateOptimizedRoute(vehicleType, includeOriginReturn) {
-        console.log("Iniciando cálculo de rota otimizada");
+        // Primeiro vamos resolver o TSP para encontrar a ordem ideal dos pontos
+        const origin = locations.find(loc => loc.isOrigin);
+        const destinations = locations.filter(loc => !loc.isOrigin);
         
-        try {
-            // Verificar o número mínimo de destinos
-            if (locations.length < 2) {
-                throw new Error("Você precisa adicionar pelo menos um destino além da origem");
-            }
-            
-            // Na versão GitHub Pages, tentar usar a implementação mais simples
-            // para evitar problemas de compatibilidade
-            const isGitHubPages = window.location.href.includes('github.io');
-            console.log("Ambiente detectado:", isGitHubPages ? "GitHub Pages" : "Aplicação normal");
-            
-            // Primeiro vamos resolver o TSP para encontrar a ordem ideal dos pontos
-            const origin = locations.find(loc => loc.isOrigin);
-            if (!origin) {
-                throw new Error("Origem não encontrada!");
-            }
-            
-            const destinations = locations.filter(loc => !loc.isOrigin);
-            console.log("Destinos encontrados:", destinations.length);
-            
-            // Verificar coordenadas
-            for (const loc of [origin, ...destinations]) {
-                if (typeof loc.latitude !== 'number' || typeof loc.longitude !== 'number' ||
-                    isNaN(loc.latitude) || isNaN(loc.longitude)) {
-                    console.error("Coordenadas inválidas para:", loc);
-                    throw new Error(`Coordenadas inválidas para o local ${loc.name}`);
-                }
-            }
-            
-            // Resolver o TSP usando algoritmo apropriado para a plataforma
-            console.log("Resolvendo TSP");
-            
-            // Usar o algoritmo mais simples no GitHub Pages
-            let tspResult;
-            if (window.location.href.includes('github.io')) {
-                console.log("Usando algoritmo simples para GitHub Pages");
-                tspResult = solveBasicTSP(origin, destinations, includeOriginReturn);
-            } else {
-                tspResult = solveAdvancedTSP(origin, destinations, includeOriginReturn);
-            }
-            
-            console.log("Resultado do TSP:", tspResult);
-            
-            // Reordenar os marcadores visualmente para corresponder à nova sequência
-            reorderMarkers(tspResult.path);
-            
-            // Traçar a rota usando o Google Directions Service
-            drawRouteOnMap(tspResult.path, vehicleType);
-            
-            // Mostrar pontos de interesse ao longo da rota
-            showPointsOfInterestOnRoute(tspResult.path);
-            
-            // Mostrar eventos nas cidades da rota
-            showEventsForCitiesOnRoute(tspResult.path);
-            
-            // Mostrar restrições para caminhões nas cidades da rota
-            showTruckRestrictionsForCitiesOnRoute(tspResult.path, vehicleType);
-            
-            // Atualizar o resumo da rota
-            updateRouteSummary(tspResult, vehicleType);
-            
-            // Habilitar botões de salvar e imprimir
-            document.getElementById('save-route').disabled = false;
-            document.getElementById('print-route').disabled = false;
-            
-            // Restaurar o botão de otimizar
-            const optimizeBtn = document.getElementById('optimize-route');
-            optimizeBtn.innerHTML = 'Otimizar Rota';
-            optimizeBtn.disabled = false;
-            
-            // Navegar para a aba de relatório
-            document.querySelector('.tab-button[data-tab="report"]').click();
-        } catch (error) {
-            console.error("Erro no cálculo da rota otimizada:", error);
-            
-            // Restaurar o botão de otimizar
-            const optimizeBtn = document.getElementById('optimize-route');
-            optimizeBtn.innerHTML = 'Otimizar Rota';
-            optimizeBtn.disabled = false;
-            
-            // Alertar o usuário
-            alert("Ocorreu um erro ao calcular a rota otimizada. Por favor tente novamente ou adicione outros locais.");
-        }
+        // Resolver o TSP (implementação avançada idêntica ao Replit)
+        const tspResult = solveAdvancedTSP(origin, destinations, includeOriginReturn);
+        
+        // Reordenar os marcadores visualmente para corresponder à nova sequência
+        reorderMarkers(tspResult.path);
+        
+        // Traçar a rota usando o Google Directions Service
+        drawRouteOnMap(tspResult.path, vehicleType);
+        
+        // Mostrar pontos de interesse ao longo da rota
+        showPointsOfInterestOnRoute(tspResult.path);
+        
+        // Mostrar eventos nas cidades da rota
+        showEventsForCitiesOnRoute(tspResult.path);
+        
+        // Mostrar restrições para caminhões nas cidades da rota
+        showTruckRestrictionsForCitiesOnRoute(tspResult.path, vehicleType);
+        
+        // Atualizar o resumo da rota
+        updateRouteSummary(tspResult, vehicleType);
+        
+        // Habilitar botões de salvar e imprimir
+        document.getElementById('save-route').disabled = false;
+        document.getElementById('print-route').disabled = false;
+        
+        // Restaurar o botão de otimizar
+        const optimizeBtn = document.getElementById('optimize-route');
+        optimizeBtn.innerHTML = 'Otimizar Rota';
+        optimizeBtn.disabled = false;
+        
+        // Navegar para a aba de relatório
+        document.querySelector('.tab-button[data-tab="report"]').click();
     }
     
     // Reordenar os marcadores para corresponder à sequência otimizada
@@ -1359,188 +1282,73 @@
     
     // Traçar a rota no mapa
     function drawRouteOnMap(pathLocations, vehicleType) {
-        console.log("Iniciando drawRouteOnMap com", pathLocations.length, "locais");
+        // Verificar e destacar pontos na mesma cidade da origem
+        const origin = locations.find(loc => loc.isOrigin);
         
-        if (pathLocations.length < 2) {
-            console.error("Pelo menos 2 pontos são necessários para traçar uma rota");
-            // Restaurar o botão de otimizar
-            const optimizeBtn = document.getElementById('optimize-route');
-            optimizeBtn.innerHTML = 'Otimizar Rota';
-            optimizeBtn.disabled = false;
-            alert("Não há locais suficientes para traçar uma rota. Adicione mais locais.");
-            return;
-        }
-        
-        try {
-            // Verificar e destacar pontos na mesma cidade da origem
-            const origin = locations.find(loc => loc.isOrigin);
-            
-            if (origin) {
-                pathLocations.forEach(location => {
-                    if (!location.isOrigin && isSameCity(location, origin)) {
-                        console.log(`Ponto ${location.name} está na mesma cidade da origem (${origin.name})`);
-                        
-                        // Encontrar o marcador correspondente e destacá-lo
-                        const marker = markers.find(m => m.location.id === location.id);
-                        if (marker) {
-                            marker.marker.setIcon({
-                                path: google.maps.SymbolPath.CIRCLE,
-                                fillColor: '#FF4500', // Cor mais destacada
-                                fillOpacity: 1,
-                                strokeWeight: 2,
-                                strokeColor: '#000',
-                                scale: 12
-                            });
-                        }
-                    }
-                });
-            }
-            
-            // Criar waypoints para o serviço de direções dentro do bloco try
-            const waypoints = pathLocations.slice(1, -1).map(location => {
-                console.log(`Waypoint: ${location.name}, Lat: ${location.latitude}, Lng: ${location.longitude}`);
-                return {
-                    location: new google.maps.LatLng(location.latitude, location.longitude),
-                    stopover: true
-                };
-            });
-            
-            const originPoint = new google.maps.LatLng(
-                pathLocations[0].latitude,
-                pathLocations[0].longitude
-            );
-            console.log(`Origem: Lat: ${pathLocations[0].latitude}, Lng: ${pathLocations[0].longitude}`);
-            
-            const destinationPoint = new google.maps.LatLng(
-                pathLocations[pathLocations.length - 1].latitude,
-                pathLocations[pathLocations.length - 1].longitude
-            );
-            console.log(`Destino: Lat: ${pathLocations[pathLocations.length - 1].latitude}, Lng: ${pathLocations[pathLocations.length - 1].longitude}`);
-            
-            const request = {
-                origin: originPoint,
-                destination: destinationPoint,
-                waypoints: waypoints,
-                optimizeWaypoints: false, // Não otimizar, já temos a ordem do TSP
-                travelMode: google.maps.TravelMode.DRIVING,
-                avoidTolls: false
-            };
-            
-            console.log("Solicitação directions:", request);
-            
-            // Versão GitHub Pages usa uma abordagem simplificada para evitar problemas
-            if (window.location.href.includes('github.io')) {
-                console.log("Usando método simplificado de rota para GitHub Pages");
-                
-                // No GitHub Pages, tentar um método mais direto com tolerância a falhas
-                directionsService.route(request, (result, status) => {
-                    if (status === google.maps.DirectionsStatus.OK) {
-                        console.log("Rota obtida com sucesso");
-                        directionsRenderer.setDirections(result);
-                        
-                        // Animar a rota (opcional)
-                        animateRoute(result.routes[0].overview_path);
-                        
-                        // Ajustar o mapa para mostrar toda a rota
-                        const bounds = new google.maps.LatLngBounds();
-                        pathLocations.forEach(location => {
-                            bounds.extend(new google.maps.LatLng(location.latitude, location.longitude));
+        if (origin) {
+            pathLocations.forEach(location => {
+                if (!location.isOrigin && isSameCity(location, origin)) {
+                    console.log(`Ponto ${location.name} está na mesma cidade da origem (${origin.name})`);
+                    
+                    // Encontrar o marcador correspondente e destacá-lo
+                    const marker = markers.find(m => m.location.id === location.id);
+                    if (marker) {
+                        marker.marker.setIcon({
+                            path: google.maps.SymbolPath.CIRCLE,
+                            fillColor: '#FF4500', // Cor mais destacada
+                            fillOpacity: 1,
+                            strokeWeight: 2,
+                            strokeColor: '#000',
+                            scale: 12
                         });
-                        map.fitBounds(bounds);
-                    } else {
-                        console.error("Erro ao traçar rota:", status);
-                        
-                        // Restaurar o botão de otimizar
-                        const optimizeBtn = document.getElementById('optimize-route');
-                        optimizeBtn.innerHTML = 'Otimizar Rota';
-                        optimizeBtn.disabled = false;
-                        
-                        alert(`Não foi possível calcular a rota (${status}). Tente novamente com outros locais.`);
                     }
-                });
-            } else {
-                // Versão normal com timeout e Promise
-                // Adicionar timeout para evitar problemas de API
-                const timeoutPromise = new Promise((_, reject) => {
-                    setTimeout(() => reject(new Error("Timeout ao solicitar rota do Google Maps")), 10000);
-                });
-                
-                // Converter o callback do Google Maps em Promise para poder usar com timeout
-                const directionsPromise = new Promise((resolve, reject) => {
-                    directionsService.route(request, (result, status) => {
-                        if (status === google.maps.DirectionsStatus.OK) {
-                            resolve(result);
-                        } else {
-                            reject(new Error(`Erro ao traçar rota: ${status}`));
-                        }
-                    });
-                });
-                
-                // Usar Promise.race para implementar o timeout
-                Promise.race([directionsPromise, timeoutPromise])
-                .then(result => {
-                    console.log("Rota obtida com sucesso");
-                    directionsRenderer.setDirections(result);
-                    
-                    // Animar a rota (opcional)
-                    animateRoute(result.routes[0].overview_path);
-                    
-                    // Ajustar o mapa para mostrar toda a rota
-                    const bounds = new google.maps.LatLngBounds();
-                    pathLocations.forEach(location => {
-                        bounds.extend(new google.maps.LatLng(location.latitude, location.longitude));
-                    });
-                    map.fitBounds(bounds);
-                })
-                .catch(error => {
-                    console.error("Erro ao traçar rota:", error);
-                    
-                    // Limpar estado de carregamento
-                    const optimizeBtn = document.getElementById('optimize-route');
-                    optimizeBtn.innerHTML = 'Otimizar Rota';
-                    optimizeBtn.disabled = false;
-                    
-                    // Mostrar mensagem amigável
-                    alert("Não foi possível calcular a rota. Por favor, tente novamente ou adicione outros destinos.");
-                    
-                    // Reverter para a visualização normal dos marcadores
-                    markers.forEach(markerObj => {
-                        const idx = locations.findIndex(loc => loc.id === markerObj.location.id);
-                        const isOrigin = markerObj.location.isOrigin;
-                        
-                        if (idx >= 0) {
-                            const markerLabel = isOrigin ? 'O' : (idx).toString();
-                            const markerColor = isOrigin ? '#FF0000' : '#1976D2';
-                            
-                            markerObj.marker.setIcon({
-                                path: google.maps.SymbolPath.CIRCLE,
-                                fillColor: markerColor,
-                                fillOpacity: 1,
-                                strokeWeight: 0,
-                                scale: 12
-                            });
-                            
-                            markerObj.marker.setLabel({
-                                text: markerLabel,
-                                color: 'white',
-                                fontSize: '14px',
-                                fontWeight: 'bold'
-                            });
-                        }
-                    });
-                });
-            
-        } catch (error) {
-            console.error("Erro ao processar a rota:", error);
-            
-            // Restaurar o botão de otimizar
-            const optimizeBtn = document.getElementById('optimize-route');
-            optimizeBtn.innerHTML = 'Otimizar Rota';
-            optimizeBtn.disabled = false;
-            
-            // Alertar o usuário
-            alert("Ocorreu um erro ao processar a rota. Por favor, tente novamente.");
+                }
+            });
         }
+        
+        // Criar waypoints para o serviço de direções
+        const waypoints = pathLocations.slice(1, -1).map(location => ({
+            location: new google.maps.LatLng(location.latitude, location.longitude),
+            stopover: true
+        }));
+        
+        const originPoint = new google.maps.LatLng(
+            pathLocations[0].latitude,
+            pathLocations[0].longitude
+        );
+        
+        const destinationPoint = new google.maps.LatLng(
+            pathLocations[pathLocations.length - 1].latitude,
+            pathLocations[pathLocations.length - 1].longitude
+        );
+        
+        const request = {
+            origin: originPoint,
+            destination: destinationPoint,
+            waypoints: waypoints,
+            optimizeWaypoints: false, // Não otimizar, já temos a ordem do TSP
+            travelMode: google.maps.TravelMode.DRIVING,
+            avoidTolls: false
+        };
+        
+        directionsService.route(request, (result, status) => {
+            if (status === google.maps.DirectionsStatus.OK) {
+                directionsRenderer.setDirections(result);
+                
+                // Animar a rota (opcional)
+                animateRoute(result.routes[0].overview_path);
+                
+                // Ajustar o mapa para mostrar toda a rota
+                const bounds = new google.maps.LatLngBounds();
+                pathLocations.forEach(location => {
+                    bounds.extend(new google.maps.LatLng(location.latitude, location.longitude));
+                });
+                map.fitBounds(bounds);
+            } else {
+                alert("Não foi possível calcular a rota: " + status);
+                console.error("Directions request failed due to " + status);
+            }
+        });
     }
 
     // Animar a rota desenhando progressivamente
@@ -1668,21 +1476,12 @@
 
     // Mostrar eventos para as cidades na rota
     function showEventsForCitiesOnRoute(pathLocations) {
-        console.log("Exibindo eventos para locais na rota");
-        
         // Limpar a lista de eventos
         const eventsListContainer = document.getElementById('events-list');
         eventsListContainer.innerHTML = '';
         
         // Limpar marcadores anteriores
         clearEventMarkers();
-        
-        // Verificar se há eventos disponíveis
-        if (!mockData.cityEvents || mockData.cityEvents.length === 0) {
-            console.error("Dados de eventos não disponíveis!");
-            eventsListContainer.innerHTML = '<p class="text-muted">Erro: Dados de eventos não disponíveis.</p>';
-            return;
-        }
         
         // Ajustar as datas para o formato atual (maio de 2025 mencionado no cabeçalho)
         const currentYear = 2025;
@@ -2022,18 +1821,9 @@
 
     // Mostrar restrições para caminhões nas cidades da rota
     function showTruckRestrictionsForCitiesOnRoute(pathLocations, vehicleType) {
-        console.log("Exibindo restrições para veículo:", vehicleType);
-        
         // Limpar a lista de restrições
         const restrictionsListContainer = document.getElementById('restrictions-list');
         restrictionsListContainer.innerHTML = '';
-        
-        // Verificar se há restrições disponíveis
-        if (!mockData.truckRestrictions || mockData.truckRestrictions.length === 0) {
-            console.error("Dados de restrições não disponíveis!");
-            restrictionsListContainer.innerHTML = '<p class="text-muted">Erro: Dados de restrições não disponíveis.</p>';
-            return;
-        }
         
         // Extrair nomes das cidades na rota
         const citiesOnRoute = pathLocations.map(loc => {
@@ -2174,8 +1964,7 @@
     // Filtrar eventos por data - agora aplicado a todas as cidades conhecidas
     function filterEventsByDate() {
         // Obter o tipo de veículo selecionado
-        const vehicleType = document.querySelector('input[name="vehicle-type"]:checked')?.value || 'truck1';
-        console.log("Filtrando eventos por data para veículo:", vehicleType);
+        const vehicleType = document.querySelector('input[name="vehicle-type"]:checked').value;
             
         // Sempre tentamos mostrar eventos, mesmo sem uma rota calculada
         if (locations && locations.length > 0) {
@@ -2193,27 +1982,11 @@
             
             console.log(`Filtrando eventos no período: ${startDate} até ${endDate}`);
             
-            try {
-                // Preparar dados de mockData para verificar se estão corretos
-                if (!mockData.cityEvents || !Array.isArray(mockData.cityEvents)) {
-                    console.error("Dados de eventos inválidos:", mockData.cityEvents);
-                    mockData.cityEvents = []; // Redefine para evitar erros
-                }
-                
-                if (!mockData.truckRestrictions || !Array.isArray(mockData.truckRestrictions)) {
-                    console.error("Dados de restrições inválidos:", mockData.truckRestrictions);
-                    mockData.truckRestrictions = []; // Redefine para evitar erros
-                }
-                
-                // Mostrar eventos para as cidades da rota ativa ou todas as cidades
-                showEventsForCitiesOnRoute(locations);
-                
-                // Também atualizar restrições de caminhões
-                showTruckRestrictionsForCitiesOnRoute(locations, vehicleType);
-            } catch (error) {
-                console.error("Erro ao filtrar eventos por data:", error);
-                alert("Ocorreu um erro ao filtrar os eventos. Veja o console para detalhes.");
-            }
+            // Mostrar eventos para as cidades da rota ativa ou todas as cidades
+            showEventsForCitiesOnRoute(locations);
+            
+            // Também atualizar restrições de caminhões
+            showTruckRestrictionsForCitiesOnRoute(locations, vehicleType);
         } else {
             alert("Adicione ao menos um local para ver eventos nas cidades.");
         }
