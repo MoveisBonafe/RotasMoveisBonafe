@@ -1572,14 +1572,10 @@
         // Obter os dados do veículo selecionado
         const selectedVehicle = mockData.vehicleTypes.find(v => v.type === vehicleType);
         
-        // Calcular custos
-        const tollCost = mockData.pointsOfInterest
+        // Contar pedágios
+        const tollCount = mockData.pointsOfInterest
             .filter(poi => poi.type === 'toll')
-            .reduce((sum, toll) => sum + (toll.cost || 0), 0);
-        
-        const fuelConsumption = tspResult.distance * selectedVehicle.fuelConsumption / 100; // L/100km
-        const fuelCost = fuelConsumption * 5.0; // Preço médio do diesel: R$ 5,00/L
-        const totalCost = fuelCost + tollCost + (tspResult.distance * selectedVehicle.costPerKm);
+            .length;
         
         // Tempo estimado (baseado na velocidade média do veículo)
         const estimatedTime = tspResult.distance / selectedVehicle.averageSpeed; // em horas
@@ -1611,12 +1607,10 @@
                 <div class="col-md-6">
                     <p><strong>Distância total:</strong> ${tspResult.distance.toFixed(1)} km</p>
                     <p><strong>Tempo estimado:</strong> ${timeFormatted}</p>
-                    <p><strong>Consumo de combustível:</strong> ${fuelConsumption.toFixed(1)} litros</p>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Custo de combustível:</strong> R$ ${fuelCost.toFixed(2)}</p>
-                    <p><strong>Custo de pedágios:</strong> R$ ${tollCost.toFixed(2)} (${tollsOnRoute.length} pedágios)</p>
-                    <p><strong>Custo total estimado:</strong> R$ ${totalCost.toFixed(2)}</p>
+                    <p><strong>Veículo selecionado:</strong> ${selectedVehicle.name}</p>
+                    <p><strong>Pedágios no percurso:</strong> ${tollsOnRoute.length} pedágios</p>
                 </div>
             </div>
             
