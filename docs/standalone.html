@@ -806,37 +806,83 @@
 
     // Função para processar o arquivo de CEPs
     function parseCEPFile(content) {
+        console.log("Processando arquivo:", content);
         const lines = content.split('\n');
         let newLocations = [];
+        let pendingGeocode = 0;
         
         for (const line of lines) {
             if (!line.trim()) continue;
             
-            const [cep, name] = line.split(',');
+            const parts = line.split(',');
+            if (parts.length < 2) continue;
+            
+            const cep = parts[0];
+            // Se houver mais de um campo após a vírgula, junta-os como nome
+            const name = parts.slice(1).join(',');
             
             if (cep && name) {
-                // Gerar coordenadas na região de São Paulo
-                const randomLat = -22.3 - Math.random() * 1.5;
-                const randomLng = -48.3 - Math.random() * 1.5;
+                pendingGeocode++;
                 
-                newLocations.push({
-                    id: locationId++,
-                    name: name.trim(),
-                    address: `${name.trim()}, SP, Brasil`,
-                    zipCode: cep.trim(),
-                    latitude: randomLat,
-                    longitude: randomLng,
-                    isOrigin: false
+                // Tentar geocodificar o CEP usando o Geocoder do Google Maps
+                geocodeCEP(cep.trim(), name.trim(), (geocoded) => {
+                    pendingGeocode--;
+                    
+                    if (geocoded) {
+                        console.log("CEP geocodificado:", geocoded);
+                        const newLocation = {
+                            id: locationId++,
+                            name: name.trim(),
+                            address: `${cep.trim()}, ${name.trim()}, Brasil`,
+                            zipCode: cep.trim(),
+                            latitude: geocoded.lat,
+                            longitude: geocoded.lng,
+                            isOrigin: false
+                        };
+                        
+                        locations.push(newLocation);
+                        newLocations.push(newLocation);
+                        addMarkerForLocation(newLocation, locations.length - 1);
+                        
+                        // Se esse for o último, mostrar alerta
+                        if (pendingGeocode === 0) {
+                            finishImport(newLocations.length);
+                        }
+                    } else {
+                        // Se a geocodificação falhar, usar coordenadas próximas à origem
+                        const offsetLat = (Math.random() - 0.5) * 0.5;
+                        const offsetLng = (Math.random() - 0.5) * 0.5;
+                        
+                        const newLocation = {
+                            id: locationId++,
+                            name: name.trim(),
+                            address: `${cep.trim()}, ${name.trim()}, Brasil`,
+                            zipCode: cep.trim(), 
+                            latitude: -22.3673 + offsetLat,
+                            longitude: -48.3822 + offsetLng,
+                            isOrigin: false
+                        };
+                        
+                        locations.push(newLocation);
+                        newLocations.push(newLocation);
+                        addMarkerForLocation(newLocation, locations.length - 1);
+                        
+                        if (pendingGeocode === 0) {
+                            finishImport(newLocations.length);
+                        }
+                    }
                 });
             }
         }
         
-        // Para cada novo local, adicionar à lista e ao mapa
-        newLocations.forEach((location, index) => {
-            locations.push(location);
-            addMarkerForLocation(location, locations.length - 1);
-        });
-        
+        // Se não houver nenhuma linha válida no arquivo
+        if (pendingGeocode === 0) {
+            alert("Nenhum local encontrado no arquivo. O formato deve ser CEP,Nome");
+        }
+    }
+    
+    // Função para finalizar a importação
+    function finishImport(count) {
         // Atualizar a lista de locais
         updateLocationsList();
         
@@ -847,7 +893,28 @@
         zoomToFitAllMarkers();
         
         // Feedback para o usuário
-        alert(`${newLocations.length} locais importados com sucesso!`);
+        alert(`${count} locais importados com sucesso!`);
+    }
+    
+    // Função para geocodificar CEP
+    function geocodeCEP(cep, name, callback) {
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ 
+            'address': cep + ', Brasil'
+        }, function(results, status) {
+            if (status === google.maps.GeocoderStatus.OK && results[0]) {
+                // Se encontrou, retorna as coordenadas
+                const location = results[0].geometry.location;
+                callback({ 
+                    lat: location.lat(), 
+                    lng: location.lng() 
+                });
+            } else {
+                console.warn("Não foi possível geocodificar o CEP:", cep, "- Status:", status);
+                callback(null);
+            }
+        });
+    }
     }
 
     // Função para extrair CEP de um objeto Place
