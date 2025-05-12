@@ -935,11 +935,26 @@
 
     // Adiciona um marcador no mapa para um local
     function addMarkerForLocation(location, index) {
+        // Verificar se está na mesma cidade da origem
+        const origin = locations.find(loc => loc.isOrigin);
+        const isSameCityAsOrigin = origin && isSameCity(location, origin);
+        
         // Ícone personalizado com número de sequência
         const markerLabel = index === 0 ? 'O' : (index).toString();
         
-        // Cor específica para a origem
-        const markerColor = index === 0 ? '#FF0000' : '#1976D2';
+        // Cor específica para a origem e pontos na mesma cidade
+        let markerColor = '#1976D2'; // Cor padrão (azul)
+        if (index === 0) {
+            markerColor = '#FF0000'; // Origem (vermelho)
+        } else if (isSameCityAsOrigin) {
+            markerColor = '#FF9800'; // Ponto na mesma cidade (laranja)
+        }
+        
+        // Verificar se deve animar o marcador (apenas pontos na mesma cidade)
+        const animation = isSameCityAsOrigin && !location.isOrigin ? 
+                         google.maps.Animation.BOUNCE : null;
+        
+        console.log(`Adicionando marcador para ${location.name} - Mesma cidade da origem: ${isSameCityAsOrigin}`);
         
         const marker = new google.maps.Marker({
             position: { lat: location.latitude, lng: location.longitude },
@@ -958,7 +973,8 @@
                 strokeWeight: 0,
                 scale: 12
             },
-            zIndex: index === 0 ? 1000 : 100 // Origem sempre em cima
+            animation: animation,
+            zIndex: index === 0 ? 1000 : (isSameCityAsOrigin ? 500 : 100) // Ordem: Origem > Mesma cidade > Outros
         });
         
         // Infowindow com detalhes do local
@@ -1217,19 +1233,54 @@
     function isSameCity(loc1, loc2) {
         if (!loc1 || !loc2) return false;
         
-        // Extrair cidade dos endereços
-        const getCity = (address) => {
-            const parts = address.split(',');
-            if (parts.length > 0) {
-                return parts[0].trim().toLowerCase();
+        console.log(`Verificando se ${loc1.name} e ${loc2.name} estão na mesma cidade`);
+        
+        // Se o nome da cidade está explícito no objeto
+        if (loc1.cityName && loc2.cityName) {
+            const result = loc1.cityName === loc2.cityName;
+            console.log(`Comparação por cityName: ${loc1.cityName} vs ${loc2.cityName} = ${result}`);
+            return result;
+        }
+        
+        // Extrair cidade dos endereços (normalmente o primeiro componente após o nome)
+        const address1Parts = loc1.address ? loc1.address.split(',') : [];
+        const address2Parts = loc2.address ? loc2.address.split(',') : [];
+        
+        // Verificar se os endereços têm pelo menos duas partes (nome, cidade)
+        if (address1Parts.length > 0 && address2Parts.length > 0) {
+            const city1 = address1Parts[0].trim().toLowerCase();
+            const city2 = address2Parts[0].trim().toLowerCase();
+            
+            if (city1 === city2) {
+                console.log(`Mesma cidade encontrada nos endereços: ${city1}`);
+                return true;
             }
-            return '';
-        };
+        }
         
-        const city1 = getCity(loc1.address);
-        const city2 = getCity(loc2.address);
+        // Verificar se ambos os nomes contêm a mesma cidade
+        if (loc1.name && loc2.name) {
+            // Removemos acentos e convertemos para minúsculas para comparação
+            const name1 = loc1.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const name2 = loc2.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            
+            // Lista de cidades comuns do interior de São Paulo
+            const cities = [
+                "dois corregos", "dois córregos", "jau", "jaú", "botucatu", "bauru", 
+                "pederneiras", "brotas", "barra bonita", "igaracu", "igaraçu", 
+                "agudos", "lencois", "lençóis", "itapui", "itapuí"
+            ];
+            
+            // Verificar se ambos os nomes contêm a mesma cidade
+            for (const city of cities) {
+                if (name1.includes(city) && name2.includes(city)) {
+                    console.log(`Mesma cidade encontrada nos nomes: "${city}"`);
+                    return true;
+                }
+            }
+        }
         
-        return city1 === city2;
+        console.log("Não estão na mesma cidade");
+        return false;
     }
     
     // Traçar a rota no mapa
