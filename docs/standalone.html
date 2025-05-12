@@ -1436,9 +1436,18 @@
                     if (originalMarker) {
                         // Reutilizar o marcador, atualizando apenas seu número de sequência
                         const marker = originalMarker.marker;
+                        
+                        // Garantir que a origem tenha sempre índice 0
+                        const markerIndex = location.isOrigin ? 0 : (index);
+                        const markerLabel = markerIndex === 0 ? 'O' : markerIndex.toString();
+                        
+                        console.log(`Atualizando marcador para ${location.name} (ID: ${location.id}) - É origem: ${location.isOrigin}, Label: ${markerLabel}`);
+                        
                         marker.setLabel({
-                            text: (index + 1).toString(),
-                            color: "#FFFFFF"
+                            text: markerLabel,
+                            color: "#FFFFFF",
+                            fontSize: '14px',
+                            fontWeight: 'bold'
                         });
                         marker.setMap(map);
                         
@@ -1449,7 +1458,10 @@
                         });
                     } else {
                         // Se não encontrou o marcador original, criar um novo
-                        addMarkerForLocation(location, index, newMarkers);
+                        // Garantir que a origem tenha sempre índice 0
+                        const markerIndex = location.isOrigin ? 0 : index;
+                        console.log(`Criando novo marcador para ${location.name} (ID: ${location.id}) - É origem: ${location.isOrigin}, Índice: ${markerIndex}`);
+                        addMarkerForLocation(location, markerIndex, newMarkers);
                     }
                 });
                 
