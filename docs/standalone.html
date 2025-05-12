@@ -724,6 +724,19 @@
         reader.readAsText(file);
     }
 
+    // Formatar texto para iniciar com maiúscula e resto minúscula
+    function formatLocationName(name) {
+        // Se o nome for vazio, retornar
+        if (!name) return name;
+        
+        // Dividir o nome em palavras
+        return name.split(' ').map(word => {
+            if (!word) return '';
+            // Primeira letra maiúscula, resto minúscula
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        }).join(' ');
+    }
+    
     // Função para processar o arquivo de CEPs
     function parseCEPFile(content) {
         const lines = content.split('\n');
@@ -759,17 +772,21 @@
             if (parts.length < 2) continue;
             
             const cep = parts[0].trim();
-            const name = parts[1].trim();
+            let name = parts[1].trim();
+            
+            // Formatar nome (primeira letra maiúscula, resto minúscula)
+            name = formatLocationName(name);
             
             if (cep && name) {
                 // Verificar se é um CEP conhecido
                 if (knownCEPs[cep]) {
                     const knownLocation = knownCEPs[cep];
+                    const formattedCityName = formatLocationName(knownLocation.name);
                     
                     newLocations.push({
                         id: locationId++,
                         name: name,
-                        address: `${name}, ${knownLocation.name}, SP, Brasil`,
+                        address: `${name}, ${formattedCityName}, SP, Brasil`,
                         zipCode: cep,
                         latitude: knownLocation.lat,
                         longitude: knownLocation.lng,
@@ -779,7 +796,7 @@
                     // Adicionar à fila para geocodificação
                     geocodeQueue.push({
                         cep: cep,
-                        name: name
+                        name: name // Nome já formatado
                     });
                 }
             }
@@ -827,8 +844,8 @@
                         
                         const newLocation = {
                             id: locationId++,
-                            name: item.name,
-                            address: `${item.name}, ${address}`,
+                            name: item.name, // Já vem formatado de antes
+                            address: `${item.name}, ${formatLocationName(address)}`,
                             zipCode: item.cep,
                             latitude: location.lat(),
                             longitude: location.lng(),
@@ -861,7 +878,7 @@
                         
                         const newLocation = {
                             id: locationId++,
-                            name: item.name,
+                            name: item.name, // Já vem formatado de antes
                             address: `${item.name}, Região Central, SP, Brasil`,
                             zipCode: item.cep,
                             latitude: fallbackLat,
