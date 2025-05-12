@@ -701,40 +701,129 @@
         const input = document.getElementById('location-search');
         const options = {
             types: ['geocode'],
-            componentRestrictions: { country: 'br' }
+            componentRestrictions: { country: 'br' },
+            fields: ['address_components', 'formatted_address', 'geometry', 'name', 'place_id']
         };
         
-        autocomplete = new google.maps.places.Autocomplete(input, options);
+        try {
+            // Criar o autocomplete
+            autocomplete = new google.maps.places.Autocomplete(input, options);
+            
+            // Adicionar um contêiner para as sugestões de autocomplete
+            const autoCompleteContainer = document.createElement('div');
+            autoCompleteContainer.id = 'autocomplete-suggestions';
+            autoCompleteContainer.className = 'autocomplete-suggestions';
+            autoCompleteContainer.style.display = 'none';
+            autoCompleteContainer.style.position = 'absolute';
+            autoCompleteContainer.style.zIndex = '1000';
+            autoCompleteContainer.style.background = '#fff';
+            autoCompleteContainer.style.width = '100%';
+            autoCompleteContainer.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+            autoCompleteContainer.style.borderRadius = '4px';
+            autoCompleteContainer.style.maxHeight = '200px';
+            autoCompleteContainer.style.overflowY = 'auto';
+            input.parentNode.style.position = 'relative';
+            input.parentNode.appendChild(autoCompleteContainer);
+            
+            // Quando um local é selecionado no autocomplete
+            autocomplete.addListener('place_changed', function() {
+                const place = autocomplete.getPlace();
+                console.log("Local selecionado:", place);
+                
+                if (!place.geometry) {
+                    alert("Não foi possível encontrar o endereço selecionado.");
+                    return;
+                }
+                
+                // Adicionar o local à lista
+                const newLocation = {
+                    id: locationId++,
+                    name: place.name || "Local",
+                    address: place.formatted_address,
+                    zipCode: getZipCodeFromPlace(place),
+                    latitude: place.geometry.location.lat(),
+                    longitude: place.geometry.location.lng(),
+                    isOrigin: false
+                };
+                
+                locations.push(newLocation);
+                addMarkerForLocation(newLocation, locations.length - 1);
+                updateLocationsList();
+                
+                // Limpar o campo de busca
+                input.value = '';
+                autoCompleteContainer.style.display = 'none';
+            });
+            
+            // Implementar busca manual se o autocomplete falhar
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const address = input.value.trim();
+                    if (address && !autocomplete.getPlace) {
+                        // Se pressionou Enter mas não selecionou um item do autocomplete
+                        geocodeAddress(address);
+                    }
+                }
+            });
+            
+            console.log("Google Places Autocomplete inicializado com sucesso");
+        } catch (error) {
+            console.error("Erro ao inicializar o autocomplete:", error);
+            
+            // Implementar fallback para busca manual
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const address = input.value.trim();
+                    if (address) {
+                        geocodeAddress(address);
+                    }
+                }
+            });
+        }
+    }
+    
+    // Função para geocodificar um endereço manualmente (fallback)
+    function geocodeAddress(address) {
+        console.log("Geocodificando endereço:", address);
+        const geocoder = new google.maps.Geocoder();
         
-        // Quando um local é selecionado no autocomplete
-        autocomplete.addListener('place_changed', function() {
-            const place = autocomplete.getPlace();
-            
-            if (!place.geometry) {
-                alert("Não foi possível encontrar o endereço selecionado.");
-                return;
+        geocoder.geocode({ 'address': address + ', Brasil' }, function(results, status) {
+            if (status === google.maps.GeocoderStatus.OK && results[0]) {
+                const result = results[0];
+                
+                // Adicionar o local à lista
+                const newLocation = {
+                    id: locationId++,
+                    name: address.split(',')[0], // Usar a primeira parte do endereço como nome
+                    address: result.formatted_address,
+                    zipCode: getZipCodeFromResult(result),
+                    latitude: result.geometry.location.lat(),
+                    longitude: result.geometry.location.lng(),
+                    isOrigin: false
+                };
+                
+                locations.push(newLocation);
+                addMarkerForLocation(newLocation, locations.length - 1);
+                updateLocationsList();
+                
+                // Limpar o campo de busca
+                document.getElementById('location-search').value = '';
+            } else {
+                alert("Não foi possível encontrar o endereço: " + address);
             }
-            
-            // Adicionar o local à lista
-            const newLocation = {
-                id: locationId++,
-                name: place.name,
-                address: place.formatted_address,
-                zipCode: getZipCodeFromPlace(place),
-                latitude: place.geometry.location.lat(),
-                longitude: place.geometry.location.lng(),
-                isOrigin: false
-            };
-            
-            locations.push(newLocation);
-            
-            // Adicionar marcador e atualizar a lista
-            addMarkerForLocation(newLocation, locations.length - 1);
-            updateLocationsList();
-            
-            // Limpar o campo de busca
-            input.value = '';
         });
+    }
+    
+    // Função para extrair CEP de um resultado do geocoder
+    function getZipCodeFromResult(result) {
+        if (!result.address_components) return "";
+        
+        for (const component of result.address_components) {
+            if (component.types.includes('postal_code')) {
+                return component.long_name;
+            }
+        }
+        return "";
     }
 
     // Inicializa a navegação por abas
