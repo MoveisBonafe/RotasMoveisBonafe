@@ -1522,6 +1522,46 @@
     }
 
     // Limpar rota atual e marcadores relacionados
+    // Função para limpar todas as polylines do mapa
+    function clearAllPolylines() {
+        console.log("Limpando todas as polylines do mapa...");
+        
+        // Limpar todas as polylines registradas
+        if (allRoutePolylines.length > 0) {
+            console.log(`Limpando ${allRoutePolylines.length} polylines registradas`);
+            allRoutePolylines.forEach(polyline => {
+                try {
+                    if (polyline) polyline.setMap(null);
+                } catch (e) {
+                    console.error("Erro ao limpar polyline:", e);
+                }
+            });
+            allRoutePolylines = [];
+        }
+        
+        // Outras limpezas específicas de polylines
+        if (routePath) {
+            try {
+                routePath.setMap(null);
+                routePath = null;
+                console.log("Polyline principal removida");
+            } catch (e) {
+                console.error("Erro ao remover polyline principal:", e);
+            }
+        }
+        
+        // Reset do mapa como medida adicional
+        try {
+            if (map) {
+                const mapCenter = map.getCenter();
+                map.setCenter(mapCenter);
+                console.log("Mapa recentrado para forçar atualização");
+            }
+        } catch (e) {
+            console.error("Erro ao recentrar mapa:", e);
+        }
+    }
+
     function clearRoute() {
         console.log("Limpando rota atual...");
         
@@ -1558,27 +1598,11 @@
             console.log("Animação de rota interrompida");
         }
         
-        // Limpar caminho da rota se existir
-        if (routePath) {
-            console.log("Removendo polyline da rota");
-            try {
-                routePath.setMap(null);
-            } catch (err) {
-                console.error("Erro ao remover polyline:", err);
-            }
-            routePath = null;
-        }
+        // Limpar todas as polylines
+        clearAllPolylines();
         
-        // Limpar todas as polylines que possam ter ficado no mapa
-        try {
-            // Este é um "truque" para forçar a limpeza de todas as polylines
-            if (map) {
-                const mapCenter = map.getCenter();
-                map.setCenter(mapCenter);
-            }
-        } catch (err) {
-            console.error("Erro ao centralizar mapa:", err);
-        }
+        // Reset das variáveis de controle
+        currentDisplayedRoute = null;
         
         // Limpar marcadores de POI
         clearPOIMarkers();
@@ -2230,9 +2254,41 @@
                 }
                 
                 try {
+                    // Limpar renderizador antes de aplicar novas direções
+                    directionsRenderer.setMap(null);
+                    
+                    // Recriar o renderizador para garantir que não haja sobreposições
+                    directionsRenderer = new google.maps.DirectionsRenderer({
+                        suppressMarkers: true, // Usamos nossos próprios marcadores
+                        preserveViewport: true, // Não muda o zoom/centro do mapa
+                        polylineOptions: {
+                            strokeColor: '#1976D2',
+                            strokeOpacity: 0.7,
+                            strokeWeight: 4
+                        }
+                    });
+                    directionsRenderer.setMap(map);
+                    
                     // Aplicar as direções ao renderizador
                     directionsRenderer.setDirections(result);
                     console.log("Direções aplicadas com sucesso");
+                    
+                    // Registrar esta rota como a atual
+                    currentDisplayedRoute = pathIds;
+                    
+                    // Capturar referências às polylines para limpeza futura
+                    setTimeout(() => {
+                        try {
+                            const mapDiv = document.getElementById('map');
+                            if (mapDiv) {
+                                const polylines = mapDiv.querySelectorAll('path');
+                                console.log(`Encontradas ${polylines.length} polylines no mapa`);
+                            }
+                        } catch (e) {
+                            console.error("Erro ao contar polylines:", e);
+                        }
+                    }, 500);
+                    
                 } catch (err) {
                     console.error("Erro ao aplicar direções:", err);
                     showNotification("Erro ao exibir rota no mapa: " + err.message, "warning");
