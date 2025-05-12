@@ -768,8 +768,17 @@
         // Botão para otimizar rota
         document.getElementById('optimize-route').addEventListener('click', optimizeRoute);
         
-        // Filtrar eventos por data
-        document.getElementById('filter-events').addEventListener('click', filterEventsByDate);
+        // Filtrar eventos por data - atualizado para também mostrar restrições
+        document.getElementById('filter-events').addEventListener('click', function() {
+            filterEventsByDate();
+            
+            // Também atualizar restrições para caminhões
+            const vehicleType = document.querySelector('input[name="vehicle-type"]:checked').value;
+            showTruckRestrictionsForCitiesOnRoute(locations, vehicleType);
+            
+            // Mudar para a aba de eventos
+            selectTab('events');
+        });
         
         // Botões de controle do mapa
         document.getElementById('zoom-to-fit').addEventListener('click', zoomToFitAllMarkers);
