@@ -663,7 +663,18 @@
             const place = autocomplete.getPlace();
             
             if (!place.geometry) {
-                alert("Não foi possível encontrar o endereço selecionado.");
+                // Substituir alert por notificação inline mais suave
+                const notifyWarning = document.createElement('div');
+                notifyWarning.className = 'alert alert-warning mt-2';
+                notifyWarning.innerHTML = `Não foi possível encontrar o endereço selecionado.`;
+                document.querySelector('#location-form').appendChild(notifyWarning);
+                
+                // Remover a notificação após alguns segundos
+                setTimeout(() => {
+                    if (notifyWarning && notifyWarning.parentNode) {
+                        notifyWarning.parentNode.removeChild(notifyWarning);
+                    }
+                }, 5000);
                 return;
             }
             
@@ -1302,7 +1313,18 @@
             
             if (alternativeRoutes.length === 0) {
                 console.error("Nenhuma rota alternativa foi gerada!");
-                alert("Erro ao calcular a rota: nenhuma rota foi gerada");
+                // Substituir alert por notificação inline mais suave
+                const notifyError = document.createElement('div');
+                notifyError.className = 'alert alert-danger mt-2';
+                notifyError.innerHTML = `Erro ao calcular a rota: nenhuma rota foi gerada`;
+                document.querySelector('.route-controls').appendChild(notifyError);
+                
+                // Remover a notificação após alguns segundos
+                setTimeout(() => {
+                    if (notifyError && notifyError.parentNode) {
+                        notifyError.parentNode.removeChild(notifyError);
+                    }
+                }, 5000);
                 return;
             }
             
@@ -1703,7 +1725,18 @@
             });
             
             console.error("Algumas localizações não foram encontradas:", missingIds);
-            alert("Erro ao traçar rota: algumas localizações não foram encontradas");
+            // Substituir alert por notificação inline mais suave
+            const notifyError = document.createElement('div');
+            notifyError.className = 'alert alert-danger mt-2';
+            notifyError.innerHTML = `Erro ao traçar rota: algumas localizações não foram encontradas`;
+            document.querySelector('.route-controls').appendChild(notifyError);
+            
+            // Remover a notificação após alguns segundos
+            setTimeout(() => {
+                if (notifyError && notifyError.parentNode) {
+                    notifyError.parentNode.removeChild(notifyError);
+                }
+            }, 5000);
             return;
         }
         
@@ -1809,7 +1842,18 @@
                 });
                 map.fitBounds(bounds);
             } else {
-                alert("Não foi possível calcular a rota: " + status);
+                // Substituir alert por notificação inline mais suave
+                const notifyError = document.createElement('div');
+                notifyError.className = 'alert alert-danger mt-2';
+                notifyError.innerHTML = `Não foi possível calcular a rota: ${status}`;
+                document.querySelector('.route-controls').appendChild(notifyError);
+                
+                // Remover a notificação após alguns segundos
+                setTimeout(() => {
+                    if (notifyError && notifyError.parentNode) {
+                        notifyError.parentNode.removeChild(notifyError);
+                    }
+                }, 5000);
                 console.error("Directions request failed due to " + status);
             }
         });
@@ -2184,7 +2228,18 @@
         
         if (!tspResult || !tspResult.path || !Array.isArray(tspResult.path)) {
             console.error("Rota alternativa inválida:", tspResult);
-            alert("Erro: a rota selecionada é inválida");
+            // Substituir alert por notificação inline mais suave
+            const notifyError = document.createElement('div');
+            notifyError.className = 'alert alert-warning mt-2';
+            notifyError.innerHTML = `Erro: a rota selecionada é inválida`;
+            document.querySelector('.route-controls').appendChild(notifyError);
+            
+            // Remover a notificação após alguns segundos
+            setTimeout(() => {
+                if (notifyError && notifyError.parentNode) {
+                    notifyError.parentNode.removeChild(notifyError);
+                }
+            }, 5000);
             return;
         }
         
@@ -2680,7 +2735,18 @@
             // Mostrar eventos para as cidades da rota ativa
             showEventsForCitiesOnRoute(locations);
         } else {
-            alert("Calcule uma rota primeiro para ver os eventos nas cidades do percurso.");
+            // Substituir alert por notificação inline mais suave
+            const notifyInfo = document.createElement('div');
+            notifyInfo.className = 'alert alert-info mt-2';
+            notifyInfo.innerHTML = `Calcule uma rota primeiro para ver os eventos nas cidades do percurso.`;
+            document.querySelector('.route-controls').appendChild(notifyInfo);
+            
+            // Remover a notificação após alguns segundos
+            setTimeout(() => {
+                if (notifyInfo && notifyInfo.parentNode) {
+                    notifyInfo.parentNode.removeChild(notifyInfo);
+                }
+            }, 5000);
         }
     }
 
@@ -2695,11 +2761,33 @@
         }
         
         if (!routeName) {
-            alert("Por favor, dê um nome para a rota antes de salvar.");
+            // Substituir alert por notificação inline mais suave
+            const notifyWarning = document.createElement('div');
+            notifyWarning.className = 'alert alert-warning mt-2';
+            notifyWarning.innerHTML = `Por favor, dê um nome para a rota antes de salvar.`;
+            document.querySelector('.route-controls').appendChild(notifyWarning);
+            
+            // Remover a notificação após alguns segundos
+            setTimeout(() => {
+                if (notifyWarning && notifyWarning.parentNode) {
+                    notifyWarning.parentNode.removeChild(notifyWarning);
+                }
+            }, 5000);
             return;
         }
         
-        alert(`Rota "${routeName}" salva com sucesso!`);
+        // Substituir alert por notificação inline mais suave
+        const notifySuccess = document.createElement('div');
+        notifySuccess.className = 'alert alert-success mt-2';
+        notifySuccess.innerHTML = `Rota "${routeName}" salva com sucesso!`;
+        document.querySelector('.route-controls').appendChild(notifySuccess);
+        
+        // Remover a notificação após alguns segundos
+        setTimeout(() => {
+            if (notifySuccess && notifySuccess.parentNode) {
+                notifySuccess.parentNode.removeChild(notifySuccess);
+            }
+        }, 5000);
     }
 
     // Imprimir a rota
