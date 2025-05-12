@@ -2233,6 +2233,7 @@
         // Extrair nomes das cidades na rota (ignorar localizações não encontradas)
         console.log("Detectando cidades na rota para restrições de caminhões...");
         
+        // Incluir TODAS as cidades na rota (não apenas origem e destino)
         const citiesOnRoute = pathLocations
             .filter(loc => loc) // Remover localizações nulas
             .map(loc => {
@@ -2247,9 +2248,11 @@
                 return cityName;
             });
         
-        // CORREÇÃO: Adicionar apenas a origem (Dois Córregos) e o destino
-        // NÃO adicionar mais cidades manualmente para a demonstração
-        if (!citiesOnRoute.includes("Dois Córregos")) citiesOnRoute.push("Dois Córregos");
+        // Garantir que a origem (Dois Córregos) está incluída mesmo que não esteja no caminho
+        if (!citiesOnRoute.includes("Dois Córregos")) {
+            citiesOnRoute.push("Dois Córregos");
+            console.log("Adicionando Dois Córregos à lista de cidades para restrições");
+        }
         
         // Extrair o destino final corretamente
         const destinoFinal = pathLocations[pathLocations.length - 1];
@@ -2269,17 +2272,40 @@
         // Filtrar restrições para cidades na rota - para TODOS os tipos de caminhões
         console.log(`Filtrando restrições para cidades na rota - exibindo para todos os caminhões`);
         
-        // Ignorar filtro por tipo de veículo (vehicleType) para mostrar TODAS as restrições
-        const restrictionsOnRoute = mockData.truckRestrictions.filter(restriction => {
-            // Verificamos apenas se a restrição está em alguma cidade da rota
-            const cityMatch = citiesOnRoute.some(city => 
-                restriction.cityName.includes(city) || city.includes(restriction.cityName)
-            );
+        // Exibir sempre TODAS as restrições para TODOS os tipos de caminhões nas cidades da rota
+        let restrictionsOnRoute = [];
+        
+        // Para cada cidade na rota, adicionar todas as restrições disponíveis
+        for (let city of citiesOnRoute) {
+            const cityRestrictions = mockData.truckRestrictions.filter(restriction => {
+                const cityNameLower = city.toLowerCase();
+                const restrictionCityLower = restriction.cityName.toLowerCase();
+                
+                // Verificar correspondência de nome de cidade
+                const cityMatch = restrictionCityLower.includes(cityNameLower) || 
+                                 cityNameLower.includes(restrictionCityLower);
+                
+                console.log(`Comparando cidade "${city}" com restrição em "${restriction.cityName}" - Corresponde: ${cityMatch}`);
+                
+                return cityMatch;
+            });
             
-            // Não importa qual veículo - mostrar todas as restrições das cidades na rota
-            console.log(`Restrição: ${restriction.description}, Cidade: ${restriction.cityName}, Caminhões: ${restriction.affectedVehicles.join(',')}, Corresponde: ${cityMatch}`);
+            console.log(`Cidade ${city} tem ${cityRestrictions.length} restrições`);
             
-            return cityMatch; // Não filtramos por vehicleType, mostramos tudo
+            // Adicionar restrições desta cidade ao array geral
+            restrictionsOnRoute = [...restrictionsOnRoute, ...cityRestrictions];
+        }
+        
+        // Remover duplicatas baseado no ID da restrição
+        restrictionsOnRoute = restrictionsOnRoute.filter((restriction, index, self) =>
+            index === self.findIndex((r) => r.id === restriction.id)
+        );
+        
+        console.log(`Total de ${restrictionsOnRoute.length} restrições distintas encontradas na rota`);
+        
+        // Debug para verificar quais restrições serão exibidas
+        restrictionsOnRoute.forEach(restriction => {
+            console.log(`Exibindo restrição: ${restriction.description}, Cidade: ${restriction.cityName}, Caminhões afetados: ${restriction.affectedVehicles.join(',')}`);
         });
         
         // Se não houver restrições, mostrar mensagem
