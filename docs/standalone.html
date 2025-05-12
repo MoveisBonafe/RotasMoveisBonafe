@@ -990,6 +990,12 @@
     
     // Função para processar o arquivo de CEPs
     function parseCEPFile(content) {
+        // Verificar se content é válido
+        if (!content || typeof content !== 'string') {
+            console.error('Conteúdo do arquivo inválido:', content);
+            return;
+        }
+        
         const lines = content.split('\n');
         let newLocations = [];
         
@@ -1324,6 +1330,10 @@
     // Atualiza a lista de locais no sidebar com base na ordem dos marcadores
     function updateLocationsList() {
         const container = document.getElementById('locations-list');
+        if (!container) {
+            console.error("Elemento 'locations-list' não encontrado!");
+            return;
+        }
         container.innerHTML = '';
         
         // Extrair os locais não-origem dos marcadores para preservar a ordem
@@ -2119,6 +2129,21 @@
 
     // Mostrar pontos de interesse ao longo da rota
     function showPointsOfInterestOnRoute(pathIds) {
+        console.log("Mostrando pontos de interesse para rota com IDs:", pathIds);
+        
+        // Verificações de segurança
+        if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
+            console.error("IDs de rota inválidos ou vazios para pontos de interesse:", pathIds);
+            const originLocations = locations.filter(loc => loc.isOrigin);
+            if (originLocations.length > 0) {
+                pathIds = originLocations.map(loc => loc.id);
+                console.log("Usando apenas a origem para mostrar pontos de interesse:", pathIds);
+            } else {
+                console.error("Impossível encontrar até mesmo a origem. Abortando exibição de pontos de interesse.");
+                return;
+            }
+        }
+        
         // Limpar marcadores anteriores
         clearPOIMarkers();
         
