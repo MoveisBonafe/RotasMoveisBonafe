@@ -1186,6 +1186,8 @@
 
     // Otimizar a rota
     function optimizeRoute() {
+        console.log("Função optimizeRoute iniciada");
+        
         // Verificar se há pelo menos um destino além da origem
         if (locations.length <= 1) {
             alert("Adicione pelo menos um destino para calcular a rota.");
@@ -1198,53 +1200,104 @@
         // Mostrar loading no botão
         const optimizeBtn = document.getElementById('optimize-route');
         optimizeBtn.innerHTML = '<span class="spinner-border" role="status" aria-hidden="true"></span> Calculando...';
-        optimizeBtn.disabled = true;
         
-        // Obter o tipo de veículo selecionado
-        const vehicleType = document.querySelector('input[name="vehicle-type"]:checked').value;
-        
-        // Calcular a rota otimizada (versão simplificada do TSP)
-        calculateOptimizedRoute(vehicleType, false);
+        // Usar setTimeout para não bloquear a UI
+        setTimeout(() => {
+            try {
+                optimizeBtn.disabled = true;
+                
+                // Obter o tipo de veículo selecionado com fallback seguro
+                const vehicleTypeElement = document.querySelector('input[name="vehicle-type"]:checked');
+                const vehicleType = vehicleTypeElement ? vehicleTypeElement.value : 'truck1';
+                
+                console.log("Tipo de veículo selecionado:", vehicleType);
+                console.log("Número de locais:", locations.length);
+                
+                // Imprimir detalhes das localizações para debug
+                locations.forEach((loc, idx) => {
+                    console.log(`Local ${idx}: ${loc.name}, Lat: ${loc.latitude}, Lng: ${loc.longitude}`);
+                });
+                
+                // Calcular a rota otimizada (versão simplificada do TSP)
+                calculateOptimizedRoute(vehicleType, false);
+            } catch (error) {
+                console.error("Erro ao otimizar rota:", error);
+                // Restaurar o botão em caso de erro
+                optimizeBtn.innerHTML = 'Otimizar Rota';
+                optimizeBtn.disabled = false;
+                alert("Erro ao otimizar rota. Verifique o console para detalhes.");
+            }
+        }, 200);
     }
 
     // Calcular rota otimizada pelo algoritmo TSP
     function calculateOptimizedRoute(vehicleType, includeOriginReturn) {
-        // Primeiro vamos resolver o TSP para encontrar a ordem ideal dos pontos
-        const origin = locations.find(loc => loc.isOrigin);
-        const destinations = locations.filter(loc => !loc.isOrigin);
+        console.log("Iniciando cálculo de rota otimizada");
         
-        // Resolver o TSP (implementação avançada idêntica ao Replit)
-        const tspResult = solveAdvancedTSP(origin, destinations, includeOriginReturn);
-        
-        // Reordenar os marcadores visualmente para corresponder à nova sequência
-        reorderMarkers(tspResult.path);
-        
-        // Traçar a rota usando o Google Directions Service
-        drawRouteOnMap(tspResult.path, vehicleType);
-        
-        // Mostrar pontos de interesse ao longo da rota
-        showPointsOfInterestOnRoute(tspResult.path);
-        
-        // Mostrar eventos nas cidades da rota
-        showEventsForCitiesOnRoute(tspResult.path);
-        
-        // Mostrar restrições para caminhões nas cidades da rota
-        showTruckRestrictionsForCitiesOnRoute(tspResult.path, vehicleType);
-        
-        // Atualizar o resumo da rota
-        updateRouteSummary(tspResult, vehicleType);
-        
-        // Habilitar botões de salvar e imprimir
-        document.getElementById('save-route').disabled = false;
-        document.getElementById('print-route').disabled = false;
-        
-        // Restaurar o botão de otimizar
-        const optimizeBtn = document.getElementById('optimize-route');
-        optimizeBtn.innerHTML = 'Otimizar Rota';
-        optimizeBtn.disabled = false;
-        
-        // Navegar para a aba de relatório
-        document.querySelector('.tab-button[data-tab="report"]').click();
+        try {
+            // Primeiro vamos resolver o TSP para encontrar a ordem ideal dos pontos
+            const origin = locations.find(loc => loc.isOrigin);
+            if (!origin) {
+                throw new Error("Origem não encontrada!");
+            }
+            
+            const destinations = locations.filter(loc => !loc.isOrigin);
+            console.log("Destinos encontrados:", destinations.length);
+            
+            // Verificar coordenadas
+            for (const loc of [origin, ...destinations]) {
+                if (typeof loc.latitude !== 'number' || typeof loc.longitude !== 'number' ||
+                    isNaN(loc.latitude) || isNaN(loc.longitude)) {
+                    console.error("Coordenadas inválidas para:", loc);
+                    throw new Error(`Coordenadas inválidas para o local ${loc.name}`);
+                }
+            }
+            
+            // Resolver o TSP (implementação avançada)
+            console.log("Resolvendo TSP");
+            const tspResult = solveAdvancedTSP(origin, destinations, includeOriginReturn);
+            console.log("Resultado do TSP:", tspResult);
+            
+            // Reordenar os marcadores visualmente para corresponder à nova sequência
+            reorderMarkers(tspResult.path);
+            
+            // Traçar a rota usando o Google Directions Service
+            drawRouteOnMap(tspResult.path, vehicleType);
+            
+            // Mostrar pontos de interesse ao longo da rota
+            showPointsOfInterestOnRoute(tspResult.path);
+            
+            // Mostrar eventos nas cidades da rota
+            showEventsForCitiesOnRoute(tspResult.path);
+            
+            // Mostrar restrições para caminhões nas cidades da rota
+            showTruckRestrictionsForCitiesOnRoute(tspResult.path, vehicleType);
+            
+            // Atualizar o resumo da rota
+            updateRouteSummary(tspResult, vehicleType);
+            
+            // Habilitar botões de salvar e imprimir
+            document.getElementById('save-route').disabled = false;
+            document.getElementById('print-route').disabled = false;
+            
+            // Restaurar o botão de otimizar
+            const optimizeBtn = document.getElementById('optimize-route');
+            optimizeBtn.innerHTML = 'Otimizar Rota';
+            optimizeBtn.disabled = false;
+            
+            // Navegar para a aba de relatório
+            document.querySelector('.tab-button[data-tab="report"]').click();
+        } catch (error) {
+            console.error("Erro no cálculo da rota otimizada:", error);
+            
+            // Restaurar o botão de otimizar
+            const optimizeBtn = document.getElementById('optimize-route');
+            optimizeBtn.innerHTML = 'Otimizar Rota';
+            optimizeBtn.disabled = false;
+            
+            // Alertar o usuário
+            alert("Ocorreu um erro ao calcular a rota otimizada. Por favor tente novamente ou adicione outros locais.");
+        }
     }
     
     // Reordenar os marcadores para corresponder à sequência otimizada
