@@ -601,6 +601,36 @@
     let routeAnimationTimeout = null;
     let showPOIs = true;
     let customTooltip = null;
+    
+    // Função para formatar data do evento com segurança
+    function formatarDataEvento(dataString) {
+        try {
+            // Se for uma string, tenta converter para Date
+            let dataObj;
+            if (typeof dataString === 'string') {
+                // Garantir que temos uma data ISO válida
+                if (dataString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                    dataObj = new Date(dataString + "T00:00:00");
+                } else {
+                    dataObj = new Date(dataString);
+                }
+            } else {
+                dataObj = new Date(dataString);
+            }
+            
+            // Verificar se a data é válida
+            if (isNaN(dataObj.getTime())) {
+                console.warn("Data inválida:", dataString);
+                return "Data inválida";
+            }
+            
+            // Formatar como DD/MM/AAAA
+            return dataObj.toLocaleDateString('pt-BR');
+        } catch (e) {
+            console.error("Erro ao formatar data:", dataString, e);
+            return "Data indisponível";
+        }
+    }
 
     // Inicialização
     document.addEventListener("DOMContentLoaded", function() {
@@ -1600,14 +1630,42 @@
             const eventItem = document.createElement('div');
             eventItem.className = 'event-item';
             
-            // Formatar datas
-            const startDate = new Date(event.startDate);
-            const endDate = new Date(event.endDate);
+            // Garantir que as datas são objetos Date válidos
+            let startDate, endDate;
+            
+            try {
+                // Tentar criar objetos Date a partir das strings de data
+                if (typeof event.startDate === 'string') {
+                    startDate = new Date(event.startDate + "T00:00:00");
+                } else {
+                    startDate = new Date(event.startDate);
+                }
+                
+                if (typeof event.endDate === 'string') {
+                    endDate = new Date(event.endDate + "T00:00:00");
+                } else {
+                    endDate = new Date(event.endDate);
+                }
+                
+                // Verificar se as datas são válidas
+                if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                    throw new Error("Data inválida");
+                }
+            } catch (e) {
+                console.error("Erro ao processar data para o evento:", event.name, e);
+                // Usar a data atual como fallback
+                startDate = new Date();
+                endDate = new Date();
+            }
+            
+            // Formatar para exibição usando o locale pt-BR
             const formattedStartDate = startDate.toLocaleDateString('pt-BR');
             const formattedEndDate = endDate.toLocaleDateString('pt-BR');
             const dateText = formattedStartDate === formattedEndDate ? 
                             formattedStartDate : 
                             `${formattedStartDate} - ${formattedEndDate}`;
+                            
+            console.log(`Evento listado: ${event.name}, Datas: ${event.startDate} -> ${formattedStartDate}`);
             
             // Definir classe baseada no tipo de evento
             const eventTypeClass = event.isHoliday ? 'holiday' : 'event';
@@ -1742,7 +1800,7 @@
         const tooltipContent = `
             <div class="tooltip-title">${event.name}</div>
             <div>${eventCity}</div>
-            <div>${new Date(event.startDate).toLocaleDateString('pt-BR')} - ${new Date(event.endDate).toLocaleDateString('pt-BR')}</div>
+            <div>${formatarDataEvento(event.startDate)} - ${formatarDataEvento(event.endDate)}</div>
             <div>${event.description}</div>
             <div>Nível de restrição: ${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</div>
             ${isHoliday ? '<div class="holiday-badge">Feriado/Aniversário da Cidade</div>' : ''}
