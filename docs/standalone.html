@@ -705,6 +705,7 @@
     let routeAnimationTimeout = null;
     let showPOIs = true;
     let customTooltip = null;
+    let directionsRendererInitialized = false; // Flag para rastrear inicialização correta do renderer
     // Variáveis para rotas alternativas
     let alternativeRoutes = [];
     let currentRouteIndex = 0;
@@ -2153,31 +2154,8 @@
                 // Substituir alert por notificação inline mais suave
                 console.error(`Erro ao calcular rota: ${status}`);
                 
-                // Criar elemento de notificação
-                const notifyError = document.createElement('div');
-                notifyError.className = 'alert alert-danger mt-2';
-                notifyError.innerHTML = `Não foi possível calcular a rota: ${status}`;
-                
-                // Verificar se o elemento pai existe antes de anexar
-                const routeControlsElement = document.querySelector('.route-controls');
-                if (routeControlsElement) {
-                    routeControlsElement.appendChild(notifyError);
-                } else {
-                    // Fallback: tentar adicionar ao sidebar ou exibir apenas no console
-                    const sidebarElement = document.getElementById('sidebar');
-                    if (sidebarElement) {
-                        sidebarElement.appendChild(notifyError);
-                    } else {
-                        console.warn("Não foi possível exibir notificação de erro na interface, elementos não encontrados");
-                    }
-                }
-                
-                // Remover a notificação após alguns segundos
-                setTimeout(() => {
-                    if (notifyError && notifyError.parentNode) {
-                        notifyError.parentNode.removeChild(notifyError);
-                    }
-                }, 5000);
+                // Usar função auxiliar para exibir notificação
+                showNotification(`Não foi possível calcular a rota: ${status}`, 'danger');
                 console.error("Directions request failed due to " + status);
             }
         });
@@ -2228,26 +2206,45 @@
         const batchSize = 3; // número de pontos a adicionar por vez (para animação mais suave)
         
         function animate() {
+            // Verificar se o caminho da rota ainda está disponível
+            if (!routePath) {
+                console.error("routePath foi removido antes do início da animação");
+                return;
+            }
+            
             if (index < path.length) {
-                // Adicionar um lote de pontos por vez para animação mais suave
-                for (let i = 0; i < batchSize && index < path.length; i++) {
-                    if (routePath && routePath.getPath) {
-                        routePath.getPath().push(path[index]);
-                    } else {
-                        console.error("routePath foi removido durante a animação");
-                        return; // Sair para evitar erros
+                try {
+                    // Adicionar um lote de pontos por vez para animação mais suave
+                    for (let i = 0; i < batchSize && index < path.length; i++) {
+                        if (routePath && routePath.getPath) {
+                            routePath.getPath().push(path[index]);
+                        } else {
+                            console.error("routePath foi removido durante a animação");
+                            return; // Sair para evitar erros
+                        }
+                        index++;
                     }
-                    index++;
+                    
+                    // Mostrar progresso da animação para depuração
+                    if (index % 20 === 0 || index === path.length) {
+                        console.log(`Animação da rota: ${Math.round((index / path.length) * 100)}% concluída (${index}/${path.length} pontos)`);
+                    }
+                    
+                    // Agendar próximo batch da animação
+                    routeAnimationTimeout = setTimeout(animate, interval);
+                } catch (err) {
+                    console.error("Erro durante a animação da rota:", err);
+                    showNotification("Erro na animação da rota: " + err.message, "warning");
                 }
-                
-                routeAnimationTimeout = setTimeout(animate, interval);
             } else {
-                console.log("Animação da rota concluída.");
+                console.log("Animação da rota concluída com sucesso.");
+                showNotification("Rota calculada e animada com sucesso!", "success");
             }
         }
         
-        // Iniciar animação
-        animate();
+        // Iniciar animação com breve atraso
+        console.log("Agendando início da animação da rota...");
+        setTimeout(animate, 100);
     }
 
     // Mostrar pontos de interesse ao longo da rota
