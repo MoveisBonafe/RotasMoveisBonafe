@@ -709,6 +709,8 @@
     // Variáveis para rotas alternativas
     let alternativeRoutes = [];
     let currentRouteIndex = 0;
+    let currentDisplayedRoute = null; // Guarda referência à rota atualmente exibida
+    let allRoutePolylines = []; // Armazena referências a todas as polylines criadas
     let tspSolver = null; // Instância do solver TSP
     
     // Função para processar CEP em formato x.y.z.w-abcd
@@ -1029,23 +1031,37 @@
                 console.log("Selecionando rota alternativa:", selectedIndex);
                 console.log("Caminho da rota selecionada:", selectedRoute.path);
                 
+                // Limpar todos os elementos da rota atual
+                console.log("Alternando para rota: " + selectedIndex + ", limpando elementos atuais...");
+                
+                // Parar qualquer animação em andamento
+                if (routeAnimationTimeout) {
+                    clearTimeout(routeAnimationTimeout);
+                    routeAnimationTimeout = null;
+                }
+                
                 // Limpar rota atual e todas as polilíneas do mapa
                 clearRoute();
+                
+                // Limpar todos os marcadores de POIs e eventos
+                clearPOIMarkers();
+                clearEventMarkers();
                 
                 // Pequena pausa para garantir que todas as limpezas foram concluídas
                 setTimeout(() => {
                     // Reordenar marcadores
                     reorderMarkers(selectedRoute.path);
                     
-                    // Desenhar nova rota
-                    drawRouteOnMap(selectedRoute.path, "truck1");
-                }, 100);
-                
-                // Mostrar pontos de interesse
-                showPointsOfInterestOnRoute(selectedRoute.path);
-                
-                // Mostrar eventos
-                showEventsForCitiesOnRoute(selectedRoute.path);
+                    // Desenhar nova rota com pequeno atraso para garantir que as limpezas foram concluídas
+                    setTimeout(() => {
+                        console.log("Desenhando nova rota: ", selectedIndex);
+                        drawRouteOnMap(selectedRoute.path, "truck1");
+                        
+                        // Mostrar pontos de interesse e eventos somente após desenhar a rota
+                        showPointsOfInterestOnRoute(selectedRoute.path);
+                        showEventsForCitiesOnRoute(selectedRoute.path);
+                    }, 100);
+                }, 200);
                 
                 // Atualizar restrições
                 showTruckRestrictionsForCitiesOnRoute(selectedRoute.path, null); // null para mostrar todos os tipos
@@ -2298,6 +2314,21 @@
                     console.error("Erro ao limpar rota anterior:", err);
                 }
                 routePath = null;
+            }
+            
+            // Forçar limpeza de qualquer polyline restante no mapa
+            try {
+                if (directionsRendererInitialized && directionsRenderer) {
+                    directionsRenderer.setDirections({ routes: [] });
+                }
+                
+                // Este é um "truque" para forçar a limpeza de todas as polylines
+                if (map) {
+                    const mapCenter = map.getCenter();
+                    map.setCenter(mapCenter);
+                }
+            } catch (err) {
+                console.error("Erro ao fazer limpeza extra do mapa:", err);
             }
             
             // Verificar se o caminho é válido
