@@ -637,8 +637,10 @@
         const nextMonth = new Date();
         nextMonth.setMonth(today.getMonth() + 1);
         
-        document.getElementById('start-date').valueAsDate = today;
-        document.getElementById('end-date').valueAsDate = nextMonth;
+        document.getElementById('locations-start-date').valueAsDate = today;
+        document.getElementById('locations-end-date').valueAsDate = nextMonth;
+        document.getElementById('events-start-date').valueAsDate = today;
+        document.getElementById('events-end-date').valueAsDate = nextMonth;
         
         // Adicionar eventos para selecionar o tipo de veículo nos cards
         setupVehicleOptions();
@@ -1442,15 +1444,30 @@
         
         // Se não foram passados eventos filtrados, criar filtro agora
         if (!eventsToShow) {
-            const startDate = document.getElementById('start-date').value;
-            const endDate = document.getElementById('end-date').value;
+            const startDate = document.getElementById('events-start-date').value;
+            const endDate = document.getElementById('events-end-date').value;
+            
+            // Configurar também os campos de data da aba de locais para manter consistência
+            if (startDate) {
+                document.getElementById('locations-start-date').value = startDate;
+            }
+            if (endDate) {
+                document.getElementById('locations-end-date').value = endDate;
+            }
             
             eventsToShow = mockData.cityEvents.filter(event => {
-                const eventDate = new Date(event.date);
+                const eventStartDate = new Date(event.startDate);
+                const eventEndDate = new Date(event.endDate);
                 const filterStart = startDate ? new Date(startDate) : new Date(0);
                 const filterEnd = endDate ? new Date(endDate) : new Date(9999, 11, 31);
                 
-                return eventDate >= filterStart && eventDate <= filterEnd;
+                // Um evento está no período se:
+                // - começa durante o período de filtro, OU
+                // - termina durante o período de filtro, OU
+                // - começa antes e termina depois do período (abrange todo o período)
+                return (eventStartDate >= filterStart && eventStartDate <= filterEnd) || 
+                       (eventEndDate >= filterStart && eventEndDate <= filterEnd) ||
+                       (eventStartDate <= filterStart && eventEndDate >= filterEnd);
             });
         }
         
