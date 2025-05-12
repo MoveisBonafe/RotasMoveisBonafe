@@ -2163,38 +2163,68 @@
         let eventsOnRoute = mockData.cityEvents.filter(event => {
             const eventCity = event.cityName;
             
-            // Filtragem de datas somente se datas forem fornecidas
+            // Filtragem de datas APENAS se as datas forem fornecidas
             let dateMatch = true;
             if (startDate || endDate) {
-                // Para resolver o problema de exibir eventos fora das datas selecionadas
-                // Se tanto a data inicial quanto a final forem fornecidas, filtrar estritamente nessas datas
-                const eventStart = new Date(event.startDate);
-                const eventEnd = new Date(event.endDate);
-                
-                // Converter para formato YYYY-MM-DD para comparação
-                const eventStartStr = event.startDate.split("T")[0];
-                const eventEndStr = event.endDate.split("T")[0];
-                
-                // Se ambas as datas foram fornecidas, usar filtro estrito
-                if (startDate && endDate) {
-                    console.log(`Filtro estrito de datas: Evento ${event.name} (${eventStartStr} a ${eventEndStr}) vs Filtro (${startDate} a ${endDate})`);
-                    dateMatch = (eventStartStr >= startDate && eventStartStr <= endDate) || 
-                               (eventEndStr >= startDate && eventEndStr <= endDate) ||
-                               (eventStartStr <= startDate && eventEndStr >= endDate);
-                } else {
-                    // Caso contrário, filtro mais flexível (apenas uma data fornecida)
-                    const filterStart = startDate ? new Date(startDate) : new Date(0);
-                    const filterEnd = endDate ? new Date(endDate) : new Date(9999, 11, 31);
-                    dateMatch = eventStart <= filterEnd && eventEnd >= filterStart;
+                try {
+                    // Converter strings de data para objetos Date
+                    const eventStartDate = new Date(event.startDate);
+                    const eventEndDate = new Date(event.endDate);
+                    
+                    // Certifique-se de que as datas de filtro são objetos Date
+                    const filterStartDate = startDate ? new Date(startDate) : null;
+                    const filterEndDate = endDate ? new Date(endDate) : null;
+                    
+                    console.log(`Filtrando evento: ${event.name}:`);
+                    console.log(`- Evento data: ${eventStartDate.toLocaleDateString('pt-BR')} até ${eventEndDate.toLocaleDateString('pt-BR')}`);
+                    console.log(`- Filtro data: ${filterStartDate ? filterStartDate.toLocaleDateString('pt-BR') : 'não definido'} até ${filterEndDate ? filterEndDate.toLocaleDateString('pt-BR') : 'não definido'}`);
+                    
+                    // Se ambas as datas do filtro foram fornecidas
+                    if (filterStartDate && filterEndDate) {
+                        // Um evento corresponde se:
+                        // 1. Começa dentro do intervalo de filtro, OU
+                        // 2. Termina dentro do intervalo de filtro, OU
+                        // 3. Abrange o intervalo de filtro completo
+                        dateMatch = (
+                            (eventStartDate >= filterStartDate && eventStartDate <= filterEndDate) || // começa dentro do filtro
+                            (eventEndDate >= filterStartDate && eventEndDate <= filterEndDate) ||     // termina dentro do filtro
+                            (eventStartDate <= filterStartDate && eventEndDate >= filterEndDate)      // abrange todo o filtro
+                        );
+                    } 
+                    // Se apenas a data inicial do filtro foi fornecida
+                    else if (filterStartDate) {
+                        dateMatch = eventEndDate >= filterStartDate; // evento termina depois/na data inicial do filtro
+                    } 
+                    // Se apenas a data final do filtro foi fornecida
+                    else if (filterEndDate) {
+                        dateMatch = eventStartDate <= filterEndDate; // evento começa antes/na data final do filtro
+                    }
+                    
+                    console.log(`- Resultado da filtragem de data: ${dateMatch ? 'INCLUIR' : 'EXCLUIR'}`);
+                } catch (e) {
+                    console.error("Erro ao comparar datas:", e);
+                    dateMatch = true; // em caso de erro, incluir o evento (erro para o lado de mostrar mais)
                 }
-                
-                console.log(`Evento: ${event.name}, Cidade: ${event.cityName}, Datas: ${eventStartStr}-${eventEndStr}, Incluir: ${dateMatch}`);
             }
             
-            // Melhorar correspondência da cidade - verificar nos dois sentidos
-            const cityMatch = citiesOnRoute.some(city => 
-                eventCity.includes(city) || city.includes(eventCity)
-            );
+            // CORRESPONDÊNCIA EXATA DE CIDADE - apenas correspondência exata
+            // Não queremos São Paulo correspondendo a São Pedro ou outras combinações parciais
+            const cityMatch = citiesOnRoute.some(city => {
+                // Só fazemos comparações para cidades não vazias
+                if (!city || !event.cityName) return false;
+                
+                // Normalizar nomes (remover acentos, espaços extras, minúsculas)
+                const normalizedRouteCity = city.toLowerCase().trim();
+                const normalizedEventCity = event.cityName.toLowerCase().trim();
+                
+                // Primeiro tentar correspondência exata
+                if (normalizedRouteCity === normalizedEventCity) {
+                    console.log(`Correspondência exata: '${city}' = '${event.cityName}'`);
+                    return true;
+                }
+                
+                return false;
+            });
             
             console.log(`Evento: ${event.name}, Cidade: ${eventCity}, Data: ${event.startDate}-${event.endDate}, Cidade Corresponde: ${cityMatch}, Data Corresponde: ${dateMatch}`);
             
