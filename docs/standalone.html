@@ -574,7 +574,7 @@
         
         // Restrições para caminhões
         truckRestrictions: [
-            { id: 1, cityName: "Dois Córregos", dayType: "weekday", startTime: "07:00", endTime: "09:00", restrictionType: "partial", description: "Restrição parcial para caminhões de grande porte no centro", affectedVehicles: ["truck5", "truck6", "truck7", "truck9"] },
+            { id: 1, cityName: "Dois Córregos", dayType: "weekday", startTime: "07:00", endTime: "09:00", restrictionType: "partial", description: "Restrição parcial para caminhões de grande porte no centro", affectedVehicles: ["truck1", "truck5", "truck6", "truck7", "truck9"] },
             { id: 2, cityName: "Jaú", dayType: "weekday", startTime: "17:00", endTime: "20:00", restrictionType: "partial", description: "Restrição parcial para todos os caminhões no centro", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] },
             { id: 3, cityName: "Botucatu", dayType: "weekend", startTime: "08:00", endTime: "18:00", restrictionType: "total", description: "Proibição total para caminhões na área central", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] },
             { id: 4, cityName: "Bauru", dayType: "all", startTime: "07:00", endTime: "22:00", restrictionType: "rodizio", description: "Sistema de rodízio para todos os caminhões", affectedVehicles: ["truck1", "truck2", "truck3", "truck4", "truck5", "truck6", "truck7", "truck9"] }
@@ -612,12 +612,15 @@
         addMarkerForLocation(mockData.origin, 0);
         
         // Inicializar datas para o filtro de eventos
-        const today = new Date();
-        const nextMonth = new Date();
-        nextMonth.setMonth(today.getMonth() + 1);
+        // Definir datas para cobrir eventos de 2025 (atualizado)
+        const today = new Date('2025-05-01'); // Começar a partir de maio de 2025
+        const endOfYear = new Date('2025-12-31'); // Até o final de 2025
         
         document.getElementById('start-date').valueAsDate = today;
-        document.getElementById('end-date').valueAsDate = nextMonth;
+        document.getElementById('end-date').valueAsDate = endOfYear;
+        
+        // Mostrar mensagem de ajuda
+        console.log("Datas padrão ajustadas para mostrar eventos de 2025");
     });
 
     // Inicializa o mapa
@@ -2005,9 +2008,13 @@
 
     // Mostrar eventos para as cidades na rota
     function showEventsForCitiesOnRoute(pathIds) {
+        console.log("Mostrando eventos para rota com IDs:", pathIds);
         // Limpar a lista de eventos
         const eventsListContainer = document.getElementById('events-list');
         eventsListContainer.innerHTML = '';
+        
+        // Log para diagnóstico
+        console.log("Eventos disponíveis:", mockData.cityEvents);
         
         // Converter IDs para objetos de localização com comparação segura
         const pathLocations = pathIds.map(id => {
@@ -2144,9 +2151,13 @@
 
     // Mostrar restrições para caminhões nas cidades da rota
     function showTruckRestrictionsForCitiesOnRoute(pathIds, vehicleType) {
+        console.log("Mostrando restrições de caminhões para rota com IDs:", pathIds, "veículo:", vehicleType || "truck1");
         // Limpar a lista de restrições
         const restrictionsListContainer = document.getElementById('restrictions-list');
         restrictionsListContainer.innerHTML = '';
+        
+        // Log para diagnóstico
+        console.log("Restrições disponíveis:", mockData.truckRestrictions);
         
         // Converter IDs para objetos de localização com comparação segura
         const pathLocations = pathIds.map(id => {
