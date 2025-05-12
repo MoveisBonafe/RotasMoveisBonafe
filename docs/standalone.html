@@ -405,21 +405,6 @@
                 
                 <!-- Aba de Locais -->
                 <div class="tab-content active" id="locations-tab">
-                    <!-- Filtro de datas -->
-                    <div class="date-filter">
-                        <h5>Filtrar eventos por data:</h5>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="start-date">Início:</label>
-                                <input type="date" id="start-date" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="end-date">Fim:</label>
-                                <input type="date" id="end-date" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                    
                     <!-- Origem fixa -->
                     <div class="form-group">
                         <label for="origin">Origem:</label>
@@ -457,6 +442,14 @@
                 
                 <!-- Aba de Eventos -->
                 <div class="tab-content" id="events-tab">
+                    <div class="form-group">
+                        <label>Filtrar eventos por data:</label>
+                        <div class="date-range-container">
+                            <input type="date" id="start-date" class="form-control">
+                            <input type="date" id="end-date" class="form-control">
+                        </div>
+                        <button id="filter-events" class="btn btn-outline-primary btn-sm mt-2">Filtrar</button>
+                    </div>
                     
                     <h5 class="mt-3">Eventos na rota:</h5>
                     <div class="events-list" id="events-list">
@@ -1428,11 +1421,9 @@
             return parts[0].trim();
         });
         
-        // Obter datas do filtro (agora na aba de locais)
+        // Obter datas do filtro
         const startDate = document.getElementById('start-date').value;
         const endDate = document.getElementById('end-date').value;
-        
-        console.log("Filtro de datas aplicado:", startDate || "Sem data inicial", "até", endDate || "Sem data final");
         
         // Filtrar eventos que estão nas cidades da rota e no período selecionado
         let eventsOnRoute = mockData.cityEvents.filter(event => {
@@ -1603,7 +1594,7 @@
             // Veículo fixo (caminhão 1 eixo)
             const selectedVehicle = {
                 name: "Caminhão",
-                averageSpeed: 80 // km/h - velocidade média
+                averageSpeed: 70 // km/h - velocidade média
             };
             
             // Tempo estimado (baseado na velocidade média padrão do caminhão)
