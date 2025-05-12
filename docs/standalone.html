@@ -1523,15 +1523,33 @@
                 return;
             }
             
+            // Verificar se temos rotas disponíveis
+            if (!alternativeRoutes || alternativeRoutes.length === 0) {
+                console.error("Nenhuma rota alternativa disponível. Criando uma rota padrão.");
+                // Criar uma rota padrão com os pontos disponíveis
+                alternativeRoutes = [{
+                    path: locations.map(loc => loc.id),
+                    distance: straightLineDistance * 1.3,
+                    time: (straightLineDistance * 1.3 / 80) * 60 // tempo em minutos a 80km/h
+                }];
+            }
+            
             // Usar a primeira rota (otimizada) como padrão
             const tspResult = alternativeRoutes[0];
             console.log("Resultado TSP:", tspResult);
+            
+            // Verificar se o resultado tem todos os dados necessários
+            if (!tspResult || !tspResult.path || !Array.isArray(tspResult.path)) {
+                console.error("Resultado TSP inválido:", tspResult);
+                return; // Interromper o processamento para evitar erros futuros
+            }
             
             // Verificar se o resultado tem uma distância válida
             if (typeof tspResult.distance !== 'number' || isNaN(tspResult.distance) || tspResult.distance <= 0) {
                 console.error("Distância TSP inválida:", tspResult.distance);
                 // Assumir uma distância aproximada baseada na linha reta
-                tspResult.distance = straightLineDistance * 1.3; // Fator de correção para rotas reais
+                const safeDistance = straightLineDistance > 0 ? straightLineDistance * 1.3 : 50; // Valor default seguro
+                tspResult.distance = safeDistance;
                 console.log("Corrigido para:", tspResult.distance.toFixed(1), "km");
             }
             
@@ -1898,6 +1916,13 @@
     // Traçar a rota no mapa
     function drawRouteOnMap(pathIds, vehicleType) {
         console.log("Desenhando rota para IDs:", pathIds);
+        
+        // Verificações de segurança
+        if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
+            console.error("IDs de caminho inválidos ou vazios:", pathIds);
+            return; // Interromper execução para evitar erros
+        }
+        
         console.log("Localizações disponíveis:", locations);
         
         // Converter ids para objetos de localização
@@ -2246,6 +2271,20 @@
     // Mostrar eventos para as cidades na rota
     function showEventsForCitiesOnRoute(pathIds) {
         console.log("Mostrando eventos para rota com IDs:", pathIds);
+        
+        // Verificações de segurança
+        if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
+            console.error("IDs de rota inválidos ou vazios:", pathIds);
+            const originLocations = locations.filter(loc => loc.isOrigin);
+            if (originLocations.length > 0) {
+                pathIds = originLocations.map(loc => loc.id);
+                console.log("Usando apenas a origem para mostrar eventos:", pathIds);
+            } else {
+                console.error("Impossível encontrar até mesmo a origem. Abortando exibição de eventos.");
+                return;
+            }
+        }
+        
         // Limpar a lista de eventos
         const eventsListContainer = document.getElementById('events-list');
         eventsListContainer.innerHTML = '';
@@ -2521,6 +2560,19 @@
     function showTruckRestrictionsForCitiesOnRoute(pathIds, vehicleType) {
         console.log("DEBUG: Acionando função para mostrar TODAS as restrições de caminhões, ignorando completamente o tipo de veículo");
         console.log("Mostrando restrições de caminhões para rota com IDs:", pathIds);
+        
+        // Verificações de segurança
+        if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
+            console.error("IDs de rota inválidos ou vazios para restrições de caminhões:", pathIds);
+            const originLocations = locations.filter(loc => loc.isOrigin);
+            if (originLocations.length > 0) {
+                pathIds = originLocations.map(loc => loc.id);
+                console.log("Usando apenas a origem para mostrar restrições:", pathIds);
+            } else {
+                console.error("Impossível encontrar até mesmo a origem. Abortando exibição de restrições.");
+                return;
+            }
+        }
         console.log("Parâmetro vehicleType:", vehicleType, "- Isso será ignorado completamente");
         // Limpar a lista de restrições
         const restrictionsListContainer = document.getElementById('restrictions-list');
