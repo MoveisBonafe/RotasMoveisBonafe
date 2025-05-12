@@ -1,20 +1,16 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <base href="./">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Planejador de Rotas - Versão GitHub Pages</title>
-  <!-- API Google Maps com Places para autocomplete e função de zoom melhorada -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places"></script>
-  <!-- Carregador do script TSP para otimização de rotas -->
-  <script src="./tsp.js"></script>
+  <title>Otimizador de Rotas - Versão GitHub Pages</title>
+  
   <style>
-    /* Reset e estilos básicos */
+    /* Reset básico */
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
     
     body {
@@ -22,79 +18,169 @@
       line-height: 1.6;
       color: #333;
       background-color: #f9fafb;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+    }
+    
+    /* Layout principal */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
     }
     
     header {
-      background-color: #ffffff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      background-color: #3b82f6;
+      color: white;
       padding: 1rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      border-radius: 0.5rem;
     }
     
-    .logo {
-      display: flex;
-      align-items: center;
-    }
-    
-    .logo svg {
-      width: 40px;
-      height: 40px;
-      margin-right: 10px;
-      color: #3b82f6;
-    }
-    
-    .logo-text h1 {
+    .app-title {
       font-size: 1.5rem;
-      font-weight: bold;
-      color: #3b82f6;
+      font-weight: 600;
     }
     
-    .logo-text p {
-      font-size: 0.75rem;
-      color: #6b7280;
+    .app-subtitle {
+      font-size: 0.875rem;
+      opacity: 0.8;
     }
     
     main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 1rem;
-      overflow: auto;
+      margin-bottom: 2rem;
     }
     
+    /* Layout de app com sidebar e mapa */
     .app-container {
       display: flex;
-      flex: 1;
+      gap: 1rem;
       min-height: 80vh;
-      margin-bottom: 1rem;
     }
     
     .sidebar {
       width: 380px;
-      background-color: #ffffff;
+      background-color: white;
       border-radius: 0.5rem;
       padding: 1rem;
-      margin-right: 1rem;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      overflow-y: auto;
-      height: 100%;
-      min-height: 80vh;
+      z-index: 10;
       display: flex;
       flex-direction: column;
     }
-
-    .sidebar-scroll {
-      overflow-y: auto;
+    
+    .map-container {
       flex: 1;
+      background-color: white;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      height: 80vh;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      position: relative;
     }
     
-    .sidebar h2 {
-      font-size: 1.1rem;
+    .date-filter {
       margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid #e5e7eb;
+      padding: 0.75rem;
+      background-color: #f3f4f6;
+      border-radius: 0.25rem;
+    }
+    
+    .date-group {
+      margin-bottom: 0.5rem;
+    }
+    
+    .date-group label {
+      display: block;
+      font-size: 0.8rem;
+      margin-bottom: 0.25rem;
+      color: #4b5563;
+    }
+    
+    .date-input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+    }
+    
+    .add-location, .import-ceps {
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      background-color: #f3f4f6;
+      border-radius: 0.25rem;
+    }
+    
+    .add-location h3, .import-ceps h3 {
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      color: #374151;
+    }
+    
+    .location-search {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .location-input {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+    }
+    
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.5rem 0.75rem;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    
+    .action-btn:hover {
+      background-color: #2563eb;
+    }
+    
+    .file-upload {
+      margin-bottom: 0.5rem;
+    }
+    
+    .file-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background-color: #e5e7eb;
+      color: #4b5563;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      cursor: pointer;
+      width: fit-content;
+    }
+    
+    .file-label:hover {
+      background-color: #d1d5db;
+    }
+    
+    #file-upload {
+      display: none;
+    }
+    
+    .file-info {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-top: 0.25rem;
+    }
+    
+    .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
     }
     
     .location-list {
@@ -140,7 +226,6 @@
       color: #6b7280;
     }
     
-    /* Estilos para os botões de remoção */
     .remove-btn {
       background: none;
       border: none;
@@ -156,119 +241,6 @@
     
     .remove-btn:hover {
       background-color: #fee2e2;
-    }
-    
-    /* Estilos para filtros de data */
-    .date-filter {
-      margin-bottom: 1rem;
-      padding: 0.75rem;
-      background-color: #f3f4f6;
-      border-radius: 0.25rem;
-    }
-    
-    .date-group {
-      margin-bottom: 0.5rem;
-    }
-    
-    .date-group label {
-      display: block;
-      font-size: 0.8rem;
-      margin-bottom: 0.25rem;
-      color: #4b5563;
-    }
-    
-    .date-input {
-      width: 100%;
-      padding: 0.5rem;
-      border: 1px solid #d1d5db;
-      border-radius: 0.25rem;
-      font-size: 0.875rem;
-    }
-    
-    /* Estilos para adicionar destino */
-    .add-location, .import-ceps {
-      margin-bottom: 1rem;
-      padding: 0.75rem;
-      background-color: #f3f4f6;
-      border-radius: 0.25rem;
-    }
-    
-    .add-location h3, .import-ceps h3 {
-      font-size: 0.9rem;
-      margin-bottom: 0.5rem;
-      color: #374151;
-    }
-    
-    .location-search {
-      display: flex;
-      gap: 0.5rem;
-    }
-    
-    .location-input {
-      flex: 1;
-      padding: 0.5rem;
-      border: 1px solid #d1d5db;
-      border-radius: 0.25rem;
-      font-size: 0.875rem;
-    }
-    
-    .action-btn {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-      padding: 0.5rem 0.75rem;
-      background-color: #3b82f6;
-      color: white;
-      border: none;
-      border-radius: 0.25rem;
-      font-size: 0.875rem;
-      cursor: pointer;
-    }
-    
-    .action-btn:hover {
-      background-color: #2563eb;
-    }
-    
-    /* Estilos para importação de arquivo */
-    .file-upload {
-      margin-bottom: 0.5rem;
-    }
-    
-    .file-label {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 0.75rem;
-      background-color: #e5e7eb;
-      color: #4b5563;
-      border-radius: 0.25rem;
-      font-size: 0.875rem;
-      cursor: pointer;
-      width: fit-content;
-    }
-    
-    .file-label:hover {
-      background-color: #d1d5db;
-    }
-    
-    #file-upload {
-      display: none;
-    }
-    
-    .file-info {
-      font-size: 0.75rem;
-      color: #6b7280;
-      margin-top: 0.25rem;
-    }
-    
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .sidebar-content {
-      flex: 1;
-      overflow-y: auto;
     }
     
     .optimize-container {
@@ -299,7 +271,6 @@
       font-size: 1rem;
       font-weight: 500;
       cursor: pointer;
-      transition: background-color 0.2s;
     }
     
     .optimize-btn:hover {
@@ -311,29 +282,18 @@
       cursor: not-allowed;
     }
     
-    .map-container {
-      flex: 1;
-      border-radius: 0.5rem;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      background-color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      height: 100%;
-      min-height: 80vh;
-    }
-    
     .map-header {
-      padding: 0.75rem;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      background-color: #f9fafb;
       border-bottom: 1px solid #e5e7eb;
     }
     
     .map-title {
       font-weight: 500;
+      color: #374151;
     }
     
     .map-actions {
@@ -342,77 +302,38 @@
     }
     
     .map-btn {
-      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #d1d5db;
       border-radius: 0.25rem;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      border: none;
-      font-size: 0.875rem;
-    }
-    
-    .primary-btn {
-      background-color: #3b82f6;
-      color: white;
-    }
-    
-    .secondary-btn {
-      background-color: #e5e7eb;
-      color: #4b5563;
-    }
-    
-    .info-btn {
-      background-color: #10b981;
-      color: white;
-    }
-    
-    /* Ajustes para o botão de Street View */
-    .pegman-container {
-      position: absolute;
-      bottom: 80px;
-      right: 10px;
-      z-index: 10;
-    }
-    
-    .pegman-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
       background-color: white;
-      border: none;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: grab;
-      transition: all 0.2s;
+      font-size: 0.875rem;
+      cursor: pointer;
     }
     
-    .pegman-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-    
-    .pegman-icon {
-      width: 24px;
-      height: 24px;
+    .map-btn:hover {
+      background-color: #f3f4f6;
     }
     
     .map-iframe {
-      flex: 1;
-      border: none;
       width: 100%;
-      height: 100%;
+      height: calc(100% - 50px);
+      border: none;
     }
     
-    /* Abas de resumo/relatório abaixo do mapa */
+    #map {
+      width: 100%;
+      height: calc(100% - 50px);
+    }
+    
     .route-tabs {
       background-color: #ffffff;
       border-radius: 0.5rem;
       overflow: hidden;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin-top: 1rem;
     }
     
     .tabs-header {
@@ -481,10 +402,14 @@
       margin-bottom: 1.5rem;
     }
     
-    .route-report h4 {
-      font-size: 0.875rem;
+    .sequence-list {
+      list-style-position: inside;
+      margin-left: 1rem;
+    }
+    
+    .sequence-list li {
       margin-bottom: 0.5rem;
-      color: #4b5563;
+      padding-left: 0.5rem;
     }
     
     .attention-points {
@@ -503,58 +428,24 @@
     }
     
     .attention-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
       width: 24px;
       height: 24px;
       border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin-right: 0.75rem;
+      flex-shrink: 0;
     }
     
-    .toll {
-      background-color: #fef3c7;
-      color: #d97706;
+    .attention-icon.toll {
+      background-color: #10b981;
+      color: white;
     }
     
-    .weighing {
-      background-color: #e0e7ff;
-      color: #4f46e5;
-    }
-    
-    .event {
-      background-color: #ecfdf5;
-      color: #10b981;
-    }
-    
-    .restriction {
-      background-color: #fee2e2;
-      color: #ef4444;
-    }
-    
-    .attention-text {
-      font-size: 0.875rem;
-      color: #374151;
-    }
-    
-    .route-sequence {
-      margin-top: 1.5rem;
-    }
-    
-    .sequence-list {
-      margin-left: 1.5rem;
-    }
-    
-    .sequence-list li {
-      margin-bottom: 0.5rem;
-      font-size: 0.875rem;
-      color: #374151;
-    }
-    
-    /* Seção de eventos na cidade */
-    .city-events {
-      margin-top: 1.5rem;
-      margin-bottom: 1.5rem;
+    .attention-icon.weighing {
+      background-color: #f59e0b;
+      color: white;
     }
     
     .events-list {
@@ -599,24 +490,6 @@
       margin-right: 0.25rem;
     }
     
-    /* Estilos para janela de informações do evento */
-    .event-info-window h3 {
-      color: #3b82f6;
-      margin-top: 0;
-      margin-bottom: 8px;
-      font-size: 16px;
-    }
-    
-    .event-info-window p {
-      margin: 4px 0;
-      font-size: 13px;
-    }
-    
-    /* Seção de restrições de caminhões */
-    .truck-restrictions {
-      margin-top: 1.5rem;
-    }
-    
     .restrictions-list {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -649,7 +522,6 @@
       font-style: italic;
     }
     
-    /* Responsive styles */
     @media (max-width: 768px) {
       .app-container {
         flex-direction: column;
@@ -669,55 +541,41 @@
       .route-summary {
         grid-template-columns: 1fr;
       }
-      
-      .attention-points,
-      .events-list,
-      .restrictions-list {
-        grid-template-columns: 1fr;
-      }
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-      </svg>
-      <div class="logo-text">
-        <h1>Otimizador de Rotas</h1>
-        <p>Planejamento de entregas a partir de Dois Córregos-SP</p>
-      </div>
-    </div>
+    <div class="app-title">Otimizador de Rotas - Versão GitHub Pages</div>
+    <div class="app-subtitle">Solução para planejamento de rotas com origem em Dois Córregos-SP</div>
   </header>
 
-  <main>
+  <main class="container">
     <div class="app-container">
       <aside class="sidebar">
         <div class="sidebar-content">
-          <h2>Destinos</h2>
-          
-          <!-- Filtros de data -->
+          <!-- Filtro de datas -->
           <div class="date-filter">
             <div class="date-group">
-              <label for="start-date">Data Início:</label>
+              <label for="start-date">Data inicial:</label>
               <input type="date" id="start-date" class="date-input">
             </div>
             <div class="date-group">
-              <label for="end-date">Data Fim:</label>
+              <label for="end-date">Data final:</label>
               <input type="date" id="end-date" class="date-input">
             </div>
           </div>
           
-          <!-- Adicionar destino -->
+          <!-- Adicionar localizações -->
           <div class="add-location">
             <h3>Adicionar Destino</h3>
             <div class="location-search">
               <input 
                 type="text" 
                 id="location-search-input" 
-                placeholder="Digite um endereço ou CEP..." 
-                class="location-input">
+                class="location-input"
+                placeholder="Digite um endereço"
+              >
               <button id="add-location-btn" class="action-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"></circle>
@@ -774,14 +632,14 @@
         <div class="map-header">
           <div class="map-title">Visualização do Mapa</div>
           <div class="map-actions">
-            <button class="map-btn secondary-btn" id="home-btn">
+            <button class="map-btn" id="home-btn">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                 <polyline points="9 22 9 12 15 12 15 22"></polyline>
               </svg>
               Inicio
             </button>
-            <button class="map-btn info-btn" id="show-info-btn">
+            <button class="map-btn" id="show-info-btn">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="12" y1="16" x2="12" y2="12"></line>
@@ -792,14 +650,12 @@
           </div>
         </div>
         
-        <!-- Div para mapa JavaScript API (permite maior controle e opções como pegman) -->
-        <div id="map" class="map-iframe"></div>
+        <div id="map" style="display: none;"></div>
         
-        <!-- Placeholder iframe oculto para fallback -->
+        <!-- Iframe para o mapa do Google -->
         <iframe 
           class="map-iframe"
           id="map-iframe"
-          style="display: none;"
           src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&q=-22.3673,-48.3823&center=-22.3673,-48.3823&zoom=10&maptype=roadmap"
           allowfullscreen
           referrerpolicy="no-referrer-when-downgrade">
@@ -822,56 +678,46 @@
           </div>
           <div class="summary-item">
             <div class="summary-label">Tempo Estimado:</div>
-            <div class="summary-value" id="estimated-time">0h 0min</div>
+            <div class="summary-value" id="total-time">0 min</div>
           </div>
           <div class="summary-item">
-            <div class="summary-label">Pedágios:</div>
-            <div class="summary-value" id="toll-count">0</div>
+            <div class="summary-label">Número de Destinos:</div>
+            <div class="summary-value" id="total-destinations">0</div>
           </div>
           <div class="summary-item">
-            <div class="summary-label">Balanças:</div>
-            <div class="summary-value" id="weighing-count">0</div>
+            <div class="summary-label">Velocidade Média:</div>
+            <div class="summary-value" id="avg-speed">0 km/h</div>
           </div>
         </div>
       </div>
       
       <div class="tab-content" id="report-tab">
         <div class="route-report">
-          <h3>Relatório Detalhado</h3>
-          
-          <!-- Sequência da Rota -->
-          <div class="route-sequence">
-            <h4>Sequência da Rota</h4>
+          <div class="route-points">
+            <h3>Sequência da Rota</h3>
             <ol class="sequence-list" id="sequence-list">
-              <li>Dois Córregos (Origem)</li>
-              <!-- Outros destinos serão adicionados dinamicamente -->
+              <!-- Sequência será adicionada aqui -->
             </ol>
           </div>
           
-          <!-- Pontos de Atenção -->
-          <div class="route-points">
-            <h4>Pontos de Atenção</h4>
+          <div class="attention-section">
+            <h3>Pontos de Atenção</h3>
             <div class="attention-points" id="attention-points">
-              <!-- Pontos de atenção serão adicionados dinamicamente -->
-              <div class="empty-message">Adicione destinos e calcule uma rota para ver os pontos de atenção.</div>
+              <!-- Pontos de atenção serão adicionados aqui -->
             </div>
           </div>
           
-          <!-- Eventos nas Cidades -->
           <div class="city-events">
-            <h4>Eventos nas Cidades</h4>
+            <h3>Eventos nas Cidades</h3>
             <div class="events-list" id="events-list">
-              <!-- Eventos serão adicionados dinamicamente -->
-              <div class="empty-message">Adicione destinos e calcule uma rota para ver os eventos.</div>
+              <!-- Eventos serão adicionados aqui -->
             </div>
           </div>
           
-          <!-- Restrições de Caminhões -->
           <div class="truck-restrictions">
-            <h4>Restrições de Caminhões</h4>
+            <h3>Restrições de Caminhões</h3>
             <div class="restrictions-list" id="restrictions-list">
-              <!-- Restrições serão adicionadas dinamicamente -->
-              <div class="empty-message">Adicione destinos e calcule uma rota para ver as restrições.</div>
+              <!-- Restrições serão adicionadas aqui -->
             </div>
           </div>
         </div>
@@ -879,10 +725,13 @@
     </div>
   </main>
 
+  <!-- Importar TSP Solver -->
+  <script src="./tsp.js"></script>
+  
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places&v=3.58"></script>
+  
   <script>
-    // Script para versão estática completa
     document.addEventListener('DOMContentLoaded', function() {
-      // Configuração da API Google Maps
       const apiKey = "AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U";
       
       // Referências dos elementos
@@ -899,11 +748,6 @@
       const tabContents = document.querySelectorAll('.tab-content');
       const routeTabs = document.getElementById('route-tabs');
       const mapIframe = document.getElementById('map-iframe');
-      const pegmanBtn = document.getElementById('pegman-btn');
-      
-      // Arrays para armazenar marcadores e infowindows
-      let eventMarkers = [];
-      let infoWindows = [];
       
       // Inicializar datas com valores padrão
       const today = new Date();
@@ -935,7 +779,7 @@
         { name: 'Balança Rod. Anhanguera (Ribeirão Preto)', type: 'weighing' }
       ];
       
-      // Eventos nas cidades (incluindo feriados e aniversários)
+      // Eventos nas cidades
       const cityEvents = [
         { 
           title: 'Feira Agropecuária', 
@@ -984,36 +828,6 @@
           city: 'Ribeirão Preto',
           startDate: '2025-06-19',
           endDate: '2025-06-19'
-        },
-        { 
-          title: 'Aniversário da Cidade', 
-          city: 'Brotas',
-          startDate: '2025-05-03',
-          endDate: '2025-05-03'
-        },
-        { 
-          title: 'Aniversário da Cidade', 
-          city: 'Barra Bonita',
-          startDate: '2025-07-14',
-          endDate: '2025-07-14'
-        },
-        { 
-          title: 'Aniversário da Cidade', 
-          city: 'Bocaina',
-          startDate: '2025-04-21',
-          endDate: '2025-04-21'
-        },
-        { 
-          title: 'Feriado Municipal', 
-          city: 'Mineiros do Tietê',
-          startDate: '2025-05-13',
-          endDate: '2025-05-13'
-        },
-        { 
-          title: 'Festa da Colheita', 
-          city: 'Pederneiras',
-          startDate: '2025-06-15',
-          endDate: '2025-06-20'
         }
       ];
       
@@ -1040,73 +854,78 @@
           details: 'Centro histórico - Diariamente 08:00-20:00'
         }
       ];
-
-      // ===== FUNÇÕES PARA CÁLCULO DE ROTA =====
       
-      // Função para construir URL com waypoints ordenados
+      // Função para construir URL de rota
       function buildDirectionsUrl(orderedLocs) {
-        // Usar localizações ordenadas se fornecidas, senão usar a lista original
         const locsToUse = orderedLocs || locations;
-        
-        // Encontrar origem
         const origin = locsToUse.find(l => l.isOrigin);
         if (!origin) return '';
         
-        // Destino é a própria origem (rota circular)
         const destination = origin.latlng;
-        
-        // Filtrar waypoints (não incluir origem)
         const waypoints = locsToUse
           .filter(l => !l.isOrigin)
           .map(l => l.latlng)
           .join('|');
         
         if (!waypoints) {
-          // Se não houver waypoints, mostrar apenas o ponto de origem
           return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${origin.latlng}&zoom=10`;
         }
         
         return `https://www.google.com/maps/embed/v1/directions?key=${apiKey}&origin=${origin.latlng}&destination=${destination}&waypoints=${waypoints}&mode=driving&avoid=ferries`;
       }
       
-      // Função para otimizar rota usando o algoritmo do Caixeiro Viajante
+      // Função para calcular rota otimizada
       function calculateOptimizedRoute() {
         if (locations.length <= 1) {
           alert('Adicione pelo menos um destino além da origem para calcular uma rota.');
           return;
         }
         
-        // Desabilitar botão enquanto processa
         optimizeBtn.disabled = true;
         optimizeBtn.innerHTML = 'Calculando...';
         
         try {
-          // Usar a implementação real do TSP
-          // Encontrar o índice da origem
           const originIndex = locations.findIndex(l => l.isOrigin);
           
-          // Resolver o problema do caixeiro viajante
-          const tspResult = window.TSPSolver.solve(locations, originIndex);
-          
-          // Guardar a última solução TSP
-          window.lastTspResult = tspResult;
-          
-          // Atualizar a ordem dos elementos visuais na lista para corresponder
-          // à ordem otimizada do TSP
-          updateLocationListVisualOrder(tspResult.orderedLocations);
-          
-          // Atualizar o mapa com a rota otimizada
-          if (map && directionsService && directionsRenderer) {
-            updateMapRoute(tspResult.orderedLocations);
-          } else {
-            const newUrl = buildDirectionsUrl(tspResult.orderedLocations);
-            if (mapIframe && newUrl) {
-              mapIframe.src = newUrl;
-              mapIframe.style.display = 'block';
-            }
+          // Criar objeto TSPSolver se não existir
+          if (!window.TSPSolver) {
+            window.TSPSolver = {
+              solve: function(locs, originIdx) {
+                // Solução simples - mantém a origem e adiciona os outros destinos em ordem
+                const origin = locs[originIdx];
+                const others = locs.filter((_, i) => i !== originIdx);
+                
+                // Calcular distâncias simplificadas
+                const orderedLocs = [origin, ...others];
+                const distances = [];
+                let totalDist = 0;
+                
+                for (let i = 0; i < orderedLocs.length - 1; i++) {
+                  const dist = calculateDistance(orderedLocs[i], orderedLocs[i+1]);
+                  distances.push(dist);
+                  totalDist += dist;
+                }
+                
+                return {
+                  orderedLocations: orderedLocs,
+                  totalDistance: Math.round(totalDist),
+                  segmentDistances: distances.map(d => Math.round(d))
+                };
+              }
+            };
           }
           
-          // Atualizar informações da rota
+          // Resolver TSP
+          const tspResult = window.TSPSolver.solve(locations, originIndex);
+          window.lastTspResult = tspResult;
+          
+          // Atualizar ordem na lista
+          updateLocationListVisualOrder(tspResult.orderedLocations);
+          
+          // Atualizar mapa
+          mapIframe.src = buildDirectionsUrl(tspResult.orderedLocations);
+          
+          // Atualizar informações
           updateRouteInfo(tspResult);
           
           // Mostrar painéis de informação
@@ -1120,7 +939,6 @@
           console.error('Erro ao calcular rota:', error);
           alert('Erro ao calcular a rota. Tente novamente.');
         } finally {
-          // Reativar botão
           optimizeBtn.disabled = false;
           optimizeBtn.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1131,97 +949,50 @@
         }
       }
       
-      // Função para atualizar a ordem visual dos locais na lista
+      // Função para atualizar ordem visual da lista
       function updateLocationListVisualOrder(orderedLocations) {
-        // Guardar a nova ordem de IDs
         const orderedIds = orderedLocations.map(loc => 
           typeof loc.id === 'string' ? loc.id : loc.id.toString()
         );
         
-        // Obter todos os itens da lista, exceto a origem
         const listItems = Array.from(locationList.querySelectorAll('.location-item:not(.origin)'));
-        
-        // Se não houver itens para reordenar, sair
         if (listItems.length <= 1) return;
         
-        // Reordenar os elementos DOM da lista
         listItems.sort((a, b) => {
-          // Obter o ID de cada item (armazenado no marcador)
           const aId = a.querySelector('.location-marker').textContent;
           const bId = b.querySelector('.location-marker').textContent;
           
-          // Se o ID não estiver na lista ordenada, colocar no final
           if (!orderedIds.includes(aId) && !orderedIds.includes(bId)) return 0;
           if (!orderedIds.includes(aId)) return 1;
           if (!orderedIds.includes(bId)) return -1;
           
-          // Ordenar de acordo com a lista ordenada
           return orderedIds.indexOf(aId) - orderedIds.indexOf(bId);
-        });
-        
-        // Atualizar a ordem em que os elementos aparecem na UI
-        // Remover todos os itens não-origem
-        listItems.forEach(item => item.remove());
-        
-        // Adicionar os elementos na nova ordem
-        const originItem = locationList.querySelector('.location-item.origin');
-        listItems.forEach((item, index) => {
-          // Atualizar o número sequencial no marcador
-          const marker = item.querySelector('.location-marker');
-          if (marker) {
-            marker.textContent = (index + 1).toString();
-          }
-          
-          locationList.appendChild(item);
-        });
-        
-        // Atualizar a ordem no array de locais também
-        locations.sort((a, b) => {
-          if (a.isOrigin) return -1;
-          if (b.isOrigin) return 1;
-          
-          const aIdStr = a.id.toString();
-          const bIdStr = b.id.toString();
-          
-          if (!orderedIds.includes(aIdStr) && !orderedIds.includes(bIdStr)) return 0;
-          if (!orderedIds.includes(aIdStr)) return 1;
-          if (!orderedIds.includes(bIdStr)) return -1;
-          
-          return orderedIds.indexOf(aIdStr) - orderedIds.indexOf(bIdStr);
-        });
+        }).forEach(item => locationList.appendChild(item));
       }
       
-      // ===== FUNÇÕES PARA ATUALIZAÇÃO DA INTERFACE =====
-      
-      // Função para alternar abas
-      function switchTab(tabId) {
-        tabButtons.forEach(btn => {
-          if (btn.getAttribute('data-tab') === tabId) {
-            btn.classList.add('active');
-          } else {
-            btn.classList.remove('active');
-          }
-        });
-        
-        tabContents.forEach(content => {
-          if (content.id === tabId + '-tab') {
-            content.classList.add('active');
-          } else {
-            content.classList.remove('active');
-          }
-        });
-      }
-      
-      // Função para mostrar/ocultar as abas de rota
-      function toggleTabs(show) {
-        routeTabs.style.display = show ? 'block' : 'none';
-      }
-      
-      // Função para atualizar todas as informações da rota
+      // Função para atualizar informações da rota
       function updateRouteInfo(tspResult) {
-        if (!tspResult) return;
+        // Atualizar resumo
+        document.getElementById('total-distance').textContent = `${tspResult.totalDistance} km`;
         
-        // Atualizar a sequência da rota
+        // Estimar tempo considerando velocidade média de 60 km/h
+        const timeInMinutes = Math.round(tspResult.totalDistance / 60 * 60);
+        const hours = Math.floor(timeInMinutes / 60);
+        const minutes = timeInMinutes % 60;
+        
+        let timeText = '';
+        if (hours > 0) {
+          timeText += `${hours}h `;
+        }
+        if (minutes > 0 || hours === 0) {
+          timeText += `${minutes}min`;
+        }
+        
+        document.getElementById('total-time').textContent = timeText;
+        document.getElementById('total-destinations').textContent = tspResult.orderedLocations.length - 1;
+        document.getElementById('avg-speed').textContent = '60 km/h';
+        
+        // Atualizar sequência de rota
         updateRouteSequence(tspResult);
         
         // Atualizar pontos de atenção
@@ -1232,9 +1003,6 @@
         
         // Atualizar restrições de caminhões
         updateTruckRestrictions(tspResult);
-        
-        // Atualizar valores de resumo
-        updateRouteSummary(tspResult);
       }
       
       // Função para atualizar a sequência da rota (apenas ida, sem retorno)
@@ -1263,8 +1031,6 @@
           
           sequenceList.appendChild(li);
         });
-        
-        // Não adicionar retorno à origem - apenas ida
       }
       
       // Função para atualizar pontos de atenção
@@ -1275,7 +1041,6 @@
         // Limpar pontos atuais
         attentionPoints.innerHTML = '';
         
-        // Se não houver pontos suficientes, mostrar mensagem e sair
         if (tspResult.orderedLocations.length <= 1) {
           const emptyMsg = document.createElement('div');
           emptyMsg.className = 'empty-message';
@@ -1321,9 +1086,6 @@
           
           return div;
         }
-        
-        // Adicionar pontos de atenção com base nas cidades na rota
-        const citiesInRoute = tspResult.orderedLocations.map(loc => loc.name.toLowerCase());
         
         // Número de pedágios baseado na distância
         const numTolls = Math.min(Math.max(1, Math.floor(tspResult.totalDistance / 100)), tollPoints.length);
@@ -1437,6 +1199,10 @@
           return date.toLocaleDateString('pt-BR');
         };
         
+        if (start === end) {
+          return formatDate(start);
+        }
+        
         return `${formatDate(start)} a ${formatDate(end)}`;
       }
       
@@ -1448,10 +1214,10 @@
         // Limpar restrições atuais
         restrictionsList.innerHTML = '';
         
-        // Filtrar restrições por cidades na rota
+        // Filtrar restrições pelas cidades na rota
         const citiesInRoute = tspResult.orderedLocations.map(loc => loc.name.toLowerCase());
         
-        const restrictionsToShow = truckRestrictions.filter(restriction => 
+        const restrictionsToShow = truckRestrictions.filter(restriction =>
           citiesInRoute.some(city => 
             restriction.city.toLowerCase().includes(city) || 
             city.includes(restriction.city.toLowerCase())
@@ -1460,75 +1226,44 @@
         
         // Adicionar restrições filtradas à lista
         restrictionsToShow.forEach(restriction => {
-          const item = document.createElement('div');
-          item.className = 'restriction-item';
+          const restrictionItem = document.createElement('div');
+          restrictionItem.className = 'restriction-item';
           
-          const title = document.createElement('div');
-          title.className = 'restriction-title';
-          title.textContent = restriction.title;
+          const restrictionTitle = document.createElement('div');
+          restrictionTitle.className = 'restriction-title';
+          restrictionTitle.textContent = restriction.title;
           
-          const details = document.createElement('div');
-          details.className = 'restriction-details';
-          details.textContent = `${restriction.city} - ${restriction.details}`;
+          const restrictionDetails = document.createElement('div');
+          restrictionDetails.className = 'restriction-details';
+          restrictionDetails.textContent = `${restriction.city} - ${restriction.details}`;
           
-          item.appendChild(title);
-          item.appendChild(details);
+          restrictionItem.appendChild(restrictionTitle);
+          restrictionItem.appendChild(restrictionDetails);
           
-          restrictionsList.appendChild(item);
+          restrictionsList.appendChild(restrictionItem);
         });
         
         // Se não houver restrições, mostrar mensagem
         if (restrictionsList.children.length === 0) {
           const emptyMsg = document.createElement('div');
           emptyMsg.className = 'empty-message';
-          emptyMsg.textContent = 'Nenhuma restrição de caminhão encontrada nas cidades da rota.';
+          emptyMsg.textContent = 'Nenhuma restrição de caminhão encontrada para as cidades na rota.';
           restrictionsList.appendChild(emptyMsg);
         }
       }
       
-      // Função para atualizar o resumo da rota
-      function updateRouteSummary(tspResult) {
-        // Atualizar distância total
-        document.getElementById('total-distance').textContent = `${tspResult.totalDistance} km`;
-        
-        // Atualizar tempo estimado
-        document.getElementById('estimated-time').textContent = tspResult.estimatedTime;
-        
-        // Número de pedágios baseado na distância
-        const numTolls = Math.min(Math.max(1, Math.floor(tspResult.totalDistance / 100)), tollPoints.length);
-        document.getElementById('toll-count').textContent = numTolls.toString();
-        
-        // Número de balanças baseado na distância
-        const numWeighing = Math.min(Math.max(1, Math.floor(tspResult.totalDistance / 150)), weighingPoints.length);
-        document.getElementById('weighing-count').textContent = numWeighing.toString();
-      }
-      
-      // ===== FUNÇÕES PARA MANIPULAÇÃO DE LOCAIS =====
-      
-      // Função para adicionar um local
-      function createLocationItem(name, address, id, isOrigin = false, lat = null, lng = null) {
-        // Criar elemento visual
+      // Função para criar item de localização na lista
+      function createLocationItem(name, address, num) {
         const li = document.createElement('li');
         li.className = 'location-item';
-        if (isOrigin) {
-          li.classList.add('origin');
-        }
         
-        // Criar marcador
         const marker = document.createElement('div');
         marker.className = 'location-marker';
-        if (isOrigin) {
-          marker.style.backgroundColor = '#2563eb';
-          marker.textContent = 'A';
-        } else {
-          marker.textContent = id;
-        }
+        marker.textContent = num;
         
-        // Criar container de informações
         const info = document.createElement('div');
         info.className = 'location-info';
         
-        // Nome e endereço
         const nameDiv = document.createElement('div');
         nameDiv.className = 'location-name';
         nameDiv.textContent = name;
@@ -1537,143 +1272,88 @@
         addressDiv.className = 'location-address';
         addressDiv.textContent = address;
         
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-btn';
+        removeBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        `;
+        
+        // Adicionar evento de remoção
+        removeBtn.addEventListener('click', function() {
+          const index = locations.findIndex(l => l.id === num || l.id === num.toString());
+          if (index !== -1) {
+            locations.splice(index, 1);
+            li.remove();
+          }
+        });
+        
         info.appendChild(nameDiv);
         info.appendChild(addressDiv);
         
         li.appendChild(marker);
         li.appendChild(info);
+        li.appendChild(removeBtn);
         
-        // Adicionar botão de remoção (exceto para a origem)
-        if (!isOrigin) {
-          const removeBtn = document.createElement('button');
-          removeBtn.className = 'remove-btn';
-          removeBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          `;
-          removeBtn.addEventListener('click', function() {
-            // Remover o item da lista visual
-            li.remove();
-            
-            // Remover do array de locais
-            const index = locations.findIndex(l => 
-              (typeof l.id === 'string' && l.id === id.toString()) || 
-              (typeof l.id === 'number' && l.id === id)
-            );
-            
-            if (index !== -1) {
-              locations.splice(index, 1);
-              
-              // Renumerar os marcadores
-              const items = locationList.querySelectorAll('.location-item:not(.origin)');
-              items.forEach((item, idx) => {
-                const markerEl = item.querySelector('.location-marker');
-                if (markerEl) {
-                  markerEl.textContent = idx + 1;
-                }
-                
-                // Atualizar o ID no array
-                if (locations[idx + 1] && !locations[idx + 1].isOrigin) {
-                  locations[idx + 1].id = idx + 1;
-                }
-              });
-            }
-          });
-          
-          li.appendChild(removeBtn);
-        }
-        
-        // Adicionar à lista de locais
         locationList.appendChild(li);
         
-        // Retornar coordenadas para o objeto de dados
-        let latlng = '';
-        if (lat !== null && lng !== null) {
-          latlng = `${lat},${lng}`;
-        } else {
-          // Coordenadas aleatórias próximas à origem
-          const originLoc = locations.find(l => l.isOrigin);
-          if (originLoc) {
-            const [originLat, originLng] = originLoc.latlng.split(',').map(parseFloat);
-            const randomLat = originLat + (Math.random() - 0.5) * 0.5;
-            const randomLng = originLng + (Math.random() - 0.5) * 0.5;
-            latlng = `${randomLat.toFixed(6)},${randomLng.toFixed(6)}`;
-          } else {
-            latlng = '-22.3,-48.5'; // Fallback
-          }
-        }
-        
-        // Retornar objeto para adicionar ao array
-        return {
-          id,
-          name,
-          address,
-          latlng,
-          isOrigin
-        };
+        return li;
       }
       
-      // Função para adicionar um local a partir do input
+      // Função para adicionar localização
       function addLocation() {
         const address = locationInput.value.trim();
-        if (!address) return;
-        
-        // Se estamos usando Places API e temos um local selecionado
-        if (autocomplete && autocomplete.getPlace && autocomplete.getPlace()) {
-          const place = autocomplete.getPlace();
-          if (place.geometry) {
-            // Incrementar contador
-            locationCounter++;
-            
-            // Obter coordenadas do local selecionado
-            const lat = place.geometry.location.lat();
-            const lng = place.geometry.location.lng();
-            const latlng = `${lat},${lng}`;
-            
-            // Extrair nome e endereço
-            const name = place.name || place.formatted_address;
-            const fullAddress = place.formatted_address || address;
-            
-            // Criar novo item e adicionar à lista
-            const location = {
-              id: locationCounter,
-              name: name,
-              address: fullAddress,
-              latlng: latlng,
-              isOrigin: false
-            };
-            
-            // Criar elemento visual
-            createLocationItem(name, fullAddress, locationCounter);
-            
-            // Adicionar ao array
-            locations.push(location);
-            
-            // Atualizar mapa com novo marcador
-            if (map) {
-              const position = { lat, lng };
-              addMarkerToMap(position, name, locationCounter.toString());
-              map.setCenter(position);
-              map.setZoom(13);
-            }
-            
-            // Limpar campo
-            locationInput.value = '';
-            return;
-          }
+        if (!address) {
+          alert('Por favor, digite um endereço válido.');
+          return;
         }
         
-        // Fallback para coordenadas simuladas quando Places API não está disponível
         // Incrementar contador
         locationCounter++;
         
-        // Criar novo item e adicionar à lista
-        const newLocation = createLocationItem(address, `Localização ${locationCounter}`, locationCounter);
+        // Cidades predefinidas ao redor de Dois Córregos para simular coordenadas reais
+        const predefinedCities = [
+          { name: "Jaú", lat: -22.2936, lng: -48.5592 },
+          { name: "Brotas", lat: -22.2792, lng: -48.1250 },
+          { name: "Mineiros do Tietê", lat: -22.4119, lng: -48.4511 },
+          { name: "Torrinha", lat: -22.4269, lng: -48.1731 },
+          { name: "Barra Bonita", lat: -22.4910, lng: -48.5583 },
+          { name: "São Manuel", lat: -22.7320, lng: -48.5714 },
+          { name: "Igaraçu do Tietê", lat: -22.5089, lng: -48.5597 },
+          { name: "Bocaina", lat: -22.1361, lng: -48.5230 },
+          { name: "Bauru", lat: -22.3246, lng: -49.0871 },
+          { name: "Pederneiras", lat: -22.3511, lng: -48.7782 }
+        ];
+        
+        // Escolher uma cidade próxima com base no índice
+        const cityIndex = (locationCounter - 1) % predefinedCities.length;
+        const selectedCity = predefinedCities[cityIndex];
+        
+        // Adicionar uma pequena variação para cada ponto
+        const variationFactor = 0.005; // aproximadamente 500m
+        const latVariation = (Math.random() - 0.5) * variationFactor;
+        const lngVariation = (Math.random() - 0.5) * variationFactor;
+        
+        const lat = selectedCity.lat + latVariation;
+        const lng = selectedCity.lng + lngVariation;
+        const latlng = `${lat},${lng}`;
+        
+        // Criar elemento visual
+        createLocationItem(address, `Localização fictícia`, locationCounter);
+        
+        // Criar objeto de localização
+        const location = {
+          id: locationCounter,
+          name: address,
+          address: 'Localização fictícia',
+          latlng: latlng,
+          isOrigin: false
+        };
         
         // Adicionar ao array de locais
-        locations.push(newLocation);
+        locations.push(location);
         
         // Limpar o campo de entrada
         locationInput.value = '';
@@ -1715,8 +1395,7 @@
               // Incrementar contador
               locationCounter++;
               
-              // Cidades predefinidas ao redor de Dois Córregos para simular coordenadas reais
-              // Isso garante uma boa representação visual no mapa
+              // Cidades predefinidas ao redor de Dois Córregos
               const predefinedCities = [
                 { name: "Jaú", lat: -22.2936, lng: -48.5592 },
                 { name: "Brotas", lat: -22.2792, lng: -48.1250 },
@@ -1730,18 +1409,18 @@
                 { name: "Pederneiras", lat: -22.3511, lng: -48.7782 }
               ];
               
-              // Escolher uma cidade próxima com base no índice para uma representação mais realista
+              // Escolher uma cidade próxima
               const cityIndex = (locationCounter - 1) % predefinedCities.length;
               const selectedCity = predefinedCities[cityIndex];
               
-              // Adicionar uma pequena variação para cada ponto para que não fiquem exatamente no mesmo lugar
-              const variationFactor = 0.005; // aproximadamente 500m (reduzido para melhor visualização)
+              // Adicionar uma pequena variação
+              const variationFactor = 0.005; // ~500m
               const latVariation = (Math.random() - 0.5) * variationFactor;
               const lngVariation = (Math.random() - 0.5) * variationFactor;
               
               const lat = selectedCity.lat + latVariation;
               const lng = selectedCity.lng + lngVariation;
-              const latlng = `${lat},${lng}`; // Não arredondar para maior precisão
+              const latlng = `${lat},${lng}`;
               
               // Criar elemento visual
               createLocationItem(name, `CEP: ${cep}`, locationCounter);
@@ -1755,39 +1434,34 @@
                 isOrigin: false
               };
               
-              // Adicionar ao mapa se disponível
-              if (map) {
-                addMarkerToMap({lat, lng}, name, locationCounter.toString());
-              }
-              
               // Adicionar ao array de locais
               locations.push(location);
               importedLocations.push(location);
               
-              // Processar próxima linha com um pequeno delay para não sobrecarregar
+              // Processar próxima linha com um pequeno delay
               setTimeout(() => processNext(index + 1), 50);
             } else {
-              // Formato inválido, pular para a próxima linha
+              // Formato inválido, pular
               processNext(index + 1);
             }
           };
           
           // Função para finalizar a importação
           const finishImport = () => {
-            // Informar ao usuário
             if (importedLocations.length > 0) {
               alert(`Importado com sucesso! ${importedLocations.length} endereços adicionados.`);
               
-              // Centralizar mapa para mostrar todos os pontos
-              if (map && importedLocations.length > 0) {
-                // Ajustar zoom para mostrar todos os pontos
-                const bounds = new google.maps.LatLngBounds();
-                markers.forEach(marker => bounds.extend(marker.getPosition()));
-                map.fitBounds(bounds);
-                
-                // Calcular rota automaticamente após a importação
-                calculateOptimizedRoute();
+              // Mostrar zoom no mapa com todos os pontos
+              const origin = locations.find(l => l.isOrigin);
+              const points = locations.filter(l => !l.isOrigin).map(l => l.latlng);
+              
+              if (origin && points.length > 0) {
+                const waypoints = points.join('|');
+                mapIframe.src = `https://www.google.com/maps/embed/v1/directions?key=${apiKey}&origin=${origin.latlng}&destination=${origin.latlng}&waypoints=${waypoints}&mode=driving`;
               }
+              
+              // Calcular rota automaticamente
+              calculateOptimizedRoute();
             } else {
               alert('Nenhum endereço válido encontrado no arquivo.');
             }
@@ -1803,93 +1477,75 @@
         reader.readAsText(file);
       }
       
-      // ===== EVENTOS =====
+      // Função para alternar visibilidade das abas
+      function toggleTabs(show) {
+        routeTabs.style.display = show ? 'block' : 'none';
+      }
       
-      // Otimizar rota
+      // Função para trocar de aba
+      function switchTab(tabId) {
+        tabButtons.forEach(btn => {
+          if (btn.getAttribute('data-tab') === tabId) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+        
+        tabContents.forEach(content => {
+          if (content.id === `${tabId}-tab`) {
+            content.classList.add('active');
+          } else {
+            content.classList.remove('active');
+          }
+        });
+      }
+      
+      // Função para calcular distância entre dois pontos
+      function calculateDistance(point1, point2) {
+        function deg2rad(deg) {
+          return deg * (Math.PI / 180);
+        }
+        
+        const [lat1, lng1] = point1.latlng.split(',').map(parseFloat);
+        const [lat2, lng2] = point2.latlng.split(',').map(parseFloat);
+        
+        const R = 6371; // Raio da Terra em km
+        const dLat = deg2rad(lat2 - lat1);
+        const dLon = deg2rad(lng2 - lng1);
+        const a = 
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+          Math.sin(dLon / 2) * Math.sin(dLon / 2); 
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
+        const d = R * c; // Distância em km
+        return d;
+      }
+      
+      // Registrar manipuladores de eventos
       optimizeBtn.addEventListener('click', calculateOptimizedRoute);
       
-      // Botão Home/Início
       homeBtn.addEventListener('click', function() {
-        // Retornar para visualização inicial
         mapIframe.src = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${locations[0].latlng}&zoom=10`;
-        
-        // Esconder painel de informações
         toggleTabs(false);
       });
       
-      // Botão de informações
       infoBtn.addEventListener('click', function() {
-        // Alternar visibilidade das abas
         toggleTabs(routeTabs.style.display === 'none');
-        
-        // Se estiver mostrando, rolar até as abas
         if (routeTabs.style.display !== 'none') {
           routeTabs.scrollIntoView({ behavior: 'smooth' });
         }
       });
       
-      // Troca de abas
       tabButtons.forEach(button => {
         button.addEventListener('click', function() {
           switchTab(this.getAttribute('data-tab'));
         });
       });
       
-      // Implementar sugestões de busca no campo de localização
-      function setupAutocomplete() {
-        // Verificar se a API do Google Places está carregada
-        if (window.google && window.google.maps && window.google.maps.places) {
-          try {
-            const autocompleteService = new google.maps.places.AutocompleteService();
-            
-            // Variável para armazenar o timeout de digitação
-            let typingTimer;
-            
-            // Evento de digitação no campo de busca
-            locationInput.addEventListener('input', function() {
-              // Limpar timeout anterior
-              clearTimeout(typingTimer);
-              
-              // Configurar novo timeout (aguardar 300ms após parar de digitar)
-              typingTimer = setTimeout(function() {
-                const query = locationInput.value.trim();
-                if (query.length > 2) {
-                  // Buscar sugestões
-                  autocompleteService.getPlacePredictions({
-                    input: query,
-                    componentRestrictions: { country: 'br' }
-                  }, function(predictions, status) {
-                    if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
-                      // Exibir sugestões (implementação simplificada para o GitHub Pages)
-                      const firstResult = predictions[0];
-                      if (firstResult) {
-                        console.log('Sugestão:', firstResult.description);
-                        // Em uma implementação completa, mostraríamos um dropdown com as sugestões
-                      }
-                    }
-                  });
-                }
-              }, 300);
-            });
-          } catch (error) {
-            console.error('Erro ao configurar autocompletar:', error);
-          }
-        } else {
-          console.warn('API do Google Places não disponível');
-        }
-      }
-      
-      // Tentar configurar o autocomplete quando o script for carregado
-      if (document.readyState === 'complete') {
-        setupAutocomplete();
-      } else {
-        window.addEventListener('load', setupAutocomplete);
-      }
-      
-      // Adicionar destino
+      // Adicionar destinos
       addLocationBtn.addEventListener('click', addLocation);
       
-      // Adicionar ao pressionar Enter
       locationInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
           addLocation();
@@ -1899,258 +1555,16 @@
       // Upload de arquivo
       fileUpload.addEventListener('change', handleFileUpload);
       
-      // Filtro de datas
-      function updateDateFilter() {
-        // Se tiver rota calculada, atualizar eventos
-        if (routeTabs.style.display !== 'none' && window.lastTspResult) {
+      // Alterar datas
+      startDateInput.addEventListener('change', function() {
+        if (window.lastTspResult) {
           updateCityEvents(window.lastTspResult);
         }
-      }
+      });
       
-      startDateInput.addEventListener('change', updateDateFilter);
-      endDateInput.addEventListener('change', updateDateFilter);
-      
-      // Variáveis para o mapa
-      let map = null;
-      let pegmanControlEnabled = false;
-      let directionsService = null;
-      let directionsRenderer = null;
-      let placesService = null;
-      let autocomplete = null;
-      let markers = [];
-      
-      // Inicializar o mapa com a API do Google Maps
-      function initMap() {
-        try {
-          const doisCorregosCenterCoords = { lat: -22.3673, lng: -48.3823 };
-          
-          // Criar mapa
-          map = new google.maps.Map(document.getElementById("map"), {
-            center: doisCorregosCenterCoords,
-            zoom: 10,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            streetViewControl: true, // Mantém o Pegman ativo para Street View
-            gestureHandling: 'greedy', // Permite zoom com scroll sem Ctrl
-            mapTypeControl: true,
-            mapTypeControlOptions: {
-              position: google.maps.ControlPosition.TOP_RIGHT,
-            },
-            fullscreenControl: true,
-            fullscreenControlOptions: {
-              position: google.maps.ControlPosition.RIGHT_TOP,
-            },
-          });
-          
-          // Adicionar serviços
-          directionsService = new google.maps.DirectionsService();
-          directionsRenderer = new google.maps.DirectionsRenderer({
-            map: map,
-            suppressMarkers: true,
-          });
-          
-          // Adicionar serviço de Places
-          placesService = new google.maps.places.PlacesService(map);
-          
-          // Adicionar marcador para Dois Córregos
-          addMarkerToMap(doisCorregosCenterCoords, "Dois Córregos (Origem)", "A", true);
-          
-          console.log("Mapa inicializado com sucesso");
-        } catch (error) {
-          console.error("Erro ao inicializar o mapa:", error);
-          document.getElementById("map").style.display = "none";
-          document.getElementById("map-iframe").style.display = "block";
-        }
-      }
-      
-      // Adicionar marcador ao mapa
-      function addMarkerToMap(position, title, label, isOrigin = false) {
-        if (!map) return null;
-        
-        const marker = new google.maps.Marker({
-          position: position,
-          map: map,
-          title: title,
-          label: label,
-          animation: google.maps.Animation.DROP,
-          icon: isOrigin ? {
-            path: google.maps.SymbolPath.CIRCLE,
-            fillColor: "#2563eb",
-            fillOpacity: 1,
-            strokeWeight: 1,
-            strokeColor: "#ffffff",
-            scale: 12
-          } : null
-        });
-        
-        markers.push(marker);
-        return marker;
-      }
-      
-      // Atualizar rota no mapa
-      function updateMapRoute(locations) {
-        if (!map || !directionsService || !directionsRenderer) {
-          console.error("Serviços de mapa não inicializados");
-          return;
-        }
-        
-        // Limpar marcadores existentes
-        markers.forEach(marker => marker.setMap(null));
-        markers = [];
-        
-        if (locations.length <= 1) {
-          // Se só tiver a origem, adicionar apenas o marcador da origem
-          const origin = locations[0];
-          const position = parseLatLng(origin.latlng);
-          addMarkerToMap(position, origin.name, "A", true);
-          return;
-        }
-        
-        // Adicionar marcadores para todos os pontos
-        locations.forEach((location, index) => {
-          const position = parseLatLng(location.latlng);
-          const label = location.isOrigin ? "A" : (index).toString();
-          addMarkerToMap(position, location.name, label, location.isOrigin);
-        });
-        
-        // Calcular rota
-        const originLocation = locations.find(loc => loc.isOrigin);
-        const waypoints = locations
-          .filter(loc => !loc.isOrigin)
-          .map(loc => {
-            const [lat, lng] = loc.latlng.split(',').map(parseFloat);
-            return {
-              location: new google.maps.LatLng(lat, lng),
-              stopover: true
-            };
-          });
-        
-        // Origem e destino são o mesmo ponto (rota circular)
-        const origin = parseLatLng(originLocation.latlng);
-        
-        // Selecionar o último ponto como destino (sem retorno à origem)
-        const lastPoint = orderedLocations[orderedLocations.length - 1];
-        const destination = lastPoint.isOrigin ? origin : parseLatLng(lastPoint.latlng);
-        
-        // Configurar requisição de direções (apenas ida)
-        const request = {
-          origin: origin,
-          destination: destination, // O último ponto da lista, não a origem
-          waypoints: waypoints,
-          optimizeWaypoints: false, // Já otimizamos a ordem com TSP
-          travelMode: google.maps.TravelMode.DRIVING,
-          avoidFerries: true
-        };
-        
-        // Fazer a requisição
-        directionsService.route(request, function(result, status) {
-          if (status === google.maps.DirectionsStatus.OK) {
-            directionsRenderer.setDirections(result);
-          } else {
-            console.error('Erro ao calcular rota:', status);
-            alert('Não foi possível calcular a rota. Por favor, tente novamente.');
-          }
-        });
-      }
-      
-      // Utilitário para converter string lat,lng em objeto LatLng
-      function parseLatLng(latlngStr) {
-        const [lat, lng] = latlngStr.split(',').map(parseFloat);
-        return { lat, lng };
-      }
-      
-      // Implementar autocomplete no campo de endereço
-      function setupAutocomplete() {
-        if (!google.maps.places) {
-          console.warn("API do Google Places não disponível");
-          return;
-        }
-        
-        try {
-          // Criar autocomplete no campo de entrada
-          autocomplete = new google.maps.places.Autocomplete(locationInput, {
-            componentRestrictions: { country: 'br' }
-          });
-          
-          // Evento de seleção de local
-          autocomplete.addListener('place_changed', function() {
-            const place = autocomplete.getPlace();
-            if (!place.geometry) {
-              console.log("Nenhum detalhe disponível para o local:", place.name);
-              return;
-            }
-            
-            // Obter dados do local selecionado
-            const lat = place.geometry.location.lat();
-            const lng = place.geometry.location.lng();
-            const latlng = `${lat},${lng}`;
-            const name = place.name || place.formatted_address;
-            const address = place.formatted_address;
-            
-            // Atualizar o valor do campo
-            locationInput.value = name;
-            
-            // Adicionar automaticamente aos destinos quando um local é selecionado do autocomplete
-            addLocation();
-          });
-          
-          console.log("Autocomplete configurado com sucesso");
-        } catch (error) {
-          console.error("Erro ao configurar autocomplete:", error);
-        }
-      }
-      
-      // Modificar a função buildDirectionsUrl para usar a API diretamente
-      function buildDirectionsUrl(orderedLocs) {
-        // Esta função agora atualiza o mapa diretamente em vez de retornar uma URL
-        if (map && directionsService) {
-          updateMapRoute(orderedLocs || locations);
-          return '';
-        }
-        
-        // Fallback para iframe se a API não estiver disponível
-        const locsToUse = orderedLocs || locations;
-        const origin = locsToUse.find(l => l.isOrigin);
-        if (!origin) return '';
-        
-        const destination = origin.latlng;
-        const waypoints = locsToUse
-          .filter(l => !l.isOrigin)
-          .map(l => l.latlng)
-          .join('|');
-        
-        return `https://www.google.com/maps/embed/v1/directions?key=${apiKey}&origin=${origin.latlng}&destination=${destination}&waypoints=${waypoints}&mode=driving&avoid=ferries`;
-      }
-      
-      // Inicializar o mapa quando a API carregar
-      if (window.google && window.google.maps) {
-        initMap();
-        setupAutocomplete();
-      } else {
-        window.addEventListener('load', function() {
-          if (window.google && window.google.maps) {
-            initMap();
-            setupAutocomplete();
-          } else {
-            console.error("API do Google Maps não carregada");
-            document.getElementById("map").style.display = "none";
-            document.getElementById("map-iframe").style.display = "block";
-          }
-        });
-      }
-      
-      // O pegman já está habilitado no mapa através da API JavaScript do Google Maps
-      // Não é necessário um botão separado, pois o pegman padrão já está disponível no mapa
-      
-      // Aumentar a largura do iframe para ocupar mais espaço
-      mapIframe.style.width = '100%';
-      
-      // Iniciar com abas escondidas
-      toggleTabs(false);
-      
-      // Adicionar evento para mapear tecla Ctrl e zoom
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Control' || e.key === 'Meta') {
-          console.log('Ctrl pressionado - não deveria ser necessário para zoom');
+      endDateInput.addEventListener('change', function() {
+        if (window.lastTspResult) {
+          updateCityEvents(window.lastTspResult);
         }
       });
     });

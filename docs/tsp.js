@@ -6,8 +6,8 @@
  */
 class TSPSolver {
   constructor() {
-    // Configurações
-    this.earthRadius = 6371; // raio da Terra em km
+    this.bestDistance = Infinity;
+    this.bestPath = [];
   }
 
   /**
@@ -19,28 +19,34 @@ class TSPSolver {
    * @returns {number} - Distância em quilômetros
    */
   calculateDistance(lat1, lon1, lat2, lon2) {
-    const dLat = this.deg2rad(lat2 - lat1);
-    const dLon = this.deg2rad(lon2 - lon1);
+    // Converter graus para radianos
+    const radLat1 = this.deg2rad(lat1);
+    const radLon1 = this.deg2rad(lon1);
+    const radLat2 = this.deg2rad(lat2);
+    const radLon2 = this.deg2rad(lon2);
     
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2);
-      
+    // Fórmula de Haversine
+    const dLat = radLat2 - radLat1;
+    const dLon = radLon2 - radLon1;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(radLat1) * Math.cos(radLat2) * 
+              Math.sin(dLon/2) * Math.sin(dLon/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    const distance = this.earthRadius * c; // distância em km
     
-    // Arredondar para inteiro
-    return Math.round(distance);
+    // Raio da Terra em km
+    const R = 6371;
+    
+    // Distância em km
+    return R * c;
   }
-
+  
   /**
    * Converte graus para radianos
    */
   deg2rad(deg) {
     return deg * (Math.PI/180);
   }
-
+  
   /**
    * Constrói a matriz de distâncias entre todos os pontos
    * @param {Array} locations - Array de locais com coordenadas lat/lng
@@ -48,27 +54,22 @@ class TSPSolver {
    */
   buildDistanceMatrix(locations) {
     const n = locations.length;
-    const distMatrix = Array(n).fill().map(() => Array(n).fill(0));
+    const matrix = Array(n).fill().map(() => Array(n).fill(0));
     
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
-        if (i === j) {
-          distMatrix[i][j] = 0;
-          continue;
+        if (i !== j) {
+          const [lat1, lng1] = locations[i].latlng.split(',').map(parseFloat);
+          const [lat2, lng2] = locations[j].latlng.split(',').map(parseFloat);
+          
+          matrix[i][j] = this.calculateDistance(lat1, lng1, lat2, lng2);
         }
-        
-        // Extrair lat e lng dos locais
-        const [lat1, lng1] = locations[i].latlng.split(',').map(parseFloat);
-        const [lat2, lng2] = locations[j].latlng.split(',').map(parseFloat);
-        
-        // Calcular distância
-        distMatrix[i][j] = this.calculateDistance(lat1, lng1, lat2, lng2);
       }
     }
     
-    return distMatrix;
+    return matrix;
   }
-
+  
   /**
    * Executa o algoritmo do vizinho mais próximo para encontrar uma rota
    * @param {Array} distMatrix - Matriz de distâncias
@@ -78,49 +79,43 @@ class TSPSolver {
   nearestNeighborTSP(distMatrix, startIdx = 0) {
     const n = distMatrix.length;
     const visited = Array(n).fill(false);
-    const route = [];
+    const path = [];
     const distances = [];
-    let currentIdx = startIdx;
     let totalDistance = 0;
     
-    // Marcar o ponto de origem como visitado e adicionar à rota
-    visited[startIdx] = true;
-    route.push(startIdx);
+    let currentCity = startIdx;
+    path.push(currentCity);
+    visited[currentCity] = true;
     
-    // Visitar todos os outros pontos
-    for (let i = 1; i < n; i++) {
-      let minDist = Infinity;
-      let nextIdx = -1;
+    // Visitar todas as cidades (apenas uma vez)
+    for (let i = 0; i < n - 1; i++) {
+      let nextCity = -1;
+      let minDistance = Infinity;
       
-      // Encontrar o vizinho mais próximo não visitado
+      // Encontrar o próximo destino mais próximo
       for (let j = 0; j < n; j++) {
-        if (!visited[j] && distMatrix[currentIdx][j] < minDist) {
-          minDist = distMatrix[currentIdx][j];
-          nextIdx = j;
+        if (!visited[j] && distMatrix[currentCity][j] < minDistance) {
+          nextCity = j;
+          minDistance = distMatrix[currentCity][j];
         }
       }
       
-      // Se encontrou um próximo ponto
-      if (nextIdx !== -1) {
-        visited[nextIdx] = true;
-        route.push(nextIdx);
-        distances.push(minDist);
-        totalDistance += minDist;
-        currentIdx = nextIdx;
+      if (nextCity !== -1) {
+        visited[nextCity] = true;
+        path.push(nextCity);
+        distances.push(minDistance);
+        totalDistance += minDistance;
+        currentCity = nextCity;
       }
     }
     
-    // Adicionar distância de volta ao ponto de origem
-    if (route.length > 1) {
-      const lastIdx = route[route.length - 1];
-      const returnDistance = distMatrix[lastIdx][startIdx];
-      distances.push(returnDistance);
-      totalDistance += returnDistance;
-    }
-    
-    return { route, distances, totalDistance };
+    return {
+      path,
+      distances,
+      totalDistance
+    };
   }
-
+  
   /**
    * Resolve o problema do caixeiro viajante para uma lista de localizações
    * @param {Array} locations - Lista de locais
@@ -128,37 +123,25 @@ class TSPSolver {
    * @returns {Object} - Resultado com caminho otimizado, distância total e tempo estimado
    */
   solve(locations, originIndex = 0) {
-    // Validar entrada
-    if (!locations || locations.length <= 1) {
-      throw new Error('É necessário pelo menos dois locais para calcular uma rota.');
-    }
-    
-    if (originIndex < 0 || originIndex >= locations.length) {
-      throw new Error('Índice de origem inválido.');
-    }
-    
     // Construir matriz de distâncias
     const distMatrix = this.buildDistanceMatrix(locations);
     
-    // Resolver o TSP
-    const { route, distances, totalDistance } = this.nearestNeighborTSP(distMatrix, originIndex);
+    // Executar o algoritmo do vizinho mais próximo
+    const result = this.nearestNeighborTSP(distMatrix, originIndex);
     
-    // Ordenar as localizações de acordo com a rota
-    const orderedLocations = route.map(idx => locations[idx]);
+    // Organizar localizações na ordem do caminho
+    const orderedLocations = result.path.map(idx => locations[idx]);
     
-    // Calcular tempo estimado (considerando velocidade média de 60 km/h)
-    const hours = Math.floor(totalDistance / 60);
-    const minutes = Math.round((totalDistance / 60 % 1) * 60);
-    const estimatedTime = `${hours}h ${minutes}min`;
+    // Arredondar distâncias
+    const roundedDistances = result.distances.map(d => Math.round(d));
     
     return {
       orderedLocations,
-      segmentDistances: distances,
-      totalDistance,
-      estimatedTime
+      totalDistance: Math.round(result.totalDistance),
+      segmentDistances: roundedDistances
     };
   }
 }
 
-// Criar instância global
+// Exportar a classe para uso global
 window.TSPSolver = new TSPSolver();
