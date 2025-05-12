@@ -567,10 +567,11 @@
         // Eventos de cidades (com aniversários atualizados para 2025)
         cityEvents: [
             // Aniversários das principais cidades (eventos fixos - feriados municipais)
-            { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2025-05-24", endDate: "2025-05-24", isHoliday: true, description: "Feriado municipal do aniversário de Dois Córregos", restrictionLevel: "low" },
+            { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2025-02-28", endDate: "2025-02-28", isHoliday: true, description: "Feriado municipal do aniversário de Dois Córregos (fundação: 28/02/1883)", restrictionLevel: "low" },
             { id: 2, cityName: "Jaú", name: "Aniversário da Cidade", startDate: "2025-08-15", endDate: "2025-08-15", isHoliday: true, description: "Feriado municipal do aniversário de Jaú", restrictionLevel: "low" },
             { id: 3, cityName: "Botucatu", name: "Aniversário da Cidade", startDate: "2025-04-14", endDate: "2025-04-14", isHoliday: true, description: "Feriado municipal do aniversário de Botucatu", restrictionLevel: "low" },
             { id: 4, cityName: "Bauru", name: "Aniversário da Cidade", startDate: "2025-08-01", endDate: "2025-08-01", isHoliday: true, description: "Feriado municipal do aniversário de Bauru", restrictionLevel: "low" },
+            { id: 5, cityName: "Ribeirão Preto", name: "Aniversário da Cidade", startDate: "2025-06-19", endDate: "2025-06-19", isHoliday: true, description: "Feriado municipal do aniversário de Ribeirão Preto (fundação: 19/06/1856)", restrictionLevel: "low" },
             
             // Eventos regulares
             { id: 5, cityName: "Jaú", name: "Festa do Rodeio", startDate: "2025-06-10", endDate: "2025-06-20", isHoliday: false, description: "Evento com grande circulação de veículos", restrictionLevel: "medium" },
@@ -2023,46 +2024,61 @@
         // Log para diagnóstico
         console.log("Eventos disponíveis:", mockData.cityEvents);
         
-        // Converter IDs para objetos de localização com comparação segura
-        const pathLocations = pathIds.map(id => {
-            // Garantir que a comparação de IDs seja feita como string
-            const idStr = String(id);
-            return locations.find(loc => String(loc.id) === idStr);
-        });
-        
-        // Verificar se todos os IDs foram encontrados
-        if (pathLocations.some(loc => !loc)) {
-            console.error("Algumas localizações não foram encontradas.",
-                "IDs da rota:", pathIds.map(id => String(id)));
-            // Continuar mesmo com algumas localizações faltando
-            // return;
+        if (!pathIds || pathIds.length === 0) {
+            eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos.</p>';
+            return;
         }
         
-        // Extrair nomes das cidades na rota (ignorar localizações não encontradas)
-        console.log("Detectando cidades na rota para eventos...");
+        // CORREÇÃO: Converter IDs para objetos de localização de forma mais robusta
+        const pathLocations = [];
+        for (const id of pathIds) {
+            const idStr = String(id);
+            const location = locations.find(loc => String(loc.id) === idStr);
+            if (location) {
+                pathLocations.push(location);
+                console.log(`Localização encontrada para ID ${idStr}:`, location);
+            }
+        }
         
-        const citiesOnRoute = pathLocations
-            .filter(loc => loc) // Remover localizações nulas
-            .map(loc => {
-                if (!loc.address) {
-                    console.log("Localização sem endereço:", loc);
-                    return loc.name || "Desconhecido";
+        if (pathLocations.length === 0) {
+            console.error("Nenhuma localização válida encontrada na rota");
+            eventsListContainer.innerHTML = '<p class="text-muted">Erro ao encontrar localizações na rota.</p>';
+            return;
+        }
+        
+        // SOLUÇÃO FUNDAMENTAL: Extrair APENAS as cidades que realmente estão na rota
+        // Array para armazenar os nomes das cidades que estão REALMENTE na rota
+        const citiesOnRoute = [];
+        
+        // Incluir apenas o destino e a origem
+        const destinoFinal = pathLocations[pathLocations.length - 1];
+        const origem = mockData.origin;
+        
+        // Adicionar a origem
+        if (!citiesOnRoute.includes(origem.name)) {
+            citiesOnRoute.push(origem.name);
+            console.log(`Origem adicionada à rota: ${origem.name}`);
+        }
+        
+        // Adicionar o destino
+        if (destinoFinal && destinoFinal.address) {
+            const destinoParts = destinoFinal.address.split(',');
+            if (destinoParts.length > 0) {
+                const destinoCity = destinoParts[0].trim();
+                if (!citiesOnRoute.includes(destinoCity)) {
+                    citiesOnRoute.push(destinoCity);
+                    console.log(`Destino adicionado à rota: ${destinoCity}`);
                 }
-                // Extrair cidade do endereço ou usar nome da localização
-                const parts = loc.address.split(',');
-                const cityName = parts[0].trim();
-                console.log(`Cidade detectada: ${cityName} de endereço ${loc.address}`);
-                return cityName;
-            });
+            }
+        }
         
-        // Adicionar manualmente "Dois Córregos", "Jaú", "Botucatu" e "Bauru" para 
-        // garantir que eventos e restrições apareçam na demonstração
-        if (!citiesOnRoute.includes("Dois Córregos")) citiesOnRoute.push("Dois Córregos");
-        if (!citiesOnRoute.includes("Jaú")) citiesOnRoute.push("Jaú");
-        if (!citiesOnRoute.includes("Botucatu")) citiesOnRoute.push("Botucatu");
-        if (!citiesOnRoute.includes("Bauru")) citiesOnRoute.push("Bauru");
+        // Adicionar também o nome do destino se for uma cidade
+        if (destinoFinal && destinoFinal.name && !citiesOnRoute.includes(destinoFinal.name)) {
+            citiesOnRoute.push(destinoFinal.name);
+            console.log(`Nome do destino adicionado: ${destinoFinal.name}`);
+        }
         
-        console.log("Cidades na rota (com adições manuais para demonstração):", citiesOnRoute);
+        console.log("APENAS ESTAS CIDADES ESTÃO NA ROTA REAL:", citiesOnRoute);
         
         // Obter datas do filtro
         const startDate = document.getElementById('start-date').value;
