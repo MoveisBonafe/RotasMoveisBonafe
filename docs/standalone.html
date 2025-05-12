@@ -1112,8 +1112,10 @@
                         
                         // Atualizar o status
                         processedCount++;
-                        document.getElementById('geocode-status').innerHTML = 
-                            `Processando... ${processedCount}/${processedCount + geocodeQueue.length}`;
+                        const statusElement = document.getElementById('geocode-status');
+                        if (statusElement) {
+                            statusElement.innerHTML = `Processando... ${processedCount}/${processedCount + geocodeQueue.length}`;
+                        }
                         
                         // Ajustar o zoom
                         zoomToFitAllMarkers();
@@ -1141,8 +1143,10 @@
                         
                         // Atualizar o status
                         processedCount++;
-                        document.getElementById('geocode-status').innerHTML = 
-                            `Processando... ${processedCount}/${processedCount + geocodeQueue.length}`;
+                        const statusElement = document.getElementById('geocode-status');
+                        if (statusElement) {
+                            statusElement.innerHTML = `Processando... ${processedCount}/${processedCount + geocodeQueue.length}`;
+                        }
                         
                         // Continuar com o próximo após um curto delay
                         setTimeout(processGeocodingQueue, 200);
