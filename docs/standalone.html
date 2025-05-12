@@ -975,36 +975,45 @@
             }
             infowindow.open(map, marker);
             activeInfoWindow = infowindow;
+            
+            // Se o local estiver na mesma cidade da origem, destacar visualmente
+            if (isSameCity(location, locations.find(loc => loc.isOrigin))) {
+                marker.setAnimation(google.maps.Animation.BOUNCE);
+                setTimeout(() => marker.setAnimation(null), 1500);
+            }
         });
         
         // Armazenar o marcador na array
         markers.push({ marker, location, infowindow });
     }
 
-    // Atualiza a lista de locais no sidebar
+    // Atualiza a lista de locais no sidebar com base na ordem dos marcadores
     function updateLocationsList() {
         const container = document.getElementById('locations-list');
         container.innerHTML = '';
         
-        // Adicionar cada local à lista, exceto a origem que é fixa
-        locations.forEach((location, index) => {
-            if (!location.isOrigin) {
-                const locationItem = document.createElement('div');
-                locationItem.className = 'location-item';
-                locationItem.innerHTML = `
-                    <div>
-                        <div><span class="badge bg-primary">${index}</span> ${location.name}</div>
-                        <div class="location-address">${location.address}</div>
-                    </div>
-                    <button class="btn btn-sm btn-danger" onclick="removeLocation(${location.id})">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                        </svg>
-                    </button>
-                `;
-                container.appendChild(locationItem);
-            }
+        // Extrair os locais não-origem dos marcadores para preservar a ordem
+        const orderedLocations = markers
+            .map(m => m.location)
+            .filter(loc => !loc.isOrigin);
+        
+        // Adicionar cada local à lista na ordem dos marcadores
+        orderedLocations.forEach((location, index) => {
+            const locationItem = document.createElement('div');
+            locationItem.className = 'location-item';
+            locationItem.innerHTML = `
+                <div>
+                    <div><span class="badge bg-primary">${index + 1}</span> ${location.name}</div>
+                    <div class="location-address">${location.address}</div>
+                </div>
+                <button class="btn btn-sm btn-danger" onclick="removeLocation(${location.id})">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                    </svg>
+                </button>
+            `;
+            container.appendChild(locationItem);
         });
     }
 
@@ -1165,27 +1174,70 @@
         updateLocationsList();
     }
 
+    // Função auxiliar para verificar se dois locais estão na mesma cidade
+    function isSameCity(loc1, loc2) {
+        if (!loc1 || !loc2) return false;
+        
+        // Extrair cidade dos endereços
+        const getCity = (address) => {
+            const parts = address.split(',');
+            if (parts.length > 0) {
+                return parts[0].trim().toLowerCase();
+            }
+            return '';
+        };
+        
+        const city1 = getCity(loc1.address);
+        const city2 = getCity(loc2.address);
+        
+        return city1 === city2;
+    }
+    
     // Traçar a rota no mapa
     function drawRouteOnMap(pathLocations, vehicleType) {
+        // Verificar e destacar pontos na mesma cidade da origem
+        const origin = locations.find(loc => loc.isOrigin);
+        
+        if (origin) {
+            pathLocations.forEach(location => {
+                if (!location.isOrigin && isSameCity(location, origin)) {
+                    console.log(`Ponto ${location.name} está na mesma cidade da origem (${origin.name})`);
+                    
+                    // Encontrar o marcador correspondente e destacá-lo
+                    const marker = markers.find(m => m.location.id === location.id);
+                    if (marker) {
+                        marker.marker.setIcon({
+                            path: google.maps.SymbolPath.CIRCLE,
+                            fillColor: '#FF4500', // Cor mais destacada
+                            fillOpacity: 1,
+                            strokeWeight: 2,
+                            strokeColor: '#000',
+                            scale: 12
+                        });
+                    }
+                }
+            });
+        }
+        
         // Criar waypoints para o serviço de direções
         const waypoints = pathLocations.slice(1, -1).map(location => ({
             location: new google.maps.LatLng(location.latitude, location.longitude),
             stopover: true
         }));
         
-        const origin = new google.maps.LatLng(
+        const originPoint = new google.maps.LatLng(
             pathLocations[0].latitude,
             pathLocations[0].longitude
         );
         
-        const destination = new google.maps.LatLng(
+        const destinationPoint = new google.maps.LatLng(
             pathLocations[pathLocations.length - 1].latitude,
             pathLocations[pathLocations.length - 1].longitude
         );
         
         const request = {
-            origin: origin,
-            destination: destination,
+            origin: originPoint,
+            destination: destinationPoint,
             waypoints: waypoints,
             optimizeWaypoints: false, // Não otimizar, já temos a ordem do TSP
             travelMode: google.maps.TravelMode.DRIVING,
