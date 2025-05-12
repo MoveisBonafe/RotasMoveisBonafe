@@ -758,9 +758,30 @@
     function parseCEPFile(content) {
         const lines = content.split('\n');
         let newLocations = [];
+        let validLinesCount = 0;
+        
+        console.log("Processando arquivo com " + lines.length + " linhas");
         
         // CEPs com coordenadas conhecidas para as principais cidades paulistas
         const knownCEPs = {
+            // CEP simplificado (apenas números) => Dados completos da localização
+            '14020260': {name: 'Ribeirão Preto', lat: -21.1767, lng: -47.8208},
+            '17560000': {name: 'Vera Cruz', lat: -22.2205, lng: -49.8233},
+            '17580000': {name: 'Pompéia', lat: -22.1075, lng: -50.1764},
+            '17280000': {name: 'Pederneiras', lat: -22.3518, lng: -48.7780},
+            '17220000': {name: 'Itapuí', lat: -22.2323, lng: -48.7186},
+            '17340000': {name: 'Barra Bonita', lat: -22.4910, lng: -48.5582},
+            '17380000': {name: 'Brotas', lat: -22.2794, lng: -48.1251},
+            '17200000': {name: 'Jaú', lat: -22.2936, lng: -48.5592},
+            '18600000': {name: 'Botucatu', lat: -22.8837, lng: -48.4437},
+            '17120000': {name: 'Agudos', lat: -22.4696, lng: -48.9870},
+            '17210000': {name: 'Igaraçu do Tietê', lat: -22.5092, lng: -48.5597},
+            '17040001': {name: 'Bauru', lat: -22.3246, lng: -49.0871},
+            '17400000': {name: 'Garça', lat: -22.2132, lng: -49.6546},
+            '17480000': {name: 'Marília', lat: -22.2171, lng: -49.9501},
+            '17300000': {name: 'Dois Córregos', lat: -22.3673, lng: -48.3822},
+            
+            // Versões com hífen dos mesmos CEPs (para compatibilidade)
             '14020-260': {name: 'Ribeirão Preto', lat: -21.1767, lng: -47.8208},
             '17560-000': {name: 'Vera Cruz', lat: -22.2205, lng: -49.8233},
             '17580-000': {name: 'Pompéia', lat: -22.1075, lng: -50.1764},
@@ -788,13 +809,21 @@
             const parts = line.split(',');
             if (parts.length < 2) continue;
             
-            const cep = parts[0].trim();
+            let cep = parts[0].trim();
             const name = parts[1].trim();
             
+            // Contagem de linhas válidas
             if (cep && name) {
-                // Verificar se é um CEP conhecido
-                if (knownCEPs[cep]) {
-                    const knownLocation = knownCEPs[cep];
+                validLinesCount++;
+                console.log(`Processando linha ${validLinesCount}: CEP ${cep}, Nome ${name}`);
+                
+                // Remover qualquer formatação do CEP (apenas números)
+                const cepNumerico = cep.replace(/\D/g, '');
+                
+                // Verificar se é um CEP conhecido (seja com hífen ou sem)
+                if (knownCEPs[cep] || knownCEPs[cepNumerico]) {
+                    const knownLocation = knownCEPs[cep] || knownCEPs[cepNumerico];
+                    console.log(`CEP conhecido: ${cep} => ${knownLocation.name}`);
                     
                     newLocations.push({
                         id: locationId++,
@@ -807,6 +836,7 @@
                     });
                 } else {
                     // Adicionar à fila para geocodificação
+                    console.log(`CEP desconhecido: ${cep}, adicionando à fila de geocodificação`);
                     geocodeQueue.push({
                         cep: cep,
                         name: name
