@@ -1286,35 +1286,85 @@
                 console.log("Corrigido para:", tspResult.distance.toFixed(1), "km");
             }
             
-            // Selecionar explicitamente a primeira rota através do seletor
-            // para garantir que o mesmo código seja executado para todas as rotas
-            const alternativeSelect = document.getElementById('alternative-routes');
-            if (alternativeSelect && alternativeSelect.options.length > 0) {
-                alternativeSelect.selectedIndex = 0;
-                
-                // Restaurar os marcadores originais, se fornecidos
-                if (savedMarkers && savedMarkers.length > 0) {
-                    console.log("Restaurando marcadores originais após otimização");
-                    // Usar uma cópia para não modificar o original
-                    markers = [...savedMarkers];
-                }
+            // IMPORTANTE: Método direto para processar a rota padrão 
+            // em vez de usar o seletor que está causando problemas
             
-                // Disparar o evento "change" para ativar o handler que exibe a rota
-                const changeEvent = new Event('change');
-                alternativeSelect.dispatchEvent(changeEvent);
-            } else {
-                console.error("Seletor de rotas alternativas não encontrado ou vazio");
+            console.log("Tratando a rota padrão DIRETAMENTE (sem usar o event handler)...");
+            
+            // Salvar uma cópia de quais locais temos antes de iniciar
+            const locationsBeforeRoute = [...locations];
+            console.log("Locais antes de processar rota:", locationsBeforeRoute.map(l => `${l.name} (ID: ${l.id})`));
+            
+            // Limpar as rotas no mapa, mas não os marcadores
+            if (directionsRenderer) {
+                directionsRenderer.setMap(null);
+            }
+            
+            // Criar um novo array para os marcadores reordenados
+            const reorderedMarkers = [];
+            
+            // Processar a rota em ordem correta
+            tspResult.path.forEach((locationId, index) => {
+                const locationIdStr = String(locationId);
+                const location = locations.find(loc => String(loc.id) === locationIdStr);
                 
-                // Fallback para o comportamento original se o seletor não funcionar
-                if (savedMarkers && savedMarkers.length > 0) {
-                    console.log("Restaurando marcadores originais (fallback)");
-                    markers = [...savedMarkers];
+                if (!location) {
+                    console.error(`Marcador não encontrado para localização ID: ${locationIdStr}`);
+                    return;
                 }
                 
-                reorderMarkers(tspResult.path);
-                drawRouteOnMap(tspResult.path, vehicleType);
+                console.log(`Processando ponto ${index} da rota: ${location.name} (ID: ${location.id})`);
+                
+                // Verificar se é a origem para garantir que o número de sequência seja 0
+                const markerIndex = location.isOrigin ? 0 : index;
+                
+                // Verificar se já existe um marcador para este local
+                const existingMarkerObj = markers.find(m => String(m.location.id) === locationIdStr);
+                
+                if (existingMarkerObj) {
+                    // Atualizar rótulo do marcador com a nova sequência
+                    existingMarkerObj.marker.setLabel({
+                        text: markerIndex === 0 ? 'O' : markerIndex.toString(),
+                        color: 'white',
+                        fontSize: '14px',
+                        fontWeight: 'bold'
+                    });
+                    
+                    // Garantir que o marcador esteja visível no mapa
+                    existingMarkerObj.marker.setMap(map);
+                    
+                    // Adicionar à lista de marcadores reordenados
+                    reorderedMarkers.push(existingMarkerObj);
+                } else {
+                    // Se o marcador não existir, criar um novo
+                    const newMarkerObj = addMarkerForLocation(location, markerIndex, reorderedMarkers);
+                    console.log(`Criado novo marcador para ${location.name} (ID: ${location.id})`);
+                }
+            });
+            
+            // Verificar se temos localizações suficientes para desenhar a rota
+            if (tspResult.path.length >= 2) {
+                // Coletar localizações na ordem da rota para desenhar no mapa
+                const pathLocations = tspResult.path.map(id => {
+                    const idStr = String(id);
+                    return locations.find(loc => String(loc.id) === idStr);
+                }).filter(loc => loc !== undefined);
+                
+                // Desenhar a rota no mapa usando as direções do Google
+                drawDirectionsRoute(pathLocations, vehicleType);
+                
+                // Mostrar pontos de interesse e eventos ao longo da rota
                 showPointsOfInterestOnRoute(tspResult.path);
                 showEventsForCitiesOnRoute(tspResult.path);
+                showTruckRestrictionsForCitiesOnRoute(tspResult.path);
+                
+                // Atualizar o sumário da rota
+                updateRouteInfo(tspResult);
+                
+                // Imprimir diagnóstico de marcadores após o processamento
+                console.log(`Após processar rota: ${markers.length} marcadores principais, ${reorderedMarkers.length} marcadores reordenados`);
+            } else {
+                console.error("Número insuficiente de pontos para desenhar uma rota");
             }
             
             // Mostrar restrições para caminhões nas cidades da rota
@@ -1531,11 +1581,21 @@
                         idType: typeof m.location.id
                     })));
                     
-                    // Busca segura do marcador
+                    // Busca do marcador com conversão de string consistente
+                    const markerIdString = String(locationId);
+                    console.log(`Procurando marcador com ID string "${markerIdString}"`);
+                    
                     const marker = markers.find(m => {
+                        if (!m || !m.location) {
+                            console.warn("Marcador inválido encontrado na lista");
+                            return false;
+                        }
+                        
                         try {
-                            const mLocationId = m.location.id;
-                            return String(mLocationId) === String(locationId);
+                            const mLocationIdString = String(m.location.id);
+                            const isMatch = mLocationIdString === markerIdString;
+                            console.log(`Comparando IDs: "${mLocationIdString}" === "${markerIdString}" = ${isMatch}`);
+                            return isMatch;
                         } catch (err) {
                             console.error("Erro ao comparar IDs:", err);
                             return false;
