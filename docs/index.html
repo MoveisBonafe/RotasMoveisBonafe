@@ -261,10 +261,28 @@
       margin-top: 0.25rem;
     }
     
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+    }
+    
     .optimize-container {
       margin-top: auto;
       padding-top: 1rem;
       text-align: center;
+      background-color: #ffffff;
+      position: sticky;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem;
+      border-top: 1px solid #e5e7eb;
+      z-index: 10;
     }
     
     .optimize-btn {
@@ -655,21 +673,21 @@
   <main>
     <div class="app-container">
       <aside class="sidebar">
-        <h2>Destinos</h2>
-        
-        <!-- Filtros de data -->
-        <div class="date-filter">
-          <div class="date-group">
-            <label for="start-date">Data Início:</label>
-            <input type="date" id="start-date" class="date-input">
+        <div class="sidebar-content">
+          <h2>Destinos</h2>
+          
+          <!-- Filtros de data -->
+          <div class="date-filter">
+            <div class="date-group">
+              <label for="start-date">Data Início:</label>
+              <input type="date" id="start-date" class="date-input">
+            </div>
+            <div class="date-group">
+              <label for="end-date">Data Fim:</label>
+              <input type="date" id="end-date" class="date-input">
+            </div>
           </div>
-          <div class="date-group">
-            <label for="end-date">Data Fim:</label>
-            <input type="date" id="end-date" class="date-input">
-          </div>
-        </div>
-        
-        <div class="sidebar-scroll">
+          
           <!-- Adicionar destino -->
           <div class="add-location">
             <h3>Adicionar Destino</h3>
