@@ -2207,7 +2207,7 @@
 
     // Mostrar restrições para caminhões nas cidades da rota
     function showTruckRestrictionsForCitiesOnRoute(pathIds, vehicleType) {
-        console.log("Mostrando restrições de caminhões para rota com IDs:", pathIds, "veículo:", vehicleType || "truck1");
+        console.log("Mostrando restrições de caminhões para rota com IDs:", pathIds, "veículo:", vehicleType === null ? "TODOS OS TIPOS" : (vehicleType || "truck1"));
         // Limpar a lista de restrições
         const restrictionsListContainer = document.getElementById('restrictions-list');
         restrictionsListContainer.innerHTML = '';
@@ -2266,25 +2266,29 @@
         
         console.log("APENAS ESTAS CIDADES ESTÃO NA ROTA PARA RESTRIÇÕES:", citiesOnRoute);
         
-        // Filtrar restrições para cidades na rota - para TODOS os tipos de caminhões
-        console.log(`Filtrando restrições para cidades na rota - exibindo para todos os caminhões`);
+        // Filtrar restrições APENAS por cidades na rota, sem filtrar por tipo de veículo
+        console.log(`Filtrando restrições APENAS por cidades na rota, ignorando completamente o tipo de veículo`);
         
-        // Ignorar filtro por tipo de veículo (vehicleType) para mostrar TODAS as restrições
+        // Obtemos TODAS as restrições para TODAS as cidades da rota
         const restrictionsOnRoute = mockData.truckRestrictions.filter(restriction => {
             // Verificamos apenas se a restrição está em alguma cidade da rota
             const cityMatch = citiesOnRoute.some(city => 
                 restriction.cityName.includes(city) || city.includes(restriction.cityName)
             );
             
-            // Não importa qual veículo - mostrar todas as restrições das cidades na rota
-            console.log(`Restrição: ${restriction.description}, Cidade: ${restriction.cityName}, Caminhões: ${restriction.affectedVehicles.join(',')}, Corresponde: ${cityMatch}`);
+            // Log detalhado
+            console.log(`Restrição: ${restriction.description}, Cidade: ${restriction.cityName}, Caminhões: ${restriction.affectedVehicles ? restriction.affectedVehicles.join(',') : 'todos'}, Corresponde: ${cityMatch}`);
             
-            return cityMatch; // Não filtramos por vehicleType, mostramos tudo
+            // Retorna true se a cidade está na rota, ignorando o tipo de veículo
+            return cityMatch;
         });
         
         // Se não houver restrições, mostrar mensagem
         if (restrictionsOnRoute.length === 0) {
-            restrictionsListContainer.innerHTML = '<p class="text-muted">Nenhuma restrição encontrada para o tipo de veículo selecionado nas cidades da rota.</p>';
+            const mensagem = vehicleType === null
+                ? '<p class="text-muted">Nenhuma restrição encontrada para caminhões nas cidades da rota.</p>'
+                : '<p class="text-muted">Nenhuma restrição encontrada para o tipo de veículo selecionado nas cidades da rota.</p>';
+            restrictionsListContainer.innerHTML = mensagem;
             return;
         }
         
@@ -2301,12 +2305,27 @@
                 case 'all': dayTypeText = 'Todos os dias'; break;
             }
             
+            // Criar exibição dos tipos de veículos afetados
+            const vehiclesAffected = restriction.affectedVehicles || [];
+            const vehiclesDisplay = vehiclesAffected.length > 0 
+                ? `<div class="affected-vehicles">Afeta: ${vehiclesAffected.map(v => {
+                    switch(v) {
+                        case 'truck1': return 'Caminhão 1 eixo';
+                        case 'truck2': return 'Caminhão 2 eixos';
+                        case 'truck3': return 'Caminhão 3+ eixos';
+                        case 'all': return 'Todos os caminhões';
+                        default: return v;
+                    }
+                  }).join(', ')}</div>` 
+                : '';
+                
             restrictionItem.innerHTML = `
                 <div class="restriction-city">${restriction.cityName} 
                     <span class="restriction-type ${restriction.restrictionType}">${restriction.restrictionType === 'partial' ? 'Parcial' : (restriction.restrictionType === 'total' ? 'Total' : 'Rodízio')}</span>
                 </div>
                 <div class="restriction-time">${dayTypeText} | ${restriction.startTime} - ${restriction.endTime}</div>
                 <div class="restriction-description">${restriction.description}</div>
+                ${vehiclesDisplay}
             `;
             
             restrictionsListContainer.appendChild(restrictionItem);
