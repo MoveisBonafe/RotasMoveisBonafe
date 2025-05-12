@@ -127,23 +127,57 @@
         /* Estilos para a área de upload de arquivo */
         .file-upload {
             margin-top: 15px;
-            border: 2px dashed #ccc;
-            padding: 15px;
+            border: 2px dashed #3498db;
+            padding: 25px 15px;
             text-align: center;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+            border-radius: 10px;
+            background-color: #f0f8ff;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        .file-upload:hover, .file-upload.dragover {
+            border-color: #2980b9;
+            background-color: #e6f2ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         .file-upload p {
             margin-bottom: 10px;
-            color: #666;
+            color: #444;
+            font-weight: 500;
+        }
+        .file-upload-icon {
+            display: block;
+            margin: 0 auto 10px;
+            font-size: 32px;
+            color: #3498db;
         }
         .file-format-example {
-            background-color: #eee;
-            padding: 5px;
-            border-radius: 3px;
+            background-color: #e2f3ff;
+            padding: 8px 12px;
+            border-radius: 6px;
             font-family: monospace;
             display: inline-block;
-            margin-bottom: 10px;
+            margin: 8px auto;
+            color: #2c3e50;
+            border: 1px solid #bde0ff;
+            font-size: 14px;
+        }
+        .file-upload input[type="file"] {
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        .file-upload-text {
+            display: block;
+            margin-top: 5px;
+            color: #7f8c8d;
+            font-size: 13px;
         }
         /* Botão para fechar o sidebar em telas pequenas */
         .sidebar-close {
@@ -438,11 +472,13 @@
                     
                     <!-- Seleção de veículo removida, agora usa caminhão padrão automaticamente -->
                     
-                    <!-- Upload de arquivo -->
-                    <div class="file-upload">
-                        <p>Importe múltiplos endereços via arquivo:</p>
+                    <!-- Upload de arquivo melhorado -->
+                    <div class="file-upload" id="upload-area">
+                        <i class="file-upload-icon fa fa-cloud-upload" aria-hidden="true"></i>
+                        <p>Importe múltiplos endereços via arquivo</p>
                         <div class="file-format-example">CEP,Nome do Local</div>
-                        <input type="file" id="file-upload" class="form-control" accept=".txt,.csv">
+                        <span class="file-upload-text">Arraste e solte seu arquivo aqui ou clique para selecionar</span>
+                        <input type="file" id="file-upload" accept=".txt,.csv">
                     </div>
                     
                     <!-- Lista de locais adicionados -->
