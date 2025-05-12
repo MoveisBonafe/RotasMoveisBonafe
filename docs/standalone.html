@@ -468,7 +468,8 @@
                         <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
                     </div>
                     
-                    <h5 class="mt-3">Restrições para todos os tipos de caminhões:</h5>
+                    <h5 class="mt-3">Restrições para caminhões do percurso:</h5>
+                    <p class="small text-muted mb-2">Filtrando para: caminhão de 1 eixo, 2 eixos, truck e comercial</p>
                     <div class="restrictions-list" id="restrictions-list">
                         <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
                     </div>
@@ -2379,55 +2380,77 @@
         console.log(`Filtrando restrições para TODAS as cidades na rota, ignorando tipo de veículo`);
         console.log("CIDADES DETECTADAS NA ROTA:", JSON.stringify(citiesOnRoute));
         
-        // FORÇAR a inclusão de cidades importantes na rota para teste
-        // Isso é uma correção temporária para demonstração
-        if (pathIds && pathIds.length > 1) {
-            const cidadesImportantes = ["Campinas", "São Paulo", "Ribeirão Preto", "São Carlos"];
-            cidadesImportantes.forEach(cidade => {
-                if (!citiesOnRoute.includes(cidade)) {
-                    console.log(`ADICIONANDO CIDADE IMPORTANTE PARA TESTE: ${cidade}`);
-                    citiesOnRoute.push(cidade);
-                }
-            });
-        }
+        // NÃO forçar inclusão de cidades - usar apenas o que está realmente no percurso
+        // Remover quaisquer cidades que não estejam realmente no percurso
+        console.log("Usando APENAS cidades realmente detectadas no percurso, sem adições forçadas.");
         
-        // Obtemos TODAS as restrições para TODAS as cidades da rota
+        // Verificar tipos de caminhões específicos a serem filtrados
+        const tiposCaminhoesFiltrar = ['truck1', 'truck2', 'truck3', 'truck4']; // Caminhão 1 eixo, 2 eixos, truck, comercial
+        
+        // Filtrar restrições APENAS para cidades na rota E que afetem os tipos de caminhões especificados
         const restrictionsOnRoute = mockData.truckRestrictions.filter(restriction => {
-            // Comparação mais flexível para nomes de cidades (ambos os lados em minúsculas)
+            // 1. Verificar se a cidade está no percurso (caso exato primeiro)
+            const cidadeExata = citiesOnRoute.includes(restriction.cityName);
+            
+            // 2. Comparação flexível para nomes de cidades (ambos os lados em minúsculas)
             const restrictionCity = restriction.cityName.toLowerCase().trim();
             
             // Verificar se a cidade da restrição está em alguma cidade na rota
-            const cityMatch = citiesOnRoute.some(city => {
+            const cityMatch = cidadeExata || citiesOnRoute.some(city => {
                 if (!city) return false;
                 
                 const routeCity = city.toLowerCase().trim();
                 
-                // Verificar correspondência em ambas as direções
-                const match = restrictionCity.includes(routeCity) || 
-                             routeCity.includes(restrictionCity) ||
-                             restrictionCity === routeCity;
-                
-                if (match) {
-                    console.log(`CORRESPONDÊNCIA ENCONTRADA: Restrição em '${restriction.cityName}' corresponde à cidade na rota '${city}'`);
+                // Verificar correspondência exata primeiro
+                if (restrictionCity === routeCity) {
+                    console.log(`CORRESPONDÊNCIA EXATA: ${restriction.cityName} = ${city}`);
+                    return true;
                 }
                 
-                return match;
+                // Verificar correspondência parcial como fallback
+                // (só usamos isso se a cidade da restrição contiver completamente a cidade da rota)
+                if (routeCity.length > 3 && restrictionCity.includes(routeCity)) {
+                    console.log(`CORRESPONDÊNCIA PARCIAL: '${restriction.cityName}' contém '${city}'`);
+                    return true;
+                }
+                
+                return false;
             });
+            
+            // 3. Verificar se a restrição afeta algum dos tipos de caminhões que estamos filtrando
+            const tiposCaminhoesAfetados = restriction.affectedVehicles || [];
+            const afetaTiposFiltrados = tiposCaminhoesAfetados.some(tipo => tiposCaminhoesFiltrar.includes(tipo));
+            
+            // Para restrições que afetam TODOS os caminhões, também incluímos
+            const afetaTodos = tiposCaminhoesAfetados.includes('all') || tiposCaminhoesAfetados.length === 0;
             
             // Log detalhado para debug
             if (cityMatch) {
-                console.log(`INCLUINDO RESTRIÇÃO: ${restriction.cityName} - ${restriction.description}`);
+                console.log(`CIDADE CORRESPONDE: ${restriction.cityName} - ${restriction.description}`);
                 console.log(`Afeta caminhões: ${restriction.affectedVehicles ? restriction.affectedVehicles.join(', ') : 'todos'}`);
+                
+                if (afetaTiposFiltrados || afetaTodos) {
+                    console.log(`✓ INCLUI RESTRIÇÃO: Afeta os tipos de caminhões filtrados`);
+                } else {
+                    console.log(`✗ EXCLUI RESTRIÇÃO: Não afeta os tipos de caminhões filtrados`);
+                }
             }
             
-            // Retorna true se a cidade está na rota, ignorando o tipo de veículo
-            return cityMatch;
+            // Retorna true apenas se a cidade está na rota E a restrição afeta os tipos de caminhões filtrados
+            return cityMatch && (afetaTiposFiltrados || afetaTodos);
         });
         
-        // Se não houver restrições, mostrar mensagem
+        // Se não houver restrições, mostrar mensagem adaptada aos tipos de caminhões filtrados
         if (restrictionsOnRoute.length === 0) {
-            // Sempre mostrar a mensagem para todos os tipos de caminhões
-            const mensagem = '<p class="text-muted">Nenhuma restrição encontrada para caminhões nas cidades da rota.</p>';
+            // Formatar os tipos de caminhões para a mensagem
+            const tiposCaminhoesTexto = [
+                'caminhão de 1 eixo', 
+                'caminhão de 2 eixos', 
+                'caminhão truck',
+                'caminhão comercial'
+            ].join(', ');
+            
+            const mensagem = `<p class="text-muted">Nenhuma restrição encontrada para ${tiposCaminhoesTexto} nas cidades detectadas no percurso.</p>`;
             restrictionsListContainer.innerHTML = mensagem;
             return;
         }
