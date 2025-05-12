@@ -1355,132 +1355,141 @@
         try {
             // Verificar e destacar pontos na mesma cidade da origem
             const origin = locations.find(loc => loc.isOrigin);
-        
-        if (origin) {
-            pathLocations.forEach(location => {
-                if (!location.isOrigin && isSameCity(location, origin)) {
-                    console.log(`Ponto ${location.name} está na mesma cidade da origem (${origin.name})`);
-                    
-                    // Encontrar o marcador correspondente e destacá-lo
-                    const marker = markers.find(m => m.location.id === location.id);
-                    if (marker) {
-                        marker.marker.setIcon({
-                            path: google.maps.SymbolPath.CIRCLE,
-                            fillColor: '#FF4500', // Cor mais destacada
-                            fillOpacity: 1,
-                            strokeWeight: 2,
-                            strokeColor: '#000',
-                            scale: 12
-                        });
-                    }
-                }
-            });
-        }
-        
-        // Fechar o try aqui para corrigir a indentação
-        }
             
-        // Criar waypoints para o serviço de direções
-        const waypoints = pathLocations.slice(1, -1).map(location => {
-            console.log(`Waypoint: ${location.name}, Lat: ${location.latitude}, Lng: ${location.longitude}`);
-            return {
-                location: new google.maps.LatLng(location.latitude, location.longitude),
-                stopover: true
-            };
-        });
-        
-        const originPoint = new google.maps.LatLng(
-            pathLocations[0].latitude,
-            pathLocations[0].longitude
-        );
-        console.log(`Origem: Lat: ${pathLocations[0].latitude}, Lng: ${pathLocations[0].longitude}`);
-        
-        const destinationPoint = new google.maps.LatLng(
-            pathLocations[pathLocations.length - 1].latitude,
-            pathLocations[pathLocations.length - 1].longitude
-        );
-        console.log(`Destino: Lat: ${pathLocations[pathLocations.length - 1].latitude}, Lng: ${pathLocations[pathLocations.length - 1].longitude}`);
-        
-        const request = {
-            origin: originPoint,
-            destination: destinationPoint,
-            waypoints: waypoints,
-            optimizeWaypoints: false, // Não otimizar, já temos a ordem do TSP
-            travelMode: google.maps.TravelMode.DRIVING,
-            avoidTolls: false
-        };
-        
-        console.log("Solicitação directions:", request);
-        
-        // Adicionar timeout para evitar problemas de API
-        const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(() => reject(new Error("Timeout ao solicitar rota do Google Maps")), 10000);
-        });
-        
-        // Converter o callback do Google Maps em Promise para poder usar com timeout
-        const directionsPromise = new Promise((resolve, reject) => {
-            directionsService.route(request, (result, status) => {
-                if (status === google.maps.DirectionsStatus.OK) {
-                    resolve(result);
-                } else {
-                    reject(new Error(`Erro ao traçar rota: ${status}`));
-                }
-            });
-        });
-        
-        // Usar Promise.race para implementar o timeout
-        Promise.race([directionsPromise, timeoutPromise])
-            .then(result => {
-                console.log("Rota obtida com sucesso");
-                directionsRenderer.setDirections(result);
-                
-                // Animar a rota (opcional)
-                animateRoute(result.routes[0].overview_path);
-                
-                // Ajustar o mapa para mostrar toda a rota
-                const bounds = new google.maps.LatLngBounds();
+            if (origin) {
                 pathLocations.forEach(location => {
-                    bounds.extend(new google.maps.LatLng(location.latitude, location.longitude));
+                    if (!location.isOrigin && isSameCity(location, origin)) {
+                        console.log(`Ponto ${location.name} está na mesma cidade da origem (${origin.name})`);
+                        
+                        // Encontrar o marcador correspondente e destacá-lo
+                        const marker = markers.find(m => m.location.id === location.id);
+                        if (marker) {
+                            marker.marker.setIcon({
+                                path: google.maps.SymbolPath.CIRCLE,
+                                fillColor: '#FF4500', // Cor mais destacada
+                                fillOpacity: 1,
+                                strokeWeight: 2,
+                                strokeColor: '#000',
+                                scale: 12
+                            });
+                        }
+                    }
                 });
-                map.fitBounds(bounds);
-            })
-            .catch(error => {
-                console.error("Erro ao traçar rota:", error);
-                
-                // Limpar estado de carregamento
-                const optimizeBtn = document.getElementById('optimize-route');
-                optimizeBtn.innerHTML = 'Otimizar Rota';
-                optimizeBtn.disabled = false;
-                
-                // Mostrar mensagem amigável
-                alert("Não foi possível calcular a rota. Por favor, tente novamente ou adicione outros destinos.");
-                
-                // Reverter para a visualização normal dos marcadores
-                markers.forEach(markerObj => {
-                    const idx = locations.findIndex(loc => loc.id === markerObj.location.id);
-                    const isOrigin = markerObj.location.isOrigin;
-                    
-                    if (idx >= 0) {
-                        const markerLabel = isOrigin ? 'O' : (idx).toString();
-                        const markerColor = isOrigin ? '#FF0000' : '#1976D2';
-                        
-                        markerObj.marker.setIcon({
-                            path: google.maps.SymbolPath.CIRCLE,
-                            fillColor: markerColor,
-                            fillOpacity: 1,
-                            strokeWeight: 0,
-                            scale: 12
-                        });
-                        
-                        markerObj.marker.setLabel({
-                            text: markerLabel,
-                            color: 'white',
-                            fontSize: '14px',
-                            fontWeight: 'bold'
-                        });
+            }
+            
+            // Criar waypoints para o serviço de direções dentro do bloco try
+            const waypoints = pathLocations.slice(1, -1).map(location => {
+                console.log(`Waypoint: ${location.name}, Lat: ${location.latitude}, Lng: ${location.longitude}`);
+                return {
+                    location: new google.maps.LatLng(location.latitude, location.longitude),
+                    stopover: true
+                };
+            });
+            
+            const originPoint = new google.maps.LatLng(
+                pathLocations[0].latitude,
+                pathLocations[0].longitude
+            );
+            console.log(`Origem: Lat: ${pathLocations[0].latitude}, Lng: ${pathLocations[0].longitude}`);
+            
+            const destinationPoint = new google.maps.LatLng(
+                pathLocations[pathLocations.length - 1].latitude,
+                pathLocations[pathLocations.length - 1].longitude
+            );
+            console.log(`Destino: Lat: ${pathLocations[pathLocations.length - 1].latitude}, Lng: ${pathLocations[pathLocations.length - 1].longitude}`);
+            
+            const request = {
+                origin: originPoint,
+                destination: destinationPoint,
+                waypoints: waypoints,
+                optimizeWaypoints: false, // Não otimizar, já temos a ordem do TSP
+                travelMode: google.maps.TravelMode.DRIVING,
+                avoidTolls: false
+            };
+            
+            console.log("Solicitação directions:", request);
+            
+            // Adicionar timeout para evitar problemas de API
+            const timeoutPromise = new Promise((_, reject) => {
+                setTimeout(() => reject(new Error("Timeout ao solicitar rota do Google Maps")), 10000);
+            });
+            
+            // Converter o callback do Google Maps em Promise para poder usar com timeout
+            const directionsPromise = new Promise((resolve, reject) => {
+                directionsService.route(request, (result, status) => {
+                    if (status === google.maps.DirectionsStatus.OK) {
+                        resolve(result);
+                    } else {
+                        reject(new Error(`Erro ao traçar rota: ${status}`));
                     }
                 });
             });
+            
+            // Usar Promise.race para implementar o timeout
+            Promise.race([directionsPromise, timeoutPromise])
+                .then(result => {
+                    console.log("Rota obtida com sucesso");
+                    directionsRenderer.setDirections(result);
+                    
+                    // Animar a rota (opcional)
+                    animateRoute(result.routes[0].overview_path);
+                    
+                    // Ajustar o mapa para mostrar toda a rota
+                    const bounds = new google.maps.LatLngBounds();
+                    pathLocations.forEach(location => {
+                        bounds.extend(new google.maps.LatLng(location.latitude, location.longitude));
+                    });
+                    map.fitBounds(bounds);
+                })
+                .catch(error => {
+                    console.error("Erro ao traçar rota:", error);
+                    
+                    // Limpar estado de carregamento
+                    const optimizeBtn = document.getElementById('optimize-route');
+                    optimizeBtn.innerHTML = 'Otimizar Rota';
+                    optimizeBtn.disabled = false;
+                    
+                    // Mostrar mensagem amigável
+                    alert("Não foi possível calcular a rota. Por favor, tente novamente ou adicione outros destinos.");
+                    
+                    // Reverter para a visualização normal dos marcadores
+                    markers.forEach(markerObj => {
+                        const idx = locations.findIndex(loc => loc.id === markerObj.location.id);
+                        const isOrigin = markerObj.location.isOrigin;
+                        
+                        if (idx >= 0) {
+                            const markerLabel = isOrigin ? 'O' : (idx).toString();
+                            const markerColor = isOrigin ? '#FF0000' : '#1976D2';
+                            
+                            markerObj.marker.setIcon({
+                                path: google.maps.SymbolPath.CIRCLE,
+                                fillColor: markerColor,
+                                fillOpacity: 1,
+                                strokeWeight: 0,
+                                scale: 12
+                            });
+                            
+                            markerObj.marker.setLabel({
+                                text: markerLabel,
+                                color: 'white',
+                                fontSize: '14px',
+                                fontWeight: 'bold'
+                            });
+                        }
+                    });
+                });
+            
+        } catch (error) {
+            console.error("Erro ao processar a rota:", error);
+            
+            // Restaurar o botão de otimizar
+            const optimizeBtn = document.getElementById('optimize-route');
+            optimizeBtn.innerHTML = 'Otimizar Rota';
+            optimizeBtn.disabled = false;
+            
+            // Alertar o usuário
+            alert("Ocorreu um erro ao processar a rota. Por favor, tente novamente.");
+        }
     }
 
     // Animar a rota desenhando progressivamente
