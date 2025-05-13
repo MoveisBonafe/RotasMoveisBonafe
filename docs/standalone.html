@@ -619,6 +619,15 @@
             right: 0;
             z-index: 1000; /* Aumentado para ficar sobre todos os elementos */
             transition: height 0.3s ease-in-out;
+            box-sizing: border-box; /* Garantir que padding e border não afetem o tamanho */
+        }
+        
+        /* Media query para garantir que o layout permaneça estável em diferentes tamanhos de tela */
+        @media (min-width: 1024px) {
+            .bottom-tabs-container {
+                width: calc(100% - 380px);
+                margin-left: 380px;
+            }
         }
         
         /* Estado minimizado para container de abas */
@@ -1887,11 +1896,27 @@
             return parts.length >= 2 && parts[0].trim() && parts[1].trim();
         }).length;
         
-        // Feedback para o usuário com notificação mais moderna
+        // Feedback para o usuário com notificação mais moderna e sem alterar layout
         const uploadArea = document.getElementById('upload-area');
         
         // Salvar o conteúdo original do componente de upload
         const originalContent = uploadArea.innerHTML;
+        
+        // Preservar dimensões originais
+        const originalHeight = uploadArea.offsetHeight;
+        const originalWidth = uploadArea.offsetWidth;
+        
+        // Guardar o estilo original para depois restaurar
+        const originalStyle = {
+            height: uploadArea.style.height,
+            width: uploadArea.style.width,
+            minHeight: uploadArea.style.minHeight
+        };
+        
+        // Fixar as dimensões para evitar mudanças no layout
+        uploadArea.style.height = originalHeight + 'px';
+        uploadArea.style.width = originalWidth + 'px';
+        uploadArea.style.minHeight = originalHeight + 'px';
         
         // Substituir com a mensagem de sucesso
         uploadArea.innerHTML = `
@@ -1911,8 +1936,11 @@
             uploadArea.classList.add('fading');
             
             setTimeout(() => {
-                // Restaurar conteúdo original
+                // Restaurar conteúdo original e dimensões flexíveis
                 uploadArea.innerHTML = originalContent;
+                uploadArea.style.height = originalStyle.height;
+                uploadArea.style.width = originalStyle.width;
+                uploadArea.style.minHeight = originalStyle.minHeight;
                 uploadArea.classList.remove('success', 'fading');
             }, 300);
         }, 2500);
