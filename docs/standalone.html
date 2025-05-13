@@ -4811,8 +4811,14 @@
                     <div class="city-in-route" style="color: #1976D2; font-size: 0.8em; margin-top: 4px;">✓ Esta cidade está no seu percurso</div>
                 `;
                 
-                // Adicionar à lista
-                restrictionsListContainer.appendChild(restrictionItem);
+                // Adicionar à lista em ambos sistemas de abas
+                if (restrictionsListContainer) {
+                    restrictionsListContainer.appendChild(restrictionItem.cloneNode(true));
+                }
+                
+                if (restrictionsListStatic) {
+                    restrictionsListStatic.appendChild(restrictionItem.cloneNode(true));
+                }
             });
             
             console.log(`GitHub Pages: Exibindo ${citiesInRoute.length} restrições para cidades na rota atual`);
@@ -4836,9 +4842,17 @@
             }
         }
         console.log("Parâmetro vehicleType:", vehicleType, "- Isso será ignorado completamente");
-        // Limpar a lista de restrições
+        // Limpar a lista de restrições - funciona para ambos os sistemas de abas
         const restrictionsListContainer = document.getElementById('restrictions-list');
-        restrictionsListContainer.innerHTML = '';
+        const restrictionsListStatic = document.getElementById('restrictions-list-static');
+        
+        if (restrictionsListContainer) {
+            restrictionsListContainer.innerHTML = '';
+        }
+        
+        if (restrictionsListStatic) {
+            restrictionsListStatic.innerHTML = '';
+        }
         
         // Log detalhado para diagnóstico
         console.log("Restrições disponíveis:", mockData.truckRestrictions);
