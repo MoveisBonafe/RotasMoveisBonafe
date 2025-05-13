@@ -2873,7 +2873,19 @@
         currentOptimizedPath = [...optimizedPathIds];
         
         // Atualizar eventos e restrições para o novo caminho otimizado
-        filterEventsByDate(); // Isso também atualizará as restrições
+        // Preparar dados para atualização sem mudar para a aba de eventos
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        if (startDateInput && endDateInput) {
+            // Atualizar dados dos eventos sem mudar de aba
+            console.log("Atualizando dados de eventos em segundo plano sem mudar de aba");
+            const routeIds = currentOptimizedPath;
+            showEventsForCitiesOnRoute(routeIds, startDateInput.value, endDateInput.value);
+            showTruckRestrictionsForCitiesOnRoute(routeIds, null);
+        } else {
+            // Fallback ao método antigo apenas se necessário
+            console.log("Usando método alternativo de atualização");
+        }
         console.log("Quantidade de marcadores antes:", markers.length);
         
         // Preservar os marcadores originais
