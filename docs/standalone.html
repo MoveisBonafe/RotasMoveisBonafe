@@ -1324,13 +1324,6 @@
                     const tabId = button.getAttribute('data-tab');
                     console.log("Tab inferior clicada:", tabId);
                     
-                    // Desativar todas as abas inferiores
-                    bottomTabButtons.forEach(btn => btn.classList.remove('active'));
-                    bottomTabContents.forEach(content => content.classList.remove('active'));
-                    
-                    // Ativar a aba inferior clicada
-                    button.classList.add('active');
-                    
                     // Mapear o data-tab para o ID do conteúdo correto
                     const contentMap = {
                         'bottom-events': 'bottom-events-content',
@@ -1341,24 +1334,70 @@
                     const contentId = contentMap[tabId];
                     if (contentId) {
                         const contentElement = document.getElementById(contentId);
-                        if (contentElement) {
-                            contentElement.classList.add('active');
-                            
-                            // Efeitos visuais adicionais para GitHub Pages
-                            if (isGitHubPages) {
-                                // Reset da animação
-                                contentElement.style.animation = 'none';
-                                setTimeout(() => {
-                                    contentElement.style.animation = 'fadeInUp 0.5s ease forwards';
-                                }, 10);
+                        
+                        // Se o botão já está ativo, alternar entre expandido e minimizado
+                        if (button.classList.contains('active')) {
+                            if (contentElement) {
+                                const isExpanded = contentElement.classList.contains('expanded');
                                 
-                                // Rolagem suave até a aba
-                                setTimeout(() => {
-                                    contentElement.scrollIntoView({
-                                        behavior: 'smooth',
-                                        block: 'start'
-                                    });
-                                }, 100);
+                                // Alternar estado de expansão
+                                contentElement.classList.toggle('expanded');
+                                
+                                // Ajustar altura do container de abas
+                                const tabsContainer = document.querySelector('.bottom-tabs-container');
+                                if (tabsContainer) {
+                                    if (isExpanded) {
+                                        // Minimizando
+                                        tabsContainer.style.height = '52px';
+                                        button.classList.remove('expanded');
+                                        console.log("Minimizando aba:", tabId);
+                                    } else {
+                                        // Expandindo
+                                        tabsContainer.style.height = '400px';
+                                        button.classList.add('expanded');
+                                        console.log("Expandindo aba:", tabId);
+                                    }
+                                }
+                            }
+                        } else {
+                            // Desativar todas as abas inferiores
+                            bottomTabButtons.forEach(btn => {
+                                btn.classList.remove('active');
+                                btn.classList.remove('expanded');
+                            });
+                            bottomTabContents.forEach(content => {
+                                content.classList.remove('active');
+                                content.classList.remove('expanded');
+                            });
+                            
+                            // Ativar a aba inferior clicada
+                            button.classList.add('active');
+                            
+                            if (contentElement) {
+                                contentElement.classList.add('active');
+                                
+                                // Ajustar altura do container para mostrar a aba clicada
+                                const tabsContainer = document.querySelector('.bottom-tabs-container');
+                                if (tabsContainer) {
+                                    tabsContainer.style.height = '400px';
+                                }
+                            
+                                // Efeitos visuais adicionais para GitHub Pages
+                                if (isGitHubPages) {
+                                    // Reset da animação
+                                    contentElement.style.animation = 'none';
+                                    setTimeout(() => {
+                                        contentElement.style.animation = 'fadeInUp 0.5s ease forwards';
+                                    }, 10);
+                                    
+                                    // Rolagem suave até a aba
+                                    setTimeout(() => {
+                                        contentElement.scrollIntoView({
+                                            behavior: 'smooth',
+                                            block: 'start'
+                                        });
+                                    }, 100);
+                                }
                             }
                         } else {
                             console.warn(`Elemento de conteúdo #${contentId} não encontrado`);
