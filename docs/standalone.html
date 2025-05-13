@@ -1051,6 +1051,7 @@
         // Verificar se os containers de conteúdo das abas existem
         const eventsTab = document.getElementById('bottom-events-content');
         const restrictionsTab = document.getElementById('bottom-restrictions-content');
+        const reportTab = document.getElementById('bottom-report-content');
         
         // Verificar e criar o container de eventos se necessário
         if (eventsTab && !document.getElementById('events-list')) {
@@ -1070,6 +1071,26 @@
             restrictionsContainer.className = 'restrictions-list';
             restrictionsContainer.innerHTML = '<p class="text-muted">Nenhuma restrição encontrada.</p>';
             restrictionsTab.appendChild(restrictionsContainer);
+        }
+        
+        // Verificar e criar o container de relatório de rota se necessário
+        if (reportTab && !document.getElementById('route-report')) {
+            console.warn("Criando container de relatório de rota que não existe");
+            const reportContainer = document.createElement('div');
+            reportContainer.id = 'route-report';
+            reportContainer.className = 'route-report';
+            reportContainer.innerHTML = '<p class="text-muted">Nenhum relatório de rota disponível.</p>';
+            reportTab.appendChild(reportContainer);
+        }
+        
+        // Garantir que o container de rota animada exista
+        if (reportTab && !document.getElementById('route-sequence')) {
+            console.warn("Criando container de sequência de rota que não existe");
+            const sequenceContainer = document.createElement('div');
+            sequenceContainer.id = 'route-sequence';
+            sequenceContainer.className = 'route-sequence mt-3';
+            sequenceContainer.innerHTML = '';
+            reportTab.appendChild(sequenceContainer);
         }
     }
     let routePath = null;
@@ -2351,6 +2372,9 @@
         
         // Mostrar as abas inferiores quando houver destinos
         toggleBottomTabsVisibility(true);
+        
+        // Verificar se todos os elementos críticos existem antes de prosseguir
+        ensureCriticalElementsExist();
         
         // Mostrar spinner de carregamento centralizado no mapa
         showLoadingSpinner();
@@ -4820,6 +4844,9 @@
     function updateRouteSummary(tspResult, vehicleType, routeIndex = 0) {
         try {
             console.log("Atualizando resumo da rota com:", tspResult);
+            
+            // Verificar se elementos críticos existem
+            ensureCriticalElementsExist();
             
             // Verificar se temos resultados válidos
             if (!tspResult || typeof tspResult.distance !== 'number' || isNaN(tspResult.distance)) {
