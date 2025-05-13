@@ -1,0 +1,136 @@
+/* NOVO DESIGN: Sistema de abas inferiores simplificado e elegante */
+
+/* Container principal para as abas inferiores */
+.bottom-tabs-container {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 100%;
+    background-color: #ffffff;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+    z-index: 1000;
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Ajuste para sidebar */
+@media (min-width: 992px) {
+    .bottom-tabs-container {
+        width: calc(100% - 380px);
+        margin-left: 380px;
+    }
+}
+
+/* Estado minimizado das abas */
+.bottom-tabs-container.minimized {
+    height: 60px;
+    overflow: hidden;
+}
+
+/* Estado expandido das abas */
+.bottom-tabs-container:not(.minimized) {
+    height: 400px;
+}
+
+/* Navegação das abas - Barra superior */
+.bottom-tabs-nav {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 15px 0;
+    background-color: #ffffff;
+    position: relative;
+    z-index: 101;
+    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Botões de abas com estilo moderno */
+.bottom-tab-btn {
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+    color: #616161;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0.0, 0.2, 1);
+    position: relative;
+}
+
+/* Efeito hover nos botões */
+.bottom-tab-btn:hover {
+    background-color: rgba(33, 150, 243, 0.08);
+    color: #2196F3;
+}
+
+/* Estado ativo dos botões */
+.bottom-tab-btn.active {
+    color: #2196F3;
+    font-weight: 600;
+}
+
+/* Indicador de aba ativa */
+.bottom-tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 3px;
+    background-color: #2196F3;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+/* Container do conteúdo das abas */
+.bottom-tabs-content-container {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    background-color: #ffffff;
+}
+
+/* Conteúdo individual de cada aba */
+.bottom-tab-content {
+    padding: 20px;
+    height: 340px;
+    overflow-y: auto;
+    display: none;
+    background-color: #ffffff;
+}
+
+/* Apenas a aba ativa é exibida */
+.bottom-tab-content.active {
+    display: block;
+}
+
+/* Ajustes para mobile */
+@media (max-width: 768px) {
+    .bottom-tabs-container {
+        width: 100%;
+        margin-left: 0;
+    }
+    
+    .bottom-tabs-nav {
+        padding: 12px 5px;
+    }
+    
+    .bottom-tab-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    .bottom-tab-content {
+        padding: 15px;
+        height: 320px;
+    }
+}
