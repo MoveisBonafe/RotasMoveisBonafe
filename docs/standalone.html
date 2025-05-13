@@ -4484,6 +4484,10 @@
             document.getElementById('save-route').disabled = false;
             document.getElementById('print-route').disabled = false;
             
+            // Disparar evento para notificar que a rota foi otimizada
+            const routeOptimizedEvent = new Event('routeOptimized');
+            document.dispatchEvent(routeOptimizedEvent);
+            
         } catch (error) {
             console.error("Erro ao atualizar resumo da rota:", error, error.stack);
             
