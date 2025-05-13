@@ -3880,11 +3880,16 @@
                 return false;
             }
             
-            // Extrair data original do aniversário
-            const originalDate = new Date(birthdayEvent.startDate);
+            // USAR A DATA ORIGINAL DE FUNDAÇÃO
+            // Se originalStartDate estiver disponível, usá-la
+            // Caso contrário, usamos a startDate normal
+            const originalDate = birthdayEvent.originalStartDate || new Date(birthdayEvent.startDate);
             
             // Ano atual para o cálculo
             const currentYear = new Date().getFullYear();
+            
+            // Log de diagnóstico
+            console.log(`[VERIFICAÇÃO ANIVERSÁRIO] ${birthdayEvent.name}: Data original: ${originalDate.toLocaleDateString('pt-BR')}`);
             
             // Extrair mês e dia do aniversário
             const birthdayMonth = originalDate.getMonth(); // 0-11
@@ -4080,12 +4085,13 @@
                 const eventStart = new Date(event.startDate);
                 const eventEnd = new Date(event.endDate);
                 
-                // AJUSTE PARA ANIVERSÁRIOS DE CIDADES E FERIADOS: 
-                // Manter o mês e dia originais da fundação, mudando apenas o ano para o atual
-                // Importante: Manter a data original como propriedade adicional para exibição
+                // AJUSTE PARA ANIVERSÁRIOS DE CIDADES E FERIADOS
+                // IMPORTANTE: Para eventos de aniversário/fundação, vamos preservar a data original
+                // mas criar uma cópia para os cálculos de filtro de data
                 if (event.name.includes("Aniversário") || event.name.includes("Fundação") || event.isHoliday) {
-                    // Guardar a data original de fundação antes de modificar
-                    event.originalStartDate = new Date(event.startDate);
+                    // CRÍTICO: Guardar a data original de fundação antes de qualquer modificação
+                    // Estas propriedades serão usadas APENAS para exibição e cálculo de idade
+                    event.originalStartDate = new Date(event.startDate); 
                     event.originalEndDate = new Date(event.endDate);
                     
                     // Formato local para diagnóstico
@@ -4107,19 +4113,29 @@
                     
                     // Para eventos de fundação/aniversário, adicionar notas especiais
                     if (event.name.includes("Aniversário") || event.name.includes("Fundação")) {
-                        // Extrair ano original (data de fundação real)
-                        const fundacaoAno = event.originalStartDate.getFullYear();
+                        // IMPORTANTÍSSIMO: USAR A DATA ORIGINAL de fundação
+                        // Preferimos a data do objeto event.originalStartDate que foi criada acima
+                        // e só como fallback usar event.startDate
+                        const dataOriginal = event.originalStartDate; // Data original da fundação
                         
-                        // Formatar dia e mês com zero à esquerda se necessário
-                        const diaPadded = originalDay.toString().padStart(2, '0');
-                        const mesPadded = (originalMonth+1).toString().padStart(2, '0');
+                        // Extrair componentes da data original
+                        const fundacaoAno = dataOriginal.getFullYear();
+                        const fundacaoMes = dataOriginal.getMonth(); 
+                        const fundacaoDia = dataOriginal.getDate();
                         
-                        // Calcular idade
+                        // Formatar dia e mês com zero à esquerda
+                        const diaPadded = fundacaoDia.toString().padStart(2, '0');
+                        const mesPadded = (fundacaoMes+1).toString().padStart(2, '0');
+                        
+                        // Calcular idade correta
                         const idadeCidade = currentYear - fundacaoAno;
                         
-                        // Adicionar informação de fundação para exibição (SEM "Fundada em" para evitar redundância)
+                        // Garantir que usamos a data original em todas as referências
                         event.fundacaoData = `${diaPadded}/${mesPadded}/${fundacaoAno}`;
+                        event.idadeCidade = idadeCidade;
                         event.fundacaoInfo = `Data de fundação: ${diaPadded}/${mesPadded}/${fundacaoAno} (${idadeCidade} anos)`;
+                        
+                        console.log(`[FUNDAÇÃO CORRIGIDA] ${event.name}: ${event.fundacaoData} (${idadeCidade} anos)`);
                     }
                     
                     console.log(`[ANIVERSÁRIO] ${event.name}: data original ${originalDateStr} → ajustada para ${eventStart.toLocaleDateString('pt-BR')}`);
@@ -4280,7 +4296,7 @@
                         <span class="restriction-level ${event.restrictionLevel}">${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</span>
                     </div>
                     <div class="event-date">${event.cityName} | ${event.fundacaoData}</div>
-                    <div class="event-description">${event.description} <br><span class="fundacao-info">${currentYear - event.originalStartDate.getFullYear()} anos de fundação</span></div>
+                    <div class="event-description">${event.description} <br><span class="fundacao-info">${event.idadeCidade} anos de fundação</span></div>
                 `;
             } else {
                 // Para eventos normais
