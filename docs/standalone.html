@@ -1634,13 +1634,7 @@
                                     contentElement.style.animation = 'fadeInUp 0.5s ease forwards';
                                 }, 10);
                                 
-                                // Rolagem suave até a aba
-                                setTimeout(() => {
-                                    contentElement.scrollIntoView({
-                                        behavior: 'smooth',
-                                        block: 'start'
-                                    });
-                                }, 100);
+                                // Não fazer scroll automático - removido para evitar expansão automática
                             }
                         } else {
                             console.warn(`Elemento de conteúdo #${contentId} não encontrado`);
@@ -3785,18 +3779,30 @@
         console.log(`Filtro de data: ${startDateValue || 'sem data inicial'} a ${endDateValue || 'sem data final'}`);
         
         // Ajuste condicional das datas - garantir que temos valores válidos
+        // Obter o ano atual para garantir filtragem apenas para eventos deste ano
+        const currentYear = new Date().getFullYear();
+        
         if (!startDateValue || !endDateValue) {
-            // Se não recebemos alguma data, verificar se temos eventos de aniversário
-            // e ajustar as datas para incluí-los automaticamente
-            const hasAnniversaryEvents = mockData.cityEvents.some(event => 
-                event.name.includes("Aniversário") && citiesOnRoute.includes(event.cityName)
-            );
+            // Se datas não foram especificadas, usar intervalo padrão do ano atual
+            console.log(`[AJUSTE AUTOMÁTICO] Definindo intervalo padrão para o ano atual (${currentYear})`);
             
-            if (hasAnniversaryEvents) {
-                console.log("[AJUSTE AUTOMÁTICO] Expandindo datas para incluir aniversários de cidades");
-                // Usar um intervalo grande o suficiente para incluir todos os aniversários
-                if (!startDateValue) startDateValue = "2023-01-01";
-                if (!endDateValue) endDateValue = "2023-12-31";
+            // Usar o ano atual para filtrar eventos
+            if (!startDateValue) startDateValue = `${currentYear}-01-01`;
+            if (!endDateValue) endDateValue = `${currentYear}-12-31`;
+            
+            console.log(`[DATA] Intervalo ajustado para: ${startDateValue} até ${endDateValue}`);
+        } else {
+            // Se as datas foram especificadas, garantir que estamos no ano correto
+            // Extrair apenas os valores de data (sem hora)
+            const startParts = startDateValue.split('T')[0].split('-');
+            const endParts = endDateValue.split('T')[0].split('-');
+            
+            // Verificar se o ano é diferente do atual
+            if (startParts[0] !== String(currentYear) || endParts[0] !== String(currentYear)) {
+                console.log(`[AVISO] Ajustando datas para o ano atual (${currentYear})`);
+                // Manter mês e dia, mas ajustar o ano
+                startDateValue = `${currentYear}-${startParts[1]}-${startParts[2]}`;
+                endDateValue = `${currentYear}-${endParts[1]}-${endParts[2]}`;
             }
         }
         
@@ -3816,6 +3822,32 @@
                 return; // Pular para o próximo evento
             }
             
+            // ETAPA INTERMEDIÁRIA: Ajustar as datas dos eventos para o ano atual
+            // Isto garante que aniversários de cidades e eventos anuais apareçam no ano correto
+            const currentYear = new Date().getFullYear();
+            const eventDate = new Date(event.startDate);
+            const eventYear = eventDate.getFullYear();
+            
+            // Se o evento é um aniversário de cidade ou evento recorrente anual
+            if (event.name.includes("Aniversário") || event.isHoliday) {
+                // Ajustar as datas para este ano apenas para comparação
+                const adjustedStartDate = new Date(event.startDate);
+                adjustedStartDate.setFullYear(currentYear);
+                
+                const adjustedEndDate = new Date(event.endDate);
+                adjustedEndDate.setFullYear(currentYear);
+                
+                // Usar estas datas ajustadas para a comparação
+                event._tempStartDate = adjustedStartDate;
+                event._tempEndDate = adjustedEndDate;
+                
+                console.log(`[AJUSTE] Evento '${event.name}' ajustado para ${adjustedStartDate.toISOString().split('T')[0]}`);
+            } else {
+                // Para outros eventos, usar as datas originais
+                event._tempStartDate = new Date(event.startDate);
+                event._tempEndDate = new Date(event.endDate);
+            }
+            
             // ETAPA 2: FILTRAR POR DATA (APÓS VERIFICAÇÃO DA CIDADE)
             if (!startDateValue && !endDateValue) {
                 // Nenhum filtro de data especificado, e a cidade já está verificada
@@ -3825,9 +3857,9 @@
             else {
                 // Filtro de data especificado, verificar se o evento está dentro do intervalo
                 try {
-                    // Criar objetos de data para comparação
-                    const eventStartObj = new Date(event.startDate);
-                    const eventEndObj = new Date(event.endDate);
+                    // Usar as datas temporárias ajustadas para o ano atual
+                    const eventStartObj = event._tempStartDate;
+                    const eventEndObj = event._tempEndDate;
                     
                     // Formatação para diagnóstico
                     const eventStartStr = eventStartObj.toLocaleDateString('pt-BR');
