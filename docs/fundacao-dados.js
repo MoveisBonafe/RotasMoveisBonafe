@@ -59,6 +59,24 @@ const DATAS_FUNDACAO = {
     ano: 1554,
     mes: 1,
     dia: 25
+  },
+  "Franca": {
+    data: "28/11/1824",
+    ano: 1824,
+    mes: 11,
+    dia: 28
+  },
+  "Botucatu": {
+    data: "14/04/1855",
+    ano: 1855,
+    mes: 4,
+    dia: 14
+  },
+  "Marília": {
+    data: "04/04/1929",
+    ano: 1929,
+    mes: 4,
+    dia: 4
   }
 };
 
