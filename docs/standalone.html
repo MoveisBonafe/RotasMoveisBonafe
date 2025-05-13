@@ -5468,12 +5468,16 @@
         
         // Limpar o seletor de rotas alternativas
         const alternativeSelect = document.getElementById('alternative-routes');
-        alternativeSelect.innerHTML = '';
-        const defaultOption = document.createElement('option');
-        defaultOption.value = "0";
-        defaultOption.text = "Rota Otimizada (Padrão)";
-        defaultOption.selected = true;
-        alternativeSelect.appendChild(defaultOption);
+        if (alternativeSelect) {
+            alternativeSelect.innerHTML = '';
+            const defaultOption = document.createElement('option');
+            defaultOption.value = "0";
+            defaultOption.text = "Rota Otimizada (Padrão)";
+            defaultOption.selected = true;
+            alternativeSelect.appendChild(defaultOption);
+        } else {
+            console.warn("Elemento 'alternative-routes' não encontrado. Ignorando esse passo.");
+        }
         
         // 1. Rota principal (otimizada pelo algoritmo principal)
         console.log("Gerando rota principal otimizada...");
