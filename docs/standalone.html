@@ -26,6 +26,7 @@
             height: 100vh;
             overflow: hidden;
             width: 100%;
+            position: relative; /* Importante para posicionamento absoluto das abas */
         }
         
         .main-content-area {
@@ -33,6 +34,7 @@
             flex-direction: row;
             flex: 1;
             overflow: hidden;
+            height: calc(100vh - 45px); /* Ajuste de altura para abas minimizadas */
         }
         .sidebar {
             width: 380px;
@@ -609,12 +611,24 @@
             /* Inicialmente minimizada ao invés de oculta */
             display: flex;
             height: auto;
+            /* Ajustes para evitar que fique encoberto pela barra de tarefas */
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            max-height: 60vh; /* Limita a altura máxima */
         }
         
         /* Estado minimizado para container de abas */
         .bottom-tabs-container.minimized {
-            height: 60px;
+            height: 45px; /* Reduzido para ser menos intrusivo */
             overflow: hidden;
+        }
+        
+        /* Ajuste para evitar que o mapa seja coberto pelas abas */
+        .map-container {
+            margin-bottom: 45px; /* Espaço para as abas minimizadas */
         }
         
         /* Botão de expandir/minimizar */
@@ -622,14 +636,19 @@
             background-color: #e1e8f0;
             border: none;
             border-radius: 4px 4px 0 0;
-            padding: 5px 15px;
+            padding: 3px 10px;
             margin: 0 auto -1px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 11px;
             box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 101;
         }
         
         .tabs-toggle-btn:hover {
@@ -638,9 +657,9 @@
         
         .bottom-tabs-nav {
             display: flex;
-            justify-content: center;
-            gap: 12px;
-            padding: 15px 0;
+            justify-content: space-around; /* Espaçamento melhor distribuído */
+            gap: 5px; /* Reduzido o espaço entre os botões */
+            padding: 10px 0 5px; /* Menos padding vertical */
             background: linear-gradient(to bottom, #f0f2f5, #ffffff);
             border-bottom: 1px solid #e0e0e0;
             position: sticky;
@@ -650,16 +669,18 @@
         }
         
         .bottom-tab-btn {
-            padding: 12px 25px;
+            padding: 8px 15px; /* Reduzido o padding */
             background-color: #f8f9fa;
             border: 1px solid #dee2e6;
-            border-radius: 24px;
+            border-radius: 16px; /* Reduzido o arredondamento */
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 500;
             color: #495057;
             position: relative;
             overflow: hidden;
+            font-size: 0.85rem; /* Texto ligeiramente menor */
+            white-space: nowrap; /* Evita quebra de linha */
         }
         
         .bottom-tab-btn::after {
