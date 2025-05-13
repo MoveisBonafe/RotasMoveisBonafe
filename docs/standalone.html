@@ -607,23 +607,58 @@
             animation: fadeIn 0.5s ease;
             background-color: #f9f9f9;
             border-top: 1px solid #ddd;
-            overflow: hidden;
+            overflow: auto; /* Alterado para auto para permitir rolagem */
             /* Inicialmente minimizada ao invés de oculta */
             display: flex;
             height: auto;
-            /* Ajustes para evitar que fique encoberto pela barra de tarefas */
-            position: absolute;
+            /* Ajustes para expandir até o topo quando aberto */
+            position: fixed; /* Alterado para fixed para cobrir toda a tela */
             bottom: 0;
             left: 0;
             right: 0;
-            z-index: 100;
-            max-height: 60vh; /* Limita a altura máxima */
+            z-index: 1000; /* Aumentado para ficar sobre todos os elementos */
+            transition: height 0.3s ease-in-out;
         }
         
         /* Estado minimizado para container de abas */
         .bottom-tabs-container.minimized {
-            height: 60px; /* Aumentado para botões maiores */
+            height: 60px; /* Altura quando minimizado */
             overflow: hidden;
+        }
+        
+        /* Estado expandido para container de abas */
+        .bottom-tabs-container:not(.minimized) {
+            height: calc(100vh - 10px); /* Quase altura total da tela quando expandido */
+            border-top: 2px solid #1976D2; /* Borda mais visível quando expandido */
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.2); /* Sombra mais evidente */
+        }
+        
+        /* Botão para fechar a aba expandida */
+        .close-expanded-tabs {
+            display: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .bottom-tabs-container:not(.minimized) .close-expanded-tabs {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-expanded-tabs:hover {
+            background-color: #d32f2f;
         }
         
         /* Ajuste para evitar que o mapa seja coberto pelas abas */
@@ -743,13 +778,26 @@
             animation: fadeInUp 0.5s ease forwards;
             opacity: 0;
             transform: translateY(20px);
-            height: 300px; /* Altura fixa para todas as abas */
             overflow-y: auto; /* Permite rolagem vertical para todos os conteúdos */
+        }
+        
+        /* Ajustes para quando as abas estão minimizadas */
+        .bottom-tabs-container.minimized .bottom-tab-content {
+            height: 300px; /* Altura fixa quando minimizado */
+        }
+        
+        /* Ajustes para quando as abas estão expandidas até o topo */
+        .bottom-tabs-container:not(.minimized) .bottom-tab-content {
+            height: calc(100vh - 140px); /* Quase altura total da tela quando expandido */
+            padding: 25px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            border-radius: 0 0 8px 8px;
+            border: 1px solid #e0e0e0;
+            margin: 0 15px 15px;
         }
         
         /* Ajustes específicos para a aba de restrições */
         #bottom-restrictions-content {
-            height: 300px; /* Altura consistente com as outras abas */
             overflow-y: auto;
         }
         
@@ -897,7 +945,8 @@
         
         <!-- NOVO: Tabs fixas na parte inferior do layout (inicialmente minimizadas) -->
         <div class="bottom-tabs-container minimized">
-            <!-- Botão para expandir/minimizar removido - agora os próprios botões das abas controlam essa funcionalidade -->
+            <!-- Botão para fechar quando expandido em tela cheia -->
+            <button class="close-expanded-tabs" onclick="toggleTabsExpansion()">×</button>
             <!-- Navegação das abas inferiores -->
             <div class="bottom-tabs-nav">
                 <button class="bottom-tab-btn active" data-tab="bottom-events">Eventos na Rota</button>
