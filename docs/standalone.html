@@ -5638,13 +5638,14 @@
         }
     }
 
-    // Filtrar eventos por data - atualiza automaticamente ao mudar datas
+    // Filtrar eventos por data - COMPLETAMENTE REESCRITO
     function filterEventsByDate() {
         console.log("==========================================");
-        console.log("FILTRO DE EVENTOS POR DATA SOLICITADO");
+        console.log("NOVA VERSÃO: FILTRO DE EVENTOS POR DATA");
         console.log("==========================================");
         
-        // Obter valores atuais das datas para filtro
+        // ETAPA 1: OBTER E VALIDAR AS DATAS DE FILTRO
+        // ------------------------------------------
         const startDateInput = document.getElementById('start-date');
         const endDateInput = document.getElementById('end-date');
         
