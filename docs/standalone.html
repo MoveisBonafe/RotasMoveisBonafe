@@ -998,7 +998,146 @@
                 font-size: 0.9rem;
             }
         }
+        
+        /* ======== ESTILOS RESPONSIVOS PARA DISPOSITIVOS MÓVEIS ======== */
+        @media (max-width: 767px) {
+            /* Layout para dispositivos móveis - layout fluido */
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: auto;
+                max-height: 50vh;
+                overflow-y: auto;
+                z-index: 2000;
+                transition: transform 0.3s ease, max-height 0.3s ease;
+                border-radius: 0 0 15px 15px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                transform: translateY(0);
+                padding-bottom: 15px;
+            }
+            
+            /* Sidebar minimizada */
+            .sidebar.minimized {
+                max-height: 50px;
+                overflow: hidden;
+                transform: translateY(0);
+            }
+            
+            /* Botão para expandir/recolher sidebar */
+            .sidebar-toggle {
+                display: flex !important;
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                z-index: 2100;
+                padding: 5px 10px;
+                background: rgba(25, 118, 210, 0.8);
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 18px;
+            }
+            
+            /* Ajustar mapa para tela cheia quando sidebar está minimizada */
+            .map-container {
+                position: fixed !important;
+                top: 50px !important; /* Espaço para a sidebar minimizada */
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                width: 100% !important;
+                height: calc(100vh - 50px) !important;
+                transition: all 0.3s ease;
+            }
+
+            /* Quando sidebar está expandida, ajustar mapa */
+            .sidebar:not(.minimized) + .container-fluid .map-container {
+                top: 50vh !important;
+                height: calc(50vh) !important;
+            }
+            
+            /* Abas inferiores ocupam toda a largura */
+            .bottom-tabs-container {
+                left: 0 !important;
+                width: 100% !important;
+                margin-left: 0 !important;
+            }
+            
+            /* Ajustar conteúdo das abas */
+            .bottom-tab-content {
+                max-height: calc(100vh - 100px) !important;
+            }
+            
+            /* Botões das abas em formato compacto */
+            .bottom-tab-btn {
+                padding: 8px 12px !important;
+                font-size: 0.9rem !important;
+            }
+            
+            /* Ajustes para listas e formulários */
+            .form-control, .form-select {
+                font-size: 16px !important; /* Evitar zoom automático no iOS */
+            }
+            
+            /* Botões mais fáceis de clicar */
+            .btn {
+                padding: 10px 15px !important;
+                min-height: 44px !important; /* Altura mínima recomendada para touch */
+            }
+            
+            /* Ajustar listas e tabelas */
+            .bottom-list, .restrictions-list {
+                font-size: 0.9rem !important;
+            }
+            
+            /* Melhorar espaçamento para touch */
+            .location-list-item {
+                padding: 12px 8px !important;
+            }
+            
+            /* Otimizar visualização de rotas */
+            #route-steps li {
+                margin-bottom: 10px !important;
+                padding: 8px 10px !important;
+            }
+            
+            /* Ajustar botão de otimizar rota */
+            .optimize-btn-container {
+                position: fixed !important;
+                bottom: 70px !important;
+                right: 10px !important;
+                z-index: 1500 !important;
+            }
+            
+            #optimize-route {
+                width: auto !important;
+                padding: 10px 15px !important;
+                font-size: 1rem !important;
+                box-shadow: 0 3px 10px rgba(0,0,0,0.2) !important;
+                border-radius: 50px !important;
+            }
+        }
+        
+        /* Estilos específicos para telas muito pequenas */
+        @media (max-width: 375px) {
+            .bottom-tab-btn {
+                padding: 8px 8px !important;
+                font-size: 0.8rem !important;
+            }
+            
+            .location-list-item .location-name {
+                max-width: 180px !important;
+                font-size: 0.9rem !important;
+            }
+        }
     </style>
+    
+    <!-- Ícone para adicionar à tela inicial em dispositivos móveis -->
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5396/5396184.png">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/5396/5396184.png">
 </head>
 <body>
     <div class="app-container">
@@ -1008,6 +1147,9 @@
             <div class="sidebar-header">
                 <h2 class="m-0">Otimizador de Rotas</h2>
                 <button type="button" class="btn-close sidebar-close" aria-label="Close"></button>
+                <button type="button" class="sidebar-toggle d-none" id="sidebar-toggle">
+                    <i class="fas fa-arrows-alt-v"></i>
+                </button>
             </div>
             <div class="sidebar-content">
             
@@ -5777,6 +5919,123 @@
 
     // Expor funções necessárias globalmente
     window.removeLocation = removeLocation;
+    
+    // Função para inicializar suporte mobile
+    function initMobileSupport() {
+        // Detectar se é dispositivo móvel
+        const isMobile = window.innerWidth <= 767;
+        
+        if (isMobile) {
+            console.log("Modo mobile detectado! Aplicando otimizações para smartphones...");
+            
+            // 1. Mostrar o botão toggle da sidebar
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            if (sidebarToggle) {
+                sidebarToggle.classList.remove('d-none');
+                
+                // Adicionar funcionalidade de toggle da sidebar
+                sidebarToggle.addEventListener('click', function() {
+                    const sidebar = document.getElementById('sidebar');
+                    if (sidebar) {
+                        sidebar.classList.toggle('minimized');
+                        
+                        // Atualizar o ícone
+                        const icon = sidebarToggle.querySelector('i');
+                        if (icon) {
+                            if (sidebar.classList.contains('minimized')) {
+                                icon.className = 'fas fa-chevron-down';
+                            } else {
+                                icon.className = 'fas fa-chevron-up';
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // 2. Iniciar com a sidebar minimizada
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                sidebar.classList.add('minimized');
+            }
+            
+            // 3. Ajustar tamanho do mapa e posição
+            adjustMapForMobile();
+            
+            // 4. Adicionar gestos para touch (pinch zoom, etc)
+            enableTouchGestures();
+            
+            // 5. Ajustar botões de ação para serem mais fáceis de tocar
+            adjustButtonsForTouch();
+            
+            // Adicionar classes especiais para o corpo da página
+            document.body.classList.add('mobile-view');
+            
+            // Adicionar listener para orientação
+            window.addEventListener('orientationchange', function() {
+                // Pequeno atraso para garantir que o evento terminou
+                setTimeout(function() {
+                    adjustMapForMobile();
+                }, 300);
+            });
+        }
+    }
+    
+    // Função para ajustar o mapa para mobile
+    function adjustMapForMobile() {
+        const mapContainer = document.querySelector('.map-container');
+        const sidebar = document.getElementById('sidebar');
+        
+        if (mapContainer && sidebar) {
+            if (sidebar.classList.contains('minimized')) {
+                // Sidebar minimizada, mapa quase tela cheia
+                mapContainer.style.top = '50px';
+                mapContainer.style.height = 'calc(100vh - 50px)';
+            } else {
+                // Sidebar expandida, mapa menor
+                mapContainer.style.top = '50vh';
+                mapContainer.style.height = '50vh';
+            }
+            
+            // Forçar redesenho do mapa
+            if (map) {
+                google.maps.event.trigger(map, 'resize');
+            }
+        }
+    }
+    
+    // Função para ativar gestos touch
+    function enableTouchGestures() {
+        if (map) {
+            // Garantir que o mapa permita zoom com gestos de pinça
+            map.setOptions({
+                gestureHandling: 'greedy', // Permite zoom sem ctrl/cmd
+                zoomControl: true,
+                zoomControlOptions: {
+                    position: google.maps.ControlPosition.RIGHT_BOTTOM
+                }
+            });
+        }
+    }
+    
+    // Função para ajustar botões para toque
+    function adjustButtonsForTouch() {
+        // Aumentar área de toque dos botões
+        const buttons = document.querySelectorAll('.btn, .location-item, .bottom-tab-btn');
+        buttons.forEach(btn => {
+            btn.classList.add('touch-friendly');
+        });
+        
+        // Destacar botão de otimizar rota
+        const optimizeBtn = document.getElementById('optimize-route');
+        if (optimizeBtn) {
+            optimizeBtn.classList.add('floating-action-btn');
+        }
+    }
+    
+    // Inicializar suporte mobile quando documento estiver pronto
+    document.addEventListener('DOMContentLoaded', function() {
+        initMobileSupport();
+    });
     </script>
 </body>
 </html>
