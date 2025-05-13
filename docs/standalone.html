@@ -1026,7 +1026,15 @@
             
             // Executar inicialização após garantir que a página está totalmente carregada
             if (document.readyState === "complete") {
+                // Inicializar o mapa
                 initMap();
+                
+                // Configurar overlay do mapa apenas após inicialização completa
+                setTimeout(function() {
+                    if (typeof setupMapOverlay === 'function') {
+                        setupMapOverlay();
+                    }
+                }, 1000);
             }
             
             // Modificar comportamento de zoom para dispositivos móveis
@@ -1036,9 +1044,19 @@
                         google.maps.MapOptions.prototype.gestureHandling = 'greedy';
                         console.log("Google Maps gesture handling modificado para permitir zoom sem Ctrl");
                     }
+                    
+                    // Configurar overlay do mapa após evento de carregamento
+                    if (typeof setupMapOverlay === 'function' && map) {
+                        setupMapOverlay();
+                    }
                 });
             } catch (e) {
                 console.warn("Não foi possível modificar gestureHandling:", e);
+            }
+            
+            // Explicitar Google Places API carregada
+            if (google.maps && google.maps.places) {
+                console.log("Google Places API loaded");
             }
         };
         
@@ -5865,44 +5883,67 @@
         return deg * (Math.PI/180);
     }
 
-    // Classe para projeção de overlay personalizado
-    class OverlayProjection {
-        fromLatLngToDivPixel(latLng) {
-            const scale = Math.pow(2, map.getZoom());
-            const proj = map.getProjection();
-            const bounds = map.getBounds();
-            
-            if (!proj || !bounds) {
-                return { x: 0, y: 0 };
-            }
-            
-            const nw = proj.fromLatLngToPoint(
-                new google.maps.LatLng(
-                    bounds.getNorthEast().lat(),
-                    bounds.getSouthWest().lng()
-                )
-            );
-            
-            const point = proj.fromLatLngToPoint(latLng);
-            
-            return {
-                x: Math.floor((point.x - nw.x) * scale),
-                y: Math.floor((point.y - nw.y) * scale)
-            };
+    // Esta função será chamada quando o mapa estiver carregado e pronto
+    function setupMapOverlay() {
+        // Verificar se o Google Maps API está disponível
+        if (typeof google === 'undefined' || !google.maps || !map) {
+            console.warn("Google Maps API não disponível para configurar overlay");
+            return;
         }
         
-        fromDivPixelToLatLng(pixel) {
-            return null; // Não precisamos desta funcionalidade
+        try {
+            // Definir a classe para projeção de overlay personalizado
+            class SafeOverlayProjection {
+                fromLatLngToDivPixel(latLng) {
+                    try {
+                        const scale = Math.pow(2, map.getZoom());
+                        const proj = map.getProjection();
+                        const bounds = map.getBounds();
+                        
+                        if (!proj || !bounds) {
+                            return { x: 0, y: 0 };
+                        }
+                        
+                        const nw = proj.fromLatLngToPoint(
+                            new google.maps.LatLng(
+                                bounds.getNorthEast().lat(),
+                                bounds.getSouthWest().lng()
+                            )
+                        );
+                        
+                        const point = proj.fromLatLngToPoint(latLng);
+                        
+                        return {
+                            x: Math.floor((point.x - nw.x) * scale),
+                            y: Math.floor((point.y - nw.y) * scale)
+                        };
+                    } catch (error) {
+                        console.error("Erro ao calcular projeção:", error);
+                        return { x: 0, y: 0 };
+                    }
+                }
+                
+                fromDivPixelToLatLng(pixel) {
+                    return null; // Não precisamos desta funcionalidade
+                }
+            }
+            
+            // Criar um overlay personalizado para a projeção
+            const safeOverlay = new google.maps.OverlayView();
+            safeOverlay.draw = function() {};
+            safeOverlay.setMap(map);
+            safeOverlay.getProjection = function() {
+                return new SafeOverlayProjection();
+            };
+            
+            console.log("Overlay do mapa configurado com sucesso");
+        } catch (error) {
+            console.error("Erro ao configurar overlay do mapa:", error);
         }
     }
-
-    // Criar um overlay personalizado para a projeção
-    const overlay = new google.maps.OverlayView();
-    overlay.draw = function() {};
-    overlay.setMap(map);
-    overlay.getProjection = function() {
-        return new OverlayProjection();
-    };
+    
+    // A função setupMapOverlay será chamada após o carregamento do mapa
+    // na callback googleMapsCallback ou no final da inicialização do mapa
 
     // Expor funções necessárias globalmente
     window.removeLocation = removeLocation;
