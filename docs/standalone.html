@@ -1597,10 +1597,11 @@
             return;
         }
         
-        // Inicializar o serviço de direções
-        directionsService = new google.maps.DirectionsService();
-        
         try {
+            // Inicializar o serviço de direções de forma segura
+            console.log("Inicializando DirectionsService...");
+            directionsService = new google.maps.DirectionsService();
+            
             console.log("Inicializando DirectionsRenderer...");
             directionsRenderer = new google.maps.DirectionsRenderer({
                 suppressMarkers: true, // Não mostrar marcadores padrão do Google
@@ -2733,6 +2734,11 @@
         whenMapsLoaded(function() {
             optimizeRouteSafely();
         });
+    }
+
+    // Versão segura da função de otimização de rota
+    function optimizeRouteSafely() {
+        console.log("Executando otimização de rota com Maps API garantidamente carregada");
         
         // IMPORTANTE: Assegurar que os marcadores originais sejam preservados antes de limpar
         const currentMarkers = [...markers]; // Criar uma cópia dos marcadores atuais
@@ -2746,11 +2752,28 @@
         // Calcular a rota otimizada (versão simplificada do TSP)
         calculateOptimizedRoute(vehicleType, false, currentMarkers);
     }
-
+    
     // Calcular rota otimizada pelo algoritmo TSP
     function calculateOptimizedRoute(vehicleType, includeOriginReturn, savedMarkers = null) {
         try {
             console.log("Calculando rota otimizada...");
+            
+            // Verificar se o Google Maps está disponível
+            if (typeof google === 'undefined' || !google.maps) {
+                console.error("Google Maps não está disponível para cálculo de rota");
+                showNotification('Erro: API do Google Maps não está disponível. Tente recarregar a página.', 'danger', '.route-controls');
+                
+                // Restaurar botão de otimização
+                const optimizeBtn = document.getElementById('optimize-route');
+                if (optimizeBtn) {
+                    optimizeBtn.innerHTML = 'Calcular Rota';
+                    optimizeBtn.disabled = false;
+                }
+                
+                // Ocultar spinner
+                hideLoadingSpinner();
+                return;
+            }
             
             // Limpar rotas alternativas existentes
             alternativeRoutes = [];
@@ -3501,7 +3524,26 @@
             avoidTolls: false
         };
         
-        directionsService.route(request, (result, status) => {
+        // Verificar se o serviço de rotas está disponível
+        if (!directionsService) {
+            console.error("Serviço de direções não inicializado");
+            showNotification("Erro no serviço de rotas. Tente recarregar a página.", "danger");
+            
+            // Restaurar botão de otimização
+            const optimizeBtn = document.getElementById('optimize-route');
+            if (optimizeBtn) {
+                optimizeBtn.innerHTML = 'Calcular Rota';
+                optimizeBtn.disabled = false;
+            }
+            
+            // Ocultar spinner
+            hideLoadingSpinner();
+            return;
+        }
+        
+        // Chamar o serviço de rotas com tratamento de erro
+        try {
+            directionsService.route(request, (result, status) => {
             // Esconder indicador de progresso
             hideLoadingSpinner();
             
