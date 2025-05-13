@@ -975,6 +975,7 @@
         initAutocomplete();
         initTabNavigation();
         initEventListeners();
+        initBottomPanel(); // Inicializar o novo painel inferior
         
         // Exibir a origem no mapa
         addMarkerForLocation(mockData.origin, 0);
@@ -1133,7 +1134,60 @@
         });
     }
 
-    // Configura todos os event listeners
+    // Inicializa o painel inferior animado
+    function initBottomPanel() {
+        const bottomPanel = document.getElementById('bottom-panel');
+        const bottomPanelTab = document.getElementById('bottom-panel-tab');
+        const mapContainer = document.querySelector('.map-container');
+        
+        if (!bottomPanel || !bottomPanelTab) {
+            console.error("Elementos do painel inferior não encontrados");
+            return;
+        }
+        
+        // Estado inicial: painel colapsado (apenas aba visível)
+        let isPanelExpanded = false;
+        
+        // Função para alternar o estado do painel
+        function toggleBottomPanel() {
+            if (isPanelExpanded) {
+                // Colapsar o painel
+                bottomPanel.classList.remove('expanded');
+                bottomPanel.classList.add('collapsed');
+                mapContainer.classList.remove('with-bottom-panel');
+            } else {
+                // Expandir o painel
+                bottomPanel.classList.add('expanded');
+                bottomPanel.classList.remove('collapsed');
+                mapContainer.classList.add('with-bottom-panel');
+            }
+            
+            // Inverter o estado
+            isPanelExpanded = !isPanelExpanded;
+        }
+        
+        // Adicionar evento de clique na aba
+        bottomPanelTab.addEventListener('click', toggleBottomPanel);
+        
+        // Também atualiza o painel quando uma rota é otimizada
+        document.addEventListener('routeOptimized', function() {
+            // Se o painel ainda não foi expandido, expandir automaticamente
+            if (!isPanelExpanded) {
+                toggleBottomPanel();
+            }
+            
+            // Animar as colunas do painel com efeito escalonado
+            const columns = document.querySelectorAll('.panel-column');
+            columns.forEach((column, index) => {
+                setTimeout(() => {
+                    column.classList.add('fadeIn');
+                }, index * 150);
+            });
+        });
+        
+        console.log("Painel inferior inicializado com sucesso");
+    }
+    
     function initEventListeners() {
         // Toggle para mostrar/esconder a sidebar
         document.getElementById('toggle-sidebar').addEventListener('click', function() {
