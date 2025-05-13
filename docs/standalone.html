@@ -2466,6 +2466,9 @@
             console.error("Botão de otimização de rota não encontrado!");
         }
         
+        // Garantir que as abas inferiores estão corretamente configuradas
+        updateBottomTabsContent();
+        
         // Filtrar eventos automaticamente ao mudar as datas
         document.getElementById('start-date').addEventListener('change', filterEventsByDate);
         document.getElementById('end-date').addEventListener('change', filterEventsByDate);
@@ -3325,6 +3328,15 @@
             
             // IMPORTANTE: Método direto para processar a rota padrão 
             // em vez de usar o seletor que está causando problemas
+            
+            // Garantir que o seletor de rotas alternativas esteja visível
+            const routeAlternativesDiv = document.getElementById('route-alternatives');
+            if (routeAlternativesDiv) {
+                routeAlternativesDiv.style.display = 'block';
+            }
+            
+            // Atualizar o conteúdo das abas
+            updateBottomTabsContent();
             
             console.log("Tratando a rota padrão DIRETAMENTE (sem usar o event handler)...");
             
@@ -5293,6 +5305,28 @@
         if (routeIndex < 0 || routeIndex >= alternativeRoutes.length) {
             console.error("Índice de rota inválido:", routeIndex);
             return;
+        }
+        
+        // Atualizar o seletor de rotas alternativas na sidebar e na aba de relatório
+        const alternativeRoutesSidebar = document.getElementById('alternative-routes-sidebar');
+        const alternativeRoutesTab = document.getElementById('alternative-routes');
+        
+        if (alternativeRoutesSidebar) {
+            alternativeRoutesSidebar.value = routeIndex.toString();
+        }
+        
+        if (alternativeRoutesTab) {
+            // Garantir que o select na aba de relatório está configurado
+            const alternativeRoutesSelect = document.getElementById('alternative-routes');
+            if (alternativeRoutesSelect) {
+                alternativeRoutesSelect.value = routeIndex.toString();
+            }
+            
+            // Garantir que o elemento pai está visível
+            const routeAlternativesDiv = document.getElementById('route-alternatives');
+            if (routeAlternativesDiv) {
+                routeAlternativesDiv.style.display = 'block';
+            }
         }
         
         console.log(`Alternando para rota alternativa ${routeIndex}`);

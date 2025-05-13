@@ -1812,6 +1812,9 @@
         // Chamar funções para mostrar eventos e restrições para a origem com base nas datas atuais
         filterEventsByDate();
         
+        // Garantir que os eventos são mostrados corretamente
+        showEventsForCitiesOnRoute([mockData.origin.id]);
+        
         // Mostrar mensagem de ajuda
         console.log("Campos de data inicializados com datas atuais e eventos/restrições para origem configurados");
     });
@@ -2164,6 +2167,50 @@
         }
     }
     
+    // Função para atualizar o conteúdo das abas inferiores
+    function updateBottomTabsContent() {
+        console.log("Atualizando conteúdo das abas inferiores...");
+        
+        // Certifique-se que todas as abas estão configuradas corretamente
+        const eventsList = document.getElementById('events-list');
+        const restrictionsList = document.getElementById('restrictions-list');
+        const routeSummary = document.getElementById('route-summary');
+        const routeAlternatives = document.getElementById('route-alternatives');
+        
+        // Verifica e garante que elementos importantes estão visíveis
+        if (routeAlternatives) {
+            routeAlternatives.style.display = 'block';
+        }
+        
+        // Atualiza o conteúdo das abas quando necessário
+        let routeIds = [];
+        
+        // Verifica se temos uma rota otimizada
+        if (alternativeRoutes && alternativeRoutes.length > 0 && 
+            alternativeRoutes[currentRouteIndex] && 
+            alternativeRoutes[currentRouteIndex].path) {
+            routeIds = alternativeRoutes[currentRouteIndex].path;
+        } else if (currentOptimizedPath && currentOptimizedPath.length > 0) {
+            // Caso não tenha rota otimizada, usa a variável currentOptimizedPath
+            routeIds = currentOptimizedPath;
+        } else {
+            // Caso não tenha nenhuma rota, usa apenas a origem
+            const originLocations = locations.filter(loc => loc.isOrigin);
+            if (originLocations.length > 0) {
+                routeIds = originLocations.map(loc => loc.id);
+            }
+        }
+        
+        if (routeIds && routeIds.length > 0) {
+            // Assegura que eventos e restrições são atualizados corretamente
+            console.log("Atualizando eventos para rota com IDs:", routeIds);
+            showEventsForCitiesOnRoute(routeIds);
+            showTruckRestrictionsForCitiesOnRoute(routeIds, null);
+        } else {
+            console.log("Nenhuma rota para atualizar conteúdo das abas");
+        }
+    }
+    
     // Função para mostrar conteúdo inicial relevante nas abas
     function showInitialTabsContent() {
         // Mostrar eventos da cidade de origem (Dois Córregos)
@@ -2418,6 +2465,9 @@
         } else {
             console.error("Botão de otimização de rota não encontrado!");
         }
+        
+        // Garantir que as abas inferiores estão corretamente configuradas
+        updateBottomTabsContent();
         
         // Filtrar eventos automaticamente ao mudar as datas
         document.getElementById('start-date').addEventListener('change', filterEventsByDate);
@@ -3191,6 +3241,18 @@
             alternativeRoutes = [];
             currentRouteIndex = 0;
             
+            // Mostrar o seletor de rotas alternativas na sidebar e na aba de relatório
+            const routeAlternativesSidebar = document.getElementById('route-alternatives-sidebar');
+            const routeAlternativesTab = document.getElementById('route-alternatives');
+            
+            if (routeAlternativesSidebar) {
+                routeAlternativesSidebar.style.display = 'block';
+            }
+            
+            if (routeAlternativesTab) {
+                routeAlternativesTab.style.display = 'block';
+            }
+            
             // Primeiro vamos resolver o TSP para encontrar a ordem ideal dos pontos
             const origin = locations.find(loc => loc.isOrigin);
             const destinations = locations.filter(loc => !loc.isOrigin);
@@ -3266,6 +3328,15 @@
             
             // IMPORTANTE: Método direto para processar a rota padrão 
             // em vez de usar o seletor que está causando problemas
+            
+            // Garantir que o seletor de rotas alternativas esteja visível
+            const routeAlternativesDiv = document.getElementById('route-alternatives');
+            if (routeAlternativesDiv) {
+                routeAlternativesDiv.style.display = 'block';
+            }
+            
+            // Atualizar o conteúdo das abas
+            updateBottomTabsContent();
             
             console.log("Tratando a rota padrão DIRETAMENTE (sem usar o event handler)...");
             
@@ -4291,8 +4362,19 @@
             }
         }
         
-        // Limpar a lista de eventos
+        // Limpar a lista de eventos - GARANTIR QUE ESTAMOS USANDO O ELEMENTO CORRETO
         const eventsListContainer = document.getElementById('events-list');
+        if (!eventsListContainer) {
+            console.error("Container de eventos não encontrado!");
+            return;
+        }
+        
+        // Garantir que o conteúdo da aba de eventos seja ativado corretamente
+        const bottomEventsContent = document.getElementById('bottom-events-content');
+        if (bottomEventsContent) {
+            console.log("Container de eventos encontrado, atualizando...");
+        }
+        
         eventsListContainer.innerHTML = '';
         
         // Log para diagnóstico
@@ -5223,6 +5305,28 @@
         if (routeIndex < 0 || routeIndex >= alternativeRoutes.length) {
             console.error("Índice de rota inválido:", routeIndex);
             return;
+        }
+        
+        // Atualizar o seletor de rotas alternativas na sidebar e na aba de relatório
+        const alternativeRoutesSidebar = document.getElementById('alternative-routes-sidebar');
+        const alternativeRoutesTab = document.getElementById('alternative-routes');
+        
+        if (alternativeRoutesSidebar) {
+            alternativeRoutesSidebar.value = routeIndex.toString();
+        }
+        
+        if (alternativeRoutesTab) {
+            // Garantir que o select na aba de relatório está configurado
+            const alternativeRoutesSelect = document.getElementById('alternative-routes');
+            if (alternativeRoutesSelect) {
+                alternativeRoutesSelect.value = routeIndex.toString();
+            }
+            
+            // Garantir que o elemento pai está visível
+            const routeAlternativesDiv = document.getElementById('route-alternatives');
+            if (routeAlternativesDiv) {
+                routeAlternativesDiv.style.display = 'block';
+            }
         }
         
         console.log(`Alternando para rota alternativa ${routeIndex}`);
