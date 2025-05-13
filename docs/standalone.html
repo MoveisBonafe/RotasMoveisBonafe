@@ -64,6 +64,38 @@
             overflow-y: auto;
             margin-top: 15px;
         }
+        /* Spinner de carregamento */
+        #loading-spinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            text-align: center;
+        }
+        
+        #loading-spinner::after {
+            content: "";
+            display: block;
+            width: 40px;
+            height: 40px;
+            margin: 10px auto;
+            border-radius: 50%;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            animation: spin 2s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         .location-item {
             padding: 10px;
             border-bottom: 1px solid #eee;
@@ -591,6 +623,7 @@
         <div class="map-container">
             <button class="toggle-sidebar" id="toggle-sidebar">☰</button>
             <div id="map"></div>
+            <div id="loading-spinner">Calculando rota...</div>
             
             <!-- Controles do mapa -->
             <div class="map-controls">
@@ -2357,12 +2390,34 @@
                     // Pequeno atraso para garantir que o DirectionsRenderer esteja pronto
                     setTimeout(() => {
                         try {
-                            animateRoute(result.routes[0].overview_path);
+                            // Verifica se os pontos são objetos de LatLng ou precisam ser convertidos
+                            const routePoints = result.routes[0].overview_path.map(point => {
+                                // Se já for um objeto LatLng, retorne-o diretamente
+                                if (point instanceof google.maps.LatLng) {
+                                    return point;
+                                } 
+                                // Se for um objeto com lat/lng como métodos
+                                else if (typeof point.lat === 'function' && typeof point.lng === 'function') {
+                                    return new google.maps.LatLng(point.lat(), point.lng());
+                                }
+                                // Se for um objeto com propriedades lat/lng
+                                else if (point.lat !== undefined && point.lng !== undefined) {
+                                    return new google.maps.LatLng(point.lat, point.lng);
+                                }
+                                // Formato desconhecido
+                                else {
+                                    console.error("Formato de ponto desconhecido:", point);
+                                    return null;
+                                }
+                            }).filter(p => p !== null);
+                            
+                            console.log("Pontos da rota preparados para animação:", routePoints.length);
+                            animateRoute(routePoints);
                         } catch (err) {
-                            console.error("Erro ao animar rota:", err);
+                            console.error("Erro ao preparar pontos para animação da rota:", err);
                             showNotification("Não foi possível animar a rota: " + err.message, "warning");
                         }
-                    }, 800);
+                    }, 1000);
                     
                 } else {
                     console.error("Dados da rota incompletos, não é possível animar:", result);
@@ -2406,6 +2461,23 @@
     // Animar a rota desenhando progressivamente
     function animateRoute(path) {
         console.log("Iniciando animação da rota...");
+        
+        // Logging para diagnóstico
+        try {
+            if (path && path.length > 0) {
+                const firstPoint = path[0];
+                console.log("Primeiro ponto da rota:", firstPoint);
+                console.log("Tipo do primeiro ponto:", 
+                    firstPoint instanceof google.maps.LatLng ? "LatLng" :
+                    typeof firstPoint.lat === 'function' ? "Com métodos lat/lng" :
+                    firstPoint.lat !== undefined ? "Com propriedades lat/lng" :
+                    firstPoint.latitude !== undefined ? "Com propriedades latitude/longitude" :
+                    "Desconhecido"
+                );
+            }
+        } catch (e) {
+            console.error("Erro ao analisar formato dos pontos:", e);
+        }
         
         try {
             // Limpar qualquer animação existente
@@ -2497,7 +2569,42 @@
                     // Adicionar um lote de pontos por vez para animação mais suave
                     for (let i = 0; i < batchSize && index < path.length; i++) {
                         if (routePath && routePath.getPath) {
-                            routePath.getPath().push(path[index]);
+                            try {
+                                const point = path[index];
+                                
+                                // Criar um objeto LatLng válido, independente do formato do ponto
+                                let latLng;
+                                
+                                // Se já for um objeto LatLng válido
+                                if (point instanceof google.maps.LatLng) {
+                                    latLng = point;
+                                }
+                                // Se for um objeto com métodos lat/lng
+                                else if (typeof point.lat === 'function' && typeof point.lng === 'function') {
+                                    latLng = new google.maps.LatLng(point.lat(), point.lng());
+                                }
+                                // Se for um objeto com propriedades lat/lng
+                                else if (point.lat !== undefined && point.lng !== undefined) {
+                                    latLng = new google.maps.LatLng(point.lat, point.lng);
+                                }
+                                // Se for um objeto com propriedades latitude/longitude
+                                else if (point.latitude !== undefined && point.longitude !== undefined) {
+                                    latLng = new google.maps.LatLng(point.latitude, point.longitude);
+                                }
+                                // Formato desconhecido - usar um ponto padrão para evitar erros
+                                else {
+                                    console.error("Formato de ponto desconhecido na animação:", point);
+                                    // Pular este ponto e continuar
+                                    index++;
+                                    continue;
+                                }
+                                
+                                // Adicionar o ponto ao caminho
+                                routePath.getPath().push(latLng);
+                            } catch (pointErr) {
+                                console.error("Erro ao processar ponto específico:", pointErr, "Índice:", index);
+                                // Continuar para o próximo ponto mesmo em caso de erro
+                            }
                         } else {
                             console.error("routePath foi removido durante a animação");
                             return; // Sair para evitar erros
