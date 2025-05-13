@@ -5726,12 +5726,12 @@
         
         routeIds = [mockData.origin.id];
         
-        // Mostrar eventos para as cidades da rota com filtro por data
+        // Mostrar eventos para as cidades da rota com filtro por data (apenas na aba Eventos)
         showEventsForCitiesOnRoute(routeIds);
         
-        // Mostrar restrições para TODOS os tipos de caminhões nas cidades da rota
-        // Passando null para indicar que queremos mostrar para todos os tipos
-        showTruckRestrictionsForCitiesOnRoute(routeIds, null);
+        // Mostrar restrições para TODOS os tipos de caminhões nas cidades da rota,
+        // mas APENAS na aba de Restrições de Tráfego
+        // Esta função será chamada separadamente quando a aba Restrições for acessada
     }
 
     // Salvar a rota
