@@ -1716,10 +1716,15 @@
             return;
         }
         
-        // Mostrar loading no botão
+        // Mostrar spinner de carregamento centralizado no mapa
+        showLoadingSpinner();
+        
+        // Mostrar loading no botão também
         const optimizeBtn = document.getElementById('optimize-route');
-        optimizeBtn.innerHTML = '<span class="spinner-border" role="status" aria-hidden="true"></span> Calculando...';
-        optimizeBtn.disabled = true;
+        if (optimizeBtn) {
+            optimizeBtn.innerHTML = '<span class="spinner-border" role="status" aria-hidden="true"></span> Calculando...';
+            optimizeBtn.disabled = true;
+        }
         
         // IMPORTANTE: Assegurar que os marcadores originais sejam preservados antes de limpar
         const currentMarkers = [...markers]; // Criar uma cópia dos marcadores atuais
@@ -2012,10 +2017,15 @@
         document.getElementById('save-route').disabled = false;
         document.getElementById('print-route').disabled = false;
         
+        // Esconder o spinner de carregamento
+        hideLoadingSpinner();
+        
         // Restaurar o botão de otimizar
         const optimizeBtn = document.getElementById('optimize-route');
-        optimizeBtn.innerHTML = 'Otimizar Rota';
-        optimizeBtn.disabled = false;
+        if (optimizeBtn) {
+            optimizeBtn.innerHTML = 'Otimizar Rota';
+            optimizeBtn.disabled = false;
+        }
         
         // Navegar para a aba de relatório
         document.querySelector('.tab-button[data-tab="report"]').click();
