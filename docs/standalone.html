@@ -2167,6 +2167,50 @@
         }
     }
     
+    // Função para atualizar o conteúdo das abas inferiores
+    function updateBottomTabsContent() {
+        console.log("Atualizando conteúdo das abas inferiores...");
+        
+        // Certifique-se que todas as abas estão configuradas corretamente
+        const eventsList = document.getElementById('events-list');
+        const restrictionsList = document.getElementById('restrictions-list');
+        const routeSummary = document.getElementById('route-summary');
+        const routeAlternatives = document.getElementById('route-alternatives');
+        
+        // Verifica e garante que elementos importantes estão visíveis
+        if (routeAlternatives) {
+            routeAlternatives.style.display = 'block';
+        }
+        
+        // Atualiza o conteúdo das abas quando necessário
+        let routeIds = [];
+        
+        // Verifica se temos uma rota otimizada
+        if (alternativeRoutes && alternativeRoutes.length > 0 && 
+            alternativeRoutes[currentRouteIndex] && 
+            alternativeRoutes[currentRouteIndex].path) {
+            routeIds = alternativeRoutes[currentRouteIndex].path;
+        } else if (currentOptimizedPath && currentOptimizedPath.length > 0) {
+            // Caso não tenha rota otimizada, usa a variável currentOptimizedPath
+            routeIds = currentOptimizedPath;
+        } else {
+            // Caso não tenha nenhuma rota, usa apenas a origem
+            const originLocations = locations.filter(loc => loc.isOrigin);
+            if (originLocations.length > 0) {
+                routeIds = originLocations.map(loc => loc.id);
+            }
+        }
+        
+        if (routeIds && routeIds.length > 0) {
+            // Assegura que eventos e restrições são atualizados corretamente
+            console.log("Atualizando eventos para rota com IDs:", routeIds);
+            showEventsForCitiesOnRoute(routeIds);
+            showTruckRestrictionsForCitiesOnRoute(routeIds, null);
+        } else {
+            console.log("Nenhuma rota para atualizar conteúdo das abas");
+        }
+    }
+    
     // Função para mostrar conteúdo inicial relevante nas abas
     function showInitialTabsContent() {
         // Mostrar eventos da cidade de origem (Dois Córregos)
