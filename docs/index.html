@@ -1487,7 +1487,7 @@
             <!-- Container das abas com rolagem independente para cada aba -->
             <div class="bottom-tabs-content-container">
                 <!-- Conteúdo da aba Eventos -->
-                <div class="bottom-tab-content active" id="bottom-events-content">
+                <div class="bottom-tab-content active" id="bottom-events-content" style="display: block; position: static; z-index: auto;">
                     <h5>Eventos nas cidades da rota:</h5>
                     <div class="events-list" id="events-list">
                         <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
@@ -1495,7 +1495,7 @@
                 </div>
                 
                 <!-- Conteúdo da aba Restrições -->
-                <div class="bottom-tab-content" id="bottom-restrictions-content">
+                <div class="bottom-tab-content" id="bottom-restrictions-content" style="display: none; position: static; z-index: auto;">
                     <h5>Restrições para caminhões do percurso:</h5>
                     <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
                     <div class="restrictions-list" id="restrictions-list">
@@ -1504,7 +1504,7 @@
                 </div>
                 
                 <!-- Conteúdo da aba Relatório -->
-                <div class="bottom-tab-content" id="bottom-report-content">
+                <div class="bottom-tab-content" id="bottom-report-content" style="display: none; position: static; z-index: auto;">
                     <div id="route-summary" class="mb-4">
                         <p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>
                     </div>
@@ -1998,60 +1998,65 @@
         if (bottomTabButtons.length > 0) {
             console.log("Inicializando sistema de navegação para tabs inferiores");
             
+            // REESCRITO: Novo sistema de abas sem dependências
             bottomTabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const tabId = button.getAttribute('data-tab');
+                button.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
                     console.log("Tab inferior clicada:", tabId);
                     
-                    // Verificar se já é o botão ativo e se o painel está expandido
-                    const isCurrentlyActive = button.classList.contains('active');
+                    // Primeiramente, verificamos se estamos clicando na aba já ativa
+                    const isCurrentlyActive = this.classList.contains('active');
                     const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
                     const isExpanded = bottomTabsContainer && !bottomTabsContainer.classList.contains('minimized');
                     
-                    // Se clicar no mesmo botão que já está ativo e o painel estiver expandido, minimiza
+                    // Se clicar na mesma aba ativa e o painel estiver expandido, apenas minimiza
                     if (isCurrentlyActive && isExpanded) {
-                        toggleTabsExpansion(); // Minimizar o painel
-                        return; // Não muda o conteúdo, apenas minimiza
+                        console.log("Minimizando painel (clique na mesma aba ativa)");
+                        toggleTabsExpansion();
+                        return; // Não alteramos conteúdo, apenas minimizamos
                     }
                     
-                    // Se o painel estiver minimizado, expande ao clicar em qualquer botão
+                    // Se o painel estiver minimizado, expande primeiro
                     if (bottomTabsContainer && bottomTabsContainer.classList.contains('minimized')) {
-                        toggleTabsExpansion(); // Expandir o painel
+                        console.log("Expandindo painel (estava minimizado)");
+                        toggleTabsExpansion();
                     }
                     
-                    // Desativar todas as abas inferiores
-                    bottomTabButtons.forEach(btn => btn.classList.remove('active'));
-                    
-                    // IMPORTANTE: Esconder TODOS os conteúdos primeiro, para evitar sobreposição
-                    document.querySelectorAll('.bottom-tab-content').forEach(content => {
-                        content.classList.remove('active');
-                        content.style.display = 'none'; // Esconde explicitamente todos os conteúdos
-                        // Redefinir estilos para evitar problemas de sobreposição
-                        content.style.position = '';
-                        content.style.zIndex = '';
+                    // Remover classe active de todos os botões
+                    bottomTabButtons.forEach(btn => {
+                        btn.classList.remove('active');
                     });
                     
-                    // Ativar a aba inferior clicada
-                    button.classList.add('active');
+                    // Adicionar classe active ao botão clicado
+                    this.classList.add('active');
                     
-                    console.log("Atualizando para mostrar apenas a aba:", tabId);
+                    // CRUCIAL: Ocultar todos os conteúdos primeiro
+                    const allTabContents = document.querySelectorAll('.bottom-tab-content');
+                    allTabContents.forEach(content => {
+                        content.classList.remove('active');
+                        content.style.display = 'none';
+                        content.style.position = 'static';
+                        content.style.zIndex = 'auto';
+                    });
                     
-                    // Mapear o data-tab para o ID do conteúdo correto
-                    const contentMap = {
+                    // Mapeamento de IDs de abas para IDs de conteúdo
+                    const tabContentMap = {
                         'bottom-events': 'bottom-events-content',
                         'bottom-restrictions': 'bottom-restrictions-content',
                         'bottom-report': 'bottom-report-content'
                     };
                     
-                    const contentId = contentMap[tabId];
+                    // Mostrar o conteúdo correspondente
+                    const contentId = tabContentMap[tabId];
+                    console.log("Tentando mostrar o conteúdo:", contentId);
+                    
                     if (contentId) {
-                        const contentElement = document.getElementById(contentId);
-                        if (contentElement) {
-                            contentElement.classList.add('active');
-                            contentElement.style.display = 'block'; // Mostra explicitamente o conteúdo da aba ativa
-                            
-                            // Limpa qualquer scroll anterior
-                            contentElement.scrollTop = 0;
+                        const contentToShow = document.getElementById(contentId);
+                        if (contentToShow) {
+                            console.log("Mostrando conteúdo:", contentId);
+                            contentToShow.classList.add('active');
+                            contentToShow.style.display = 'block';
+                            contentToShow.scrollTop = 0;
                             
                             // Verificar se estamos no modo tela cheia
                             const isFullScreen = document.body.classList.contains('tabs-expanded') || 
@@ -2225,19 +2230,25 @@
     
     // Função para mostrar conteúdo inicial relevante nas abas
     function showInitialTabsContent() {
-        // Primeiro esconder TODO o conteúdo das abas para evitar sobreposições
-        const bottomTabContents = document.querySelectorAll('.bottom-tab-content');
-        bottomTabContents.forEach(content => {
+        console.log("Inicializando conteúdo das abas inferiores");
+        
+        // RESET COMPLETO: Esconder TODOS os conteúdos e limpar estilos para garantir um estado "limpo"
+        const allTabContents = document.querySelectorAll('.bottom-tab-content');
+        allTabContents.forEach(content => {
+            content.classList.remove('active');
             content.style.display = 'none';
-            content.style.position = '';
-            content.style.zIndex = '';
+            content.style.position = 'static';
+            content.style.zIndex = 'auto';
         });
         
-        // Garantir que apenas a primeira aba de eventos esteja visível
+        // Garantir que apenas a primeira aba (eventos) esteja visível inicialmente
         const eventsContent = document.getElementById('bottom-events-content');
         if (eventsContent) {
-            eventsContent.style.display = 'block';
+            console.log("Ativando aba inicial de eventos");
             eventsContent.classList.add('active');
+            eventsContent.style.display = 'block';
+        } else {
+            console.error("Elemento de conteúdo de eventos não encontrado!");
         }
         
         // Mostrar eventos da cidade de origem (Dois Córregos)
