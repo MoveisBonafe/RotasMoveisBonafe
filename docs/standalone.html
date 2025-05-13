@@ -22,11 +22,17 @@
         }
         .app-container {
             display: flex;
-            flex-direction: row !important; /* Força elementos lado a lado sempre */
+            flex-direction: column;
             height: 100vh;
             overflow: hidden;
             width: 100%;
-            position: relative; /* Permite posicionamento absoluto das abas inferiores */
+        }
+        
+        .main-content-area {
+            display: flex;
+            flex-direction: row;
+            flex: 1;
+            overflow: hidden;
         }
         .sidebar {
             width: 380px;
@@ -589,30 +595,20 @@
             margin-right: 0.5rem;
         }
         
-        /* NOVO LAYOUT - Tabs na parte inferior do mapa */
+        /* NOVO LAYOUT - Tabs na parte inferior do mapa (fixas) */
         .bottom-tabs-container {
             width: 100%;
-            margin-top: 30px;
-            margin-bottom: 40px;
+            margin-top: 0;
+            margin-bottom: 0;
             display: flex;
             flex-direction: column;
             animation: fadeIn 0.5s ease;
             background-color: #f9f9f9;
-            border-radius: 12px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            border-top: 1px solid #ddd;
             overflow: hidden;
-            max-width: calc(100% - 40px); /* Largura responsiva com margens */
-            margin-left: auto;
-            margin-right: auto;
             /* Inicialmente oculto até que uma rota seja otimizada */
             display: none;
-            /* Posicionamento absoluto para não afetar o layout principal */
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            z-index: 1000;
-            max-height: 40vh; /* Altura máxima de 40% da tela */
+            height: auto;
         }
         
         .bottom-tabs-nav {
@@ -721,12 +717,13 @@
             animation: fadeInUp 0.5s ease forwards;
             opacity: 0;
             transform: translateY(20px);
-            height: calc(40vh - 100px); /* Ajusta para o espaço disponível considerando a altura da aba */
+            height: 300px; /* Altura fixa para todas as abas */
             overflow-y: auto; /* Permite rolagem vertical para todos os conteúdos */
         }
         
-        /* Aumentando tamanho específico para a aba de restrições */
+        /* Ajustes específicos para a aba de restrições */
         #bottom-restrictions-content {
+            height: 300px; /* Altura consistente com as outras abas */
             overflow-y: auto;
         }
         
@@ -778,7 +775,8 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar para controles e informações -->
+        <div class="main-content-area">
+            <!-- Sidebar para controles e informações -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h2 class="m-0">Otimizador de Rotas</h2>
@@ -869,8 +867,9 @@
                 </button>
             </div>
         </div>
+        </div>
         
-        <!-- NOVO: Tabs na parte inferior do mapa -->
+        <!-- NOVO: Tabs fixas na parte inferior do layout -->
         <div class="bottom-tabs-container">
             <!-- Navegação das abas inferiores -->
             <div class="bottom-tabs-nav">
@@ -1342,15 +1341,15 @@
         const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
         if (bottomTabsContainer) {
             if (show) {
-                // Remover qualquer estilo display antigo
+                // Remover qualquer estilo display antigo e mostrar como flex
                 bottomTabsContainer.style.removeProperty('display');
                 bottomTabsContainer.style.display = 'flex';
                 
-                // Adiciona animação de entrada
+                // Adiciona animação de entrada suave
                 bottomTabsContainer.style.animation = 'none';
                 // Trigger reflow
                 void bottomTabsContainer.offsetWidth;
-                bottomTabsContainer.style.animation = 'fadeInUp 0.5s ease forwards';
+                bottomTabsContainer.style.animation = 'fadeIn 0.5s ease forwards';
                 
                 console.log("Abas inferiores exibidas com sucesso");
                 
@@ -1361,19 +1360,26 @@
                         firstTabButton.click();
                     }
                 }
-            } else {
-                // Primeiramente, aplica animação de saída
-                bottomTabsContainer.style.animation = 'fadeOutDown 0.3s ease forwards';
                 
-                // Aguarda o fim da animação para esconder completamente
-                setTimeout(() => {
-                    bottomTabsContainer.style.display = 'none';
-                    console.log("Abas inferiores ocultadas com sucesso");
-                }, 300);
+                // Ajusta o layout do mapa para acomodar as abas inferiores
+                adjustMapForBottomTabs(true);
+            } else {
+                // Esconder diretamente sem animação para evitar problemas de layout
+                bottomTabsContainer.style.display = 'none';
+                console.log("Abas inferiores ocultadas com sucesso");
+                
+                // Restaura o layout original do mapa
+                adjustMapForBottomTabs(false);
             }
         } else {
             console.warn("Container de abas inferiores não encontrado!");
         }
+    }
+    
+    // Função para ajustar o mapa quando as abas inferiores são exibidas
+    function adjustMapForBottomTabs(showTabs) {
+        // Não precisamos mais ajustar o layout do mapa, pois ele agora
+        // é gerenciado automaticamente pelo flexbox no novo layout
     }
     
     // Configura todos os event listeners
