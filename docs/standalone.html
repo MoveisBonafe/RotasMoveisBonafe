@@ -34,7 +34,7 @@
             flex-direction: row;
             flex: 1;
             overflow: hidden;
-            height: calc(100vh - 45px); /* Ajuste de altura para abas minimizadas */
+            height: calc(100vh - 60px); /* Ajuste de altura para abas minimizadas maiores */
         }
         .sidebar {
             width: 380px;
@@ -622,13 +622,13 @@
         
         /* Estado minimizado para container de abas */
         .bottom-tabs-container.minimized {
-            height: 45px; /* Reduzido para ser menos intrusivo */
+            height: 60px; /* Aumentado para botões maiores */
             overflow: hidden;
         }
         
         /* Ajuste para evitar que o mapa seja coberto pelas abas */
         .map-container {
-            margin-bottom: 45px; /* Espaço para as abas minimizadas */
+            margin-bottom: 60px; /* Espaço para as abas minimizadas */
         }
         
         /* Botão de expandir/minimizar */
@@ -658,8 +658,8 @@
         .bottom-tabs-nav {
             display: flex;
             justify-content: space-around; /* Espaçamento melhor distribuído */
-            gap: 5px; /* Reduzido o espaço entre os botões */
-            padding: 10px 0 5px; /* Menos padding vertical */
+            gap: 8px; /* Aumentado o espaço entre os botões */
+            padding: 12px 0 6px; /* Aumentado padding vertical */
             background: linear-gradient(to bottom, #f0f2f5, #ffffff);
             border-bottom: 1px solid #e0e0e0;
             position: sticky;
@@ -669,18 +669,20 @@
         }
         
         .bottom-tab-btn {
-            padding: 8px 15px; /* Reduzido o padding */
+            padding: 10px 20px; /* Aumentado o padding */
             background-color: #f8f9fa;
             border: 1px solid #dee2e6;
-            border-radius: 16px; /* Reduzido o arredondamento */
+            border-radius: 20px; /* Aumentado o arredondamento */
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 500;
             color: #495057;
             position: relative;
             overflow: hidden;
-            font-size: 0.85rem; /* Texto ligeiramente menor */
+            font-size: 0.9rem; /* Texto um pouco maior */
             white-space: nowrap; /* Evita quebra de linha */
+            min-width: 120px; /* Tamanho mínimo para botões maiores */
+            text-align: center; /* Centralizar o texto */
         }
         
         .bottom-tab-btn::after {
