@@ -620,7 +620,7 @@
             margin-right: 0.5rem;
         }
         
-        /* NOVO LAYOUT - Tabs na parte inferior do mapa (fixas) */
+        /* NOVO LAYOUT - Tabs na parte inferior do mapa no estilo de página de notícias */
         .bottom-tabs-container {
             width: calc(100% - 380px); /* Ajustado para não sobrepor a sidebar */
             margin-top: 0;
@@ -630,21 +630,20 @@
             flex-direction: column;
             animation: fadeIn 0.5s ease;
             background-color: #f9f9f9;
-            border-top: 1px solid #ddd; /* Alterado para borda superior */
-            overflow: auto; /* Alterado para auto para permitir rolagem */
+            border-top: 1px solid #ddd;
             /* Inicialmente minimizada ao invés de oculta */
-            display: flex;
             height: auto;
-            /* Ajustes para expandir de baixo para cima */
-            position: fixed; /* Alterado para fixed para cobrir toda a tela */
-            bottom: 0; /* Posicionar na parte inferior da página */
-            top: auto; /* Remover posicionamento do topo */
+            max-height: 60vh; /* Limita a altura para 60% da altura da janela */
+            /* Posicionamento fixo na parte inferior */
+            position: fixed;
+            bottom: 0;
+            top: auto;
             left: 0;
             right: 0;
-            z-index: 1000; /* Aumentado para ficar sobre todos os elementos */
-            transition: height 0.3s ease-in-out;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1); /* Sombra para cima */
-            box-sizing: border-box; /* Garantir que padding e border não afetem o tamanho */
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            box-sizing: border-box;
         }
         
         /* Media query para garantir que o layout permaneça estável em diferentes tamanhos de tela */
@@ -667,9 +666,9 @@
             overflow-y: auto !important;
         }
         
-        /* Estado minimizado para container de abas (agora na parte inferior) */
+        /* NOVO ESTILO: Estado minimizado para container de abas (apenas mostra os botões) */
         .bottom-tabs-container.minimized {
-            height: 60px; /* Altura quando minimizado */
+            height: 60px; /* Apenas altura suficiente para mostrar os botões de navegação */
             overflow: hidden;
             position: fixed !important;
             bottom: 0 !important;
@@ -680,38 +679,57 @@
             box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
         }
         
-        /* Estado expandido para container de abas (expandindo para baixo) */
+        /* NOVO ESTILO: Estado expandido para container de abas (estilo página de notícias) */
         .bottom-tabs-container:not(.minimized) {
-            height: calc(60vh) !important; /* Altura limitada a 60% da tela */
-            max-height: calc(100vh - 380px) !important; /* Preservando espaço para a sidebar */
+            height: 60vh !important; /* Altura fixa de 60% da altura da tela */
+            max-height: 70vh !important; /* Limite máximo para não cobrir muito a visualização */
             top: auto !important; /* Não fixar no topo */
-            bottom: 60px !important; /* Manter a barra de abas na parte inferior */
-            border-top: 2px solid #1976D2; /* Borda mais visível quando expandido (acima) */
+            bottom: 0 !important; /* Expandir a partir da parte inferior */
+            border-top: 2px solid #1976D2; /* Borda mais visível quando expandido */
             border-left: 2px solid #1976D2; /* Borda na lateral para separar da sidebar */
-            box-shadow: 0 10px 15px rgba(0,0,0,0.3); /* Sombra ajustada para baixo */
-            overflow-y: auto !important; /* Garantir rolagem vertical */
-            z-index: 2000 !important; /* Garantir que fique por cima de todos os elementos */
-            position: fixed !important; /* Posicionamento fixo na janela */
-            transform: translateY(-100%) !important; /* Mover para cima da sua própria altura */
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.2); /* Sombra para cima */
+            overflow: hidden !important; /* Conteúdo interno terá seu próprio scroll */
+            z-index: 1500 !important; /* Garantir que fique por cima dos outros elementos */
         }
         
-        /* Classe específica para expansão para baixo */
-        .bottom-tabs-container.expand-down {
-            transform: translateY(0) !important; /* Remover transformação quando expandido para baixo */
-            height: 70vh !important;
-            border-bottom: 2px solid #1976D2;
-            border-top: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
+        /* Navegação das abas sempre visível no topo do container */
+        .bottom-tabs-nav {
+            padding: 10px;
+            background: linear-gradient(to top, #1565C0, #1976D2);
+            display: flex;
+            justify-content: space-around;
+            flex-shrink: 0; /* Evita que encolha */
+            z-index: 1600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border-bottom: 2px solid #0d47a1;
         }
         
-        /* Ajuste específico para GitHub Pages */
-        body.tabs-expanded .bottom-tabs-container:not(.minimized) {
-            height: calc(60vh) !important;
-            max-height: 60vh !important;
-            bottom: 0 !important;
-            top: auto !important;
-            position: fixed !important;
-            margin-top: 0 !important;
+        /* Novo container de conteúdo com rolagem independente para estilo página de notícias */
+        .bottom-tabs-content-container {
+            padding: 0; /* Sem padding para maximizar espaço */
+            flex-grow: 1; /* Ocupa todo o espaço disponível */
+            overflow: hidden; /* Esconde overflow - cada conteúdo terá seu próprio scroll */
+            position: relative; /* Necessário para posicionamento dos conteúdos internos */
+            height: calc(60vh - 60px); /* Altura calculada: altura total - altura dos botões */
+        }
+        
+        /* Conteúdo das abas com rolagem independente (estilo página de notícias) */
+        .bottom-tab-content {
+            display: none; /* Inicialmente oculto */
+            position: absolute; /* Posicionamento absoluto para não influenciar outros elementos */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 15px;
+            overflow-y: auto; /* Rolagem independente para cada conteúdo */
+            background-color: white;
+            height: 100%; /* Ocupa toda a altura disponível */
+        }
+        
+        /* Conteúdo ativo da aba */
+        .bottom-tab-content.active {
+            display: block;
         }
         
         /* Ajustes para modo de tela cheia com abas na parte inferior */
