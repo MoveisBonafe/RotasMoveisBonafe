@@ -606,11 +606,9 @@
             background-color: #f9f9f9;
             border-top: 1px solid #ddd;
             overflow: hidden;
-            /* Visível desde o início em estado minimizado */
-            height: 52px; /* Apenas altura suficiente para mostrar os botões das abas */
-            transition: height 0.3s ease;
-            position: relative;
-            z-index: 100;
+            /* Inicialmente oculto até que uma rota seja otimizada */
+            display: none;
+            height: auto;
         }
         
         .bottom-tabs-nav {
@@ -637,15 +635,6 @@
             color: #495057;
             position: relative;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .expand-indicator {
-            margin-left: 8px;
-            font-size: 10px;
-            transition: transform 0.3s ease;
         }
         
         .bottom-tab-btn::after {
@@ -679,29 +668,6 @@
             box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
             position: relative;
             overflow: hidden;
-        }
-        
-        .bottom-tab-btn.active.expanded {
-            background-color: #115293;
-            position: relative;
-        }
-        
-        .bottom-tab-btn.active.expanded::after {
-            content: "▼";
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 10px;
-        }
-        
-        .bottom-tab-btn.active:not(.expanded)::after {
-            content: "▲";
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 10px;
         }
         
         /* Adicionar indicador sob a aba ativa */
@@ -746,43 +712,25 @@
         
         .bottom-tab-content {
             display: none;
-            padding: 0;
+            padding: 20px;
             background-color: white;
+            animation: fadeInUp 0.5s ease forwards;
             opacity: 0;
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.3s ease-in-out;
-        }
-        
-        /* Estado expandido para todas as abas */
-        .bottom-tab-content.expanded {
-            height: calc(100vh - 160px);
-            position: absolute;
-            top: 80px;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+            transform: translateY(20px);
+            height: 300px; /* Altura fixa para todas as abas */
+            overflow-y: auto; /* Permite rolagem vertical para todos os conteúdos */
         }
         
         /* Ajustes específicos para a aba de restrições */
         #bottom-restrictions-content {
+            height: 300px; /* Altura consistente com as outras abas */
             overflow-y: auto;
         }
         
         .bottom-tab-content.active {
             display: block;
             opacity: 1;
-            padding: 10px;
-            max-height: 0;
-            overflow: hidden;
-        }
-        
-        .bottom-tab-content.active.expanded {
-            max-height: 350px;
-            padding: 20px;
-            overflow-y: auto;
-            opacity: 1;
+            transform: translateY(0);
         }
         
         @keyframes fadeIn {
@@ -925,18 +873,9 @@
         <div class="bottom-tabs-container">
             <!-- Navegação das abas inferiores -->
             <div class="bottom-tabs-nav">
-                <button class="bottom-tab-btn active" data-tab="bottom-events">
-                    Eventos na Rota
-                    <span class="expand-indicator">▲</span>
-                </button>
-                <button class="bottom-tab-btn" data-tab="bottom-restrictions">
-                    Restrições de Tráfego
-                    <span class="expand-indicator">▲</span>
-                </button>
-                <button class="bottom-tab-btn" data-tab="bottom-report">
-                    Relatório da Rota
-                    <span class="expand-indicator">▲</span>
-                </button>
+                <button class="bottom-tab-btn active" data-tab="bottom-events">Eventos na Rota</button>
+                <button class="bottom-tab-btn" data-tab="bottom-restrictions">Restrições de Tráfego</button>
+                <button class="bottom-tab-btn" data-tab="bottom-report">Relatório da Rota</button>
             </div>
             
             <!-- Conteúdo da aba Eventos -->
@@ -1345,34 +1284,17 @@
         if (bottomTabButtons.length > 0) {
             console.log("Inicializando sistema de navegação para tabs inferiores");
             
-            // Configurar o container de abas
-            const tabsContainer = document.querySelector('.bottom-tabs-container');
-            
-            // Pegar a primeira aba (Eventos na Rota) e expandir por padrão
-            const firstTabButton = bottomTabButtons[0];
-            const firstTabContent = document.getElementById('bottom-events-content');
-            
-            if (tabsContainer && firstTabButton && firstTabContent) {
-                // Deixar a primeira aba expandida por padrão
-                tabsContainer.style.height = '400px';
-                firstTabButton.classList.add('expanded');
-                firstTabContent.classList.add('expanded');
-                
-                // Configurar os indicadores de expansão/contração iniciais
-                bottomTabButtons.forEach(btn => {
-                    const indicator = btn.querySelector('.expand-indicator');
-                    if (indicator) {
-                        // Se for a primeira aba (active), mostra seta para baixo (expandido)
-                        // Demais abas mostram seta para cima (colapsadas)
-                        indicator.textContent = btn === firstTabButton ? '▼' : '▲';
-                    }
-                });
-            }
-            
             bottomTabButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     const tabId = button.getAttribute('data-tab');
                     console.log("Tab inferior clicada:", tabId);
+                    
+                    // Desativar todas as abas inferiores
+                    bottomTabButtons.forEach(btn => btn.classList.remove('active'));
+                    bottomTabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Ativar a aba inferior clicada
+                    button.classList.add('active');
                     
                     // Mapear o data-tab para o ID do conteúdo correto
                     const contentMap = {
@@ -1382,94 +1304,29 @@
                     };
                     
                     const contentId = contentMap[tabId];
-                    if (!contentId) return;
-                    
-                    const contentElement = document.getElementById(contentId);
-                    if (!contentElement) {
-                        console.warn(`Elemento de conteúdo #${contentId} não encontrado`);
-                        return;
-                    }
-                    
-                    // Se o botão já está ativo, alternar entre expandido e minimizado
-                    if (button.classList.contains('active')) {
-                        const isExpanded = contentElement.classList.contains('expanded');
-                        
-                        // Alternar estado de expansão
-                        contentElement.classList.toggle('expanded');
-                        
-                        // Aplicar altura de acordo com o estado expandido
-                        if (contentElement.classList.contains('expanded')) {
-                            contentElement.style.maxHeight = '350px';
-                        } else {
-                            contentElement.style.maxHeight = '0';
-                        }
-                        
-                        // Ajustar altura do container de abas
-                        if (tabsContainer) {
-                            if (isExpanded) {
-                                // Minimizando
-                                tabsContainer.style.height = '52px';
-                                button.classList.remove('expanded');
-                                // Alterar o indicador de expansão para seta para cima
-                                const indicator = button.querySelector('.expand-indicator');
-                                if (indicator) indicator.textContent = '▲';
-                                console.log("Minimizando aba:", tabId);
-                                
-                                // Se for a aba de eventos, garantir que os eventos são mostrados mesmo minimizada
-                                if (tabId === 'bottom-events' && currentOptimizedPath && currentOptimizedPath.length > 0) {
-                                    showEventsForCitiesOnRoute(currentOptimizedPath);
-                                }
-                            } else {
-                                // Expandindo
-                                tabsContainer.style.height = '400px';
-                                button.classList.add('expanded');
-                                // Alterar o indicador de expansão para seta para baixo
-                                const indicator = button.querySelector('.expand-indicator');
-                                if (indicator) indicator.textContent = '▼';
-                                console.log("Expandindo aba:", tabId);
-                                
-                                // Se for a aba de eventos, atualizá-los quando expandir
-                                if (tabId === 'bottom-events' && currentOptimizedPath && currentOptimizedPath.length > 0) {
-                                    showEventsForCitiesOnRoute(currentOptimizedPath);
-                                }
-                            }
-                        }
-                    } else {
-                        // Desativar todas as abas inferiores
-                        bottomTabButtons.forEach(btn => {
-                            btn.classList.remove('active');
-                            btn.classList.remove('expanded');
-                        });
-                        bottomTabContents.forEach(content => {
-                            content.classList.remove('active');
-                            content.classList.remove('expanded');
-                        });
-                        
-                        // Ativar a aba inferior clicada
-                        button.classList.add('active');
-                        contentElement.classList.add('active');
-                        contentElement.classList.add('expanded');
-                        
-                        // Ajustar altura do container para mostrar a aba clicada
-                        if (tabsContainer) {
-                            tabsContainer.style.height = '400px';
-                        }
-                        
-                        // Efeitos visuais adicionais para GitHub Pages
-                        if (isGitHubPages) {
-                            // Reset da animação
-                            contentElement.style.animation = 'none';
-                            setTimeout(() => {
-                                contentElement.style.animation = 'fadeInUp 0.5s ease forwards';
-                            }, 10);
+                    if (contentId) {
+                        const contentElement = document.getElementById(contentId);
+                        if (contentElement) {
+                            contentElement.classList.add('active');
                             
-                            // Rolagem suave até a aba
-                            setTimeout(() => {
-                                contentElement.scrollIntoView({
-                                    behavior: 'smooth',
-                                    block: 'start'
-                                });
-                            }, 100);
+                            // Efeitos visuais adicionais para GitHub Pages
+                            if (isGitHubPages) {
+                                // Reset da animação
+                                contentElement.style.animation = 'none';
+                                setTimeout(() => {
+                                    contentElement.style.animation = 'fadeInUp 0.5s ease forwards';
+                                }, 10);
+                                
+                                // Rolagem suave até a aba
+                                setTimeout(() => {
+                                    contentElement.scrollIntoView({
+                                        behavior: 'smooth',
+                                        block: 'start'
+                                    });
+                                }, 100);
+                            }
+                        } else {
+                            console.warn(`Elemento de conteúdo #${contentId} não encontrado`);
                         }
                     }
                 });
@@ -2489,28 +2346,6 @@
                 showEventsForCitiesOnRoute(tspResult.path);
                 showTruckRestrictionsForCitiesOnRoute(tspResult.path, null); // null para mostrar todos os tipos
                 
-                // Garantir que as abas estão visíveis e com os dados atualizados
-                const tabsContainer = document.querySelector('.bottom-tabs-container');
-                const eventsTab = document.getElementById('bottom-events-content');
-                const eventsButton = document.querySelector('.bottom-tab-btn[data-tab="bottom-events"]');
-                
-                if (tabsContainer && eventsTab && eventsButton) {
-                    // Garantir que a aba esteja ativa para mostrar os eventos
-                    eventsTab.classList.add('active');
-                    eventsButton.classList.add('active');
-                    
-                    // Expandir a aba de eventos para mostrar o conteúdo
-                    eventsTab.classList.add('expanded');
-                    eventsButton.classList.add('expanded');
-                    
-                    // Atualizar indicador visual
-                    const indicator = eventsButton.querySelector('.expand-indicator');
-                    if (indicator) indicator.textContent = '▼';
-                    
-                    // Definir altura do container para mostrar o conteúdo
-                    tabsContainer.style.height = '400px';
-                }
-                
                 // Atualizar a sequência de rota no relatório
                 // A função não existe, então implementamos diretamente aqui
                 const routeSequenceElement = document.getElementById('route-sequence');
@@ -3411,23 +3246,6 @@
     // Mostrar eventos para as cidades na rota
     function showEventsForCitiesOnRoute(pathIds) {
         console.log("Mostrando eventos para rota com IDs:", pathIds);
-        
-        // Garantir que a aba esteja visível
-        const eventsTab = document.getElementById('bottom-events-content');
-        if (eventsTab) {
-            // Verificar se a aba está ativa
-            if (!eventsTab.classList.contains('active')) {
-                // Se não estiver ativa, ativar apenas para atualizar o conteúdo, sem expandir
-                const bottomTabButtons = document.querySelectorAll('.bottom-tab-btn');
-                bottomTabButtons.forEach(btn => {
-                    if (btn.getAttribute('data-tab') === 'bottom-events') {
-                        // Manter o botão ativo para garantir que a função de atualização será chamada
-                        btn.classList.add('active');
-                    }
-                });
-                eventsTab.classList.add('active');
-            }
-        }
         
         // Verificações de segurança
         if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
