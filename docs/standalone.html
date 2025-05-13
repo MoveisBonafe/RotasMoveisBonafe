@@ -2106,8 +2106,21 @@
                 bottomTabsContainer.style.removeProperty('display');
                 bottomTabsContainer.style.display = 'flex';
                 
+                // Garantir que as abas permaneçam na parte inferior
+                bottomTabsContainer.style.position = 'fixed';
+                bottomTabsContainer.style.bottom = '0';
+                bottomTabsContainer.style.top = 'auto';
+                bottomTabsContainer.style.left = '0';
+                bottomTabsContainer.style.right = '0';
+                bottomTabsContainer.style.zIndex = '1000';
+                
                 // Remover a classe minimizada para mostrar o conteúdo completo
                 bottomTabsContainer.classList.remove('minimized');
+                
+                // Adicionar classe para expandir para baixo (não para cima)
+                if (!bottomTabsContainer.classList.contains('expand-down')) {
+                    bottomTabsContainer.classList.add('expand-down');
+                }
                 
                 // Atualizar o texto do botão de toggle
                 const toggleIcon = document.getElementById('toggle-icon');
