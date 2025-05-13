@@ -2022,31 +2022,74 @@
             console.log("Versão GitHub Pages detectada, aplicando melhorias de desempenho.");
         }
     }
-                        return; // Não muda o conteúdo, apenas minimiza
-                    }
-                    
-                    // Se o painel estiver minimizado, expande ao clicar em qualquer botão
-                    if (bottomTabsContainer && bottomTabsContainer.classList.contains('minimized')) {
-                        toggleTabsExpansion(); // Expandir o painel
-                    }
-                    
-                    // Desativar todas as abas inferiores
-                    bottomTabButtons.forEach(btn => btn.classList.remove('active'));
-                    bottomTabContents.forEach(content => content.classList.remove('active'));
-                    
-                    // Ativar a aba inferior clicada
-                    button.classList.add('active');
-                    
-                    // Mapear o data-tab para o ID do conteúdo correto
-                    const contentMap = {
-                        'bottom-events': 'bottom-events-content',
-                        'bottom-restrictions': 'bottom-restrictions-content',
-                        'bottom-report': 'bottom-report-content'
-                    };
-                    
-                    const contentId = contentMap[tabId];
-                    if (contentId) {
-                        const contentElement = document.getElementById(contentId);
+
+    // Função para alternar entre mostrar e esconder conteúdo das abas
+    function toggleTabContent(contentId) {
+        const content = document.getElementById(contentId);
+        if (content) {
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+            } else {
+                // Esconder todos os conteúdos primeiro
+                document.querySelectorAll('.tab-content').forEach(
+                    el => el.classList.remove('active')
+                );
+                // Mostrar apenas o selecionado
+                content.classList.add('active');
+            }
+        }
+    }
+    // Função para manipular as abas inferiores antigas (sistema legado)
+    function handleBottomTabs() {
+        const bottomTabButtons = document.querySelectorAll('.bottom-tab-btn');
+        const bottomTabContents = document.querySelectorAll('.bottom-tab-content');
+        const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+        
+        if (!bottomTabButtons.length) {
+            console.log("Sistema de abas inferiores antigo não encontrado");
+            return;
+        }
+        
+        console.log("Inicializando sistema de abas inferiores antigo");
+        
+        // Mapear o data-tab para o ID do conteúdo correto
+        const contentMap = {
+            'bottom-events': 'bottom-events-content',
+            'bottom-restrictions': 'bottom-restrictions-content',
+            'bottom-report': 'bottom-report-content'
+        };
+        
+        // Adicionar event listeners para os botões
+        bottomTabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                console.log("Tab inferior clicada:", tabId);
+                
+                // Verificar se já é o botão ativo e se o painel está expandido
+                const isCurrentlyActive = button.classList.contains('active');
+                const isExpanded = bottomTabsContainer && !bottomTabsContainer.classList.contains('minimized');
+                
+                // Se clicar no mesmo botão que já está ativo e o painel estiver expandido, minimiza
+                if (isCurrentlyActive && isExpanded) {
+                    toggleTabsExpansion(); // Minimizar o painel
+                    return; // Não muda o conteúdo, apenas minimiza
+                }
+                
+                // Se o painel estiver minimizado, expande ao clicar em qualquer botão
+                if (bottomTabsContainer && bottomTabsContainer.classList.contains('minimized')) {
+                    toggleTabsExpansion(); // Expandir o painel
+                }
+                
+                // Desativar todas as abas inferiores
+                bottomTabButtons.forEach(btn => btn.classList.remove('active'));
+                bottomTabContents.forEach(content => content.classList.remove('active'));
+                
+                // Ativar a aba clicada
+                button.classList.add('active');
+                
+                const contentId = contentMap[tabId];
+                if (contentId) {
+                    const contentElement = document.getElementById(contentId);
                         if (contentElement) {
                             contentElement.classList.add('active');
                             
