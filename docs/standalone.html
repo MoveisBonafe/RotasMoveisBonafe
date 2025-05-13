@@ -529,8 +529,11 @@
         /* Estilos para restrições de caminhões */
         .restrictions-list {
             margin-top: 10px;
-            max-height: 200px;
-            overflow-y: auto;
+            max-height: none !important; /* Sem limite de altura máxima */
+            min-height: calc(100vh - 210px) !important; /* Preencher quase toda a altura disponível */
+            overflow-y: auto !important;
+            padding-bottom: 30px !important;
+            flex-grow: 1 !important;
         }
         .restriction-item {
             padding: 8px;
@@ -858,8 +861,25 @@
         #bottom-restrictions-content {
             overflow-y: auto !important;
             min-height: 100% !important;
+            max-height: calc(100vh - 140px) !important; /* Garantir altura máxima */
             display: flex !important;
             flex-direction: column !important;
+            padding-bottom: 50px !important; /* Adicionar espaço na parte inferior */
+        }
+        
+        /* Estilos específicos para GitHub Pages */
+        .fullscreen-mode #bottom-restrictions-content,
+        .fullscreen-mode #bottom-events-content,
+        .fullscreen-mode #bottom-report-content {
+            min-height: calc(100vh - 140px) !important;
+            max-height: calc(100vh - 140px) !important;
+            height: calc(100vh - 140px) !important;
+            overflow-y: auto !important;
+            background-color: white !important;
+            padding: 20px !important;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1) !important;
+            border-radius: 8px !important;
+            margin: 10px !important;
         }
         
         /* Garantir que todas as listas dentro das abas tenham altura completa */
