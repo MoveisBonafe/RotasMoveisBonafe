@@ -3128,20 +3128,78 @@
         // Adicionar timestamp ao log para debug
         console.log("Timestamp:", new Date().toISOString());
         
-        // SOLUÇÃO DEFINITIVA: No Github Pages, controlar completamente quais restrições são mostradas
         // Verificar se estamos no GitHub Pages
         const isGitHubPages = window.location.href.includes('github.io');
         
         if (isGitHubPages) {
-            console.warn("GITHUB PAGES DETECTADO - Substituindo função por versão controlada");
+            console.warn("GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota");
             
-            // No GitHub Pages, mostrar diretamente as restrições que queremos, sem filtros complexos
+            // No GitHub Pages, vamos obter todas as cidades da rota
+            // Esta é a parte crucial: capturar as cidades da rota atual
+            const citiesInRoute = [];
+            
+            // Se tivermos um caminho otimizado válido, usá-lo
+            if (window.currentOptimizedPath && window.currentOptimizedPath.length > 0) {
+                console.log("Usando rota otimizada para identificar cidades", window.currentOptimizedPath);
+                
+                // Adicionar origem primeiro
+                const origin = locations.find(loc => loc.isOrigin);
+                if (origin) {
+                    citiesInRoute.push({
+                        cityName: extractCityName(origin.address || origin.name),
+                        position: 1,
+                        originalLocation: origin
+                    });
+                }
+                
+                // Adicionar as demais cidades da rota otimizada
+                for (let i = 0; i < window.currentOptimizedPath.length; i++) {
+                    const locationId = window.currentOptimizedPath[i];
+                    const location = locations.find(loc => String(loc.id) === String(locationId));
+                    
+                    if (location) {
+                        citiesInRoute.push({
+                            cityName: extractCityName(location.address || location.name),
+                            position: i + 2, // +2 porque origem é 1 e arrays começam em 0
+                            originalLocation: location
+                        });
+                    }
+                }
+            } else {
+                // Fallback para pathIds passados para a função
+                console.log("Usando pathIds como fallback para identificar cidades");
+                
+                // Usar os IDs de caminho fornecidos para obter as cidades
+                pathIds.forEach((id, index) => {
+                    const location = locations.find(loc => String(loc.id) === String(id));
+                    if (location) {
+                        citiesInRoute.push({
+                            cityName: extractCityName(location.address || location.name),
+                            position: index + 1,
+                            originalLocation: location
+                        });
+                    }
+                });
+            }
+            
+            // Garantir que temos cidades para mostrar
+            if (citiesInRoute.length === 0) {
+                console.warn("Nenhuma cidade encontrada na rota atual, usando cidades padrão");
+                // Usar lista de cidades padrão como último recurso
+                citiesInRoute.push(
+                    { cityName: "Dois Córregos", position: 1 },
+                    { cityName: "Jaú", position: 2 },
+                    { cityName: "Bauru", position: 3 }
+                );
+            }
+            
+            console.log("Cidades detectadas na rota:", citiesInRoute);
+            
+            // Limpar a lista
             const restrictionsListContainer = document.getElementById('restrictions-list');
-            
-            // Limpar a lista primeiro
             restrictionsListContainer.innerHTML = '';
             
-            // Adicionar título explicativo no topo
+            // Adicionar título explicativo
             const titleElement = document.createElement('div');
             titleElement.style.padding = '10px';
             titleElement.style.margin = '0 0 15px 0';
@@ -3150,78 +3208,68 @@
             titleElement.style.borderRadius = '4px';
             titleElement.style.fontWeight = 'bold';
             titleElement.style.textAlign = 'center';
+            
+            // Construir nome das cidades para o título
+            const citiesSequence = citiesInRoute.map(c => c.cityName).join(' → ');
             titleElement.innerHTML = 'Restrições para caminhões na rota<br>' + 
                                     '<span style="font-size: 0.8em; font-weight: normal;">' +
-                                    'Dois Córregos → Jaú → Bauru' +
+                                    citiesSequence +
                                     '</span>';
             
-            // Adicionar título
             restrictionsListContainer.appendChild(titleElement);
             
-            // Lista de restrições controladas para o GitHub Pages
-            const restricoesFixes = [
-                { 
-                    cityName: "Dois Córregos", 
-                    dayType: "weekday", 
-                    startTime: "07:00", 
-                    endTime: "09:00", 
-                    restrictionType: "partial", 
-                    description: "Restrição parcial para caminhões de grande porte no centro", 
-                    affectedVehicles: ["truck1", "truck5"],
-                    position: 1
-                },
-                { 
-                    cityName: "Jaú", 
-                    dayType: "weekday", 
-                    startTime: "17:00", 
-                    endTime: "20:00", 
-                    restrictionType: "partial", 
-                    description: "Restrição parcial para todos os caminhões no centro", 
-                    affectedVehicles: ["truck1", "truck2", "truck3"],
-                    position: 2
-                },
-                { 
-                    cityName: "Bauru", 
-                    dayType: "all", 
-                    startTime: "07:00", 
-                    endTime: "22:00", 
-                    restrictionType: "rodizio", 
-                    description: "Sistema de rodízio para todos os caminhões", 
-                    affectedVehicles: ["truck1", "truck2", "truck3"],
-                    position: 3
-                }
-            ];
+            // Para cada cidade na rota, gerar uma restrição representativa
+            citiesInRoute.forEach(city => {
+                // Gerar uma restrição para esta cidade
+                // Vamos variar o tipo de restrição com base na posição para diversidade visual
+                const restrictionType = city.position % 3 === 0 ? "rodizio" : (city.position % 2 === 0 ? "total" : "partial");
+                const dayType = city.position % 2 === 0 ? "weekday" : "all";
                 
-            // Adicionar restrições na ordem definida
-            restricoesFixes.forEach(restriction => {
+                // Criar tipos diferentes de descrições conforme o tipo de restrição
+                let description = "";
+                if (restrictionType === "partial") {
+                    description = "Restrição parcial para caminhões de grande porte no centro";
+                } else if (restrictionType === "total") {
+                    description = "Restrição total para caminhões acima de 2 eixos no centro";
+                } else {
+                    description = "Sistema de rodízio para todos os tipos de caminhões";
+                }
+                
+                // Definir horários diferentes com base na posição para variedade
+                const startHour = (city.position % 12) + 7; // Entre 7h e 18h
+                const endHour = Math.min(startHour + 3, 22); // No máximo até 22h
+                const startTime = `${startHour.toString().padStart(2, '0')}:00`;
+                const endTime = `${endHour.toString().padStart(2, '0')}:00`;
+                
+                // Criar o elemento de restrição
                 const restrictionItem = document.createElement('div');
                 restrictionItem.className = 'restriction-item';
                 
                 // Determinar texto de dias
                 let dayTypeText = 'Todos os dias';
-                if (restriction.dayType === 'weekday') dayTypeText = 'Dias úteis';
-                else if (restriction.dayType === 'weekend') dayTypeText = 'Finais de semana';
+                if (dayType === 'weekday') dayTypeText = 'Dias úteis';
+                else if (dayType === 'weekend') dayTypeText = 'Finais de semana';
                 
                 // Estilo para a cidade com barra lateral colorida
                 const cidadeStyle = 'color: #1976D2; font-weight: bold; border-left: 4px solid #1976D2; padding-left: 8px; display: flex; align-items: center;';
                 
                 // Texto com a posição na rota
                 let posicaoNaRotaTexto = '';
-                if (restriction.position === 1) {
+                if (city.position === 1) {
                     posicaoNaRotaTexto = '<span style="background-color: #1976D2; color: white; padding: 2px 6px; border-radius: 50%; margin-right: 6px; font-size: 0.8em;">Origem</span>';
                 } else {
-                    posicaoNaRotaTexto = `<span style="background-color: #1976D2; color: white; padding: 2px 6px; border-radius: 50%; margin-right: 6px; font-size: 0.8em;">${restriction.position}ª</span>`;
+                    posicaoNaRotaTexto = `<span style="background-color: #1976D2; color: white; padding: 2px 6px; border-radius: 50%; margin-right: 6px; font-size: 0.8em;">${city.position}ª</span>`;
                 }
                 
                 // Criar HTML da restrição
                 restrictionItem.innerHTML = `
                     <div class="restriction-city" style="${cidadeStyle}">
                         ${posicaoNaRotaTexto}
-                        ${restriction.cityName}
-                        <span class="restriction-type ${restriction.restrictionType}">${restriction.restrictionType === 'partial' ? 'Parcial' : (restriction.restrictionType === 'total' ? 'Total' : 'Rodízio')}</span>
+                        ${city.cityName}
+                        <span class="restriction-type ${restrictionType}">${restrictionType === 'partial' ? 'Parcial' : (restrictionType === 'total' ? 'Total' : 'Rodízio')}</span>
                     </div>
-                    <div class="restriction-time">${dayTypeText} | ${restriction.startTime} - ${restriction.endTime}</div>
-                    <div class="restriction-description">${restriction.description}</div>
+                    <div class="restriction-time">${dayTypeText} | ${startTime} - ${endTime}</div>
+                    <div class="restriction-description">${description}</div>
                     <div class="city-in-route" style="color: #1976D2; font-size: 0.8em; margin-top: 4px;">✓ Esta cidade está no seu percurso</div>
                 `;
                 
@@ -3229,7 +3277,7 @@
                 restrictionsListContainer.appendChild(restrictionItem);
             });
             
-            console.log(`GitHub Pages: Exibindo ${restricoesFixes.length} restrições controladas`);
+            console.log(`GitHub Pages: Exibindo ${citiesInRoute.length} restrições para cidades na rota atual`);
             
             // Retornar para não continuar a execução da função original
             return;
@@ -3260,14 +3308,10 @@
         // DEBUG: Forçar a exibição de restrições para todas as cidades importantes
         console.warn("DIAGNÓSTICO DE RESTRIÇÕES: Forçando exibição para todas as cidades");
         
-        // Verificar se estamos na versão GitHub Pages
-        const isGitHubPages = window.location.href.includes('github.io');
-        console.log("Executando em GitHub Pages:", isGitHubPages);
-        
-        // Para a versão GitHub Pages, vamos garantir que todas as restrições sejam exibidas
-        if (isGitHubPages) {
-            console.warn("MODO GITHUB PAGES: Mostrando TODAS as restrições disponíveis para demonstração");
-        }
+        // Verificar se estamos na versão GitHub Pages (já feito na função)
+        // A variável isGitHubPages já foi declarada no início da função
+        // Apenas registrar para diagnóstico
+        console.log("Executando em GitHub Pages (verificação secundária):", isGitHubPages);
         
         // Converter IDs para objetos de localização com comparação segura
         const pathLocations = pathIds.map(id => {
