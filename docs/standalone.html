@@ -1474,34 +1474,28 @@
         </div>
         </div>
         
-        <!-- NOVO SISTEMA DE ABAS: Simplificado e mais confiável -->
-        <link rel="stylesheet" href="standalone.css">
+        <!-- NOVO: Tabs fixas na parte inferior do layout (inicialmente minimizadas) -->
         <div class="bottom-tabs-container minimized">
-            <!-- Navegação das abas com design simplificado -->
+            <!-- Sem botão adicional - os próprios botões das abas controlam expandir/minimizar -->
+            <!-- Navegação das abas inferiores -->
             <div class="bottom-tabs-nav">
-                <button class="bottom-tab-btn active" data-tab="events">
-                    <span>Eventos na Rota</span>
-                </button>
-                <button class="bottom-tab-btn" data-tab="restrictions">
-                    <span>Restrições de Tráfego</span>
-                </button>
-                <button class="bottom-tab-btn" data-tab="report">
-                    <span>Relatório da Rota</span>
-                </button>
+                <button class="bottom-tab-btn active" data-tab="bottom-events">Eventos na Rota</button>
+                <button class="bottom-tab-btn" data-tab="bottom-restrictions">Restrições de Tráfego</button>
+                <button class="bottom-tab-btn" data-tab="bottom-report">Relatório da Rota</button>
             </div>
             
-            <!-- Container de conteúdo independente para cada aba -->
+            <!-- Container das abas com rolagem independente para cada aba -->
             <div class="bottom-tabs-content-container">
-                <!-- Conteúdo de Eventos -->
-                <div class="bottom-tab-content active" id="events-content">
+                <!-- Conteúdo da aba Eventos -->
+                <div class="bottom-tab-content active" id="bottom-events-content" style="display: block; position: static; z-index: auto;">
                     <h5>Eventos nas cidades da rota:</h5>
                     <div class="events-list" id="events-list">
                         <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
                     </div>
                 </div>
                 
-                <!-- Conteúdo de Restrições -->
-                <div class="bottom-tab-content" id="restrictions-content">
+                <!-- Conteúdo da aba Restrições -->
+                <div class="bottom-tab-content" id="bottom-restrictions-content" style="display: none; position: static; z-index: auto;">
                     <h5>Restrições para caminhões do percurso:</h5>
                     <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
                     <div class="restrictions-list" id="restrictions-list">
@@ -1509,8 +1503,8 @@
                     </div>
                 </div>
                 
-                <!-- Conteúdo de Relatório -->
-                <div class="bottom-tab-content" id="report-content">
+                <!-- Conteúdo da aba Relatório -->
+                <div class="bottom-tab-content" id="bottom-report-content" style="display: none; position: static; z-index: auto;">
                     <div id="route-summary" class="mb-4">
                         <p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>
                     </div>
@@ -2005,27 +1999,26 @@
             console.log("Inicializando sistema de navegação para tabs inferiores");
             
             // REESCRITO: Novo sistema de abas sem dependências
-            // SISTEMA DE ABAS TOTALMENTE NOVO E SIMPLIFICADO
             bottomTabButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const tabId = this.getAttribute('data-tab');
-                    console.log("Aba clicada:", tabId);
+                    console.log("Tab inferior clicada:", tabId);
                     
-                    // Verificar se a aba já está ativa
+                    // Primeiramente, verificamos se estamos clicando na aba já ativa
                     const isCurrentlyActive = this.classList.contains('active');
                     const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
                     const isExpanded = bottomTabsContainer && !bottomTabsContainer.classList.contains('minimized');
                     
-                    // Clique na mesma aba ativa quando expandido apenas minimiza
+                    // Se clicar na mesma aba ativa e o painel estiver expandido, apenas minimiza
                     if (isCurrentlyActive && isExpanded) {
-                        console.log("Minimizando painel (clique na mesma aba)");
+                        console.log("Minimizando painel (clique na mesma aba ativa)");
                         toggleTabsExpansion();
-                        return;
+                        return; // Não alteramos conteúdo, apenas minimizamos
                     }
                     
-                    // Se o painel estiver minimizado, primeiro expandir
+                    // Se o painel estiver minimizado, expande primeiro
                     if (bottomTabsContainer && bottomTabsContainer.classList.contains('minimized')) {
-                        console.log("Expandindo painel");
+                        console.log("Expandindo painel (estava minimizado)");
                         toggleTabsExpansion();
                     }
                     
@@ -2034,23 +2027,36 @@
                         btn.classList.remove('active');
                     });
                     
-                    // Adicionar classe active ao botão atual
+                    // Adicionar classe active ao botão clicado
                     this.classList.add('active');
                     
-                    // Ocultar todos os painéis de conteúdo
+                    // CRUCIAL: Ocultar todos os conteúdos primeiro
                     const allTabContents = document.querySelectorAll('.bottom-tab-content');
                     allTabContents.forEach(content => {
                         content.classList.remove('active');
+                        content.style.display = 'none';
+                        content.style.position = 'static';
+                        content.style.zIndex = 'auto';
                     });
                     
-                    // Mostrar apenas o painel de conteúdo correspondente
-                    const contentId = tabId + '-content';
-                    console.log("Mostrando conteúdo:", contentId);
+                    // Mapeamento de IDs de abas para IDs de conteúdo
+                    const tabContentMap = {
+                        'bottom-events': 'bottom-events-content',
+                        'bottom-restrictions': 'bottom-restrictions-content',
+                        'bottom-report': 'bottom-report-content'
+                    };
                     
-                    const contentToShow = document.getElementById(contentId);
-                    if (contentToShow) {
-                        contentToShow.classList.add('active');
-                        contentToShow.scrollTop = 0;
+                    // Mostrar o conteúdo correspondente
+                    const contentId = tabContentMap[tabId];
+                    console.log("Tentando mostrar o conteúdo:", contentId);
+                    
+                    if (contentId) {
+                        const contentToShow = document.getElementById(contentId);
+                        if (contentToShow) {
+                            console.log("Mostrando conteúdo:", contentId);
+                            contentToShow.classList.add('active');
+                            contentToShow.style.display = 'block';
+                            contentToShow.scrollTop = 0;
                             
                             // Verificar se estamos no modo tela cheia
                             const isFullScreen = document.body.classList.contains('tabs-expanded') || 
@@ -2224,31 +2230,26 @@
     
     // Função para mostrar conteúdo inicial relevante nas abas
     function showInitialTabsContent() {
-        console.log("Inicializando conteúdo das abas inferiores (novo sistema)");
+        console.log("Inicializando conteúdo das abas inferiores");
         
-        // Remover classe active de todos os painéis
+        // RESET COMPLETO: Esconder TODOS os conteúdos e limpar estilos para garantir um estado "limpo"
         const allTabContents = document.querySelectorAll('.bottom-tab-content');
         allTabContents.forEach(content => {
             content.classList.remove('active');
+            content.style.display = 'none';
+            content.style.position = 'static';
+            content.style.zIndex = 'auto';
         });
         
-        // Ativar apenas o painel inicial de eventos
-        const eventsContent = document.getElementById('events-content');
+        // Garantir que apenas a primeira aba (eventos) esteja visível inicialmente
+        const eventsContent = document.getElementById('bottom-events-content');
         if (eventsContent) {
             console.log("Ativando aba inicial de eventos");
             eventsContent.classList.add('active');
+            eventsContent.style.display = 'block';
         } else {
             console.error("Elemento de conteúdo de eventos não encontrado!");
         }
-        
-        // Garantir que o botão correto também esteja ativo
-        const tabButtons = document.querySelectorAll('.bottom-tab-btn');
-        tabButtons.forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.getAttribute('data-tab') === 'events') {
-                btn.classList.add('active');
-            }
-        });
         
         // Mostrar eventos da cidade de origem (Dois Córregos)
         const routeIds = [mockData.origin.id];
@@ -2258,7 +2259,7 @@
         showTruckRestrictionsForCitiesOnRoute(routeIds, null);
         
         // Mostrar mensagem no relatório
-        const reportContent = document.getElementById('report-content');
+        const reportContent = document.getElementById('bottom-report-content');
         if (reportContent) {
             const routeSummary = document.getElementById('route-summary');
             if (routeSummary) {
