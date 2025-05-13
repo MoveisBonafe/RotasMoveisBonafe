@@ -2018,6 +2018,36 @@
                             contentElement.style.transform = 'translateY(30px)';
                             contentElement.style.display = 'block';
                             
+                            // Carregar o conteúdo específico de cada aba
+                            // Isso evita que as restrições para caminhões apareçam em todas as abas
+                            if (tabId === 'bottom-restrictions') {
+                                // Carregar restrições para caminhões somente na aba de Restrições
+                                // Usar os IDs da rota atual para mostrar as restrições
+                                let pathIds = [mockData.origin.id]; // Valor padrão: apenas origem
+                                
+                                // Verificar se temos um caminho otimizado válido
+                                if (typeof currentOptimizedPath === 'object' && currentOptimizedPath) {
+                                    if (Array.isArray(currentOptimizedPath)) {
+                                        // Se for um array simples
+                                        pathIds = currentOptimizedPath;
+                                    } else if (currentOptimizedPath.path && Array.isArray(currentOptimizedPath.path)) {
+                                        // Se for um objeto com propriedade path
+                                        pathIds = currentOptimizedPath.path;
+                                    }
+                                }
+                                
+                                // Limpar o conteúdo atual das restrições
+                                const restrictionsListContainer = document.getElementById('restrictions-list');
+                                if (restrictionsListContainer) {
+                                    restrictionsListContainer.innerHTML = '<p class="text-center"><i class="fas fa-sync fa-spin"></i> Carregando restrições...</p>';
+                                }
+                                
+                                // Mostrar restrições para caminhões apenas nesta aba
+                                setTimeout(() => {
+                                    showTruckRestrictionsForCitiesOnRoute(pathIds, null);
+                                }, 100);
+                            }
+                            
                             // Aplicar animação de entrada após breve delay
                             setTimeout(() => {
                                 contentElement.classList.add('active');
