@@ -633,33 +633,7 @@
             box-shadow: 0 -5px 15px rgba(0,0,0,0.2); /* Sombra mais evidente */
         }
         
-        /* Botão para fechar a aba expandida */
-        .close-expanded-tabs {
-            display: none;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #f44336;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            font-size: 16px;
-            cursor: pointer;
-            z-index: 1001;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        
-        .bottom-tabs-container:not(.minimized) .close-expanded-tabs {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .close-expanded-tabs:hover {
-            background-color: #d32f2f;
-        }
+        /* Botão de fechar removido - usando apenas os botões das abas para controlar expandir/minimizar */
         
         /* Ajuste para evitar que o mapa seja coberto pelas abas */
         .map-container {
@@ -945,8 +919,7 @@
         
         <!-- NOVO: Tabs fixas na parte inferior do layout (inicialmente minimizadas) -->
         <div class="bottom-tabs-container minimized">
-            <!-- Botão para fechar quando expandido em tela cheia -->
-            <button class="close-expanded-tabs" onclick="toggleTabsExpansion()">×</button>
+            <!-- Sem botão adicional - os próprios botões das abas controlam expandir/minimizar -->
             <!-- Navegação das abas inferiores -->
             <div class="bottom-tabs-nav">
                 <button class="bottom-tab-btn active" data-tab="bottom-events">Eventos na Rota</button>
