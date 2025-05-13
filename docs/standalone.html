@@ -3323,19 +3323,33 @@
         if (isGitHubPages) {
             console.warn("MODO GITHUB PAGES - Mostrando restrições apenas para cidades importantes");
             
-            // Lista de cidades que queremos mostrar no modo GitHub Pages
-            const cidadesImportantes = [
-                "Dois Córregos", "Jaú", "Bauru", "Botucatu", "São Paulo", 
-                "Campinas", "Piracicaba", "São Carlos", "Araraquara"
+            // Para o GitHub Pages, usamos uma rota fixa e predefinida
+            // Apenas estas cidades serão mostradas, na ordem definida
+            const rotaFixaOrdenada = [
+                "Dois Córregos", // Origem sempre primeiro
+                "Jaú",           // Segunda cidade na rota
+                "Bauru"          // Terceira cidade na rota
             ];
             
-            // Filtrar restrições apenas para cidades importantes no percurso
-            restrictionsOnRoute = mockData.truckRestrictions.filter(restriction => {
-                return cidadesImportantes.some(cidade => 
-                    cidade.toLowerCase() === restriction.cityName.toLowerCase() ||
-                    cidade.toLowerCase().includes(restriction.cityName.toLowerCase()) ||
-                    restriction.cityName.toLowerCase().includes(cidade.toLowerCase())
-                );
+            // Filtrar restrições APENAS para cidades que estão na rota fixa
+            restrictionsOnRoute = [];
+            
+            // Para cada cidade na rota ordenada
+            rotaFixaOrdenada.forEach(cidade => {
+                // Encontrar todas as restrições para esta cidade
+                const restricoesDaCidade = mockData.truckRestrictions.filter(restriction => {
+                    const nomeCidade = cidade.toLowerCase();
+                    const nomeCidadeRestricao = restriction.cityName.toLowerCase();
+                    
+                    return nomeCidade === nomeCidadeRestricao ||
+                           nomeCidade.includes(nomeCidadeRestricao) ||
+                           nomeCidadeRestricao.includes(nomeCidade);
+                });
+                
+                // Adicionar restrições desta cidade à lista final (preservando a ordem)
+                if (restricoesDaCidade.length > 0) {
+                    restrictionsOnRoute = restrictionsOnRoute.concat(restricoesDaCidade);
+                }
             });
             
             console.log(`Restrições apenas para cidades importantes: ${restrictionsOnRoute.length}`);
@@ -3407,6 +3421,28 @@
             console.log(`RESTRIÇÕES FILTRADAS: ${restrictionsOnRoute.length} restrições encontradas para as cidades na rota`);
         }
         
+        // Adicionar título explicativo para a seção de restrições no GitHub Pages
+        if (isGitHubPages) {
+            const restrictionsListContainer = document.getElementById('restrictions-list');
+            const titleElement = document.createElement('div');
+            titleElement.className = 'restrictions-title';
+            titleElement.style.padding = '10px';
+            titleElement.style.margin = '0 0 10px 0';
+            titleElement.style.backgroundColor = '#1976D2';
+            titleElement.style.color = 'white';
+            titleElement.style.borderRadius = '4px';
+            titleElement.style.fontWeight = 'bold';
+            titleElement.style.textAlign = 'center';
+            titleElement.innerHTML = 'Restrições para caminhões na rota<br><span style="font-size: 0.8em; font-weight: normal;">Dois Córregos → Jaú → Bauru</span>';
+            
+            // Inserir no início da lista
+            if (restrictionsListContainer.firstChild) {
+                restrictionsListContainer.insertBefore(titleElement, restrictionsListContainer.firstChild);
+            } else {
+                restrictionsListContainer.appendChild(titleElement);
+            }
+        }
+        
         // Se não houver restrições, mostrar mensagem adaptada aos tipos de caminhões filtrados
         if (restrictionsOnRoute.length === 0) {
             // Formatar os tipos de caminhões para a mensagem
@@ -3453,18 +3489,29 @@
             // Verificar se a cidade está no percurso atual
             let estaNoPercurso = false;
             
-            // No GitHub Pages, destacar apenas as cidades que estão na rota atual
+            // No GitHub Pages, TODAS as restrições exibidas já são do percurso
+            // Graças à filtragem feita anteriormente
             if (isGitHubPages) {
-                // Para o GitHub Pages, consideramos que a rota típica inclui:
-                // Dois Córregos -> Jaú -> Bauru -> (São Paulo ou outras cidades)
-                const rotaTipica = ["Dois Córregos", "Jaú", "Bauru"];
+                // Como já filtramos apenas para mostrar restrições das cidades na rota,
+                // todas as restrições exibidas estão no percurso
+                estaNoPercurso = true;
                 
-                // Verificar se a cidade da restrição está na rota típica
-                estaNoPercurso = rotaTipica.some(city => 
-                    city.toLowerCase() === restriction.cityName.toLowerCase() ||
-                    city.toLowerCase().includes(restriction.cityName.toLowerCase()) ||
-                    restriction.cityName.toLowerCase().includes(city.toLowerCase())
-                );
+                // Adicionar a posição da cidade na rota (para diagnóstico)
+                const rotaFixaOrdenada = ["Dois Córregos", "Jaú", "Bauru"];
+                let posicaoNaRota = -1;
+                
+                // Encontrar a posição da cidade na rota
+                for (let i = 0; i < rotaFixaOrdenada.length; i++) {
+                    const cidadeRota = rotaFixaOrdenada[i].toLowerCase();
+                    const cidadeRestricao = restriction.cityName.toLowerCase();
+                    
+                    if (cidadeRota === cidadeRestricao || 
+                        cidadeRota.includes(cidadeRestricao) || 
+                        cidadeRestricao.includes(cidadeRota)) {
+                        posicaoNaRota = i + 1; // +1 para começar em 1 em vez de 0
+                        break;
+                    }
+                }
             } else {
                 // Modo normal: verificar se a cidade está no percurso atual
                 estaNoPercurso = citiesOnRoute.some(city => {
@@ -3480,19 +3527,37 @@
                 ? 'color: #1976D2; font-weight: bold; border-left: 4px solid #1976D2; padding-left: 8px;' 
                 : '';
             
+            // No GitHub Pages, adicionamos informação da posição na rota
+            let posicaoNaRotaTexto = '';
+            let posicaoStyle = '';
+            
+            if (isGitHubPages && typeof posicaoNaRota !== 'undefined' && posicaoNaRota > 0) {
+                // Gerar texto da posição na rota
+                if (posicaoNaRota === 1) {
+                    posicaoNaRotaTexto = '<span style="background-color: #1976D2; color: white; padding: 2px 6px; border-radius: 50%; margin-right: 6px; font-size: 0.8em;">Origem</span>';
+                } else {
+                    posicaoNaRotaTexto = `<span style="background-color: #1976D2; color: white; padding: 2px 6px; border-radius: 50%; margin-right: 6px; font-size: 0.8em;">${posicaoNaRota}ª</span>`;
+                }
+                
+                // Adicionar margem para o texto de posição
+                posicaoStyle = 'display: flex; align-items: center;';
+            }
+            
             // Ícone para indicar se a cidade está no percurso
-            const percursoIcon = estaNoPercurso 
+            const percursoIcon = estaNoPercurso && !isGitHubPages
                 ? '<span style="color: #1976D2; margin-left: 5px;">✓</span>' 
                 : '';
             
             restrictionItem.innerHTML = `
-                <div class="restriction-city" style="${cidadeStyle}">${restriction.cityName} ${percursoIcon}
+                <div class="restriction-city" style="${cidadeStyle} ${posicaoStyle}">
+                    ${isGitHubPages ? posicaoNaRotaTexto : ''}
+                    ${restriction.cityName} ${percursoIcon}
                     <span class="restriction-type ${restriction.restrictionType}">${restriction.restrictionType === 'partial' ? 'Parcial' : (restriction.restrictionType === 'total' ? 'Total' : 'Rodízio')}</span>
                 </div>
                 <div class="restriction-time">${dayTypeText} | ${restriction.startTime} - ${restriction.endTime}</div>
                 <div class="restriction-description">${restriction.description}</div>
                 ${vehiclesDisplay}
-                ${estaNoPercurso ? '<div class="city-in-route" style="color: #1976D2; font-size: 0.8em; margin-top: 4px;">✓ Esta cidade está no seu percurso</div>' : ''}
+                ${estaNoPercurso && !isGitHubPages ? '<div class="city-in-route" style="color: #1976D2; font-size: 0.8em; margin-top: 4px;">✓ Esta cidade está no seu percurso</div>' : ''}
             `;
             
             restrictionsListContainer.appendChild(restrictionItem);
