@@ -1614,17 +1614,41 @@
 
     // Inicializa o autocomplete
     function initAutocomplete() {
-        const input = document.getElementById('location-search');
-        const options = {
-            types: ['geocode'],
-            componentRestrictions: { country: 'br' }
-        };
+        // Usar o sistema seguro de carregamento
+        whenMapsLoaded(function() {
+            initAutocompleteSafely();
+        });
+    }
+    
+    // Versão segura da inicialização do autocomplete
+    function initAutocompleteSafely() {
+        console.log("Inicializando autocomplete com Google Maps API garantidamente carregada");
         
-        autocomplete = new google.maps.places.Autocomplete(input, options);
+        // Verificação de segurança
+        if (typeof google === 'undefined' || !google.maps || !google.maps.places) {
+            console.error("Google Maps Places API não disponível");
+            return;
+        }
         
-        // Quando um local é selecionado no autocomplete
-        autocomplete.addListener('place_changed', function() {
-            const place = autocomplete.getPlace();
+        try {
+            const input = document.getElementById('location-search');
+            if (!input) {
+                console.error("Campo de busca de localização não encontrado");
+                return;
+            }
+            
+            const options = {
+                types: ['geocode'],
+                componentRestrictions: { country: 'br' }
+            };
+            
+            // Criar o autocomplete
+            autocomplete = new google.maps.places.Autocomplete(input, options);
+            console.log("Google Places Autocomplete inicializado com sucesso");
+            
+            // Quando um local é selecionado no autocomplete
+            autocomplete.addListener('place_changed', function() {
+                const place = autocomplete.getPlace();
             
             if (!place.geometry) {
                 // Substituir alert por notificação inline mais suave
@@ -1662,6 +1686,9 @@
             // Limpar o campo de busca
             input.value = '';
         });
+        } catch (error) {
+            console.error("Erro ao inicializar autocomplete:", error);
+        }
     }
 
     // Inicializa a navegação por abas (novas abas inferiores)
