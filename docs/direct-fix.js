@@ -114,13 +114,38 @@ window.applyCityFoundingDateCorrection = function() {
   // E também quando eventos forem filtrados (aba de eventos)
   const originalUpdateEventsList = window.updateEventsList;
   if (originalUpdateEventsList) {
+    // Guardar referência para proteção contra loops
+    let isUpdating = false;
+    
     window.updateEventsList = function(...args) {
-      // Chamar função original
-      originalUpdateEventsList.apply(this, args);
-      // Após atualizar a lista, aplicar correção
-      setTimeout(forceCorrectEventDate, 500);
+      // Evitar recursão infinita
+      if (isUpdating) {
+        console.log("[CORREÇÃO DIRETA] Evitando recursão em updateEventsList");
+        return originalUpdateEventsList.apply(this, args);
+      }
+      
+      // Definir flag de proteção
+      isUpdating = true;
+      
+      try {
+        // Chamar função original
+        const result = originalUpdateEventsList.apply(this, args);
+        
+        // Após atualizar a lista, aplicar correção com atraso para evitar conflitos
+        setTimeout(() => {
+          forceCorrectEventDate();
+          // Liberar flag após processamento completo
+          setTimeout(() => { isUpdating = false; }, 100);
+        }, 500);
+        
+        return result;
+      } catch (err) {
+        console.error("[CORREÇÃO DIRETA] Erro ao processar updateEventsList:", err);
+        isUpdating = false; // Garantir que a flag seja liberada em caso de erro
+        return null;
+      }
     };
-    console.log("[CORREÇÃO DIRETA] Interceptação de updateEventsList ativada");
+    console.log("[CORREÇÃO DIRETA] Interceptação segura de updateEventsList ativada");
   }
   
   // Também monitorar cliques no botão de filtro de eventos
@@ -135,17 +160,49 @@ window.applyCityFoundingDateCorrection = function() {
   // Observer para monitorar mudanças na lista de eventos
   const eventsContainer = document.querySelector('#events-list');
   if (eventsContainer) {
-    const observer = new MutationObserver(function() {
-      console.log("[CORREÇÃO DIRETA] Mudanças detectadas na lista de eventos, aplicando correção...");
-      forceCorrectEventDate();
+    // Variável para evitar loops infinitos
+    let isProcessing = false;
+    
+    const observer = new MutationObserver(function(mutations) {
+      // Se já estiver processando, não fazer nada para evitar loop
+      if (isProcessing) return;
+      
+      // Verificar se alguma mutação realmente afetou elementos de eventos
+      let eventItemsChanged = false;
+      mutations.forEach(mutation => {
+        if (mutation.type === 'childList') {
+          const addedNodes = Array.from(mutation.addedNodes);
+          eventItemsChanged = addedNodes.some(node => 
+            node.nodeType === 1 && 
+            (node.classList?.contains('event-item') || 
+             node.querySelector?.('.event-item'))
+          );
+        }
+      });
+      
+      // Se não houver mudanças em itens de eventos, ignorar
+      if (!eventItemsChanged) return;
+      
+      console.log("[CORREÇÃO DIRETA] Mudanças relevantes detectadas na lista de eventos");
+      
+      // Ativar flag para evitar loops
+      isProcessing = true;
+      
+      // Aplicar correção e depois liberar a flag
+      setTimeout(function() {
+        forceCorrectEventDate();
+        // Liberar flag após processamento
+        setTimeout(() => { isProcessing = false; }, 100);
+      }, 200);
     });
     
     observer.observe(eventsContainer, { 
       childList: true,
-      subtree: true
+      subtree: true,
+      characterData: false
     });
     
-    console.log("[CORREÇÃO DIRETA] Observer configurado para a lista de eventos");
+    console.log("[CORREÇÃO DIRETA] Observer configurado para a lista de eventos com proteção anti-loop");
   }
   
   console.log("[CORREÇÃO DIRETA] Inicialização concluída com sucesso");
