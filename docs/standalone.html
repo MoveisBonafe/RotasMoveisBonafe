@@ -596,20 +596,19 @@
             margin-right: 0.5rem;
         }
         
-        /* NOVO LAYOUT - Tabs na parte inferior do mapa */
+        /* NOVO LAYOUT - Tabs na parte inferior do mapa - agora sempre visíveis */
         .bottom-tabs-container {
             width: 100%;
-            margin-top: 30px;
-            margin-bottom: 40px;
+            margin-top: 20px;
+            margin-bottom: 0;
             display: flex;
             flex-direction: column;
-            animation: fadeIn 0.5s ease;
             background-color: #f9f9f9;
             border-radius: 12px 12px 0 0;
             box-shadow: 0 -2px 15px rgba(0,0,0,0.08);
             overflow: hidden;
-            /* Inicialmente oculto até que uma rota seja otimizada */
-            display: none;
+            /* Sempre visível */
+            display: flex;
         }
         
         .bottom-tabs-nav {
@@ -1339,37 +1338,32 @@
 
     // Função para gerenciar a visibilidade das abas inferiores
     function toggleBottomTabsVisibility(show = true) {
+        // Modificado para deixar o container sempre visível, apenas atualiza o conteúdo
         const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+        
         if (bottomTabsContainer) {
+            // Manter sempre visível - não esconder as abas
+            bottomTabsContainer.style.display = 'flex';
+            
+            // Atualizar o conteúdo das abas apenas
+            const eventsTab = document.getElementById('bottom-events-content');
+            const restrictionsTab = document.getElementById('bottom-restrictions-content');
+            const reportTab = document.getElementById('bottom-report-content');
+            
             if (show) {
-                // Remover qualquer estilo display antigo
-                bottomTabsContainer.style.removeProperty('display');
-                bottomTabsContainer.style.display = 'flex';
+                // Mostrar conteúdo relevante nas abas
+                console.log("Conteúdo das abas sendo atualizado...");
                 
-                // Adiciona animação de entrada
-                bottomTabsContainer.style.animation = 'none';
-                // Trigger reflow
-                void bottomTabsContainer.offsetWidth;
-                bottomTabsContainer.style.animation = 'fadeInUp 0.5s ease forwards';
-                
-                console.log("Abas inferiores exibidas com sucesso");
-                
-                // Se estamos no GitHub Pages, ativa a primeira aba automaticamente
-                if (window.location.href.includes('github.io')) {
-                    const firstTabButton = document.querySelector('.bottom-tab-btn[data-tab="bottom-events"]');
-                    if (firstTabButton) {
-                        firstTabButton.click();
-                    }
+                // Ativar a primeira aba por padrão
+                const firstTabButton = document.querySelector('.bottom-tab-btn[data-tab="bottom-events"]');
+                if (firstTabButton && !firstTabButton.classList.contains('active')) {
+                    firstTabButton.click();
                 }
             } else {
-                // Primeiramente, aplica animação de saída
-                bottomTabsContainer.style.animation = 'fadeOutDown 0.3s ease forwards';
-                
-                // Aguarda o fim da animação para esconder completamente
-                setTimeout(() => {
-                    bottomTabsContainer.style.display = 'none';
-                    console.log("Abas inferiores ocultadas com sucesso");
-                }, 300);
+                // Limpar conteúdo das abas, mas manter elas visíveis
+                if (eventsTab) eventsTab.innerHTML = '<p class="text-muted">Adicione destinos e otimize a rota para ver eventos.</p>';
+                if (restrictionsTab) restrictionsTab.innerHTML = '<p class="text-muted">Adicione destinos e otimize a rota para ver restrições.</p>';
+                if (reportTab) reportTab.innerHTML = '<p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>';
             }
         } else {
             console.warn("Container de abas inferiores não encontrado!");
