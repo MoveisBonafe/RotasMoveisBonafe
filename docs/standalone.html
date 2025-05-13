@@ -3367,23 +3367,39 @@
             
             // Verificar cidades conhecidas no endereço
             const lowerAddress = address.toLowerCase();
+            
+        }
+        
+        // Função para extrair nome de cidade de um texto
+        function extractCityName(addressOrName) {
+            if (!addressOrName) return 'Desconhecido';
+            
+            // Se o texto já contém vírgulas, tentar extrair cidade do endereço
+            if (addressOrName.includes(',')) {
+                try {
+                    const cityPart = extractCityFromAddress(addressOrName);
+                    if (cityPart) return cityPart;
+                } catch (e) {
+                    console.warn("Erro ao extrair cidade do endereço:", e);
+                }
+            }
+            
+            // Lista de cidades conhecidas para reconhecimento direto
             const knownCities = [
-                "campinas", "ribeirão preto", "são carlos", "piracicaba", "são paulo", 
-                "sorocaba", "americana", "limeira", "rio claro", "araraquara", "bauru", 
-                "botucatu", "jaú", "dois córregos"
+                "Dois Córregos", "Jaú", "Botucatu", "Bauru", "Ribeirão Preto", 
+                "São Paulo", "Campinas", "São Carlos", "Piracicaba", "Araraquara",
+                "Americana", "Sorocaba", "Limeira", "Rio Claro"
             ];
             
-            let cityName = null;
-            
-            // Verificar cidades conhecidas primeiro
+            // Verificar se o nome já contém uma cidade conhecida
             for (const city of knownCities) {
-                if (lowerAddress.includes(city)) {
-                    cityName = city.split(' ').map(word => 
-                        word.charAt(0).toUpperCase() + word.slice(1)
-                    ).join(' ');
-                    console.log(`Cidade conhecida detectada: ${cityName}`);
-                    return cityName;
+                if (addressOrName.includes(city)) {
+                    return city;
                 }
+            }
+            
+            // Se chegamos até aqui, retornar o nome como está
+            return addressOrName;
             }
             
             // Se não encontrou cidade conhecida, tentar extrair do endereço
