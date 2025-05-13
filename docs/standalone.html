@@ -829,21 +829,24 @@
             justify-content: space-around; /* Espaçamento melhor distribuído */
             gap: 8px; /* Aumentado o espaço entre os botões */
             padding: 12px 0 6px; /* Aumentado padding vertical */
-            background: linear-gradient(to bottom, #f0f2f5, #ffffff);
-            border-bottom: 1px solid #e0e0e0;
+            background: linear-gradient(to bottom, #ffffff, #f0f2f5); /* Invertido para parecer vir de baixo */
+            border-top: 1px solid #e0e0e0;
+            border-bottom: none;
             position: sticky !important;
-            top: 0 !important;
+            bottom: 0 !important; /* Fixado na parte inferior agora */
+            top: auto !important; /* Removendo posicionamento do topo */
             z-index: 3000 !important; /* Muito alto para garantir que fique por cima de tudo */
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.06); /* Sombra para cima agora */
             width: 100% !important;
         }
         
         /* Estilo especial para navegação em modo tela cheia */
         .fullscreen-mode .bottom-tabs-nav {
-            background: linear-gradient(to bottom, #1976D2, #1565C0) !important;
+            background: linear-gradient(to bottom, #1565C0, #1976D2) !important; /* Invertido para parecer vir de baixo */
             padding: 15px 0 10px !important;
-            border-bottom: 2px solid #0d47a1 !important;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2) !important;
+            border-top: 2px solid #0d47a1 !important;
+            border-bottom: none !important;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2) !important; /* Sombra para cima */
         }
         
         /* Ajuste dos botões na navegação em tela cheia */
@@ -960,9 +963,10 @@
             display: none;
             padding: 20px;
             background-color: white;
-            animation: fadeInUp 0.5s ease forwards;
+            border-top: 1px solid #e0e0e0;
+            animation: fadeInDown 0.5s ease forwards;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(-20px);
             overflow-y: auto; /* Permite rolagem vertical para todos os conteúdos */
         }
         
