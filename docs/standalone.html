@@ -1812,6 +1812,9 @@
         // Chamar funções para mostrar eventos e restrições para a origem com base nas datas atuais
         filterEventsByDate();
         
+        // Garantir que os eventos são mostrados corretamente
+        showEventsForCitiesOnRoute([mockData.origin.id]);
+        
         // Mostrar mensagem de ajuda
         console.log("Campos de data inicializados com datas atuais e eventos/restrições para origem configurados");
     });
@@ -3191,6 +3194,18 @@
             alternativeRoutes = [];
             currentRouteIndex = 0;
             
+            // Mostrar o seletor de rotas alternativas na sidebar e na aba de relatório
+            const routeAlternativesSidebar = document.getElementById('route-alternatives-sidebar');
+            const routeAlternativesTab = document.getElementById('route-alternatives');
+            
+            if (routeAlternativesSidebar) {
+                routeAlternativesSidebar.style.display = 'block';
+            }
+            
+            if (routeAlternativesTab) {
+                routeAlternativesTab.style.display = 'block';
+            }
+            
             // Primeiro vamos resolver o TSP para encontrar a ordem ideal dos pontos
             const origin = locations.find(loc => loc.isOrigin);
             const destinations = locations.filter(loc => !loc.isOrigin);
@@ -4291,8 +4306,19 @@
             }
         }
         
-        // Limpar a lista de eventos
+        // Limpar a lista de eventos - GARANTIR QUE ESTAMOS USANDO O ELEMENTO CORRETO
         const eventsListContainer = document.getElementById('events-list');
+        if (!eventsListContainer) {
+            console.error("Container de eventos não encontrado!");
+            return;
+        }
+        
+        // Garantir que o conteúdo da aba de eventos seja ativado corretamente
+        const bottomEventsContent = document.getElementById('bottom-events-content');
+        if (bottomEventsContent) {
+            console.log("Container de eventos encontrado, atualizando...");
+        }
+        
         eventsListContainer.innerHTML = '';
         
         // Log para diagnóstico
