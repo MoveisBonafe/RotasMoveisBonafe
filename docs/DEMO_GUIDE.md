@@ -1,93 +1,83 @@
-# Guia para Demonstração e Uso da Aplicação
+# Guia de Demonstração - Otimizador de Rotas
 
-Este guia explica como utilizar a aplicação de otimização de rotas tanto na versão React (em desenvolvimento) quanto na versão standalone para o GitHub Pages.
+Este guia detalha como utilizar o Otimizador de Rotas para planejamento e visualização de rotas no Brasil.
 
-## Acesso à Aplicação
+## Como Acessar a Demonstração
 
-### Versão em Desenvolvimento (React)
-- Acesse a versão completa em desenvolvimento executando o workflow "Start application" no Replit
-- A aplicação estará disponível na aba Webview
+A demonstração está disponível em: [https://seu-usuario.github.io/seu-repositorio](https://seu-usuario.github.io/seu-repositorio)
 
-### Versão GitHub Pages (Standalone)
-- Para testar localmente, execute o script `./docs/test-locally.sh`
-- Para acessar online, vá para a URL do GitHub Pages do repositório
-- A versão standalone contém todas as funcionalidades principais sem necessidade de backend
+## Funcionalidades Principais
 
-## Guia para Demonstração
+### 1. Planejamento de Rotas
+- **Origem fixa em Dois Córregos-SP**: Todas as rotas começam neste ponto
+- **Adição de destinos**: Adicione manualmente ou via arquivo de CEPs
+- **Visualização no mapa**: Rotas são mostradas em tempo real
 
-### 1. Página Inicial
-A aplicação está organizada em três abas principais:
-- **Locais**: Para adicionar e gerenciar os destinos da rota
-- **Eventos**: Para visualizar eventos e restrições nas cidades da rota
-- **Relatório**: Para visualizar o resumo detalhado da rota otimizada
+### 2. Upload de Arquivo
+- Formato aceito: arquivo de texto com formato `CEP,Nome`
+- Cada linha representa um destino a ser incluído na rota
+- Exemplo de conteúdo:
+  ```
+  13560-970,Destino 1
+  17800-000,Destino 2
+  13566-590,Destino 3
+  ```
 
-### 2. Adicionar Locais
-Existem duas maneiras de adicionar locais à rota:
+### 3. Otimização de Rota
+- Implementação do algoritmo do Caixeiro Viajante
+- Calcula a sequência mais eficiente para visitar todos os pontos
+- Exibe distância total e tempo estimado
 
-**Método 1: Adição manual**
-1. Na aba "Locais", use o campo "Adicionar local" para pesquisar um endereço
-2. Selecione o local desejado nas sugestões que aparecerem
-3. O local será adicionado à lista e um marcador aparecerá no mapa
+### 4. Informações Adicionais
+- **Pedágios**: Visualize pedágios ao longo da rota
+- **Balanças**: Localize postos de pesagem na rota
+- **Restrições**: Verifique horários de restrição de caminhões
+- **Eventos**: Visualize eventos nas cidades ao longo da rota
 
-**Método 2: Upload de arquivo**
-1. Prepare um arquivo de texto no formato `CEP,Nome do Local` (um por linha)
-2. Exemplo:
-   ```
-   14020-260,Ribeirão Preto
-   17560-000,Vera Cruz
-   17580-000,Pompéia
-   ```
-3. Clique em "Escolher arquivo" e selecione seu arquivo
-4. Os locais serão adicionados automaticamente
+## Guia Passo a Passo
 
-### 3. Otimizar Rota
-1. Selecione o tipo de veículo (influencia custos e restrições)
-2. Clique no botão "Otimizar Rota" na parte inferior da aba "Locais"
-3. A aplicação calculará a melhor rota entre todos os pontos
-4. O mapa mostrará a rota com uma animação progressiva
-5. A aplicação mudará automaticamente para a aba "Relatório"
+### Planejando uma Rota Simples
+1. Acesse a demonstração
+2. Utilize o campo de busca para adicionar um destino (endereço ou CEP)
+3. Clique em "Adicionar ao Roteiro"
+4. Adicione mais destinos conforme necessário
+5. Clique em "Calcular Rota"
+6. O mapa mostrará a rota otimizada com marcadores numerados
 
-### 4. Visualizar Relatório
-Na aba "Relatório", você verá:
-- Distância total da rota
-- Tempo estimado de viagem
-- Consumo de combustível estimado
-- Custo de pedágios
-- Custo total estimado da viagem
-- Sequência detalhada de cidades na rota
+### Carregando Destinos via Arquivo
+1. Prepare um arquivo de texto com o formato `CEP,Nome` (um por linha)
+2. Clique em "Importar" na interface
+3. Selecione seu arquivo
+4. Os destinos serão adicionados automaticamente
+5. Clique em "Calcular Rota"
 
-Você também pode:
-- Dar um nome à rota e salvá-la (na versão React)
-- Imprimir o relatório da rota
+### Visualizando Informações Adicionais
+1. Com uma rota calculada, explore as abas inferiores:
+   - **Pedágios**: Mostra pedágios no trajeto
+   - **Eventos**: Exibe eventos nas cidades da rota
+   - **Restrições**: Indica horários de restrição para caminhões
+   - **Balanças**: Mostra postos de pesagem no trajeto
 
-### 5. Verificar Eventos e Restrições
-Na aba "Eventos", após otimizar uma rota:
-- Use o filtro de datas para selecionar um período
-- Veja todos os eventos nas cidades da rota (festas, feriados, etc.)
-- Veja as restrições para caminhões em cada cidade da rota
-- Os eventos e restrições são específicos para as cidades incluídas na rota atual
+## Opções Avançadas
 
-### 6. Recursos Adicionais no Mapa
-O mapa mostra:
-- Marcadores numerados para cada local na sequência da rota
-- Pedágios ao longo das rodovias da rota (ícones verdes)
-- Balanças de pesagem (ícones laranja)
-- Eventos nas cidades (ícones vermelhos para feriados, laranjas para eventos)
+### Seleção de Veículos
+- Escolha entre diferentes tipos de caminhões
+- Cada tipo tem seu próprio custo por km e consumo
+- Influencia o cálculo do custo total da rota
 
-Botões de controle:
-- Zoom para ajustar a visualização a todos os pontos
-- Mostrar/ocultar pontos de interesse
-- Street View disponível (arraste o Pegman para qualquer ponto da rota)
+### Filtragem de Datas
+- Selecione um período específico
+- Filtra eventos e restrições relevantes apenas para o período escolhido
 
-## Diferenças entre as Versões
+## Solução de Problemas
 
-### Versão React (Desenvolvimento)
-- Conexão com banco de dados para armazenamento persistente
-- Funcionalidades completas de backend
-- Mais opções de personalização
+### Se o mapa não carregar:
+1. Verifique sua conexão com a internet
+2. Certifique-se que JavaScript está habilitado
+3. Tente recarregar a página
+4. Limpe o cache do navegador
 
-### Versão Standalone (GitHub Pages)
-- Funciona completamente sem servidor
-- Dados mockados embutidos no HTML
-- Mesma interface e funcionalidades principais
-- Melhor desempenho em dispositivos móveis
+### Se a importação de arquivo falhar:
+1. Verifique o formato do arquivo (deve ser `.txt`)
+2. Confirme que cada linha segue o formato `CEP,Nome`
+3. Certifique-se que os CEPs são válidos
