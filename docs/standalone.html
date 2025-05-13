@@ -1419,23 +1419,85 @@
 
     // Inicializa o mapa
     function initMap() {
-        // Inicializar com a data atual e data atual + 30 dias
-        const today = new Date();
-        const formattedToday = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-        
-        // Calcular a data final (hoje + 30 dias)
-        const endDate = new Date();
-        endDate.setDate(today.getDate() + 30);
-        const formattedEndDate = endDate.toISOString().split('T')[0];
-        
-        // Definir os valores dos campos de data
-        document.getElementById('start-date').value = formattedToday;
-        document.getElementById('end-date').value = formattedEndDate;
-        
-        console.log(`Datas definidas automaticamente na inicialização do mapa: de ${formattedToday} até ${formattedEndDate}`);
+        // Definir valores iniciais aos campos de data
+        initDatePickers();
         
         // Invocar a filtragem de eventos inicial para exibir eventos para a origem
         filterEventsByDate();
+    }
+    
+    // Função centralizada para inicializar os campos de data
+    function initDatePickers() {
+        try {
+            console.log("Inicializando campos de data...");
+            
+            // Verificar se os campos existem
+            const startDateInput = document.getElementById('start-date');
+            const endDateInput = document.getElementById('end-date');
+            
+            if (!startDateInput || !endDateInput) {
+                console.error("Campos de data não encontrados. Tentando encontrar container...");
+                
+                // Tentar criar os campos se não existirem
+                const dateContainer = document.querySelector('.date-filters');
+                if (dateContainer) {
+                    if (!startDateInput) {
+                        const newStart = document.createElement('input');
+                        newStart.type = 'date';
+                        newStart.id = 'start-date';
+                        newStart.className = 'form-control form-control-sm';
+                        dateContainer.appendChild(newStart);
+                        console.log("Campo de data inicial criado");
+                    }
+                    
+                    if (!endDateInput) {
+                        const newEnd = document.createElement('input');
+                        newEnd.type = 'date';
+                        newEnd.id = 'end-date';
+                        newEnd.className = 'form-control form-control-sm';
+                        dateContainer.appendChild(newEnd);
+                        console.log("Campo de data final criado");
+                    }
+                } else {
+                    console.error("Container de datas não encontrado!");
+                    return;
+                }
+            }
+            
+            // Referenciar os elementos (originais ou recém-criados)
+            const startDate = document.getElementById('start-date');
+            const endDate = document.getElementById('end-date');
+            
+            // Verificar novamente
+            if (!startDate || !endDate) {
+                console.error("Impossível criar ou localizar campos de data");
+                return;
+            }
+            
+            // Inicializar com a data atual e data atual + 7 dias
+            const today = new Date();
+            const formattedToday = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+            
+            // Calcular a data final (hoje + 7 dias)
+            const futureDate = new Date();
+            futureDate.setDate(today.getDate() + 7);
+            const formattedFuture = futureDate.toISOString().split('T')[0];
+            
+            // Definir os valores apenas se estiverem vazios
+            if (!startDate.value) {
+                startDate.value = formattedToday;
+                console.log("Data inicial definida:", formattedToday);
+            }
+            
+            if (!endDate.value) {
+                endDate.value = formattedFuture;
+                console.log("Data final definida:", formattedFuture);
+            }
+            
+            console.log(`Datas inicializadas: de ${startDate.value} até ${endDate.value}`);
+        } catch (error) {
+            console.error("Erro ao inicializar seletores de data:", error);
+        }
         
         // Ajustar a altura do container e do mapa para preencher todo o espaço disponível
         function resizeMap() {
@@ -3856,68 +3918,103 @@
                     return; // Pular para o próximo evento
                 }
                 
-                // PARTE 2: PREPARAR DATAS PARA COMPARAÇÃO
-                // Identificar o evento especial Festival de Verão
+                // PARTE 2: AJUSTAR DATAS DO EVENTO PARA O ANO ATUAL
+                // Evento especial: Festival de Verão
                 const isFestivalVerao = event.id === 99 && event.name === "Festival de Verão";
                 
-                // Usar o ano atual para todas as datas (para corrigir aniversários de cidades)
+                // Obter o ano atual
                 const currentYear = new Date().getFullYear();
                 
-                // Datas do evento ajustadas para o ano atual
+                // Criar novas datas para o evento ajustadas para o ano atual
                 const eventStart = new Date(event.startDate);
-                eventStart.setFullYear(currentYear);
-                eventStart.setHours(0,0,0,0);
-                
                 const eventEnd = new Date(event.endDate);
-                eventEnd.setFullYear(currentYear);
+                
+                // Garantir que estamos usando o ano atual para eventos anuais (aniversários)
+                if (event.name.includes("Aniversário") || event.isHoliday) {
+                    eventStart.setFullYear(currentYear);
+                    eventEnd.setFullYear(currentYear);
+                }
+                
+                // Ajustar horas para garantir dias completos
+                eventStart.setHours(0,0,0,0);
                 eventEnd.setHours(23,59,59,999);
                 
-                // Log para debug
-                console.log(`[EVENTO] ${event.name} em ${event.cityName}: ${eventStart.toLocaleDateString()} a ${eventEnd.toLocaleDateString()}`);
+                // Log detalhado
+                console.log(`[EVENTO] ${event.name} (${event.cityName}): ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')}`);
                 
-                // PARTE 3: FILTRAR POR DATA (se filtro estiver ativo)
+                // PARTE 3: APLICAR FILTRO DE DATA
                 if (startDateValue && endDateValue) {
-                    // Festival de Verão tem tratamento especial - excluir quando há filtro de data
+                    // Tratamento especial para o Festival de Verão
                     if (isFestivalVerao) {
-                        console.log(`[FESTIVAL] Festival de Verão excluído pois filtro de data está ativo`);
+                        console.log(`[FESTIVAL] Festival de Verão excluído quando há filtro de data`);
                         includeEvent = false;
                         return;
                     }
                     
-                    // Configurar datas do filtro
-                    const filterStart = new Date(startDateValue);
-                    filterStart.setHours(0,0,0,0);
-                    
-                    const filterEnd = new Date(endDateValue);
-                    filterEnd.setHours(23,59,59,999);
-                    
-                    // Log para debug
-                    console.log(`[FILTRO] Período: ${filterStart.toLocaleDateString()} a ${filterEnd.toLocaleDateString()}`);
-                    
-                    // Verificar sobreposição entre evento e filtro
-                    // Um evento está no período se:
-                    // - Começa dentro do período do filtro, OU
-                    // - Termina dentro do período do filtro, OU
-                    // - Abrange todo o período do filtro
-                    const hasOverlap = (eventStart <= filterEnd && eventEnd >= filterStart);
-                    
-                    // Resultado da filtragem
-                    if (hasOverlap) {
-                        console.log(`[ACEITO] Evento '${event.name}' está no período do filtro`);
-                        includeEvent = true;
-                    } else {
-                        console.log(`[REJEITADO] Evento '${event.name}' está fora do período do filtro`);
-                        includeEvent = false;
+                    try {
+                        // Criar objetos Date para as datas do filtro
+                        let filterStart = new Date(startDateValue);
+                        let filterEnd = new Date(endDateValue);
+                        
+                        // Verificar se as datas são objetos Date válidos
+                        if (isNaN(filterStart.getTime()) || isNaN(filterEnd.getTime())) {
+                            console.error(`[ERRO] Datas de filtro inválidas: ${startDateValue}, ${endDateValue}`);
+                            
+                            // Tentar corrigir formatos de data (pode ser ISO ou MM/DD/YYYY)
+                            if (startDateValue.includes('/')) {
+                                const parts = startDateValue.split('/');
+                                filterStart = new Date(parts[2], parts[0]-1, parts[1]);
+                            }
+                            
+                            if (endDateValue.includes('/')) {
+                                const parts = endDateValue.split('/');
+                                filterEnd = new Date(parts[2], parts[0]-1, parts[1]);
+                            }
+                            
+                            // Verificar novamente
+                            if (isNaN(filterStart.getTime()) || isNaN(filterEnd.getTime())) {
+                                console.error(`[ERRO] Impossível corrigir datas inválidas`);
+                                includeEvent = true; // Em caso de erro, mostrar evento
+                                return;
+                            }
+                        }
+                        
+                        // Garantir dia completo
+                        filterStart.setHours(0,0,0,0);
+                        filterEnd.setHours(23,59,59,999);
+                        
+                        // Verificar sobreposição entre as datas
+                        const hasOverlap = (
+                            // Evento começa dentro do período do filtro
+                            (eventStart >= filterStart && eventStart <= filterEnd) ||
+                            // Evento termina dentro do período do filtro
+                            (eventEnd >= filterStart && eventEnd <= filterEnd) ||
+                            // Evento abrange todo o período do filtro
+                            (eventStart <= filterStart && eventEnd >= filterEnd)
+                        );
+                        
+                        console.log(`[VERIFICAÇÃO] Data evento ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')} vs. Filtro ${filterStart.toLocaleDateString('pt-BR')}-${filterEnd.toLocaleDateString('pt-BR')}`);
+                        
+                        if (hasOverlap) {
+                            console.log(`[ACEITO] Evento '${event.name}' está no período filtrado`);
+                            includeEvent = true;
+                        } else {
+                            console.log(`[REJEITADO] Evento '${event.name}' fora do período filtrado`);
+                            includeEvent = false;
+                        }
+                    } catch (dateError) {
+                        console.error(`[ERRO] Falha ao processar datas do filtro:`, dateError);
+                        includeEvent = true; // Em caso de erro mostrar o evento
                     }
                 } else {
-                    // Sem filtro de data, aceitar todos os eventos
-                    console.log(`[ACEITO] Evento '${event.name}' aceito pois não há filtro de data`);
+                    // Sem filtro de data, mostrar todos os eventos
+                    console.log(`[ACEITO] Evento '${event.name}' aceito (sem filtro de data)`);
                     includeEvent = true;
                 }
+                
             } catch (error) {
-                // Tratamento de erros robusto
-                console.error(`[ERRO] Falha ao processar evento ${event.name}:`, error);
-                includeEvent = false;
+                console.error(`[ERRO GERAL] Falha ao processar evento ${event.name}:`, error);
+                includeEvent = true; // Em caso de erro geral, mostrar o evento
             }
             
             // Se passou por todos os filtros, incluir o evento
@@ -5428,7 +5525,46 @@
         // Verificação de segurança para GitHub Pages
         if (!startDateInput || !endDateInput) {
             console.error("Campos de data não encontrados no DOM");
-            return;
+            
+            // Tentar criar os campos se estiverem ausentes (para GitHub Pages)
+            try {
+                // Verificar se temos o container de datas
+                const dateContainer = document.querySelector('.date-filters');
+                if (dateContainer) {
+                    if (!startDateInput) {
+                        const newStartInput = document.createElement('input');
+                        newStartInput.type = 'date';
+                        newStartInput.id = 'start-date';
+                        newStartInput.className = 'form-control form-control-sm';
+                        dateContainer.appendChild(newStartInput);
+                        console.log("Criado campo de data inicial ausente");
+                    }
+                    
+                    if (!endDateInput) {
+                        const newEndInput = document.createElement('input');
+                        newEndInput.type = 'date';
+                        newEndInput.id = 'end-date';
+                        newEndInput.className = 'form-control form-control-sm';
+                        dateContainer.appendChild(newEndInput);
+                        console.log("Criado campo de data final ausente");
+                    }
+                }
+            } catch (e) {
+                console.error("Falha ao criar campos de data:", e);
+            }
+            
+            // Tentar novamente após recriação
+            const retriedStartInput = document.getElementById('start-date');
+            const retriedEndInput = document.getElementById('end-date');
+            
+            if (!retriedStartInput || !retriedEndInput) {
+                console.error("Impossível recuperar campos de data, mesmo após tentativa de criação");
+                return;
+            } else {
+                console.log("Campos de data recuperados após recriação");
+                startDateInput = retriedStartInput;
+                endDateInput = retriedEndInput;
+            }
         }
         
         // Obter datas do filtro
