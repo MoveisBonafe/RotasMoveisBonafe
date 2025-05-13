@@ -724,6 +724,33 @@
             overflow: hidden !important;
         }
         
+        /* Estilos para quando as abas estão em modo expandido no GitHub Pages */
+        body.tabs-expanded .bottom-tabs-container {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100% !important;
+            height: 100vh !important;
+            margin: 0 !important;
+            z-index: 9999 !important;
+            background-color: white !important;
+        }
+        
+        /* Ajustar conteúdos das abas em modo expandido */
+        body.tabs-expanded .bottom-tab-content {
+            height: calc(100vh - 70px) !important;
+            padding: 20px !important;
+            overflow-y: auto !important;
+        }
+        
+        /* Ajustar lista de restrições em modo expandido */
+        body.tabs-expanded #bottom-restrictions-content .restrictions-list {
+            min-height: calc(100vh - 150px) !important;
+            padding-bottom: 50px !important;
+        }
+        
         /* Botão de expandir/minimizar removido - funcionalidade incorporada nos botões das abas */
         
         .bottom-tabs-nav {
@@ -733,10 +760,39 @@
             padding: 12px 0 6px; /* Aumentado padding vertical */
             background: linear-gradient(to bottom, #f0f2f5, #ffffff);
             border-bottom: 1px solid #e0e0e0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 3000 !important; /* Muito alto para garantir que fique por cima de tudo */
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            width: 100% !important;
+        }
+        
+        /* Estilo especial para navegação em modo tela cheia */
+        .fullscreen-mode .bottom-tabs-nav {
+            background: linear-gradient(to bottom, #1976D2, #1565C0) !important;
+            padding: 15px 0 10px !important;
+            border-bottom: 2px solid #0d47a1 !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2) !important;
+        }
+        
+        /* Ajuste dos botões na navegação em tela cheia */
+        .fullscreen-mode .bottom-tab-btn {
+            color: white !important;
+            border-color: rgba(255,255,255,0.5) !important;
+            background-color: rgba(255,255,255,0.1) !important;
+            transform: none !important;
+        }
+        
+        .fullscreen-mode .bottom-tab-btn:hover {
+            background-color: rgba(255,255,255,0.2) !important;
+            transform: translateY(-2px) !important;
+        }
+        
+        .fullscreen-mode .bottom-tab-btn.active {
+            background-color: white !important;
+            color: #1976D2 !important;
+            font-weight: bold !important;
+            border-color: white !important;
         }
         
         .bottom-tab-btn {
@@ -1566,6 +1622,28 @@
                         if (contentElement) {
                             contentElement.classList.add('active');
                             
+                            // Verificar se estamos no modo tela cheia
+                            const isFullScreen = document.body.classList.contains('tabs-expanded') || 
+                                                bottomTabsContainer.classList.contains('fullscreen-mode');
+                            
+                            // Se estiver em tela cheia, ajustar altura do conteúdo
+                            if (isFullScreen) {
+                                console.log("Ajustando altura para conteúdo da aba em modo tela cheia:", contentId);
+                                contentElement.style.height = 'calc(100vh - 70px)';
+                                contentElement.style.maxHeight = 'calc(100vh - 70px)';
+                                contentElement.style.overflow = 'auto';
+                                
+                                // Ajustes específicos para diferentes tipos de conteúdo
+                                if (contentId === 'bottom-restrictions-content') {
+                                    const restrictionsList = contentElement.querySelector('.restrictions-list');
+                                    if (restrictionsList) {
+                                        restrictionsList.style.minHeight = 'calc(100vh - 150px)';
+                                        restrictionsList.style.maxHeight = 'none';
+                                        restrictionsList.style.paddingBottom = '50px';
+                                    }
+                                }
+                            }
+                            
                             // Efeitos visuais adicionais para GitHub Pages
                             if (isGitHubPages) {
                                 // Reset da animação
@@ -1666,23 +1744,60 @@
                 bottomTabsContainer.classList.remove('minimized');
                 if (toggleIcon) toggleIcon.textContent = '▼ Minimizar';
                 
-                // Ajuste especial para tela cheia
+                // Implementação especial para GitHub Pages
+                const isGitHubPages = window.location.href.includes('github.io');
+                
                 // Definir top=0 para garantir que a aba vá até o topo
                 bottomTabsContainer.style.top = '0';
                 
                 // Adicionar classe para indicar que está em modo de tela cheia
                 bottomTabsContainer.classList.add('fullscreen-mode');
                 
-                // Verificar tamanho para todos os conteúdos
-                const tabContents = document.querySelectorAll('.bottom-tab-content');
-                tabContents.forEach(content => {
-                    if (content.classList.contains('active')) {
-                        // Ajustar altura do conteúdo para preencher todo o espaço
-                        content.style.height = 'calc(100vh - 140px)';
-                        content.style.maxHeight = 'calc(100vh - 140px)';
-                        content.style.overflow = 'auto';
+                if (isGitHubPages) {
+                    console.log("Aplicando ajustes de tela cheia especiais para GitHub Pages");
+                    
+                    // No GitHub Pages, queremos que a aba cubra tudo
+                    document.body.classList.add('tabs-expanded');
+                    
+                    // Ocultar outros elementos para focar apenas nas abas
+                    const mapContainer = document.querySelector('.map-container');
+                    if (mapContainer) {
+                        mapContainer.style.visibility = 'hidden';
                     }
-                });
+                    
+                    // Forçar altura cheia na estrutura do container
+                    bottomTabsContainer.style.height = '100vh';
+                    bottomTabsContainer.style.maxHeight = '100vh';
+                    
+                    // Ajustar todos os conteúdos para altura total
+                    const activeTab = document.querySelector('.bottom-tab-content.active');
+                    if (activeTab) {
+                        activeTab.style.height = 'calc(100vh - 140px)';
+                        activeTab.style.maxHeight = 'calc(100vh - 140px)';
+                        activeTab.style.overflow = 'auto';
+                        
+                        // Verificar tipo de conteúdo para ajustes específicos
+                        if (activeTab.id === 'bottom-restrictions-content') {
+                            const restrictionsList = activeTab.querySelector('.restrictions-list');
+                            if (restrictionsList) {
+                                restrictionsList.style.minHeight = 'calc(100vh - 210px)';
+                                restrictionsList.style.maxHeight = 'none';
+                                restrictionsList.style.overflow = 'auto';
+                            }
+                        }
+                    }
+                } else {
+                    // Para versão normal, apenas ajustar os conteúdos
+                    const tabContents = document.querySelectorAll('.bottom-tab-content');
+                    tabContents.forEach(content => {
+                        if (content.classList.contains('active')) {
+                            // Ajustar altura do conteúdo para preencher espaço
+                            content.style.height = 'calc(100vh - 140px)';
+                            content.style.maxHeight = 'calc(100vh - 140px)';
+                            content.style.overflow = 'auto';
+                        }
+                    });
+                }
                 
                 // Ajustar altura do mapa quando as abas estão expandidas
                 if (mapContainer) {
@@ -1711,12 +1826,36 @@
                 // Remover classe de modo tela cheia
                 bottomTabsContainer.classList.remove('fullscreen-mode');
                 
+                // Verificar se estamos no GitHub Pages
+                const isGitHubPages = window.location.href.includes('github.io');
+                
+                // Remover classe especial do body
+                document.body.classList.remove('tabs-expanded');
+                
+                // Resetar estilos do container de abas
+                bottomTabsContainer.style.removeProperty('height');
+                bottomTabsContainer.style.removeProperty('maxHeight');
+                
+                // Resetar estilos de todos os conteúdos
+                const allTabContents = document.querySelectorAll('.bottom-tab-content');
+                allTabContents.forEach(content => {
+                    content.style.removeProperty('height');
+                    content.style.removeProperty('maxHeight');
+                    
+                    // Resetar estilos específicos para listas
+                    const restrictionsList = content.querySelector('.restrictions-list');
+                    if (restrictionsList) {
+                        restrictionsList.style.removeProperty('minHeight');
+                        restrictionsList.style.removeProperty('maxHeight');
+                    }
+                });
+                
                 // Restaurar altura original do mapa quando as abas estão minimizadas
                 if (mapContainer) {
                     mapContainer.style.bottom = '60px'; // Altura das abas minimizadas
                     
                     // Mostrar o mapa novamente se estiver no GitHub Pages
-                    if (window.location.href.includes('github.io')) {
+                    if (isGitHubPages) {
                         mapContainer.style.visibility = 'visible';
                     }
                     
