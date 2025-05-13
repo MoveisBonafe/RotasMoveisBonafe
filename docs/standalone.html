@@ -52,6 +52,24 @@
             top: 0;
             left: 0;
             bottom: 0;
+            max-height: 100vh; /* Garantir que não ultrapasse a altura da janela */
+            scrollbar-width: thin; /* Para Firefox */
+            scrollbar-color: #adb5bd #f8f9fa; /* Para Firefox */
+        }
+        
+        /* Estilizar scrollbar para navegadores baseados em WebKit (Chrome, Safari) */
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background: #f8f9fa;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: #adb5bd;
+            border-radius: 10px;
+            border: 2px solid #f8f9fa;
         }
         
         /* Melhorar layout da sidebar para GitHub Pages */
@@ -4579,10 +4597,15 @@
                     console.log("Gerando rota alternativa 2: Padrão espiral...");
                     const spiralRoute = solveSpiralTSP(origin, destinations, includeOriginReturn);
                     alternativeRoutes.push(spiralRoute);
-                    const option2 = document.createElement('option');
-                    option2.value = "2";
-                    option2.text = "Rota Alternativa 2 (Padrão Espiral)";
-                    alternativeSelect.appendChild(option2);
+                    
+                    // Adicionar opção ao select da sidebar
+                    const alternativeSidebar = document.getElementById('alternative-routes-sidebar');
+                    if (alternativeSidebar) {
+                        const option2 = document.createElement('option');
+                        option2.value = "2";
+                        option2.text = "Rota Alternativa 2 (Padrão Espiral)";
+                        alternativeSidebar.appendChild(option2);
+                    }
                 }
             } catch (error) {
                 console.error("Erro ao gerar rota em espiral:", error);
@@ -4595,26 +4618,29 @@
                     const cityPriorityRoute = solveCityPriorityTSP(origin, destinations, includeOriginReturn);
                     alternativeRoutes.push(cityPriorityRoute);
                     const routeIndex = alternativeRoutes.length - 1;
-                    const cityOption = document.createElement('option');
-                    cityOption.value = routeIndex.toString();
-                    cityOption.text = `Rota Alternativa ${routeIndex} (Agrupamento por Cidade)`;
-                    alternativeSelect.appendChild(cityOption);
+                    
+                    // Adicionar opção ao select da sidebar
+                    const alternativeSidebar = document.getElementById('alternative-routes-sidebar');
+                    if (alternativeSidebar) {
+                        const cityOption = document.createElement('option');
+                        cityOption.value = routeIndex.toString();
+                        cityOption.text = `Rota Alternativa ${routeIndex} (Agrupamento por Cidade)`;
+                        alternativeSidebar.appendChild(cityOption);
+                    }
                 }
             } catch (error) {
                 console.error("Erro ao gerar rota por cidade:", error);
             }
         }
         
-        // Mostrar o seletor de rotas alternativas se houver mais de uma rota
-        const routeAlternativesEl = document.getElementById('route-alternatives');
-        if (routeAlternativesEl) {
-            routeAlternativesEl.style.display = alternativeRoutes.length > 1 ? 'block' : 'none';
+        // Mostrar o seletor de rotas alternativas na sidebar se houver mais de uma rota
+        const routeAlternativesSidebarEl = document.getElementById('route-alternatives-sidebar');
+        if (routeAlternativesSidebarEl) {
+            routeAlternativesSidebarEl.style.display = alternativeRoutes.length > 1 ? 'block' : 'none';
+            console.log('Exibindo seletor de rotas alternativas na sidebar:', alternativeRoutes.length > 1);
         }
         
-        // Configurar o evento para alternar entre as rotas
-        alternativeSelect.onchange = function() {
-            switchAlternativeRoute(parseInt(this.value));
-        };
+        // Evento para o select de rotas alternativas já configurado na inicialização
         
         // Retornar a rota principal (a primeira no array)
         return alternativeRoutes[0];
