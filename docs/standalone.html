@@ -3991,10 +3991,24 @@
                 const eventStart = new Date(event.startDate);
                 const eventEnd = new Date(event.endDate);
                 
-                // Garantir que estamos usando o ano atual para eventos anuais (aniversários)
+                // AJUSTE PARA ANIVERSÁRIOS DE CIDADES: 
+                // Manter o mês e dia originais da fundação, mudando apenas o ano para o atual
                 if (event.name.includes("Aniversário") || event.isHoliday) {
+                    // Preservar mês e dia exatos da data de fundação, apenas atualizando o ano
+                    const originalMonth = eventStart.getMonth();
+                    const originalDay = eventStart.getDate();
+                    
+                    // Redefinir para o ano atual
                     eventStart.setFullYear(currentYear);
                     eventEnd.setFullYear(currentYear);
+                    
+                    // Garantir que o mês e dia originais são mantidos
+                    eventStart.setMonth(originalMonth);
+                    eventStart.setDate(originalDay);
+                    eventEnd.setMonth(originalMonth);
+                    eventEnd.setDate(originalDay);
+                    
+                    console.log(`Ajustada data de aniversário: ${event.cityName} para ${eventStart.toLocaleDateString('pt-BR')}`);
                 }
                 
                 // Ajustar horas para garantir dias completos
@@ -4045,15 +4059,61 @@
                         filterStart.setHours(0,0,0,0);
                         filterEnd.setHours(23,59,59,999);
                         
+                        // Verificar sobreposição entre as datas - implementação mais rigorosa
+                        // Converter para timestamps numéricos para comparação mais segura
+                        const eventStartTime = eventStart.getTime();
+                        const eventEndTime = eventEnd.getTime();
+                        const filterStartTime = filterStart.getTime();
+                        const filterEndTime = filterEnd.getTime();
+                        
+                        // Para depuração
+                        console.log(`[COMPARAÇÃO] Evento: ${eventStartTime}-${eventEndTime} | Filtro: ${filterStartTime}-${filterEndTime}`);
+                        
                         // Verificar sobreposição entre as datas
-                        const hasOverlap = (
+                        let hasOverlap = (
                             // Evento começa dentro do período do filtro
-                            (eventStart >= filterStart && eventStart <= filterEnd) ||
+                            (eventStartTime >= filterStartTime && eventStartTime <= filterEndTime) ||
                             // Evento termina dentro do período do filtro
-                            (eventEnd >= filterStart && eventEnd <= filterEnd) ||
+                            (eventEndTime >= filterStartTime && eventEndTime <= filterEndTime) ||
                             // Evento abrange todo o período do filtro
-                            (eventStart <= filterStart && eventEnd >= filterEnd)
+                            (eventStartTime <= filterStartTime && eventEndTime >= filterEndTime)
                         );
+                        
+                        // CORREÇÃO CRÍTICA: Verificação especial para aniversários de cidade
+                        // A correção detecta se o mês e dia exatos do aniversário ocorrem dentro do intervalo de filtro
+                        if (event.name.includes("Aniversário") && !hasOverlap) {
+                            // Extrair o mês e dia do aniversário
+                            const birthdayMonth = eventStart.getMonth(); // 0-11
+                            const birthdayDay = eventStart.getDate();    // 1-31
+                            
+                            console.log(`[ANIVERSÁRIO] ${event.name} (${event.cityName}): Data original fundação: ${birthdayDay}/${birthdayMonth+1}`);
+                            console.log(`[ANIVERSÁRIO] Período filtro: ${filterStart.toLocaleDateString('pt-BR')} até ${filterEnd.toLocaleDateString('pt-BR')}`);
+                            
+                            // Criar uma cópia do início do filtro para iteração
+                            let currentDate = new Date(filterStart);
+                            
+                            // Loop por cada dia no intervalo do filtro
+                            while (currentDate <= filterEnd) {
+                                const currentMonth = currentDate.getMonth();
+                                const currentDay = currentDate.getDate();
+                                
+                                // Verificar se o mês e dia correspondem ao aniversário
+                                if (currentMonth === birthdayMonth && currentDay === birthdayDay) {
+                                    console.log(`[ANIVERSÁRIO] CORRESPONDÊNCIA ENCONTRADA para ${event.name} em ${currentDate.toLocaleDateString('pt-BR')}`);
+                                    hasOverlap = true;
+                                    break;
+                                }
+                                
+                                // Avançar para o próximo dia
+                                currentDate.setDate(currentDate.getDate() + 1);
+                            }
+                            
+                            if (hasOverlap) {
+                                console.log(`[ANIVERSÁRIO] Incluindo ${event.name} (${event.cityName}) no filtro`);
+                            } else {
+                                console.log(`[ANIVERSÁRIO] ${event.name} (${event.cityName}) NÃO está no período de filtro`);
+                            }
+                        }
                         
                         console.log(`[VERIFICAÇÃO] Data evento ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')} vs. Filtro ${filterStart.toLocaleDateString('pt-BR')}-${filterEnd.toLocaleDateString('pt-BR')}`);
                         
