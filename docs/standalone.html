@@ -1433,12 +1433,34 @@
         }
         
         // Filtrar eventos automaticamente ao mudar as datas
-        document.getElementById('start-date').addEventListener('change', filterEventsByDate);
-        document.getElementById('end-date').addEventListener('change', filterEventsByDate);
+        const startDateInput = document.getElementById('start-date');
+        if (startDateInput) {
+            startDateInput.addEventListener('change', filterEventsByDate);
+        } else {
+            console.error("Campo de data inicial não encontrado!");
+        }
+        
+        const endDateInput = document.getElementById('end-date');
+        if (endDateInput) {
+            endDateInput.addEventListener('change', filterEventsByDate);
+        } else {
+            console.error("Campo de data final não encontrado!");
+        }
         
         // Botões de controle do mapa
-        document.getElementById('zoom-to-fit').addEventListener('click', zoomToFitAllMarkers);
-        document.getElementById('toggle-poi').addEventListener('click', togglePointsOfInterest);
+        const zoomToFitButton = document.getElementById('zoom-to-fit');
+        if (zoomToFitButton) {
+            zoomToFitButton.addEventListener('click', zoomToFitAllMarkers);
+        } else {
+            console.error("Botão de zoom para ajustar todos os marcadores não encontrado!");
+        }
+        
+        const togglePoiButton = document.getElementById('toggle-poi');
+        if (togglePoiButton) {
+            togglePoiButton.addEventListener('click', togglePointsOfInterest);
+        } else {
+            console.error("Botão para alternar pontos de interesse não encontrado!");
+        }
         
         // Botões da aba de relatório
         const saveRouteButton = document.getElementById('save-route');
@@ -1548,6 +1570,9 @@
                 currentRouteIndex = selectedIndex;
             }
         });
+        } else {
+            console.error("Seletor de rotas alternativas não encontrado!");
+        }
     }
 
     // Função para tratar o upload de arquivo
