@@ -2010,69 +2010,18 @@
 
     // Inicializa a navegação por abas (novas abas inferiores)
     function initTabNavigation() {
-        // Inicializar abas inferiores (abaixo do mapa) - SISTEMA ANTIGO 
-        const bottomTabButtons = document.querySelectorAll('.bottom-tab-btn');
-        const bottomTabContents = document.querySelectorAll('.bottom-tab-content');
+        console.log("Inicializando navegação por abas...");
         
-        // Inicializar NOVO sistema de abas fluido
-        const tabButtons = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
+        // A funcionalidade de abas foi migrada para o novo sistema initTabSystem
         
         // Verificar se estamos no GitHub Pages (para aplicar animações avançadas)
         const isGitHubPages = window.location.href.includes('github.io');
         
-        // Inicializar as novas abas fluidas
-        if (tabButtons.length > 0) {
-            console.log("Inicializando novo sistema de navegação para tabs fluidas");
-            
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const tabId = button.getAttribute('data-tab');
-                    console.log("Tab fluida clicada:", tabId);
-                    
-                    // Desativar todas as abas
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    tabContents.forEach(content => content.classList.remove('active'));
-                    
-                    // Ativar a aba clicada
-                    button.classList.add('active');
-                    
-                    // Ativar o conteúdo correspondente
-                    const contentId = `${tabId}-content`;
-                    const contentElement = document.getElementById(contentId);
-                    
-                    if (contentElement) {
-                        contentElement.classList.add('active');
-                        
-                        // Rolar suavemente até o conteúdo da aba
-                        contentElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    } else {
-                        console.error(`Elemento de conteúdo não encontrado: ${contentId}`);
-                    }
-                });
-            });
-            
-            // Adicionar função de sincronização do conteúdo
-            setupContentSync();
+        // Registrar que estamos usando o GitHub Pages para futuras otimizações
+        if (isGitHubPages) {
+            console.log("Versão GitHub Pages detectada, aplicando melhorias de desempenho.");
         }
-        
-        // Inicializar sistema antigo de abas (mantido para compatibilidade)
-        if (bottomTabButtons.length > 0) {
-            console.log("Inicializando sistema antigo de navegação para tabs inferiores");
-            
-            bottomTabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const tabId = button.getAttribute('data-tab');
-                    console.log("Tab inferior clicada:", tabId);
-                    
-                    // Verificar se já é o botão ativo e se o painel está expandido
-                    const isCurrentlyActive = button.classList.contains('active');
-                    const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
-                    const isExpanded = bottomTabsContainer && !bottomTabsContainer.classList.contains('minimized');
-                    
-                    // Se clicar no mesmo botão que já está ativo e o painel estiver expandido, minimiza
-                    if (isCurrentlyActive && isExpanded) {
-                        toggleTabsExpansion(); // Minimizar o painel
+    }
                         return; // Não muda o conteúdo, apenas minimiza
                     }
                     
