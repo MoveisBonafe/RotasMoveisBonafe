@@ -619,19 +619,20 @@
             flex-direction: column;
             animation: fadeIn 0.5s ease;
             background-color: #f9f9f9;
-            border-bottom: 1px solid #ddd; /* Alterado de border-top para border-bottom */
+            border-top: 1px solid #ddd; /* Alterado para borda superior */
             overflow: auto; /* Alterado para auto para permitir rolagem */
             /* Inicialmente minimizada ao invés de oculta */
             display: flex;
             height: auto;
-            /* Ajustes para expandir de cima para baixo */
+            /* Ajustes para expandir de baixo para cima */
             position: fixed; /* Alterado para fixed para cobrir toda a tela */
-            top: 0; /* Alterado de bottom para top */
+            bottom: 0; /* Posicionar na parte inferior da página */
+            top: auto; /* Remover posicionamento do topo */
             left: 0;
             right: 0;
             z-index: 1000; /* Aumentado para ficar sobre todos os elementos */
             transition: height 0.3s ease-in-out;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Sombra para baixo */
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1); /* Sombra para cima */
             box-sizing: border-box; /* Garantir que padding e border não afetem o tamanho */
         }
         
@@ -661,14 +662,15 @@
             overflow: hidden;
         }
         
-        /* Estado expandido para container de abas (expandindo de cima para baixo) */
+        /* Estado expandido para container de abas (expandindo de baixo para cima) */
         .bottom-tabs-container:not(.minimized) {
-            height: calc(100vh - 380px) !important; /* Altura limitada a uma página, preservando a sidebar */
-            max-height: 70vh !important; /* Nunca ultrapassar 70% da altura da tela */
-            top: 0 !important; /* Garantir que começa no topo */
-            border-bottom: 2px solid #1976D2; /* Borda mais visível quando expandido (abaixo) */
+            height: calc(70vh) !important; /* Altura limitada a 70% da tela */
+            max-height: calc(100vh - 380px) !important; /* Preservando espaço para a sidebar */
+            bottom: 0 !important; /* Garantir que começa na parte inferior */
+            top: auto !important; /* Remover posicionamento do topo */
+            border-top: 2px solid #1976D2; /* Borda mais visível quando expandido (acima) */
             border-left: 2px solid #1976D2; /* Borda na lateral para separar da sidebar */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Sombra ajustada para baixo */
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.2); /* Sombra ajustada para cima */
             overflow-y: auto !important; /* Garantir rolagem vertical */
             z-index: 2000 !important; /* Garantir que fique por cima de todos os elementos */
         }
@@ -677,16 +679,24 @@
         body.tabs-expanded .bottom-tabs-container:not(.minimized) {
             height: calc(100vh - 380px) !important;
             max-height: 70vh !important;
+            bottom: 0 !important;
+            top: auto !important;
+        }
+        
+        /* Ajustes para modo de tela cheia com abas na parte inferior */
+        .bottom-tabs-container.fullscreen-mode {
+            bottom: 0 !important;
+            top: auto !important;
         }
         
         /* Botão de fechar removido - usando apenas os botões das abas para controlar expandir/minimizar */
         
-        /* Ajuste para que o mapa ocupe todo o espaço disponível (considerando abas no topo) */
+        /* Ajuste para que o mapa ocupe todo o espaço disponível (considerando abas na parte inferior) */
         .map-container {
             position: fixed !important; /* Posicionamento fixo para cobrir toda a área */
-            top: 60px !important; /* Começa abaixo das abas minimizadas */
+            top: 0 !important; /* Começa no topo da página */
             right: 0 !important;
-            bottom: 0 !important; /* Vai até o final da página (sem abas no bottom) */
+            bottom: 60px !important; /* Termina acima das abas minimizadas */
             left: 380px !important; /* Começa onde termina a sidebar */
             width: calc(100% - 380px) !important; /* Largura ajustada para alinhar com a sidebar */
             height: calc(100vh - 60px) !important; /* Altura total menos as abas minimizadas */
@@ -1955,7 +1965,7 @@
                 // Atualizar o texto do botão de toggle
                 const toggleIcon = document.getElementById('toggle-icon');
                 if (toggleIcon) {
-                    toggleIcon.textContent = '▼ Minimizar';
+                    toggleIcon.textContent = '▲ Minimizar';
                 }
                 
                 console.log("Abas inferiores expandidas com sucesso");
@@ -2011,13 +2021,14 @@
             if (bottomTabsContainer.classList.contains('minimized')) {
                 // Expandir
                 bottomTabsContainer.classList.remove('minimized');
-                if (toggleIcon) toggleIcon.textContent = '▼ Minimizar';
+                if (toggleIcon) toggleIcon.textContent = '▲ Minimizar';
                 
                 // Implementação especial para GitHub Pages
                 const isGitHubPages = window.location.href.includes('github.io');
                 
-                // Definir top=0 para garantir que a aba vá até o topo
-                bottomTabsContainer.style.top = '0';
+                // Definir bottom=0 para garantir que a aba vá até o fundo
+                bottomTabsContainer.style.bottom = '0';
+                bottomTabsContainer.style.top = 'auto';
                 
                 // Adicionar classe para indicar que está em modo de tela cheia
                 bottomTabsContainer.classList.add('fullscreen-mode');
