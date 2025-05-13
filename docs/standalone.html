@@ -2243,9 +2243,12 @@
                     }
                 }
             } else {
-                // Minimizar
+                // Minimizar com animação suave
                 bottomTabsContainer.classList.add('minimized');
                 if (toggleIcon) toggleIcon.textContent = '▲ Expandir';
+                
+                // Animar a transição para estado minimizado
+                bottomTabsContainer.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
                 
                 // Remover classe de modo tela cheia
                 bottomTabsContainer.classList.remove('fullscreen-mode');
@@ -2256,12 +2259,37 @@
                 // Remover classe especial do body
                 document.body.classList.remove('tabs-expanded');
                 
-                // Resetar estilos do container de abas
-                bottomTabsContainer.style.removeProperty('height');
-                bottomTabsContainer.style.removeProperty('maxHeight');
+                // Restaurar o brilho do mapa se existir
+                if (mapContainer) {
+                    mapContainer.style.transition = 'filter 0.3s ease';
+                    mapContainer.style.filter = 'brightness(1)';
+                }
+                
+                // Animar conteúdo ativo antes de minimizar
+                const activeContent = document.querySelector('.bottom-tab-content.active');
+                if (activeContent) {
+                    activeContent.style.transition = 'all 0.3s ease-out';
+                    activeContent.style.transform = 'translateY(15px)';
+                    activeContent.style.opacity = '0.9';
+                    
+                    // Resetar após a animação
+                    setTimeout(() => {
+                        // Então resetar estilos
+                        activeContent.style.transform = '';
+                        activeContent.style.opacity = '';
+                        
+                        // Resetar estilos do container de abas
+                        bottomTabsContainer.style.removeProperty('height');
+                        bottomTabsContainer.style.removeProperty('maxHeight');
+                        
+                        // Definir altura fixa para o conteúdo minimizado
+                        activeContent.style.height = 'auto';
+                        activeContent.style.maxHeight = '280px';
+                    }, 300);
+                }
                 
                 // Resetar estilos de todos os conteúdos
-                const allTabContents = document.querySelectorAll('.bottom-tab-content');
+                const allTabContents = document.querySelectorAll('.bottom-tab-content:not(.active)');
                 allTabContents.forEach(content => {
                     content.style.removeProperty('height');
                     content.style.removeProperty('maxHeight');
