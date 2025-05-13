@@ -3669,6 +3669,10 @@
             
             // Limpar a lista
             const restrictionsListContainer = document.getElementById('restrictions-list');
+            if (!restrictionsListContainer) {
+                console.error("Container de restrições não encontrado na função showTruckRestrictionsForCitiesOnRoute!");
+                return;
+            }
             restrictionsListContainer.innerHTML = '';
             
             // Adicionar título explicativo
@@ -4114,6 +4118,10 @@
             try {
                 // Limpar a lista primeiro e adicionar título depois
                 const restrictionsListContainer = document.getElementById('restrictions-list');
+                if (!restrictionsListContainer) {
+                    console.error("Container de restrições não encontrado na versão GitHub Pages!");
+                    return;
+                }
                 
                 // Limpar o container para garantir que não há restrições remanescentes
                 restrictionsListContainer.innerHTML = '';
