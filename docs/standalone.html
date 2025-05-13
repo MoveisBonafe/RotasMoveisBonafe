@@ -4687,9 +4687,33 @@
     
     // Atualizar detalhes das rotas nos cards
     function updateRouteCardDetails(routes) {
-        if (!routes || routes.length === 0) return;
+        console.log("Atualizando detalhes das rotas alternativas:", routes);
+        if (!routes || routes.length === 0) {
+            console.log("Nenhuma rota para atualizar");
+            return;
+        }
         
-        routes.forEach((route, index) => {
+        // Padronizar propriedades das rotas para garantir compatibilidade
+        const standardizedRoutes = routes.map(route => {
+            // Se a rota não tem totalDistance, verifica se tem distance
+            if (route.totalDistance === undefined && route.distance !== undefined) {
+                route.totalDistance = route.distance;
+            }
+            
+            // Se totalDistance ainda for undefined, defina como 0
+            if (route.totalDistance === undefined) {
+                route.totalDistance = 0;
+            }
+            
+            // Garantir que temos pathIds
+            if (!route.pathIds && route.path) {
+                route.pathIds = route.path.map(id => typeof id === 'object' ? id.toString() : id.toString());
+            }
+            
+            return route;
+        });
+        
+        standardizedRoutes.forEach((route, index) => {
             const detailsElement = document.getElementById(`route-${index}-details`);
             const cardElement = document.getElementById(`route-card-${index}`);
             
@@ -4698,16 +4722,25 @@
                 let distanceStr = "N/A";
                 let timeStr = "N/A";
                 
-                // Formatar distância apenas se definida
-                if (route.totalDistance !== undefined && route.totalDistance !== null) {
-                    distanceStr = (route.totalDistance < 1) ? 
-                        `${Math.round(route.totalDistance * 1000)} m` : 
-                        `${route.totalDistance.toFixed(1)} km`;
+                // Formatar distância sempre com verificação de tipo
+                try {
+                    const distance = parseFloat(route.totalDistance);
+                    if (!isNaN(distance)) {
+                        distanceStr = (distance < 1) ? 
+                            `${Math.round(distance * 1000)} m` : 
+                            `${distance.toFixed(1)} km`;
+                    }
+                } catch (e) {
+                    console.error("Erro ao formatar distância:", e);
                 }
                 
-                // Formatar tempo apenas se definido
-                if (route.estimatedTime !== undefined && route.estimatedTime !== null) {
-                    timeStr = formatTravelTime(route.estimatedTime);
+                // Formatar tempo sempre com verificação de tipo
+                try {
+                    if (route.estimatedTime !== undefined && route.estimatedTime !== null) {
+                        timeStr = formatTravelTime(route.estimatedTime);
+                    }
+                } catch (e) {
+                    console.error("Erro ao formatar tempo:", e);
                 }
                 
                 // Atualizar detalhes no card
@@ -4720,11 +4753,13 @@
                 if (cardElement) {
                     cardElement.style.display = 'block';
                 }
+            } else {
+                console.log(`Elemento de detalhes não encontrado para rota ${index}`);
             }
         });
         
         // Esconder cards não utilizados
-        for (let i = routes.length; i < 3; i++) {
+        for (let i = standardizedRoutes.length; i < 3; i++) {
             const unusedCard = document.getElementById(`route-card-${i}`);
             if (unusedCard) {
                 unusedCard.style.display = 'none';
