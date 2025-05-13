@@ -1281,6 +1281,36 @@
         // Verificar se estamos no GitHub Pages (para aplicar animações avançadas)
         const isGitHubPages = window.location.href.includes('github.io');
         
+        // Garantir que os containers de eventos e restrições existam
+        const eventsContainer = document.getElementById('events-list');
+        const restrictionsContainer = document.getElementById('restrictions-list');
+        
+        // Se o container de eventos não existir, criar um
+        if (!eventsContainer) {
+            console.warn("Container de eventos não encontrado no DOM. Criando um novo.");
+            const eventsContent = document.getElementById('bottom-events-content');
+            if (eventsContent) {
+                const newEventsContainer = document.createElement('div');
+                newEventsContainer.id = 'events-list';
+                newEventsContainer.className = 'events-list';
+                newEventsContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado.</p>';
+                eventsContent.appendChild(newEventsContainer);
+            }
+        }
+        
+        // Se o container de restrições não existir, criar um
+        if (!restrictionsContainer) {
+            console.warn("Container de restrições não encontrado no DOM. Criando um novo.");
+            const restrictionsContent = document.getElementById('bottom-restrictions-content');
+            if (restrictionsContent) {
+                const newRestrictionsContainer = document.createElement('div');
+                newRestrictionsContainer.id = 'restrictions-list';
+                newRestrictionsContainer.className = 'restrictions-list';
+                newRestrictionsContainer.innerHTML = '<p class="text-muted">Nenhuma restrição encontrada.</p>';
+                restrictionsContent.appendChild(newRestrictionsContainer);
+            }
+        }
+        
         if (bottomTabButtons.length > 0) {
             console.log("Inicializando sistema de navegação para tabs inferiores");
             
