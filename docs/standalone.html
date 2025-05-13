@@ -997,8 +997,11 @@
             border-top: 1px solid #e0e0e0;
             animation: fadeInDown 0.5s ease forwards;
             opacity: 0;
-            transform: translateY(-20px);
-            overflow-y: auto; /* Permite rolagem vertical para todos os conteúdos */
+            transform: translateY(0); /* Modificado para evitar problemas de rolagem */
+            overflow-y: auto; /* Permite rolagem vertical apenas dentro da própria aba */
+            overflow-x: hidden; /* Previne rolagem horizontal */
+            height: calc(60vh - 80px); /* Altura fixa para cada aba */
+            max-height: calc(60vh - 80px);
         }
         
         /* Ajustes para quando as abas estão minimizadas */
@@ -2028,18 +2031,28 @@
                             // Se estiver em tela cheia, ajustar altura do conteúdo
                             if (isFullScreen) {
                                 console.log("Ajustando altura para conteúdo da aba em modo tela cheia:", contentId);
-                                contentElement.style.height = 'auto';
+                                contentElement.style.height = 'calc(60vh - 80px)'; // Altura fixa para evitar rolagem entre abas
                                 contentElement.style.maxHeight = 'calc(60vh - 80px)';
                                 contentElement.style.overflow = 'auto';
                                 contentElement.style.paddingBottom = '20px';
+                                contentElement.style.overflowX = 'hidden'; // Impede rolagem horizontal
                                 
                                 // Ajustes específicos para diferentes tipos de conteúdo
                                 if (contentId === 'bottom-restrictions-content') {
                                     const restrictionsList = contentElement.querySelector('.restrictions-list');
                                     if (restrictionsList) {
-                                        restrictionsList.style.maxHeight = 'calc(60vh - 150px)';
-                                        restrictionsList.style.paddingBottom = '50px';
+                                        restrictionsList.style.maxHeight = 'calc(60vh - 180px)'; // Ajustado para caber dentro da aba
+                                        restrictionsList.style.paddingBottom = '20px';
                                         restrictionsList.style.overflow = 'auto';
+                                    }
+                                }
+                                
+                                // Ajustes para o relatório de rota
+                                if (contentId === 'bottom-report-content') {
+                                    const routeSummary = contentElement.querySelector('#route-summary');
+                                    if (routeSummary) {
+                                        routeSummary.style.maxHeight = 'calc(60vh - 180px)';
+                                        routeSummary.style.overflow = 'auto';
                                     }
                                 }
                             }
@@ -2151,12 +2164,22 @@
         const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
         const toggleIcon = document.getElementById('toggle-icon');
         const mapContainer = document.querySelector('.map-container');
+        const bottomTabContents = document.querySelectorAll('.bottom-tab-content');
         
         if (bottomTabsContainer) {
             if (bottomTabsContainer.classList.contains('minimized')) {
                 // Expandir
                 bottomTabsContainer.classList.remove('minimized');
                 if (toggleIcon) toggleIcon.textContent = '▼ Minimizar';
+                
+                // Garantir que apenas a aba ativa esteja visível
+                bottomTabContents.forEach(content => {
+                    if (content.classList.contains('active')) {
+                        content.style.display = 'block';
+                    } else {
+                        content.style.display = 'none';
+                    }
+                });
                 
                 // Implementação especial para GitHub Pages
                 const isGitHubPages = window.location.href.includes('github.io');
