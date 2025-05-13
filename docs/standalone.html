@@ -1174,9 +1174,21 @@
         endDate.setDate(today.getDate() + 30);
         const formattedEndDate = endDate.toISOString().split('T')[0];
         
-        // Definir os valores dos campos de data
-        document.getElementById('start-date').value = formattedToday;
-        document.getElementById('end-date').value = formattedEndDate;
+        // Definir os valores dos campos de data (com verificações null)
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        
+        if (startDateInput) {
+            startDateInput.value = formattedToday;
+        } else {
+            console.error("Campo de data inicial não encontrado");
+        }
+        
+        if (endDateInput) {
+            endDateInput.value = formattedEndDate;
+        } else {
+            console.error("Campo de data final não encontrado");
+        }
         
         console.log(`Datas definidas automaticamente na inicialização do mapa: de ${formattedToday} até ${formattedEndDate}`);
         
@@ -2181,8 +2193,17 @@
         if (routeSummary) {
             routeSummary.style.display = 'none';
         }
-        document.getElementById('save-route').disabled = true;
-        document.getElementById('print-route').disabled = true;
+        
+        // Adicionar verificações de null para os botões
+        const saveRouteBtn = document.getElementById('save-route');
+        if (saveRouteBtn) {
+            saveRouteBtn.disabled = true;
+        }
+        
+        const printRouteBtn = document.getElementById('print-route');
+        if (printRouteBtn) {
+            printRouteBtn.disabled = true;
+        }
     }
 
     // Limpar marcadores de pontos de interesse
