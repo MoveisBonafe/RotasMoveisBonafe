@@ -1373,56 +1373,83 @@
     // Configura todos os event listeners
     function initEventListeners() {
         // Toggle para mostrar/esconder a sidebar
-        document.getElementById('toggle-sidebar').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('sidebar-hidden');
-        });
+        const toggleSidebarBtn = document.getElementById('toggle-sidebar');
+        if (toggleSidebarBtn) {
+            toggleSidebarBtn.addEventListener('click', function() {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) {
+                    sidebar.classList.toggle('sidebar-hidden');
+                }
+            });
+        } else {
+            console.error("Botão para alternar sidebar não encontrado!");
+        }
         
         // Botão para fechar a sidebar em telas pequenas
-        document.querySelector('.sidebar-close').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.add('sidebar-hidden');
-        });
+        const sidebarCloseBtn = document.querySelector('.sidebar-close');
+        if (sidebarCloseBtn) {
+            sidebarCloseBtn.addEventListener('click', function() {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) {
+                    sidebar.classList.add('sidebar-hidden');
+                }
+            });
+        } else {
+            console.error("Botão para fechar sidebar não encontrado!");
+        }
         
         // Upload de arquivo com suporte para drag and drop
         const fileUploadInput = document.getElementById('file-upload');
         const uploadArea = document.getElementById('upload-area');
         
         // Evento para quando o arquivo é selecionado pelo input
-        fileUploadInput.addEventListener('change', handleFileUpload);
-        
-        // Eventos de drag and drop
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, preventDefaults, false);
-        });
-        
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
+        if (fileUploadInput) {
+            fileUploadInput.addEventListener('change', handleFileUpload);
+        } else {
+            console.error("Input de upload de arquivo não encontrado!");
         }
         
-        // Adicionar classe visual quando o arquivo está sendo arrastado sobre a área
-        ['dragenter', 'dragover'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, () => {
-                uploadArea.classList.add('dragover');
+        // Eventos de drag and drop
+        if (uploadArea) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            // Adicionar classe visual quando o arquivo está sendo arrastado sobre a área
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, () => {
+                    uploadArea.classList.add('dragover');
+                }, false);
+            });
+            
+            // Remover classe visual quando o arquivo sai da área ou é solto
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, () => {
+                    uploadArea.classList.remove('dragover');
+                }, false);
+            });
+            
+            // Processar o arquivo quando for solto na área
+            uploadArea.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length && fileUploadInput) {
+                    fileUploadInput.files = files;
+                    handleFileUpload({target: fileUploadInput});
+                }
             }, false);
-        });
-        
-        // Remover classe visual quando o arquivo sai da área ou é solto
-        ['dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, () => {
-                uploadArea.classList.remove('dragover');
-            }, false);
-        });
+        } else {
+            console.error("Área de upload não encontrada!");
+        }
         
         // Processar o arquivo quando for solto na área
-        uploadArea.addEventListener('drop', (e) => {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            
-            if (files.length) {
-                fileUploadInput.files = files;
-                handleFileUpload({target: fileUploadInput});
-            }
-        }, false);
+        // Esse handler já está incluso no bloco acima, podemos remover esta duplicação
         
         // Botão para otimizar rota
         const optimizeButton = document.getElementById('optimize-route');
