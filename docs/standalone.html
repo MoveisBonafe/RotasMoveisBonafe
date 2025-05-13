@@ -22,10 +22,11 @@
         }
         .app-container {
             display: flex;
-            flex-direction: row; /* Garante que os elementos ficam lado a lado */
+            flex-direction: row !important; /* Força elementos lado a lado sempre */
             height: 100vh;
             overflow: hidden;
             width: 100%;
+            position: relative; /* Permite posicionamento absoluto das abas inferiores */
         }
         .sidebar {
             width: 380px;
@@ -600,11 +601,18 @@
             border-radius: 12px;
             box-shadow: 0 2px 15px rgba(0,0,0,0.08);
             overflow: hidden;
-            max-width: 1200px;
+            max-width: calc(100% - 40px); /* Largura responsiva com margens */
             margin-left: auto;
             margin-right: auto;
             /* Inicialmente oculto até que uma rota seja otimizada */
             display: none;
+            /* Posicionamento absoluto para não afetar o layout principal */
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-height: 40vh; /* Altura máxima de 40% da tela */
         }
         
         .bottom-tabs-nav {
@@ -708,18 +716,17 @@
         
         .bottom-tab-content {
             display: none;
-            padding: 30px;
+            padding: 20px;
             background-color: white;
             animation: fadeInUp 0.5s ease forwards;
             opacity: 0;
             transform: translateY(20px);
-            min-height: 300px;
+            height: calc(40vh - 100px); /* Ajusta para o espaço disponível considerando a altura da aba */
+            overflow-y: auto; /* Permite rolagem vertical para todos os conteúdos */
         }
         
         /* Aumentando tamanho específico para a aba de restrições */
         #bottom-restrictions-content {
-            min-height: 400px;
-            max-height: 600px;
             overflow-y: auto;
         }
         
@@ -4752,7 +4759,6 @@
         }
         
         routeIds = [mockData.origin.id];
-        }
         
         // Mostrar eventos para as cidades da rota com filtro por data
         showEventsForCitiesOnRoute(routeIds);
