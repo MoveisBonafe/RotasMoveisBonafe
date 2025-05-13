@@ -1033,20 +1033,21 @@
         .tabs-header {
             position: sticky;
             bottom: 0;
-            background-color: #fff;
+            background-color: #f8f9fa;
             padding: 12px 0;
             margin-bottom: 15px;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             z-index: 900;
             display: flex;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             border-radius: 8px 8px 0 0;
+            border-bottom: 2px solid #1976D2;
         }
         
         .tab-btn {
             padding: 10px 20px;
-            background-color: #f8f9fa;
+            background-color: #ffffff;
             border: 1px solid #dee2e6;
             border-radius: 20px;
             cursor: pointer;
@@ -1055,6 +1056,11 @@
             transition: all 0.3s ease;
             font-size: 0.95rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-width: 100px;
         }
         
         .tab-btn:hover {
@@ -6743,9 +6749,73 @@
         }
     }
     
+    // Função para inicializar o sistema de abas fluidas
+    function initTabSystem() {
+        try {
+            console.log("Inicializando sistema de abas fluidas...");
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            if (!tabBtns.length) {
+                console.error("Botões de tab não encontrados!");
+                return;
+            }
+            
+            if (!tabContents.length) {
+                console.error("Conteúdo de tabs não encontrado!");
+                return;
+            }
+            
+            // Ajustar altura do placeholder para compensar a altura das abas
+            const tabsSection = document.querySelector('.tabs-section');
+            const placeholder = document.getElementById('scroll-tabs-placeholder');
+            
+            if (tabsSection && placeholder) {
+                const updatePlaceholderHeight = () => {
+                    const tabsHeight = tabsSection.offsetHeight;
+                    placeholder.style.height = tabsHeight + 'px';
+                    console.log("Altura do placeholder de abas ajustada para", tabsHeight, "px");
+                };
+                
+                // Atualizar inicialmente
+                updatePlaceholderHeight();
+                
+                // Atualizar sempre que a janela for redimensionada
+                window.addEventListener('resize', updatePlaceholderHeight);
+            } else {
+                console.warn("Elementos de placeholder de abas não encontrados!");
+            }
+            
+            // Adicionar evento de clique para todas as abas
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remover classe ativa de todas as abas
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Adicionar classe ativa à aba clicada
+                    const tabId = this.getAttribute('data-tab');
+                    this.classList.add('active');
+                    
+                    const content = document.getElementById(tabId + '-content');
+                    if (content) {
+                        content.classList.add('active');
+                    } else {
+                        console.error("Conteúdo da aba", tabId, "não encontrado!");
+                    }
+                });
+            });
+            
+            console.log("Sistema de abas inicializado com sucesso!");
+        } catch (err) {
+            console.error("Erro ao inicializar sistema de abas:", err);
+        }
+    }
+
     // Inicializar suporte mobile quando documento estiver pronto
     document.addEventListener('DOMContentLoaded', function() {
         initMobileSupport();
+        initTabSystem();
     });
     </script>
 </body>
