@@ -3842,110 +3842,46 @@
         });
     }
 
-    // Mostrar eventos para as cidades na rota - FUNÇÃO COMPLETAMENTE REESCRITA
+    // Mostrar eventos para as cidades na rota
     function showEventsForCitiesOnRoute(pathIds, startDateStr, endDateStr) {
         console.log("=================== NOVA EXECUÇÃO ===================");
         console.log("Mostrando eventos para rota com IDs:", pathIds);
         console.log("Datas de filtro (string):", startDateStr, endDateStr);
         
-        // ========================================================================================
-        // ETAPA 1: CONFIGURAÇÃO E VALIDAÇÃO INICIAL
-        // ========================================================================================
-        
-        // Verificar e validar as datas de entrada
-        let startDateValue = startDateStr;
-        let endDateValue = endDateStr;
-        
-        // Obter o ano atual (usado para ajustar as datas de aniversário)
-        const currentYear = new Date().getFullYear();
-        
-        // Se não fornecidas, usar valores padrão: hoje e uma semana depois
-        if (!startDateValue || !endDateValue) {
-            console.warn("Datas não fornecidas, usando período padrão", startDateValue, endDateValue);
-            
-            const today = new Date();
-            const oneWeekLater = new Date(today.getTime());
-            oneWeekLater.setDate(today.getDate() + 7);
-            
-            // Converter para formato de string YYYY-MM-DD
-            startDateValue = !startDateValue ? today.toISOString().split('T')[0] : startDateValue;
-            endDateValue = !endDateValue ? oneWeekLater.toISOString().split('T')[0] : endDateValue;
-            
-            console.log("Datas ajustadas para:", startDateValue, "até", endDateValue);
-        }
+        // Valores para filtragem por data - garantir que são strings válidas
+        let startDateValue = startDateStr || "";
+        let endDateValue = endDateStr || "";
         
         // Verificações de segurança
         if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
             console.error("IDs de rota inválidos ou vazios:", pathIds);
-            return;
-        }
-        
-        // Converter datas de string para objetos Date para comparação
-        const startDate = new Date(startDateValue);
-        const endDate = new Date(endDateValue);
-        
-        // Verificar se as datas são válidas
-        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-            console.error("Datas inválidas:", startDateValue, endDateValue);
-            return;
-        }
-        
-        // Garantir que a data final é após a data inicial
-        if (endDate < startDate) {
-            console.warn("Data final é anterior à data inicial. Invertendo as datas.");
-            const tempDate = endDateValue;
-            endDateValue = startDateValue;
-            startDateValue = tempDate;
-        }
-        
-        console.log("Datas de filtro (final):", 
-            startDateValue, "→", new Date(startDateValue).toLocaleDateString('pt-BR'),
-            endDateValue, "→", new Date(endDateValue).toLocaleDateString('pt-BR'));
-        
-        // ========================================================================================
-        // ETAPA 2: DETERMINAÇÃO DAS CIDADES NA ROTA
-        // ========================================================================================
-        
-        // Garantir que temos localizações válidas para trabalhar
-        if (!locations || !Array.isArray(locations) || locations.length === 0) {
-            console.error("Nenhuma localização disponível para mostrar eventos");
-            return;
+            const originLocations = locations.filter(loc => loc.isOrigin);
+            if (originLocations.length > 0) {
+                pathIds = originLocations.map(loc => loc.id);
+                console.log("Usando apenas a origem para mostrar eventos:", pathIds);
+            } else {
+                console.error("Impossível encontrar até mesmo a origem. Abortando exibição de eventos.");
+                return;
+            }
         }
         
         // Limpar a lista de eventos
         const eventsListContainer = document.getElementById('events-list');
-        if (!eventsListContainer) {
-            console.error("Container de eventos não encontrado no DOM");
-            return;
-        }
         eventsListContainer.innerHTML = '';
         
         // Log para diagnóstico
         console.log("Eventos disponíveis:", mockData.cityEvents);
         
-        // Verificar novamente se temos IDs de rota válidos
         if (!pathIds || pathIds.length === 0) {
-            // Se não tivermos IDs de caminho, usar pelo menos a origem
-            const origin = locations.find(loc => loc.isOrigin);
-            if (origin) {
-                pathIds = [origin.id];
-                console.log("Usando apenas a origem para mostrar eventos:", pathIds);
-            } else {
-                console.error("Nenhuma origem encontrada. Impossível mostrar eventos.");
-                eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos.</p>';
-                return;
-            }
+            eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos.</p>';
+            return;
         }
         
-        // Converter IDs para objetos de localização de forma mais robusta
+        // CORREÇÃO: Converter IDs para objetos de localização de forma mais robusta
         const pathLocations = [];
         for (const id of pathIds) {
-            // Garantir que estamos trabalhando com strings para comparação
             const idStr = String(id);
-            
-            // Procurar localização com este ID
             const location = locations.find(loc => String(loc.id) === idStr);
-            
             if (location) {
                 pathLocations.push(location);
                 console.log(`Localização encontrada para ID ${idStr}:`, location);
@@ -5638,14 +5574,13 @@
         }
     }
 
-    // Filtrar eventos por data - COMPLETAMENTE REESCRITO
+    // Filtrar eventos por data - atualiza automaticamente ao mudar datas
     function filterEventsByDate() {
         console.log("==========================================");
-        console.log("NOVA VERSÃO: FILTRO DE EVENTOS POR DATA");
+        console.log("FILTRO DE EVENTOS POR DATA SOLICITADO");
         console.log("==========================================");
         
-        // ETAPA 1: OBTER E VALIDAR AS DATAS DE FILTRO
-        // ------------------------------------------
+        // Obter valores atuais das datas para filtro
         const startDateInput = document.getElementById('start-date');
         const endDateInput = document.getElementById('end-date');
         
