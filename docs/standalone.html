@@ -346,11 +346,13 @@
             border-bottom: 2px solid #1976D2;
             background-color: #e9ecef;
         }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
+        .sidebar-content {
             display: block;
+            height: 100%;
+            overflow-y: auto;
+        }
+        .sidebar-section {
+            padding: 10px 0;
         }
         
         /* Estilo para datas */
@@ -633,13 +635,9 @@
             <button type="button" class="btn-close sidebar-close" aria-label="Close"></button>
             
             <!-- Container de abas -->
-            <div class="tab-container">
-                <div class="tab-buttons">
-                    <button class="tab-button active" data-tab="locations">Locais</button>
-                </div>
-                
-                <!-- Aba de Locais -->
-                <div class="tab-content active" id="locations-tab">
+            <div class="sidebar-content">
+                <!-- Conteúdo da barra lateral -->
+                <div class="sidebar-section">
                     <!-- Filtro de eventos por data (sem botão filtrar) -->
                     <div class="form-group">
                         <label>Filtrar eventos por data:</label>
@@ -921,7 +919,8 @@
             '.route-controls',
             '#sidebar',
             '.sidebar-content',
-            '.tab-content:first-child',
+            '.sidebar-section',
+            '.bottom-panel-content',
             'body'
         ];
         
@@ -1116,22 +1115,8 @@
 
     // Inicializa a navegação por abas
     function initTabNavigation() {
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabContents = document.querySelectorAll('.tab-content');
-        
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const tabId = button.getAttribute('data-tab');
-                
-                // Desativar todas as abas
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                tabContents.forEach(content => content.classList.remove('active'));
-                
-                // Ativar a aba clicada
-                button.classList.add('active');
-                document.getElementById(`${tabId}-tab`).classList.add('active');
-            });
-        });
+        console.log("Navegação simplificada: usando painel inferior em vez de abas na barra lateral");
+        // A navegação de abas foi substituída pelo painel inferior
     }
 
     // Inicializa o painel inferior animado
