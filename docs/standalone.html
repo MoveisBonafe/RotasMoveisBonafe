@@ -1026,23 +1026,54 @@
                         </button>
                     </div>
                     
-                    <!-- Seleção de Rota Alternativa na sidebar (aprimorado) -->
-                    <div id="route-alternatives-sidebar" class="mt-3" style="display: none;">
-                        <div class="card border-light">
-                            <div class="card-header bg-light py-1">
-                                <h6 class="mb-0 fs-6">Rotas Alternativas</h6>
+                    <!-- Seleção de Rota Alternativa na sidebar (redesenhada) -->
+                    <div id="route-alternatives-sidebar" class="alternative-routes-section" style="display: none;">
+                        <h5>Rotas Alternativas</h5>
+                        <p class="text-muted small mb-3">Escolha a melhor opção para seu trajeto:</p>
+                        
+                        <div id="route-options-container">
+                            <!-- Cards gerados dinamicamente -->
+                            <div class="route-option-card selected" data-route="0" id="route-card-0">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong>Rota Otimizada</strong>
+                                    <span class="badge bg-primary">Recomendada</span>
+                                </div>
+                                <div class="text-muted small" id="route-0-details">
+                                    <span class="me-2"><i class="bi bi-truck"></i> Distância total</span>
+                                    <span><i class="bi bi-clock"></i> Tempo estimado</span>
+                                </div>
                             </div>
-                            <div class="card-body py-2">
-                                <p class="text-muted small mb-2">Diferentes ordenações de pontos:</p>
-                                <select id="alternative-routes-sidebar" class="form-select form-select-sm mb-2">
-                                    <option value="0">Rota Otimizada (Padrão)</option>
-                                    <!-- Opções de rotas alternativas serão adicionadas dinamicamente -->
-                                </select>
-                                <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">
-                                    Cada rota usa um algoritmo diferente com trade-offs entre distância e tempo.
-                                </small>
+                            
+                            <div class="route-option-card" data-route="1" id="route-card-1" style="display: none;">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong>Alternativa 1</strong>
+                                </div>
+                                <div class="text-muted small" id="route-1-details">
+                                    <span class="me-2"><i class="bi bi-truck"></i> Distância total</span>
+                                    <span><i class="bi bi-clock"></i> Tempo estimado</span>
+                                </div>
+                            </div>
+                            
+                            <div class="route-option-card" data-route="2" id="route-card-2" style="display: none;">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong>Alternativa 2</strong>
+                                </div>
+                                <div class="text-muted small" id="route-2-details">
+                                    <span class="me-2"><i class="bi bi-truck"></i> Distância total</span>
+                                    <span><i class="bi bi-clock"></i> Tempo estimado</span>
+                                </div>
                             </div>
                         </div>
+                        
+                        <small class="text-muted d-block mt-3" style="font-size: 0.75rem;">
+                            Cada rota usa um algoritmo diferente com trade-offs entre distância e tempo.
+                        </small>
+                        
+                        <!-- Seletor escondido para compatibilidade com código existente -->
+                        <select id="alternative-routes-sidebar" class="d-none">
+                            <option value="0">Rota Otimizada (Padrão)</option>
+                            <!-- Opções de rotas alternativas serão adicionadas dinamicamente -->
+                        </select>
                     </div>
                 </div>
                 
@@ -1800,7 +1831,84 @@
         document.getElementById('save-route').addEventListener('click', saveRoute);
         document.getElementById('print-route').addEventListener('click', printRoute);
         
-        // Seletor de rotas alternativas na sidebar
+        // Inicializar os cards de rotas alternativas
+        function initRouteOptionCards() {
+            // Evento para clique nos cards de rota alternativa
+            const routeCards = document.querySelectorAll('.route-option-card');
+            routeCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const routeIndex = parseInt(this.getAttribute('data-route'));
+                    
+                    // Atualizar seleção visual
+                    document.querySelectorAll('.route-option-card').forEach(c => {
+                        c.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    
+                    // Atualizar o select escondido (para compatibilidade)
+                    const selectElement = document.getElementById('alternative-routes-sidebar');
+                    selectElement.value = routeIndex;
+                    
+                    // Disparar evento de mudança para acionar o manipulador existente
+                    const event = new Event('change');
+                    selectElement.dispatchEvent(event);
+                });
+            });
+        }
+        
+        // Chamar inicialização após carregar o DOM
+        initRouteOptionCards();
+        
+        // Atualizar detalhes das rotas nos cards
+        function updateRouteCardDetails(routes) {
+            if (!routes || routes.length === 0) return;
+            
+            routes.forEach((route, index) => {
+                const detailsElement = document.getElementById(`route-${index}-details`);
+                const cardElement = document.getElementById(`route-card-${index}`);
+                
+                if (detailsElement && route) {
+                    // Formatar distância e tempo
+                    const distanceStr = (route.totalDistance < 1) ? 
+                        `${Math.round(route.totalDistance * 1000)} m` : 
+                        `${route.totalDistance.toFixed(1)} km`;
+                    
+                    const timeStr = formatTravelTime(route.estimatedTime);
+                    
+                    // Atualizar detalhes no card
+                    detailsElement.innerHTML = `
+                        <span class="me-2"><i class="bi bi-truck"></i> ${distanceStr}</span>
+                        <span><i class="bi bi-clock"></i> ${timeStr}</span>
+                    `;
+                    
+                    // Mostrar o card
+                    if (cardElement) {
+                        cardElement.style.display = 'block';
+                    }
+                }
+            });
+            
+            // Esconder cards não utilizados
+            for (let i = routes.length; i < 3; i++) {
+                const unusedCard = document.getElementById(`route-card-${i}`);
+                if (unusedCard) {
+                    unusedCard.style.display = 'none';
+                }
+            }
+        }
+        
+        // Função auxiliar para formatação de tempo
+        function formatTravelTime(minutes) {
+            if (minutes < 60) {
+                return `${Math.round(minutes)} min`;
+            } else {
+                const hours = Math.floor(minutes / 60);
+                const mins = Math.round(minutes % 60);
+                return `${hours}h ${mins}min`;
+            }
+        }
+        
+        // Seletor de rotas alternativas na sidebar (mantido para compatibilidade)
         document.getElementById('alternative-routes-sidebar').addEventListener('change', function(e) {
             const selectedIndex = parseInt(e.target.value);
             if (alternativeRoutes && alternativeRoutes.length > selectedIndex) {
