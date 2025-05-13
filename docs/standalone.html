@@ -930,7 +930,30 @@
     </div>
 
     <!-- Scripts externos -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places"></script>
+    <!-- Carregamento da API do Google Maps com tratamento de erro -->
+    <script>
+        function handleGoogleMapsError() {
+            console.error("Erro ao carregar a API do Google Maps! Verifique sua conexão e a chave da API.");
+            const mapElement = document.getElementById('map');
+            if (mapElement) {
+                mapElement.innerHTML = `
+                    <div style="padding: 20px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; color: #721c24; text-align: center;">
+                        <h3>Erro ao carregar o Google Maps</h3>
+                        <p>Não foi possível carregar a API do Google Maps. Possíveis causas:</p>
+                        <ul style="text-align: left; display: inline-block;">
+                            <li>Problemas com a conexão de internet</li>
+                            <li>Bloqueadores de anúncios ativos</li>
+                            <li>Restrições de CORS ou CSP</li>
+                            <li>Chave da API do Google Maps inválida ou restrita</li>
+                        </ul>
+                        <button onclick="window.location.reload()" class="btn btn-danger mt-3">Tentar Novamente</button>
+                    </div>
+                `;
+            }
+        }
+    </script>
+    
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places" onerror="handleGoogleMapsError()"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="cep-database.js"></script>
     <script src="geocode-fix.js"></script>
@@ -1120,23 +1143,34 @@
         // Verificar se temos acesso ao Google Maps
         if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
             console.error("Google Maps API não carregada corretamente");
+            handleGoogleMapsError(); // Usar nossa função para mostrar erro visualmente
             showNotification("Não foi possível carregar o Google Maps. Verifique sua conexão ou se há bloqueadores ativos no navegador.", "error");
+            return; // Não continue a inicialização se o Google Maps não estiver disponível
         } else {
             console.log("Google Maps API disponível");
         }
         
-        // Inicializar componentes principais
-        try {
-            initMap();
-            initAutocomplete();
-            initTabNavigation();
-            initEventListeners();
-        } catch (initError) {
-            console.error("Erro ao inicializar a aplicação:", initError);
-        }
+        // Atrasar a inicialização para garantir que o Google Maps esteja totalmente carregado (especialmente no GitHub Pages)
+        setTimeout(function() {
+            // Inicializar componentes principais
+            try {
+                console.log("Iniciando carregamento de componentes com atraso");
+                initMap();
+                initAutocomplete();
+                initTabNavigation();
+                initEventListeners();
+                console.log("Aplicação inicializada com sucesso!");
+            } catch (initError) {
+                console.error("Erro ao inicializar a aplicação:", initError);
+            }
+        }, 800); // 800ms de atraso para garantir carregamento completo
         
-        // Exibir a origem no mapa
-        addMarkerForLocation(mockData.origin, 0);
+        // Exibir a origem no mapa - só chamar se o mapa for inicializado
+        setTimeout(function() {
+            if (map) {
+                addMarkerForLocation(mockData.origin, 0);
+            }
+        }, 1000); // Atrasar para garantir que o mapa já está inicializado
         
         // Definir data inicial como a data atual por padrão
         const today = new Date();
