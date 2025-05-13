@@ -1108,13 +1108,13 @@
             <!-- Sem botão adicional - os próprios botões das abas controlam expandir/minimizar -->
             <!-- Navegação das abas inferiores -->
             <div class="bottom-tabs-nav">
-                <button class="bottom-tab-btn active" data-tab="bottom-events">Eventos na Rota</button>
+                <button class="bottom-tab-btn" data-tab="bottom-events">Eventos na Rota</button>
                 <button class="bottom-tab-btn" data-tab="bottom-restrictions">Restrições de Tráfego</button>
                 <button class="bottom-tab-btn" data-tab="bottom-report">Relatório da Rota</button>
             </div>
             
             <!-- Conteúdo da aba Eventos -->
-            <div class="bottom-tab-content active" id="bottom-events-content">
+            <div class="bottom-tab-content" id="bottom-events-content">
                 <h5>Eventos nas cidades da rota:</h5>
                 <div class="events-list" id="events-list">
                     <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
@@ -3845,82 +3845,50 @@
             }
             
             // ETAPA 2: FILTRAR POR DATA (APÓS VERIFICAÇÃO DA CIDADE)
-            if (!startDateValue && !endDateValue) {
-                // Nenhum filtro de data especificado, e a cidade já está verificada
-                console.log(`[DATA] Evento '${event.name}' em '${event.cityName}' ACEITO - nenhum filtro de data especificado`);
-                includeEvent = true;
-            } 
-            else {
-                // Filtro de data especificado, verificar se o evento está dentro do intervalo
-                try {
-                    // Usar as datas temporárias ajustadas para o ano atual
-                    const eventStartObj = event._tempStartDate;
-                    const eventEndObj = event._tempEndDate;
-                    
-                    // Formatação para diagnóstico
-                    const eventStartStr = eventStartObj.toLocaleDateString('pt-BR');
-                    const eventEndStr = eventEndObj.toLocaleDateString('pt-BR');
-                    
-                    // Se ambas as datas do filtro foram especificadas
-                    if (startDateValue && endDateValue) {
-                        const filterStartObj = new Date(startDateValue);
-                        const filterEndObj = new Date(endDateValue);
-                        
-                        const filterStartStr = filterStartObj.toLocaleDateString('pt-BR');
-                        const filterEndStr = filterEndObj.toLocaleDateString('pt-BR');
-                        
-                        console.log(`[DATA] Verificando se evento ${event.name} (${eventStartStr} a ${eventEndStr}) está no período ${filterStartStr} a ${filterEndStr}`);
-                        
-                        // Um evento corresponde se:
-                        // 1. O evento começa dentro do intervalo do filtro, OU
-                        // 2. O evento termina dentro do intervalo do filtro, OU
-                        // 3. O evento abrange completamente o intervalo do filtro
-                        if (
-                            // Começa no intervalo
-                            (eventStartObj >= filterStartObj && eventStartObj <= filterEndObj) ||
-                            // Termina no intervalo
-                            (eventEndObj >= filterStartObj && eventEndObj <= filterEndObj) ||
-                            // Abrange o intervalo completo
-                            (eventStartObj <= filterStartObj && eventEndObj >= filterEndObj)
-                        ) {
-                            console.log(`[DATA] Evento '${event.name}' ACEITO - está no intervalo de datas especificado`);
-                            includeEvent = true;
-                        } else {
-                            console.log(`[DATA] Evento '${event.name}' REJEITADO - fora do intervalo de datas especificado`);
-                        }
-                    }
-                    // Se apenas a data inicial foi especificada
-                    else if (startDateValue) {
-                        const filterStartObj = new Date(startDateValue);
-                        const filterStartStr = filterStartObj.toLocaleDateString('pt-BR');
-                        
-                        console.log(`[DATA] Verificando se evento ${event.name} (${eventStartStr} a ${eventEndStr}) ocorre após ${filterStartStr}`);
-                        
-                        if (eventEndObj >= filterStartObj) {
-                            console.log(`[DATA] Evento '${event.name}' ACEITO - termina após a data inicial especificada`);
-                            includeEvent = true;
-                        } else {
-                            console.log(`[DATA] Evento '${event.name}' REJEITADO - termina antes da data inicial especificada`);
-                        }
-                    }
-                    // Se apenas a data final foi especificada
-                    else if (endDateValue) {
-                        const filterEndObj = new Date(endDateValue);
-                        const filterEndStr = filterEndObj.toLocaleDateString('pt-BR');
-                        
-                        console.log(`[DATA] Verificando se evento ${event.name} (${eventStartStr} a ${eventEndStr}) ocorre antes de ${filterEndStr}`);
-                        
-                        if (eventStartObj <= filterEndObj) {
-                            console.log(`[DATA] Evento '${event.name}' ACEITO - começa antes da data final especificada`);
-                            includeEvent = true;
-                        } else {
-                            console.log(`[DATA] Evento '${event.name}' REJEITADO - começa após a data final especificada`);
-                        }
-                    }
-                } catch (e) {
-                    console.error(`[ERRO] Falha ao processar datas para evento ${event.name}:`, e);
-                    includeEvent = false; // Em caso de erro, não incluir o evento
+            // Sempre aplicar filtragem de data, mesmo sem datas especificadas
+            try {
+                // Definir valores padrão para filtro se não especificados
+                const startFilterDate = startDateValue ? new Date(startDateValue) : new Date('2025-01-01');
+                const endFilterDate = endDateValue ? new Date(endDateValue) : new Date('2025-12-31');
+                
+                // Sempre usar eventos com data no ano 2025
+                const eventStartObj = new Date(event.startDate);
+                const eventEndObj = new Date(event.endDate);
+                
+                // Garantir que estamos usando o ano 2025
+                eventStartObj.setFullYear(2025);
+                eventEndObj.setFullYear(2025);
+                
+                // Formatação para diagnóstico
+                const eventStartStr = eventStartObj.toLocaleDateString('pt-BR');
+                const eventEndStr = eventEndObj.toLocaleDateString('pt-BR');
+                
+                const filterStartStr = startFilterDate.toLocaleDateString('pt-BR');
+                const filterEndStr = endFilterDate.toLocaleDateString('pt-BR');
+                
+                console.log(`[DATA] Verificando se evento ${event.name} (${eventStartStr} a ${eventEndStr}) está no período ${filterStartStr} a ${filterEndStr}`);
+                
+                // Um evento corresponde se:
+                // 1. O evento começa dentro do intervalo do filtro, OU
+                // 2. O evento termina dentro do intervalo do filtro, OU
+                // 3. O evento abrange completamente o intervalo do filtro
+                if (
+                    // Começa no intervalo
+                    (eventStartObj >= startFilterDate && eventStartObj <= endFilterDate) ||
+                    // Termina no intervalo
+                    (eventEndObj >= startFilterDate && eventEndObj <= endFilterDate) ||
+                    // Abrange o intervalo completo
+                    (eventStartObj <= startFilterDate && eventEndObj >= endFilterDate)
+                ) {
+                    console.log(`[DATA] Evento '${event.name}' ACEITO - está no intervalo de datas especificado`);
+                    includeEvent = true;
+                } else {
+                    console.log(`[DATA] Evento '${event.name}' REJEITADO - fora do intervalo de datas especificado: ${eventStartStr} não está entre ${filterStartStr} e ${filterEndStr}`);
                 }
+            } catch (e) {
+                console.error(`[ERRO] Falha ao processar datas para evento ${event.name}:`, e);
+                includeEvent = false; // Em caso de erro, não incluir o evento
+            }
             }
             
             // Se passou por todos os filtros, incluir o evento
