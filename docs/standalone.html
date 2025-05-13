@@ -585,6 +585,8 @@
             max-width: 1200px;
             margin-left: auto;
             margin-right: auto;
+            /* Inicialmente oculto até que uma rota seja otimizada */
+            display: none;
         }
         
         .bottom-tabs-nav {
@@ -631,8 +633,9 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
-        .bottom-tab-btn:hover::after {
-            transform: scaleX(1);
+        .bottom-tab-btn:hover::before {
+            opacity: 0.8;
+            transform: scale(1.1);
         }
         
         .bottom-tab-btn.active {
@@ -641,19 +644,48 @@
             border-color: #1976D2;
             transform: translateY(-3px);
             box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Adicionar indicador sob a aba ativa */
+        .bottom-tab-btn.active::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: #ffeb3b;
+            transform: scaleX(1);
+            animation: pulseWidth 2s infinite;
+        }
+        
+        @keyframes pulseWidth {
+            0%, 100% { transform: scaleX(0.95); }
+            50% { transform: scaleX(1.05); }
         }
         
         /* Adicione um ícone adequado a cada tab inferior */
         .bottom-tab-btn[data-tab="bottom-events"]::before {
-            content: "🎉 ";
+            content: "🎉";
+            display: inline-block;
+            margin-right: 8px;
+            transition: all 0.3s ease;
         }
         
         .bottom-tab-btn[data-tab="bottom-restrictions"]::before {
-            content: "🚫 ";
+            content: "🚫";
+            display: inline-block;
+            margin-right: 8px;
+            transition: all 0.3s ease;
         }
         
         .bottom-tab-btn[data-tab="bottom-report"]::before {
-            content: "📊 ";
+            content: "📊";
+            display: inline-block;
+            margin-right: 8px;
+            transition: all 0.3s ease;
         }
         
         .bottom-tab-content {
@@ -1037,6 +1069,9 @@
 
     // Inicialização
     document.addEventListener("DOMContentLoaded", function() {
+        // Esconder as abas inferiores inicialmente - deve ser chamado primeiro
+        toggleBottomTabsVisibility(false);
+        
         initMap();
         initAutocomplete();
         initTabNavigation();
