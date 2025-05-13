@@ -23,6 +23,10 @@ cp ../docs/fix-github.js ./js/
 cp ../docs/route-optimizer.js ./js/
 cp ../docs/map-controls.js ./js/
 cp ../docs/geocode-fix.js ./js/
+cp ../docs/fix-tabs-github.js ./js/
+cp ../docs/fix-specific-tabs.js ./js/
+cp ../docs/fix-report-tab.js ./js/
+cp ../docs/tabs-demo.html ./
 
 # Copiar index.html otimizado
 cp ../docs/index.html ./
@@ -31,8 +35,11 @@ cp ../docs/index.html ./
 sed -i 's/<head>/<head>\n  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" \/>\n  <meta http-equiv="Pragma" content="no-cache" \/>\n  <meta http-equiv="Expires" content="0" \/>/' index.html
 
 # Verificar se precisamos corrigir caminhos
-if [[ -f ../fix-github-paths.js ]]; then
-  echo "Executando correção de caminhos..."
+if [[ -f ../fix-github-paths.mjs ]]; then
+  echo "Executando correção de caminhos com módulo ES..."
+  node ../fix-github-paths.mjs
+elif [[ -f ../fix-github-paths.js ]]; then
+  echo "Executando correção de caminhos com script CommonJS..."
   node ../fix-github-paths.js
 fi
 
