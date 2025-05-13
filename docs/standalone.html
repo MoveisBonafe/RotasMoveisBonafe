@@ -12,8 +12,6 @@
     <title>Otimizador de Rotas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <!-- Carregar o sistema de carregamento seguro da API Google Maps -->
-    <script src="fix-github.js"></script>
     <style>
         /* Estilos globais */
         html, body {
@@ -24,21 +22,14 @@
         }
         .app-container {
             display: flex;
-            flex-direction: column;
+            flex-direction: row !important; /* Força elementos lado a lado sempre */
             height: 100vh;
             overflow: hidden;
             width: 100%;
-        }
-        
-        /* Layout principal que contém sidebar e mapa lado a lado */
-        .main-layout {
-            display: flex;
-            flex-direction: row;
-            flex: 1;
-            overflow: hidden;
+            position: relative; /* Permite posicionamento absoluto das abas inferiores */
         }
         .sidebar {
-            width: 420px; /* Aumentado de 380px para 420px */
+            width: 380px;
             height: 100%;
             background-color: #f8f9fa;
             padding: 20px;
@@ -598,19 +589,30 @@
             margin-right: 0.5rem;
         }
         
-        /* NOVO LAYOUT - Tabs na parte inferior do mapa - agora sempre visíveis */
+        /* NOVO LAYOUT - Tabs na parte inferior do mapa */
         .bottom-tabs-container {
             width: 100%;
-            margin-top: 20px;
-            margin-bottom: 0;
+            margin-top: 30px;
+            margin-bottom: 40px;
             display: flex;
             flex-direction: column;
+            animation: fadeIn 0.5s ease;
             background-color: #f9f9f9;
-            border-radius: 12px 12px 0 0;
-            box-shadow: 0 -2px 15px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
             overflow: hidden;
-            /* Sempre visível */
-            display: flex;
+            max-width: calc(100% - 40px); /* Largura responsiva com margens */
+            margin-left: auto;
+            margin-right: auto;
+            /* Inicialmente oculto até que uma rota seja otimizada */
+            display: none;
+            /* Posicionamento absoluto para não afetar o layout principal */
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-height: 40vh; /* Altura máxima de 40% da tela */
         }
         
         .bottom-tabs-nav {
@@ -714,18 +716,17 @@
         
         .bottom-tab-content {
             display: none;
-            padding: 25px;
+            padding: 20px;
             background-color: white;
             animation: fadeInUp 0.5s ease forwards;
             opacity: 0;
             transform: translateY(20px);
-            min-height: 300px;
+            height: calc(40vh - 100px); /* Ajusta para o espaço disponível considerando a altura da aba */
             overflow-y: auto; /* Permite rolagem vertical para todos os conteúdos */
         }
         
         /* Aumentando tamanho específico para a aba de restrições */
         #bottom-restrictions-content {
-            min-height: 350px;
             overflow-y: auto;
         }
         
@@ -777,19 +778,17 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Layout principal: Sidebar + Mapa -->
-        <div class="main-layout">
-            <!-- Sidebar para controles e informações -->
-            <div class="sidebar" id="sidebar">
-                <div class="sidebar-header">
-                    <h2 class="m-0">Otimizador de Rotas</h2>
-                    <button type="button" class="btn-close sidebar-close" aria-label="Close"></button>
-                </div>
-                <div class="sidebar-content">
-                
-                <!-- A aba de Locais fica no sidebar -->
-                <div id="locations-content">
-                        <!-- O conteúdo de locais fica no sidebar -->
+        <!-- Sidebar para controles e informações -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2 class="m-0">Otimizador de Rotas</h2>
+                <button type="button" class="btn-close sidebar-close" aria-label="Close"></button>
+            </div>
+            <div class="sidebar-content">
+            
+            <!-- A aba de Locais fica no sidebar -->
+            <div id="locations-content">
+                    <!-- O conteúdo de locais fica no sidebar -->
                 
                     <!-- Filtro de eventos por data (movido para cima da origem) -->
                     <div class="form-group mb-3">
@@ -932,244 +931,10 @@
     </div>
 
     <!-- Scripts externos -->
-    <!-- Carregamento da API do Google Maps com tratamento de erro -->
-    <script>
-        function handleGoogleMapsError() {
-            console.error("Erro ao carregar a API do Google Maps! Verifique sua conexão e a chave da API.");
-            const mapElement = document.getElementById('map');
-            if (mapElement) {
-                mapElement.innerHTML = `
-                    <div style="padding: 20px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; color: #721c24; text-align: center;">
-                        <h3>Erro ao carregar o Google Maps</h3>
-                        <p>Não foi possível carregar a API do Google Maps. Possíveis causas:</p>
-                        <ul style="text-align: left; display: inline-block;">
-                            <li>Problemas com a conexão de internet</li>
-                            <li>Bloqueadores de anúncios ativos</li>
-                            <li>Restrições de CORS ou CSP</li>
-                            <li>Chave da API do Google Maps inválida ou restrita</li>
-                        </ul>
-                        <p class="mt-2">Utilizando GitHub Pages? A API pode demorar para carregar corretamente na primeira vez.</p>
-                        <div class="mt-3">
-                            <button onclick="window.location.reload()" class="btn btn-danger mr-2">Recarregar Página</button>
-                            <button onclick="retryMapInitialization()" class="btn btn-primary ml-2">Tentar Inicializar Mapa</button>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            // Desabilitar controles que dependem do mapa
-            const optimizeBtn = document.getElementById('optimize-route');
-            if (optimizeBtn) {
-                optimizeBtn.disabled = true;
-                optimizeBtn.title = "Google Maps não disponível";
-            }
-            
-            // Adicionar uma mensagem ao sidebar
-            const sidebar = document.querySelector('.sidebar');
-            if (sidebar) {
-                const errorAlert = document.createElement('div');
-                errorAlert.className = 'alert alert-danger mt-3';
-                errorAlert.innerHTML = 'O Google Maps não pôde ser carregado. Tente recarregar a página.';
-                sidebar.prepend(errorAlert);
-            }
-        }
-        
-        // Função para tentar reinicializar o mapa sem recarregar a página
-        function retryMapInitialization() {
-            console.log("Tentando reinicializar o mapa...");
-            
-            // Resetar o contador de tentativas
-            mapInitAttempts = 0;
-            
-            // Mostrar mensagem de carregamento
-            const mapElement = document.getElementById('map');
-            if (mapElement) {
-                mapElement.innerHTML = `
-                    <div style="padding: 20px; background-color: #e2f4f8; border: 1px solid #b8daff; border-radius: 4px; color: #004085; text-align: center;">
-                        <h3>Carregando Google Maps</h3>
-                        <p>Tentando carregar novamente, por favor aguarde...</p>
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="sr-only">Carregando...</span>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            // Tentar inicializar novamente
-            setTimeout(initMap, 1500);
-        }
-    </script>
-    
-    <!-- Sistema de carregamento robusto para Google Maps API -->
-    <script>
-        // Variáveis de controle para carregamento seguro do Maps API
-        window.mapsApiLoaded = false;
-        window.mapsInitialized = false;
-        window.mapsCallbacks = [];
-        
-        // Registrar uma função para ser executada quando o Maps API estiver carregado
-        function whenMapsLoaded(callback) {
-            if (!callback || typeof callback !== 'function') {
-                console.error("whenMapsLoaded: callback deve ser uma função");
-                return;
-            }
-            
-            try {
-                if (window.mapsApiLoaded && typeof google !== 'undefined' && google.maps) {
-                    // Se já estiver carregado, executar imediatamente
-                    console.log("Google Maps já carregado, executando callback imediatamente");
-                    setTimeout(callback, 0);
-                } else {
-                    // Caso contrário, adicionar à fila
-                    console.log("Google Maps ainda não está pronto, adicionando callback para execução posterior");
-                    window.mapsCallbacks.push(callback);
-                }
-            } catch (error) {
-                console.error("Erro em whenMapsLoaded:", error);
-            }
-        }
-        
-        // Função para executar todos os callbacks registrados
-        function runMapsCallbacks() {
-            console.log(`Executando ${window.mapsCallbacks.length} callbacks pendentes do Maps API`);
-            while (window.mapsCallbacks.length > 0) {
-                try {
-                    const callback = window.mapsCallbacks.shift();
-                    callback();
-                } catch (error) {
-                    console.error("Erro ao executar callback do Maps:", error);
-                }
-            }
-        }
-        
-        // Função de carregamento seguro do Google Maps API
-        function loadGoogleMapsAPI() {
-            console.log("Iniciando carregamento da Google Maps API...");
-            
-            // Verificar se já está carregado
-            if (typeof google !== 'undefined' && google.maps) {
-                console.log("Google Maps API já está carregada");
-                window.mapsApiLoaded = true;
-                runMapsCallbacks();
-                return;
-            }
-            
-            // Definir callback global para a API
-            window.googleMapsCallback = function() {
-                console.log("Google Maps API carregada com sucesso!");
-                window.mapsApiLoaded = true;
-                
-                // Para segurança em ambientes problemáticos como GitHub Pages
-                try {
-                    // Modificar comportamento de zoom para dispositivos móveis
-                    if (google.maps && google.maps.MapOptions) {
-                        google.maps.MapOptions.prototype.gestureHandling = 'greedy';
-                        console.log("Google Maps gesture handling modificado para permitir zoom sem Ctrl");
-                    }
-                    
-                    // Inicializar o mapa se o documento estiver pronto
-                    if (document.readyState === "complete") {
-                        setTimeout(function() {
-                            if (!window.mapsInitialized && typeof initMap === 'function') {
-                                initMap();
-                                window.mapsInitialized = true;
-                            }
-                        }, 500);
-                    } else {
-                        // Esperar que o documento carregue completamente
-                        document.addEventListener('DOMContentLoaded', function() {
-                            setTimeout(function() {
-                                if (!window.mapsInitialized && typeof initMap === 'function') {
-                                    initMap();
-                                    window.mapsInitialized = true;
-                                }
-                            }, 500);
-                        });
-                    }
-                    
-                    // Executar callbacks pendentes
-                    setTimeout(runMapsCallbacks, 100);
-                    
-                } catch (error) {
-                    console.error("Erro ao inicializar após carregamento do Maps:", error);
-                }
-            };
-            
-            // Criar e adicionar o script com parâmetros corretos para ambientes sensíveis
-            try {
-                const script = document.createElement('script');
-                script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places&callback=googleMapsCallback";
-                script.async = true;
-                script.defer = true;
-                script.onerror = function(error) {
-                    console.error("Erro ao carregar Google Maps API:", error);
-                    handleGoogleMapsError();
-                };
-                
-                // Compatibilidade com o sistema de carregamento seguro
-                if (typeof window.initGoogleMapsAPI === 'function') {
-                    console.log("Sistema de carregamento seguro encontrado, integrando...");
-                    const originalCallback = window.googleMapsCallback;
-                    window.googleMapsCallback = function() {
-                        console.log("Callback do Google Maps: integrando com sistema seguro");
-                        if (typeof originalCallback === 'function') {
-                            originalCallback();
-                        }
-                        window.initGoogleMapsAPI();
-                    };
-                }
-                
-                document.head.appendChild(script);
-                console.log("Script da Google Maps API adicionado ao documento");
-            } catch (error) {
-                console.error("Erro ao adicionar script do Google Maps:", error);
-                handleGoogleMapsError();
-            }
-        }
-        
-        // Iniciar carregamento da API
-        loadGoogleMapsAPI();
-        
-        // Verificação de segurança após 10 segundos
-        setTimeout(function() {
-            if (!window.mapsApiLoaded) {
-                console.warn("Google Maps API não carregou após 10 segundos - tentando recarregar");
-                loadGoogleMapsAPI();
-            }
-        }, 10000);
-    </script>
-    
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Scripts adicionais carregados dinamicamente quando necessário -->
-    <script>
-        // Função para carregar scripts externos dinamicamente apenas quando necessário
-        function loadExternalScript(url, callback) {
-            console.log(`Carregando script externo: ${url}`);
-            const script = document.createElement('script');
-            script.src = url;
-            script.onload = function() {
-                console.log(`Script carregado com sucesso: ${url}`);
-                if (callback) callback();
-            };
-            script.onerror = function() {
-                console.error(`Erro ao carregar script: ${url}`);
-            };
-            document.body.appendChild(script);
-        }
-        
-        // Verificar se estamos no GitHub Pages
-        const isGitHubPages = window.location.href.includes('github.io');
-        
-        // No GitHub Pages, scripts auxiliares são carregados apenas quando necessário
-        if (!isGitHubPages) {
-            // Se não estivermos no GitHub Pages, podemos carregar normalmente
-            loadExternalScript('cep-database.js');
-            loadExternalScript('geocode-fix.js');
-        } else {
-            console.log("Executando em GitHub Pages - scripts auxiliares serão carregados quando solicitados");
-        }
-    </script>
+    <script src="cep-database.js"></script>
+    <script src="geocode-fix.js"></script>
     
     <script>
     // Dados de amostra para a aplicação standalone
@@ -1258,54 +1023,6 @@
     let locationId = 2; // Começa em 2 porque 1 é reservado para a origem
     let locations = [mockData.origin];
     let activeInfoWindow = null;
-    
-    // Função para verificar e criar elementos essenciais antes de usá-los
-    function ensureCriticalElementsExist() {
-        // Verificar se os containers de conteúdo das abas existem
-        const eventsTab = document.getElementById('bottom-events-content');
-        const restrictionsTab = document.getElementById('bottom-restrictions-content');
-        const reportTab = document.getElementById('bottom-report-content');
-        
-        // Verificar e criar o container de eventos se necessário
-        if (eventsTab && !document.getElementById('events-list')) {
-            console.warn("Criando container de eventos que não existe");
-            const eventsContainer = document.createElement('div');
-            eventsContainer.id = 'events-list';
-            eventsContainer.className = 'events-list';
-            eventsContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado.</p>';
-            eventsTab.appendChild(eventsContainer);
-        }
-        
-        // Verificar e criar o container de restrições se necessário
-        if (restrictionsTab && !document.getElementById('restrictions-list')) {
-            console.warn("Criando container de restrições que não existe");
-            const restrictionsContainer = document.createElement('div');
-            restrictionsContainer.id = 'restrictions-list';
-            restrictionsContainer.className = 'restrictions-list';
-            restrictionsContainer.innerHTML = '<p class="text-muted">Nenhuma restrição encontrada.</p>';
-            restrictionsTab.appendChild(restrictionsContainer);
-        }
-        
-        // Verificar e criar o container de relatório de rota se necessário
-        if (reportTab && !document.getElementById('route-report')) {
-            console.warn("Criando container de relatório de rota que não existe");
-            const reportContainer = document.createElement('div');
-            reportContainer.id = 'route-report';
-            reportContainer.className = 'route-report';
-            reportContainer.innerHTML = '<p class="text-muted">Nenhum relatório de rota disponível.</p>';
-            reportTab.appendChild(reportContainer);
-        }
-        
-        // Garantir que o container de rota animada exista
-        if (reportTab && !document.getElementById('route-sequence')) {
-            console.warn("Criando container de sequência de rota que não existe");
-            const sequenceContainer = document.createElement('div');
-            sequenceContainer.id = 'route-sequence';
-            sequenceContainer.className = 'route-sequence mt-3';
-            sequenceContainer.innerHTML = '';
-            reportTab.appendChild(sequenceContainer);
-        }
-    }
     let routePath = null;
     let routeAnimationTimeout = null;
     let showPOIs = true;
@@ -1398,69 +1115,29 @@
     document.addEventListener("DOMContentLoaded", function() {
         console.log("DOM carregado - inicializando aplicação");
         
-        // Verificar e criar elementos críticos antes de qualquer outra coisa
-        ensureCriticalElementsExist();
-        
         // Esconder as abas inferiores inicialmente - deve ser chamado primeiro
         toggleBottomTabsVisibility(false);
         
         // Verificar se temos acesso ao Google Maps
         if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
             console.error("Google Maps API não carregada corretamente");
-            handleGoogleMapsError(); // Usar nossa função para mostrar erro visualmente
             showNotification("Não foi possível carregar o Google Maps. Verifique sua conexão ou se há bloqueadores ativos no navegador.", "error");
-            return; // Não continue a inicialização se o Google Maps não estiver disponível
         } else {
             console.log("Google Maps API disponível");
         }
         
-        // Para GitHub Pages: configurar verificação adicional para elementos críticos
-        // que possam ser carregados com atraso
-        if (window.location.href.includes('github.io')) {
-            console.log("GitHub Pages detectado - configurando verificações adicionais para carregamento tardio");
-            
-            // Verificar elementos críticos a cada 1 segundo até que todos existam ou tempo limite seja atingido
-            let checkCount = 0;
-            const maxChecks = 10;
-            
-            const delayedElementCheck = setInterval(function() {
-                console.log(`Verificação de elementos críticos #${checkCount + 1}`);
-                ensureCriticalElementsExist();
-                
-                checkCount++;
-                if (checkCount >= maxChecks) {
-                    console.log("Verificações periódicas de elementos concluídas.");
-                    clearInterval(delayedElementCheck);
-                }
-            }, 1000);
+        // Inicializar componentes principais
+        try {
+            initMap();
+            initAutocomplete();
+            initTabNavigation();
+            initEventListeners();
+        } catch (initError) {
+            console.error("Erro ao inicializar a aplicação:", initError);
         }
         
-        // Removida função duplicada - agora usamos ensureCriticalElementsExist
-        // que já foi definida anteriormente e garante que todos os containers
-        // essenciais existam
-            
-        // Atrasar a inicialização para garantir que o Google Maps esteja totalmente carregado (especialmente no GitHub Pages)
-        setTimeout(function() {
-            // Inicializar componentes principais
-            try {
-                console.log("Iniciando carregamento de componentes com atraso");
-                ensureCriticalElementsExist(); // Garantir que elementos essenciais existam ANTES da inicialização
-                initMap();
-                initAutocomplete();
-                initTabNavigation();
-                initEventListeners();
-                console.log("Aplicação inicializada com sucesso!");
-            } catch (initError) {
-                console.error("Erro ao inicializar a aplicação:", initError);
-            }
-        }, 800); // 800ms de atraso para garantir carregamento completo
-        
-        // Exibir a origem no mapa - só chamar se o mapa for inicializado
-        setTimeout(function() {
-            if (map) {
-                addMarkerForLocation(mockData.origin, 0);
-            }
-        }, 1000); // Atrasar para garantir que o mapa já está inicializado
+        // Exibir a origem no mapa
+        addMarkerForLocation(mockData.origin, 0);
         
         // Definir data inicial como a data atual por padrão
         const today = new Date();
@@ -1487,158 +1164,41 @@
         console.log("Campos de data inicializados com datas atuais e eventos/restrições para origem configurados");
     });
 
-    // Sistema de retry para inicialização do mapa (especialmente para GitHub Pages)
-    let mapInitAttempts = 0;
-    const MAX_MAP_INIT_ATTEMPTS = 5;
-    
-    // Inicializa o mapa com sistema de retry
+    // Inicializa o mapa
     function initMap() {
-        console.log("initMap chamado - Verificando sistema de carregamento disponível");
-        
-        // Verificar qual sistema de carregamento seguro está disponível
-        if (typeof window.whenGoogleMapsReady === 'function') {
-            // Usar o sistema do fix-github.js
-            console.log("Usando sistema de carregamento seguro do fix-github.js");
-            window.whenGoogleMapsReady(function() {
-                initMapSafely();
-            });
-        } else if (typeof whenMapsLoaded === 'function') {
-            // Usar o sistema interno
-            console.log("Usando sistema de carregamento interno whenMapsLoaded");
-            whenMapsLoaded(function() {
-                initMapSafely();
-            });
-        } else {
-            // Fallback: tentar inicializar diretamente
-            console.log("Nenhum sistema de carregamento seguro disponível, tentando direto");
-            setTimeout(function() {
-                if (typeof google !== 'undefined' && google.maps) {
-                    initMapSafely();
-                } else {
-                    console.error("Google Maps API não disponível para inicialização do mapa");
-                    handleGoogleMapsError();
-                }
-            }, 500);
-        }
-    }
-    
-    // A versão real da inicialização do mapa que será executada quando o Google Maps estiver carregado
-    function initMapSafely() {
-        console.log("Inicializando mapa com Google Maps API garantidamente carregada");
-        
-        // Verificação extra de segurança
-        if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-            console.error("Google Maps API ainda não está disponível mesmo após verificação");
-            handleGoogleMapsError();
-            return;
-        }
-        
-        // O Google Maps está garantidamente disponível aqui
-        
-        // Inicializar com a data atual e data atual + 7 dias
+        // Inicializar com a data atual e data atual + 30 dias
         const today = new Date();
         const formattedToday = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
         
-        // Calcular a data final (hoje + 7 dias - requisito do cliente)
+        // Calcular a data final (hoje + 30 dias)
         const endDate = new Date();
-        endDate.setDate(today.getDate() + 7);
+        endDate.setDate(today.getDate() + 30);
         const formattedEndDate = endDate.toISOString().split('T')[0];
         
-        // Definir os valores dos campos de data (com verificações null)
-        const startDateInput = document.getElementById('start-date');
-        const endDateInput = document.getElementById('end-date');
-        
-        if (startDateInput) {
-            startDateInput.value = formattedToday;
-        } else {
-            console.error("Campo de data inicial não encontrado");
-        }
-        
-        if (endDateInput) {
-            endDateInput.value = formattedEndDate;
-        } else {
-            console.error("Campo de data final não encontrado");
-        }
+        // Definir os valores dos campos de data
+        document.getElementById('start-date').value = formattedToday;
+        document.getElementById('end-date').value = formattedEndDate;
         
         console.log(`Datas definidas automaticamente na inicialização do mapa: de ${formattedToday} até ${formattedEndDate}`);
         
-        try {
-            // Verificação explícita do elemento do mapa
-            const mapElement = document.getElementById("map");
-            
-            if (!mapElement) {
-                console.error("Elemento do mapa não encontrado no DOM");
-                handleGoogleMapsError();
-                return;
-            }
-            
-            // Para GitHub Pages: verificar se o elemento tem dimensões válidas
-            const isGitHubPages = window.location.href.includes('github.io');
-            if (isGitHubPages) {
-                if (mapElement.offsetWidth === 0 || mapElement.offsetHeight === 0) {
-                    console.warn("Elemento do mapa tem dimensões zero, tentando ajustar...");
-                    mapElement.style.width = "100%";
-                    mapElement.style.height = "500px";
-                }
-                
-                // Forçar reflow
-                void mapElement.offsetHeight;
-            }
-            
-            // Opções do mapa
-            const mapOptions = {
-                center: { lat: -22.3673, lng: -48.3822 }, // Dois Córregos
-                zoom: 8,
-                mapTypeControl: true,
-                fullscreenControl: true,
-                streetViewControl: true,
-                zoomControl: true,
-                gestureHandling: 'greedy', // Permite zoom com scroll sem precionar Ctrl
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-            
-            // Criar o mapa com tratamento de erro
-            console.log("Criando instância do mapa Google...");
-            map = new google.maps.Map(mapElement, mapOptions);
-            
-            // Verificar se o mapa foi criado corretamente
-            if (!map) {
-                throw new Error("Falha ao criar instância do mapa");
-            }
-            
-            // Para GitHub Pages: aguardar carregamento completo do mapa
-            if (isGitHubPages) {
-                google.maps.event.addListenerOnce(map, 'idle', function() {
-                    console.log("Mapa completamente carregado e renderizado!");
-                    
-                    // Configurar o overlay do mapa (com segurança)
-                    setupMapOverlay();
-                    
-                    // Adicionar origem no mapa
-                    setTimeout(function() {
-                        try {
-                            // Adicionar o marcador da origem
-                            if (mockData && mockData.origin) {
-                                console.log("Adicionando marcador para origem...");
-                                addMarkerForLocation(mockData.origin, 0);
-                            }
-                        } catch (error) {
-                            console.error("Erro ao adicionar origem no mapa:", error);
-                        }
-                    }, 500);
-                });
-            }
-        } catch (mapError) {
-            console.error("Erro ao inicializar o mapa:", mapError);
-            handleGoogleMapsError();
-            return;
-        }
+        // Opções do mapa
+        const mapOptions = {
+            center: { lat: -22.3673, lng: -48.3822 }, // Dois Córregos
+            zoom: 8,
+            mapTypeControl: true,
+            fullscreenControl: true,
+            streetViewControl: true,
+            zoomControl: true,
+            gestureHandling: 'greedy' // Permite zoom com scroll sem precionar Ctrl
+        };
+        
+        // Criar o mapa
+        map = new google.maps.Map(document.getElementById("map"), mapOptions);
+        
+        // Inicializar o serviço de direções
+        directionsService = new google.maps.DirectionsService();
         
         try {
-            // Inicializar o serviço de direções de forma segura
-            console.log("Inicializando DirectionsService...");
-            directionsService = new google.maps.DirectionsService();
-            
             console.log("Inicializando DirectionsRenderer...");
             directionsRenderer = new google.maps.DirectionsRenderer({
                 suppressMarkers: true, // Não mostrar marcadores padrão do Google
@@ -1663,41 +1223,17 @@
 
     // Inicializa o autocomplete
     function initAutocomplete() {
-        // Usar o sistema seguro de carregamento
-        whenMapsLoaded(function() {
-            initAutocompleteSafely();
-        });
-    }
-    
-    // Versão segura da inicialização do autocomplete
-    function initAutocompleteSafely() {
-        console.log("Inicializando autocomplete com Google Maps API garantidamente carregada");
+        const input = document.getElementById('location-search');
+        const options = {
+            types: ['geocode'],
+            componentRestrictions: { country: 'br' }
+        };
         
-        // Verificação de segurança
-        if (typeof google === 'undefined' || !google.maps || !google.maps.places) {
-            console.error("Google Maps Places API não disponível");
-            return;
-        }
+        autocomplete = new google.maps.places.Autocomplete(input, options);
         
-        try {
-            const input = document.getElementById('location-search');
-            if (!input) {
-                console.error("Campo de busca de localização não encontrado");
-                return;
-            }
-            
-            const options = {
-                types: ['geocode'],
-                componentRestrictions: { country: 'br' }
-            };
-            
-            // Criar o autocomplete
-            autocomplete = new google.maps.places.Autocomplete(input, options);
-            console.log("Google Places Autocomplete inicializado com sucesso");
-            
-            // Quando um local é selecionado no autocomplete
-            autocomplete.addListener('place_changed', function() {
-                const place = autocomplete.getPlace();
+        // Quando um local é selecionado no autocomplete
+        autocomplete.addListener('place_changed', function() {
+            const place = autocomplete.getPlace();
             
             if (!place.geometry) {
                 // Substituir alert por notificação inline mais suave
@@ -1735,9 +1271,6 @@
             // Limpar o campo de busca
             input.value = '';
         });
-        } catch (error) {
-            console.error("Erro ao inicializar autocomplete:", error);
-        }
     }
 
     // Inicializa a navegação por abas (novas abas inferiores)
@@ -1748,36 +1281,6 @@
         
         // Verificar se estamos no GitHub Pages (para aplicar animações avançadas)
         const isGitHubPages = window.location.href.includes('github.io');
-        
-        // Garantir que os containers de eventos e restrições existam
-        const eventsContainer = document.getElementById('events-list');
-        const restrictionsContainer = document.getElementById('restrictions-list');
-        
-        // Se o container de eventos não existir, criar um
-        if (!eventsContainer) {
-            console.warn("Container de eventos não encontrado no DOM. Criando um novo.");
-            const eventsContent = document.getElementById('bottom-events-content');
-            if (eventsContent) {
-                const newEventsContainer = document.createElement('div');
-                newEventsContainer.id = 'events-list';
-                newEventsContainer.className = 'events-list';
-                newEventsContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado.</p>';
-                eventsContent.appendChild(newEventsContainer);
-            }
-        }
-        
-        // Se o container de restrições não existir, criar um
-        if (!restrictionsContainer) {
-            console.warn("Container de restrições não encontrado no DOM. Criando um novo.");
-            const restrictionsContent = document.getElementById('bottom-restrictions-content');
-            if (restrictionsContent) {
-                const newRestrictionsContainer = document.createElement('div');
-                newRestrictionsContainer.id = 'restrictions-list';
-                newRestrictionsContainer.className = 'restrictions-list';
-                newRestrictionsContainer.innerHTML = '<p class="text-muted">Nenhuma restrição encontrada.</p>';
-                restrictionsContent.appendChild(newRestrictionsContainer);
-            }
-        }
         
         if (bottomTabButtons.length > 0) {
             console.log("Inicializando sistema de navegação para tabs inferiores");
@@ -1836,59 +1339,37 @@
 
     // Função para gerenciar a visibilidade das abas inferiores
     function toggleBottomTabsVisibility(show = true) {
-        // Modificado para deixar o container sempre visível, apenas atualiza o conteúdo
         const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
-        
         if (bottomTabsContainer) {
-            // Manter sempre visível - não esconder as abas
-            bottomTabsContainer.style.display = 'flex';
-            
-            // Atualizar o conteúdo das abas apenas
-            const eventsTab = document.getElementById('bottom-events-content');
-            const restrictionsTab = document.getElementById('bottom-restrictions-content');
-            const reportTab = document.getElementById('bottom-report-content');
-            
             if (show) {
-                // Mostrar conteúdo relevante nas abas
-                console.log("Conteúdo das abas sendo atualizado...");
+                // Remover qualquer estilo display antigo
+                bottomTabsContainer.style.removeProperty('display');
+                bottomTabsContainer.style.display = 'flex';
                 
-                // Ativar a primeira aba por padrão
-                const firstTabButton = document.querySelector('.bottom-tab-btn[data-tab="bottom-events"]');
-                if (firstTabButton && !firstTabButton.classList.contains('active')) {
-                    firstTabButton.click();
+                // Adiciona animação de entrada
+                bottomTabsContainer.style.animation = 'none';
+                // Trigger reflow
+                void bottomTabsContainer.offsetWidth;
+                bottomTabsContainer.style.animation = 'fadeInUp 0.5s ease forwards';
+                
+                console.log("Abas inferiores exibidas com sucesso");
+                
+                // Se estamos no GitHub Pages, ativa a primeira aba automaticamente
+                if (window.location.href.includes('github.io')) {
+                    const firstTabButton = document.querySelector('.bottom-tab-btn[data-tab="bottom-events"]');
+                    if (firstTabButton) {
+                        firstTabButton.click();
+                    }
                 }
             } else {
-                // Limpar conteúdo das abas, mas manter elas visíveis
-                // Modificado para preservar elementos essenciais
-                if (eventsTab) {
-                    // Preservar ou criar o elemento events-list
-                    let eventsContainer = document.getElementById('events-list');
-                    if (!eventsContainer) {
-                        eventsContainer = document.createElement('div');
-                        eventsContainer.id = 'events-list';
-                        eventsContainer.className = 'events-list';
-                        eventsTab.innerHTML = '';
-                        eventsTab.appendChild(eventsContainer);
-                    }
-                    eventsContainer.innerHTML = '<p class="text-muted">Adicione destinos e otimize a rota para ver eventos.</p>';
-                }
+                // Primeiramente, aplica animação de saída
+                bottomTabsContainer.style.animation = 'fadeOutDown 0.3s ease forwards';
                 
-                if (restrictionsTab) {
-                    // Preservar ou criar o elemento restrictions-list
-                    let restrictionsContainer = document.getElementById('restrictions-list');
-                    if (!restrictionsContainer) {
-                        restrictionsContainer = document.createElement('div');
-                        restrictionsContainer.id = 'restrictions-list';
-                        restrictionsContainer.className = 'restrictions-list';
-                        restrictionsTab.innerHTML = '';
-                        restrictionsTab.appendChild(restrictionsContainer);
-                    }
-                    restrictionsContainer.innerHTML = '<p class="text-muted">Adicione destinos e otimize a rota para ver restrições.</p>';
-                }
-                
-                if (reportTab) {
-                    reportTab.innerHTML = '<p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>';
-                }
+                // Aguarda o fim da animação para esconder completamente
+                setTimeout(() => {
+                    bottomTabsContainer.style.display = 'none';
+                    console.log("Abas inferiores ocultadas com sucesso");
+                }, 300);
             }
         } else {
             console.warn("Container de abas inferiores não encontrado!");
@@ -1898,83 +1379,56 @@
     // Configura todos os event listeners
     function initEventListeners() {
         // Toggle para mostrar/esconder a sidebar
-        const toggleSidebarBtn = document.getElementById('toggle-sidebar');
-        if (toggleSidebarBtn) {
-            toggleSidebarBtn.addEventListener('click', function() {
-                const sidebar = document.getElementById('sidebar');
-                if (sidebar) {
-                    sidebar.classList.toggle('sidebar-hidden');
-                }
-            });
-        } else {
-            console.error("Botão para alternar sidebar não encontrado!");
-        }
+        document.getElementById('toggle-sidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('sidebar-hidden');
+        });
         
         // Botão para fechar a sidebar em telas pequenas
-        const sidebarCloseBtn = document.querySelector('.sidebar-close');
-        if (sidebarCloseBtn) {
-            sidebarCloseBtn.addEventListener('click', function() {
-                const sidebar = document.getElementById('sidebar');
-                if (sidebar) {
-                    sidebar.classList.add('sidebar-hidden');
-                }
-            });
-        } else {
-            console.error("Botão para fechar sidebar não encontrado!");
-        }
+        document.querySelector('.sidebar-close').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.add('sidebar-hidden');
+        });
         
         // Upload de arquivo com suporte para drag and drop
         const fileUploadInput = document.getElementById('file-upload');
         const uploadArea = document.getElementById('upload-area');
         
         // Evento para quando o arquivo é selecionado pelo input
-        if (fileUploadInput) {
-            fileUploadInput.addEventListener('change', handleFileUpload);
-        } else {
-            console.error("Input de upload de arquivo não encontrado!");
-        }
+        fileUploadInput.addEventListener('change', handleFileUpload);
         
         // Eventos de drag and drop
-        if (uploadArea) {
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, preventDefaults, false);
-            });
-            
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            
-            // Adicionar classe visual quando o arquivo está sendo arrastado sobre a área
-            ['dragenter', 'dragover'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, () => {
-                    uploadArea.classList.add('dragover');
-                }, false);
-            });
-            
-            // Remover classe visual quando o arquivo sai da área ou é solto
-            ['dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, () => {
-                    uploadArea.classList.remove('dragover');
-                }, false);
-            });
-            
-            // Processar o arquivo quando for solto na área
-            uploadArea.addEventListener('drop', (e) => {
-                const dt = e.dataTransfer;
-                const files = dt.files;
-                
-                if (files.length && fileUploadInput) {
-                    fileUploadInput.files = files;
-                    handleFileUpload({target: fileUploadInput});
-                }
-            }, false);
-        } else {
-            console.error("Área de upload não encontrada!");
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
         }
         
+        // Adicionar classe visual quando o arquivo está sendo arrastado sobre a área
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.add('dragover');
+            }, false);
+        });
+        
+        // Remover classe visual quando o arquivo sai da área ou é solto
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.remove('dragover');
+            }, false);
+        });
+        
         // Processar o arquivo quando for solto na área
-        // Esse handler já está incluso no bloco acima, podemos remover esta duplicação
+        uploadArea.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length) {
+                fileUploadInput.files = files;
+                handleFileUpload({target: fileUploadInput});
+            }
+        }, false);
         
         // Botão para otimizar rota
         const optimizeButton = document.getElementById('optimize-route');
@@ -1985,54 +1439,19 @@
         }
         
         // Filtrar eventos automaticamente ao mudar as datas
-        const startDateInput = document.getElementById('start-date');
-        if (startDateInput) {
-            startDateInput.addEventListener('change', filterEventsByDate);
-        } else {
-            console.error("Campo de data inicial não encontrado!");
-        }
-        
-        const endDateInput = document.getElementById('end-date');
-        if (endDateInput) {
-            endDateInput.addEventListener('change', filterEventsByDate);
-        } else {
-            console.error("Campo de data final não encontrado!");
-        }
+        document.getElementById('start-date').addEventListener('change', filterEventsByDate);
+        document.getElementById('end-date').addEventListener('change', filterEventsByDate);
         
         // Botões de controle do mapa
-        const zoomToFitButton = document.getElementById('zoom-to-fit');
-        if (zoomToFitButton) {
-            zoomToFitButton.addEventListener('click', zoomToFitAllMarkers);
-        } else {
-            console.error("Botão de zoom para ajustar todos os marcadores não encontrado!");
-        }
-        
-        const togglePoiButton = document.getElementById('toggle-poi');
-        if (togglePoiButton) {
-            togglePoiButton.addEventListener('click', togglePointsOfInterest);
-        } else {
-            console.error("Botão para alternar pontos de interesse não encontrado!");
-        }
+        document.getElementById('zoom-to-fit').addEventListener('click', zoomToFitAllMarkers);
+        document.getElementById('toggle-poi').addEventListener('click', togglePointsOfInterest);
         
         // Botões da aba de relatório
-        const saveRouteButton = document.getElementById('save-route');
-        if (saveRouteButton) {
-            saveRouteButton.addEventListener('click', saveRoute);
-        } else {
-            console.error("Botão para salvar rota não encontrado!");
-        }
-        
-        const printRouteButton = document.getElementById('print-route');
-        if (printRouteButton) {
-            printRouteButton.addEventListener('click', printRoute);
-        } else {
-            console.error("Botão para imprimir rota não encontrado!");
-        }
+        document.getElementById('save-route').addEventListener('click', saveRoute);
+        document.getElementById('print-route').addEventListener('click', printRoute);
         
         // Seletor de rotas alternativas
-        const alternativeRoutesSelect = document.getElementById('alternative-routes');
-        if (alternativeRoutesSelect) {
-            alternativeRoutesSelect.addEventListener('change', function(e) {
+        document.getElementById('alternative-routes').addEventListener('change', function(e) {
             const selectedIndex = parseInt(e.target.value);
             if (alternativeRoutes && alternativeRoutes.length > selectedIndex) {
                 const selectedRoute = alternativeRoutes[selectedIndex];
@@ -2122,9 +1541,6 @@
                 currentRouteIndex = selectedIndex;
             }
         });
-        } else {
-            console.error("Seletor de rotas alternativas não encontrado!");
-        }
     }
 
     // Função para tratar o upload de arquivo
@@ -2132,51 +1548,12 @@
         const file = event.target.files[0];
         if (!file) return;
         
-        // Mostrar spinner de carregamento
-        showLoadingSpinner("Processando arquivo...");
-        
-        // Verificar se estamos no GitHub Pages e se os scripts auxiliares precisam ser carregados
-        const isGitHubPages = window.location.href.includes('github.io');
-        
-        // Função para processar o arquivo após garantir que temos todas as dependências
-        function processFile() {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const content = e.target.result;
-                hideLoadingSpinner();
-                
-                try {
-                    // Verificar se a função parseCEPFile está disponível
-                    if (typeof parseCEPFile === 'function') {
-                        parseCEPFile(content);
-                    } else {
-                        console.error("A função parseCEPFile não está disponível");
-                        showNotification("Erro ao processar arquivo: função de processamento não disponível", "error");
-                    }
-                } catch (error) {
-                    console.error("Erro ao processar arquivo:", error);
-                    showNotification("Erro ao processar arquivo: " + error.message, "error");
-                }
-            };
-            reader.readAsText(file);
-        }
-        
-        // Se estivermos no GitHub Pages, carregar script necessário primeiro
-        if (isGitHubPages && typeof parseCEPFile !== 'function') {
-            console.log("Carregando scripts auxiliares para o processamento de CEP...");
-            
-            // Primeiro carregamos cep-database.js que contém dados de coordenadas
-            loadExternalScript('cep-database.js', function() {
-                // Depois carregamos geocode-fix.js que contém a função parseCEPFile
-                loadExternalScript('geocode-fix.js', function() {
-                    // Agora sim processamos o arquivo
-                    processFile();
-                });
-            });
-        } else {
-            // Fora do GitHub Pages os scripts já foram carregados
-            processFile();
-        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const content = e.target.result;
+            parseCEPFile(content);
+        };
+        reader.readAsText(file);
     }
 
     // Formatar texto para iniciar com maiúscula e resto minúscula
@@ -2715,17 +2092,8 @@
         if (routeSummary) {
             routeSummary.style.display = 'none';
         }
-        
-        // Adicionar verificações de null para os botões
-        const saveRouteBtn = document.getElementById('save-route');
-        if (saveRouteBtn) {
-            saveRouteBtn.disabled = true;
-        }
-        
-        const printRouteBtn = document.getElementById('print-route');
-        if (printRouteBtn) {
-            printRouteBtn.disabled = true;
-        }
+        document.getElementById('save-route').disabled = true;
+        document.getElementById('print-route').disabled = true;
     }
 
     // Limpar marcadores de pontos de interesse
@@ -2754,9 +2122,6 @@
         // Mostrar as abas inferiores quando houver destinos
         toggleBottomTabsVisibility(true);
         
-        // Verificar se todos os elementos críticos existem antes de prosseguir
-        ensureCriticalElementsExist();
-        
         // Mostrar spinner de carregamento centralizado no mapa
         showLoadingSpinner();
         
@@ -2766,16 +2131,6 @@
             optimizeBtn.innerHTML = '<span class="spinner-border" role="status" aria-hidden="true"></span> Calculando...';
             optimizeBtn.disabled = true;
         }
-        
-        // Usar sistema seguro de carregamento do Google Maps
-        whenMapsLoaded(function() {
-            optimizeRouteSafely();
-        });
-    }
-
-    // Versão segura da função de otimização de rota
-    function optimizeRouteSafely() {
-        console.log("Executando otimização de rota com Maps API garantidamente carregada");
         
         // IMPORTANTE: Assegurar que os marcadores originais sejam preservados antes de limpar
         const currentMarkers = [...markers]; // Criar uma cópia dos marcadores atuais
@@ -2789,28 +2144,11 @@
         // Calcular a rota otimizada (versão simplificada do TSP)
         calculateOptimizedRoute(vehicleType, false, currentMarkers);
     }
-    
+
     // Calcular rota otimizada pelo algoritmo TSP
     function calculateOptimizedRoute(vehicleType, includeOriginReturn, savedMarkers = null) {
         try {
             console.log("Calculando rota otimizada...");
-            
-            // Verificar se o Google Maps está disponível
-            if (typeof google === 'undefined' || !google.maps) {
-                console.error("Google Maps não está disponível para cálculo de rota");
-                showNotification('Erro: API do Google Maps não está disponível. Tente recarregar a página.', 'danger', '.route-controls');
-                
-                // Restaurar botão de otimização
-                const optimizeBtn = document.getElementById('optimize-route');
-                if (optimizeBtn) {
-                    optimizeBtn.innerHTML = 'Calcular Rota';
-                    optimizeBtn.disabled = false;
-                }
-                
-                // Ocultar spinner
-                hideLoadingSpinner();
-                return;
-            }
             
             // Limpar rotas alternativas existentes
             alternativeRoutes = [];
@@ -3280,9 +2618,6 @@
     function drawRouteOnMap(pathIds, vehicleType) {
         console.log("Desenhando rota para IDs:", pathIds);
         
-        // Verificar se estamos no GitHub Pages
-        const isGitHubPages = window.location.href.includes('github.io');
-        
         // Mostrar spinner durante o carregamento
         showLoadingSpinner();
         
@@ -3291,142 +2626,6 @@
             console.error("IDs de caminho inválidos ou vazios:", pathIds);
             hideLoadingSpinner();
             return; // Interromper execução para evitar erros
-        }
-        
-        // Para GitHub Pages, usamos um método simplificado para evitar loops infinitos
-        if (isGitHubPages) {
-            console.log("GitHub Pages detectado - usando método simplificado para desenhar rota");
-            
-            try {
-                // Converter IDs para localizações
-                const pathLocations = [];
-                for (const id of pathIds) {
-                    const idStr = String(id);
-                    const location = locations.find(loc => String(loc.id) === idStr);
-                    if (location) {
-                        pathLocations.push(location);
-                    } else {
-                        console.error(`Localização ID ${idStr} não encontrada`);
-                    }
-                }
-                
-                if (pathLocations.length < 2) {
-                    console.error("Número insuficiente de localizações para desenhar rota");
-                    hideLoadingSpinner();
-                    return;
-                }
-                
-                // Limpar polylines anteriores
-                clearAllPolylines();
-                
-                // Desenhar uma linha reta entre os pontos
-                const path = pathLocations.map(loc => ({ lat: loc.latitude, lng: loc.longitude }));
-                const polyline = new google.maps.Polyline({
-                    path: path,
-                    geodesic: true,
-                    strokeColor: '#4285F4',
-                    strokeOpacity: 0.8,
-                    strokeWeight: 5,
-                    map: map
-                });
-                
-                // Adicionar à lista de polylines ativas
-                activeRoutePolylines.push(polyline);
-                
-                // Ajustar o mapa para mostrar toda a rota
-                const bounds = new google.maps.LatLngBounds();
-                path.forEach(point => bounds.extend(point));
-                map.fitBounds(bounds);
-                
-                // Calcular distância e tempo estimados
-                let totalDistance = 0;
-                for (let i = 0; i < pathLocations.length - 1; i++) {
-                    totalDistance += calculateDistance(
-                        pathLocations[i].latitude, 
-                        pathLocations[i].longitude,
-                        pathLocations[i+1].latitude, 
-                        pathLocations[i+1].longitude
-                    );
-                }
-                
-                // Velocidade média de 80 km/h (padrão solicitado)
-                const durationMinutes = Math.round((totalDistance / 80) * 60);
-                
-                // Atualizar resumo da rota
-                const routeSummary = document.getElementById('route-summary');
-                if (routeSummary) {
-                    routeSummary.innerHTML = `
-                        <div class="alert alert-info">
-                            <h5>Resumo da Rota:</h5>
-                            <p><strong>Distância:</strong> ${totalDistance.toFixed(1)} km</p>
-                            <p><strong>Tempo estimado:</strong> ${durationMinutes} minutos</p>
-                            <p><strong>Velocidade média:</strong> 80 km/h</p>
-                        </div>
-                    `;
-                }
-                
-                // Atualizar sequência de rota
-                const routeSequence = document.getElementById('route-sequence');
-                if (routeSequence) {
-                    // Limpar conteúdo anterior
-                    routeSequence.innerHTML = '';
-                    
-                    // Criar lista com sequência
-                    const sequenceList = document.createElement('ol');
-                    sequenceList.className = 'route-sequence-list';
-                    
-                    // Adicionar cada localização
-                    pathLocations.forEach((location, index) => {
-                        const item = document.createElement('li');
-                        
-                        // Destacar a origem
-                        if (location.isOrigin) {
-                            item.className = 'origin-point';
-                            item.innerHTML = `<strong>${location.name}</strong> (Origem)`;
-                        } else {
-                            item.innerHTML = location.name;
-                        }
-                        
-                        sequenceList.appendChild(item);
-                    });
-                    
-                    routeSequence.appendChild(sequenceList);
-                }
-                
-                // Configurar caminho otimizado para uso em outras funções
-                currentOptimizedPath = pathIds;
-                
-                // Mostrar pontos de interesse, eventos e restrições
-                showPointsOfInterestOnRoute(pathIds);
-                showEventsForCitiesOnRoute(pathIds);
-                showTruckRestrictionsForCitiesOnRoute(pathIds, null);
-                
-                // Esconder spinner
-                hideLoadingSpinner();
-                
-                // Restaurar botão de otimização
-                const optimizeBtn = document.getElementById('optimize-route');
-                if (optimizeBtn) {
-                    optimizeBtn.innerHTML = 'Otimizar Rota';
-                    optimizeBtn.disabled = false;
-                }
-                
-                // Mostrar sucesso
-                showNotification("Rota calculada com sucesso", "Método simplificado para GitHub Pages", "success");
-                
-                // Navegar para a aba de relatório
-                const reportTabButton = document.querySelector('.bottom-tab-btn[data-tab="bottom-report"]');
-                if (reportTabButton) {
-                    reportTabButton.click();
-                }
-                
-                return; // Sair da função, não prosseguir com o método padrão
-            } catch (error) {
-                console.error("Erro ao desenhar rota simplificada:", error);
-                hideLoadingSpinner();
-                showNotification("Erro ao calcular rota", error.message, "error");
-                return;
-            }
         }
         
         // Verificar se há uma rota já desenhada e removê-la para evitar sobreposições
@@ -3561,26 +2760,7 @@
             avoidTolls: false
         };
         
-        // Verificar se o serviço de rotas está disponível
-        if (!directionsService) {
-            console.error("Serviço de direções não inicializado");
-            showNotification("Erro no serviço de rotas. Tente recarregar a página.", "danger");
-            
-            // Restaurar botão de otimização
-            const optimizeBtn = document.getElementById('optimize-route');
-            if (optimizeBtn) {
-                optimizeBtn.innerHTML = 'Calcular Rota';
-                optimizeBtn.disabled = false;
-            }
-            
-            // Ocultar spinner
-            hideLoadingSpinner();
-            return;
-        }
-        
-        // Chamar o serviço de rotas com tratamento de erro
-        try {
-            directionsService.route(request, (result, status) => {
+        directionsService.route(request, (result, status) => {
             // Esconder indicador de progresso
             hideLoadingSpinner();
             
@@ -4061,9 +3241,6 @@
     function showEventsForCitiesOnRoute(pathIds) {
         console.log("Mostrando eventos para rota com IDs:", pathIds);
         
-        // Verificar se os elementos críticos existem antes de prosseguir
-        ensureCriticalElementsExist();
-        
         // Verificações de segurança
         if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
             console.error("IDs de rota inválidos ou vazios:", pathIds);
@@ -4079,11 +3256,6 @@
         
         // Limpar a lista de eventos
         const eventsListContainer = document.getElementById('events-list');
-        if (!eventsListContainer) {
-            console.error("Container de eventos não encontrado!");
-            return;
-        }
-        
         eventsListContainer.innerHTML = '';
         
         // Log para diagnóstico
@@ -4361,9 +3533,6 @@
         // Adicionar timestamp ao log para debug
         console.log("Timestamp:", new Date().toISOString());
         
-        // Verificar se os elementos críticos existem antes de prosseguir
-        ensureCriticalElementsExist();
-        
         // Verificar se estamos no GitHub Pages
         const isGitHubPages = window.location.href.includes('github.io');
         
@@ -4436,10 +3605,6 @@
             
             // Limpar a lista
             const restrictionsListContainer = document.getElementById('restrictions-list');
-            if (!restrictionsListContainer) {
-                console.error("Container de restrições não encontrado na função showTruckRestrictionsForCitiesOnRoute!");
-                return;
-            }
             restrictionsListContainer.innerHTML = '';
             
             // Adicionar título explicativo
@@ -4554,10 +3719,6 @@
         console.log("Parâmetro vehicleType:", vehicleType, "- Isso será ignorado completamente");
         // Limpar a lista de restrições
         const restrictionsListContainer = document.getElementById('restrictions-list');
-        if (!restrictionsListContainer) {
-            console.error("Container de restrições não encontrado!");
-            return;
-        }
         restrictionsListContainer.innerHTML = '';
         
         // Log detalhado para diagnóstico
@@ -4885,10 +4046,6 @@
             try {
                 // Limpar a lista primeiro e adicionar título depois
                 const restrictionsListContainer = document.getElementById('restrictions-list');
-                if (!restrictionsListContainer) {
-                    console.error("Container de restrições não encontrado na versão GitHub Pages!");
-                    return;
-                }
                 
                 // Limpar o container para garantir que não há restrições remanescentes
                 restrictionsListContainer.innerHTML = '';
@@ -5411,9 +4568,6 @@
         try {
             console.log("Atualizando resumo da rota com:", tspResult);
             
-            // Verificar se elementos críticos existem
-            ensureCriticalElementsExist();
-            
             // Verificar se temos resultados válidos
             if (!tspResult || typeof tspResult.distance !== 'number' || isNaN(tspResult.distance)) {
                 console.error("Dados incompletos ou inválidos do TSP:", tspResult);
@@ -5581,20 +4735,10 @@
         } else {
             // Se não tivermos rota, mostrar apenas para origem
             console.log("Sem rota, mostrando apenas para origem");
-            
-            // Usar a ID da origem como último recurso
-            if (mockData && mockData.origin && mockData.origin.id) {
-                routeIds = [mockData.origin.id];
-            } else {
-                console.error("Não foi possível obter nem mesmo a ID da origem!");
-                return; // Sair da função se não conseguirmos nem a origem
-            }
-            
             // Mostrar notificação para indicar que é necessário calcular uma rota
             const notifyInfo = document.createElement('div');
             notifyInfo.className = 'alert alert-info mt-2';
             notifyInfo.innerHTML = `Calcule uma rota primeiro para ver os eventos e restrições no percurso.`;
-            
             // Usar a primeira aba inferior ativa como container para notificação
             const tabContent = document.querySelector('.bottom-tab-content.active');
             if (tabContent) {
@@ -5606,7 +4750,6 @@
                     optimizeSection.appendChild(notifyInfo);
                 }
             }
-            
             // Remover a notificação após alguns segundos
             setTimeout(() => {
                 if (notifyInfo && notifyInfo.parentNode) {
@@ -5614,6 +4757,8 @@
                 }
             }, 5000);
         }
+        
+        routeIds = [mockData.origin.id];
         
         // Mostrar eventos para as cidades da rota com filtro por data
         showEventsForCitiesOnRoute(routeIds);
@@ -6071,84 +5216,44 @@
         return deg * (Math.PI/180);
     }
 
-    // Esta função configura o overlay de forma segura usando o sistema de whenMapsLoaded
-    function setupMapOverlay() {
-        // Usar o sistema seguro de carregamento
-        whenMapsLoaded(function() {
-            // Verificação extra de segurança
-            if (typeof google === 'undefined' || !google.maps || !map) {
-                console.warn("Maps API ou mapa não disponível para configurar overlay");
-                
-                // Tentar novamente em 1 segundo
-                setTimeout(setupMapOverlay, 1000);
-                return;
+    // Classe para projeção de overlay personalizado
+    class OverlayProjection {
+        fromLatLngToDivPixel(latLng) {
+            const scale = Math.pow(2, map.getZoom());
+            const proj = map.getProjection();
+            const bounds = map.getBounds();
+            
+            if (!proj || !bounds) {
+                return { x: 0, y: 0 };
             }
             
-            console.log("Configurando overlay do mapa após garantir carregamento do Maps API");
+            const nw = proj.fromLatLngToPoint(
+                new google.maps.LatLng(
+                    bounds.getNorthEast().lat(),
+                    bounds.getSouthWest().lng()
+                )
+            );
             
-            try {
-                // Definir a classe para projeção de overlay personalizado
-                class SafeOverlayProjection {
-                    fromLatLngToDivPixel(latLng) {
-                        try {
-                            if (!map || !map.getZoom) {
-                                return { x: 0, y: 0 };
-                            }
-                            
-                            const scale = Math.pow(2, map.getZoom());
-                            const proj = map.getProjection();
-                            const bounds = map.getBounds();
-                            
-                            if (!proj || !bounds) {
-                                return { x: 0, y: 0 };
-                            }
-                            
-                            try {
-                                const nw = proj.fromLatLngToPoint(
-                                    new google.maps.LatLng(
-                                        bounds.getNorthEast().lat(),
-                                        bounds.getSouthWest().lng()
-                                    )
-                                );
-                                
-                                const point = proj.fromLatLngToPoint(latLng);
-                                
-                                return {
-                                    x: Math.floor((point.x - nw.x) * scale),
-                                    y: Math.floor((point.y - nw.y) * scale)
-                                };
-                            } catch (innerError) {
-                                console.error("Erro interno de projeção:", innerError);
-                                return { x: 0, y: 0 };
-                            }
-                        } catch (error) {
-                            console.error("Erro ao calcular projeção:", error);
-                            return { x: 0, y: 0 };
-                        }
-                    }
-                    
-                    fromDivPixelToLatLng(pixel) {
-                        return null; // Não precisamos desta funcionalidade
-                    }
-                }
-                
-                // Criar um overlay personalizado para a projeção
-                const safeOverlay = new google.maps.OverlayView();
-                safeOverlay.draw = function() {};
-                safeOverlay.setMap(map);
-                safeOverlay.getProjection = function() {
-                    return new SafeOverlayProjection();
-                };
-                
-                console.log("Overlay do mapa configurado com sucesso");
-            } catch (error) {
-                console.error("Erro ao configurar overlay do mapa:", error);
-            }
-        });
+            const point = proj.fromLatLngToPoint(latLng);
+            
+            return {
+                x: Math.floor((point.x - nw.x) * scale),
+                y: Math.floor((point.y - nw.y) * scale)
+            };
+        }
+        
+        fromDivPixelToLatLng(pixel) {
+            return null; // Não precisamos desta funcionalidade
+        }
     }
-    
-    // A função setupMapOverlay será registrada para execução 
-    // quando o Google Maps API estiver completamente carregado
+
+    // Criar um overlay personalizado para a projeção
+    const overlay = new google.maps.OverlayView();
+    overlay.draw = function() {};
+    overlay.setMap(map);
+    overlay.getProjection = function() {
+        return new OverlayProjection();
+    };
 
     // Expor funções necessárias globalmente
     window.removeLocation = removeLocation;
