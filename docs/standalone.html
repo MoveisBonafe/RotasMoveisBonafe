@@ -2640,6 +2640,17 @@
                 return; // Interromper o processamento para evitar erros futuros
             }
             
+            // Verificar se temos pathIds definidos ou se precisamos extrair dos objetos path
+            if (!tspResult.pathIds) {
+                tspResult.pathIds = tspResult.path.map(item => {
+                    if (typeof item === 'object' && item !== null && item.id !== undefined) {
+                        return item.id;
+                    }
+                    return item;
+                });
+                console.log("IDs de caminho gerados:", tspResult.pathIds);
+            }
+            
             // Verificar se o resultado tem uma distância válida
             if (typeof tspResult.distance !== 'number' || isNaN(tspResult.distance) || tspResult.distance <= 0) {
                 console.error("Distância TSP inválida:", tspResult.distance);
@@ -2755,12 +2766,13 @@
                 
                 // Desenhar a rota no mapa usando as direções do Google
                 // Usamos drawRouteOnMap que é a função correta definida no código
-                drawRouteOnMap(tspResult.path, vehicleType);
+                const pathToUse = tspResult.pathIds || tspResult.path;
+                drawRouteOnMap(pathToUse, vehicleType);
                 
                 // Mostrar pontos de interesse e eventos ao longo da rota
-                showPointsOfInterestOnRoute(tspResult.path);
-                showEventsForCitiesOnRoute(tspResult.path);
-                showTruckRestrictionsForCitiesOnRoute(tspResult.path, null); // null para mostrar todos os tipos
+                showPointsOfInterestOnRoute(pathToUse);
+                showEventsForCitiesOnRoute(pathToUse);
+                showTruckRestrictionsForCitiesOnRoute(pathToUse, null); // null para mostrar todos os tipos
                 
                 // Atualizar a sequência de rota no relatório
                 // A função não existe, então implementamos diretamente aqui
@@ -4650,10 +4662,11 @@
         console.log("Usando rota com caminhos:", tspResult.path);
         
         // Reordenar os marcadores visualmente para corresponder à nova sequência
-        reorderMarkers(tspResult.path);
+        // Usar pathIds se disponível, ou path como fallback
+        reorderMarkers(tspResult.pathIds || tspResult.path);
             
         // Traçar a rota usando o Google Directions Service
-        drawRouteOnMap(tspResult.path, "truck1");
+        drawRouteOnMap(tspResult.pathIds || tspResult.path, "truck1");
             
         // Mostrar pontos de interesse ao longo da rota
         showPointsOfInterestOnRoute(tspResult.path);
