@@ -3782,7 +3782,7 @@
         // NOVA IMPLEMENTAÇÃO DE FILTRAGEM DE EVENTOS
         console.log("NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data");
         console.log(`Filtrando eventos para cidades: ${citiesOnRoute.join(', ')}`);
-        console.log(`Filtro de data: ${startDate || 'sem data inicial'} a ${endDate || 'sem data final'}`);
+        console.log(`Filtro de data: ${startDateValue || 'sem data inicial'} a ${endDateValue || 'sem data final'}`);
         
         // Array para armazenar eventos filtrados
         let eventsOnRoute = [];
@@ -3818,9 +3818,9 @@
                     const eventEndStr = eventEndObj.toLocaleDateString('pt-BR');
                     
                     // Se ambas as datas do filtro foram especificadas
-                    if (startDate && endDate) {
-                        const filterStartObj = new Date(startDate);
-                        const filterEndObj = new Date(endDate);
+                    if (startDateValue && endDateValue) {
+                        const filterStartObj = new Date(startDateValue);
+                        const filterEndObj = new Date(endDateValue);
                         
                         const filterStartStr = filterStartObj.toLocaleDateString('pt-BR');
                         const filterEndStr = filterEndObj.toLocaleDateString('pt-BR');
@@ -3846,8 +3846,8 @@
                         }
                     }
                     // Se apenas a data inicial foi especificada
-                    else if (startDate) {
-                        const filterStartObj = new Date(startDate);
+                    else if (startDateValue) {
+                        const filterStartObj = new Date(startDateValue);
                         const filterStartStr = filterStartObj.toLocaleDateString('pt-BR');
                         
                         console.log(`[DATA] Verificando se evento ${event.name} (${eventStartStr} a ${eventEndStr}) ocorre após ${filterStartStr}`);
@@ -3860,8 +3860,8 @@
                         }
                     }
                     // Se apenas a data final foi especificada
-                    else if (endDate) {
-                        const filterEndObj = new Date(endDate);
+                    else if (endDateValue) {
+                        const filterEndObj = new Date(endDateValue);
                         const filterEndStr = filterEndObj.toLocaleDateString('pt-BR');
                         
                         console.log(`[DATA] Verificando se evento ${event.name} (${eventStartStr} a ${eventEndStr}) ocorre antes de ${filterEndStr}`);
