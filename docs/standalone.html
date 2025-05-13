@@ -2219,6 +2219,82 @@
         if (printRouteStatic) printRouteStatic.disabled = true;
     }
     
+    // Função específica para atualizar o relatório de rota no novo sistema de abas
+    function updateNewRouteReport(tspResult) {
+        // Verificar se temos um resultado válido
+        if (!tspResult || !tspResult.path || tspResult.path.length < 2) {
+            console.warn("Não há rota válida para mostrar no relatório fluido");
+            return;
+        }
+        
+        console.log("Atualizando relatório de rota no sistema fluido:", tspResult);
+        
+        // Elementos do DOM no sistema fluido
+        const totalDistanceStatic = document.getElementById('total-distance-static');
+        const totalTimeStatic = document.getElementById('total-time-static');
+        const totalTollsStatic = document.getElementById('total-tolls-static');
+        const deliverySequenceStatic = document.getElementById('delivery-sequence-static');
+        const saveRouteStatic = document.getElementById('save-route-static');
+        const printRouteStatic = document.getElementById('print-route-static');
+        const routeSummaryStatic = document.getElementById('route-summary-static');
+        const noRouteMessageStatic = document.getElementById('no-route-message-static');
+        
+        // Atualizar dados se os elementos existirem
+        if (totalDistanceStatic) {
+            totalDistanceStatic.textContent = `${tspResult.distance.toFixed(1)} km`;
+        }
+        
+        if (totalTimeStatic) {
+            const hours = Math.floor(tspResult.time);
+            const minutes = Math.round((tspResult.time - hours) * 60);
+            totalTimeStatic.textContent = `${hours}h ${minutes}min`;
+        }
+        
+        // Atualizar número de pedágios
+        if (totalTollsStatic && window.currentDisplayedRoute) {
+            // Determinar quantos pedágios existem na rota atual
+            const tollCount = window.currentDisplayedRoute.tolls ? window.currentDisplayedRoute.tolls.length : 0;
+            totalTollsStatic.textContent = tollCount.toString();
+        }
+        
+        // Atualizar sequência de entrega
+        if (deliverySequenceStatic && tspResult.path.length > 0) {
+            // Limpar conteúdo anterior
+            deliverySequenceStatic.innerHTML = '';
+            
+            // Criar lista ordenada para a sequência
+            const sequenceList = document.createElement('ol');
+            sequenceList.className = 'delivery-sequence-list';
+            
+            // Adicionar cada local na sequência
+            tspResult.path.forEach((locationId, index) => {
+                const location = locations.find(loc => loc.id === locationId);
+                if (location) {
+                    const item = document.createElement('li');
+                    item.className = location.isOrigin ? 'origin-item' : 'location-item';
+                    
+                    item.innerHTML = `
+                        <div class="location-name">${location.name}</div>
+                        <div class="location-address">${location.address}</div>
+                    `;
+                    
+                    sequenceList.appendChild(item);
+                }
+            });
+            
+            // Adicionar a lista à sequência de entrega
+            deliverySequenceStatic.appendChild(sequenceList);
+        }
+        
+        // Habilitar botões
+        if (saveRouteStatic) saveRouteStatic.disabled = false;
+        if (printRouteStatic) printRouteStatic.disabled = false;
+        
+        // Exibir o resumo e ocultar a mensagem de nenhuma rota
+        if (routeSummaryStatic) routeSummaryStatic.style.display = 'block';
+        if (noRouteMessageStatic) noRouteMessageStatic.style.display = 'none';
+    }
+    
     // Função para sincronizar o conteúdo entre os sistemas de abas (antigo e novo)
     function setupContentSync() {
         console.log("Configurando sincronização de conteúdo entre sistemas de abas");
@@ -4742,6 +4818,7 @@
             }
             
             if (restrictionsListStatic) {
+                // Se estamos usando o sistema fluido, adicionar o título lá também
                 restrictionsListStatic.appendChild(titleElement.cloneNode(true));
             }
             
@@ -5393,6 +5470,12 @@
         console.log("Gerando rota principal otimizada...");
         const mainRoute = solveAdvancedTSP(origin, destinations, includeOriginReturn);
         alternativeRoutes.push(mainRoute);
+        
+        // Atualizar o relatório de rota no novo sistema de abas fluidas
+        if (typeof updateNewRouteReport === 'function') {
+            console.log("Atualizando relatório no sistema fluido...");
+            updateNewRouteReport(mainRoute);
+        }
         
         // Só criar rotas alternativas se houver mais de 2 destinos
         if (destinations.length >= 2) {
