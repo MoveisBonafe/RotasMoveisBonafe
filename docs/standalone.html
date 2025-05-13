@@ -4117,8 +4117,9 @@
                         // Calcular idade
                         const idadeCidade = currentYear - fundacaoAno;
                         
-                        // Adicionar informação adicional para exibição
-                        event.fundacaoInfo = `Fundada em ${diaPadded}/${mesPadded}/${fundacaoAno} (${idadeCidade} anos)`;
+                        // Adicionar informação de fundação para exibição (SEM "Fundada em" para evitar redundância)
+                        event.fundacaoData = `${diaPadded}/${mesPadded}/${fundacaoAno}`;
+                        event.fundacaoInfo = `Data de fundação: ${diaPadded}/${mesPadded}/${fundacaoAno} (${idadeCidade} anos)`;
                     }
                     
                     console.log(`[ANIVERSÁRIO] ${event.name}: data original ${originalDateStr} → ajustada para ${eventStart.toLocaleDateString('pt-BR')}`);
@@ -4266,23 +4267,32 @@
             
             // Se é um evento de aniversário/fundação e temos a informação de fundação
             if (isFundacao && event.fundacaoInfo) {
-                // Exibir a data atual e a data original de fundação com estilo especial
-                const currentYear = new Date().getFullYear();
-                const currentDate = `${dateText}`; // Data atual (aniversário este ano)
-                const foundingInfo = `<span class="fundacao-info">${event.fundacaoInfo}</span>`; // Data de fundação real
-                
-                // Combinar informações
-                displayDateText = `${currentDate} ${foundingInfo}`;
+                // Mostrar APENAS a informação de fundação original, sem a data atual
+                displayDateText = `${event.fundacaoInfo}`;
             }
             
-            eventItem.innerHTML = `
-                <div class="event-name">${event.name} 
-                    <span class="event-type ${eventTypeClass}">${event.isHoliday ? 'Feriado' : 'Evento'}</span>
-                    <span class="restriction-level ${event.restrictionLevel}">${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</span>
-                </div>
-                <div class="event-date">${event.cityName} | ${displayDateText}</div>
-                <div class="event-description">${event.description}</div>
-            `;
+            // HTML do evento com formatação especial para aniversários de cidades
+            if (isFundacao && event.fundacaoData) {
+                // Para eventos de aniversário/fundação: mostrar o nome da cidade e a data de fundação
+                eventItem.innerHTML = `
+                    <div class="event-name">${event.name} 
+                        <span class="event-type ${eventTypeClass}">${event.isHoliday ? 'Feriado' : 'Evento'}</span>
+                        <span class="restriction-level ${event.restrictionLevel}">${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</span>
+                    </div>
+                    <div class="event-date">${event.cityName} | ${event.fundacaoData}</div>
+                    <div class="event-description">${event.description} <br><span class="fundacao-info">${currentYear - event.originalStartDate.getFullYear()} anos de fundação</span></div>
+                `;
+            } else {
+                // Para eventos normais
+                eventItem.innerHTML = `
+                    <div class="event-name">${event.name} 
+                        <span class="event-type ${eventTypeClass}">${event.isHoliday ? 'Feriado' : 'Evento'}</span>
+                        <span class="restriction-level ${event.restrictionLevel}">${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</span>
+                    </div>
+                    <div class="event-date">${event.cityName} | ${dateText}</div>
+                    <div class="event-description">${event.description}</div>
+                `;
+            }
             
             eventsListContainer.appendChild(eventItem);
             
