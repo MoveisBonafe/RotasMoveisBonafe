@@ -643,6 +643,19 @@
             box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
         }
         
+        /* Adicione um ícone adequado a cada tab inferior */
+        .bottom-tab-btn[data-tab="bottom-events"]::before {
+            content: "🎉 ";
+        }
+        
+        .bottom-tab-btn[data-tab="bottom-restrictions"]::before {
+            content: "🚫 ";
+        }
+        
+        .bottom-tab-btn[data-tab="bottom-report"]::before {
+            content: "📊 ";
+        }
+        
         .bottom-tab-content {
             display: none;
             padding: 30px;
@@ -1219,6 +1232,25 @@
         }
     }
 
+    // Função para gerenciar a visibilidade das abas inferiores
+    function toggleBottomTabsVisibility(show = true) {
+        const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+        if (bottomTabsContainer) {
+            if (show) {
+                bottomTabsContainer.style.display = 'flex';
+                // Adiciona animação de entrada
+                bottomTabsContainer.style.animation = 'fadeInUp 0.5s ease forwards';
+            } else {
+                // Primeiramente, aplica animação de saída
+                bottomTabsContainer.style.animation = 'fadeOutDown 0.3s ease forwards';
+                // Aguarda o fim da animação para esconder completamente
+                setTimeout(() => {
+                    bottomTabsContainer.style.display = 'none';
+                }, 300);
+            }
+        }
+    }
+    
     // Configura todos os event listeners
     function initEventListeners() {
         // Toggle para mostrar/esconder a sidebar
