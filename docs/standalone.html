@@ -3250,6 +3250,11 @@
         
         // Limpar a lista de eventos
         const eventsListContainer = document.getElementById('events-list');
+        if (!eventsListContainer) {
+            console.error("Container de eventos não encontrado!");
+            return;
+        }
+        
         eventsListContainer.innerHTML = '';
         
         // Log para diagnóstico
@@ -3713,6 +3718,10 @@
         console.log("Parâmetro vehicleType:", vehicleType, "- Isso será ignorado completamente");
         // Limpar a lista de restrições
         const restrictionsListContainer = document.getElementById('restrictions-list');
+        if (!restrictionsListContainer) {
+            console.error("Container de restrições não encontrado!");
+            return;
+        }
         restrictionsListContainer.innerHTML = '';
         
         // Log detalhado para diagnóstico
