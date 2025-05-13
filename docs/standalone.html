@@ -16,69 +16,6 @@
     <title>Otimizador de Rotas - Mobile</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
-    <!-- Fix para correção de problemas de inicialização no GitHub Pages -->
-    <script>
-        // Variáveis de controle para garantir inicialização única
-        var mapInitialized = false;
-        var googleMapsLoaded = false;
-        
-        // Função para inicializar o aplicativo de forma segura
-        function safeInitApp() {
-            // Verificar se já foi inicializado
-            if (mapInitialized) {
-                console.log("Aplicativo já foi inicializado anteriormente");
-                return;
-            }
-            
-            console.log("Tentando inicializar aplicativo de forma segura...");
-            
-            // Verificar se as funções necessárias estão disponíveis
-            if (typeof google !== 'undefined' && 
-                typeof google.maps !== 'undefined' && 
-                typeof initMap === 'function') {
-                
-                try {
-                    console.log("APIs carregadas, iniciando mapa");
-                    initMap();
-                    
-                    if (typeof initTabNavigation === 'function') {
-                        console.log("Inicializando navegação por abas");
-                        initTabNavigation();
-                    }
-                    
-                    if (typeof initAutocomplete === 'function') {
-                        console.log("Inicializando autocompletar");
-                        initAutocomplete();
-                    }
-                    
-                    if (typeof initEventListeners === 'function') {
-                        console.log("Inicializando listeners de eventos");
-                        initEventListeners();
-                    }
-                    
-                    mapInitialized = true;
-                    console.log("Aplicativo inicializado com sucesso");
-                } catch (err) {
-                    console.error("Erro durante inicialização segura:", err);
-                }
-            } else {
-                console.warn("Google Maps ainda não está disponível, tentando novamente em 500ms");
-                setTimeout(safeInitApp, 500);
-            }
-        }
-        
-        // Configurar múltiplos pontos de entrada para inicialização
-        window.addEventListener('DOMContentLoaded', function() {
-            console.log("DOMContentLoaded: tentando inicializar");
-            setTimeout(safeInitApp, 500);
-        });
-        
-        window.addEventListener('load', function() {
-            console.log("Window load: tentando inicializar");
-            setTimeout(safeInitApp, 1000);
-        });
-    </script>
     <style>
         /* Estilos globais */
         html, body {
@@ -1069,121 +1006,6 @@
             }
         }
         
-        /* ======== NOVO LAYOUT DE ABAS FLUIDO PARA GITHUB PAGES ======== */
-        .tabs-section {
-            padding-top: 15px;
-            padding-bottom: 15px;
-            background-color: #ffffff;
-            border-top: 2px solid #1976D2;
-            width: 100%;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            max-height: 40vh;
-            overflow-y: auto;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .tabs-container {
-            margin: 0 auto;
-            max-width: 1200px;
-            padding: 0 20px;
-        }
-        
-        .tabs-header {
-            position: sticky;
-            bottom: 0;
-            background-color: #f8f9fa;
-            padding: 12px 0;
-            margin-bottom: 15px;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            z-index: 900;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            border-radius: 8px 8px 0 0;
-            border-bottom: 2px solid #1976D2;
-        }
-        
-        .tab-btn {
-            padding: 10px 20px;
-            background-color: #ffffff;
-            border: 1px solid #dee2e6;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 500;
-            color: #495057;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            min-width: 100px;
-        }
-        
-        .tab-btn:hover {
-            background-color: #e9ecef;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        .tab-btn.active {
-            background-color: #1976D2;
-            color: white;
-            border-color: #1976D2;
-        }
-        
-        .tab-content {
-            display: none;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-        }
-        
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .tab-title {
-            font-size: 1.4rem;
-            margin-bottom: 20px;
-            color: #333;
-            border-bottom: 2px solid #1976D2;
-            padding-bottom: 10px;
-            display: inline-block;
-        }
-        
-        .tab-content .card {
-            margin-bottom: 20px;
-            border: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        
-        /* Animação suave para os conteúdos */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Estilos específicos para cada aba */
-        #events-content .event-item,
-        #restrictions-content .restriction-item,
-        #report-content .report-item {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            background-color: #f9f9fa;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
-        }
-        
         /* ======== ESTILOS RESPONSIVOS PARA DISPOSITIVOS MÓVEIS ======== */
         @media (max-width: 767px) {
             /* Layout para dispositivos móveis - layout fluido */
@@ -1536,73 +1358,45 @@
         </div>
         </div>
         
-        <!-- NOVO LAYOUT: Seção de abas fluidas com rolagem na página -->
-        <div id="scroll-tabs-placeholder"></div>
-    </div>
-
-    <!-- NOVO LAYOUT: Seção de abas fluidas na parte inferior -->
-    <section class="tabs-section">
-        <div class="tabs-container">
-            <!-- Cabeçalho fixo com os botões de navegação -->
-            <div class="tabs-header">
-                <button class="tab-btn active" data-tab="events">
-                    <i class="fas fa-calendar-alt"></i> Eventos
-                </button>
-                <button class="tab-btn" data-tab="restrictions">
-                    <i class="fas fa-exclamation-triangle"></i> Restrições
-                </button>
-                <button class="tab-btn" data-tab="report">
-                    <i class="fas fa-route"></i> Relatório
-                </button>
+        <!-- NOVO: Tabs fixas na parte inferior do layout (inicialmente minimizadas) -->
+        <div class="bottom-tabs-container minimized">
+            <!-- Sem botão adicional - os próprios botões das abas controlam expandir/minimizar -->
+            <!-- Navegação das abas inferiores -->
+            <div class="bottom-tabs-nav">
+                <button class="bottom-tab-btn active" data-tab="bottom-events">Eventos na Rota</button>
+                <button class="bottom-tab-btn" data-tab="bottom-restrictions">Restrições de Tráfego</button>
+                <button class="bottom-tab-btn" data-tab="bottom-report">Relatório da Rota</button>
             </div>
             
             <!-- Conteúdo da aba Eventos -->
-            <div class="tab-content active" id="events-content">
-                <h3 class="tab-title">Eventos nas cidades da rota</h3>
+            <div class="bottom-tab-content active" id="bottom-events-content">
+                <h5>Eventos nas cidades da rota:</h5>
                 <div class="events-list" id="events-list">
                     <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
                 </div>
             </div>
             
             <!-- Conteúdo da aba Restrições -->
-            <div class="tab-content" id="restrictions-content">
-                <h3 class="tab-title">Restrições para caminhões do percurso</h3>
+            <div class="bottom-tab-content" id="bottom-restrictions-content">
+                <h5>Restrições para caminhões do percurso:</h5>
                 <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
-                <div class="restrictions-list" id="restrictions-list-static">
+                <div class="restrictions-list" id="restrictions-list">
                     <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
                 </div>
             </div>
             
             <!-- Conteúdo da aba Relatório -->
-            <div class="tab-content" id="report-content">
-                <h3 class="tab-title">Relatório da rota</h3>
-                <div id="route-summary-static" class="route-summary">
-                    <div class="route-summary-content">
-                        <div class="summary-item">
-                            <span class="summary-label">Distância total:</span>
-                            <span class="summary-value" id="total-distance-static">--</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">Tempo estimado:</span>
-                            <span class="summary-value" id="total-time-static">--</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">Pedágios no percurso:</span>
-                            <span class="summary-value" id="total-tolls-static">--</span>
-                        </div>
-                        <div id="average-toll-cost-static" class="summary-item">
-                            <span class="summary-label">Custo médio em pedágios:</span>
-                            <span class="summary-value">R$ 180,00 - R$ 240,00</span>
-                        </div>
-                    </div>
+            <div class="bottom-tab-content" id="bottom-report-content">
+                <div id="route-summary" class="mb-4">
+                    <p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>
                 </div>
                 
                 <!-- Seleção de Rota Alternativa -->
-                <div id="route-alternatives-static" class="mb-4" style="display: none;">
+                <div id="route-alternatives" class="mb-4" style="display: none;">
                     <h5>Rotas Alternativas</h5>
                     <p class="text-muted">Selecione uma rota alternativa para visualizar diferentes ordenações de pontos:</p>
                     <div class="form-group">
-                        <select id="alternative-routes-static" class="form-select">
+                        <select id="alternative-routes" class="form-select">
                             <option value="0">Rota Otimizada (Padrão)</option>
                             <!-- Opções de rotas alternativas serão adicionadas dinamicamente -->
                         </select>
@@ -1612,58 +1406,26 @@
                     </div>
                 </div>
                 
-                <h5 class="mt-4">Sequência de entrega:</h5>
-                <div class="delivery-sequence" id="delivery-sequence-static">
-                    <p class="text-muted">Nenhuma rota calculada.</p>
-                </div>
-                
-                <div class="form-group mt-4">
-                    <label for="report-route-name-static">Nome da rota:</label>
-                    <input type="text" id="report-route-name-static" class="form-control" placeholder="Ex: Entrega Região Sul" style="max-width: 400px">
+                <div class="form-group">
+                    <label for="report-route-name">Nome da rota:</label>
+                    <input type="text" id="report-route-name" class="form-control" placeholder="Ex: Entrega Região Sul" style="max-width: 400px">
                 </div>
                 
                 <div class="mt-3">
-                    <button id="save-route-static" class="btn btn-primary">Salvar Rota</button>
-                    <button id="print-route-static" class="btn btn-secondary ms-2">Imprimir</button>
+                    <button id="save-route" class="btn btn-outline-success" disabled>Salvar Rota</button>
+                    <button id="print-route" class="btn btn-outline-primary ms-2" disabled>Imprimir</button>
                 </div>
-                
-                <p class="text-muted mt-3" id="no-route-message-static">Otimize uma rota para ver o relatório completo.</p>
             </div>
         </div>
-    </section>
+    </div>
 
     <!-- Scripts externos -->
-    <!-- Callback definido acima -->
-    <script>
-        // Configuração para detectar e resolver problemas de inicialização
-        console.log("Configurando detecção de problemas de inicialização...");
-        
-        // Tentar novamente após 3 segundos se nada acontecer
-        setTimeout(function() {
-            if (!mapInitialized && typeof safeInitApp === 'function') {
-                console.log("Inicialização automática não ocorreu, tentando inicialização forçada");
-                safeInitApp();
-            }
-        }, 3000);
-    </script>
-    <script>
-        // Definindo uma função de callback global mais robusta para ser chamada pela API do Google Maps
-        function initGoogleMapsCallback() {
-            console.log("Google Maps API carregada via callback oficial");
-            googleMapsLoaded = true;
-            
-            // Iniciar a aplicação de forma segura
-            safeInitApp();
-        }
-    </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places&callback=initGoogleMapsCallback" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="cep-database.js"></script>
     <script src="geocode-fix.js"></script>
     
     <script>
-    // Dados de cidades e CEPs são carregados aqui (não interagindo com a inicialização)
-    
     // Dados de amostra para a aplicação standalone
     const mockData = {
         // Origem (Dois Córregos)
@@ -1889,27 +1651,6 @@
                             google.maps.event.trigger(map, 'resize');
                         }
                         
-                        // Ativar o sistema de abas fluido para GitHub Pages
-                        const scrollTabsSection = document.querySelector('.tabs-section');
-                        const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
-                        
-                        if (scrollTabsSection && bottomTabsContainer) {
-                            console.log("Ativando o sistema de abas fluidas para GitHub Pages");
-                            
-                            // Desativar o sistema antigo de abas
-                            bottomTabsContainer.style.display = 'none';
-                            
-                            // Ativar o sistema novo de abas fluidas
-                            scrollTabsSection.style.display = 'block';
-                            
-                            // Atualizar o estilo do mapa para não considerar as abas inferiores
-                            mapContainer.style.paddingBottom = '0';
-                            mapElement.style.paddingBottom = '0';
-                            
-                            // Sincronizar abas antigas com as novas
-                            setupContentSync();
-                        }
-                        
                         console.log("Ajustes de layout para GitHub Pages aplicados");
                     }
                 }, 500);
@@ -2098,108 +1839,77 @@
 
     // Inicializa a navegação por abas (novas abas inferiores)
     function initTabNavigation() {
-        console.log("Inicializando navegação por abas...");
-        
-        // A funcionalidade de abas foi migrada para o novo sistema initTabSystem
+        // Inicializar abas inferiores (abaixo do mapa)
+        const bottomTabButtons = document.querySelectorAll('.bottom-tab-btn');
+        const bottomTabContents = document.querySelectorAll('.bottom-tab-content');
         
         // Verificar se estamos no GitHub Pages (para aplicar animações avançadas)
         const isGitHubPages = window.location.href.includes('github.io');
         
-        // Registrar que estamos usando o GitHub Pages para futuras otimizações
-        if (isGitHubPages) {
-            console.log("Versão GitHub Pages detectada, aplicando melhorias de desempenho.");
-        }
-    }
-
-    // Função para alternar entre mostrar e esconder conteúdo das abas
-    function toggleTabContent(contentId) {
-        const content = document.getElementById(contentId);
-        if (content) {
-            if (content.classList.contains('active')) {
-                content.classList.remove('active');
-            } else {
-                // Esconder todos os conteúdos primeiro
-                document.querySelectorAll('.tab-content').forEach(
-                    el => el.classList.remove('active')
-                );
-                // Mostrar apenas o selecionado
-                content.classList.add('active');
-            }
-        }
-    }
-    // Função para manipular as abas inferiores antigas (sistema legado)
-    function handleBottomTabs() {
-        const bottomTabButtons = document.querySelectorAll('.bottom-tab-btn');
-        const bottomTabContents = document.querySelectorAll('.bottom-tab-content');
-        const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
-        
-        if (!bottomTabButtons.length) {
-            console.log("Sistema de abas inferiores antigo não encontrado");
-            return;
-        }
-        
-        console.log("Inicializando sistema de abas inferiores antigo");
-        
-        // Mapear o data-tab para o ID do conteúdo correto
-        const contentMap = {
-            'bottom-events': 'bottom-events-content',
-            'bottom-restrictions': 'bottom-restrictions-content',
-            'bottom-report': 'bottom-report-content'
-        };
-        
-        // Adicionar event listeners para os botões
-        bottomTabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const tabId = button.getAttribute('data-tab');
-                console.log("Tab inferior clicada:", tabId);
-                
-                // Verificar se já é o botão ativo e se o painel está expandido
-                const isCurrentlyActive = button.classList.contains('active');
-                const isExpanded = bottomTabsContainer && !bottomTabsContainer.classList.contains('minimized');
-                
-                // Se clicar no mesmo botão que já está ativo e o painel estiver expandido, minimiza
-                if (isCurrentlyActive && isExpanded) {
-                    toggleTabsExpansion(); // Minimizar o painel
-                    return; // Não muda o conteúdo, apenas minimiza
-                }
-                
-                // Se o painel estiver minimizado, expande ao clicar em qualquer botão
-                if (bottomTabsContainer && bottomTabsContainer.classList.contains('minimized')) {
-                    toggleTabsExpansion(); // Expandir o painel
-                }
-                
-                // Desativar todas as abas inferiores
-                bottomTabButtons.forEach(btn => btn.classList.remove('active'));
-                bottomTabContents.forEach(content => content.classList.remove('active'));
-                
-                // Ativar a aba clicada
-                button.classList.add('active');
-                
-                const contentId = contentMap[tabId];
-                if (contentId) {
-                    const contentElement = document.getElementById(contentId);
-                    if (contentElement) {
-                        contentElement.classList.add('active');
+        if (bottomTabButtons.length > 0) {
+            console.log("Inicializando sistema de navegação para tabs inferiores");
+            
+            bottomTabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.getAttribute('data-tab');
+                    console.log("Tab inferior clicada:", tabId);
+                    
+                    // Verificar se já é o botão ativo e se o painel está expandido
+                    const isCurrentlyActive = button.classList.contains('active');
+                    const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+                    const isExpanded = bottomTabsContainer && !bottomTabsContainer.classList.contains('minimized');
+                    
+                    // Se clicar no mesmo botão que já está ativo e o painel estiver expandido, minimiza
+                    if (isCurrentlyActive && isExpanded) {
+                        toggleTabsExpansion(); // Minimizar o painel
+                        return; // Não muda o conteúdo, apenas minimiza
+                    }
+                    
+                    // Se o painel estiver minimizado, expande ao clicar em qualquer botão
+                    if (bottomTabsContainer && bottomTabsContainer.classList.contains('minimized')) {
+                        toggleTabsExpansion(); // Expandir o painel
+                    }
+                    
+                    // Desativar todas as abas inferiores
+                    bottomTabButtons.forEach(btn => btn.classList.remove('active'));
+                    bottomTabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Ativar a aba inferior clicada
+                    button.classList.add('active');
+                    
+                    // Mapear o data-tab para o ID do conteúdo correto
+                    const contentMap = {
+                        'bottom-events': 'bottom-events-content',
+                        'bottom-restrictions': 'bottom-restrictions-content',
+                        'bottom-report': 'bottom-report-content'
+                    };
+                    
+                    const contentId = contentMap[tabId];
+                    if (contentId) {
+                        const contentElement = document.getElementById(contentId);
+                        if (contentElement) {
+                            contentElement.classList.add('active');
                             
-                        // Verificar se estamos no modo tela cheia
-                        const isFullScreen = document.body.classList.contains('tabs-expanded') || 
-                                            bottomTabsContainer.classList.contains('fullscreen-mode');
-                        
-                        // Se estiver em tela cheia, ajustar altura do conteúdo
-                        if (isFullScreen) {
-                            console.log("Ajustando altura para conteúdo da aba em modo tela cheia:", contentId);
-                            contentElement.style.height = 'calc(100vh - 450px)';
-                            contentElement.style.maxHeight = 'calc(70vh - 80px)';
-                            contentElement.style.overflow = 'auto';
+                            // Verificar se estamos no modo tela cheia
+                            const isFullScreen = document.body.classList.contains('tabs-expanded') || 
+                                                bottomTabsContainer.classList.contains('fullscreen-mode');
                             
-                            // Ajustes específicos para diferentes tipos de conteúdo
-                            if (contentId === 'bottom-restrictions-content') {
-                                const restrictionsList = contentElement.querySelector('.restrictions-list');
-                                if (restrictionsList) {
-                                    restrictionsList.style.minHeight = 'calc(70vh - 150px)';
-                                    restrictionsList.style.maxHeight = 'calc(70vh - 150px)';
-                                    restrictionsList.style.paddingBottom = '50px';
-                                    restrictionsList.style.overflow = 'auto';
+                            // Se estiver em tela cheia, ajustar altura do conteúdo
+                            if (isFullScreen) {
+                                console.log("Ajustando altura para conteúdo da aba em modo tela cheia:", contentId);
+                                contentElement.style.height = 'calc(100vh - 450px)';
+                                contentElement.style.maxHeight = 'calc(70vh - 80px)';
+                                contentElement.style.overflow = 'auto';
+                                
+                                // Ajustes específicos para diferentes tipos de conteúdo
+                                if (contentId === 'bottom-restrictions-content') {
+                                    const restrictionsList = contentElement.querySelector('.restrictions-list');
+                                    if (restrictionsList) {
+                                        restrictionsList.style.minHeight = 'calc(70vh - 150px)';
+                                        restrictionsList.style.maxHeight = 'calc(70vh - 150px)';
+                                        restrictionsList.style.paddingBottom = '50px';
+                                        restrictionsList.style.overflow = 'auto';
+                                    }
                                 }
                             }
                             
@@ -2288,200 +1998,6 @@
                     <p>Origem atual: <strong>Dois Córregos-SP</strong></p>
                 `;
             }
-        }
-        
-        // Atualizar conteúdo nas novas abas fluidas
-        updateNewTabsContent(routeIds);
-    }
-    
-    // Função para atualizar conteúdo nas novas abas fluidas
-    function updateNewTabsContent(routeIds) {
-        // Atualizar conteúdo do relatório estático
-        const routeSummaryStatic = document.getElementById('route-summary-static');
-        if (routeSummaryStatic) {
-            routeSummaryStatic.style.display = 'block';
-        }
-        
-        const deliverySequenceStatic = document.getElementById('delivery-sequence-static');
-        if (deliverySequenceStatic) {
-            deliverySequenceStatic.innerHTML = `
-                <p>Adicione destinos e otimize uma rota para ver a sequência de entrega.</p>
-                <p>Origem atual: <strong>Dois Córregos-SP</strong></p>
-            `;
-        }
-        
-        // Desabilitar botões no início
-        const saveRouteStatic = document.getElementById('save-route-static');
-        const printRouteStatic = document.getElementById('print-route-static');
-        
-        if (saveRouteStatic) saveRouteStatic.disabled = true;
-        if (printRouteStatic) printRouteStatic.disabled = true;
-    }
-    
-    // Função específica para atualizar o relatório de rota no novo sistema de abas
-    function updateNewRouteReport(tspResult) {
-        // Verificar se temos um resultado válido
-        if (!tspResult || !tspResult.path || tspResult.path.length < 2) {
-            console.warn("Não há rota válida para mostrar no relatório fluido");
-            return;
-        }
-        
-        console.log("Atualizando relatório de rota no sistema fluido:", tspResult);
-        
-        // Elementos do DOM no sistema fluido
-        const totalDistanceStatic = document.getElementById('total-distance-static');
-        const totalTimeStatic = document.getElementById('total-time-static');
-        const totalTollsStatic = document.getElementById('total-tolls-static');
-        const deliverySequenceStatic = document.getElementById('delivery-sequence-static');
-        const saveRouteStatic = document.getElementById('save-route-static');
-        const printRouteStatic = document.getElementById('print-route-static');
-        const routeSummaryStatic = document.getElementById('route-summary-static');
-        const noRouteMessageStatic = document.getElementById('no-route-message-static');
-        
-        // Atualizar dados se os elementos existirem
-        if (totalDistanceStatic) {
-            totalDistanceStatic.textContent = `${tspResult.distance.toFixed(1)} km`;
-        }
-        
-        if (totalTimeStatic) {
-            const hours = Math.floor(tspResult.time);
-            const minutes = Math.round((tspResult.time - hours) * 60);
-            totalTimeStatic.textContent = `${hours}h ${minutes}min`;
-        }
-        
-        // Atualizar número de pedágios
-        if (totalTollsStatic && window.currentDisplayedRoute) {
-            // Determinar quantos pedágios existem na rota atual
-            const tollCount = window.currentDisplayedRoute.tolls ? window.currentDisplayedRoute.tolls.length : 0;
-            totalTollsStatic.textContent = tollCount.toString();
-        }
-        
-        // Atualizar sequência de entrega
-        if (deliverySequenceStatic && tspResult.path.length > 0) {
-            // Limpar conteúdo anterior
-            deliverySequenceStatic.innerHTML = '';
-            
-            // Criar lista ordenada para a sequência
-            const sequenceList = document.createElement('ol');
-            sequenceList.className = 'delivery-sequence-list';
-            
-            // Adicionar cada local na sequência
-            tspResult.path.forEach((locationId, index) => {
-                const location = locations.find(loc => loc.id === locationId);
-                if (location) {
-                    const item = document.createElement('li');
-                    item.className = location.isOrigin ? 'origin-item' : 'location-item';
-                    
-                    item.innerHTML = `
-                        <div class="location-name">${location.name}</div>
-                        <div class="location-address">${location.address}</div>
-                    `;
-                    
-                    sequenceList.appendChild(item);
-                }
-            });
-            
-            // Adicionar a lista à sequência de entrega
-            deliverySequenceStatic.appendChild(sequenceList);
-        }
-        
-        // Habilitar botões
-        if (saveRouteStatic) saveRouteStatic.disabled = false;
-        if (printRouteStatic) printRouteStatic.disabled = false;
-        
-        // Exibir o resumo e ocultar a mensagem de nenhuma rota
-        if (routeSummaryStatic) routeSummaryStatic.style.display = 'block';
-        if (noRouteMessageStatic) noRouteMessageStatic.style.display = 'none';
-    }
-    
-    // Função para sincronizar o conteúdo entre os sistemas de abas (antigo e novo)
-    function setupContentSync() {
-        console.log("Configurando sincronização de conteúdo entre sistemas de abas");
-        
-        // Mapear elementos do DOM de restrições
-        const restrictionsListOld = document.getElementById('restrictions-list');
-        const restrictionsListNew = document.getElementById('restrictions-list-static');
-        
-        // Mapear elementos do DOM de relatório
-        const totalDistanceOld = document.getElementById('total-distance');
-        const totalTimeOld = document.getElementById('total-time');
-        const totalTollsOld = document.getElementById('total-tolls');
-        
-        const totalDistanceNew = document.getElementById('total-distance-static');
-        const totalTimeNew = document.getElementById('total-time-static');
-        const totalTollsNew = document.getElementById('total-tolls-static');
-        
-        // Botões para salvar e imprimir rota
-        const saveRouteOld = document.getElementById('save-route');
-        const printRouteOld = document.getElementById('print-route');
-        const saveRouteNew = document.getElementById('save-route-static');
-        const printRouteNew = document.getElementById('print-route-static');
-        
-        // Adicionar listeners para os botões no sistema novo
-        if (saveRouteNew && saveRouteOld) {
-            saveRouteNew.addEventListener('click', function() {
-                saveRouteOld.click();
-            });
-        }
-        
-        if (printRouteNew && printRouteOld) {
-            printRouteNew.addEventListener('click', function() {
-                printRouteOld.click();
-            });
-        }
-        
-        // Sincronizar conteúdos inicialmente
-        if (restrictionsListOld && restrictionsListNew) {
-            restrictionsListNew.innerHTML = restrictionsListOld.innerHTML;
-        }
-        
-        // Observar mudanças nas restrições
-        const restrictionsObserver = new MutationObserver(function(mutations) {
-            if (restrictionsListOld && restrictionsListNew) {
-                restrictionsListNew.innerHTML = restrictionsListOld.innerHTML;
-            }
-        });
-        
-        if (restrictionsListOld) {
-            restrictionsObserver.observe(restrictionsListOld, { 
-                childList: true, 
-                subtree: true 
-            });
-        }
-        
-        // Observador para o relatório
-        const summaryObserver = new MutationObserver(function(mutations) {
-            if (totalDistanceOld && totalDistanceNew) {
-                totalDistanceNew.textContent = totalDistanceOld.textContent;
-            }
-            
-            if (totalTimeOld && totalTimeNew) {
-                totalTimeNew.textContent = totalTimeOld.textContent;
-            }
-            
-            if (totalTollsOld && totalTollsNew) {
-                totalTollsNew.textContent = totalTollsOld.textContent;
-            }
-            
-            // Sincronizar estado dos botões
-            if (saveRouteOld && saveRouteNew) {
-                saveRouteNew.disabled = saveRouteOld.disabled;
-            }
-            
-            if (printRouteOld && printRouteNew) {
-                printRouteNew.disabled = printRouteOld.disabled;
-            }
-        });
-        
-        // Observar o relatório completo
-        const routeSummaryOld = document.getElementById('route-summary');
-        if (routeSummaryOld) {
-            summaryObserver.observe(routeSummaryOld, { 
-                childList: true, 
-                subtree: true,
-                attributes: true,
-                characterData: true
-            });
         }
     }
     
@@ -2636,154 +2152,115 @@
     
     // Configura todos os event listeners
     function initEventListeners() {
-        try {
-            // Toggle para mostrar/esconder a sidebar
-            const toggleSidebarBtn = document.getElementById('toggle-sidebar');
-            if (toggleSidebarBtn) {
-                toggleSidebarBtn.addEventListener('click', function() {
-                    document.getElementById('sidebar').classList.toggle('sidebar-hidden');
-                });
-            }
-            
-            // Botão para fechar a sidebar em telas pequenas
-            const sidebarCloseBtn = document.querySelector('.sidebar-close');
-            if (sidebarCloseBtn) {
-                sidebarCloseBtn.addEventListener('click', function() {
-                    document.getElementById('sidebar').classList.add('sidebar-hidden');
-                });
-            }
-            
-            // Upload de arquivo com suporte para drag and drop
-            const fileUploadInput = document.getElementById('file-upload');
-            const uploadArea = document.getElementById('upload-area');
-            
-            // Eventos para upload de arquivo
-            if (fileUploadInput && uploadArea) {
-                // Evento para quando o arquivo é selecionado pelo input
-                fileUploadInput.addEventListener('change', handleFileUpload);
-                
-                // Eventos de drag and drop
-                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                    uploadArea.addEventListener(eventName, function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }, false);
-                });
-                
-                // Adicionar classe visual quando o arquivo está sendo arrastado sobre a área
-                ['dragenter', 'dragover'].forEach(eventName => {
-                    uploadArea.addEventListener(eventName, () => {
-                        uploadArea.classList.add('dragover');
-                    }, false);
-                });
-                
-                // Remover classe visual quando o arquivo sai da área ou é solto
-                ['dragleave', 'drop'].forEach(eventName => {
-                    uploadArea.addEventListener(eventName, () => {
-                        uploadArea.classList.remove('dragover');
-                    }, false);
-                });
-                
-                // Processar o arquivo quando for solto na área
-                uploadArea.addEventListener('drop', (e) => {
-                    const dt = e.dataTransfer;
-                    const files = dt.files;
-                    
-                    if (files.length) {
-                        fileUploadInput.files = files;
-                        handleFileUpload({target: fileUploadInput});
-                    }
-                }, false);
-            }
-            
-            // Botão para otimizar rota
-            const optimizeButton = document.getElementById('optimize-route');
-            if (optimizeButton) {
-                optimizeButton.addEventListener('click', optimizeRoute);
-            } else {
-                console.warn("Botão de otimização de rota não encontrado!");
-            }
-            
-            // Filtrar eventos automaticamente ao mudar as datas
-            const startDateInput = document.getElementById('start-date');
-            if (startDateInput) {
-                startDateInput.addEventListener('change', filterEventsByDate);
-            }
-            
-            const endDateInput = document.getElementById('end-date');
-            if (endDateInput) {
-                endDateInput.addEventListener('change', filterEventsByDate);
-            }
-            
-            // Botões de controle do mapa
-            const zoomToFitBtn = document.getElementById('zoom-to-fit');
-            if (zoomToFitBtn) {
-                zoomToFitBtn.addEventListener('click', zoomToFitAllMarkers);
-            }
-            
-            const togglePoiBtn = document.getElementById('toggle-poi');
-            if (togglePoiBtn) {
-                togglePoiBtn.addEventListener('click', togglePointsOfInterest);
-            }
-            
-            // Botões da aba de relatório
-            const saveRouteBtn = document.getElementById('save-route');
-            if (saveRouteBtn) {
-                saveRouteBtn.addEventListener('click', saveRoute);
-            }
-            
-            const printRouteBtn = document.getElementById('print-route');
-            if (printRouteBtn) {
-                printRouteBtn.addEventListener('click', printRoute);
-            }
-            
-            console.log("Event listeners inicializados com sucesso!");
-        } catch (error) {
-            console.error("Erro ao inicializar event listeners:", error);
+        // Toggle para mostrar/esconder a sidebar
+        document.getElementById('toggle-sidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('sidebar-hidden');
+        });
+        
+        // Botão para fechar a sidebar em telas pequenas
+        document.querySelector('.sidebar-close').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.add('sidebar-hidden');
+        });
+        
+        // Upload de arquivo com suporte para drag and drop
+        const fileUploadInput = document.getElementById('file-upload');
+        const uploadArea = document.getElementById('upload-area');
+        
+        // Evento para quando o arquivo é selecionado pelo input
+        fileUploadInput.addEventListener('change', handleFileUpload);
+        
+        // Eventos de drag and drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
         }
         
-        // Seletor de rotas alternativas
-        const alternativeRoutesSelect = document.getElementById('alternative-routes');
-        if (alternativeRoutesSelect) {
-            alternativeRoutesSelect.addEventListener('change', function(e) {
-                const selectedIndex = parseInt(e.target.value);
-                if (alternativeRoutes && alternativeRoutes.length > selectedIndex) {
-                    const selectedRoute = alternativeRoutes[selectedIndex];
-                    
-                    console.log("Selecionando rota alternativa:", selectedIndex);
-                    console.log("Caminho da rota selecionada:", selectedRoute.path);
-                    
-                    // Informar sobre a troca de rota
-                    console.log("Alternando para rota: " + selectedIndex + ", reconstruindo elementos...");
-                    showNotification("Alternando para rota " + (selectedIndex + 1) + "...", "info");
-                    
-                    // Salvar o caminho selecionado para uso após a limpeza
-                    const pathToUse = selectedRoute.path;
-                    
-                    // Parar qualquer animação em andamento
-                    if (routeAnimationTimeout) {
-                        clearTimeout(routeAnimationTimeout);
-                        routeAnimationTimeout = null;
-                    }
-                    
-                    // Limpar TUDO - todas as rotas, marcadores, eventos, e estado
-                    clearRoute();
-                    clearAllPolylines();
-                    clearPOIMarkers();
-                    clearEventMarkers();
-                }
-            });
-        }
-                
-        // Resetar o mapa para forçar atualização (parte do código da função de rotas alternativas)
-        if (map) {
-            try {
-                const mapCenter = map.getCenter();
-                map.setCenter(mapCenter);
-            } catch (e) {
-                console.error("Erro ao recentrar mapa:", e);
+        // Adicionar classe visual quando o arquivo está sendo arrastado sobre a área
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.add('dragover');
+            }, false);
+        });
+        
+        // Remover classe visual quando o arquivo sai da área ou é solto
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.remove('dragover');
+            }, false);
+        });
+        
+        // Processar o arquivo quando for solto na área
+        uploadArea.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length) {
+                fileUploadInput.files = files;
+                handleFileUpload({target: fileUploadInput});
             }
+        }, false);
+        
+        // Botão para otimizar rota
+        const optimizeButton = document.getElementById('optimize-route');
+        if (optimizeButton) {
+            optimizeButton.addEventListener('click', optimizeRoute);
+        } else {
+            console.error("Botão de otimização de rota não encontrado!");
         }
+        
+        // Filtrar eventos automaticamente ao mudar as datas
+        document.getElementById('start-date').addEventListener('change', filterEventsByDate);
+        document.getElementById('end-date').addEventListener('change', filterEventsByDate);
+        
+        // Botões de controle do mapa
+        document.getElementById('zoom-to-fit').addEventListener('click', zoomToFitAllMarkers);
+        document.getElementById('toggle-poi').addEventListener('click', togglePointsOfInterest);
+        
+        // Botões da aba de relatório
+        document.getElementById('save-route').addEventListener('click', saveRoute);
+        document.getElementById('print-route').addEventListener('click', printRoute);
+        
+        // Seletor de rotas alternativas
+        document.getElementById('alternative-routes').addEventListener('change', function(e) {
+            const selectedIndex = parseInt(e.target.value);
+            if (alternativeRoutes && alternativeRoutes.length > selectedIndex) {
+                const selectedRoute = alternativeRoutes[selectedIndex];
+                
+                console.log("Selecionando rota alternativa:", selectedIndex);
+                console.log("Caminho da rota selecionada:", selectedRoute.path);
+                
+                // Informar sobre a troca de rota
+                console.log("Alternando para rota: " + selectedIndex + ", reconstruindo elementos...");
+                showNotification("Alternando para rota " + (selectedIndex + 1) + "...", "info");
+                
+                // Salvar o caminho selecionado para uso após a limpeza
+                const pathToUse = selectedRoute.path;
+                
+                // Parar qualquer animação em andamento
+                if (routeAnimationTimeout) {
+                    clearTimeout(routeAnimationTimeout);
+                    routeAnimationTimeout = null;
+                }
+                
+                // Limpar TUDO - todas as rotas, marcadores, eventos, e estado
+                clearRoute();
+                clearAllPolylines();
+                clearPOIMarkers();
+                clearEventMarkers();
+                
+                // Resetar o mapa para forçar atualização
+                if (map) {
+                    try {
+                        const mapCenter = map.getCenter();
+                        map.setCenter(mapCenter);
+                    } catch (e) {
+                        console.error("Erro ao recentrar mapa:", e);
+                    }
+                }
                 
                 // Delay maior para garantir limpeza completa antes de reconstruir
                 setTimeout(() => {
@@ -3408,17 +2885,8 @@
         if (routeSummary) {
             routeSummary.style.display = 'none';
         }
-        
-        // Desabilitar os botões de salvar e imprimir com verificação de null
-        const saveRouteBtn = document.getElementById('save-route');
-        if (saveRouteBtn) {
-            saveRouteBtn.disabled = true;
-        }
-        
-        const printRouteBtn = document.getElementById('print-route');
-        if (printRouteBtn) {
-            printRouteBtn.disabled = true;
-        }
+        document.getElementById('save-route').disabled = true;
+        document.getElementById('print-route').disabled = true;
     }
 
     // Limpar marcadores de pontos de interesse
@@ -4579,11 +4047,9 @@
             }
         }
         
-        // Limpar a lista de eventos (funciona para ambos os sistemas de abas)
+        // Limpar a lista de eventos
         const eventsListContainer = document.getElementById('events-list');
-        if (eventsListContainer) {
-            eventsListContainer.innerHTML = '';
-        }
+        eventsListContainer.innerHTML = '';
         
         // Log para diagnóstico
         console.log("Eventos disponíveis:", mockData.cityEvents);
@@ -4930,17 +4396,9 @@
             
             console.log("Cidades detectadas na rota:", citiesInRoute);
             
-            // Limpar a lista - funciona para ambos os sistemas de abas
+            // Limpar a lista
             const restrictionsListContainer = document.getElementById('restrictions-list');
-            const restrictionsListStatic = document.getElementById('restrictions-list-static');
-            
-            if (restrictionsListContainer) {
-                restrictionsListContainer.innerHTML = '';
-            }
-            
-            if (restrictionsListStatic) {
-                restrictionsListStatic.innerHTML = '';
-            }
+            restrictionsListContainer.innerHTML = '';
             
             // Adicionar título explicativo
             const titleElement = document.createElement('div');
@@ -4959,15 +4417,7 @@
                                     citiesSequence +
                                     '</span>';
             
-            // Adicionar título a ambos os containers (sistema antigo e novo)
-            if (restrictionsListContainer) {
-                restrictionsListContainer.appendChild(titleElement.cloneNode(true));
-            }
-            
-            if (restrictionsListStatic) {
-                // Se estamos usando o sistema fluido, adicionar o título lá também
-                restrictionsListStatic.appendChild(titleElement.cloneNode(true));
-            }
+            restrictionsListContainer.appendChild(titleElement);
             
             // Para cada cidade na rota, gerar uma restrição representativa
             citiesInRoute.forEach(city => {
@@ -5035,14 +4485,8 @@
                     <div class="city-in-route" style="color: #1976D2; font-size: 0.8em; margin-top: 4px;">✓ Esta cidade está no seu percurso</div>
                 `;
                 
-                // Adicionar à lista em ambos sistemas de abas
-                if (restrictionsListContainer) {
-                    restrictionsListContainer.appendChild(restrictionItem.cloneNode(true));
-                }
-                
-                if (restrictionsListStatic) {
-                    restrictionsListStatic.appendChild(restrictionItem.cloneNode(true));
-                }
+                // Adicionar à lista
+                restrictionsListContainer.appendChild(restrictionItem);
             });
             
             console.log(`GitHub Pages: Exibindo ${citiesInRoute.length} restrições para cidades na rota atual`);
@@ -5066,17 +4510,9 @@
             }
         }
         console.log("Parâmetro vehicleType:", vehicleType, "- Isso será ignorado completamente");
-        // Limpar a lista de restrições - funciona para ambos os sistemas de abas
+        // Limpar a lista de restrições
         const restrictionsListContainer = document.getElementById('restrictions-list');
-        const restrictionsListStatic = document.getElementById('restrictions-list-static');
-        
-        if (restrictionsListContainer) {
-            restrictionsListContainer.innerHTML = '';
-        }
-        
-        if (restrictionsListStatic) {
-            restrictionsListStatic.innerHTML = '';
-        }
+        restrictionsListContainer.innerHTML = '';
         
         // Log detalhado para diagnóstico
         console.log("Restrições disponíveis:", mockData.truckRestrictions);
@@ -5606,27 +5042,17 @@
         
         // Limpar o seletor de rotas alternativas
         const alternativeSelect = document.getElementById('alternative-routes');
-        if (alternativeSelect) {
-            alternativeSelect.innerHTML = '';
-            const defaultOption = document.createElement('option');
-            defaultOption.value = "0";
-            defaultOption.text = "Rota Otimizada (Padrão)";
-            defaultOption.selected = true;
-            alternativeSelect.appendChild(defaultOption);
-        } else {
-            console.warn("Elemento 'alternative-routes' não encontrado. Ignorando esse passo.");
-        }
+        alternativeSelect.innerHTML = '';
+        const defaultOption = document.createElement('option');
+        defaultOption.value = "0";
+        defaultOption.text = "Rota Otimizada (Padrão)";
+        defaultOption.selected = true;
+        alternativeSelect.appendChild(defaultOption);
         
         // 1. Rota principal (otimizada pelo algoritmo principal)
         console.log("Gerando rota principal otimizada...");
         const mainRoute = solveAdvancedTSP(origin, destinations, includeOriginReturn);
         alternativeRoutes.push(mainRoute);
-        
-        // Atualizar o relatório de rota no novo sistema de abas fluidas
-        if (typeof updateNewRouteReport === 'function') {
-            console.log("Atualizando relatório no sistema fluido...");
-            updateNewRouteReport(mainRoute);
-        }
         
         // Só criar rotas alternativas se houver mais de 2 destinos
         if (destinations.length >= 2) {
@@ -6828,73 +6254,9 @@
         }
     }
     
-    // Função para inicializar o sistema de abas fluidas
-    function initTabSystem() {
-        try {
-            console.log("Inicializando sistema de abas fluidas...");
-            const tabBtns = document.querySelectorAll('.tab-btn');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            if (!tabBtns.length) {
-                console.error("Botões de tab não encontrados!");
-                return;
-            }
-            
-            if (!tabContents.length) {
-                console.error("Conteúdo de tabs não encontrado!");
-                return;
-            }
-            
-            // Ajustar altura do placeholder para compensar a altura das abas
-            const tabsSection = document.querySelector('.tabs-section');
-            const placeholder = document.getElementById('scroll-tabs-placeholder');
-            
-            if (tabsSection && placeholder) {
-                const updatePlaceholderHeight = () => {
-                    const tabsHeight = tabsSection.offsetHeight;
-                    placeholder.style.height = tabsHeight + 'px';
-                    console.log("Altura do placeholder de abas ajustada para", tabsHeight, "px");
-                };
-                
-                // Atualizar inicialmente
-                updatePlaceholderHeight();
-                
-                // Atualizar sempre que a janela for redimensionada
-                window.addEventListener('resize', updatePlaceholderHeight);
-            } else {
-                console.warn("Elementos de placeholder de abas não encontrados!");
-            }
-            
-            // Adicionar evento de clique para todas as abas
-            tabBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Remover classe ativa de todas as abas
-                    tabBtns.forEach(b => b.classList.remove('active'));
-                    tabContents.forEach(c => c.classList.remove('active'));
-                    
-                    // Adicionar classe ativa à aba clicada
-                    const tabId = this.getAttribute('data-tab');
-                    this.classList.add('active');
-                    
-                    const content = document.getElementById(tabId + '-content');
-                    if (content) {
-                        content.classList.add('active');
-                    } else {
-                        console.error("Conteúdo da aba", tabId, "não encontrado!");
-                    }
-                });
-            });
-            
-            console.log("Sistema de abas inicializado com sucesso!");
-        } catch (err) {
-            console.error("Erro ao inicializar sistema de abas:", err);
-        }
-    }
-
     // Inicializar suporte mobile quando documento estiver pronto
     document.addEventListener('DOMContentLoaded', function() {
         initMobileSupport();
-        initTabSystem();
     });
     </script>
 </body>
