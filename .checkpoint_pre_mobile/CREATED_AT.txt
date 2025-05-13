@@ -1,9 +1,0 @@
-Checkpoint criado com sucesso - Tue 13 May 2025 05:06:44 AM UTC
-Arquivos preservados:
-- standalone.html
-- index.html
-- fix-github.js
-- geocode-fix.js
-- cep-database.js
-- route-optimizer.js
-- tsp.js

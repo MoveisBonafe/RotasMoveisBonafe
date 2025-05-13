@@ -2,18 +2,14 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#1976D2">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Otimizador de Rotas para logística e transporte, com suporte a cálculo de rotas entre múltiplos pontos, otimização de sequência, e visualização de eventos e restrições em cidades brasileiras." />
     <meta name="keywords" content="otimizador de rotas, problema do caixeiro viajante, logística, transporte, planejamento de rotas, otimização de entregas, Brasil, Google Maps, pedágios, eventos em cidades" />
     <meta name="author" content="Otimizador de Rotas" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    <title>Otimizador de Rotas - Mobile</title>
+    <title>Otimizador de Rotas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
@@ -26,20 +22,8 @@
         }
         .app-container {
             display: flex;
-            flex-direction: column;
             height: 100vh;
             overflow: hidden;
-            width: 100%;
-            position: relative; /* Importante para posicionamento absoluto das abas */
-        }
-        
-        .main-content-area {
-            display: flex;
-            flex-direction: row;
-            flex: 1;
-            overflow: hidden;
-            height: calc(100vh - 60px); /* Ajuste de altura para abas minimizadas maiores */
-            position: relative; /* Importante para posicionamento dos elementos filhos */
         }
         .sidebar {
             width: 380px;
@@ -50,26 +34,6 @@
             z-index: 10;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
             transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            position: fixed; /* Fixar a sidebar no lado esquerdo */
-            top: 0;
-            left: 0;
-            bottom: 0;
-        }
-        
-        /* Melhorar layout da sidebar para GitHub Pages */
-        .sidebar-header {
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .sidebar-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
         }
         .map-container {
             flex: 1;
@@ -197,9 +161,9 @@
         .file-upload {
             margin-top: 15px;
             border: 2px dashed #3498db;
-            padding: 15px 10px;
+            padding: 25px 15px;
             text-align: center;
-            border-radius: 8px;
+            border-radius: 10px;
             background-color: #f0f8ff;
             transition: all 0.3s ease;
             position: relative;
@@ -218,20 +182,20 @@
         }
         .file-upload-icon {
             display: block;
-            margin: 0 auto 5px;
-            font-size: 24px;
+            margin: 0 auto 10px;
+            font-size: 32px;
             color: #3498db;
         }
         .file-format-example {
             background-color: #e2f3ff;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 8px 12px;
+            border-radius: 6px;
             font-family: monospace;
             display: inline-block;
-            margin: 4px auto;
+            margin: 8px auto;
             color: #2c3e50;
             border: 1px solid #bde0ff;
-            font-size: 12px;
+            font-size: 14px;
         }
         .file-upload input[type="file"] {
             opacity: 0;
@@ -361,96 +325,32 @@
             padding-bottom: 5px;
         }
         
-        /* Estilos para abas - Nova versão com animação e layout inferior */
+        /* Estilos para abas */
         .tab-container {
-            width: 100%;
-            margin-top: 40px;
-            position: relative;
-            transition: all 0.5s ease;
+            margin-bottom: 20px;
         }
         .tab-buttons {
             display: flex;
-            justify-content: center;
-            background: #f5f7fa;
-            border-top: 1px solid #dee2e6;
+            margin-bottom: 10px;
             border-bottom: 1px solid #dee2e6;
-            padding: 10px 0;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
         }
         .tab-button {
-            padding: 10px 20px;
-            margin: 0 5px;
+            padding: 8px 16px;
             background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 20px;
+            border: none;
+            border-bottom: 2px solid transparent;
             cursor: pointer;
             transition: all 0.3s;
-            font-weight: 500;
-            color: #495057;
-            position: relative;
-            overflow: hidden;
-        }
-        .tab-button::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: #1976D2;
-            transform: translateY(3px);
-            transition: transform 0.3s ease;
-        }
-        .tab-button:hover {
-            background-color: #e9ecef;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .tab-button:hover::after {
-            transform: translateY(0);
         }
         .tab-button.active {
-            background-color: #1976D2;
-            color: white;
-            border-color: #1976D2;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
-        }
-        .tab-button.active::after {
-            background-color: white;
-            transform: translateY(0);
+            border-bottom: 2px solid #1976D2;
+            background-color: #e9ecef;
         }
         .tab-content {
             display: none;
-            padding: 25px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            margin-top: 20px;
-            animation: fadeInUp 0.5s ease forwards;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease;
         }
         .tab-content.active {
             display: block;
-            max-height: 2000px;
-            overflow-y: auto;
-        }
-        
-        /* Animações para as abas e conteúdo */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
         
         /* Estilo para datas */
@@ -533,11 +433,8 @@
         /* Estilos para restrições de caminhões */
         .restrictions-list {
             margin-top: 10px;
-            max-height: none !important; /* Sem limite de altura máxima */
-            min-height: calc(100vh - 210px) !important; /* Preencher quase toda a altura disponível */
-            overflow-y: auto !important;
-            padding-bottom: 30px !important;
-            flex-grow: 1 !important;
+            max-height: 200px;
+            overflow-y: auto;
         }
         .restriction-item {
             padding: 8px;
@@ -608,424 +505,37 @@
             height: 1rem;
             margin-right: 0.5rem;
         }
-        
-        /* NOVO LAYOUT - Tabs na parte inferior do mapa (fixas) */
-        .bottom-tabs-container {
-            width: calc(100% - 380px); /* Ajustado para não sobrepor a sidebar */
-            margin-top: 0;
-            margin-bottom: 0;
-            margin-left: 380px; /* Afastado para alinhar com a sidebar */
-            display: flex;
-            flex-direction: column;
-            animation: fadeIn 0.5s ease;
-            background-color: #f9f9f9;
-            border-bottom: 1px solid #ddd; /* Alterado de border-top para border-bottom */
-            overflow: auto; /* Alterado para auto para permitir rolagem */
-            /* Inicialmente minimizada ao invés de oculta */
-            display: flex;
-            height: auto;
-            /* Ajustes para expandir de cima para baixo */
-            position: fixed; /* Alterado para fixed para cobrir toda a tela */
-            top: 0; /* Alterado de bottom para top */
-            left: 0;
-            right: 0;
-            z-index: 1000; /* Aumentado para ficar sobre todos os elementos */
-            transition: height 0.3s ease-in-out;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Sombra para baixo */
-            box-sizing: border-box; /* Garantir que padding e border não afetem o tamanho */
-        }
-        
-        /* Media query para garantir que o layout permaneça estável em diferentes tamanhos de tela */
-        @media (min-width: 1024px) {
-            .bottom-tabs-container {
-                width: calc(100% - 380px);
-                margin-left: 380px;
-            }
-        }
-        
-        /* Classe especial para modo de tela cheia nas abas */
-        .bottom-tabs-container.fullscreen-mode {
-            top: 0 !important;
-            height: 100vh !important;
-            max-height: 100vh !important;
-            background-color: rgba(255, 255, 255, 0.98) !important;
-            z-index: 9999 !important;
-            width: calc(100% - 380px) !important;
-            margin-left: 380px !important;
-            overflow-y: auto !important;
-        }
-        
-        /* Estado minimizado para container de abas (agora no topo) */
-        .bottom-tabs-container.minimized {
-            height: 60px; /* Altura quando minimizado */
-            overflow: hidden;
-        }
-        
-        /* Estado expandido para container de abas (expandindo de cima para baixo) */
-        .bottom-tabs-container:not(.minimized) {
-            height: 100vh !important; /* Altura total da tela quando expandido */
-            top: 0 !important; /* Garantir que começa no topo */
-            border-bottom: 2px solid #1976D2; /* Borda mais visível quando expandido (abaixo) */
-            border-left: 2px solid #1976D2; /* Borda na lateral para separar da sidebar */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Sombra ajustada para baixo */
-            overflow-y: auto !important; /* Garantir rolagem vertical */
-            z-index: 2000 !important; /* Garantir que fique por cima de todos os elementos */
-        }
-        
-        /* Botão de fechar removido - usando apenas os botões das abas para controlar expandir/minimizar */
-        
-        /* Ajuste para que o mapa ocupe todo o espaço disponível (considerando abas no topo) */
-        .map-container {
-            position: fixed !important; /* Posicionamento fixo para cobrir toda a área */
-            top: 60px !important; /* Começa abaixo das abas minimizadas */
-            right: 0 !important;
-            bottom: 0 !important; /* Vai até o final da página (sem abas no bottom) */
-            left: 380px !important; /* Começa onde termina a sidebar */
-            width: calc(100% - 380px) !important; /* Largura ajustada para alinhar com a sidebar */
-            height: calc(100vh - 60px) !important; /* Altura total menos as abas minimizadas */
-            margin: 0 !important;
-            padding: 0 !important;
-            overflow: hidden !important;
-            z-index: 5; /* Garantir que fique acima do corpo da página, mas abaixo da sidebar e abas */
-            transition: top 0.3s ease-in-out; /* Animação suave para ajuste quando as abas mudam */
-        }
-        
-        /* Garantir que o mapa ocupe 100% do container */
-        #map {
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        
-        /* Classe especial para forçar tamanho completo */
-        .full-size-map {
-            width: 100% !important;
-            height: 100% !important;
-            min-height: 100% !important;
-            max-height: none !important;
-            display: block !important;
-            position: absolute !important;
-        }
-        
-        /* Estilo para garantir que a estrutura HTML permita que o mapa ocupe 100% */
-        html, body {
-            height: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            overflow: hidden !important;
-        }
-        
-        /* Estilo para contêiner principal */
-        .container-fluid {
-            height: 100vh !important;
-            width: 100% !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            overflow: hidden !important;
-        }
-        
-        /* Estilos para quando as abas estão em modo expandido no GitHub Pages */
-        body.tabs-expanded .bottom-tabs-container {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-            width: 100% !important;
-            height: 100vh !important;
-            margin: 0 !important;
-            z-index: 9999 !important;
-            background-color: white !important;
-        }
-        
-        /* Ajustar conteúdos das abas em modo expandido */
-        body.tabs-expanded .bottom-tab-content {
-            height: calc(100vh - 70px) !important;
-            padding: 20px !important;
-            overflow-y: auto !important;
-        }
-        
-        /* Ajustar lista de restrições em modo expandido */
-        body.tabs-expanded #bottom-restrictions-content .restrictions-list {
-            min-height: calc(100vh - 150px) !important;
-            padding-bottom: 50px !important;
-        }
-        
-        /* Botão de expandir/minimizar removido - funcionalidade incorporada nos botões das abas */
-        
-        .bottom-tabs-nav {
-            display: flex;
-            justify-content: space-around; /* Espaçamento melhor distribuído */
-            gap: 8px; /* Aumentado o espaço entre os botões */
-            padding: 12px 0 6px; /* Aumentado padding vertical */
-            background: linear-gradient(to bottom, #f0f2f5, #ffffff);
-            border-bottom: 1px solid #e0e0e0;
-            position: sticky !important;
-            top: 0 !important;
-            z-index: 3000 !important; /* Muito alto para garantir que fique por cima de tudo */
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            width: 100% !important;
-        }
-        
-        /* Estilo especial para navegação em modo tela cheia */
-        .fullscreen-mode .bottom-tabs-nav {
-            background: linear-gradient(to bottom, #1976D2, #1565C0) !important;
-            padding: 15px 0 10px !important;
-            border-bottom: 2px solid #0d47a1 !important;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2) !important;
-        }
-        
-        /* Ajuste dos botões na navegação em tela cheia */
-        .fullscreen-mode .bottom-tab-btn {
-            color: white !important;
-            border-color: rgba(255,255,255,0.5) !important;
-            background-color: rgba(255,255,255,0.1) !important;
-            transform: none !important;
-        }
-        
-        .fullscreen-mode .bottom-tab-btn:hover {
-            background-color: rgba(255,255,255,0.2) !important;
-            transform: translateY(-2px) !important;
-        }
-        
-        .fullscreen-mode .bottom-tab-btn.active {
-            background-color: white !important;
-            color: #1976D2 !important;
-            font-weight: bold !important;
-            border-color: white !important;
-        }
-        
-        .bottom-tab-btn {
-            padding: 10px 20px; /* Aumentado o padding */
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 20px; /* Aumentado o arredondamento */
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 500;
-            color: #495057;
-            position: relative;
-            overflow: hidden;
-            font-size: 0.9rem; /* Texto um pouco maior */
-            white-space: nowrap; /* Evita quebra de linha */
-            min-width: 120px; /* Tamanho mínimo para botões maiores */
-            text-align: center; /* Centralizar o texto */
-        }
-        
-        .bottom-tab-btn::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: #1976D2;
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-        
-        .bottom-tab-btn:hover {
-            background-color: #e9ecef;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        .bottom-tab-btn:hover::before {
-            opacity: 0.8;
-            transform: scale(1.1);
-        }
-        
-        .bottom-tab-btn.active {
-            background-color: #1976D2;
-            color: white;
-            border-color: #1976D2;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        /* Adicionar indicador sob a aba ativa */
-        .bottom-tab-btn.active::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background-color: #ffeb3b;
-            transform: scaleX(1);
-            animation: pulseWidth 2s infinite;
-        }
-        
-        @keyframes pulseWidth {
-            0%, 100% { transform: scaleX(0.95); }
-            50% { transform: scaleX(1.05); }
-        }
-        
-        /* Adicione um ícone adequado a cada tab inferior */
-        .bottom-tab-btn[data-tab="bottom-events"]::before {
-            content: "🎉";
-            display: inline-block;
-            margin-right: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .bottom-tab-btn[data-tab="bottom-restrictions"]::before {
-            content: "🚫";
-            display: inline-block;
-            margin-right: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .bottom-tab-btn[data-tab="bottom-report"]::before {
-            content: "📊";
-            display: inline-block;
-            margin-right: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .bottom-tab-content {
-            display: none;
-            padding: 20px;
-            background-color: white;
-            animation: fadeInUp 0.5s ease forwards;
-            opacity: 0;
-            transform: translateY(20px);
-            overflow-y: auto; /* Permite rolagem vertical para todos os conteúdos */
-        }
-        
-        /* Ajustes para quando as abas estão minimizadas */
-        .bottom-tabs-container.minimized .bottom-tab-content {
-            height: 300px; /* Altura fixa quando minimizado */
-        }
-        
-        /* Ajustes para quando as abas estão expandidas até o topo */
-        .bottom-tabs-container:not(.minimized) .bottom-tab-content {
-            height: calc(100vh - 140px) !important; /* Quase altura total da tela quando expandido */
-            max-height: calc(100vh - 140px) !important; /* Limitando altura máxima */
-            padding: 25px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-            border-radius: 0 0 8px 8px;
-            border: 1px solid #e0e0e0;
-            margin: 0 15px 15px;
-            overflow-y: auto !important; /* Garantir que todos os conteúdos tenham rolagem */
-            position: relative !important; /* Importante para o posicionamento absoluto dos filhos */
-        }
-        
-        /* Ajustes específicos para a aba de restrições */
-        #bottom-restrictions-content {
-            overflow-y: auto !important;
-            min-height: 100% !important;
-            max-height: calc(100vh - 140px) !important; /* Garantir altura máxima */
-            display: flex !important;
-            flex-direction: column !important;
-            padding-bottom: 50px !important; /* Adicionar espaço na parte inferior */
-        }
-        
-        /* Estilos específicos para GitHub Pages */
-        .fullscreen-mode #bottom-restrictions-content,
-        .fullscreen-mode #bottom-events-content,
-        .fullscreen-mode #bottom-report-content {
-            min-height: calc(100vh - 140px) !important;
-            max-height: calc(100vh - 140px) !important;
-            height: calc(100vh - 140px) !important;
-            overflow-y: auto !important;
-            background-color: white !important;
-            padding: 20px !important;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1) !important;
-            border-radius: 8px !important;
-            margin: 10px !important;
-        }
-        
-        /* Garantir que todas as listas dentro das abas tenham altura completa */
-        .bottom-tab-content .restrictions-list,
-        .bottom-tab-content .events-list,
-        .bottom-tab-content .report-section {
-            flex-grow: 1 !important;
-            height: auto !important;
-            min-height: 100% !important;
-            overflow-y: auto !important;
-        }
-        
-        .bottom-tab-content.active {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes fadeOutDown {
-            from {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            to {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Ajustes para o layout responsivo */
-        @media (max-width: 768px) {
-            .bottom-tabs-nav {
-                flex-wrap: wrap;
-            }
-            
-            .bottom-tab-btn {
-                padding: 10px 16px;
-                font-size: 0.9rem;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <div class="main-content-area">
-            <!-- Sidebar para controles e informações -->
+        <!-- Sidebar para controles e informações -->
         <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <h2 class="m-0">Otimizador de Rotas</h2>
-                <button type="button" class="btn-close sidebar-close" aria-label="Close"></button>
-            </div>
-            <div class="sidebar-content">
+            <h2 class="mb-4">Otimizador de Rotas</h2>
+            <button type="button" class="btn-close sidebar-close" aria-label="Close"></button>
             
-            <!-- A aba de Locais fica no sidebar -->
-            <div id="locations-content">
-                    <!-- O conteúdo de locais fica no sidebar -->
+            <!-- Container de abas -->
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button active" data-tab="locations">Locais</button>
+                    <button class="tab-button" data-tab="events">Eventos</button>
+                    <button class="tab-button" data-tab="report">Relatório</button>
+                </div>
                 
-                    <!-- Filtro de eventos por data (movido para cima da origem) -->
-                    <div class="form-group mb-3">
-                        <label>Filtrar eventos por data:</label>
-                        <div class="date-range-container d-flex gap-2">
-                            <input type="date" id="start-date" class="form-control form-control-sm">
-                            <input type="date" id="end-date" class="form-control form-control-sm">
-                        </div>
-                    </div>
-                    
-                    <!-- Origem fixa -->
+                <!-- Aba de Locais -->
+                <div class="tab-content active" id="locations-tab">
+                    <!-- Filtro de eventos por data (sem botão filtrar) -->
                     <div class="form-group">
+                        <label>Filtrar eventos por data:</label>
+                        <div class="date-range-container">
+                            <input type="date" id="start-date" class="form-control">
+                            <input type="date" id="end-date" class="form-control">
+                        </div>
+                        <!-- Botão de filtrar removido - filtro aplicado automaticamente -->
+                    </div>
+                
+                    <!-- Origem fixa -->
+                    <div class="form-group mt-3">
                         <label for="origin">Origem:</label>
                         <input type="text" id="origin" class="form-control" value="Dois Córregos, SP" readonly>
                     </div>
@@ -1038,12 +548,12 @@
                     
                     <!-- Seleção de veículo removida, agora usa caminhão padrão automaticamente -->
                     
-                    <!-- Upload de arquivo melhorado e compacto -->
+                    <!-- Upload de arquivo melhorado -->
                     <div class="file-upload" id="upload-area">
                         <i class="file-upload-icon fas fa-cloud-upload-alt" aria-hidden="true"></i>
-                        <p style="margin: 0">Importar CEPs via arquivo</p>
-                        <div class="file-format-example">CEP,Nome</div>
-                        <span class="file-upload-text">Arraste arquivo ou clique aqui</span>
+                        <p>Importe múltiplos endereços via arquivo</p>
+                        <div class="file-format-example">CEP,Nome do Local</div>
+                        <span class="file-upload-text">Arraste e solte seu arquivo aqui ou clique para selecionar</span>
                         <input type="file" id="file-upload" accept=".txt,.csv">
                     </div>
                     
@@ -1059,18 +569,53 @@
                             Otimizar Rota
                         </button>
                     </div>
+                </div>
+                
+                <!-- Aba de Eventos -->
+                <div class="tab-content" id="events-tab">
+                    <!-- Filtro de eventos por data movido para a aba Locais -->
                     
-                    <!-- Seleção de Rota Alternativa na sidebar -->
-                    <div id="route-alternatives-sidebar" class="mt-3" style="display: none;">
-                        <p class="mb-2"><small>Rotas Alternativas:</small></p>
-                        <select id="alternative-routes-sidebar" class="form-select form-select-sm">
-                            <option value="0">Rota Otimizada (Padrão)</option>
-                            <!-- Opções de rotas alternativas serão adicionadas dinamicamente -->
-                        </select>
+                    <h5>Eventos na rota:</h5>
+                    <div class="events-list" id="events-list">
+                        <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
+                    </div>
+                    
+                    <h5 class="mt-3">Restrições para caminhões do percurso:</h5>
+                    <p class="small text-muted mb-2">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
+                    <div class="restrictions-list" id="restrictions-list">
+                        <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
                     </div>
                 </div>
                 
-                <!-- Conteúdo do sidebar apenas com a seção de Locais -->
+                <!-- Aba de Relatório -->
+                <div class="tab-content" id="report-tab">
+                    <div id="route-summary" class="mb-3">
+                        <p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>
+                    </div>
+                    
+                    <!-- Seleção de Rota Alternativa -->
+                    <div id="route-alternatives" class="mb-3" style="display: none;">
+                        <h5>Rotas Alternativas</h5>
+                        <p class="text-muted">Selecione uma rota alternativa para visualizar diferentes ordenações de pontos:</p>
+                        <div class="form-group">
+                            <select id="alternative-routes" class="form-select">
+                                <option value="0">Rota Otimizada (Padrão)</option>
+                                <!-- Opções de rotas alternativas serão adicionadas dinamicamente -->
+                            </select>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">Cada rota usa um algoritmo diferente para ordenar os pontos, com diferentes trade-offs entre distância e tempo.</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="report-route-name">Nome da rota:</label>
+                        <input type="text" id="report-route-name" class="form-control" placeholder="Ex: Entrega Região Sul">
+                    </div>
+                    
+                    <button id="save-route" class="btn btn-outline-success mt-2" disabled>Salvar Rota</button>
+                    <button id="print-route" class="btn btn-outline-primary mt-2 ms-2" disabled>Imprimir</button>
+                </div>
             </div>
         </div>
         
@@ -1092,67 +637,6 @@
                         <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
                     </svg>
                 </button>
-            </div>
-        </div>
-        </div>
-        
-        <!-- NOVO: Tabs fixas na parte inferior do layout (inicialmente minimizadas) -->
-        <div class="bottom-tabs-container minimized">
-            <!-- Sem botão adicional - os próprios botões das abas controlam expandir/minimizar -->
-            <!-- Navegação das abas inferiores -->
-            <div class="bottom-tabs-nav">
-                <button class="bottom-tab-btn active" data-tab="bottom-events">Eventos na Rota</button>
-                <button class="bottom-tab-btn" data-tab="bottom-restrictions">Restrições de Tráfego</button>
-                <button class="bottom-tab-btn" data-tab="bottom-report">Relatório da Rota</button>
-            </div>
-            
-            <!-- Conteúdo da aba Eventos -->
-            <div class="bottom-tab-content active" id="bottom-events-content">
-                <h5>Eventos nas cidades da rota:</h5>
-                <div class="events-list" id="events-list">
-                    <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
-                </div>
-            </div>
-            
-            <!-- Conteúdo da aba Restrições -->
-            <div class="bottom-tab-content" id="bottom-restrictions-content">
-                <h5>Restrições para caminhões do percurso:</h5>
-                <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
-                <div class="restrictions-list" id="restrictions-list">
-                    <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
-                </div>
-            </div>
-            
-            <!-- Conteúdo da aba Relatório -->
-            <div class="bottom-tab-content" id="bottom-report-content">
-                <div id="route-summary" class="mb-4">
-                    <p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>
-                </div>
-                
-                <!-- Seleção de Rota Alternativa -->
-                <div id="route-alternatives" class="mb-4" style="display: none;">
-                    <h5>Rotas Alternativas</h5>
-                    <p class="text-muted">Selecione uma rota alternativa para visualizar diferentes ordenações de pontos:</p>
-                    <div class="form-group">
-                        <select id="alternative-routes" class="form-select">
-                            <option value="0">Rota Otimizada (Padrão)</option>
-                            <!-- Opções de rotas alternativas serão adicionadas dinamicamente -->
-                        </select>
-                    </div>
-                    <div class="mt-2">
-                        <small class="text-muted">Cada rota usa um algoritmo diferente para ordenar os pontos, com diferentes trade-offs entre distância e tempo.</small>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="report-route-name">Nome da rota:</label>
-                    <input type="text" id="report-route-name" class="form-control" placeholder="Ex: Entrega Região Sul" style="max-width: 400px">
-                </div>
-                
-                <div class="mt-3">
-                    <button id="save-route" class="btn btn-outline-success" disabled>Salvar Rota</button>
-                    <button id="print-route" class="btn btn-outline-primary ms-2" disabled>Imprimir</button>
-                </div>
             </div>
         </div>
     </div>
@@ -1340,62 +824,10 @@
 
     // Inicialização
     document.addEventListener("DOMContentLoaded", function() {
-        console.log("DOM carregado - inicializando aplicação");
-        
-        // Event listener para o botão de toggle das abas removido
-        // A funcionalidade de toggle agora está incorporada nos próprios botões das abas
-        
-        // Inicializar conteúdo das abas com a origem
-        // Ativar a primeira aba
-        const firstTabButton = document.querySelector('.bottom-tab-btn[data-tab="bottom-events"]');
-        if (firstTabButton) {
-            firstTabButton.click();
-        }
-        
-        // Mostrar informações iniciais nas abas
-        showInitialTabsContent();
-        
-        // Verificar se temos acesso ao Google Maps
-        if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-            console.error("Google Maps API não carregada corretamente");
-            showNotification("Não foi possível carregar o Google Maps. Verifique sua conexão ou se há bloqueadores ativos no navegador.", "error");
-        } else {
-            console.log("Google Maps API disponível");
-        }
-        
-        // Inicializar componentes principais
-        try {
-            initMap();
-            initAutocomplete();
-            initTabNavigation();
-            initEventListeners();
-            
-            // Verificar se estamos no GitHub Pages para ajustes adicionais
-            if (window.location.href.includes('github.io')) {
-                console.log("Detectado GitHub Pages - aplicando ajustes especiais de layout");
-                
-                // Aplicar correções específicas para GitHub Pages após um breve atraso
-                setTimeout(() => {
-                    const mapContainer = document.querySelector('.map-container');
-                    const mapElement = document.getElementById('map');
-                    
-                    if (mapContainer && mapElement) {
-                        // Forçar tamanhos explicitamente
-                        mapContainer.style.height = 'calc(100vh - 60px)';
-                        mapElement.style.height = '100%';
-                        
-                        // Forçar redesenho do mapa
-                        if (typeof google !== 'undefined' && google.maps && map) {
-                            google.maps.event.trigger(map, 'resize');
-                        }
-                        
-                        console.log("Ajustes de layout para GitHub Pages aplicados");
-                    }
-                }, 500);
-            }
-        } catch (initError) {
-            console.error("Erro ao inicializar a aplicação:", initError);
-        }
+        initMap();
+        initAutocomplete();
+        initTabNavigation();
+        initEventListeners();
         
         // Exibir a origem no mapa
         addMarkerForLocation(mockData.origin, 0);
@@ -1442,43 +874,6 @@
         
         console.log(`Datas definidas automaticamente na inicialização do mapa: de ${formattedToday} até ${formattedEndDate}`);
         
-        // Ajustar a altura do container e do mapa para preencher todo o espaço disponível
-        function resizeMap() {
-            const mapContainer = document.querySelector('.map-container');
-            const mapElement = document.getElementById('map');
-            
-            if (mapContainer && mapElement) {
-                const windowHeight = window.innerHeight;
-                console.log('Redimensionando mapa para altura da janela:', windowHeight);
-                
-                // Ajustar posição e tamanho do container
-                mapContainer.style.position = 'fixed';
-                mapContainer.style.top = '0';
-                mapContainer.style.right = '0';
-                mapContainer.style.bottom = '60px'; // Altura das abas minimizadas
-                mapContainer.style.left = '380px'; // Começa onde termina a sidebar
-                mapContainer.style.width = 'calc(100% - 380px)';
-                mapContainer.style.height = 'calc(100vh - 60px)'; // Toda a altura menos as abas
-                
-                // Forçar tamanho do elemento do mapa para ocupar todo o container
-                mapElement.style.position = 'absolute';
-                mapElement.style.top = '0';
-                mapElement.style.left = '0';
-                mapElement.style.right = '0';
-                mapElement.style.bottom = '0';
-                mapElement.style.width = '100%';
-                mapElement.style.height = '100%';
-                
-                // Adicionar classe para forçar tamanho completo
-                mapElement.classList.add('full-size-map');
-                
-                // Forçar renderização do mapa
-                if (typeof google !== 'undefined' && google.maps && map) {
-                    google.maps.event.trigger(map, 'resize');
-                }
-            }
-        }
-        
         // Opções do mapa
         const mapOptions = {
             center: { lat: -22.3673, lng: -48.3822 }, // Dois Córregos
@@ -1492,10 +887,6 @@
         
         // Criar o mapa
         map = new google.maps.Map(document.getElementById("map"), mapOptions);
-        
-        // Redimensionar o mapa agora e quando a janela for redimensionada
-        resizeMap();
-        window.addEventListener('resize', resizeMap);
         
         // Inicializar o serviço de direções
         directionsService = new google.maps.DirectionsService();
@@ -1575,308 +966,26 @@
         });
     }
 
-    // Inicializa a navegação por abas (novas abas inferiores)
+    // Inicializa a navegação por abas
     function initTabNavigation() {
-        // Inicializar abas inferiores (abaixo do mapa)
-        const bottomTabButtons = document.querySelectorAll('.bottom-tab-btn');
-        const bottomTabContents = document.querySelectorAll('.bottom-tab-content');
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
         
-        // Verificar se estamos no GitHub Pages (para aplicar animações avançadas)
-        const isGitHubPages = window.location.href.includes('github.io');
-        
-        if (bottomTabButtons.length > 0) {
-            console.log("Inicializando sistema de navegação para tabs inferiores");
-            
-            bottomTabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const tabId = button.getAttribute('data-tab');
-                    console.log("Tab inferior clicada:", tabId);
-                    
-                    // Verificar se já é o botão ativo e se o painel está expandido
-                    const isCurrentlyActive = button.classList.contains('active');
-                    const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
-                    const isExpanded = bottomTabsContainer && !bottomTabsContainer.classList.contains('minimized');
-                    
-                    // Se clicar no mesmo botão que já está ativo e o painel estiver expandido, minimiza
-                    if (isCurrentlyActive && isExpanded) {
-                        toggleTabsExpansion(); // Minimizar o painel
-                        return; // Não muda o conteúdo, apenas minimiza
-                    }
-                    
-                    // Se o painel estiver minimizado, expande ao clicar em qualquer botão
-                    if (bottomTabsContainer && bottomTabsContainer.classList.contains('minimized')) {
-                        toggleTabsExpansion(); // Expandir o painel
-                    }
-                    
-                    // Desativar todas as abas inferiores
-                    bottomTabButtons.forEach(btn => btn.classList.remove('active'));
-                    bottomTabContents.forEach(content => content.classList.remove('active'));
-                    
-                    // Ativar a aba inferior clicada
-                    button.classList.add('active');
-                    
-                    // Mapear o data-tab para o ID do conteúdo correto
-                    const contentMap = {
-                        'bottom-events': 'bottom-events-content',
-                        'bottom-restrictions': 'bottom-restrictions-content',
-                        'bottom-report': 'bottom-report-content'
-                    };
-                    
-                    const contentId = contentMap[tabId];
-                    if (contentId) {
-                        const contentElement = document.getElementById(contentId);
-                        if (contentElement) {
-                            contentElement.classList.add('active');
-                            
-                            // Verificar se estamos no modo tela cheia
-                            const isFullScreen = document.body.classList.contains('tabs-expanded') || 
-                                                bottomTabsContainer.classList.contains('fullscreen-mode');
-                            
-                            // Se estiver em tela cheia, ajustar altura do conteúdo
-                            if (isFullScreen) {
-                                console.log("Ajustando altura para conteúdo da aba em modo tela cheia:", contentId);
-                                contentElement.style.height = 'calc(100vh - 70px)';
-                                contentElement.style.maxHeight = 'calc(100vh - 70px)';
-                                contentElement.style.overflow = 'auto';
-                                
-                                // Ajustes específicos para diferentes tipos de conteúdo
-                                if (contentId === 'bottom-restrictions-content') {
-                                    const restrictionsList = contentElement.querySelector('.restrictions-list');
-                                    if (restrictionsList) {
-                                        restrictionsList.style.minHeight = 'calc(100vh - 150px)';
-                                        restrictionsList.style.maxHeight = 'none';
-                                        restrictionsList.style.paddingBottom = '50px';
-                                    }
-                                }
-                            }
-                            
-                            // Efeitos visuais adicionais para GitHub Pages
-                            if (isGitHubPages) {
-                                // Reset da animação
-                                contentElement.style.animation = 'none';
-                                setTimeout(() => {
-                                    contentElement.style.animation = 'fadeInUp 0.5s ease forwards';
-                                }, 10);
-                                
-                                // Rolagem suave até a aba
-                                setTimeout(() => {
-                                    contentElement.scrollIntoView({
-                                        behavior: 'smooth',
-                                        block: 'start'
-                                    });
-                                }, 100);
-                            }
-                        } else {
-                            console.warn(`Elemento de conteúdo #${contentId} não encontrado`);
-                        }
-                    }
-                });
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                // Desativar todas as abas
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Ativar a aba clicada
+                button.classList.add('active');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
             });
-        } else {
-            console.warn("Botões de tab inferiores não encontrados. Abas não inicializadas.");
-        }
+        });
     }
 
-    // Função para gerenciar a visibilidade das abas inferiores
-    function toggleBottomTabsVisibility(show = true) {
-        const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
-        if (bottomTabsContainer) {
-            if (show) {
-                // Garante que o container está visível 
-                bottomTabsContainer.style.removeProperty('display');
-                bottomTabsContainer.style.display = 'flex';
-                
-                // Remover a classe minimizada para mostrar o conteúdo completo
-                bottomTabsContainer.classList.remove('minimized');
-                
-                // Atualizar o texto do botão de toggle
-                const toggleIcon = document.getElementById('toggle-icon');
-                if (toggleIcon) {
-                    toggleIcon.textContent = '▼ Minimizar';
-                }
-                
-                console.log("Abas inferiores expandidas com sucesso");
-                
-                // Mostrar informações iniciais relevantes (origem)
-                showInitialTabsContent();
-            } else {
-                // Apenas minimiza, sem ocultar completamente
-                bottomTabsContainer.classList.add('minimized');
-                
-                // Atualizar o texto do botão de toggle
-                const toggleIcon = document.getElementById('toggle-icon');
-                if (toggleIcon) {
-                    toggleIcon.textContent = '▲ Expandir';
-                }
-                
-                console.log("Abas inferiores minimizadas com sucesso");
-            }
-        } else {
-            console.warn("Container de abas inferiores não encontrado!");
-        }
-    }
-    
-    // Função para mostrar conteúdo inicial relevante nas abas
-    function showInitialTabsContent() {
-        // Mostrar eventos da cidade de origem (Dois Córregos)
-        const routeIds = [mockData.origin.id];
-        showEventsForCitiesOnRoute(routeIds);
-        
-        // Mostrar restrições para a cidade de origem
-        showTruckRestrictionsForCitiesOnRoute(routeIds, null);
-        
-        // Mostrar mensagem no relatório
-        const reportContent = document.getElementById('bottom-report-content');
-        if (reportContent) {
-            const routeSummary = document.getElementById('route-summary');
-            if (routeSummary) {
-                routeSummary.innerHTML = `
-                    <p>Adicione destinos e otimize uma rota para ver o relatório detalhado.</p>
-                    <p>Origem atual: <strong>Dois Córregos-SP</strong></p>
-                `;
-            }
-        }
-    }
-    
-    // Função para expandir/colapsar as abas inferiores
-    function toggleTabsExpansion() {
-        const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
-        const toggleIcon = document.getElementById('toggle-icon');
-        const mapContainer = document.querySelector('.map-container');
-        
-        if (bottomTabsContainer) {
-            if (bottomTabsContainer.classList.contains('minimized')) {
-                // Expandir
-                bottomTabsContainer.classList.remove('minimized');
-                if (toggleIcon) toggleIcon.textContent = '▼ Minimizar';
-                
-                // Implementação especial para GitHub Pages
-                const isGitHubPages = window.location.href.includes('github.io');
-                
-                // Definir top=0 para garantir que a aba vá até o topo
-                bottomTabsContainer.style.top = '0';
-                
-                // Adicionar classe para indicar que está em modo de tela cheia
-                bottomTabsContainer.classList.add('fullscreen-mode');
-                
-                if (isGitHubPages) {
-                    console.log("Aplicando ajustes de tela cheia especiais para GitHub Pages");
-                    
-                    // No GitHub Pages, queremos que a aba cubra tudo
-                    document.body.classList.add('tabs-expanded');
-                    
-                    // Ocultar outros elementos para focar apenas nas abas
-                    const mapContainer = document.querySelector('.map-container');
-                    if (mapContainer) {
-                        mapContainer.style.visibility = 'hidden';
-                    }
-                    
-                    // Forçar altura cheia na estrutura do container
-                    bottomTabsContainer.style.height = '100vh';
-                    bottomTabsContainer.style.maxHeight = '100vh';
-                    
-                    // Ajustar todos os conteúdos para altura total
-                    const activeTab = document.querySelector('.bottom-tab-content.active');
-                    if (activeTab) {
-                        activeTab.style.height = 'calc(100vh - 140px)';
-                        activeTab.style.maxHeight = 'calc(100vh - 140px)';
-                        activeTab.style.overflow = 'auto';
-                        
-                        // Verificar tipo de conteúdo para ajustes específicos
-                        if (activeTab.id === 'bottom-restrictions-content') {
-                            const restrictionsList = activeTab.querySelector('.restrictions-list');
-                            if (restrictionsList) {
-                                restrictionsList.style.minHeight = 'calc(100vh - 210px)';
-                                restrictionsList.style.maxHeight = 'none';
-                                restrictionsList.style.overflow = 'auto';
-                            }
-                        }
-                    }
-                } else {
-                    // Para versão normal, apenas ajustar os conteúdos
-                    const tabContents = document.querySelectorAll('.bottom-tab-content');
-                    tabContents.forEach(content => {
-                        if (content.classList.contains('active')) {
-                            // Ajustar altura do conteúdo para preencher espaço
-                            content.style.height = 'calc(100vh - 140px)';
-                            content.style.maxHeight = 'calc(100vh - 140px)';
-                            content.style.overflow = 'auto';
-                        }
-                    });
-                }
-                
-                // Ajustar altura do mapa quando as abas estão expandidas
-                if (mapContainer) {
-                    // Ocultar o mapa quando as abas estão em tela cheia (GitHub Pages)
-                    if (window.location.href.includes('github.io')) {
-                        mapContainer.style.visibility = 'hidden';
-                    } else {
-                        // Ajustar a altura do container do mapa para considerar o tamanho expandido das abas
-                        const tabsHeight = bottomTabsContainer.offsetHeight;
-                        mapContainer.style.bottom = tabsHeight + 'px';
-                    }
-                    
-                    // Forçar redesenho do mapa
-                    if (typeof google !== 'undefined' && google.maps && map) {
-                        setTimeout(() => {
-                            google.maps.event.trigger(map, 'resize');
-                            console.log("Mapa redimensionado após expandir abas, altura das abas:", bottomTabsContainer.offsetHeight);
-                        }, 100);
-                    }
-                }
-            } else {
-                // Minimizar
-                bottomTabsContainer.classList.add('minimized');
-                if (toggleIcon) toggleIcon.textContent = '▲ Expandir';
-                
-                // Remover classe de modo tela cheia
-                bottomTabsContainer.classList.remove('fullscreen-mode');
-                
-                // Verificar se estamos no GitHub Pages
-                const isGitHubPages = window.location.href.includes('github.io');
-                
-                // Remover classe especial do body
-                document.body.classList.remove('tabs-expanded');
-                
-                // Resetar estilos do container de abas
-                bottomTabsContainer.style.removeProperty('height');
-                bottomTabsContainer.style.removeProperty('maxHeight');
-                
-                // Resetar estilos de todos os conteúdos
-                const allTabContents = document.querySelectorAll('.bottom-tab-content');
-                allTabContents.forEach(content => {
-                    content.style.removeProperty('height');
-                    content.style.removeProperty('maxHeight');
-                    
-                    // Resetar estilos específicos para listas
-                    const restrictionsList = content.querySelector('.restrictions-list');
-                    if (restrictionsList) {
-                        restrictionsList.style.removeProperty('minHeight');
-                        restrictionsList.style.removeProperty('maxHeight');
-                    }
-                });
-                
-                // Restaurar altura original do mapa quando as abas estão minimizadas
-                if (mapContainer) {
-                    mapContainer.style.bottom = '60px'; // Altura das abas minimizadas
-                    
-                    // Mostrar o mapa novamente se estiver no GitHub Pages
-                    if (isGitHubPages) {
-                        mapContainer.style.visibility = 'visible';
-                    }
-                    
-                    // Forçar redesenho do mapa
-                    if (typeof google !== 'undefined' && google.maps && map) {
-                        setTimeout(() => {
-                            google.maps.event.trigger(map, 'resize');
-                            console.log("Mapa redimensionado após minimizar abas");
-                        }, 100);
-                    }
-                }
-            }
-        }
-    }
-    
     // Configura todos os event listeners
     function initEventListeners() {
         // Toggle para mostrar/esconder a sidebar
@@ -1932,12 +1041,7 @@
         }, false);
         
         // Botão para otimizar rota
-        const optimizeButton = document.getElementById('optimize-route');
-        if (optimizeButton) {
-            optimizeButton.addEventListener('click', optimizeRoute);
-        } else {
-            console.error("Botão de otimização de rota não encontrado!");
-        }
+        document.getElementById('optimize-route').addEventListener('click', optimizeRoute);
         
         // Filtrar eventos automaticamente ao mudar as datas
         document.getElementById('start-date').addEventListener('change', filterEventsByDate);
@@ -2270,27 +1374,11 @@
             return parts.length >= 2 && parts[0].trim() && parts[1].trim();
         }).length;
         
-        // Feedback para o usuário com notificação mais moderna e sem alterar layout
+        // Feedback para o usuário com notificação mais moderna
         const uploadArea = document.getElementById('upload-area');
         
         // Salvar o conteúdo original do componente de upload
         const originalContent = uploadArea.innerHTML;
-        
-        // Preservar dimensões originais
-        const originalHeight = uploadArea.offsetHeight;
-        const originalWidth = uploadArea.offsetWidth;
-        
-        // Guardar o estilo original para depois restaurar
-        const originalStyle = {
-            height: uploadArea.style.height,
-            width: uploadArea.style.width,
-            minHeight: uploadArea.style.minHeight
-        };
-        
-        // Fixar as dimensões para evitar mudanças no layout
-        uploadArea.style.height = originalHeight + 'px';
-        uploadArea.style.width = originalWidth + 'px';
-        uploadArea.style.minHeight = originalHeight + 'px';
         
         // Substituir com a mensagem de sucesso
         uploadArea.innerHTML = `
@@ -2310,11 +1398,8 @@
             uploadArea.classList.add('fading');
             
             setTimeout(() => {
-                // Restaurar conteúdo original e dimensões flexíveis
+                // Restaurar conteúdo original
                 uploadArea.innerHTML = originalContent;
-                uploadArea.style.height = originalStyle.height;
-                uploadArea.style.width = originalStyle.width;
-                uploadArea.style.minHeight = originalStyle.minHeight;
                 uploadArea.classList.remove('success', 'fading');
             }, 300);
         }, 2500);
@@ -2634,13 +1719,8 @@
         if (locations.length <= 1) {
             // Usar função auxiliar para mostrar notificação
             showNotification('Adicione pelo menos um destino para calcular a rota.', 'warning', '.route-controls');
-            // Esconder as abas inferiores se não houver destinos
-            toggleBottomTabsVisibility(false);
             return;
         }
-        
-        // Mostrar as abas inferiores quando houver destinos
-        toggleBottomTabsVisibility(true);
         
         // Mostrar spinner de carregamento centralizado no mapa
         showLoadingSpinner();
@@ -2954,12 +2034,7 @@
         }
         
         // Navegar para a aba de relatório
-        const reportTabButton = document.querySelector('.bottom-tab-btn[data-tab="bottom-report"]');
-        if (reportTabButton) {
-            reportTabButton.click();
-        } else {
-            console.warn("Botão da aba de relatório não encontrado");
-        }
+        document.querySelector('.tab-button[data-tab="report"]').click();
     }
     
     // Reordenar os marcadores para corresponder à sequência otimizada
@@ -5229,17 +4304,8 @@
         console.log("Filtrando eventos por datas e atualizando restrições para caminhões");
         
         // Obter valores atuais das datas para filtro
-        const startDateInput = document.getElementById('start-date');
-        const endDateInput = document.getElementById('end-date');
-        
-        // Verificação de segurança para GitHub Pages
-        if (!startDateInput || !endDateInput) {
-            console.error("Campos de data não encontrados no DOM");
-            return;
-        }
-        
-        const startDate = startDateInput.value;
-        const endDate = endDateInput.value;
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
         console.log(`Datas selecionadas: ${startDate || 'vazia'} até ${endDate || 'vazia'}`);
         
         let routeIds = [];
@@ -5259,26 +4325,19 @@
             const notifyInfo = document.createElement('div');
             notifyInfo.className = 'alert alert-info mt-2';
             notifyInfo.innerHTML = `Calcule uma rota primeiro para ver os eventos e restrições no percurso.`;
-            // Usar a primeira aba inferior ativa como container para notificação
-            const tabContent = document.querySelector('.bottom-tab-content.active');
+            const tabContent = document.querySelector('.tab-content');
             if (tabContent) {
                 tabContent.appendChild(notifyInfo);
-            } else {
-                // Fallback para a seção de otimização caso as abas não existam
-                const optimizeSection = document.querySelector('.optimize-btn-container');
-                if (optimizeSection) {
-                    optimizeSection.appendChild(notifyInfo);
-                }
+                // Remover a notificação após alguns segundos
+                setTimeout(() => {
+                    if (notifyInfo && notifyInfo.parentNode) {
+                        notifyInfo.parentNode.removeChild(notifyInfo);
+                    }
+                }, 5000);
             }
-            // Remover a notificação após alguns segundos
-            setTimeout(() => {
-                if (notifyInfo && notifyInfo.parentNode) {
-                    notifyInfo.parentNode.removeChild(notifyInfo);
-                }
-            }, 5000);
+            
+            routeIds = [mockData.origin.id];
         }
-        
-        routeIds = [mockData.origin.id];
         
         // Mostrar eventos para as cidades da rota com filtro por data
         showEventsForCitiesOnRoute(routeIds);
