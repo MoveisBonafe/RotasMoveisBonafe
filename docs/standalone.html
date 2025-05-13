@@ -2749,12 +2749,12 @@
         // Resetar o mapa para forçar atualização (parte do código da função de rotas alternativas)
         if (map) {
             try {
-                        const mapCenter = map.getCenter();
-                        map.setCenter(mapCenter);
-                    } catch (e) {
-                        console.error("Erro ao recentrar mapa:", e);
-                    }
-                }
+                const mapCenter = map.getCenter();
+                map.setCenter(mapCenter);
+            } catch (e) {
+                console.error("Erro ao recentrar mapa:", e);
+            }
+        }
                 
                 // Delay maior para garantir limpeza completa antes de reconstruir
                 setTimeout(() => {
