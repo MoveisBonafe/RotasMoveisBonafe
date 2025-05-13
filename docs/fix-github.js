@@ -1,5 +1,42 @@
 // Script para corrigir problemas com a versão GitHub Pages
 window.locationOrder = []; // Array para armazenar a ordem das localizações
+window.mapsApiReadyCallbacks = []; // Callbacks para quando o Maps API estiver pronto
+
+// Sistema seguro de carregamento do Google Maps API
+window.initGoogleMapsAPI = function() {
+  console.log("Google Maps API carregada com sucesso (fix-github.js)");
+  window.googleMapsLoaded = true;
+  
+  // Executar todos os callbacks pendentes
+  while (window.mapsApiReadyCallbacks && window.mapsApiReadyCallbacks.length > 0) {
+    try {
+      const callback = window.mapsApiReadyCallbacks.shift();
+      callback();
+    } catch (error) {
+      console.error("Erro ao executar callback do Google Maps:", error);
+    }
+  }
+};
+
+// Função para registrar callbacks para execução quando o Maps estiver pronto
+window.whenGoogleMapsReady = function(callback) {
+  if (typeof callback !== 'function') {
+    console.error("whenGoogleMapsReady: callback deve ser uma função");
+    return;
+  }
+  
+  if (window.googleMapsLoaded && typeof google !== 'undefined' && google.maps) {
+    // Se o Maps já estiver carregado, executar imediatamente
+    setTimeout(callback, 0);
+  } else {
+    // Caso contrário, registrar para execução posterior
+    if (!window.mapsApiReadyCallbacks) {
+      window.mapsApiReadyCallbacks = [];
+    }
+    window.mapsApiReadyCallbacks.push(callback);
+  }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
   // Ajustar tamanho do mapa e da sidebar
   const fixLayout = function() {
@@ -318,8 +355,90 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   };
   
+  // Verificar e configurar sistema de carregamento da API Google Maps
+  const setupGoogleMapsAPI = function() {
+    // Verificar se já foi configurado
+    if (window.googleMapsAPIConfigured) {
+      return;
+    }
+    
+    // Marcar como configurado para evitar duplicação
+    window.googleMapsAPIConfigured = true;
+    
+    // Verificar se a API já está carregada
+    if (typeof google !== 'undefined' && google.maps) {
+      console.log("Google Maps API já está carregada, inicializando...");
+      window.initGoogleMapsAPI();
+      return;
+    }
+    
+    // Se a janela global googleMapsCallback já existir, adicionar nosso código
+    const originalCallback = window.googleMapsCallback;
+    window.googleMapsCallback = function() {
+      console.log("Callback do Google Maps chamado (interceptado por fix-github.js)");
+      
+      // Chamar o callback original, se existir
+      if (typeof originalCallback === 'function') {
+        try {
+          originalCallback();
+        } catch (error) {
+          console.error("Erro ao chamar callback original do Google Maps:", error);
+        }
+      }
+      
+      // Chamar nossa própria função de inicialização
+      window.initGoogleMapsAPI();
+    };
+    
+    console.log("Sistema de carregamento seguro do Google Maps configurado");
+    
+    // Se já estamos além do DOMContentLoaded, verificar se podemos inicializar agora
+    if (document.readyState === "complete" && typeof google !== 'undefined' && google.maps) {
+      console.log("Documento já carregado e Google Maps disponível, inicializando...");
+      window.initGoogleMapsAPI();
+    }
+  };
+  
+  // Função para configurar listeners para Google Maps
+  const setupGoogleMapsListeners = function() {
+    // Adicionar listener para o evento de mudança de estado de carregamento
+    window.addEventListener('load', function() {
+      if (typeof google !== 'undefined' && google.maps) {
+        console.log("Google Maps detectado no evento window.load");
+        window.initGoogleMapsAPI();
+      }
+    });
+    
+    // Verificar periodicamente (última chance)
+    let checkCount = 0;
+    const maxChecks = 10;
+    
+    const checkGoogleMaps = function() {
+      if (typeof google !== 'undefined' && google.maps) {
+        console.log("Google Maps detectado em verificação periódica");
+        window.initGoogleMapsAPI();
+        return;
+      }
+      
+      checkCount++;
+      if (checkCount < maxChecks) {
+        setTimeout(checkGoogleMaps, 1000);
+      } else {
+        console.log("Número máximo de verificações excedido");
+      }
+    };
+    
+    // Iniciar verificações
+    setTimeout(checkGoogleMaps, 2000);
+  };
+  
   // Configurar todas as melhorias
   const applyAllFixes = function() {
+    // Configurar sistema seguro para API Google Maps
+    setupGoogleMapsAPI();
+    setupGoogleMapsListeners();
+    
+    // Aplicar correções de layout e funcionalidade
     fixLayout();
     patchCepImport();
     enhanceAddressSearch();
