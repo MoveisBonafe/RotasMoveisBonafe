@@ -4127,81 +4127,154 @@
                 }
                 
                 // PARTE 2: AJUSTAR DATAS DO EVENTO PARA O ANO ATUAL
+                console.log("=========== PROCESSANDO EVENTO ==========");
+                console.log(`Evento: ${event.name} (${event.cityName})`);
+                console.log(`Data original: ${event.startDate} até ${event.endDate}`);
+                
                 // Evento especial: Festival de Verão
                 const isFestivalVerao = event.id === 99 && event.name === "Festival de Verão";
                 
-                // Obter o ano atual
+                // Obter o ano atual do sistema
                 const currentYear = new Date().getFullYear();
+                console.log(`Ano atual do sistema: ${currentYear}`);
                 
-                // Criar novas datas para o evento ajustadas para o ano atual
-                const eventStart = new Date(event.startDate);
-                const eventEnd = new Date(event.endDate);
+                // CRIAR NOVAS VARIÁVEIS para as datas do evento (não modificar o original)
+                let eventDateStart, eventDateEnd;
                 
-                // Garantir que estamos usando o ano atual para eventos anuais (aniversários)
-                if (event.name.includes("Aniversário") || event.isHoliday) {
-                    eventStart.setFullYear(currentYear);
-                    eventEnd.setFullYear(currentYear);
+                try {
+                    // Tentar o formato padrão first (YYYY-MM-DD)
+                    eventDateStart = new Date(event.startDate);
+                    eventDateEnd = new Date(event.endDate);
+                    
+                    // Verificar se as datas são válidas
+                    if (isNaN(eventDateStart.getTime()) || isNaN(eventDateEnd.getTime())) {
+                        throw new Error("Datas inválidas no formato original");
+                    }
+                    
+                    console.log(`Datas do evento (originais): ${eventDateStart.toISOString()} até ${eventDateEnd.toISOString()}`);
+                } catch (error) {
+                    console.error("Erro ao processar datas de evento:", error);
+                    
+                    // Recuperação de emergência: extrair partes da data
+                    try {
+                        // Tentar criar a partir de partes ano-mes-dia
+                        const startParts = event.startDate.split('-');
+                        const endParts = event.endDate.split('-');
+                        
+                        if (startParts.length === 3 && endParts.length === 3) {
+                            eventDateStart = new Date(parseInt(startParts[0]), parseInt(startParts[1]) - 1, parseInt(startParts[2]));
+                            eventDateEnd = new Date(parseInt(endParts[0]), parseInt(endParts[1]) - 1, parseInt(endParts[2]));
+                            console.log("Recuperação de data bem-sucedida usando split");
+                        } else {
+                            throw new Error("Formato de data não reconhecido");
+                        }
+                    } catch (recoveryError) {
+                        console.error("Falha na recuperação de data:", recoveryError);
+                        
+                        // Último recurso: criar datas para o dia atual
+                        const today = new Date();
+                        eventDateStart = new Date(today);
+                        eventDateEnd = new Date(today);
+                        console.warn("USANDO DATAS DO DIA ATUAL COMO ÚLTIMO RECURSO");
+                    }
+                }
+                
+                // AJUSTE CRÍTICO: Garantir que eventos como "Aniversário da Cidade" usem o ano atual
+                // Isso é crucial para que os eventos de aniversário sejam exibidos corretamente
+                if (event.name.includes("Aniversário") || event.isHoliday || event.foundationDate) {
+                    const originalYear = eventDateStart.getFullYear();
+                    
+                    console.log(`Ajustando aniversário/feriado do ano ${originalYear} para ${currentYear}`);
+                    eventDateStart.setFullYear(currentYear);
+                    eventDateEnd.setFullYear(currentYear);
                 }
                 
                 // Ajustar horas para garantir dias completos
-                eventStart.setHours(0,0,0,0);
-                eventEnd.setHours(23,59,59,999);
+                eventDateStart.setHours(0,0,0,0);
+                eventDateEnd.setHours(23,59,59,999);
                 
-                // Log detalhado
-                console.log(`[EVENTO] ${event.name} (${event.cityName}): ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')}`);
+                // Log após ajustes
+                console.log(`[EVENTO AJUSTADO] ${event.name} (${event.cityName}): ${eventDateStart.toISOString()} até ${eventDateEnd.toISOString()}`);
                 
                 // PARTE 3: APLICAR FILTRO DE DATA
                 if (startDateValue && endDateValue) {
+                    console.log(`Aplicando filtro de data: ${startDateValue} até ${endDateValue}`);
+                    
                     // Tratamento especial para o Festival de Verão
                     if (isFestivalVerao) {
-                        console.log(`[FESTIVAL] Festival de Verão excluído quando há filtro de data`);
-                        includeEvent = false;
+                        console.log(`[FESTIVAL] Festival de Verão recebe tratamento especial`);
+                        // O festival de verão está sempre ativo, então podemos incluí-lo se o usuário
+                        // selecionou datas dentro do ano atual
+                        includeEvent = true;
                         return;
                     }
                     
                     try {
-                        // Criar objetos Date para as datas do filtro
-                        let filterStart = new Date(startDateValue);
-                        let filterEnd = new Date(endDateValue);
+                        // Criar objetos Date a partir das strings de filtro
+                        let filterStart, filterEnd;
                         
-                        // Verificar se as datas são objetos Date válidos
-                        if (isNaN(filterStart.getTime()) || isNaN(filterEnd.getTime())) {
-                            console.error(`[ERRO] Datas de filtro inválidas: ${startDateValue}, ${endDateValue}`);
+                        try {
+                            // Primeira tentativa: formato padrão
+                            filterStart = new Date(startDateValue);
+                            filterEnd = new Date(endDateValue);
                             
-                            // Tentar corrigir formatos de data (pode ser ISO ou MM/DD/YYYY)
-                            if (startDateValue.includes('/')) {
-                                const parts = startDateValue.split('/');
-                                filterStart = new Date(parts[2], parts[0]-1, parts[1]);
-                            }
-                            
-                            if (endDateValue.includes('/')) {
-                                const parts = endDateValue.split('/');
-                                filterEnd = new Date(parts[2], parts[0]-1, parts[1]);
-                            }
-                            
-                            // Verificar novamente
+                            // Verificar validade
                             if (isNaN(filterStart.getTime()) || isNaN(filterEnd.getTime())) {
-                                console.error(`[ERRO] Impossível corrigir datas inválidas`);
-                                includeEvent = true; // Em caso de erro, mostrar evento
+                                throw new Error("Datas de filtro inválidas no formato padrão");
+                            }
+                        } catch (dateFormatError) {
+                            console.warn("Erro no formato de data:", dateFormatError);
+                            
+                            // Segunda tentativa: formatos alternativos
+                            try {
+                                // Tentar formato MM/DD/YYYY
+                                if (startDateValue.includes('/')) {
+                                    const parts = startDateValue.split('/');
+                                    filterStart = new Date(parts[2], parts[0]-1, parts[1]);
+                                } else if (startDateValue.includes('-')) {
+                                    const parts = startDateValue.split('-');
+                                    filterStart = new Date(parts[0], parts[1]-1, parts[2]);
+                                }
+                                
+                                if (endDateValue.includes('/')) {
+                                    const parts = endDateValue.split('/');
+                                    filterEnd = new Date(parts[2], parts[0]-1, parts[1]);
+                                } else if (endDateValue.includes('-')) {
+                                    const parts = endDateValue.split('-');
+                                    filterEnd = new Date(parts[0], parts[1]-1, parts[2]);
+                                }
+                                
+                                // Verificar novamente
+                                if (isNaN(filterStart.getTime()) || isNaN(filterEnd.getTime())) {
+                                    throw new Error("Datas de filtro inválidas mesmo após tentativas de correção");
+                                }
+                            } catch (recoveryError) {
+                                console.error("Falha total na recuperação de datas:", recoveryError);
+                                // Último recurso: mostrar evento de qualquer forma
+                                includeEvent = true;
                                 return;
                             }
                         }
                         
-                        // Garantir dia completo
+                        // Garantir dia completo para o filtro
                         filterStart.setHours(0,0,0,0);
                         filterEnd.setHours(23,59,59,999);
                         
-                        // Verificar sobreposição entre as datas
+                        console.log(`Filtro final: ${filterStart.toISOString()} até ${filterEnd.toISOString()}`);
+                        console.log(`Evento final: ${eventDateStart.toISOString()} até ${eventDateEnd.toISOString()}`);
+                        
+                        // LÓGICA DE SOBREPOSIÇÃO CORRIGIDA
+                        // Verificar sobreposição entre as datas de evento e o filtro
                         const hasOverlap = (
-                            // Evento começa dentro do período do filtro
-                            (eventStart >= filterStart && eventStart <= filterEnd) ||
-                            // Evento termina dentro do período do filtro
-                            (eventEnd >= filterStart && eventEnd <= filterEnd) ||
-                            // Evento abrange todo o período do filtro
-                            (eventStart <= filterStart && eventEnd >= filterEnd)
+                            // Evento começa durante o período do filtro
+                            (eventDateStart >= filterStart && eventDateStart <= filterEnd) ||
+                            // Evento termina durante o período do filtro
+                            (eventDateEnd >= filterStart && eventDateEnd <= filterEnd) ||
+                            // Evento engloba todo o período do filtro
+                            (eventDateStart <= filterStart && eventDateEnd >= filterEnd)
                         );
                         
-                        console.log(`[VERIFICAÇÃO] Data evento ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')} vs. Filtro ${filterStart.toLocaleDateString('pt-BR')}-${filterEnd.toLocaleDateString('pt-BR')}`);
+                        console.log(`[VERIFICAÇÃO] Data evento ${eventDateStart.toLocaleDateString('pt-BR')}-${eventDateEnd.toLocaleDateString('pt-BR')} vs. Filtro ${filterStart.toLocaleDateString('pt-BR')}-${filterEnd.toLocaleDateString('pt-BR')}`);
                         
                         if (hasOverlap) {
                             console.log(`[ACEITO] Evento '${event.name}' está no período filtrado`);
