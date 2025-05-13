@@ -4694,12 +4694,21 @@
             const cardElement = document.getElementById(`route-card-${index}`);
             
             if (detailsElement && route) {
-                // Formatar distância e tempo
-                const distanceStr = (route.totalDistance < 1) ? 
-                    `${Math.round(route.totalDistance * 1000)} m` : 
-                    `${route.totalDistance.toFixed(1)} km`;
+                // Verificar se temos distância e tempo definidos
+                let distanceStr = "N/A";
+                let timeStr = "N/A";
                 
-                const timeStr = formatTravelTime(route.estimatedTime);
+                // Formatar distância apenas se definida
+                if (route.totalDistance !== undefined && route.totalDistance !== null) {
+                    distanceStr = (route.totalDistance < 1) ? 
+                        `${Math.round(route.totalDistance * 1000)} m` : 
+                        `${route.totalDistance.toFixed(1)} km`;
+                }
+                
+                // Formatar tempo apenas se definido
+                if (route.estimatedTime !== undefined && route.estimatedTime !== null) {
+                    timeStr = formatTravelTime(route.estimatedTime);
+                }
                 
                 // Atualizar detalhes no card
                 detailsElement.innerHTML = `
@@ -4725,6 +4734,11 @@
     
     // Função auxiliar para formatação de tempo
     function formatTravelTime(minutes) {
+        // Verificar se o tempo é válido
+        if (minutes === undefined || minutes === null || isNaN(minutes)) {
+            return "N/A";
+        }
+        
         if (minutes < 60) {
             return `${Math.round(minutes)} min`;
         } else {
