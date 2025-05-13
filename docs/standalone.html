@@ -1133,6 +1133,111 @@
                 font-size: 0.9rem !important;
             }
         }
+        
+        /* Estilos para o botão de ação flutuante no mobile */
+        .floating-action-btn {
+            position: fixed !important;
+            bottom: 20px !important;
+            right: 20px !important;
+            border-radius: 50px !important;
+            width: auto !important;
+            min-height: 56px !important;
+            padding: 15px 24px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+            background-color: #1976D2 !important;
+            color: white !important;
+            font-weight: bold !important;
+            font-size: 1rem !important;
+            z-index: 2000 !important;
+            transition: all 0.3s ease !important;
+            border: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        .floating-action-btn:hover,
+        .floating-action-btn:active {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4) !important;
+            background-color: #1565C0 !important;
+        }
+        
+        /* Estilo para elementos com área de toque maior */
+        .touch-friendly {
+            min-height: 44px !important;
+            min-width: 44px !important;
+            margin: 3px !important;
+            padding: 10px 15px !important;
+        }
+        
+        /* Layout para modo mobile */
+        .mobile-view .sidebar-header {
+            position: relative !important;
+            padding-right: 50px !important; /* Espaço para o botão toggle */
+        }
+        
+        .mobile-view .sidebar-header h2 {
+            font-size: 1.2rem !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+        
+        /* Estilo para banner de instalação iOS */
+        #ios-install-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(25, 118, 210, 0.95);
+            color: white;
+            z-index: 9999;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .ios-banner-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        #close-ios-banner {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            padding: 5px;
+            cursor: pointer;
+        }
+        
+        /* Ajustes extras para melhorar a experiência em telas pequenas */
+        @media (max-width: 767px) {
+            .sidebar-content {
+                padding: 10px !important;
+            }
+            
+            .location-list {
+                max-height: 35vh !important;
+            }
+            
+            /* Esconder elementos menos importantes */
+            .sidebar.minimized .sidebar-content {
+                display: none !important;
+            }
+            
+            /* Melhorar a visualização dos inputs */
+            input[type="text"],
+            input[type="date"],
+            select {
+                font-size: 16px !important; /* Evitar zoom no iOS */
+                height: 44px !important;
+                line-height: 44px !important;
+            }
+        }
     </style>
     
     <!-- Ícone para adicionar à tela inicial em dispositivos móveis -->
@@ -1140,6 +1245,14 @@
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/5396/5396184.png">
 </head>
 <body>
+    <!-- Banner de instalação em dispositivos iOS (escondido por padrão) -->
+    <div id="ios-install-banner" class="d-none">
+        <div class="ios-banner-content">
+            <div>Instale este app: toque em <i class="fas fa-share-square"></i> e depois "Adicionar à Tela de Início"</div>
+            <button id="close-ios-banner"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+    
     <div class="app-container">
         <div class="main-content-area">
             <!-- Sidebar para controles e informações -->
@@ -5922,8 +6035,9 @@
     
     // Função para inicializar suporte mobile
     function initMobileSupport() {
-        // Detectar se é dispositivo móvel
-        const isMobile = window.innerWidth <= 767;
+        // Detectar se é dispositivo móvel (verificação mais robusta)
+        const isMobile = window.innerWidth <= 767 || 
+                         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         
         if (isMobile) {
             console.log("Modo mobile detectado! Aplicando otimizações para smartphones...");
@@ -5977,6 +6091,32 @@
                     adjustMapForMobile();
                 }, 300);
             });
+            
+            // Verificar se é iOS e mostrar banner de instalação
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            if (isIOS && !localStorage.getItem('ios_install_banner_closed')) {
+                const iosBanner = document.getElementById('ios-install-banner');
+                if (iosBanner) {
+                    // Verificar se o app já foi instalado na tela inicial
+                    const isInStandaloneMode = window.navigator.standalone;
+                    if (!isInStandaloneMode) {
+                        // Mostrar o banner com delay de 3 segundos após o carregamento
+                        setTimeout(() => {
+                            iosBanner.classList.remove('d-none');
+                        }, 3000);
+                        
+                        // Adicionar funcionalidade ao botão de fechar
+                        const closeButton = document.getElementById('close-ios-banner');
+                        if (closeButton) {
+                            closeButton.addEventListener('click', function() {
+                                iosBanner.classList.add('d-none');
+                                // Armazenar a preferência para não mostrar novamente
+                                localStorage.setItem('ios_install_banner_closed', 'true');
+                            });
+                        }
+                    }
+                }
+            }
         }
     }
     
@@ -5984,23 +6124,87 @@
     function adjustMapForMobile() {
         const mapContainer = document.querySelector('.map-container');
         const sidebar = document.getElementById('sidebar');
+        const bottomTabs = document.querySelector('.bottom-tabs-container');
         
         if (mapContainer && sidebar) {
             if (sidebar.classList.contains('minimized')) {
                 // Sidebar minimizada, mapa quase tela cheia
                 mapContainer.style.top = '50px';
-                mapContainer.style.height = 'calc(100vh - 50px)';
+                mapContainer.style.height = 'calc(100vh - 110px)'; // 50px para header, 60px para abas
+                mapContainer.style.left = '0';
+                mapContainer.style.width = '100%';
             } else {
                 // Sidebar expandida, mapa menor
                 mapContainer.style.top = '50vh';
                 mapContainer.style.height = '50vh';
+                mapContainer.style.left = '0';
+                mapContainer.style.width = '100%';
+            }
+            
+            // Ajustar posição das abas inferiores para não sobrepor a sidebar
+            if (bottomTabs) {
+                bottomTabs.style.left = '0';
+                bottomTabs.style.width = '100%';
+                bottomTabs.style.marginLeft = '0';
             }
             
             // Forçar redesenho do mapa
             if (map) {
                 google.maps.event.trigger(map, 'resize');
+                
+                // Ajustar controles de zoom para posição mais acessível
+                map.setOptions({
+                    zoomControlOptions: {
+                        position: google.maps.ControlPosition.RIGHT_BOTTOM
+                    },
+                    streetViewControlOptions: {
+                        position: google.maps.ControlPosition.RIGHT_BOTTOM
+                    }
+                });
+                
+                // Tentar centralizar o mapa na origem, se disponível
+                try {
+                    if (locations.length > 0) {
+                        const origin = locations.find(loc => loc.isOrigin);
+                        if (origin) {
+                            const center = new google.maps.LatLng(origin.latitude, origin.longitude);
+                            map.setCenter(center);
+                        }
+                    }
+                } catch (e) {
+                    console.warn("Erro ao centralizar mapa:", e);
+                }
             }
+            
+            // Otimizar elementos visuais para mobile
+            optimizeUIForMobile();
         }
+    }
+    
+    // Função para otimizar a UI para mobile
+    function optimizeUIForMobile() {
+        // Simplificar textos para telas menores
+        const titleElements = document.querySelectorAll('.sidebar h4, .sidebar h5');
+        titleElements.forEach(el => {
+            el.classList.add('mobile-optimized');
+        });
+        
+        // Simplificar botões para touch
+        const actionButtons = document.querySelectorAll('.btn:not(.floating-action-btn)');
+        actionButtons.forEach(btn => {
+            // Remover texto extenso e substituir com ícones quando possível
+            if (btn.textContent.includes('Otimizar Rota')) {
+                btn.innerHTML = '<i class="fas fa-route"></i> Otimizar';
+            } else if (btn.textContent.includes('Adicionar')) {
+                btn.innerHTML = '<i class="fas fa-plus"></i> Adicionar';
+            } else if (btn.textContent.includes('Remover')) {
+                btn.innerHTML = '<i class="fas fa-trash"></i>';
+            } else if (btn.textContent.includes('Limpar')) {
+                btn.innerHTML = '<i class="fas fa-eraser"></i> Limpar';
+            } else if (btn.textContent.includes('Importar')) {
+                btn.innerHTML = '<i class="fas fa-file-import"></i> Importar';
+            }
+        });
     }
     
     // Função para ativar gestos touch
