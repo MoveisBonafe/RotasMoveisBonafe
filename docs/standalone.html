@@ -1007,12 +1007,23 @@
         
         // Registrar uma função para ser executada quando o Maps API estiver carregado
         function whenMapsLoaded(callback) {
-            if (window.mapsApiLoaded && typeof google !== 'undefined' && google.maps) {
-                // Se já estiver carregado, executar imediatamente
-                setTimeout(callback, 0);
-            } else {
-                // Caso contrário, adicionar à fila
-                window.mapsCallbacks.push(callback);
+            if (!callback || typeof callback !== 'function') {
+                console.error("whenMapsLoaded: callback deve ser uma função");
+                return;
+            }
+            
+            try {
+                if (window.mapsApiLoaded && typeof google !== 'undefined' && google.maps) {
+                    // Se já estiver carregado, executar imediatamente
+                    console.log("Google Maps já carregado, executando callback imediatamente");
+                    setTimeout(callback, 0);
+                } else {
+                    // Caso contrário, adicionar à fila
+                    console.log("Google Maps ainda não está pronto, adicionando callback para execução posterior");
+                    window.mapsCallbacks.push(callback);
+                }
+            } catch (error) {
+                console.error("Erro em whenMapsLoaded:", error);
             }
         }
         
@@ -2717,6 +2728,11 @@
             optimizeBtn.innerHTML = '<span class="spinner-border" role="status" aria-hidden="true"></span> Calculando...';
             optimizeBtn.disabled = true;
         }
+        
+        // Usar sistema seguro de carregamento do Google Maps
+        whenMapsLoaded(function() {
+            optimizeRouteSafely();
+        });
         
         // IMPORTANTE: Assegurar que os marcadores originais sejam preservados antes de limpar
         const currentMarkers = [...markers]; // Criar uma cópia dos marcadores atuais
