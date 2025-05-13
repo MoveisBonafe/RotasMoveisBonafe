@@ -3680,8 +3680,9 @@
     }
 
     // Mostrar eventos para as cidades na rota
-    function showEventsForCitiesOnRoute(pathIds) {
+    function showEventsForCitiesOnRoute(pathIds, startDate, endDate) {
         console.log("Mostrando eventos para rota com IDs:", pathIds);
+        console.log("Datas de filtro:", startDate, endDate);
         
         // Verificações de segurança
         if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
@@ -3763,9 +3764,20 @@
         
         console.log("APENAS ESTAS CIDADES ESTÃO NA ROTA REAL:", citiesOnRoute);
         
-        // Obter datas do filtro
-        const startDate = document.getElementById('start-date').value;
-        const endDate = document.getElementById('end-date').value;
+        // Usar as datas de filtro recebidas como parâmetros
+        // Se não recebemos datas, tentar obter do formulário como fallback
+        let startDateValue = startDate;
+        let endDateValue = endDate;
+        
+        if (!startDateValue || !endDateValue) {
+            const startDateInput = document.getElementById('start-date');
+            const endDateInput = document.getElementById('end-date');
+            
+            if (startDateInput) startDateValue = startDateInput.value;
+            if (endDateInput) endDateValue = endDateInput.value;
+            
+            console.log("Usando datas dos inputs como fallback:", startDateValue, endDateValue);
+        }
         
         // NOVA IMPLEMENTAÇÃO DE FILTRAGEM DE EVENTOS
         console.log("NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data");
@@ -4671,8 +4683,11 @@
         // Mostrar pontos de interesse ao longo da rota
         showPointsOfInterestOnRoute(tspResult.pathIds || tspResult.path);
             
-        // Mostrar eventos nas cidades da rota
-        showEventsForCitiesOnRoute(tspResult.pathIds || tspResult.path);
+        // Mostrar eventos nas cidades da rota - pegando as datas do filtro
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
+        console.log("Chamando showEventsForCitiesOnRoute com datas:", startDate, endDate);
+        showEventsForCitiesOnRoute(tspResult.pathIds || tspResult.path, startDate, endDate);
             
         // Mostrar restrições para caminhões nas cidades da rota
         showTruckRestrictionsForCitiesOnRoute(tspResult.pathIds || tspResult.path, null); // null para mostrar todos os tipos
