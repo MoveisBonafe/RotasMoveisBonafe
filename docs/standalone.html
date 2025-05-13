@@ -616,23 +616,23 @@
             margin-bottom: 0;
             margin-left: 380px; /* Afastado para alinhar com a sidebar */
             display: flex;
-            flex-direction: column;
+            flex-direction: column-reverse; /* Invertido para mostrar navegação embaixo */
             animation: fadeIn 0.5s ease;
             background-color: #f9f9f9;
-            border-bottom: 1px solid #ddd; /* Alterado de border-top para border-bottom */
-            overflow: auto; /* Alterado para auto para permitir rolagem */
+            border-top: 1px solid #ddd; /* Alterado para border-top */
+            overflow: auto; /* Permitir rolagem */
             /* Inicialmente minimizada ao invés de oculta */
             display: flex;
             height: auto;
-            /* Ajustes para expandir de cima para baixo */
-            position: fixed; /* Alterado para fixed para cobrir toda a tela */
-            top: 0; /* Alterado de bottom para top */
+            /* Posicionado na parte inferior */
+            position: fixed;
+            bottom: 0; /* Posicionado na parte inferior da página */
             left: 0;
             right: 0;
-            z-index: 1000; /* Aumentado para ficar sobre todos os elementos */
-            transition: height 0.3s ease-in-out;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Sombra para baixo */
-            box-sizing: border-box; /* Garantir que padding e border não afetem o tamanho */
+            z-index: 1000;
+            transition: height 0.3s ease-in-out, transform 0.3s ease-in-out;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1); /* Sombra para cima */
+            box-sizing: border-box;
         }
         
         /* Media query para garantir que o layout permaneça estável em diferentes tamanhos de tela */
@@ -661,14 +661,15 @@
             overflow: hidden;
         }
         
-        /* Estado expandido para container de abas (expandindo de cima para baixo) */
+        /* Estado expandido para container de abas (expandindo de baixo para cima) */
         .bottom-tabs-container:not(.minimized) {
             height: calc(100vh - 380px) !important; /* Altura limitada a uma página, preservando a sidebar */
             max-height: 70vh !important; /* Nunca ultrapassar 70% da altura da tela */
-            top: 0 !important; /* Garantir que começa no topo */
-            border-bottom: 2px solid #1976D2; /* Borda mais visível quando expandido (abaixo) */
+            bottom: 0 !important; /* Ancorado na parte inferior */
+            transform: translateY(0) !important; /* Sem deslocamento vertical */
+            border-top: 2px solid #1976D2; /* Borda mais visível quando expandido (acima) */
             border-left: 2px solid #1976D2; /* Borda na lateral para separar da sidebar */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Sombra ajustada para baixo */
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.2); /* Sombra ajustada para cima */
             overflow-y: auto !important; /* Garantir rolagem vertical */
             z-index: 2000 !important; /* Garantir que fique por cima de todos os elementos */
         }
@@ -677,16 +678,17 @@
         body.tabs-expanded .bottom-tabs-container:not(.minimized) {
             height: calc(100vh - 380px) !important;
             max-height: 70vh !important;
+            transform: translateY(0) !important; /* Sem deslocamento vertical */
         }
         
         /* Botão de fechar removido - usando apenas os botões das abas para controlar expandir/minimizar */
         
-        /* Ajuste para que o mapa ocupe todo o espaço disponível (considerando abas no topo) */
+        /* Ajuste para que o mapa ocupe todo o espaço disponível (considerando abas na parte inferior) */
         .map-container {
             position: fixed !important; /* Posicionamento fixo para cobrir toda a área */
-            top: 60px !important; /* Começa abaixo das abas minimizadas */
+            top: 0 !important; /* Começa no topo da página */
             right: 0 !important;
-            bottom: 0 !important; /* Vai até o final da página (sem abas no bottom) */
+            bottom: 60px !important; /* Para no início das abas minimizadas */
             left: 380px !important; /* Começa onde termina a sidebar */
             width: calc(100% - 380px) !important; /* Largura ajustada para alinhar com a sidebar */
             height: calc(100vh - 60px) !important; /* Altura total menos as abas minimizadas */
@@ -694,7 +696,7 @@
             padding: 0 !important;
             overflow: hidden !important;
             z-index: 5; /* Garantir que fique acima do corpo da página, mas abaixo da sidebar e abas */
-            transition: top 0.3s ease-in-out; /* Animação suave para ajuste quando as abas mudam */
+            transition: bottom 0.3s ease-in-out, height 0.3s ease-in-out; /* Animação suave para ajuste */
         }
         
         /* Garantir que o mapa ocupe 100% do container */
@@ -768,16 +770,17 @@
         
         .bottom-tabs-nav {
             display: flex;
-            justify-content: space-around; /* Espaçamento melhor distribuído */
-            gap: 8px; /* Aumentado o espaço entre os botões */
-            padding: 12px 0 6px; /* Aumentado padding vertical */
-            background: linear-gradient(to bottom, #f0f2f5, #ffffff);
-            border-bottom: 1px solid #e0e0e0;
+            justify-content: space-around; /* Espaçamento distribuído */
+            gap: 10px; /* Maior espaço entre os botões */
+            padding: 12px 12px 0 12px; /* Padding lateral e superior */
+            background: linear-gradient(to top, #f0f2f5, #ffffff); /* Invertido para baixo para cima */
+            border-top: 1px solid #e0e0e0; /* Borda superior */
             position: sticky !important;
-            top: 0 !important;
-            z-index: 3000 !important; /* Muito alto para garantir que fique por cima de tudo */
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            bottom: 0 !important; /* Fixado na parte inferior */
+            z-index: 3000 !important;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.08); /* Sombra para cima */
             width: 100% !important;
+            border-radius: 12px 12px 0 0; /* Arredondado no topo */
         }
         
         /* Estilo especial para navegação em modo tela cheia */
@@ -900,12 +903,26 @@
         
         .bottom-tab-content {
             display: none;
-            padding: 20px;
+            padding: 20px 20px 30px 20px; /* Mais espaço no bottom */
             background-color: white;
-            animation: fadeInUp 0.5s ease forwards;
+            animation: slideInUp 0.5s ease forwards;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(50px); /* Maior deslocamento inicial para efeito mais dramático */
             overflow-y: auto; /* Permite rolagem vertical para todos os conteúdos */
+            border-radius: 12px 12px 0 0; /* Cantos arredondados apenas no topo */
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.15); /* Sombra para cima mais pronunciada */
+        }
+        
+        /* Animação de slide de baixo para cima */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         /* Ajustes para quando as abas estão minimizadas */
@@ -913,17 +930,37 @@
             height: 300px; /* Altura fixa quando minimizado */
         }
         
-        /* Ajustes para quando as abas estão expandidas até o topo */
+        /* Ajustes para quando as abas estão expandidas de baixo para cima */
         .bottom-tabs-container:not(.minimized) .bottom-tab-content {
-            height: calc(100vh - 140px) !important; /* Quase altura total da tela quando expandido */
-            max-height: calc(100vh - 140px) !important; /* Limitando altura máxima */
-            padding: 25px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-            border-radius: 0 0 8px 8px;
+            height: calc(70vh - 140px) !important; /* Altura limitada a 70% da tela */
+            max-height: calc(70vh - 140px) !important; /* Limitando altura máxima */
+            padding: 25px 25px 40px 25px; /* Mais espaço no bottom */
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05), 0 -8px 15px rgba(0,0,0,0.1);
+            border-radius: 16px 16px 0 0; /* Cantos arredondados apenas no topo */
             border: 1px solid #e0e0e0;
-            margin: 0 15px 15px;
-            overflow-y: auto !important; /* Garantir que todos os conteúdos tenham rolagem */
-            position: relative !important; /* Importante para o posicionamento absoluto dos filhos */
+            border-bottom: none; /* Sem borda na parte inferior */
+            margin: 0 15px 0 15px; /* Sem margem inferior */
+            overflow-y: auto !important; /* Garantir rolagem vertical */
+            position: relative !important;
+            animation: expandUp 0.4s ease-out forwards; /* Animação de expansão para cima */
+        }
+        
+        /* Animação de expansão para cima */
+        @keyframes expandUp {
+            from {
+                height: 0 !important;
+                max-height: 0 !important;
+                padding-top: 0;
+                padding-bottom: 0;
+                opacity: 0.7;
+            }
+            to {
+                height: calc(70vh - 140px) !important;
+                max-height: calc(70vh - 140px) !important;
+                padding-top: 25px;
+                padding-bottom: 40px;
+                opacity: 1;
+            }
         }
         
         /* Ajustes específicos para a aba de restrições */
@@ -936,19 +973,36 @@
             padding-bottom: 50px !important; /* Adicionar espaço na parte inferior */
         }
         
-        /* Estilos específicos para GitHub Pages */
+        /* Estilos específicos para GitHub Pages em modo tela cheia */
         .fullscreen-mode #bottom-restrictions-content,
         .fullscreen-mode #bottom-events-content,
         .fullscreen-mode #bottom-report-content {
-            min-height: calc(100vh - 140px) !important;
-            max-height: calc(100vh - 140px) !important;
-            height: calc(100vh - 140px) !important;
+            min-height: calc(70vh - 140px) !important; /* Altura limitada */
+            max-height: calc(70vh - 140px) !important;
+            height: calc(70vh - 140px) !important;
             overflow-y: auto !important;
             background-color: white !important;
-            padding: 20px !important;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1) !important;
-            border-radius: 8px !important;
-            margin: 10px !important;
+            padding: 25px 25px 40px 25px !important; /* Mais espaço no bottom */
+            box-shadow: 0 -8px 15px rgba(0,0,0,0.12) !important;
+            border-radius: 16px 16px 0 0 !important; /* Cantos arredondados no topo */
+            margin: 0 10px 0 10px !important; /* Sem margem inferior */
+            transform-origin: bottom center !important;
+            animation: glowExpand 0.5s ease-out forwards !important;
+        }
+        
+        /* Animação com leve efeito de brilho ao expandir */
+        @keyframes glowExpand {
+            0% {
+                box-shadow: 0 -4px 8px rgba(25, 118, 210, 0.1);
+                transform: translateY(30px) scale(0.97);
+            }
+            50% {
+                box-shadow: 0 -6px 12px rgba(25, 118, 210, 0.2);
+            }
+            100% {
+                box-shadow: 0 -8px 15px rgba(0,0,0,0.12);
+                transform: translateY(0) scale(1);
+            }
         }
         
         /* Garantir que todas as listas dentro das abas tenham altura completa */
