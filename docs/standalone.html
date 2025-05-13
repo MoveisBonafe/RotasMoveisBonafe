@@ -606,9 +606,8 @@
             background-color: #f9f9f9;
             border-top: 1px solid #ddd;
             overflow: hidden;
-            /* Inicialmente oculto até que uma rota seja otimizada */
-            display: none;
-            height: auto;
+            /* Visível desde o início em estado minimizado */
+            height: 52px; /* Apenas altura suficiente para mostrar os botões das abas */
         }
         
         .bottom-tabs-nav {
@@ -670,6 +669,31 @@
             overflow: hidden;
         }
         
+        /* Estilo para o botão quando a aba está expandida */
+        .bottom-tab-btn.expanded {
+            background-color: #115293;
+            box-shadow: 0 4px 12px rgba(17, 82, 147, 0.5);
+        }
+        
+        /* Indicador visual de expandido/minimizado */
+        .bottom-tab-btn.expanded::before {
+            content: "▼";
+            font-size: 9px;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .bottom-tab-btn.active:not(.expanded)::before {
+            content: "▲";
+            font-size: 9px;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
         /* Adicionar indicador sob a aba ativa */
         .bottom-tab-btn.active::after {
             content: "";
@@ -717,13 +741,24 @@
             animation: fadeInUp 0.5s ease forwards;
             opacity: 0;
             transform: translateY(20px);
-            height: 300px; /* Altura fixa para todas as abas */
+            height: 300px; /* Altura inicial para todas as abas */
             overflow-y: auto; /* Permite rolagem vertical para todos os conteúdos */
+            transition: height 0.5s ease;
+        }
+        
+        /* Estado expandido para todas as abas */
+        .bottom-tab-content.expanded {
+            height: calc(100vh - 160px);
+            position: absolute;
+            top: 80px;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
         }
         
         /* Ajustes específicos para a aba de restrições */
         #bottom-restrictions-content {
-            height: 300px; /* Altura consistente com as outras abas */
             overflow-y: auto;
         }
         
