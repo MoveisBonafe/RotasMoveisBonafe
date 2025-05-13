@@ -1859,54 +1859,7 @@
         // Chamar inicialização após carregar o DOM
         initRouteOptionCards();
         
-        // Atualizar detalhes das rotas nos cards
-        function updateRouteCardDetails(routes) {
-            if (!routes || routes.length === 0) return;
-            
-            routes.forEach((route, index) => {
-                const detailsElement = document.getElementById(`route-${index}-details`);
-                const cardElement = document.getElementById(`route-card-${index}`);
-                
-                if (detailsElement && route) {
-                    // Formatar distância e tempo
-                    const distanceStr = (route.totalDistance < 1) ? 
-                        `${Math.round(route.totalDistance * 1000)} m` : 
-                        `${route.totalDistance.toFixed(1)} km`;
-                    
-                    const timeStr = formatTravelTime(route.estimatedTime);
-                    
-                    // Atualizar detalhes no card
-                    detailsElement.innerHTML = `
-                        <span class="me-2"><i class="bi bi-truck"></i> ${distanceStr}</span>
-                        <span><i class="bi bi-clock"></i> ${timeStr}</span>
-                    `;
-                    
-                    // Mostrar o card
-                    if (cardElement) {
-                        cardElement.style.display = 'block';
-                    }
-                }
-            });
-            
-            // Esconder cards não utilizados
-            for (let i = routes.length; i < 3; i++) {
-                const unusedCard = document.getElementById(`route-card-${i}`);
-                if (unusedCard) {
-                    unusedCard.style.display = 'none';
-                }
-            }
-        }
-        
-        // Função auxiliar para formatação de tempo
-        function formatTravelTime(minutes) {
-            if (minutes < 60) {
-                return `${Math.round(minutes)} min`;
-            } else {
-                const hours = Math.floor(minutes / 60);
-                const mins = Math.round(minutes % 60);
-                return `${hours}h ${mins}min`;
-            }
-        }
+        // Esta função foi movida para a seção global para resolver o erro de referência
         
         // Seletor de rotas alternativas na sidebar (mantido para compatibilidade)
         document.getElementById('alternative-routes-sidebar').addEventListener('change', function(e) {
@@ -2660,10 +2613,7 @@
             if (alternativeRoutes.length === 0) {
                 console.error("Nenhuma rota alternativa foi gerada!");
                 // Substituir alert por notificação inline mais suave
-                const notifyError = document.createElement('div');
-                notifyError.className = 'alert alert-danger mt-2';
-                notifyError.innerHTML = `Erro ao calcular a rota: nenhuma rota foi gerada`;
-                document.querySelector('.route-controls').appendChild(notifyError);
+                showNotification("Erro ao calcular a rota: nenhuma rota foi gerada", "error");
                 
                 // Remover a notificação após alguns segundos
                 setTimeout(() => {
@@ -4717,6 +4667,55 @@
         // Habilitar botões de salvar e imprimir
         document.getElementById('save-route').disabled = false;
         document.getElementById('print-route').disabled = false;
+    }
+    
+    // Atualizar detalhes das rotas nos cards
+    function updateRouteCardDetails(routes) {
+        if (!routes || routes.length === 0) return;
+        
+        routes.forEach((route, index) => {
+            const detailsElement = document.getElementById(`route-${index}-details`);
+            const cardElement = document.getElementById(`route-card-${index}`);
+            
+            if (detailsElement && route) {
+                // Formatar distância e tempo
+                const distanceStr = (route.totalDistance < 1) ? 
+                    `${Math.round(route.totalDistance * 1000)} m` : 
+                    `${route.totalDistance.toFixed(1)} km`;
+                
+                const timeStr = formatTravelTime(route.estimatedTime);
+                
+                // Atualizar detalhes no card
+                detailsElement.innerHTML = `
+                    <span class="me-2"><i class="bi bi-truck"></i> ${distanceStr}</span>
+                    <span><i class="bi bi-clock"></i> ${timeStr}</span>
+                `;
+                
+                // Mostrar o card
+                if (cardElement) {
+                    cardElement.style.display = 'block';
+                }
+            }
+        });
+        
+        // Esconder cards não utilizados
+        for (let i = routes.length; i < 3; i++) {
+            const unusedCard = document.getElementById(`route-card-${i}`);
+            if (unusedCard) {
+                unusedCard.style.display = 'none';
+            }
+        }
+    }
+    
+    // Função auxiliar para formatação de tempo
+    function formatTravelTime(minutes) {
+        if (minutes < 60) {
+            return `${Math.round(minutes)} min`;
+        } else {
+            const hours = Math.floor(minutes / 60);
+            const mins = Math.round(minutes % 60);
+            return `${hours}h ${mins}min`;
+        }
     }
     
     // Função para gerar rotas alternativas
