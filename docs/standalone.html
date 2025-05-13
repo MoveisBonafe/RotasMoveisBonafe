@@ -746,14 +746,12 @@
         
         .bottom-tab-content {
             display: none;
-            padding: 20px;
+            padding: 0;
             background-color: white;
-            animation: fadeInUp 0.5s ease forwards;
             opacity: 0;
-            transform: translateY(20px);
-            height: 300px; /* Altura inicial para todas as abas */
-            overflow-y: auto; /* Permite rolagem vertical para todos os conteúdos */
-            transition: height 0.5s ease;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease-in-out;
         }
         
         /* Estado expandido para todas as abas */
@@ -1380,6 +1378,13 @@
                         // Alternar estado de expansão
                         contentElement.classList.toggle('expanded');
                         
+                        // Aplicar altura de acordo com o estado expandido
+                        if (contentElement.classList.contains('expanded')) {
+                            contentElement.style.maxHeight = '350px';
+                        } else {
+                            contentElement.style.maxHeight = '0';
+                        }
+                        
                         // Ajustar altura do container de abas
                         if (tabsContainer) {
                             if (isExpanded) {
@@ -1390,6 +1395,11 @@
                                 const indicator = button.querySelector('.expand-indicator');
                                 if (indicator) indicator.textContent = '▲';
                                 console.log("Minimizando aba:", tabId);
+                                
+                                // Se for a aba de eventos, garantir que os eventos são mostrados mesmo minimizada
+                                if (tabId === 'bottom-events' && currentOptimizedPath && currentOptimizedPath.length > 0) {
+                                    showEventsForCitiesOnRoute(currentOptimizedPath);
+                                }
                             } else {
                                 // Expandindo
                                 tabsContainer.style.height = '400px';
@@ -1398,6 +1408,11 @@
                                 const indicator = button.querySelector('.expand-indicator');
                                 if (indicator) indicator.textContent = '▼';
                                 console.log("Expandindo aba:", tabId);
+                                
+                                // Se for a aba de eventos, atualizá-los quando expandir
+                                if (tabId === 'bottom-events' && currentOptimizedPath && currentOptimizedPath.length > 0) {
+                                    showEventsForCitiesOnRoute(currentOptimizedPath);
+                                }
                             }
                         }
                     } else {
