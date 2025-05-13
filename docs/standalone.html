@@ -325,32 +325,96 @@
             padding-bottom: 5px;
         }
         
-        /* Estilos para abas */
+        /* Estilos para abas - Nova versão com animação e layout inferior */
         .tab-container {
-            margin-bottom: 20px;
+            width: 100%;
+            margin-top: 40px;
+            position: relative;
+            transition: all 0.5s ease;
         }
         .tab-buttons {
             display: flex;
-            margin-bottom: 10px;
+            justify-content: center;
+            background: #f5f7fa;
+            border-top: 1px solid #dee2e6;
             border-bottom: 1px solid #dee2e6;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
         }
         .tab-button {
-            padding: 8px 16px;
+            padding: 10px 20px;
+            margin: 0 5px;
             background-color: #f8f9fa;
-            border: none;
-            border-bottom: 2px solid transparent;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s;
+            font-weight: 500;
+            color: #495057;
+            position: relative;
+            overflow: hidden;
+        }
+        .tab-button::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #1976D2;
+            transform: translateY(3px);
+            transition: transform 0.3s ease;
+        }
+        .tab-button:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .tab-button:hover::after {
+            transform: translateY(0);
         }
         .tab-button.active {
-            border-bottom: 2px solid #1976D2;
-            background-color: #e9ecef;
+            background-color: #1976D2;
+            color: white;
+            border-color: #1976D2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+        .tab-button.active::after {
+            background-color: white;
+            transform: translateY(0);
         }
         .tab-content {
             display: none;
+            padding: 25px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-top: 20px;
+            animation: fadeInUp 0.5s ease forwards;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
         }
         .tab-content.active {
             display: block;
+            max-height: 2000px;
+            overflow-y: auto;
+        }
+        
+        /* Animações para as abas e conteúdo */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         /* Estilo para datas */
