@@ -2489,6 +2489,28 @@
                 showEventsForCitiesOnRoute(tspResult.path);
                 showTruckRestrictionsForCitiesOnRoute(tspResult.path, null); // null para mostrar todos os tipos
                 
+                // Garantir que as abas estão visíveis e com os dados atualizados
+                const tabsContainer = document.querySelector('.bottom-tabs-container');
+                const eventsTab = document.getElementById('bottom-events-content');
+                const eventsButton = document.querySelector('.bottom-tab-btn[data-tab="bottom-events"]');
+                
+                if (tabsContainer && eventsTab && eventsButton) {
+                    // Garantir que a aba esteja ativa para mostrar os eventos
+                    eventsTab.classList.add('active');
+                    eventsButton.classList.add('active');
+                    
+                    // Expandir a aba de eventos para mostrar o conteúdo
+                    eventsTab.classList.add('expanded');
+                    eventsButton.classList.add('expanded');
+                    
+                    // Atualizar indicador visual
+                    const indicator = eventsButton.querySelector('.expand-indicator');
+                    if (indicator) indicator.textContent = '▼';
+                    
+                    // Definir altura do container para mostrar o conteúdo
+                    tabsContainer.style.height = '400px';
+                }
+                
                 // Atualizar a sequência de rota no relatório
                 // A função não existe, então implementamos diretamente aqui
                 const routeSequenceElement = document.getElementById('route-sequence');
