@@ -4764,6 +4764,19 @@
                     option1.value = "1";
                     option1.text = "Rota Alternativa 1 (Proximidade à Origem)";
                     alternativeSidebar.appendChild(option1);
+                    
+                    // Atualizar card da rota alternativa 1
+                    const cardRoute1 = document.getElementById('route-card-1');
+                    if (cardRoute1) {
+                        // Mostrar o card
+                        cardRoute1.style.display = 'block';
+                        
+                        // Atualizar título
+                        const titleElement = cardRoute1.querySelector('strong');
+                        if (titleElement) {
+                            titleElement.textContent = "Proximidade à origem";
+                        }
+                    }
                 }
             } catch (error) {
                 console.error("Erro ao gerar rota por proximidade:", error);
@@ -4783,6 +4796,19 @@
                         option2.value = "2";
                         option2.text = "Rota Alternativa 2 (Padrão Espiral)";
                         alternativeSidebar.appendChild(option2);
+                        
+                        // Atualizar card da rota alternativa 2
+                        const cardRoute2 = document.getElementById('route-card-2');
+                        if (cardRoute2) {
+                            // Mostrar o card
+                            cardRoute2.style.display = 'block';
+                            
+                            // Atualizar título
+                            const titleElement = cardRoute2.querySelector('strong');
+                            if (titleElement) {
+                                titleElement.textContent = "Padrão espiral";
+                            }
+                        }
                     }
                 }
             } catch (error) {
@@ -4804,6 +4830,62 @@
                         cityOption.value = routeIndex.toString();
                         cityOption.text = `Rota Alternativa ${routeIndex} (Agrupamento por Cidade)`;
                         alternativeSidebar.appendChild(cityOption);
+                        
+                        // Para cada rota alternativa extra, criar ou atualizar card correspondente
+                        if (routeIndex >= 3) {
+                            // Verificar se já existe card para essa rota
+                            let cardRouteCity = document.getElementById(`route-card-${routeIndex}`);
+                            
+                            // Se não existir, criar novo card
+                            if (!cardRouteCity) {
+                                // Clonar o template do card 2
+                                const templateCard = document.getElementById('route-card-2');
+                                if (templateCard && templateCard.parentNode) {
+                                    cardRouteCity = templateCard.cloneNode(true);
+                                    cardRouteCity.id = `route-card-${routeIndex}`;
+                                    cardRouteCity.setAttribute('data-route', routeIndex.toString());
+                                    
+                                    // Atualizar o ID do elemento de detalhes
+                                    const detailsElement = cardRouteCity.querySelector('[id^="route-"]');
+                                    if (detailsElement) {
+                                        detailsElement.id = `route-${routeIndex}-details`;
+                                    }
+                                    
+                                    // Adicionar ao container
+                                    templateCard.parentNode.appendChild(cardRouteCity);
+                                    
+                                    // Adicionar evento de clique
+                                    cardRouteCity.addEventListener('click', function() {
+                                        const routeIdx = parseInt(this.getAttribute('data-route'));
+                                        
+                                        // Atualizar seleção visual
+                                        document.querySelectorAll('.route-option-card').forEach(c => {
+                                            c.classList.remove('selected');
+                                        });
+                                        this.classList.add('selected');
+                                        
+                                        // Atualizar o select escondido
+                                        const selectElement = document.getElementById('alternative-routes-sidebar');
+                                        if (selectElement) {
+                                            selectElement.value = routeIdx.toString();
+                                            
+                                            // Disparar evento de mudança
+                                            const event = new Event('change');
+                                            selectElement.dispatchEvent(event);
+                                        }
+                                    });
+                                }
+                            }
+                            
+                            // Atualizar título e exibir card
+                            if (cardRouteCity) {
+                                cardRouteCity.style.display = 'block';
+                                const titleElement = cardRouteCity.querySelector('strong');
+                                if (titleElement) {
+                                    titleElement.textContent = "Agrupamento por cidade";
+                                }
+                            }
+                        }
                     }
                 }
             } catch (error) {
