@@ -9,6 +9,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="Otimizador de Rotas para logística e transporte, com suporte a cálculo de rotas entre múltiplos pontos, otimização de sequência, e visualização de eventos e restrições em cidades brasileiras." />
     <meta name="keywords" content="otimizador de rotas, problema do caixeiro viajante, logística, transporte, planejamento de rotas, otimização de entregas, Brasil, Google Maps, pedágios, eventos em cidades" />
+    <meta name="author" content="Otimizador de Rotas" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>Otimizador de Rotas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -186,6 +190,21 @@
         }
         .mobile-sidebar-toggle:active {
             transform: scale(0.95);
+        }
+        
+        /* Animação de aparecimento */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
         
         /* NOVO: Estilos específicos para as abas inferiores */
@@ -389,6 +408,39 @@
             /* Tornar o conteúdo de abas mais compacto em telas pequenas */
             .bottom-tab-content {
                 padding: 15px 10px;
+            }
+        }
+        
+        /* Print styles - esconder mapa para melhor geração de PDF */
+        @media print {
+            .map-container {
+                display: none;
+            }
+            
+            .sidebar {
+                width: 100%;
+                box-shadow: none;
+                border: none;
+            }
+            
+            .bottom-tabs-container {
+                height: auto;
+                box-shadow: none;
+            }
+            
+            .bottom-tabs-nav {
+                display: none;
+            }
+            
+            .bottom-tab-content {
+                display: block !important;
+                position: static;
+                overflow: visible;
+                page-break-inside: avoid;
+            }
+            
+            .optimize-container, .mobile-sidebar-toggle, .toggle-sidebar {
+                display: none;
             }
         }
     </style>
@@ -656,330 +708,6 @@
     });
     </script>
     
-    <!-- Implementação do Problema do Caixeiro Viajante (TSP) para otimização de rotas -->
-    <script>
-    /**
-     * Implementação do algoritmo do Caixeiro Viajante (TSP)
-     * para otimização de rotas de entrega
-     */
-    class TSPSolver {
-        constructor() {
-            this.maxRouteLength = 100; // Limite de segurança para não travar o navegador
-        }
-        
-        /**
-         * Calcula a distância entre dois pontos usando a fórmula de Haversine
-         * @param {number} lat1 - Latitude do ponto 1
-         * @param {number} lon1 - Longitude do ponto 1
-         * @param {number} lat2 - Latitude do ponto 2
-         * @param {number} lon2 - Longitude do ponto 2
-         * @returns {number} - Distância em quilômetros
-         */
-        calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Raio da Terra em km
-            const dLat = this.deg2rad(lat2 - lat1);
-            const dLon = this.deg2rad(lon2 - lon1);
-            
-            const a = 
-                Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
-                Math.sin(dLon/2) * Math.sin(dLon/2);
-                
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return R * c; // Distância em km
-        }
-        
-        /**
-         * Converte graus para radianos
-         */
-        deg2rad(deg) {
-            return deg * (Math.PI/180);
-        }
-        
-        /**
-         * Constrói a matriz de distâncias entre todos os pontos
-         * @param {Array} locations - Array de locais com coordenadas lat/lng
-         * @returns {Array} - Matriz de distâncias
-         */
-        buildDistanceMatrix(locations) {
-            const n = locations.length;
-            const distMatrix = Array(n).fill().map(() => Array(n).fill(0));
-            
-            for (let i = 0; i < n; i++) {
-                for (let j = 0; j < n; j++) {
-                    if (i !== j) {
-                        distMatrix[i][j] = this.calculateDistance(
-                            locations[i].lat, locations[i].lng,
-                            locations[j].lat, locations[j].lng
-                        );
-                    }
-                }
-            }
-            
-            return distMatrix;
-        }
-        
-        /**
-         * Executa o algoritmo do vizinho mais próximo para encontrar uma rota
-         * @param {Array} distMatrix - Matriz de distâncias
-         * @param {number} startIdx - Índice do ponto de partida
-         * @returns {Object} - Rota e distância total
-         */
-        nearestNeighborTSP(distMatrix, startIdx = 0) {
-            const n = distMatrix.length;
-            
-            // Verificar se há pontos suficientes
-            if (n <= 1) {
-                return {
-                    path: [0],
-                    distance: 0
-                };
-            }
-            
-            const visited = Array(n).fill(false);
-            const path = [];
-            let totalDistance = 0;
-            
-            // Começar pelo ponto de partida
-            let currentIdx = startIdx;
-            path.push(currentIdx);
-            visited[currentIdx] = true;
-            
-            // Encontrar o vizinho mais próximo em cada etapa
-            for (let i = 1; i < n; i++) {
-                let bestDistance = Infinity;
-                let bestIdx = -1;
-                
-                for (let j = 0; j < n; j++) {
-                    if (!visited[j] && distMatrix[currentIdx][j] < bestDistance) {
-                        bestDistance = distMatrix[currentIdx][j];
-                        bestIdx = j;
-                    }
-                }
-                
-                if (bestIdx !== -1) {
-                    visited[bestIdx] = true;
-                    path.push(bestIdx);
-                    totalDistance += bestDistance;
-                    currentIdx = bestIdx;
-                }
-            }
-            
-            // Voltar para a origem (comentado pois não queremos retorno à origem)
-            // totalDistance += distMatrix[currentIdx][startIdx];
-            // path.push(startIdx);
-            
-            return {
-                path: path,
-                distance: totalDistance
-            };
-        }
-        
-        /**
-         * Otimização baseada na proximidade com a origem
-         * @param {Array} locations - Lista de locais
-         * @param {number} originIndex - Índice da localização de origem
-         * @returns {Array} - Caminho otimizado
-         */
-        nearestToOriginOptimization(locations, originIndex = 0) {
-            if (locations.length <= 1) {
-                return {
-                    path: [0],
-                    distance: 0
-                };
-            }
-            
-            const origin = locations[originIndex];
-            
-            // Calcular distância de cada ponto à origem
-            const distances = locations.map((loc, index) => {
-                if (index === originIndex) return { index, distance: 0 };
-                
-                const distance = this.calculateDistance(
-                    origin.lat, origin.lng,
-                    loc.lat, loc.lng
-                );
-                
-                return { index, distance };
-            });
-            
-            // Ordenar por distância à origem (excluindo a própria origem)
-            const sortedDistances = distances
-                .filter(item => item.index !== originIndex)
-                .sort((a, b) => a.distance - b.distance);
-            
-            // Construir o caminho
-            const path = [originIndex];
-            let totalDistance = 0;
-            
-            // Adicionar pontos em ordem de proximidade com a origem
-            for (const item of sortedDistances) {
-                path.push(item.index);
-            }
-            
-            // Calcular a distância total do caminho
-            for (let i = 0; i < path.length - 1; i++) {
-                const from = locations[path[i]];
-                const to = locations[path[i+1]];
-                
-                totalDistance += this.calculateDistance(
-                    from.lat, from.lng,
-                    to.lat, to.lng
-                );
-            }
-            
-            return {
-                path: path,
-                distance: totalDistance
-            };
-        }
-        
-        /**
-         * Otimização em espiral a partir da origem
-         * @param {Array} locations - Lista de locais
-         * @param {number} originIndex - Índice da localização de origem
-         * @returns {Array} - Caminho otimizado
-         */
-        spiralOptimization(locations, originIndex = 0) {
-            if (locations.length <= 1) {
-                return {
-                    path: [0],
-                    distance: 0
-                };
-            }
-            
-            const origin = locations[originIndex];
-            
-            // Calcular ângulo e distância de cada ponto à origem
-            const pointsWithAngles = locations.map((loc, index) => {
-                if (index === originIndex) {
-                    return { index, angle: 0, distance: 0 };
-                }
-                
-                // Calcular ângulo em radianos (0 é leste, aumenta no sentido anti-horário)
-                const deltaX = loc.lng - origin.lng;
-                const deltaY = loc.lat - origin.lat;
-                let angle = Math.atan2(deltaY, deltaX);
-                
-                // Converter para graus e normalizar para 0-360
-                angle = (angle * 180 / Math.PI + 360) % 360;
-                
-                // Calcular distância
-                const distance = this.calculateDistance(
-                    origin.lat, origin.lng,
-                    loc.lat, loc.lng
-                );
-                
-                return { index, angle, distance };
-            });
-            
-            // Ordenar pontos por ângulo (para criar uma espiral)
-            const sortedPoints = pointsWithAngles
-                .filter(item => item.index !== originIndex)
-                .sort((a, b) => {
-                    // Se os ângulos são aproximadamente iguais, ordenar por distância
-                    if (Math.abs(a.angle - b.angle) < 10) {
-                        return a.distance - b.distance;
-                    }
-                    // Caso contrário, ordenar por ângulo
-                    return a.angle - b.angle;
-                });
-            
-            // Construir o caminho
-            const path = [originIndex];
-            let totalDistance = 0;
-            
-            // Adicionar pontos em ordem espiral
-            for (const point of sortedPoints) {
-                path.push(point.index);
-            }
-            
-            // Calcular a distância total do caminho
-            for (let i = 0; i < path.length - 1; i++) {
-                const from = locations[path[i]];
-                const to = locations[path[i+1]];
-                
-                totalDistance += this.calculateDistance(
-                    from.lat, from.lng,
-                    to.lat, to.lng
-                );
-            }
-            
-            return {
-                path: path,
-                distance: totalDistance
-            };
-        }
-        
-        /**
-         * Resolve o problema do caixeiro viajante para uma lista de localizações
-         * @param {Array} locations - Lista de locais
-         * @param {number} originIndex - Índice da localização de origem
-         * @param {string} method - Método de otimização: 'standard', 'nearest', 'spiral'
-         * @returns {Object} - Resultado com caminho otimizado, distância total e tempo estimado
-         */
-        solve(locations, originIndex = 0, method = 'standard') {
-            // Verificar se há locais suficientes
-            if (locations.length === 0) {
-                return {
-                    path: [],
-                    distance: 0,
-                    estimatedTime: 0,
-                    waypoint_order: []
-                };
-            }
-            
-            if (locations.length === 1) {
-                return {
-                    path: [locations[0]],
-                    distance: 0,
-                    estimatedTime: 0,
-                    waypoint_order: [0]
-                };
-            }
-            
-            // Limitar o número de locais para evitar travamento
-            if (locations.length > this.maxRouteLength) {
-                console.warn(`Número de locais (${locations.length}) excede o limite (${this.maxRouteLength})`);
-                locations = locations.slice(0, this.maxRouteLength);
-            }
-            
-            let result;
-            
-            // Escolher o método de otimização
-            if (method === 'nearest') {
-                result = this.nearestToOriginOptimization(locations, originIndex);
-            } else if (method === 'spiral') {
-                result = this.spiralOptimization(locations, originIndex);
-            } else {
-                // Método padrão: algoritmo do vizinho mais próximo
-                const distMatrix = this.buildDistanceMatrix(locations);
-                result = this.nearestNeighborTSP(distMatrix, originIndex);
-            }
-            
-            // Calcular o tempo estimado (considerando velocidade média de 60 km/h)
-            const estimatedTime = result.distance / 60; // tempo em horas
-            
-            // Mapear índices do caminho para o formato esperado pelo Google Maps
-            // (sem incluir o ponto de origem)
-            const waypoint_order = result.path
-                .filter(index => index !== originIndex)
-                .map(index => {
-                    // Ajustar o índice para o formato esperado pelo Google Maps
-                    // (se o originIndex não é 0, pode ser necessário ajustar)
-                    return index > originIndex ? index - 1 : index;
-                });
-            
-            return {
-                path: result.path.map(index => locations[index]),
-                distance: result.distance,
-                estimatedTime: estimatedTime,
-                waypoint_order: waypoint_order
-            };
-        }
-    }
-    </script>
-    
     <!-- Script Principal -->
     <script>
         // Variáveis globais
@@ -998,7 +726,10 @@
         let geocoder;
         let currentStepIndex = 0;
         let animationTimeout;
-        let tspSolver;
+        
+        // Pontos de interesse (pedágios, balanças, etc.)
+        let pointsOfInterest = [];
+        let poiMarkers = [];
         
         // ID do último local adicionado
         let lastLocationId = 0;
@@ -1006,27 +737,46 @@
         // Configurações padrão
         const DEFAULT_SPEED = 80; // km/h
         
+        // Constantes para POIs
+        const POI_TYPES = {
+            TOLL: 'toll',
+            WEIGHING: 'weighing',
+            GAS: 'gas',
+            REST: 'rest'
+        };
+        
+        // Mapeamento de ícones para POIs
+        const POI_ICONS = {
+            [POI_TYPES.TOLL]: '💰',
+            [POI_TYPES.WEIGHING]: '⚖️',
+            [POI_TYPES.GAS]: '⛽',
+            [POI_TYPES.REST]: '🛌'
+        };
+        
         // Inicialização após o carregamento da página
         document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se estamos usando dados mocked ou não
+            const useMockData = true;
+            console.log("Using mock data:", useMockData);
+            
             // Inicializar o mapa quando a API Google Maps estiver pronta
             initMap();
-            
-            // Inicializar o algoritmo TSP
-            tspSolver = new TSPSolver();
             
             // Inicializar a interface do usuário
             initUI();
             
-            // Preencher com dados iniciais (origem em Dois Córregos)
-            fetchInitialData()
-            .then(() => {
-                console.log("Dados iniciais carregados com sucesso");
-                // Atualizar a lista de cidades para eventos
-                updateEventCitiesList();
-            })
-            .catch(error => {
-                console.error("Erro ao carregar dados iniciais:", error);
-            });
+            // Preencher com dados iniciais
+            if (useMockData) {
+                fetchMockData()
+                .then(() => {
+                    console.log("Seed data loaded successfully");
+                    // Atualizar a lista de cidades para eventos
+                    updateEventCitiesList();
+                })
+                .catch(error => {
+                    console.error("Error loading seed data:", error);
+                });
+            }
         });
         
         // Inicializar o mapa
@@ -1046,6 +796,15 @@
                 rotateControl: true,
                 fullscreenControl: true
             });
+            
+            // Modificar gestureHandling para permitir zoom sem Ctrl
+            try {
+                // Este é um hack para permitir zoom sem Ctrl
+                map.setOptions({ gestureHandling: 'auto' });
+                console.log("Google Maps gesture handling modificado para permitir zoom sem Ctrl");
+            } catch (e) {
+                console.error("Erro ao modificar gesture handling:", e);
+            }
             
             // Inicializar serviços do Google Maps
             directionsService = new google.maps.DirectionsService();
@@ -1072,6 +831,78 @@
             placesService = new google.maps.places.PlacesService(map);
             
             console.log("Google Maps API loaded");
+            
+            // Configurar a API Places
+            const placesOptions = {
+                types: ['geocode'],
+                componentRestrictions: { country: 'br' }
+            };
+            
+            try {
+                // Inicializar o autocomplete do Places
+                autocomplete = new google.maps.places.Autocomplete(
+                    document.getElementById('address-input'),
+                    placesOptions
+                );
+                
+                // Prevenir submissão do formulário ao pressionar Enter
+                document.getElementById('address-input').addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+                
+                console.log("Google Places API loaded");
+            } catch (e) {
+                console.error("Erro ao inicializar Google Places API:", e);
+            }
+            
+            // Adicionar eventos para detectar quando o mapa está totalmente carregado
+            google.maps.event.addListenerOnce(map, 'idle', function() {
+                // O mapa está totalmente carregado
+                try {
+                    // Tentar aplicar o helper de zoom
+                    setTimeout(applyZoomHelper, 1000);
+                } catch (e) {
+                    console.error("Erro ao aplicar helper de zoom:", e);
+                }
+            });
+        }
+        
+        // Helper para facilitar o zoom no mapa
+        function applyZoomHelper() {
+            // Encontrar o elemento .gm-style dentro do mapa
+            const gmStyleElement = document.querySelector('.gm-style');
+            
+            if (gmStyleElement) {
+                // Adicionar um evento para capturar scroll e transformar em zoom
+                gmStyleElement.addEventListener('wheel', function(e) {
+                    // Se a tecla Ctrl não estiver pressionada, ainda assim permitir o zoom
+                    if (!e.ctrlKey) {
+                        e.stopPropagation();
+                        
+                        // Criar um novo evento com a tecla Ctrl pressionada
+                        const newEvent = new WheelEvent('wheel', {
+                            bubbles: true,
+                            cancelable: true,
+                            composed: true,
+                            deltaMode: e.deltaMode,
+                            deltaX: e.deltaX,
+                            deltaY: e.deltaY,
+                            deltaZ: e.deltaZ,
+                            ctrlKey: true
+                        });
+                        
+                        // Disparar o novo evento
+                        gmStyleElement.dispatchEvent(newEvent);
+                    }
+                }, { passive: false });
+                
+                console.log("Helper de zoom aplicado ao mapa do Google");
+            } else {
+                console.log("Nenhum elemento .gm-style encontrado para aplicar helper de zoom");
+            }
         }
         
         // Inicializar a interface do usuário
@@ -1189,11 +1020,7 @@
             
             // Adicionar evento de clique para mostrar info
             marker.addListener('click', function() {
-                // Mostrar informações do ponto quando clicado
-                const infoWindow = new google.maps.InfoWindow({
-                    content: `<div><strong>${title}</strong></div>`
-                });
-                infoWindow.open(map, marker);
+                // Implementar conforme necessário
             });
             
             markers.push(marker);
@@ -1289,26 +1116,20 @@
                 return;
             }
             
-            // Filtrar locais que não são origem
-            const destinationLocations = locations.filter(loc => !loc.isOrigin);
-            
-            if (destinationLocations.length === 0) {
-                listElement.innerHTML = '<div class="p-3 text-muted">Nenhum destino adicionado.</div>';
-                return;
-            }
-            
             // Adicionar cada local à lista
-            destinationLocations.forEach(location => {
-                const item = document.createElement('div');
-                item.className = 'location-item';
-                item.innerHTML = `
-                    <div>${location.name}</div>
-                    <div class="location-delete" data-id="${location.id}" title="Remover">
-                        <i class="fas fa-trash"></i>
-                    </div>
-                `;
-                
-                listElement.appendChild(item);
+            locations.forEach(location => {
+                if (!location.isOrigin) { // Não incluir a origem na lista de destinos
+                    const item = document.createElement('div');
+                    item.className = 'location-item';
+                    item.innerHTML = `
+                        <div>${location.name}</div>
+                        <div class="location-delete" data-id="${location.id}" title="Remover">
+                            <i class="fas fa-trash"></i>
+                        </div>
+                    `;
+                    
+                    listElement.appendChild(item);
+                }
             });
             
             // Adicionar evento de clique para remover locais
@@ -1420,8 +1241,6 @@
             // Contador para geocodificações bem-sucedidas
             let successCount = 0;
             let errorCount = 0;
-            let totalLines = lines.filter(l => l.trim()).length;
-            let processedCount = 0;
             
             // Processar cada linha
             lines.forEach(line => {
@@ -1445,13 +1264,6 @@
                 if (cep.length !== 8) {
                     console.warn('CEP inválido:', cep);
                     errorCount++;
-                    processedCount++;
-                    
-                    // Verificar se terminou
-                    if (processedCount === totalLines) {
-                        showNotification(`Processados ${successCount} CEPs com sucesso. ${errorCount} erros.`, errorCount > 0);
-                    }
-                    
                     return;
                 }
                 
@@ -1466,10 +1278,8 @@
                         errorCount++;
                     }
                     
-                    processedCount++;
-                    
                     // Verificar se terminou
-                    if (processedCount === totalLines) {
+                    if (successCount + errorCount === lines.filter(l => l.trim()).length) {
                         showNotification(`Processados ${successCount} CEPs com sucesso. ${errorCount} erros.`, errorCount > 0);
                     }
                 });
@@ -1545,123 +1355,404 @@
                 originLocation.isOrigin = true;
             }
             
-            // Índice da origem no array de locais
-            const originIndex = locations.findIndex(loc => loc.id === originLocation.id);
+            // Coletar todos os locais para otimização
+            const originLatLng = new google.maps.LatLng(originLocation.lat, originLocation.lng);
+            const waypoints = locations.filter(loc => !loc.isOrigin).map(loc => ({
+                location: new google.maps.LatLng(loc.lat, loc.lng),
+                id: loc.id,
+                name: loc.name,
+                lat: loc.lat,
+                lng: loc.lng
+            }));
+            
+            // Se não houver waypoints, não há como calcular rota
+            if (waypoints.length === 0) {
+                toggleLoadingSpinner(false);
+                optimizeBtn.disabled = false;
+                optimizeBtn.innerHTML = 'Otimizar Rota';
+                showNotification('Adicione destinos para calcular a rota', true);
+                return;
+            }
             
             // Obter o método de otimização selecionado
             const routeMethod = document.querySelector('input[name="route-method"]:checked').value;
-            console.log("Método de otimização selecionado:", routeMethod);
             
-            try {
-                // Usar o algoritmo TSP para otimizar a rota
-                const tspResult = tspSolver.solve(locations, originIndex, routeMethod);
-                console.log("Resultado TSP:", tspResult);
-                
-                // Construir waypoints para o Google Maps
-                const waypointsForGoogleMaps = tspResult.path
-                    .filter(loc => !loc.isOrigin)
-                    .map(loc => ({
-                        location: new google.maps.LatLng(loc.lat, loc.lng),
-                        stopover: true
-                    }));
-                
-                // Configurar a solicitação de rota
-                const request = {
-                    origin: new google.maps.LatLng(originLocation.lat, originLocation.lng),
-                    destination: new google.maps.LatLng(originLocation.lat, originLocation.lng),
-                    waypoints: waypointsForGoogleMaps,
-                    optimizeWaypoints: false, // Já otimizamos manualmente
-                    travelMode: google.maps.TravelMode.DRIVING
-                };
-                
-                // Solicitar a rota ao Google Maps
-                directionsService.route(request, function(result, status) {
-                    // Ocultar o spinner
-                    toggleLoadingSpinner(false);
-                    
-                    // Restaurar o botão de otimizar
-                    optimizeBtn.disabled = false;
-                    optimizeBtn.innerHTML = 'Otimizar Rota';
-                    
-                    if (status === google.maps.DirectionsStatus.OK) {
-                        // Modificar o resultado para usar nossa ordem otimizada
-                        result.routes[0].waypoint_order = tspResult.waypoint_order;
+            // Calcular a rota usando o método selecionado
+            if (routeMethod === 'standard') {
+                // Método padrão usando o serviço de direções do Google Maps
+                calculateStandardRoute(originLocation, waypoints)
+                    .then(result => {
+                        // Renderizar a rota no mapa
+                        renderOptimizedRoute(result);
                         
-                        // Armazenar o caminho otimizado
-                        currentOptimizedPath = {
-                            origin: originLocation,
-                            path: tspResult.path,
-                            waypoints: tspResult.path.filter(loc => !loc.isOrigin),
-                            route: result,
-                            method: routeMethod
-                        };
+                        // Ocultar o spinner
+                        toggleLoadingSpinner(false);
                         
-                        // Calcular resumo da rota
-                        currentRouteSummary = {
-                            totalDistance: tspResult.distance,
-                            totalDuration: tspResult.estimatedTime * 3600, // converter horas para segundos
-                            formattedDistance: tspResult.distance.toFixed(1) + ' km',
-                            formattedDuration: formatDuration(tspResult.estimatedTime),
-                            estimatedTolls: `R$ ${(tspResult.distance * 0.15).toFixed(2)}`
-                        };
-                        
-                        // Mostrar a rota no mapa
-                        directionsRenderer.setDirections(result);
-                        
-                        // Atualizar os marcadores para mostrar a sequência
-                        updateMarkersWithSequence(tspResult.path);
-                        
-                        // Atualizar o relatório de rota
-                        updateRouteReport(currentRouteSummary, result, tspResult.path, routeMethod);
-                        
-                        // Atualizar eventos
-                        updateEventsList();
-                        
-                        // Atualizar restrições
-                        updateRestrictionsList();
+                        // Restaurar o botão de otimizar
+                        optimizeBtn.disabled = false;
+                        optimizeBtn.innerHTML = 'Otimizar Rota';
                         
                         // Navegar para a aba de relatório
                         showTab('bottom-report');
+                    })
+                    .catch(error => {
+                        console.error('Erro ao otimizar rota padrão:', error);
                         
-                        // Mostrar notificação
-                        showNotification('Rota otimizada com sucesso!');
-                    } else {
-                        console.error("Erro ao calcular rota:", status);
-                        showNotification('Erro ao calcular a rota: ' + status, true);
-                    }
-                });
-            } catch (error) {
-                // Ocultar o spinner
-                toggleLoadingSpinner(false);
-                
-                // Restaurar o botão de otimizar
-                optimizeBtn.disabled = false;
-                optimizeBtn.innerHTML = 'Otimizar Rota';
-                
-                console.error("Erro na otimização:", error);
-                showNotification('Erro ao otimizar rota: ' + error.message, true);
+                        // Ocultar o spinner
+                        toggleLoadingSpinner(false);
+                        
+                        // Restaurar o botão de otimizar
+                        optimizeBtn.disabled = false;
+                        optimizeBtn.innerHTML = 'Otimizar Rota';
+                        
+                        // Mostrar erro
+                        showNotification('Erro ao calcular a rota: ' + error.message, true);
+                    });
+            } else if (routeMethod === 'nearest') {
+                // Método mais próximo da origem
+                calculateNearestToOriginRoute(originLocation, waypoints)
+                    .then(result => {
+                        // Renderizar a rota no mapa
+                        renderOptimizedRoute(result);
+                        
+                        // Ocultar o spinner
+                        toggleLoadingSpinner(false);
+                        
+                        // Restaurar o botão de otimizar
+                        optimizeBtn.disabled = false;
+                        optimizeBtn.innerHTML = 'Otimizar Rota';
+                        
+                        // Navegar para a aba de relatório
+                        showTab('bottom-report');
+                    })
+                    .catch(error => {
+                        console.error('Erro ao otimizar rota mais próxima da origem:', error);
+                        
+                        // Ocultar o spinner
+                        toggleLoadingSpinner(false);
+                        
+                        // Restaurar o botão de otimizar
+                        optimizeBtn.disabled = false;
+                        optimizeBtn.innerHTML = 'Otimizar Rota';
+                        
+                        // Mostrar erro
+                        showNotification('Erro ao calcular a rota mais próxima da origem: ' + error.message, true);
+                    });
+            } else if (routeMethod === 'spiral') {
+                // Método em espiral
+                calculateSpiralRoute(originLocation, waypoints)
+                    .then(result => {
+                        // Renderizar a rota no mapa
+                        renderOptimizedRoute(result);
+                        
+                        // Ocultar o spinner
+                        toggleLoadingSpinner(false);
+                        
+                        // Restaurar o botão de otimizar
+                        optimizeBtn.disabled = false;
+                        optimizeBtn.innerHTML = 'Otimizar Rota';
+                        
+                        // Navegar para a aba de relatório
+                        showTab('bottom-report');
+                    })
+                    .catch(error => {
+                        console.error('Erro ao otimizar rota em espiral:', error);
+                        
+                        // Ocultar o spinner
+                        toggleLoadingSpinner(false);
+                        
+                        // Restaurar o botão de otimizar
+                        optimizeBtn.disabled = false;
+                        optimizeBtn.innerHTML = 'Otimizar Rota';
+                        
+                        // Mostrar erro
+                        showNotification('Erro ao calcular a rota em espiral: ' + error.message, true);
+                    });
             }
         }
         
-        // Formatar duração de horas para texto legível
-        function formatDuration(hours) {
-            const h = Math.floor(hours);
-            const m = Math.round((hours - h) * 60);
-            return `${h}h ${m}min`;
+        // Calcular a rota otimizada (método padrão)
+        function calculateStandardRoute(origin, waypoints) {
+            return new Promise((resolve, reject) => {
+                // Configurar a solicitação de rota
+                const request = {
+                    origin: new google.maps.LatLng(origin.lat, origin.lng),
+                    destination: new google.maps.LatLng(origin.lat, origin.lng),  // Retorno ao ponto de origem
+                    waypoints: waypoints.map(wp => ({
+                        location: wp.location,
+                        stopover: true
+                    })),
+                    optimizeWaypoints: true,
+                    travelMode: google.maps.TravelMode.DRIVING,
+                    avoidHighways: false,
+                    avoidTolls: false
+                };
+                
+                // Solicitar a rota
+                directionsService.route(request, function(result, status) {
+                    if (status === google.maps.DirectionsStatus.OK) {
+                        // Armazenar o caminho otimizado e resumo
+                        currentOptimizedPath = {
+                            origin: origin,
+                            waypoints: waypoints,
+                            order: result.routes[0].waypoint_order,
+                            route: result,
+                            method: 'standard'
+                        };
+                        
+                        // Calcular resumo da rota
+                        currentRouteSummary = calculateRouteSummary(result, waypoints);
+                        
+                        resolve({
+                            directions: result,
+                            summary: currentRouteSummary,
+                            order: result.routes[0].waypoint_order,
+                            originalWaypoints: waypoints,
+                            method: 'standard'
+                        });
+                    } else {
+                        reject(new Error('Erro no cálculo da rota padrão: ' + status));
+                    }
+                });
+            });
+        }
+        
+        // Calcular a rota otimizada (método mais próximo da origem)
+        function calculateNearestToOriginRoute(origin, waypoints) {
+            return new Promise((resolve, reject) => {
+                try {
+                    // Calcular a distância de cada ponto em relação à origem
+                    const distancesFromOrigin = waypoints.map((waypoint, index) => {
+                        const distance = calculateHaversineDistance(
+                            origin.lat, origin.lng,
+                            waypoint.lat, waypoint.lng
+                        );
+                        return { index, distance };
+                    });
+                    
+                    // Ordenar pontos por distância da origem (mais próximo primeiro)
+                    distancesFromOrigin.sort((a, b) => a.distance - b.distance);
+                    
+                    // Obter a ordem dos waypoints
+                    const waypointOrder = distancesFromOrigin.map(item => item.index);
+                    
+                    // Reordenar os waypoints
+                    const orderedWaypoints = waypointOrder.map(index => waypoints[index]);
+                    
+                    // Configurar a solicitação de rota com os waypoints reordenados
+                    const request = {
+                        origin: new google.maps.LatLng(origin.lat, origin.lng),
+                        destination: new google.maps.LatLng(origin.lat, origin.lng),
+                        waypoints: orderedWaypoints.map(wp => ({
+                            location: new google.maps.LatLng(wp.lat, wp.lng),
+                            stopover: true
+                        })),
+                        optimizeWaypoints: false, // Não otimizar, já está na ordem que queremos
+                        travelMode: google.maps.TravelMode.DRIVING
+                    };
+                    
+                    // Solicitar a rota
+                    directionsService.route(request, function(result, status) {
+                        if (status === google.maps.DirectionsStatus.OK) {
+                            // Armazenar o caminho otimizado e resumo
+                            currentOptimizedPath = {
+                                origin: origin,
+                                waypoints: waypoints,
+                                order: waypointOrder,
+                                route: result,
+                                method: 'nearest'
+                            };
+                            
+                            // Calcular resumo da rota
+                            currentRouteSummary = calculateRouteSummary(result, waypoints);
+                            
+                            resolve({
+                                directions: result,
+                                summary: currentRouteSummary,
+                                order: waypointOrder,
+                                originalWaypoints: waypoints,
+                                method: 'nearest'
+                            });
+                        } else {
+                            reject(new Error('Erro no cálculo da rota mais próxima da origem: ' + status));
+                        }
+                    });
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }
+        
+        // Calcular a rota otimizada (método em espiral)
+        function calculateSpiralRoute(origin, waypoints) {
+            return new Promise((resolve, reject) => {
+                try {
+                    // Calcular o ângulo de cada ponto em relação à origem
+                    const pointsWithAngles = waypoints.map((waypoint, index) => {
+                        // Calcular ângulo em radianos (0 é leste, aumenta no sentido anti-horário)
+                        const deltaX = waypoint.lng - origin.lng;
+                        const deltaY = waypoint.lat - origin.lat;
+                        let angle = Math.atan2(deltaY, deltaX);
+                        
+                        // Converter para graus e normalizar para 0-360
+                        angle = (angle * 180 / Math.PI + 360) % 360;
+                        
+                        // Calcular distância
+                        const distance = calculateHaversineDistance(
+                            origin.lat, origin.lng,
+                            waypoint.lat, waypoint.lng
+                        );
+                        
+                        return { index, angle, distance };
+                    });
+                    
+                    // Ordenar pontos por ângulo (para criar uma espiral)
+                    pointsWithAngles.sort((a, b) => {
+                        // Se os ângulos são aproximadamente iguais, ordenar por distância
+                        if (Math.abs(a.angle - b.angle) < 10) {
+                            return a.distance - b.distance;
+                        }
+                        // Caso contrário, ordenar por ângulo
+                        return a.angle - b.angle;
+                    });
+                    
+                    // Obter a ordem dos waypoints
+                    const waypointOrder = pointsWithAngles.map(item => item.index);
+                    
+                    // Reordenar os waypoints
+                    const orderedWaypoints = waypointOrder.map(index => waypoints[index]);
+                    
+                    // Configurar a solicitação de rota com os waypoints reordenados
+                    const request = {
+                        origin: new google.maps.LatLng(origin.lat, origin.lng),
+                        destination: new google.maps.LatLng(origin.lat, origin.lng),
+                        waypoints: orderedWaypoints.map(wp => ({
+                            location: new google.maps.LatLng(wp.lat, wp.lng),
+                            stopover: true
+                        })),
+                        optimizeWaypoints: false, // Não otimizar, já está na ordem que queremos
+                        travelMode: google.maps.TravelMode.DRIVING
+                    };
+                    
+                    // Solicitar a rota
+                    directionsService.route(request, function(result, status) {
+                        if (status === google.maps.DirectionsStatus.OK) {
+                            // Armazenar o caminho otimizado e resumo
+                            currentOptimizedPath = {
+                                origin: origin,
+                                waypoints: waypoints,
+                                order: waypointOrder,
+                                route: result,
+                                method: 'spiral'
+                            };
+                            
+                            // Calcular resumo da rota
+                            currentRouteSummary = calculateRouteSummary(result, waypoints);
+                            
+                            resolve({
+                                directions: result,
+                                summary: currentRouteSummary,
+                                order: waypointOrder,
+                                originalWaypoints: waypoints,
+                                method: 'spiral'
+                            });
+                        } else {
+                            reject(new Error('Erro no cálculo da rota em espiral: ' + status));
+                        }
+                    });
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }
+        
+        // Calcular distância usando a fórmula de Haversine
+        function calculateHaversineDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Raio da terra em km
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2); 
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+            const distance = R * c; // Distância em km
+            return distance;
+        }
+        
+        // Converter graus para radianos
+        function deg2rad(deg) {
+            return deg * (Math.PI/180);
+        }
+        
+        // Calcular resumo da rota
+        function calculateRouteSummary(directions, waypoints) {
+            let totalDistance = 0;
+            let totalDuration = 0;
+            
+            // Somar distâncias e durações de todas as pernas da rota
+            const legs = directions.routes[0].legs;
+            legs.forEach(leg => {
+                totalDistance += leg.distance.value;
+                totalDuration += leg.duration.value;
+            });
+            
+            // Converter distância de metros para km
+            totalDistance = Math.round(totalDistance / 1000);
+            
+            // Converter duração de segundos para horas e minutos
+            const hours = Math.floor(totalDuration / 3600);
+            const minutes = Math.round((totalDuration % 3600) / 60);
+            
+            // Calcular pedágios estimados (dados mockados)
+            const estimatedTolls = Math.ceil(totalDistance / 100) * 15;
+            
+            // Formato do resumo
+            return {
+                totalDistance: totalDistance,
+                totalDuration: totalDuration,
+                formattedDistance: totalDistance + ' km',
+                formattedDuration: hours + 'h ' + minutes + 'min',
+                estimatedTolls: 'R$ ' + estimatedTolls.toFixed(2)
+            };
+        }
+        
+        // Renderizar a rota otimizada no mapa
+        function renderOptimizedRoute(result) {
+            // Mostrar a rota no mapa
+            directionsRenderer.setDirections(result.directions);
+            
+            // Método de otimização utilizado
+            let methodName = "Padrão";
+            if (result.method === 'nearest') {
+                methodName = "Mais próximo da origem";
+            } else if (result.method === 'spiral') {
+                methodName = "Em espiral";
+            }
+            
+            // Atualizar os marcadores para mostrar a sequência
+            updateMarkersWithSequence(result.originalWaypoints, result.order, result.directions);
+            
+            // Atualizar o relatório de rota
+            updateRouteReport(result.summary, result.directions, result.originalWaypoints, result.order, methodName);
+            
+            // Atualizar eventos
+            updateEventsList();
+            
+            // Atualizar restrições
+            updateRestrictionsList();
         }
         
         // Atualizar marcadores com a sequência otimizada
-        function updateMarkersWithSequence(path) {
+        function updateMarkersWithSequence(waypoints, order, directions) {
             // Remover marcadores existentes
             markers.forEach(marker => {
                 marker.setMap(null);
             });
             markers = [];
             
-            // Encontrar a origem
-            const origin = path.find(loc => loc.isOrigin);
-            
             // Adicionar marcador de origem
+            const origin = locations.find(loc => loc.isOrigin);
             const originMarker = new google.maps.Marker({
                 position: new google.maps.LatLng(origin.lat, origin.lng),
                 map: map,
@@ -1679,43 +1770,32 @@
             markers.push(originMarker);
             
             // Adicionar marcadores para os pontos de parada na ordem otimizada
-            let stopIndex = 1;
-            path.forEach(location => {
-                if (!location.isOrigin) {
-                    const marker = new google.maps.Marker({
-                        position: new google.maps.LatLng(location.lat, location.lng),
-                        map: map,
-                        label: { text: String(stopIndex++), color: 'white' },
-                        title: location.name,
-                        icon: {
-                            path: google.maps.SymbolPath.CIRCLE,
-                            fillColor: '#1976D2',
-                            fillOpacity: 1,
-                            strokeColor: '#ffffff',
-                            strokeWeight: 2,
-                            scale: 12
-                        }
-                    });
-                    markers.push(marker);
-                }
+            order.forEach((index, i) => {
+                const waypoint = waypoints[index];
+                const marker = new google.maps.Marker({
+                    position: waypoint.location,
+                    map: map,
+                    label: { text: String(i + 1), color: 'white' },
+                    title: waypoint.name,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: '#1976D2',
+                        fillOpacity: 1,
+                        strokeColor: '#ffffff',
+                        strokeWeight: 2,
+                        scale: 12
+                    }
+                });
+                markers.push(marker);
             });
         }
         
         // Atualizar o relatório de rota
-        function updateRouteReport(summary, directions, path, methodName) {
-            // Mapear o método para um nome amigável
-            const methodNames = {
-                'standard': 'Padrão',
-                'nearest': 'Mais próximo da origem',
-                'spiral': 'Em espiral'
-            };
-            
-            const displayMethod = methodNames[methodName] || methodName;
-            
+        function updateRouteReport(summary, directions, waypoints, order, methodName) {
             // Atualizar o resumo da rota
             const routeInfo = document.getElementById('route-info');
             routeInfo.innerHTML = `
-                <div class="mb-2"><strong>Método de otimização:</strong> ${displayMethod}</div>
+                <div class="mb-2"><strong>Método de otimização:</strong> ${methodName}</div>
                 <div class="mb-2"><strong>Distância total:</strong> ${summary.formattedDistance}</div>
                 <div class="mb-2"><strong>Tempo estimado:</strong> ${summary.formattedDuration}</div>
                 <div><strong>Pedágios estimados:</strong> ${summary.estimatedTolls}</div>
@@ -1725,7 +1805,7 @@
             const routeSequence = document.getElementById('route-sequence');
             
             // Começar com a origem
-            const origin = path.find(loc => loc.isOrigin);
+            const origin = locations.find(loc => loc.isOrigin);
             let sequenceHTML = `
                 <div class="origin-point mb-3">
                     <strong>A.</strong> ${origin.name} (Origem)
@@ -1733,19 +1813,22 @@
             `;
             
             // Adicionar cada parada na ordem otimizada
-            let stopIndex = 1;
-            path.forEach(location => {
-                if (!location.isOrigin) {
-                    sequenceHTML += `
-                        <div class="mb-2">
-                            <strong>${stopIndex++}.</strong> ${location.name}
-                        </div>
-                    `;
-                }
+            order.forEach((index, i) => {
+                const waypoint = waypoints[index];
+                const leg = directions.routes[0].legs[i];
+                
+                sequenceHTML += `
+                    <div class="mb-2">
+                        <strong>${i + 1}.</strong> ${waypoint.name} 
+                        <span class="text-muted">- ${leg.distance.text}</span>
+                    </div>
+                `;
             });
             
-            // Atualizar a sequência
             routeSequence.innerHTML = sequenceHTML;
+            
+            // Disparar evento de rota otimizada
+            window.dispatchEvent(new Event('route-optimized'));
         }
         
         // Atualizar a lista de cidades com base nos locais
@@ -1769,9 +1852,6 @@
         
         // Extrair cidade de um endereço
         function extractCityFromAddress(address) {
-            // Verificar se o endereço existe
-            if (!address) return null;
-            
             // Lista de cidades conhecidas para detectar
             const knownCities = [
                 'São Paulo', 'Rio de Janeiro', 'Brasília', 'Salvador', 'Fortaleza',
@@ -1810,8 +1890,12 @@
             
             // Extrair cidades da rota otimizada
             const cities = [];
-            currentOptimizedPath.path.forEach(location => {
-                let city = extractCityFromAddress(location.address || location.name);
+            const allLocations = [currentOptimizedPath.origin, ...currentOptimizedPath.waypoints];
+            
+            allLocations.forEach(location => {
+                // Para waypoints, location é diferente
+                const address = location.address || location.name;
+                let city = extractCityFromAddress(address);
                 if (city) {
                     cities.push(city);
                 }
@@ -1915,8 +1999,12 @@
             
             // Extrair cidades da rota otimizada
             const cities = [];
-            currentOptimizedPath.path.forEach(location => {
-                let city = extractCityFromAddress(location.address || location.name);
+            const allLocations = [currentOptimizedPath.origin, ...currentOptimizedPath.waypoints];
+            
+            allLocations.forEach(location => {
+                // Para waypoints, location é diferente
+                const address = location.address || location.name;
+                let city = extractCityFromAddress(address);
                 if (city) {
                     cities.push(city);
                 }
@@ -2014,8 +2102,8 @@
             });
         }
         
-        // Carregar dados iniciais
-        async function fetchInitialData() {
+        // Carregar dados mockados
+        async function fetchMockData() {
             // Carregar a origem (Dois Córregos-SP)
             const originData = {
                 id: 0,
