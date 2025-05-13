@@ -4669,13 +4669,13 @@
         drawRouteOnMap(tspResult.pathIds || tspResult.path, "truck1");
             
         // Mostrar pontos de interesse ao longo da rota
-        showPointsOfInterestOnRoute(tspResult.path);
+        showPointsOfInterestOnRoute(tspResult.pathIds || tspResult.path);
             
         // Mostrar eventos nas cidades da rota
-        showEventsForCitiesOnRoute(tspResult.path);
+        showEventsForCitiesOnRoute(tspResult.pathIds || tspResult.path);
             
         // Mostrar restrições para caminhões nas cidades da rota
-        showTruckRestrictionsForCitiesOnRoute(tspResult.path, null); // null para mostrar todos os tipos
+        showTruckRestrictionsForCitiesOnRoute(tspResult.pathIds || tspResult.path, null); // null para mostrar todos os tipos
             
         // Atualizar o resumo da rota
         updateRouteSummary(tspResult, "truck1", routeIndex);
