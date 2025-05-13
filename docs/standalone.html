@@ -656,10 +656,17 @@
             overflow-y: auto !important;
         }
         
-        /* Estado minimizado para container de abas (agora no topo) */
+        /* Estado minimizado para container de abas (agora na parte inferior) */
         .bottom-tabs-container.minimized {
             height: 60px; /* Altura quando minimizado */
             overflow: hidden;
+            position: fixed !important;
+            bottom: 0 !important;
+            top: auto !important;
+            transform: none !important;
+            border-top: 1px solid #ccc;
+            border-bottom: none;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
         }
         
         /* Estado expandido para container de abas (expandindo para baixo) */
@@ -688,20 +695,43 @@
         
         /* Ajuste específico para GitHub Pages */
         body.tabs-expanded .bottom-tabs-container:not(.minimized) {
-            height: calc(100vh - 380px) !important;
+            height: calc(70vh) !important;
             max-height: 70vh !important;
-            bottom: auto !important;
+            bottom: 0 !important;
             top: auto !important;
-            position: absolute !important;
-            margin-top: 60px !important;
+            position: fixed !important;
+            margin-top: 0 !important;
         }
         
         /* Ajustes para modo de tela cheia com abas na parte inferior */
         .bottom-tabs-container.fullscreen-mode {
-            bottom: auto !important;
+            bottom: 0 !important;
             top: auto !important;
-            position: absolute !important;
-            margin-top: 60px !important;
+            position: fixed !important;
+            margin-top: 0 !important;
+            height: 70vh !important;
+        }
+        
+        /* Garantir que quando o container expande para baixo, se expande corretamente */
+        .bottom-tabs-container.expand-down:not(.minimized) {
+            bottom: 0 !important;
+            top: auto !important;
+            height: 60vh !important;
+            max-height: 60vh !important; 
+            border-top: none !important;
+            border-bottom: 2px solid #1976D2 !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+        
+        /* Ajuste para o conteúdo das abas quando expandido para baixo */
+        .bottom-tabs-container.expand-down:not(.minimized) .bottom-tab-content {
+            display: block !important;
+            position: relative !important;
+            margin-top: 0 !important;
+            padding-top: 10px !important;
+            overflow-y: auto !important;
+            max-height: calc(70vh - 60px) !important;
         }
         
         /* Botão de fechar removido - usando apenas os botões das abas para controlar expandir/minimizar */
@@ -2052,10 +2082,10 @@
                 
                 // Configurar para expandir para baixo
                 bottomTabsContainer.style.top = 'auto';
-                bottomTabsContainer.style.bottom = '60px'; // Manter a barra de abas visível na parte inferior
+                bottomTabsContainer.style.bottom = '0'; // Começar do fundo da página
                 bottomTabsContainer.style.position = 'fixed';
                 bottomTabsContainer.style.marginTop = '0';
-                bottomTabsContainer.style.transform = 'translateY(0)'; // Reset qualquer transformação
+                bottomTabsContainer.style.transform = 'none'; // Remover qualquer transformação
                 
                 // Adicionar classe para expandir para baixo e modo tela cheia
                 bottomTabsContainer.classList.add('fullscreen-mode');
