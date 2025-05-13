@@ -2169,6 +2169,124 @@
                 `;
             }
         }
+        
+        // Atualizar conteúdo nas novas abas fluidas
+        updateNewTabsContent(routeIds);
+    }
+    
+    // Função para atualizar conteúdo nas novas abas fluidas
+    function updateNewTabsContent(routeIds) {
+        // Atualizar conteúdo do relatório estático
+        const routeSummaryStatic = document.getElementById('route-summary-static');
+        if (routeSummaryStatic) {
+            routeSummaryStatic.style.display = 'block';
+        }
+        
+        const deliverySequenceStatic = document.getElementById('delivery-sequence-static');
+        if (deliverySequenceStatic) {
+            deliverySequenceStatic.innerHTML = `
+                <p>Adicione destinos e otimize uma rota para ver a sequência de entrega.</p>
+                <p>Origem atual: <strong>Dois Córregos-SP</strong></p>
+            `;
+        }
+        
+        // Desabilitar botões no início
+        const saveRouteStatic = document.getElementById('save-route-static');
+        const printRouteStatic = document.getElementById('print-route-static');
+        
+        if (saveRouteStatic) saveRouteStatic.disabled = true;
+        if (printRouteStatic) printRouteStatic.disabled = true;
+    }
+    
+    // Função para sincronizar o conteúdo entre os sistemas de abas (antigo e novo)
+    function setupContentSync() {
+        console.log("Configurando sincronização de conteúdo entre sistemas de abas");
+        
+        // Mapear elementos do DOM de restrições
+        const restrictionsListOld = document.getElementById('restrictions-list');
+        const restrictionsListNew = document.getElementById('restrictions-list-static');
+        
+        // Mapear elementos do DOM de relatório
+        const totalDistanceOld = document.getElementById('total-distance');
+        const totalTimeOld = document.getElementById('total-time');
+        const totalTollsOld = document.getElementById('total-tolls');
+        
+        const totalDistanceNew = document.getElementById('total-distance-static');
+        const totalTimeNew = document.getElementById('total-time-static');
+        const totalTollsNew = document.getElementById('total-tolls-static');
+        
+        // Botões para salvar e imprimir rota
+        const saveRouteOld = document.getElementById('save-route');
+        const printRouteOld = document.getElementById('print-route');
+        const saveRouteNew = document.getElementById('save-route-static');
+        const printRouteNew = document.getElementById('print-route-static');
+        
+        // Adicionar listeners para os botões no sistema novo
+        if (saveRouteNew && saveRouteOld) {
+            saveRouteNew.addEventListener('click', function() {
+                saveRouteOld.click();
+            });
+        }
+        
+        if (printRouteNew && printRouteOld) {
+            printRouteNew.addEventListener('click', function() {
+                printRouteOld.click();
+            });
+        }
+        
+        // Sincronizar conteúdos inicialmente
+        if (restrictionsListOld && restrictionsListNew) {
+            restrictionsListNew.innerHTML = restrictionsListOld.innerHTML;
+        }
+        
+        // Observar mudanças nas restrições
+        const restrictionsObserver = new MutationObserver(function(mutations) {
+            if (restrictionsListOld && restrictionsListNew) {
+                restrictionsListNew.innerHTML = restrictionsListOld.innerHTML;
+            }
+        });
+        
+        if (restrictionsListOld) {
+            restrictionsObserver.observe(restrictionsListOld, { 
+                childList: true, 
+                subtree: true 
+            });
+        }
+        
+        // Observador para o relatório
+        const summaryObserver = new MutationObserver(function(mutations) {
+            if (totalDistanceOld && totalDistanceNew) {
+                totalDistanceNew.textContent = totalDistanceOld.textContent;
+            }
+            
+            if (totalTimeOld && totalTimeNew) {
+                totalTimeNew.textContent = totalTimeOld.textContent;
+            }
+            
+            if (totalTollsOld && totalTollsNew) {
+                totalTollsNew.textContent = totalTollsOld.textContent;
+            }
+            
+            // Sincronizar estado dos botões
+            if (saveRouteOld && saveRouteNew) {
+                saveRouteNew.disabled = saveRouteOld.disabled;
+            }
+            
+            if (printRouteOld && printRouteNew) {
+                printRouteNew.disabled = printRouteOld.disabled;
+            }
+        });
+        
+        // Observar o relatório completo
+        const routeSummaryOld = document.getElementById('route-summary');
+        if (routeSummaryOld) {
+            summaryObserver.observe(routeSummaryOld, { 
+                childList: true, 
+                subtree: true,
+                attributes: true,
+                characterData: true
+            });
+        }
     }
     
     // Função para expandir/colapsar as abas inferiores
