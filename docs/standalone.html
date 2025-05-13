@@ -653,20 +653,35 @@
         
         /* Ajuste para que o mapa ocupe todo o espaço disponível */
         .map-container {
-            margin-bottom: 60px; /* Espaço para as abas minimizadas */
             width: calc(100% - 380px); /* Largura ajustada para alinhar com a sidebar */
             margin-left: 380px; /* Afastado para alinhar com a sidebar */
-            position: absolute; /* Posicionamento absoluto para controle preciso */
+            position: fixed; /* Posicionamento fixo para cobrir toda a área */
             top: 0;
             right: 0;
             bottom: 60px; /* Altura das abas minimizadas */
+            left: 380px; /* Começa onde termina a sidebar */
             height: auto; /* Altura automática para preencher o espaço disponível */
+            z-index: 5; /* Garantir que fique acima do corpo da página, mas abaixo da sidebar e abas */
         }
         
         /* Garantir que o mapa ocupe 100% do container */
         #map {
             width: 100% !important;
             height: 100% !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+        }
+        
+        /* Classe especial para forçar tamanho completo */
+        .full-size-map {
+            width: 100% !important;
+            height: 100vh !important;
+            min-height: calc(100vh - 60px) !important;
+            max-height: none !important;
+            display: block !important;
         }
         
         /* Botão de expandir/minimizar removido - funcionalidade incorporada nos botões das abas */
@@ -1268,6 +1283,24 @@
         
         console.log(`Datas definidas automaticamente na inicialização do mapa: de ${formattedToday} até ${formattedEndDate}`);
         
+        // Ajustar a altura do container e do mapa para preencher todo o espaço disponível
+        function resizeMap() {
+            const mapContainer = document.querySelector('.map-container');
+            const mapElement = document.getElementById('map');
+            
+            if (mapContainer && mapElement) {
+                const windowHeight = window.innerHeight;
+                console.log('Redimensionando mapa para altura da janela:', windowHeight);
+                
+                // Forçar tamanho do elemento do mapa para ocupar todo o container
+                mapElement.style.width = '100%';
+                mapElement.style.height = '100%';
+                
+                // Adicionar classe para forçar tamanho completo
+                mapElement.classList.add('full-size-map');
+            }
+        }
+        
         // Opções do mapa
         const mapOptions = {
             center: { lat: -22.3673, lng: -48.3822 }, // Dois Córregos
@@ -1281,6 +1314,10 @@
         
         // Criar o mapa
         map = new google.maps.Map(document.getElementById("map"), mapOptions);
+        
+        // Redimensionar o mapa agora e quando a janela for redimensionada
+        resizeMap();
+        window.addEventListener('resize', resizeMap);
         
         // Inicializar o serviço de direções
         directionsService = new google.maps.DirectionsService();
