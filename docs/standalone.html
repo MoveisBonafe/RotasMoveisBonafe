@@ -1010,8 +1010,8 @@
         .tabs-section {
             padding-top: 15px;
             padding-bottom: 15px;
-            background-color: #f9f9f9;
-            border-top: 2px solid #ddd;
+            background-color: #ffffff;
+            border-top: 2px solid #1976D2;
             width: 100%;
             position: fixed;
             bottom: 0;
@@ -1476,9 +1476,15 @@
         <div class="tabs-container">
             <!-- Cabeçalho fixo com os botões de navegação -->
             <div class="tabs-header">
-                <button class="tab-btn active" data-tab="events">Eventos na Rota</button>
-                <button class="tab-btn" data-tab="restrictions">Restrições de Tráfego</button>
-                <button class="tab-btn" data-tab="report">Relatório da Rota</button>
+                <button class="tab-btn active" data-tab="events">
+                    <i class="fas fa-calendar-alt"></i> Eventos
+                </button>
+                <button class="tab-btn" data-tab="restrictions">
+                    <i class="fas fa-exclamation-triangle"></i> Restrições
+                </button>
+                <button class="tab-btn" data-tab="report">
+                    <i class="fas fa-route"></i> Relatório
+                </button>
             </div>
             
             <!-- Conteúdo da aba Eventos -->
@@ -2739,12 +2745,12 @@
                         }, 200);
                     }, 200);
                 }, 400);
-                
-                // Atualizar restrições
-                showTruckRestrictionsForCitiesOnRoute(selectedRoute.path, null); // null para mostrar todos os tipos
-                
-                // Atualizar rota atual
-                currentRouteIndex = selectedIndex;
+                    
+                    // Atualizar restrições
+                    showTruckRestrictionsForCitiesOnRoute(selectedRoute.path, null); // null para mostrar todos os tipos
+                    
+                    // Atualizar rota atual
+                    currentRouteIndex = selectedIndex;
             }
         });
     }
