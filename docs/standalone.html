@@ -677,6 +677,17 @@
             to { opacity: 1; }
         }
         
+        @keyframes fadeOutDown {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+        
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -1984,8 +1995,13 @@
         if (locations.length <= 1) {
             // Usar função auxiliar para mostrar notificação
             showNotification('Adicione pelo menos um destino para calcular a rota.', 'warning', '.route-controls');
+            // Esconder as abas inferiores se não houver destinos
+            toggleBottomTabsVisibility(false);
             return;
         }
+        
+        // Mostrar as abas inferiores quando houver destinos
+        toggleBottomTabsVisibility(true);
         
         // Mostrar spinner de carregamento centralizado no mapa
         showLoadingSpinner();
