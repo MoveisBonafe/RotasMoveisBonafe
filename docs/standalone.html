@@ -1192,26 +1192,172 @@
             { id: 8, name: "Borracharia 24h (Botucatu)", type: "mechanic", latitude: -22.8900, longitude: -48.4500, highway: "SP-300", cityName: "Botucatu", services: ["tire"] }
         ],
         
-        // Eventos de cidades (com aniversários atualizados para 2025)
+        // Eventos de cidades (com aniversários atualizados para o ano atual)
         cityEvents: [
-            // Aniversários das principais cidades (eventos fixos - feriados municipais)
-            { id: 99, cityName: "Dois Córregos", name: "Festival de Verão", startDate: "2025-01-01", endDate: "2025-12-31", isHoliday: false, description: "Festival com atividades durante todo o ano", restrictionLevel: "low" },
-            { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2025-02-04", endDate: "2025-02-04", isHoliday: true, description: "Aniversário de fundação de Dois Córregos em 04/02/1883", restrictionLevel: "low" },
-            { id: 2, cityName: "Jaú", name: "Aniversário da Cidade", startDate: "2025-08-15", endDate: "2025-08-15", isHoliday: true, description: "Aniversário de fundação de Jaú em 15/08/1853", restrictionLevel: "low" },
-            { id: 3, cityName: "Botucatu", name: "Aniversário da Cidade", startDate: "2025-04-14", endDate: "2025-04-14", isHoliday: true, description: "Aniversário de fundação de Botucatu em 14/04/1855", restrictionLevel: "low" },
-            { id: 4, cityName: "Bauru", name: "Aniversário da Cidade", startDate: "2025-08-01", endDate: "2025-08-01", isHoliday: true, description: "Aniversário de fundação de Bauru em 01/08/1896", restrictionLevel: "low" },
-            { id: 5, cityName: "Ribeirão Preto", name: "Aniversário da Cidade", startDate: "2025-06-19", endDate: "2025-06-19", isHoliday: true, description: "Aniversário de fundação de Ribeirão Preto em 19/06/1856", restrictionLevel: "low" },
-            { id: 6, cityName: "São Paulo", name: "Aniversário da Cidade", startDate: "2025-01-25", endDate: "2025-01-25", isHoliday: true, description: "Aniversário de fundação de São Paulo em 25/01/1554", restrictionLevel: "high" },
-            { id: 7, cityName: "Campinas", name: "Aniversário da Cidade", startDate: "2025-07-14", endDate: "2025-07-14", isHoliday: true, description: "Aniversário de fundação de Campinas em 14/07/1774", restrictionLevel: "medium" },
-            { id: 8, cityName: "São Carlos", name: "Aniversário da Cidade", startDate: "2025-11-04", endDate: "2025-11-04", isHoliday: true, description: "Aniversário de fundação de São Carlos em 04/11/1857", restrictionLevel: "low" },
+            // Festival de Verão é um evento especial o ano inteiro
+            { 
+              id: 99, 
+              cityName: "Dois Córregos", 
+              name: "Festival de Verão", 
+              startDate: new Date().getFullYear() + "-01-01", 
+              endDate: new Date().getFullYear() + "-12-31", 
+              isHoliday: false, 
+              description: "Festival com atividades durante todo o ano", 
+              restrictionLevel: "low",
+              foundationDate: null
+            },
             
-            // Eventos regulares
-            { id: 9, cityName: "Jaú", name: "Festa do Rodeio", startDate: "2025-06-10", endDate: "2025-06-20", isHoliday: false, description: "Evento com grande circulação de veículos", restrictionLevel: "medium" },
-            { id: 10, cityName: "Botucatu", name: "Festival de Inverno", startDate: "2025-07-15", endDate: "2025-07-30", isHoliday: false, description: "Evento cultural e gastronômico", restrictionLevel: "low" },
-            { id: 11, cityName: "Bauru", name: "Exposição Agropecuária", startDate: "2025-08-05", endDate: "2025-08-15", isHoliday: false, description: "Feira agropecuária com shows", restrictionLevel: "high" },
-            { id: 12, cityName: "Ribeirão Preto", name: "Agrishow", startDate: "2025-04-25", endDate: "2025-04-29", isHoliday: false, description: "Maior feira de agronegócio da América Latina com forte impacto no tráfego local", restrictionLevel: "high" },
-            { id: 13, cityName: "São Paulo", name: "Virada Cultural", startDate: "2025-05-17", endDate: "2025-05-18", isHoliday: false, description: "Festival de 24 horas com eventos culturais pela cidade", restrictionLevel: "medium" },
-            { id: 14, cityName: "Ribeirão Preto", name: "Feira Tecnológica", startDate: "2025-05-15", endDate: "2025-05-18", isHoliday: false, description: "Exposição de novas tecnologias agrícolas", restrictionLevel: "medium" }
+            // Datas de aniversário atualizadas com o ano atual
+            { 
+              id: 1, 
+              cityName: "Dois Córregos", 
+              name: "Aniversário da Cidade", 
+              startDate: new Date().getFullYear() + "-02-04", 
+              endDate: new Date().getFullYear() + "-02-04", 
+              isHoliday: true, 
+              description: "Aniversário da fundação de Dois Córregos (04/02/1883)", 
+              restrictionLevel: "low",
+              foundationDate: "1883-02-04"
+            },
+            { 
+              id: 2, 
+              cityName: "Jaú", 
+              name: "Aniversário da Cidade", 
+              startDate: new Date().getFullYear() + "-08-15", 
+              endDate: new Date().getFullYear() + "-08-15", 
+              isHoliday: true, 
+              description: "Aniversário da fundação de Jaú (15/08/1853)", 
+              restrictionLevel: "low",
+              foundationDate: "1853-08-15"
+            },
+            { 
+              id: 3, 
+              cityName: "Botucatu", 
+              name: "Aniversário da Cidade", 
+              startDate: new Date().getFullYear() + "-04-14", 
+              endDate: new Date().getFullYear() + "-04-14", 
+              isHoliday: true, 
+              description: "Aniversário da fundação de Botucatu (14/04/1855)", 
+              restrictionLevel: "low",
+              foundationDate: "1855-04-14"
+            },
+            { 
+              id: 4, 
+              cityName: "Bauru", 
+              name: "Aniversário da Cidade", 
+              startDate: new Date().getFullYear() + "-08-01", 
+              endDate: new Date().getFullYear() + "-08-01", 
+              isHoliday: true, 
+              description: "Aniversário da fundação de Bauru (01/08/1896)", 
+              restrictionLevel: "low",
+              foundationDate: "1896-08-01"
+            },
+            { 
+              id: 5, 
+              cityName: "Ribeirão Preto", 
+              name: "Aniversário da Cidade", 
+              startDate: new Date().getFullYear() + "-06-19", 
+              endDate: new Date().getFullYear() + "-06-19", 
+              isHoliday: true, 
+              description: "Aniversário da fundação de Ribeirão Preto (19/06/1856)", 
+              restrictionLevel: "low",
+              foundationDate: "1856-06-19"
+            },
+            { 
+              id: 6, 
+              cityName: "São Paulo", 
+              name: "Aniversário da Cidade", 
+              startDate: new Date().getFullYear() + "-01-25", 
+              endDate: new Date().getFullYear() + "-01-25", 
+              isHoliday: true, 
+              description: "Aniversário da fundação de São Paulo (25/01/1554)", 
+              restrictionLevel: "high",
+              foundationDate: "1554-01-25"
+            },
+            { 
+              id: 7, 
+              cityName: "Campinas", 
+              name: "Aniversário da Cidade", 
+              startDate: new Date().getFullYear() + "-07-14", 
+              endDate: new Date().getFullYear() + "-07-14", 
+              isHoliday: true, 
+              description: "Aniversário da fundação de Campinas (14/07/1774)", 
+              restrictionLevel: "medium",
+              foundationDate: "1774-07-14"
+            },
+            { 
+              id: 8, 
+              cityName: "São Carlos", 
+              name: "Aniversário da Cidade", 
+              startDate: new Date().getFullYear() + "-11-04", 
+              endDate: new Date().getFullYear() + "-11-04", 
+              isHoliday: true, 
+              description: "Aniversário da fundação de São Carlos (04/11/1857)", 
+              restrictionLevel: "low",
+              foundationDate: "1857-11-04"
+            },
+            
+            // Eventos regulares - Usamos o ano atual para estes também
+            { 
+              id: 9, 
+              cityName: "Jaú", 
+              name: "Festa do Rodeio", 
+              startDate: new Date().getFullYear() + "-06-10", 
+              endDate: new Date().getFullYear() + "-06-20", 
+              isHoliday: false, 
+              description: "Evento com grande circulação de veículos", 
+              restrictionLevel: "medium" 
+            },
+            { 
+              id: 10, 
+              cityName: "Botucatu", 
+              name: "Festival de Inverno", 
+              startDate: new Date().getFullYear() + "-07-15", 
+              endDate: new Date().getFullYear() + "-07-30", 
+              isHoliday: false, 
+              description: "Evento cultural e gastronômico", 
+              restrictionLevel: "low" 
+            },
+            { 
+              id: 11, 
+              cityName: "Bauru", 
+              name: "Exposição Agropecuária", 
+              startDate: new Date().getFullYear() + "-08-05", 
+              endDate: new Date().getFullYear() + "-08-15", 
+              isHoliday: false, 
+              description: "Feira agropecuária com shows", 
+              restrictionLevel: "high" 
+            },
+            { 
+              id: 12, 
+              cityName: "Ribeirão Preto", 
+              name: "Agrishow", 
+              startDate: new Date().getFullYear() + "-04-25", 
+              endDate: new Date().getFullYear() + "-04-29", 
+              isHoliday: false, 
+              description: "Maior feira de agronegócio da América Latina", 
+              restrictionLevel: "high" 
+            },
+            { 
+              id: 13, 
+              cityName: "São Paulo", 
+              name: "Virada Cultural", 
+              startDate: new Date().getFullYear() + "-05-17", 
+              endDate: new Date().getFullYear() + "-05-18", 
+              isHoliday: false, 
+              description: "Festival de 24 horas com eventos culturais pela cidade", 
+              restrictionLevel: "medium" 
+            },
+            { 
+              id: 14, 
+              cityName: "Ribeirão Preto", 
+              name: "Feira Tecnológica", 
+              startDate: new Date().getFullYear() + "-05-15", 
+              endDate: new Date().getFullYear() + "-05-18", 
+              isHoliday: false, 
+              description: "Exposição de novas tecnologias agrícolas", 
+              restrictionLevel: "medium" 
+            }
         ],
         
         // Restrições para caminhões
