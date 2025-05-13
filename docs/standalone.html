@@ -637,6 +637,15 @@
             color: #495057;
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .expand-indicator {
+            margin-left: 8px;
+            font-size: 10px;
+            transition: transform 0.3s ease;
         }
         
         .bottom-tab-btn::after {
@@ -909,9 +918,18 @@
         <div class="bottom-tabs-container">
             <!-- Navegação das abas inferiores -->
             <div class="bottom-tabs-nav">
-                <button class="bottom-tab-btn active" data-tab="bottom-events">Eventos na Rota</button>
-                <button class="bottom-tab-btn" data-tab="bottom-restrictions">Restrições de Tráfego</button>
-                <button class="bottom-tab-btn" data-tab="bottom-report">Relatório da Rota</button>
+                <button class="bottom-tab-btn active" data-tab="bottom-events">
+                    Eventos na Rota
+                    <span class="expand-indicator">▲</span>
+                </button>
+                <button class="bottom-tab-btn" data-tab="bottom-restrictions">
+                    Restrições de Tráfego
+                    <span class="expand-indicator">▲</span>
+                </button>
+                <button class="bottom-tab-btn" data-tab="bottom-report">
+                    Relatório da Rota
+                    <span class="expand-indicator">▲</span>
+                </button>
             </div>
             
             <!-- Conteúdo da aba Eventos -->
@@ -1324,6 +1342,14 @@
             const tabsContainer = document.querySelector('.bottom-tabs-container');
             if (tabsContainer) {
                 tabsContainer.style.height = '52px';
+                
+                // Configurar os indicadores de expansão/contração iniciais
+                bottomTabButtons.forEach(btn => {
+                    const indicator = btn.querySelector('.expand-indicator');
+                    if (indicator) {
+                        indicator.textContent = btn.classList.contains('active') ? '▼' : '▲';
+                    }
+                });
             }
             
             bottomTabButtons.forEach(button => {
@@ -1360,11 +1386,17 @@
                                 // Minimizando
                                 tabsContainer.style.height = '52px';
                                 button.classList.remove('expanded');
+                                // Alterar o indicador de expansão para seta para cima
+                                const indicator = button.querySelector('.expand-indicator');
+                                if (indicator) indicator.textContent = '▲';
                                 console.log("Minimizando aba:", tabId);
                             } else {
                                 // Expandindo
                                 tabsContainer.style.height = '400px';
                                 button.classList.add('expanded');
+                                // Alterar o indicador de expansão para seta para baixo
+                                const indicator = button.querySelector('.expand-indicator');
+                                if (indicator) indicator.textContent = '▼';
                                 console.log("Expandindo aba:", tabId);
                             }
                         }
