@@ -1486,8 +1486,10 @@
             
             <!-- Container das abas com rolagem independente para cada aba -->
             <div class="bottom-tabs-content-container">
+                <!-- IMPORTANTE: os estilos inline foram adicionados para evitar sobreposição -->
+                
                 <!-- Conteúdo da aba Eventos -->
-                <div class="bottom-tab-content active" id="bottom-events-content">
+                <div class="bottom-tab-content active" id="bottom-events-content" style="display: block; position: static; z-index: auto;">
                     <h5>Eventos nas cidades da rota:</h5>
                     <div class="events-list" id="events-list">
                         <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
@@ -1495,7 +1497,7 @@
                 </div>
                 
                 <!-- Conteúdo da aba Restrições -->
-                <div class="bottom-tab-content" id="bottom-restrictions-content">
+                <div class="bottom-tab-content" id="bottom-restrictions-content" style="display: none; position: static; z-index: auto;">
                     <h5>Restrições para caminhões do percurso:</h5>
                     <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
                     <div class="restrictions-list" id="restrictions-list">
@@ -1504,7 +1506,7 @@
                 </div>
                 
                 <!-- Conteúdo da aba Relatório -->
-                <div class="bottom-tab-content" id="bottom-report-content">
+                <div class="bottom-tab-content" id="bottom-report-content" style="display: none; position: static; z-index: auto;">
                     <div id="route-summary" class="mb-4">
                         <p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>
                     </div>
