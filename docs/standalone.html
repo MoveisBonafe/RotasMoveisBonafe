@@ -982,12 +982,10 @@
                     <!-- O conteúdo de locais fica no sidebar -->
                 
                     <!-- Filtro de eventos por data (movido para cima da origem) -->
-                    <div class="form-group mb-3">
-                        <label>Filtrar eventos por data:</label>
-                        <div class="date-range-container d-flex gap-2">
-                            <input type="date" id="start-date" class="form-control form-control-sm">
-                            <input type="date" id="end-date" class="form-control form-control-sm">
-                        </div>
+                    <!-- Removido filtro de eventos por data conforme solicitado -->
+                    <div style="display: none">
+                        <input type="hidden" id="start-date">
+                        <input type="hidden" id="end-date">
                     </div>
                     
                     <!-- Origem fixa -->
@@ -3980,103 +3978,13 @@
                     return; // Pular para o próximo evento
                 }
                 
-                // PARTE 2: AJUSTAR DATAS DO EVENTO PARA O ANO ATUAL
-                // Evento especial: Festival de Verão
-                const isFestivalVerao = event.id === 99 && event.name === "Festival de Verão";
-                
-                // Obter o ano atual
-                const currentYear = new Date().getFullYear();
-                
-                // Criar novas datas para o evento ajustadas para o ano atual
-                const eventStart = new Date(event.startDate);
-                const eventEnd = new Date(event.endDate);
-                
-                // Garantir que estamos usando o ano atual para eventos anuais (aniversários)
-                if (event.name.includes("Aniversário") || event.isHoliday) {
-                    eventStart.setFullYear(currentYear);
-                    eventEnd.setFullYear(currentYear);
-                }
-                
-                // Ajustar horas para garantir dias completos
-                eventStart.setHours(0,0,0,0);
-                eventEnd.setHours(23,59,59,999);
-                
-                // Log detalhado
-                console.log(`[EVENTO] ${event.name} (${event.cityName}): ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')}`);
-                
-                // PARTE 3: APLICAR FILTRO DE DATA
-                if (startDateValue && endDateValue) {
-                    // Tratamento especial para o Festival de Verão
-                    if (isFestivalVerao) {
-                        console.log(`[FESTIVAL] Festival de Verão excluído quando há filtro de data`);
-                        includeEvent = false;
-                        return;
-                    }
-                    
-                    try {
-                        // Criar objetos Date para as datas do filtro
-                        let filterStart = new Date(startDateValue);
-                        let filterEnd = new Date(endDateValue);
-                        
-                        // Verificar se as datas são objetos Date válidos
-                        if (isNaN(filterStart.getTime()) || isNaN(filterEnd.getTime())) {
-                            console.error(`[ERRO] Datas de filtro inválidas: ${startDateValue}, ${endDateValue}`);
-                            
-                            // Tentar corrigir formatos de data (pode ser ISO ou MM/DD/YYYY)
-                            if (startDateValue.includes('/')) {
-                                const parts = startDateValue.split('/');
-                                filterStart = new Date(parts[2], parts[0]-1, parts[1]);
-                            }
-                            
-                            if (endDateValue.includes('/')) {
-                                const parts = endDateValue.split('/');
-                                filterEnd = new Date(parts[2], parts[0]-1, parts[1]);
-                            }
-                            
-                            // Verificar novamente
-                            if (isNaN(filterStart.getTime()) || isNaN(filterEnd.getTime())) {
-                                console.error(`[ERRO] Impossível corrigir datas inválidas`);
-                                includeEvent = true; // Em caso de erro, mostrar evento
-                                return;
-                            }
-                        }
-                        
-                        // Garantir dia completo
-                        filterStart.setHours(0,0,0,0);
-                        filterEnd.setHours(23,59,59,999);
-                        
-                        // Verificar sobreposição entre as datas
-                        const hasOverlap = (
-                            // Evento começa dentro do período do filtro
-                            (eventStart >= filterStart && eventStart <= filterEnd) ||
-                            // Evento termina dentro do período do filtro
-                            (eventEnd >= filterStart && eventEnd <= filterEnd) ||
-                            // Evento abrange todo o período do filtro
-                            (eventStart <= filterStart && eventEnd >= filterEnd)
-                        );
-                        
-                        console.log(`[VERIFICAÇÃO] Data evento ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')} vs. Filtro ${filterStart.toLocaleDateString('pt-BR')}-${filterEnd.toLocaleDateString('pt-BR')}`);
-                        
-                        if (hasOverlap) {
-                            console.log(`[ACEITO] Evento '${event.name}' está no período filtrado`);
-                            includeEvent = true;
-                        } else {
-                            console.log(`[REJEITADO] Evento '${event.name}' fora do período filtrado`);
-                            includeEvent = false;
-                        }
-                    } catch (dateError) {
-                        console.error(`[ERRO] Falha ao processar datas do filtro:`, dateError);
-                        includeEvent = true; // Em caso de erro mostrar o evento
-                    }
-                } else {
-                    // Sem filtro de data, mostrar todos os eventos
-                    console.log(`[ACEITO] Evento '${event.name}' aceito (sem filtro de data)`);
-                    includeEvent = true;
-                }
+                // SEM FILTRO DE DATA - MOSTRAR TODOS OS EVENTOS
+                console.log(`[ACEITO SEM FILTRO] Evento '${event.name}' em ${event.cityName}`);
+                includeEvent = true;
                 
             } catch (error) {
-                console.error(`[ERRO GERAL] Falha ao processar evento ${event.name}:`, error);
-                includeEvent = true; // Em caso de erro geral, mostrar o evento
+                console.error(`[ERRO] Falha ao processar evento ${event.name}:`, error);
+                includeEvent = true; // Em caso de erro, mostrar o evento de qualquer forma
             }
             
             // Se passou por todos os filtros, incluir o evento
