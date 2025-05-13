@@ -2288,8 +2288,11 @@
         };
         
         directionsService.route(request, (result, status) => {
-            // Esconder indicador de progresso
-            document.getElementById('loading-spinner').style.display = 'none';
+            // Esconder indicador de progresso se existir
+            const loadingSpinner = document.getElementById('loading-spinner');
+            if (loadingSpinner) {
+                loadingSpinner.style.display = 'none';
+            }
             
             if (status === google.maps.DirectionsStatus.OK) {
                 // Verificar se o DirectionsRenderer foi inicializado corretamente
@@ -3327,7 +3330,10 @@
         }
         
         // Mostrar o seletor de rotas alternativas se houver mais de uma rota
-        document.getElementById('route-alternatives').style.display = alternativeRoutes.length > 1 ? 'block' : 'none';
+        const routeAlternativesEl = document.getElementById('route-alternatives');
+        if (routeAlternativesEl) {
+            routeAlternativesEl.style.display = alternativeRoutes.length > 1 ? 'block' : 'none';
+        }
         
         // Configurar o evento para alternar entre as rotas
         alternativeSelect.onchange = function() {
