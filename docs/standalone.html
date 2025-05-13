@@ -3842,133 +3842,207 @@
         });
     }
 
-    // Mostrar eventos para as cidades na rota
-    // Função reescrita para mostrar eventos de forma simples e direta para GitHub Pages
+    // Mostrar eventos para as cidades na rota - FUNÇÃO COMPLETAMENTE REESCRITA
     function showEventsForCitiesOnRoute(pathIds, startDateStr, endDateStr) {
-        // Chamar a nova função que implementa a filtragem simplificada
-        return showEventsSimplified(pathIds, startDateStr, endDateStr);
+        console.log("=================== NOVA EXECUÇÃO ===================");
+        console.log("Mostrando eventos para rota com IDs:", pathIds);
+        console.log("Datas de filtro (string):", startDateStr, endDateStr);
         
-        /********* ORIGINAL SUBSTITUÍDO - MANTENDO COMENTADO PARA REFERÊNCIA *********
-        // Código da implementação antiga abaixo:
-        // 1. INICIALIZAÇÃO BÁSICA
-        console.log("==== FILTRAGEM DE EVENTOS SIMPLIFICADA ====");
+        // ========================================================================================
+        // ETAPA 1: CONFIGURAÇÃO E VALIDAÇÃO INICIAL
+        // ========================================================================================
         
-        // Obter o elemento container da lista de eventos
-        const eventsListContainer = document.getElementById('events-list');
-        if (!eventsListContainer) {
-            console.error("Container da lista de eventos não encontrado");
+        // Verificar e validar as datas de entrada
+        let startDateValue = startDateStr;
+        let endDateValue = endDateStr;
+        
+        // Obter o ano atual (usado para ajustar as datas de aniversário)
+        const currentYear = new Date().getFullYear();
+        
+        // Se não fornecidas, usar valores padrão: hoje e uma semana depois
+        if (!startDateValue || !endDateValue) {
+            console.warn("Datas não fornecidas, usando período padrão", startDateValue, endDateValue);
+            
+            const today = new Date();
+            const oneWeekLater = new Date(today.getTime());
+            oneWeekLater.setDate(today.getDate() + 7);
+            
+            // Converter para formato de string YYYY-MM-DD
+            startDateValue = !startDateValue ? today.toISOString().split('T')[0] : startDateValue;
+            endDateValue = !endDateValue ? oneWeekLater.toISOString().split('T')[0] : endDateValue;
+            
+            console.log("Datas ajustadas para:", startDateValue, "até", endDateValue);
+        }
+        
+        // Verificações de segurança
+        if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
+            console.error("IDs de rota inválidos ou vazios:", pathIds);
             return;
         }
         
-        // Limpar a lista atual
+        // Converter datas de string para objetos Date para comparação
+        const startDate = new Date(startDateValue);
+        const endDate = new Date(endDateValue);
+        
+        // Verificar se as datas são válidas
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+            console.error("Datas inválidas:", startDateValue, endDateValue);
+            return;
+        }
+        
+        // Garantir que a data final é após a data inicial
+        if (endDate < startDate) {
+            console.warn("Data final é anterior à data inicial. Invertendo as datas.");
+            const tempDate = endDateValue;
+            endDateValue = startDateValue;
+            startDateValue = tempDate;
+        }
+        
+        console.log("Datas de filtro (final):", 
+            startDateValue, "→", new Date(startDateValue).toLocaleDateString('pt-BR'),
+            endDateValue, "→", new Date(endDateValue).toLocaleDateString('pt-BR'));
+        
+        // ========================================================================================
+        // ETAPA 2: DETERMINAÇÃO DAS CIDADES NA ROTA
+        // ========================================================================================
+        
+        // Garantir que temos localizações válidas para trabalhar
+        if (!locations || !Array.isArray(locations) || locations.length === 0) {
+            console.error("Nenhuma localização disponível para mostrar eventos");
+            return;
+        }
+        
+        // Limpar a lista de eventos
+        const eventsListContainer = document.getElementById('events-list');
+        if (!eventsListContainer) {
+            console.error("Container de eventos não encontrado no DOM");
+            return;
+        }
         eventsListContainer.innerHTML = '';
         
-        // 2. GARANTIR ROTA VÁLIDA
-        if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
-            // Se não há rota, usar apenas a origem
+        // Log para diagnóstico
+        console.log("Eventos disponíveis:", mockData.cityEvents);
+        
+        // Verificar novamente se temos IDs de rota válidos
+        if (!pathIds || pathIds.length === 0) {
+            // Se não tivermos IDs de caminho, usar pelo menos a origem
             const origin = locations.find(loc => loc.isOrigin);
             if (origin) {
                 pathIds = [origin.id];
+                console.log("Usando apenas a origem para mostrar eventos:", pathIds);
             } else {
-                eventsListContainer.innerHTML = '<p class="text-muted">Nenhuma rota definida.</p>';
+                console.error("Nenhuma origem encontrada. Impossível mostrar eventos.");
+                eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos.</p>';
                 return;
             }
         }
         
-        // 3. DEFINIR CIDADES NA ROTA
-        const citiesOnRoute = [];
-        
-        // Sempre incluir a origem (Dois Córregos)
-        citiesOnRoute.push("Dois Córregos");
-        
-        // Adicionar cidades dos destinos na rota
-        pathIds.forEach(id => {
-            const location = locations.find(loc => loc.id === id);
-            if (location && location.name && !citiesOnRoute.includes(location.name)) {
-                citiesOnRoute.push(location.name);
-            }
-        });
-        
-        console.log("Cidades na rota:", citiesOnRoute);
-        
-        // 4. DEFINIR PERÍODO DO FILTRO
-        let startDate, endDate;
-        
-        // Usar data atual
-        const currentYear = new Date().getFullYear();
-        
-        // Definir datas a partir dos parâmetros ou usar padrão
-        if (startDateStr && endDateStr) {
-            startDate = new Date(startDateStr);
-            endDate = new Date(endDateStr);
+        // Converter IDs para objetos de localização de forma mais robusta
+        const pathLocations = [];
+        for (const id of pathIds) {
+            // Garantir que estamos trabalhando com strings para comparação
+            const idStr = String(id);
             
-            // Verificar se as datas são válidas
-            if (isNaN(startDate) || isNaN(endDate)) {
-                console.warn("Datas de filtro inválidas, usando padrão");
-                startDate = new Date();
-                endDate = new Date();
-                endDate.setDate(startDate.getDate() + 7);
+            // Procurar localização com este ID
+            const location = locations.find(loc => String(loc.id) === idStr);
+            
+            if (location) {
+                pathLocations.push(location);
+                console.log(`Localização encontrada para ID ${idStr}:`, location);
             }
-        } else {
-            // Usar período padrão: hoje + 7 dias
-            startDate = new Date();
-            endDate = new Date();
-            endDate.setDate(startDate.getDate() + 7);
         }
         
-        // Garantir horário completo nos dias
-        startDate.setHours(0, 0, 0, 0);
-        endDate.setHours(23, 59, 59, 999);
+        if (pathLocations.length === 0) {
+            console.error("Nenhuma localização válida encontrada na rota");
+            eventsListContainer.innerHTML = '<p class="text-muted">Erro ao encontrar localizações na rota.</p>';
+            return;
+        }
         
-        console.log("Período do filtro:", 
-            startDate.toLocaleDateString(), "a", 
-            endDate.toLocaleDateString()
-        );
+        // EXTRAÇÃO MELHORADA DE CIDADES DO PERCURSO
+        // Array para armazenar os nomes das cidades que estão REALMENTE na rota
+        const citiesOnRoute = [];
         
-        // 5. FILTRAR EVENTOS
-        const eventsOnRoute = [];
+        // Cidade de origem (sempre incluir Dois Córregos)
+        citiesOnRoute.push("Dois Córregos");
+        console.log(`[ROTA] Adicionada cidade de origem: Dois Córregos`);
+        
+        // Processar CADA destino na rota para extrair nomes de cidades
+        for (const location of pathLocations) {
+            // Apenas adicionar se tivermos um nome válido
+            if (location && location.name) {
+                // Verificar se o nome é uma cidade conhecida (estratégia 1)
+                const knownCities = [
+                    "Dois Córregos", "Jaú", "Botucatu", "Bauru", "Ribeirão Preto", 
+                    "São Paulo", "Campinas", "São Carlos", "Piracicaba", "Araraquara",
+                    "Americana", "Sorocaba", "Limeira", "Rio Claro"
+                ];
+                
+                // Se o nome exato da localização é uma cidade conhecida
+                if (knownCities.includes(location.name) && !citiesOnRoute.includes(location.name)) {
+                    citiesOnRoute.push(location.name);
+                    console.log(`[ROTA] Adicionada cidade conhecida: ${location.name}`);
+                    continue; // Ir para o próximo local
+                }
+                
+                // Estratégia 2: Usar o nome da localização diretamente
+                if (!citiesOnRoute.includes(location.name)) {
+                    citiesOnRoute.push(location.name);
+                    console.log(`[ROTA] Adicionado local como possível cidade: ${location.name}`);
+                }
+            }
+        }
+        
+        console.log(`[ROTA] Cidades encontradas no percurso (${citiesOnRoute.length}): ${citiesOnRoute.join(', ')}`);
+        
+        console.log("APENAS ESTAS CIDADES ESTÃO NA ROTA REAL:", citiesOnRoute);
+        
+        // NOVA IMPLEMENTAÇÃO DE FILTRAGEM DE EVENTOS
+        console.log("NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data");
+        console.log(`Filtrando eventos para cidades: ${citiesOnRoute.join(', ')}`);
+        console.log(`Filtro de data: ${startDateValue || 'sem data inicial'} a ${endDateValue || 'sem data final'}`);
+        
+        // Ajuste condicional das datas - garantir que temos valores válidos
+        // Usar o ano atual do sistema
+        const currentYear = new Date().getFullYear();
+        
+        if (!startDateValue || !endDateValue) {
+            // Se datas não foram especificadas, usar intervalo padrão do ano atual
+            console.log(`[AJUSTE AUTOMÁTICO] Definindo intervalo padrão para o ano ${currentYear}`);
+            
+            // Usar o ano atual para filtrar eventos
+            if (!startDateValue) startDateValue = `${currentYear}-01-01`;
+            if (!endDateValue) endDateValue = `${currentYear}-12-31`;
+            
+            console.log(`[DATA] Intervalo ajustado para: ${startDateValue} até ${endDateValue}`);
+        } else {
+            // Se as datas foram especificadas, garantir que estamos no ano correto
+            // Extrair apenas os valores de data (sem hora)
+            const startParts = startDateValue.split('T')[0].split('-');
+            const endParts = endDateValue.split('T')[0].split('-');
+            
+            // Verificar se o ano é diferente de 2025
+            if (startParts[0] !== String(currentYear) || endParts[0] !== String(currentYear)) {
+                console.log(`[AVISO] Ajustando datas para o ano ${currentYear}`);
+                // Manter mês e dia, mas ajustar o ano
+                startDateValue = `${currentYear}-${startParts[1]}-${startParts[2]}`;
+                endDateValue = `${currentYear}-${endParts[1]}-${endParts[2]}`;
+            }
+        }
+        
+        // Array para armazenar eventos filtrados
+        let eventsOnRoute = [];
         
         // Para cada evento nos dados...
         mockData.cityEvents.forEach(event => {
-            // FILTRO 1: CIDADE - O evento deve estar em uma cidade na rota
-            if (!citiesOnRoute.includes(event.cityName)) {
-                return; // Pular para o próximo evento
-            }
+            let includeEvent = false;
             
-            // FILTRO 2: DATA - O evento deve estar no período do filtro
             try {
-                // Ajustar datas do evento para o ano atual
-                const eventStart = new Date(event.startDate);
-                const eventEnd = new Date(event.endDate);
-                
-                // Para eventos anuais (aniversários e feriados), usar o ano atual
-                if (event.name.includes("Aniversário") || event.isHoliday) {
-                    eventStart.setFullYear(currentYear);
-                    eventEnd.setFullYear(currentYear);
+                // PARTE 1: VERIFICAÇÃO DE CIDADE - Evento deve estar em uma cidade do percurso
+                const cityMatch = citiesOnRoute.includes(event.cityName);
+                if (!cityMatch) {
+                    console.log(`[CIDADE] Evento '${event.name}' em '${event.cityName}' REJEITADO - cidade não está no percurso`);
+                    return; // Pular para o próximo evento
                 }
-                
-                // Garantir dia completo
-                eventStart.setHours(0, 0, 0, 0);
-                eventEnd.setHours(23, 59, 59, 999);
-                
-                // Verificar sobreposição de datas:
-                // 1. Evento começa durante o período do filtro, OU
-                // 2. Evento termina durante o período do filtro, OU
-                // 3. Evento abrange todo o período do filtro
-                const hasOverlap = (
-                    (eventStart >= startDate && eventStart <= endDate) ||
-                    (eventEnd >= startDate && eventEnd <= endDate) ||
-                    (eventStart <= startDate && eventEnd >= endDate)
-                );
-                
-                if (hasOverlap) {
-                    eventsOnRoute.push(event);
-                }
-            } catch (error) {
-                console.error("Erro ao processar datas do evento:", event.name, error);
-            }
-            
-        });
                 
                 // PARTE 2: AJUSTAR DATAS DO EVENTO PARA O ANO ATUAL
                 // Evento especial: Festival de Verão
@@ -4125,178 +4199,6 @@
         });
     }
 
-    // Nova função para mostrar eventos (implementação simplificada)
-    function showEventsSimplified(pathIds, startDateStr, endDateStr) {
-        // 1. INICIALIZAÇÃO
-        console.log("==== NOVA FUNÇÃO DE FILTRAGEM DE EVENTOS ====");
-        clearEventMarkers();
-        
-        // Obter container da lista de eventos
-        const eventsListContainer = document.getElementById('events-list');
-        if (!eventsListContainer) {
-            console.error("Container de eventos não encontrado");
-            return;
-        }
-        eventsListContainer.innerHTML = '';
-        
-        // 2. VERIFICAR ROTA
-        if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
-            eventsListContainer.innerHTML = '<p class="text-muted">Adicione destinos e calcule a rota para ver eventos.</p>';
-            return;
-        }
-        
-        // 3. OBTER CIDADES NA ROTA
-        const citiesOnRoute = ["Dois Córregos"]; // Sempre incluir a origem
-        
-        pathIds.forEach(id => {
-            const location = locations.find(loc => loc.id === id);
-            if (location && location.name && !citiesOnRoute.includes(location.name)) {
-                citiesOnRoute.push(location.name);
-            }
-        });
-        
-        console.log("Cidades na rota:", citiesOnRoute);
-        
-        // 4. PROCESSAR DATAS
-        const currentYear = new Date().getFullYear();
-        let startDate, endDate;
-        
-        if (startDateStr && endDateStr) {
-            startDate = new Date(startDateStr);
-            endDate = new Date(endDateStr);
-            
-            if (isNaN(startDate) || isNaN(endDate)) {
-                const today = new Date();
-                startDate = today;
-                endDate = new Date();
-                endDate.setDate(today.getDate() + 7);
-            }
-        } else {
-            const today = new Date();
-            startDate = today;
-            endDate = new Date();
-            endDate.setDate(today.getDate() + 7);
-        }
-        
-        startDate.setHours(0, 0, 0, 0);
-        endDate.setHours(23, 59, 59, 999);
-        
-        console.log("Período de filtro:", 
-            startDate.toLocaleDateString('pt-BR'), "a", 
-            endDate.toLocaleDateString('pt-BR')
-        );
-        
-        // 5. FILTRAR EVENTOS
-        const filteredEvents = [];
-        
-        if (mockData && mockData.cityEvents) {
-            mockData.cityEvents.forEach(event => {
-                // Filtro 1: Cidade deve estar na rota
-                if (!citiesOnRoute.includes(event.cityName)) {
-                    return;
-                }
-                
-                // Filtro 2: Data deve estar no período selecionado
-                try {
-                    const eventStart = new Date(event.startDate);
-                    const eventEnd = new Date(event.endDate);
-                    
-                    // Ajustar ano para eventos anuais
-                    if (event.name.includes("Aniversário") || event.isHoliday) {
-                        eventStart.setFullYear(currentYear);
-                        eventEnd.setFullYear(currentYear);
-                    }
-                    
-                    eventStart.setHours(0, 0, 0, 0);
-                    eventEnd.setHours(23, 59, 59, 999);
-                    
-                    // Verificar sobreposição de datas
-                    const hasOverlap = (
-                        (eventStart >= startDate && eventStart <= endDate) ||
-                        (eventEnd >= startDate && eventEnd <= endDate) ||
-                        (eventStart <= startDate && eventEnd >= endDate)
-                    );
-                    
-                    if (hasOverlap) {
-                        filteredEvents.push(event);
-                    }
-                } catch (error) {
-                    console.error("Erro ao processar datas:", error);
-                }
-            });
-        }
-        
-        // 6. EXIBIR EVENTOS
-        if (filteredEvents.length === 0) {
-            eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado para este período e cidades.</p>';
-            return;
-        }
-        
-        // Ordenar por data
-        filteredEvents.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
-        
-        // Exibir na lista
-        filteredEvents.forEach((event, index) => {
-            // Formatar datas
-            const formatDate = (dateStr) => {
-                const date = new Date(dateStr);
-                if (event.name.includes("Aniversário") || event.isHoliday) {
-                    date.setFullYear(currentYear);
-                }
-                return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth()+1).toString().padStart(2, '0')}/${date.getFullYear()}`;
-            };
-            
-            const startFormatted = formatDate(event.startDate);
-            const endFormatted = formatDate(event.endDate);
-            
-            // Definir estilo
-            let iconColor = event.isHoliday ? 'text-danger' : 'text-info';
-            let badge = '';
-            
-            if (event.restrictionLevel === 'high') {
-                badge = '<span class="badge bg-danger ms-2">Restrição Alta</span>';
-            } else if (event.restrictionLevel === 'medium') {
-                badge = '<span class="badge bg-warning ms-2">Restrição Média</span>';
-            } else if (event.restrictionLevel === 'low') {
-                badge = '<span class="badge bg-success ms-2">Restrição Baixa</span>';
-            }
-            
-            // Criar elemento
-            const eventItem = document.createElement('div');
-            eventItem.className = 'event-item';
-            eventItem.innerHTML = `
-                <div class="d-flex align-items-start">
-                    <i class="bi bi-calendar-event ${iconColor} me-2 mt-1"></i>
-                    <div>
-                        <div class="d-flex align-items-center">
-                            <strong>${event.name}</strong>
-                            ${badge}
-                        </div>
-                        <div class="text-muted">${event.cityName}</div>
-                        <div class="text-muted small">
-                            ${startFormatted}${startFormatted !== endFormatted ? ' até ' + endFormatted : ''}
-                        </div>
-                        <p class="mb-0 small">${event.description}</p>
-                    </div>
-                </div>
-            `;
-            
-            eventsListContainer.appendChild(eventItem);
-            
-            // Adicionar separador (exceto último)
-            if (index < filteredEvents.length - 1) {
-                const divider = document.createElement('hr');
-                divider.className = 'my-2';
-                eventsListContainer.appendChild(divider);
-            }
-            
-            // Adicionar marcador no mapa
-            addEventMarker(event);
-        });
-        
-        console.log(`Exibindo ${filteredEvents.length} eventos`);
-    }
-    
     // Adicionar marcador para um evento
     function addEventMarker(event, location) {
         // Seletor de ícone com base no tipo de evento
@@ -5736,13 +5638,14 @@
         }
     }
 
-    // Filtrar eventos por data - atualiza automaticamente ao mudar datas
+    // Filtrar eventos por data - COMPLETAMENTE REESCRITO
     function filterEventsByDate() {
         console.log("==========================================");
-        console.log("FILTRO DE EVENTOS POR DATA SOLICITADO");
+        console.log("NOVA VERSÃO: FILTRO DE EVENTOS POR DATA");
         console.log("==========================================");
         
-        // Obter valores atuais das datas para filtro
+        // ETAPA 1: OBTER E VALIDAR AS DATAS DE FILTRO
+        // ------------------------------------------
         const startDateInput = document.getElementById('start-date');
         const endDateInput = document.getElementById('end-date');
         
