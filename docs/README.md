@@ -1,38 +1,56 @@
-# Otimizador de Rotas - GitHub Pages
+# Otimizador de Rotas - Versão GitHub Pages
 
-## Sobre este projeto
-Esta é a versão do Otimizador de Rotas adaptada para o GitHub Pages. O aplicativo realiza cálculos de otimização de rotas com base no problema do caixeiro viajante (TSP) e exibe informações relevantes como eventos em cidades, restrições de tráfego e pontos de interesse.
+Este diretório contém a versão otimizada do Otimizador de Rotas para deploy no GitHub Pages.
 
-## Arquivos importantes
+## Conteúdo
 
-- `standalone.html` - Versão completa e autônoma do aplicativo
-- `fix-event-dates.js` - Script para correção de datas de aniversário de cidades
-- `GITHUB_PAGES_FIX.md` - Documentação sobre a correção de datas
+1. `index.html` - Página inicial com navegação para as versões
+2. `standalone.html` - Versão completa da aplicação sem dependências externas
+3. `test.html` - Versão simplificada para teste do Google Maps API
 
-## Correções realizadas em 13/05/2025
+## Instruções para teste local
 
-1. **Problema de Distância TSP Inválida (0km)**
-   - Implementadas verificações robustas de coordenadas
-   - Adicionados mecanismos de fallback para garantir sempre distâncias válidas
-   - Criada uma rota de backup caso o algoritmo TSP falhe
+### Opção 1: Servidor Python
 
-2. **Problema com Datas de Aniversário de Cidades**
-   - Implementada correção para exibir a data histórica de fundação das cidades
-   - Script dedicado `fix-event-dates.js` que corrige a exibição na interface
-   - Correção específica para garantir que Ribeirão Preto mostre "19/06/1856" como sua data de fundação
+```bash
+cd docs
+python3 -m http.server 8000
+```
 
-3. **Problema de Filtro de Datas**
-   - Implementada lógica melhorada para comparar apenas mês/dia para eventos de aniversário
-   - Adicionada validação de datas para garantir funcionamento correto do filtro
+Acesse em seu navegador: `http://localhost:8000`
 
-## Como verificar as correções
+### Opção 2: Abrir arquivos diretamente
 
-1. Abra o aplicativo no GitHub Pages
-2. Adicione alguns destinos à rota
-3. Clique em "Otimizar Rota"
-4. Verifique a aba "Eventos" - as datas de aniversário de cidades devem mostrar a data histórica de fundação, não o ano atual
-5. Confirme que a idade da cidade (anos desde a fundação) é calculada corretamente
+Você também pode abrir os arquivos HTML diretamente no navegador:
 
-## Manutenção
+```
+docs/index.html
+docs/standalone.html
+docs/test.html
+```
 
-Se forem necessárias correções adicionais, consulte o arquivo `GITHUB_PAGES_FIX.md` para instruções detalhadas.
+## Recursos da versão standalone
+
+- Implementação completa de todas as funcionalidades sem dependências externas
+- Interface idêntica à versão React, mas sem necessidade de servidor
+- Suporte total a:
+  - Adição de múltiplos destinos manualmente ou via arquivo
+  - Cálculo de rota otimizada (algoritmo do caixeiro viajante)
+  - Visualização de eventos e restrições em cidades
+  - Relatório detalhado com custos e tempos
+  - Marcadores sequenciais e animação da rota
+  - Street View (Pegman) funcional
+  - Zoom com scroll sem precionar CTRL
+
+## Recursos do mapa
+
+- Marcadores numerados para sequência da rota
+- Pedágios e balanças de pesagem ao longo da rota
+- Eventos em cidades destacados com ícones coloridos
+- Relatório detalhado com custos estimados
+
+## Notas técnicas
+
+- A versão standalone utiliza JavaScript puro e Google Maps API
+- Dados de exemplo estão incorporados diretamente no HTML
+- A página não requer conexão com banco de dados

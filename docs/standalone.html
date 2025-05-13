@@ -12,12 +12,6 @@
     <title>Otimizador de Rotas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <!-- Dados históricos de fundação das cidades -->
-    <script src="fundacao-dados.js"></script>
-    <!-- Script de correção de datas para eventos do GitHub Pages -->
-    <script src="fix-event-dates.js" defer></script>
-    <!-- Correção direta e agressiva para datas -->
-    <script src="direct-fix.js" defer></script>
     <style>
         /* Estilos globais */
         html, body {
@@ -25,14 +19,6 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        /* Estilo para destacar informações de data de fundação */
-        .fundacao-info {
-            font-style: italic;
-            color: #666;
-            font-size: 0.9em;
-            margin-left: 5px;
         }
         .app-container {
             display: flex;
@@ -1489,28 +1475,13 @@
             }
             
             // Inicializar com a data atual e data atual + 7 dias
-            // Garantir que estamos sempre usando o ano atual
             const today = new Date();
-            const currentYear = today.getFullYear();
-            console.log(`[DATA] Usando ano atual: ${currentYear} para inicialização de datas`);
-            
-            // Formatar manualmente para garantir o uso do ano atual
-            const formatDateWithCurrentYear = (date) => {
-                const year = currentYear;
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            };
-            
-            // Usar nossa função customizada em vez de toISOString
-            const formattedToday = formatDateWithCurrentYear(today);
+            const formattedToday = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
             
             // Calcular a data final (hoje + 7 dias)
             const futureDate = new Date();
             futureDate.setDate(today.getDate() + 7);
-            const formattedFuture = formatDateWithCurrentYear(futureDate);
-            
-            console.log(`[DATA] Datas formatadas: ${formattedToday} até ${formattedFuture}`);
+            const formattedFuture = futureDate.toISOString().split('T')[0];
             
             // Definir os valores apenas se estiverem vazios
             if (!startDate.value) {
@@ -3871,86 +3842,15 @@
         });
     }
 
-    /**
-     * Verifica se um evento de aniversário de cidade deve ser exibido
-     * baseado no período de datas selecionado.
-     * 
-     * Esta função especial:
-     * 1. Ignora o ano da data de aniversário, considera apenas mês e dia
-     * 2. Verifica se esse mês/dia cai dentro do período de datas selecionado este ano
-     */
-    function shouldShowCityBirthday(birthdayEvent, filterStartDate, filterEndDate) {
-        try {
-            if (!birthdayEvent || !birthdayEvent.startDate) {
-                console.error("Evento de aniversário inválido:", birthdayEvent);
-                return false;
-            }
-            
-            // USAR A DATA ORIGINAL DE FUNDAÇÃO
-            // Se originalStartDate estiver disponível, usá-la
-            // Caso contrário, usamos a startDate normal
-            const originalDate = birthdayEvent.originalStartDate || new Date(birthdayEvent.startDate);
-            
-            // Ano atual para o cálculo
-            const currentYear = new Date().getFullYear();
-            
-            // Log de diagnóstico
-            console.log(`[VERIFICAÇÃO ANIVERSÁRIO] ${birthdayEvent.name}: Data original: ${originalDate.toLocaleDateString('pt-BR')}`);
-            
-            // Extrair mês e dia do aniversário
-            const birthdayMonth = originalDate.getMonth(); // 0-11
-            const birthdayDay = originalDate.getDate();    // 1-31
-            
-            // Recriar a data no ano atual
-            const birthdayThisYear = new Date(currentYear, birthdayMonth, birthdayDay);
-            birthdayThisYear.setHours(0, 0, 0, 0); // Início do dia
-            
-            // Garantir que as datas de filtro estão no formato correto
-            const filterStart = new Date(filterStartDate);
-            filterStart.setHours(0, 0, 0, 0);
-            
-            const filterEnd = new Date(filterEndDate);
-            filterEnd.setHours(23, 59, 59, 999); // Fim do dia
-            
-            // Verificar se o aniversário deste ano cai dentro do período filtrado
-            const isInRange = birthdayThisYear >= filterStart && birthdayThisYear <= filterEnd;
-            
-            console.log(`[ANIVERSÁRIO VERIFICAÇÃO] ${birthdayEvent.name} (${birthdayEvent.cityName}): ${birthdayThisYear.toLocaleDateString('pt-BR')}`);
-            console.log(`[ANIVERSÁRIO VERIFICAÇÃO] Período filtro: ${filterStart.toLocaleDateString('pt-BR')} até ${filterEnd.toLocaleDateString('pt-BR')}`);
-            console.log(`[ANIVERSÁRIO VERIFICAÇÃO] Resultado: ${isInRange ? 'EXIBIR' : 'NÃO EXIBIR'}`);
-            
-            return isInRange;
-        } catch (error) {
-            console.error("Erro ao verificar aniversário:", error, birthdayEvent);
-            return false;
-        }
-    }
-    
     // Mostrar eventos para as cidades na rota
     function showEventsForCitiesOnRoute(pathIds, startDateStr, endDateStr) {
-        console.log("=================== EVENTOS NA ROTA ===================");
+        console.log("=================== NOVA EXECUÇÃO ===================");
         console.log("Mostrando eventos para rota com IDs:", pathIds);
+        console.log("Datas de filtro (string):", startDateStr, endDateStr);
         
         // Valores para filtragem por data - garantir que são strings válidas
         let startDateValue = startDateStr || "";
         let endDateValue = endDateStr || "";
-        
-        console.log(`Datas de filtro (string): "${startDateValue}" até "${endDateValue}"`);
-        
-        // Verificar se as datas de filtro são válidas
-        if (startDateValue && endDateValue) {
-            try {
-                // Tentar criar objetos de data para verificar
-                const testStart = new Date(startDateValue);
-                const testEnd = new Date(endDateValue);
-                
-                if (isNaN(testStart.getTime()) || isNaN(testEnd.getTime())) {
-                    console.error("Datas de filtro inválidas:", startDateValue, endDateValue);
-                }
-            } catch (e) {
-                console.error("Erro ao validar datas:", e);
-            }
-        }
         
         // Verificações de segurança
         if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
@@ -4091,60 +3991,10 @@
                 const eventStart = new Date(event.startDate);
                 const eventEnd = new Date(event.endDate);
                 
-                // AJUSTE PARA ANIVERSÁRIOS DE CIDADES E FERIADOS
-                // IMPORTANTE: Para eventos de aniversário/fundação, vamos preservar a data original
-                // mas criar uma cópia para os cálculos de filtro de data
-                if (event.name.includes("Aniversário") || event.name.includes("Fundação") || event.isHoliday) {
-                    // CRÍTICO: Guardar a data original de fundação antes de qualquer modificação
-                    // Estas propriedades serão usadas APENAS para exibição e cálculo de idade
-                    event.originalStartDate = new Date(event.startDate); 
-                    event.originalEndDate = new Date(event.endDate);
-                    
-                    // Formato local para diagnóstico
-                    const originalDateStr = event.originalStartDate.toLocaleDateString('pt-BR');
-                    
-                    // Preservar mês e dia exatos da data de fundação
-                    const originalMonth = eventStart.getMonth();
-                    const originalDay = eventStart.getDate();
-                    
-                    // Redefinir para o ano atual
+                // Garantir que estamos usando o ano atual para eventos anuais (aniversários)
+                if (event.name.includes("Aniversário") || event.isHoliday) {
                     eventStart.setFullYear(currentYear);
                     eventEnd.setFullYear(currentYear);
-                    
-                    // Garantir que o mês e dia originais são mantidos (para casos onde a mudança de ano pode alterar)
-                    eventStart.setMonth(originalMonth);
-                    eventStart.setDate(originalDay);
-                    eventEnd.setMonth(originalMonth);
-                    eventEnd.setDate(originalDay);
-                    
-                    // Para eventos de fundação/aniversário, adicionar notas especiais
-                    if (event.name.includes("Aniversário") || event.name.includes("Fundação")) {
-                        // IMPORTANTÍSSIMO: USAR A DATA ORIGINAL de fundação
-                        // Preferimos a data do objeto event.originalStartDate que foi criada acima
-                        // e só como fallback usar event.startDate
-                        const dataOriginal = event.originalStartDate; // Data original da fundação
-                        
-                        // Extrair componentes da data original
-                        const fundacaoAno = dataOriginal.getFullYear();
-                        const fundacaoMes = dataOriginal.getMonth(); 
-                        const fundacaoDia = dataOriginal.getDate();
-                        
-                        // Formatar dia e mês com zero à esquerda
-                        const diaPadded = fundacaoDia.toString().padStart(2, '0');
-                        const mesPadded = (fundacaoMes+1).toString().padStart(2, '0');
-                        
-                        // Calcular idade correta
-                        const idadeCidade = currentYear - fundacaoAno;
-                        
-                        // Garantir que usamos a data original em todas as referências
-                        event.fundacaoData = `${diaPadded}/${mesPadded}/${fundacaoAno}`;
-                        event.idadeCidade = idadeCidade;
-                        event.fundacaoInfo = `Data de fundação: ${diaPadded}/${mesPadded}/${fundacaoAno} (${idadeCidade} anos)`;
-                        
-                        console.log(`[FUNDAÇÃO CORRIGIDA] ${event.name}: ${event.fundacaoData} (${idadeCidade} anos)`);
-                    }
-                    
-                    console.log(`[ANIVERSÁRIO] ${event.name}: data original ${originalDateStr} → ajustada para ${eventStart.toLocaleDateString('pt-BR')}`);
                 }
                 
                 // Ajustar horas para garantir dias completos
@@ -4195,31 +4045,15 @@
                         filterStart.setHours(0,0,0,0);
                         filterEnd.setHours(23,59,59,999);
                         
-                        // Verificar sobreposição entre as datas - implementação mais rigorosa
-                        // Converter para timestamps numéricos para comparação mais segura
-                        const eventStartTime = eventStart.getTime();
-                        const eventEndTime = eventEnd.getTime();
-                        const filterStartTime = filterStart.getTime();
-                        const filterEndTime = filterEnd.getTime();
-                        
-                        // Para depuração
-                        console.log(`[COMPARAÇÃO] Evento: ${eventStartTime}-${eventEndTime} | Filtro: ${filterStartTime}-${filterEndTime}`);
-                        
                         // Verificar sobreposição entre as datas
-                        let hasOverlap = (
+                        const hasOverlap = (
                             // Evento começa dentro do período do filtro
-                            (eventStartTime >= filterStartTime && eventStartTime <= filterEndTime) ||
+                            (eventStart >= filterStart && eventStart <= filterEnd) ||
                             // Evento termina dentro do período do filtro
-                            (eventEndTime >= filterStartTime && eventEndTime <= filterEndTime) ||
+                            (eventEnd >= filterStart && eventEnd <= filterEnd) ||
                             // Evento abrange todo o período do filtro
-                            (eventStartTime <= filterStartTime && eventEndTime >= filterEndTime)
+                            (eventStart <= filterStart && eventEnd >= filterEnd)
                         );
-                        
-                        // VERIFICAÇÃO ESPECIAL PARA ANIVERSÁRIOS DE CIDADE - Usando função dedicada
-                        if ((event.name.includes("Aniversário") || event.name.includes("Fundação")) && !hasOverlap) {
-                            // Usar nossa função específica para verificação de aniversários
-                            hasOverlap = shouldShowCityBirthday(event, filterStart, filterEnd);
-                        }
                         
                         console.log(`[VERIFICAÇÃO] Data evento ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')} vs. Filtro ${filterStart.toLocaleDateString('pt-BR')}-${filterEnd.toLocaleDateString('pt-BR')}`);
                         
@@ -4281,50 +4115,14 @@
             // Definir classe baseada no tipo de evento
             const eventTypeClass = event.isHoliday ? 'holiday' : 'event';
             
-            // Verificar se é um evento de aniversário/fundação para mostrar a data original
-            const isFundacao = event.name.includes("Aniversário") || event.name.includes("Fundação");
-            
-            // Formatar a data de exibição especificamente para aniversários de cidade
-            let displayDateText = dateText;
-            
-            // Se é um evento de aniversário/fundação e temos a informação de fundação
-            if (isFundacao && event.fundacaoInfo) {
-                // Mostrar APENAS a informação de fundação original, sem a data atual
-                displayDateText = `${event.fundacaoInfo}`;
-            }
-            
-            // HTML do evento com formatação especial para aniversários de cidades
-            if (isFundacao && event.fundacaoData) {
-                // Para eventos de aniversário/fundação: mostrar o nome da cidade e a data de fundação
-                eventItem.innerHTML = `
-                    <div class="event-name">${event.name} 
-                        <span class="event-type ${eventTypeClass}">${event.isHoliday ? 'Feriado' : 'Evento'}</span>
-                        <span class="restriction-level ${event.restrictionLevel}">${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</span>
-                    </div>
-                    <div class="event-date">${event.cityName}</div>
-                    <div class="event-description">
-                        ${event.description}
-                        <br><br>
-                        <span style="color:#d9534f;font-weight:bold;">
-                            ${event.cityName === "Ribeirão Preto" ? "Data de fundação: 19/06/1856 (169 anos)" : 
-                            event.name.includes("São Carlos") ? "Data de fundação: 04/11/1857 (168 anos)" :
-                            event.name.includes("Amparo") ? "Data de fundação: 08/04/1829 (196 anos)" :
-                            event.cityName === "Dois Córregos" ? "Data de fundação: 20/05/1865 (160 anos)" : 
-                            "Data original de fundação (histórica)"}
-                        </span>
-                    </div>
-                `;
-            } else {
-                // Para eventos normais
-                eventItem.innerHTML = `
-                    <div class="event-name">${event.name} 
-                        <span class="event-type ${eventTypeClass}">${event.isHoliday ? 'Feriado' : 'Evento'}</span>
-                        <span class="restriction-level ${event.restrictionLevel}">${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</span>
-                    </div>
-                    <div class="event-date">${event.cityName} | ${dateText}</div>
-                    <div class="event-description">${event.description}</div>
-                `;
-            }
+            eventItem.innerHTML = `
+                <div class="event-name">${event.name} 
+                    <span class="event-type ${eventTypeClass}">${event.isHoliday ? 'Feriado' : 'Evento'}</span>
+                    <span class="restriction-level ${event.restrictionLevel}">${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</span>
+                </div>
+                <div class="event-date">${event.cityName} | ${dateText}</div>
+                <div class="event-description">${event.description}</div>
+            `;
             
             eventsListContainer.appendChild(eventItem);
             

@@ -1,93 +1,93 @@
-# Guia de Demonstração do Otimizador de Rotas
+# Guia para Demonstração e Uso da Aplicação
 
-Este guia oferece um passo a passo para demonstrar as funcionalidades principais do Otimizador de Rotas.
+Este guia explica como utilizar a aplicação de otimização de rotas tanto na versão React (em desenvolvimento) quanto na versão standalone para o GitHub Pages.
 
-## 1. Acessando a Aplicação
+## Acesso à Aplicação
 
-- Acesse a versão GitHub Pages através da URL: https://seu-usuario.github.io/otimizador-rotas/
-- Ou clique em "Versão Standalone" na página inicial
+### Versão em Desenvolvimento (React)
+- Acesse a versão completa em desenvolvimento executando o workflow "Start application" no Replit
+- A aplicação estará disponível na aba Webview
 
-## 2. Demonstração de Funcionalidades Básicas
+### Versão GitHub Pages (Standalone)
+- Para testar localmente, execute o script `./docs/test-locally.sh`
+- Para acessar online, vá para a URL do GitHub Pages do repositório
+- A versão standalone contém todas as funcionalidades principais sem necessidade de backend
 
-### 2.1 Configurar as Datas
-- Na barra lateral, localize o seletor de datas no topo
-- Selecione um intervalo de datas para sua viagem (por exemplo, próxima semana)
-- O sistema filtrará eventos que ocorrem neste período
+## Guia para Demonstração
 
-### 2.2 Adicionar Locais Manualmente
-- Abaixo do campo "Origem: Dois Córregos-SP", localize o campo de pesquisa
-- Digite um endereço como "Ribeirão Preto" e clique em "Adicionar Local"
-- Repita o processo para adicionar mais 3-4 locais (sugestões: "Jaú", "São Carlos", "Bauru")
-- Observe que cada local é adicionado com um marcador numerado no mapa
+### 1. Página Inicial
+A aplicação está organizada em três abas principais:
+- **Locais**: Para adicionar e gerenciar os destinos da rota
+- **Eventos**: Para visualizar eventos e restrições nas cidades da rota
+- **Relatório**: Para visualizar o resumo detalhado da rota otimizada
 
-### 2.3 Importar Locais via Arquivo
-- Prepare um arquivo de texto no formato:
-```
-14400-000,Franca-SP
-13560-000,São Carlos-SP
-```
-- Clique em "Importar Locais" e selecione o arquivo
-- Observe que os locais são adicionados automaticamente
+### 2. Adicionar Locais
+Existem duas maneiras de adicionar locais à rota:
 
-### 2.4 Otimizar Rota
-- Após adicionar 4-5 locais, clique no botão "Otimizar Rota"
-- Observe a animação no mapa mostrando a rota otimizada
-- Note que o sistema calcula a rota mais eficiente partindo sempre de Dois Córregos-SP
+**Método 1: Adição manual**
+1. Na aba "Locais", use o campo "Adicionar local" para pesquisar um endereço
+2. Selecione o local desejado nas sugestões que aparecerem
+3. O local será adicionado à lista e um marcador aparecerá no mapa
 
-## 3. Demonstração de Recursos Avançados
+**Método 2: Upload de arquivo**
+1. Prepare um arquivo de texto no formato `CEP,Nome do Local` (um por linha)
+2. Exemplo:
+   ```
+   14020-260,Ribeirão Preto
+   17560-000,Vera Cruz
+   17580-000,Pompéia
+   ```
+3. Clique em "Escolher arquivo" e selecione seu arquivo
+4. Os locais serão adicionados automaticamente
 
-### 3.1 Visualizar Relatório de Rota
-- Após a otimização, note o relatório detalhado abaixo do botão "Otimizar Rota"
-- Observe informações como:
-  - Distância total da rota
-  - Tempo estimado de viagem
-  - Custo estimado (combustível)
-  - Sequência otimizada de locais
+### 3. Otimizar Rota
+1. Selecione o tipo de veículo (influencia custos e restrições)
+2. Clique no botão "Otimizar Rota" na parte inferior da aba "Locais"
+3. A aplicação calculará a melhor rota entre todos os pontos
+4. O mapa mostrará a rota com uma animação progressiva
+5. A aplicação mudará automaticamente para a aba "Relatório"
 
-### 3.2 Explorar Eventos das Cidades
-- Clique na aba "Eventos" no menu inferior
-- Observe a lista de eventos existentes nas cidades da sua rota
-- Note especialmente os eventos de aniversário de fundação das cidades, que mostram a data histórica correta e a idade atual
+### 4. Visualizar Relatório
+Na aba "Relatório", você verá:
+- Distância total da rota
+- Tempo estimado de viagem
+- Consumo de combustível estimado
+- Custo de pedágios
+- Custo total estimado da viagem
+- Sequência detalhada de cidades na rota
 
-### 3.3 Verificar Pontos de Interesse 
-- Clique na aba "Pontos de Interesse" no menu inferior
-- Observe os pedágios e balanças de pesagem ao longo da rota
-- Clique em um pedágio para ver mais informações
+Você também pode:
+- Dar um nome à rota e salvá-la (na versão React)
+- Imprimir o relatório da rota
 
-### 3.4 Explorar Restrições de Caminhões
-- Clique na aba "Restrições" no menu inferior
-- Observe as restrições de circulação de caminhões nas cidades da rota
-- Filtre por tipo específico de caminhão para ver restrições aplicáveis
+### 5. Verificar Eventos e Restrições
+Na aba "Eventos", após otimizar uma rota:
+- Use o filtro de datas para selecionar um período
+- Veja todos os eventos nas cidades da rota (festas, feriados, etc.)
+- Veja as restrições para caminhões em cada cidade da rota
+- Os eventos e restrições são específicos para as cidades incluídas na rota atual
 
-## 4. Recursos Interativos do Mapa
+### 6. Recursos Adicionais no Mapa
+O mapa mostra:
+- Marcadores numerados para cada local na sequência da rota
+- Pedágios ao longo das rodovias da rota (ícones verdes)
+- Balanças de pesagem (ícones laranja)
+- Eventos nas cidades (ícones vermelhos para feriados, laranjas para eventos)
 
-### 4.1 Street View
-- Clique e arraste o ícone do "Pegman" (bonequinho) no mapa
-- Solte sobre um trecho da rota para ver o Street View daquela área
+Botões de controle:
+- Zoom para ajustar a visualização a todos os pontos
+- Mostrar/ocultar pontos de interesse
+- Street View disponível (arraste o Pegman para qualquer ponto da rota)
 
-### 4.2 Zoom e Navegação
-- Use os botões +/- ou scroll do mouse para ajustar o zoom
-- Clique e arraste para navegar pelo mapa
+## Diferenças entre as Versões
 
-### 4.3 Alternar Visualizações
-- Clique no botão de camadas no canto superior direito do mapa
-- Alterne entre visualizações de mapa, satélite e híbrido
+### Versão React (Desenvolvimento)
+- Conexão com banco de dados para armazenamento persistente
+- Funcionalidades completas de backend
+- Mais opções de personalização
 
-## 5. Demonstração de Casos Especiais
-
-### 5.1 Rotas Alternativas
-- Na seção abaixo de "Otimizar Rota", observe as rotas alternativas sugeridas
-- Clique em uma rota alternativa para visualizá-la no mapa
-- Compare distâncias e tempos estimados entre as opções
-
-### 5.2 Feriados e Eventos Especiais
-- Utilize as datas próximas a feriados nacionais ou eventos importantes
-- Veja como o sistema destaca eventos relevantes ao longo da rota
-
-## 6. Dicas para uma Demonstração Eficaz
-
-1. **Prepare com antecedência** alguns endereços para adicionar rapidamente
-2. **Escolha uma rota interessante** que passe por cidades com eventos conhecidos
-3. **Destaque as melhorias recentes** como a correção das datas históricas de fundação
-4. **Explique o algoritmo** de otimização (problema do caixeiro viajante) de forma simplificada
-5. **Mostre a responsividade** testando em diferentes tamanhos de tela
+### Versão Standalone (GitHub Pages)
+- Funciona completamente sem servidor
+- Dados mockados embutidos no HTML
+- Mesma interface e funcionalidades principais
+- Melhor desempenho em dispositivos móveis
