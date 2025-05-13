@@ -2615,12 +2615,7 @@
                 // Substituir alert por notificação inline mais suave
                 showNotification("Erro ao calcular a rota: nenhuma rota foi gerada", "error");
                 
-                // Remover a notificação após alguns segundos
-                setTimeout(() => {
-                    if (notifyError && notifyError.parentNode) {
-                        notifyError.parentNode.removeChild(notifyError);
-                    }
-                }, 5000);
+                // A função showNotification já trata a remoção automática
                 return;
             }
             
@@ -2832,18 +2827,8 @@
             updateRouteSummary(tspResult, vehicleType);
         } catch (error) {
             console.error("Erro ao calcular rota otimizada:", error);
-            // Substituir alert por notificação inline mais suave
-            const notifyError = document.createElement('div');
-            notifyError.className = 'alert alert-danger mt-2';
-            notifyError.innerHTML = `Ocorreu um erro ao calcular a rota. Tente novamente.`;
-            document.querySelector('.route-controls').appendChild(notifyError);
-            
-            // Remover a notificação após alguns segundos
-            setTimeout(() => {
-                if (notifyError && notifyError.parentNode) {
-                    notifyError.parentNode.removeChild(notifyError);
-                }
-            }, 5000);
+            // Usar a função centralizada de notificação
+            showNotification("Ocorreu um erro ao calcular a rota. Tente novamente.", "error");
         }
         
         // Habilitar botões de salvar e imprimir
