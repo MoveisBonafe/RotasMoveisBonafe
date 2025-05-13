@@ -4055,10 +4055,26 @@
                 const eventStart = new Date(event.startDate);
                 const eventEnd = new Date(event.endDate);
                 
-                // Garantir que estamos usando o ano atual para eventos anuais (aniversários)
+                // Garantir que estamos usando o ano atual para eventos anuais como aniversários de fundação
                 if (event.name.includes("Aniversário") || event.isHoliday) {
+                    // Extrair o dia e mês da data original de fundação, mas usar o ano atual
+                    // Isso garante que eventos históricos de fundação apareçam corretamente no calendário atual
+                    const diaEvento = eventStart.getDate();
+                    const mesEvento = eventStart.getMonth();
+                    
+                    // Criar nova data com dia/mês originais mas ano atual
+                    const novaDataAtual = new Date(currentYear, mesEvento, diaEvento);
+                    
+                    // Atualizar as datas de início e fim
                     eventStart.setFullYear(currentYear);
+                    eventStart.setMonth(mesEvento);
+                    eventStart.setDate(diaEvento);
+                    
                     eventEnd.setFullYear(currentYear);
+                    eventEnd.setMonth(mesEvento);
+                    eventEnd.setDate(diaEvento);
+                    
+                    console.log(`[ANIVERSÁRIO] Ajustada data de fundação para ano atual: ${event.cityName} - ${novaDataAtual.toLocaleDateString('pt-BR')}`);
                 }
                 
                 // Ajustar horas para garantir dias completos
@@ -4109,15 +4125,47 @@
                         filterStart.setHours(0,0,0,0);
                         filterEnd.setHours(23,59,59,999);
                         
-                        // Verificar sobreposição entre as datas
-                        const hasOverlap = (
-                            // Evento começa dentro do período do filtro
-                            (eventStart >= filterStart && eventStart <= filterEnd) ||
-                            // Evento termina dentro do período do filtro
-                            (eventEnd >= filterStart && eventEnd <= filterEnd) ||
-                            // Evento abrange todo o período do filtro
-                            (eventStart <= filterStart && eventEnd >= filterEnd)
-                        );
+                        // Verificação especial para aniversários de fundação
+                        let hasOverlap = false;
+                        
+                        if (event.name.includes("Aniversário")) {
+                            console.log(`[ANIVERSÁRIO] Verificando data de aniversário com maior precisão para ${event.cityName}`);
+                            
+                            // Para aniversários, compare apenas dia e mês, ignorando o ano
+                            const eventDia = eventStart.getDate();
+                            const eventMes = eventStart.getMonth();
+                            
+                            // Crie um range de datas do mesmo ano para comparação
+                            const inicioAno = new Date(currentYear, 0, 1); // 1 de janeiro
+                            const fimAno = new Date(currentYear, 11, 31);  // 31 de dezembro
+                            
+                            // Verificar se o evento está dentro do período
+                            hasOverlap = false;
+                            
+                            // Percorrer cada dia entre as datas de filtro
+                            for (let checkDate = new Date(filterStart); 
+                                 checkDate <= filterEnd; 
+                                 checkDate.setDate(checkDate.getDate() + 1)) {
+                                
+                                // Verificar se o dia e mês coincide com o evento
+                                if (checkDate.getDate() === eventDia && 
+                                    checkDate.getMonth() === eventMes) {
+                                    hasOverlap = true;
+                                    console.log(`[ANIVERSÁRIO] Data de fundação ${eventStart.toLocaleDateString('pt-BR')} está dentro do filtro`);
+                                    break;
+                                }
+                            }
+                        } else {
+                            // Para eventos normais, usar verificação padrão de sobreposição
+                            hasOverlap = (
+                                // Evento começa dentro do período do filtro
+                                (eventStart >= filterStart && eventStart <= filterEnd) ||
+                                // Evento termina dentro do período do filtro
+                                (eventEnd >= filterStart && eventEnd <= filterEnd) ||
+                                // Evento abrange todo o período do filtro
+                                (eventStart <= filterStart && eventEnd >= filterEnd)
+                            );
+                        }
                         
                         console.log(`[VERIFICAÇÃO] Data evento ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')} vs. Filtro ${filterStart.toLocaleDateString('pt-BR')}-${filterEnd.toLocaleDateString('pt-BR')}`);
                         
