@@ -3270,8 +3270,17 @@
         if (routeSummary) {
             routeSummary.style.display = 'none';
         }
-        document.getElementById('save-route').disabled = true;
-        document.getElementById('print-route').disabled = true;
+        
+        // Desabilitar os botões de salvar e imprimir com verificação de null
+        const saveRouteBtn = document.getElementById('save-route');
+        if (saveRouteBtn) {
+            saveRouteBtn.disabled = true;
+        }
+        
+        const printRouteBtn = document.getElementById('print-route');
+        if (printRouteBtn) {
+            printRouteBtn.disabled = true;
+        }
     }
 
     // Limpar marcadores de pontos de interesse
