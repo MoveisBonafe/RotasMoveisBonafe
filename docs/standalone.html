@@ -3148,7 +3148,8 @@
                     citiesInRoute.push({
                         cityName: extractCityName(origin.address || origin.name),
                         position: 1,
-                        originalLocation: origin
+                        originalLocation: origin,
+                        displayName: origin.name // Nome para mostrar na interface
                     });
                 }
                 
@@ -3161,7 +3162,8 @@
                         citiesInRoute.push({
                             cityName: extractCityName(location.address || location.name),
                             position: i + 2, // +2 porque origem é 1 e arrays começam em 0
-                            originalLocation: location
+                            originalLocation: location,
+                            displayName: location.name // Nome para mostrar na interface
                         });
                     }
                 }
@@ -3176,7 +3178,8 @@
                         citiesInRoute.push({
                             cityName: extractCityName(location.address || location.name),
                             position: index + 1,
-                            originalLocation: location
+                            originalLocation: location,
+                            displayName: location.name // Nome para mostrar na interface
                         });
                     }
                 });
@@ -3187,9 +3190,9 @@
                 console.warn("Nenhuma cidade encontrada na rota atual, usando cidades padrão");
                 // Usar lista de cidades padrão como último recurso
                 citiesInRoute.push(
-                    { cityName: "Dois Córregos", position: 1 },
-                    { cityName: "Jaú", position: 2 },
-                    { cityName: "Bauru", position: 3 }
+                    { cityName: "Dois Córregos", position: 1, displayName: "Dois Córregos (origem)" },
+                    { cityName: "Jaú", position: 2, displayName: "Jaú" },
+                    { cityName: "Bauru", position: 3, displayName: "Bauru" }
                 );
             }
             
@@ -3251,14 +3254,25 @@
                 else if (dayType === 'weekend') dayTypeText = 'Finais de semana';
                 
                 // Estilo para a cidade com barra lateral colorida
-                const cidadeStyle = 'color: #1976D2; font-weight: bold; border-left: 4px solid #1976D2; padding-left: 8px; display: flex; align-items: center;';
+                const cidadeStyle = 'color: #1976D2; font-weight: bold; border-left: 4px solid #1976D2; padding-left: 8px; display: flex; align-items: center; flex-wrap: wrap;';
                 
-                // Texto com a posição na rota
+                // Texto com a posição na rota e nome do local
                 let posicaoNaRotaTexto = '';
                 if (city.position === 1) {
-                    posicaoNaRotaTexto = '<span style="background-color: #1976D2; color: white; padding: 2px 6px; border-radius: 50%; margin-right: 6px; font-size: 0.8em;">Origem</span>';
+                    posicaoNaRotaTexto = '<span style="background-color: #1976D2; color: white; padding: 2px 6px; border-radius: 8px; margin-right: 6px; font-size: 0.85em;">Origem</span>';
+                    
+                    // Adicionar nome do local se disponível
+                    if (city.displayName) {
+                        posicaoNaRotaTexto += `<span style="font-size: 0.85em; margin-left: 3px; color: #555;">${city.displayName}</span>`;
+                    }
                 } else {
-                    posicaoNaRotaTexto = `<span style="background-color: #1976D2; color: white; padding: 2px 6px; border-radius: 50%; margin-right: 6px; font-size: 0.8em;">${city.position}ª</span>`;
+                    // Estilo para a posição com nome do local
+                    posicaoNaRotaTexto = `<span style="background-color: #1976D2; color: white; padding: 2px 6px; border-radius: 8px; margin-right: 6px; font-size: 0.85em;">#${city.position}</span>`;
+                    
+                    // Adicionar nome do local se disponível
+                    if (city.displayName) {
+                        posicaoNaRotaTexto += `<span style="font-size: 0.85em; margin-left: 3px; color: #555;">${city.displayName}</span>`;
+                    }
                 }
                 
                 // Criar HTML da restrição
