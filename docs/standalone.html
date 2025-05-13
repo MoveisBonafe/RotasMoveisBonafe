@@ -1591,6 +1591,8 @@
                     initAutocomplete();
                     initTabNavigation();
                     initEventListeners();
+                    // Marcar que o mapa já foi inicializado
+                    mapInitialized = true;
                     console.log("Inicialização concluída via callback");
                 } catch (err) {
                     console.error("Erro na inicialização via callback:", err);
@@ -1604,6 +1606,35 @@
     <script src="geocode-fix.js"></script>
     
     <script>
+    // Variável para controlar se o mapa já foi inicializado
+    let mapInitialized = false;
+    
+    // Adicionar ouvinte para quando o DOM estiver carregado
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("DOMContentLoaded event firing - verificando se mapa está carregado");
+        
+        // Tentar inicializar o mapa se a API do Google já estiver carregada
+        if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
+            console.log("Google Maps API já está disponível no DOMContentLoaded");
+            
+            // Se o mapa ainda não foi inicializado e a função initMap está disponível
+            if (!mapInitialized && typeof initMap === 'function') {
+                console.log("Inicializando mapa via evento DOMContentLoaded");
+                setTimeout(function() {
+                    try {
+                        initMap();
+                        initTabNavigation();
+                        mapInitialized = true;
+                    } catch (err) {
+                        console.error("Falha ao inicializar via DOMContentLoaded:", err);
+                    }
+                }, 500);
+            }
+        } else {
+            console.log("Google Maps API ainda não disponível no DOMContentLoaded");
+        }
+    });
+    
     // Dados de amostra para a aplicação standalone
     const mockData = {
         // Origem (Dois Córregos)
