@@ -1069,13 +1069,28 @@
 
     // Inicialização
     document.addEventListener("DOMContentLoaded", function() {
+        console.log("DOM carregado - inicializando aplicação");
+        
         // Esconder as abas inferiores inicialmente - deve ser chamado primeiro
         toggleBottomTabsVisibility(false);
         
-        initMap();
-        initAutocomplete();
-        initTabNavigation();
-        initEventListeners();
+        // Verificar se temos acesso ao Google Maps
+        if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+            console.error("Google Maps API não carregada corretamente");
+            showNotification("Não foi possível carregar o Google Maps. Verifique sua conexão ou se há bloqueadores ativos no navegador.", "error");
+        } else {
+            console.log("Google Maps API disponível");
+        }
+        
+        // Inicializar componentes principais
+        try {
+            initMap();
+            initAutocomplete();
+            initTabNavigation();
+            initEventListeners();
+        } catch (initError) {
+            console.error("Erro ao inicializar a aplicação:", initError);
+        }
         
         // Exibir a origem no mapa
         addMarkerForLocation(mockData.origin, 0);
@@ -1283,17 +1298,29 @@
         const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
         if (bottomTabsContainer) {
             if (show) {
+                // Remover qualquer estilo display antigo
+                bottomTabsContainer.style.removeProperty('display');
                 bottomTabsContainer.style.display = 'flex';
+                
                 // Adiciona animação de entrada
+                bottomTabsContainer.style.animation = 'none';
+                // Trigger reflow
+                void bottomTabsContainer.offsetWidth;
                 bottomTabsContainer.style.animation = 'fadeInUp 0.5s ease forwards';
+                
+                console.log("Abas inferiores exibidas com sucesso");
             } else {
                 // Primeiramente, aplica animação de saída
                 bottomTabsContainer.style.animation = 'fadeOutDown 0.3s ease forwards';
+                
                 // Aguarda o fim da animação para esconder completamente
                 setTimeout(() => {
                     bottomTabsContainer.style.display = 'none';
+                    console.log("Abas inferiores ocultadas com sucesso");
                 }, 300);
             }
+        } else {
+            console.warn("Container de abas inferiores não encontrado!");
         }
     }
     
