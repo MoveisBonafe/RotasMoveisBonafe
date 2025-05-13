@@ -1734,17 +1734,24 @@
         }
         
         // Mostrar informações iniciais nas abas
-        showInitialTabsContent();
-        
-        // Garantir que apenas a aba ativa esteja visível no início
-        const bottomTabContents = document.querySelectorAll('.bottom-tab-content');
-        bottomTabContents.forEach(content => {
-            if (content.classList.contains('active')) {
-                content.style.display = 'block';
-            } else {
-                content.style.display = 'none';
-            }
+        // IMPORTANTE: Esconder TODOS os conteúdos primeiro, para evitar sobreposição
+        document.querySelectorAll('.bottom-tab-content').forEach(content => {
+            content.classList.remove('active');
+            content.style.display = 'none';
+            // Redefinir estilos para evitar problemas de sobreposição
+            content.style.position = '';
+            content.style.zIndex = '';
         });
+        
+        // Garantir que apenas a primeira aba esteja ativa no início
+        const firstContent = document.getElementById('bottom-events-content');
+        if (firstContent) {
+            firstContent.classList.add('active');
+            firstContent.style.display = 'block';
+        }
+        
+        // Mostrar conteúdo inicial nas abas
+        showInitialTabsContent();
         
         // Verificar se temos acesso ao Google Maps
         if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
@@ -2014,9 +2021,14 @@
                     
                     // Desativar todas as abas inferiores
                     bottomTabButtons.forEach(btn => btn.classList.remove('active'));
-                    bottomTabContents.forEach(content => {
+                    
+                    // IMPORTANTE: Esconder TODOS os conteúdos primeiro, para evitar sobreposição
+                    document.querySelectorAll('.bottom-tab-content').forEach(content => {
                         content.classList.remove('active');
                         content.style.display = 'none'; // Esconde explicitamente todos os conteúdos
+                        // Redefinir estilos para evitar problemas de sobreposição
+                        content.style.position = '';
+                        content.style.zIndex = '';
                     });
                     
                     // Ativar a aba inferior clicada
@@ -2213,6 +2225,21 @@
     
     // Função para mostrar conteúdo inicial relevante nas abas
     function showInitialTabsContent() {
+        // Primeiro esconder TODO o conteúdo das abas para evitar sobreposições
+        const bottomTabContents = document.querySelectorAll('.bottom-tab-content');
+        bottomTabContents.forEach(content => {
+            content.style.display = 'none';
+            content.style.position = '';
+            content.style.zIndex = '';
+        });
+        
+        // Garantir que apenas a primeira aba de eventos esteja visível
+        const eventsContent = document.getElementById('bottom-events-content');
+        if (eventsContent) {
+            eventsContent.style.display = 'block';
+            eventsContent.classList.add('active');
+        }
+        
         // Mostrar eventos da cidade de origem (Dois Córregos)
         const routeIds = [mockData.origin.id];
         showEventsForCitiesOnRoute(routeIds);
