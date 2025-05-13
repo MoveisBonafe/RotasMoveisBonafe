@@ -3361,34 +3361,64 @@
             }
         }
         
-        // Função auxiliar para extrair nome da cidade de um endereço
+        /**
+         * Extrai o nome da cidade de um endereço completo
+         * @param {string} address - Endereço completo
+         * @returns {string|null} - Nome da cidade extraído ou null se não encontrado
+         */
         function extractCityFromAddress(address) {
             if (!address) return null;
             
-            // Verificar cidades conhecidas no endereço
-            const lowerAddress = address.toLowerCase();
+            // Lista de cidades conhecidas para detecção direta
+            const knownCities = [
+                "Dois Córregos", "Jaú", "Botucatu", "Bauru", "Ribeirão Preto", 
+                "São Paulo", "Campinas", "São Carlos", "Piracicaba", "Araraquara",
+                "Americana", "Sorocaba", "Limeira", "Rio Claro", "Lençóis Paulista"
+            ];
             
+            // Procurar cidades conhecidas no endereço
+            for (const city of knownCities) {
+                if (address.includes(city)) {
+                    return city;
+                }
+            }
+            
+            // Tentar extrair a cidade do formato padrão de endereço
+            // Padrão comum: "Rua X, Cidade - Estado, CEP"
+            const parts = address.split(',');
+            if (parts.length >= 2) {
+                // A cidade geralmente está na segunda parte
+                let cityPart = parts[1].trim();
+                
+                // Remover o estado e CEP se presente
+                if (cityPart.includes('-')) {
+                    cityPart = cityPart.split('-')[0].trim();
+                }
+                
+                return cityPart;
+            }
+            
+            return null;
         }
         
-        // Função para extrair nome de cidade de um texto
+        /**
+         * Função principal para extrair nome de cidade de um texto ou endereço
+         * Utiliza várias estratégias para identificar a cidade
+         * @param {string} addressOrName - Endereço completo ou nome de localização
+         * @returns {string} - Nome da cidade extraído ou texto original como fallback
+         */
         function extractCityName(addressOrName) {
             if (!addressOrName) return 'Desconhecido';
             
-            // Se o texto já contém vírgulas, tentar extrair cidade do endereço
-            if (addressOrName.includes(',')) {
-                try {
-                    const cityPart = extractCityFromAddress(addressOrName);
-                    if (cityPart) return cityPart;
-                } catch (e) {
-                    console.warn("Erro ao extrair cidade do endereço:", e);
-                }
-            }
+            // Tentar extrair cidade de endereço completo primeiro
+            const cityFromAddress = extractCityFromAddress(addressOrName);
+            if (cityFromAddress) return cityFromAddress;
             
             // Lista de cidades conhecidas para reconhecimento direto
             const knownCities = [
                 "Dois Córregos", "Jaú", "Botucatu", "Bauru", "Ribeirão Preto", 
                 "São Paulo", "Campinas", "São Carlos", "Piracicaba", "Araraquara",
-                "Americana", "Sorocaba", "Limeira", "Rio Claro"
+                "Americana", "Sorocaba", "Limeira", "Rio Claro", "Lençóis Paulista"
             ];
             
             // Verificar se o nome já contém uma cidade conhecida
@@ -3400,19 +3430,6 @@
             
             // Se chegamos até aqui, retornar o nome como está
             return addressOrName;
-            }
-            
-            // Se não encontrou cidade conhecida, tentar extrair do endereço
-            const addressParts = address.split(',');
-            if (addressParts.length > 0) {
-                cityName = addressParts[0].trim();
-                // Se parece ser um nome de rua, tentar o segundo componente
-                if (cityName.includes('R.') || cityName.includes('Av.') || cityName.includes('Rod.')) {
-                    cityName = addressParts.length > 1 ? addressParts[1].trim() : null;
-                }
-            }
-            
-            return cityName;
         }
         
         const citiesOnRoute = pathLocations
