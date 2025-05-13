@@ -641,12 +641,20 @@
             overflow: hidden;
         }
         
-        /* Estado expandido para container de abas */
+        /* Estado expandido para container de abas - expandir para baixo ao invés de para cima */
         .bottom-tabs-container:not(.minimized) {
-            height: calc(100vh - 10px); /* Quase altura total da tela quando expandido */
+            position: fixed; /* Posicionamento fixo para manter abaixo do viewport */
+            top: auto; /* Não fixar no topo */
+            bottom: 0; /* Fixado na parte inferior */
+            height: auto; /* Altura automática baseada no conteúdo */
+            max-height: 70vh; /* Altura máxima como porcentagem da altura da tela */
+            overflow-y: auto; /* Permitir rolagem vertical */
+            z-index: 1001; /* Garantir que fique acima do mapa */
             border-top: 2px solid #1976D2; /* Borda mais visível quando expandido */
             border-left: 2px solid #1976D2; /* Borda na lateral para separar da sidebar */
-            box-shadow: -5px -5px 15px rgba(0,0,0,0.2); /* Sombra ajustada */
+            box-shadow: 0px -5px 15px rgba(0,0,0,0.2); /* Sombra ajustada para vir de cima */
+            background-color: #f9f9f9; /* Fundo opaco para cobrir o que está abaixo */
+            transform: translateY(0); /* Não mover verticalmente */
         }
         
         /* Botão de fechar removido - usando apenas os botões das abas para controlar expandir/minimizar */
@@ -826,14 +834,17 @@
             height: 300px; /* Altura fixa quando minimizado */
         }
         
-        /* Ajustes para quando as abas estão expandidas até o topo */
+        /* Ajustes para quando as abas estão expandidas - conteúdo rolável para baixo */
         .bottom-tabs-container:not(.minimized) .bottom-tab-content {
-            height: calc(100vh - 140px); /* Quase altura total da tela quando expandido */
+            height: auto; /* Altura automática baseada no conteúdo */
+            min-height: 300px; /* Altura mínima para garantir espaço suficiente */
+            max-height: calc(65vh - 60px); /* Altura máxima menos a altura da navegação */
             padding: 25px;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
             border-radius: 0 0 8px 8px;
             border: 1px solid #e0e0e0;
             margin: 0 15px 15px;
+            overflow-y: auto; /* Permitir rolagem vertical dentro do conteúdo */
         }
         
         /* Ajustes específicos para a aba de restrições */
@@ -1608,6 +1619,7 @@
         const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
         const toggleIcon = document.getElementById('toggle-icon');
         const mapContainer = document.querySelector('.map-container');
+        const isGitHubPages = window.location.href.includes('github.io');
         
         if (bottomTabsContainer) {
             if (bottomTabsContainer.classList.contains('minimized')) {
@@ -1615,18 +1627,38 @@
                 bottomTabsContainer.classList.remove('minimized');
                 if (toggleIcon) toggleIcon.textContent = '▼ Minimizar';
                 
-                // Ajustar altura do mapa quando as abas estão expandidas
-                if (mapContainer) {
-                    // Ajustar a altura do container do mapa para considerar o tamanho expandido das abas
-                    const tabsHeight = bottomTabsContainer.offsetHeight;
-                    mapContainer.style.bottom = tabsHeight + 'px';
+                // Comportamento diferente para GitHub Pages (expandir para baixo)
+                if (isGitHubPages) {
+                    console.log("GitHub Pages: Expandindo abas para baixo");
                     
-                    // Forçar redesenho do mapa
+                    // Não alterar a altura do mapa, pois as abas se expandem para baixo
+                    // Mas forçar um redesenho do mapa para garantir que ele preencha o espaço corretamente
                     if (typeof google !== 'undefined' && google.maps && map) {
                         setTimeout(() => {
                             google.maps.event.trigger(map, 'resize');
-                            console.log("Mapa redimensionado após expandir abas, altura das abas:", tabsHeight);
                         }, 100);
+                    }
+                    
+                    // Aplicar estilo específico para GitHub Pages
+                    bottomTabsContainer.style.position = 'absolute';
+                    bottomTabsContainer.style.top = 'auto';
+                    bottomTabsContainer.style.maxHeight = '70vh';
+                    bottomTabsContainer.style.overflowY = 'auto';
+                } else {
+                    // Comportamento padrão (expandir para cima)
+                    // Ajustar altura do mapa quando as abas estão expandidas
+                    if (mapContainer) {
+                        // Ajustar a altura do container do mapa para considerar o tamanho expandido das abas
+                        const tabsHeight = bottomTabsContainer.offsetHeight;
+                        mapContainer.style.bottom = tabsHeight + 'px';
+                        
+                        // Forçar redesenho do mapa
+                        if (typeof google !== 'undefined' && google.maps && map) {
+                            setTimeout(() => {
+                                google.maps.event.trigger(map, 'resize');
+                                console.log("Mapa redimensionado após expandir abas, altura das abas:", tabsHeight);
+                            }, 100);
+                        }
                     }
                 }
             } else {
@@ -1645,6 +1677,13 @@
                             console.log("Mapa redimensionado após minimizar abas");
                         }, 100);
                     }
+                }
+                
+                // Restaurar comportamento padrão para GitHub Pages
+                if (isGitHubPages) {
+                    bottomTabsContainer.style.position = 'fixed';
+                    bottomTabsContainer.style.maxHeight = '60px';
+                    bottomTabsContainer.style.overflowY = 'hidden';
                 }
             }
         }
