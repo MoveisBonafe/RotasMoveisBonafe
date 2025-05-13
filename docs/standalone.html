@@ -1000,8 +1000,35 @@
     
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places" onerror="handleGoogleMapsError()"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="cep-database.js"></script>
-    <script src="geocode-fix.js"></script>
+    <!-- Scripts adicionais carregados dinamicamente quando necessário -->
+    <script>
+        // Função para carregar scripts externos dinamicamente apenas quando necessário
+        function loadExternalScript(url, callback) {
+            console.log(`Carregando script externo: ${url}`);
+            const script = document.createElement('script');
+            script.src = url;
+            script.onload = function() {
+                console.log(`Script carregado com sucesso: ${url}`);
+                if (callback) callback();
+            };
+            script.onerror = function() {
+                console.error(`Erro ao carregar script: ${url}`);
+            };
+            document.body.appendChild(script);
+        }
+        
+        // Verificar se estamos no GitHub Pages
+        const isGitHubPages = window.location.href.includes('github.io');
+        
+        // No GitHub Pages, scripts auxiliares são carregados apenas quando necessário
+        if (!isGitHubPages) {
+            // Se não estivermos no GitHub Pages, podemos carregar normalmente
+            loadExternalScript('cep-database.js');
+            loadExternalScript('geocode-fix.js');
+        } else {
+            console.log("Executando em GitHub Pages - scripts auxiliares serão carregados quando solicitados");
+        }
+    </script>
     
     <script>
     // Dados de amostra para a aplicação standalone
@@ -1855,12 +1882,51 @@
         const file = event.target.files[0];
         if (!file) return;
         
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const content = e.target.result;
-            parseCEPFile(content);
-        };
-        reader.readAsText(file);
+        // Mostrar spinner de carregamento
+        showLoadingSpinner("Processando arquivo...");
+        
+        // Verificar se estamos no GitHub Pages e se os scripts auxiliares precisam ser carregados
+        const isGitHubPages = window.location.href.includes('github.io');
+        
+        // Função para processar o arquivo após garantir que temos todas as dependências
+        function processFile() {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                hideLoadingSpinner();
+                
+                try {
+                    // Verificar se a função parseCEPFile está disponível
+                    if (typeof parseCEPFile === 'function') {
+                        parseCEPFile(content);
+                    } else {
+                        console.error("A função parseCEPFile não está disponível");
+                        showNotification("Erro ao processar arquivo: função de processamento não disponível", "error");
+                    }
+                } catch (error) {
+                    console.error("Erro ao processar arquivo:", error);
+                    showNotification("Erro ao processar arquivo: " + error.message, "error");
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        // Se estivermos no GitHub Pages, carregar script necessário primeiro
+        if (isGitHubPages && typeof parseCEPFile !== 'function') {
+            console.log("Carregando scripts auxiliares para o processamento de CEP...");
+            
+            // Primeiro carregamos cep-database.js que contém dados de coordenadas
+            loadExternalScript('cep-database.js', function() {
+                // Depois carregamos geocode-fix.js que contém a função parseCEPFile
+                loadExternalScript('geocode-fix.js', function() {
+                    // Agora sim processamos o arquivo
+                    processFile();
+                });
+            });
+        } else {
+            // Fora do GitHub Pages os scripts já foram carregados
+            processFile();
+        }
     }
 
     // Formatar texto para iniciar com maiúscula e resto minúscula
