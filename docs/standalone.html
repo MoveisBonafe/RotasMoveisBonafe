@@ -3845,6 +3845,11 @@
     // Mostrar eventos para as cidades na rota
     // Função reescrita para mostrar eventos de forma simples e direta para GitHub Pages
     function showEventsForCitiesOnRoute(pathIds, startDateStr, endDateStr) {
+        // Chamar a nova função que implementa a filtragem simplificada
+        return showEventsSimplified(pathIds, startDateStr, endDateStr);
+        
+        /********* ORIGINAL SUBSTITUÍDO - MANTENDO COMENTADO PARA REFERÊNCIA *********
+        // Código da implementação antiga abaixo:
         // 1. INICIALIZAÇÃO BÁSICA
         console.log("==== FILTRAGEM DE EVENTOS SIMPLIFICADA ====");
         
@@ -4120,6 +4125,178 @@
         });
     }
 
+    // Nova função para mostrar eventos (implementação simplificada)
+    function showEventsSimplified(pathIds, startDateStr, endDateStr) {
+        // 1. INICIALIZAÇÃO
+        console.log("==== NOVA FUNÇÃO DE FILTRAGEM DE EVENTOS ====");
+        clearEventMarkers();
+        
+        // Obter container da lista de eventos
+        const eventsListContainer = document.getElementById('events-list');
+        if (!eventsListContainer) {
+            console.error("Container de eventos não encontrado");
+            return;
+        }
+        eventsListContainer.innerHTML = '';
+        
+        // 2. VERIFICAR ROTA
+        if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
+            eventsListContainer.innerHTML = '<p class="text-muted">Adicione destinos e calcule a rota para ver eventos.</p>';
+            return;
+        }
+        
+        // 3. OBTER CIDADES NA ROTA
+        const citiesOnRoute = ["Dois Córregos"]; // Sempre incluir a origem
+        
+        pathIds.forEach(id => {
+            const location = locations.find(loc => loc.id === id);
+            if (location && location.name && !citiesOnRoute.includes(location.name)) {
+                citiesOnRoute.push(location.name);
+            }
+        });
+        
+        console.log("Cidades na rota:", citiesOnRoute);
+        
+        // 4. PROCESSAR DATAS
+        const currentYear = new Date().getFullYear();
+        let startDate, endDate;
+        
+        if (startDateStr && endDateStr) {
+            startDate = new Date(startDateStr);
+            endDate = new Date(endDateStr);
+            
+            if (isNaN(startDate) || isNaN(endDate)) {
+                const today = new Date();
+                startDate = today;
+                endDate = new Date();
+                endDate.setDate(today.getDate() + 7);
+            }
+        } else {
+            const today = new Date();
+            startDate = today;
+            endDate = new Date();
+            endDate.setDate(today.getDate() + 7);
+        }
+        
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(23, 59, 59, 999);
+        
+        console.log("Período de filtro:", 
+            startDate.toLocaleDateString('pt-BR'), "a", 
+            endDate.toLocaleDateString('pt-BR')
+        );
+        
+        // 5. FILTRAR EVENTOS
+        const filteredEvents = [];
+        
+        if (mockData && mockData.cityEvents) {
+            mockData.cityEvents.forEach(event => {
+                // Filtro 1: Cidade deve estar na rota
+                if (!citiesOnRoute.includes(event.cityName)) {
+                    return;
+                }
+                
+                // Filtro 2: Data deve estar no período selecionado
+                try {
+                    const eventStart = new Date(event.startDate);
+                    const eventEnd = new Date(event.endDate);
+                    
+                    // Ajustar ano para eventos anuais
+                    if (event.name.includes("Aniversário") || event.isHoliday) {
+                        eventStart.setFullYear(currentYear);
+                        eventEnd.setFullYear(currentYear);
+                    }
+                    
+                    eventStart.setHours(0, 0, 0, 0);
+                    eventEnd.setHours(23, 59, 59, 999);
+                    
+                    // Verificar sobreposição de datas
+                    const hasOverlap = (
+                        (eventStart >= startDate && eventStart <= endDate) ||
+                        (eventEnd >= startDate && eventEnd <= endDate) ||
+                        (eventStart <= startDate && eventEnd >= endDate)
+                    );
+                    
+                    if (hasOverlap) {
+                        filteredEvents.push(event);
+                    }
+                } catch (error) {
+                    console.error("Erro ao processar datas:", error);
+                }
+            });
+        }
+        
+        // 6. EXIBIR EVENTOS
+        if (filteredEvents.length === 0) {
+            eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado para este período e cidades.</p>';
+            return;
+        }
+        
+        // Ordenar por data
+        filteredEvents.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+        
+        // Exibir na lista
+        filteredEvents.forEach((event, index) => {
+            // Formatar datas
+            const formatDate = (dateStr) => {
+                const date = new Date(dateStr);
+                if (event.name.includes("Aniversário") || event.isHoliday) {
+                    date.setFullYear(currentYear);
+                }
+                return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth()+1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+            };
+            
+            const startFormatted = formatDate(event.startDate);
+            const endFormatted = formatDate(event.endDate);
+            
+            // Definir estilo
+            let iconColor = event.isHoliday ? 'text-danger' : 'text-info';
+            let badge = '';
+            
+            if (event.restrictionLevel === 'high') {
+                badge = '<span class="badge bg-danger ms-2">Restrição Alta</span>';
+            } else if (event.restrictionLevel === 'medium') {
+                badge = '<span class="badge bg-warning ms-2">Restrição Média</span>';
+            } else if (event.restrictionLevel === 'low') {
+                badge = '<span class="badge bg-success ms-2">Restrição Baixa</span>';
+            }
+            
+            // Criar elemento
+            const eventItem = document.createElement('div');
+            eventItem.className = 'event-item';
+            eventItem.innerHTML = `
+                <div class="d-flex align-items-start">
+                    <i class="bi bi-calendar-event ${iconColor} me-2 mt-1"></i>
+                    <div>
+                        <div class="d-flex align-items-center">
+                            <strong>${event.name}</strong>
+                            ${badge}
+                        </div>
+                        <div class="text-muted">${event.cityName}</div>
+                        <div class="text-muted small">
+                            ${startFormatted}${startFormatted !== endFormatted ? ' até ' + endFormatted : ''}
+                        </div>
+                        <p class="mb-0 small">${event.description}</p>
+                    </div>
+                </div>
+            `;
+            
+            eventsListContainer.appendChild(eventItem);
+            
+            // Adicionar separador (exceto último)
+            if (index < filteredEvents.length - 1) {
+                const divider = document.createElement('hr');
+                divider.className = 'my-2';
+                eventsListContainer.appendChild(divider);
+            }
+            
+            // Adicionar marcador no mapa
+            addEventMarker(event);
+        });
+        
+        console.log(`Exibindo ${filteredEvents.length} eventos`);
+    }
+    
     // Adicionar marcador para um evento
     function addEventMarker(event, location) {
         // Seletor de ícone com base no tipo de evento
