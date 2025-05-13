@@ -1196,7 +1196,7 @@
         cityEvents: [
             // Aniversários das principais cidades (eventos fixos - feriados municipais)
             { id: 99, cityName: "Dois Córregos", name: "Festival de Verão", startDate: "2025-01-01", endDate: "2025-12-31", isHoliday: false, description: "Festival com atividades durante todo o ano", restrictionLevel: "low" },
-            { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2025-02-03", endDate: "2025-02-03", isHoliday: true, description: "Feriado municipal do aniversário de Dois Córregos (fundação: 04/02/1883)", restrictionLevel: "low" },
+            { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2025-02-04", endDate: "2025-02-04", isHoliday: true, description: "Feriado municipal do aniversário de Dois Córregos (fundação: 04/02/1883)", restrictionLevel: "low" },
             { id: 2, cityName: "Jaú", name: "Aniversário da Cidade", startDate: "2025-08-15", endDate: "2025-08-15", isHoliday: true, description: "Feriado municipal do aniversário de Jaú (fundação: 15/08/1853)", restrictionLevel: "low" },
             { id: 3, cityName: "Botucatu", name: "Aniversário da Cidade", startDate: "2025-04-14", endDate: "2025-04-14", isHoliday: true, description: "Feriado municipal do aniversário de Botucatu (fundação: 14/04/1855)", restrictionLevel: "low" },
             { id: 4, cityName: "Bauru", name: "Aniversário da Cidade", startDate: "2025-08-01", endDate: "2025-08-01", isHoliday: true, description: "Feriado municipal do aniversário de Bauru (fundação: 01/08/1896)", restrictionLevel: "low" },
@@ -1209,7 +1209,7 @@
             { id: 9, cityName: "Jaú", name: "Festa do Rodeio", startDate: "2025-06-10", endDate: "2025-06-20", isHoliday: false, description: "Evento com grande circulação de veículos", restrictionLevel: "medium" },
             { id: 10, cityName: "Botucatu", name: "Festival de Inverno", startDate: "2025-07-15", endDate: "2025-07-30", isHoliday: false, description: "Evento cultural e gastronômico", restrictionLevel: "low" },
             { id: 11, cityName: "Bauru", name: "Exposição Agropecuária", startDate: "2025-08-05", endDate: "2025-08-15", isHoliday: false, description: "Feira agropecuária com shows", restrictionLevel: "high" },
-            { id: 12, cityName: "Ribeirão Preto", name: "Agrishow", startDate: "2025-04-26", endDate: "2025-04-30", isHoliday: false, description: "Feira internacional de tecnologia agrícola", restrictionLevel: "high" },
+            { id: 12, cityName: "Ribeirão Preto", name: "Agrishow", startDate: "2025-04-25", endDate: "2025-04-29", isHoliday: false, description: "Feira internacional de tecnologia agrícola", restrictionLevel: "high" },
             { id: 13, cityName: "São Paulo", name: "Virada Cultural", startDate: "2025-05-17", endDate: "2025-05-18", isHoliday: false, description: "Festival de 24 horas com eventos culturais pela cidade", restrictionLevel: "medium" },
             { id: 14, cityName: "Ribeirão Preto", name: "Feira Tecnológica", startDate: "2025-05-15", endDate: "2025-05-18", isHoliday: false, description: "Exposição de novas tecnologias agrícolas", restrictionLevel: "medium" }
         ],
@@ -3890,28 +3890,31 @@
                 // O Festival de Verão é excluído desta regra de filtragem estrita
                 const isFestivalAnual = event.id === 99 && event.name === "Festival de Verão";
                 
-                // Para eventos normais (exceto Festival de Verão que tem tratamento especial)
-                if (!isFestivalAnual) {
-                    // Um evento corresponde se:
-                    // 1. O evento começa dentro do intervalo do filtro, OU
-                    // 2. O evento termina dentro do intervalo do filtro, OU
-                    // 3. O evento abrange completamente o intervalo do filtro
+                // Usar uma comparação rigorosa para garantir que todos os eventos exibidos estejam dentro do intervalo
+                if (startDateValue && endDateValue) {
+                    // Filtro rigoroso quando datas estão selecionadas
+                    const eventStart = new Date(event.startDate).setHours(0,0,0,0);
+                    const eventEnd = new Date(event.endDate).setHours(23,59,59,999);
+                    const filterStart = new Date(startDateValue).setHours(0,0,0,0);
+                    const filterEnd = new Date(endDateValue).setHours(23,59,59,999);
+                    
+                    console.log(`[DEBUG] Evento: ${event.name} | Data: ${new Date(eventStart).toLocaleDateString()} a ${new Date(eventEnd).toLocaleDateString()}`);
+                    console.log(`[DEBUG] Filtro: ${new Date(filterStart).toLocaleDateString()} a ${new Date(filterEnd).toLocaleDateString()}`);
+                    
+                    // Verificar se há sobreposição entre os intervalos
+                    // Um evento deve ter alguma parte dentro do período de filtro para ser incluído
                     if (
-                        // Começa no intervalo
-                        (eventStartObj >= startFilterDate && eventStartObj <= endFilterDate) ||
-                        // Termina no intervalo
-                        (eventEndObj >= startFilterDate && eventEndObj <= endFilterDate) ||
-                        // Abrange o intervalo completo
-                        (eventStartObj <= startFilterDate && eventEndObj >= endFilterDate)
+                        (eventStart <= filterEnd && eventEnd >= filterStart)
                     ) {
                         console.log(`[DATA] Evento '${event.name}' ACEITO - está no intervalo de datas especificado`);
                         includeEvent = true;
                     } else {
-                        console.log(`[DATA] Evento '${event.name}' REJEITADO - fora do intervalo de datas especificado: ${eventStartStr} não está entre ${filterStartStr} e ${filterEndStr}`);
+                        console.log(`[DATA] Evento '${event.name}' REJEITADO - fora do intervalo de datas especificado`);
                     }
                 } else {
-                    // Festival anual tem um tratamento separado (já foi verificado antes)
-                    console.log(`[DATA] Festival anual verificado separadamente.`);
+                    // Se não houver filtro de data, aceitar o evento
+                    console.log(`[DATA] Evento '${event.name}' ACEITO - nenhum filtro de data aplicado`);
+                    includeEvent = true;
                 }
             } catch (e) {
                 console.error(`[ERRO] Falha ao processar datas para evento ${event.name}:`, e);
