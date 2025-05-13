@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Correção Direta para Abas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #1976D2;
+        }
+        .code-block {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #1976D2;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Correção Direta para Abas</h1>
+        
+        <p>Para resolver o problema das abas na versão GitHub Pages, copie e cole o código abaixo diretamente no arquivo HTML principal, substituindo o conteúdo atual das abas:</p>
+        
+        <h2>1. Substitua o container de abas</h2>
+        <div class="code-block">&lt;!-- NOVO: Tabs fixas na parte inferior do layout (inicialmente minimizadas) --&gt;
+&lt;div class="bottom-tabs-container minimized"&gt;
+    &lt;!-- Navegação das abas inferiores --&gt;
+    &lt;div class="bottom-tabs-nav"&gt;
+        &lt;button class="bottom-tab-btn active" data-tab="bottom-events" onclick="showTab('bottom-events')"&gt;Eventos na Rota&lt;/button&gt;
+        &lt;button class="bottom-tab-btn" data-tab="bottom-restrictions" onclick="showTab('bottom-restrictions')"&gt;Restrições de Tráfego&lt;/button&gt;
+        &lt;button class="bottom-tab-btn" data-tab="bottom-report" onclick="showTab('bottom-report')"&gt;Relatório da Rota&lt;/button&gt;
+    &lt;/div&gt;
+    
+    &lt;!-- Container das abas com rolagem independente para cada aba --&gt;
+    &lt;div class="bottom-tabs-content-container"&gt;
+        &lt;!-- Conteúdo da aba Eventos --&gt;
+        &lt;div class="bottom-tab-content active" id="bottom-events-content" style="display: block;"&gt;
+            &lt;h5&gt;Eventos nas cidades da rota:&lt;/h5&gt;
+            &lt;div class="events-list" id="events-list"&gt;
+                &lt;p class="text-muted"&gt;Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        
+        &lt;!-- Conteúdo da aba Restrições --&gt;
+        &lt;div class="bottom-tab-content" id="bottom-restrictions-content" style="display: none;"&gt;
+            &lt;h5&gt;Restrições de tráfego para caminhões:&lt;/h5&gt;
+            &lt;div class="restrictions-list" id="restrictions-list"&gt;
+                &lt;p class="text-muted"&gt;Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver as restrições de tráfego.&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        
+        &lt;!-- Conteúdo da aba Relatório --&gt;
+        &lt;div class="bottom-tab-content" id="bottom-report-content" style="display: none;"&gt;
+            &lt;h5&gt;Resumo da rota otimizada:&lt;/h5&gt;
+            &lt;div class="route-info p-3 border rounded mb-3 bg-light" id="route-info"&gt;
+                &lt;p class="text-muted"&gt;Otimize a rota para ver o relatório detalhado.&lt;/p&gt;
+            &lt;/div&gt;
+            
+            &lt;h5&gt;Sequência de entrega:&lt;/h5&gt;
+            &lt;div class="route-sequence border rounded p-3" id="route-sequence"&gt;
+                &lt;p class="text-muted"&gt;A sequência de rota será exibida aqui após a otimização.&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</div>
+        
+        <h2>2. Adicione esta função no final do arquivo, antes de &lt;/body&gt;</h2>
+        <div class="code-block">&lt;script&gt;
+// Função simples para controlar as abas
+function showTab(tabName) {
+    console.log('Mostrando aba:', tabName);
+    
+    // Primeiro, esconder todos os conteúdos das abas
+    var allContents = document.querySelectorAll('.bottom-tab-content');
+    allContents.forEach(function(content) {
+        content.style.display = 'none';
+        content.classList.remove('active');
+    });
+    
+    // Depois, mostrar apenas o conteúdo da aba selecionada
+    var selectedContent = document.getElementById(tabName + '-content');
+    if (selectedContent) {
+        selectedContent.style.display = 'block';
+        selectedContent.classList.add('active');
+        console.log('Ativado conteúdo:', tabName + '-content');
+    } else {
+        console.error('Conteúdo não encontrado para aba:', tabName);
+    }
+    
+    // Atualizar classes ativas nos botões
+    var allButtons = document.querySelectorAll('.bottom-tab-btn');
+    allButtons.forEach(function(button) {
+        button.classList.remove('active');
+        
+        if (button.getAttribute('data-tab') === tabName) {
+            button.classList.add('active');
+        }
+    });
+    
+    // Expandir o container se estiver minimizado
+    var tabsContainer = document.querySelector('.bottom-tabs-container');
+    if (tabsContainer && tabsContainer.classList.contains('minimized')) {
+        tabsContainer.classList.remove('minimized');
+    }
+}
+
+// Modificar a função que lida com a otimização de rota
+document.addEventListener('DOMContentLoaded', function() {
+    // Primeiro, garantir que a aba de eventos esteja ativa na inicialização
+    showTab('bottom-events');
+    
+    // Interceptar e modificar o botão de otimizar rota
+    var optimizeButton = document.getElementById('optimize-route');
+    if (optimizeButton) {
+        // Armazenar a função original de clique
+        var originalClickHandler = optimizeButton.onclick;
+        
+        // Substituir com nossa função
+        optimizeButton.onclick = function(event) {
+            console.log('Botão otimizar rota clicado, executando função original...');
+            
+            // Executar a função original
+            if (typeof originalClickHandler === 'function') {
+                originalClickHandler.call(this, event);
+            }
+            
+            // Agendar a navegação para a aba de relatório
+            setTimeout(function() {
+                console.log('Navegando para aba de relatório após otimização...');
+                showTab('bottom-report');
+            }, 2000);
+            
+            return false; // Prevenir comportamento padrão
+        };
+        
+        console.log('Handler do botão Otimizar Rota modificado');
+    } else {
+        console.warn('Botão Otimizar Rota não encontrado!');
+    }
+});
+&lt;/script&gt;</div>
+        
+        <h2>3. Remova scripts antigos</h2>
+        <p>Remova ou comente os scripts antigos que podem estar interferindo:</p>
+        <div class="code-block">&lt;!-- Scripts antigos de correção (podem ser removidos)
+&lt;script src="fix-tabs-github.js"&gt;&lt;/script&gt;
+&lt;script src="fix-specific-tabs.js"&gt;&lt;/script&gt;
+&lt;script src="fix-report-tab.js"&gt;&lt;/script&gt;
+&lt;script src="tab-content-isolator.js"&gt;&lt;/script&gt;
+--&gt;</div>
+        
+        <a href="index.html" class="btn">Voltar para a aplicação</a>
+    </div>
+</body>
+</html>
