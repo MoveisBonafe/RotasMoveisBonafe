@@ -1,11 +1,16 @@
 // Script para corrigir os caminhos no GitHub Pages
 // Salve este arquivo na pasta docs e execute com node
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
 
 // Garantir que estamos na pasta docs
+// Obter o diretório atual
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const currentDir = path.basename(process.cwd());
 if (currentDir !== 'docs') {
   console.error('Este script deve ser executado na pasta docs.');
