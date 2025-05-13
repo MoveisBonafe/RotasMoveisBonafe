@@ -1459,45 +1459,67 @@
         </div>
         </div>
         
-        <!-- NOVO: Tabs fixas na parte inferior do layout (inicialmente minimizadas) -->
-        <div class="bottom-tabs-container minimized">
-            <!-- Sem botão adicional - os próprios botões das abas controlam expandir/minimizar -->
-            <!-- Navegação das abas inferiores -->
-            <div class="bottom-tabs-nav">
-                <button class="bottom-tab-btn active" data-tab="bottom-events">Eventos na Rota</button>
-                <button class="bottom-tab-btn" data-tab="bottom-restrictions">Restrições de Tráfego</button>
-                <button class="bottom-tab-btn" data-tab="bottom-report">Relatório da Rota</button>
+        <!-- NOVO LAYOUT: Seção de abas fluidas com rolagem na página -->
+        <div id="scroll-tabs-placeholder"></div>
+    </div>
+
+    <!-- NOVO LAYOUT: Seção de abas fluidas na parte inferior -->
+    <section class="tabs-section">
+        <div class="tabs-container">
+            <!-- Cabeçalho fixo com os botões de navegação -->
+            <div class="tabs-header">
+                <button class="tab-btn active" data-tab="events">Eventos na Rota</button>
+                <button class="tab-btn" data-tab="restrictions">Restrições de Tráfego</button>
+                <button class="tab-btn" data-tab="report">Relatório da Rota</button>
             </div>
             
             <!-- Conteúdo da aba Eventos -->
-            <div class="bottom-tab-content active" id="bottom-events-content">
-                <h5>Eventos nas cidades da rota:</h5>
+            <div class="tab-content active" id="events-content">
+                <h3 class="tab-title">Eventos nas cidades da rota</h3>
                 <div class="events-list" id="events-list">
                     <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
                 </div>
             </div>
             
             <!-- Conteúdo da aba Restrições -->
-            <div class="bottom-tab-content" id="bottom-restrictions-content">
-                <h5>Restrições para caminhões do percurso:</h5>
+            <div class="tab-content" id="restrictions-content">
+                <h3 class="tab-title">Restrições para caminhões do percurso</h3>
                 <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
-                <div class="restrictions-list" id="restrictions-list">
+                <div class="restrictions-list" id="restrictions-list-static">
                     <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
                 </div>
             </div>
             
             <!-- Conteúdo da aba Relatório -->
-            <div class="bottom-tab-content" id="bottom-report-content">
-                <div id="route-summary" class="mb-4">
-                    <p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>
+            <div class="tab-content" id="report-content">
+                <h3 class="tab-title">Relatório da rota</h3>
+                <div id="route-summary-static" class="route-summary">
+                    <div class="route-summary-content">
+                        <div class="summary-item">
+                            <span class="summary-label">Distância total:</span>
+                            <span class="summary-value" id="total-distance-static">--</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Tempo estimado:</span>
+                            <span class="summary-value" id="total-time-static">--</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Pedágios no percurso:</span>
+                            <span class="summary-value" id="total-tolls-static">--</span>
+                        </div>
+                        <div id="average-toll-cost-static" class="summary-item">
+                            <span class="summary-label">Custo médio em pedágios:</span>
+                            <span class="summary-value">R$ 180,00 - R$ 240,00</span>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Seleção de Rota Alternativa -->
-                <div id="route-alternatives" class="mb-4" style="display: none;">
+                <div id="route-alternatives-static" class="mb-4" style="display: none;">
                     <h5>Rotas Alternativas</h5>
                     <p class="text-muted">Selecione uma rota alternativa para visualizar diferentes ordenações de pontos:</p>
                     <div class="form-group">
-                        <select id="alternative-routes" class="form-select">
+                        <select id="alternative-routes-static" class="form-select">
                             <option value="0">Rota Otimizada (Padrão)</option>
                             <!-- Opções de rotas alternativas serão adicionadas dinamicamente -->
                         </select>
@@ -1507,18 +1529,25 @@
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="report-route-name">Nome da rota:</label>
-                    <input type="text" id="report-route-name" class="form-control" placeholder="Ex: Entrega Região Sul" style="max-width: 400px">
+                <h5 class="mt-4">Sequência de entrega:</h5>
+                <div class="delivery-sequence" id="delivery-sequence-static">
+                    <p class="text-muted">Nenhuma rota calculada.</p>
+                </div>
+                
+                <div class="form-group mt-4">
+                    <label for="report-route-name-static">Nome da rota:</label>
+                    <input type="text" id="report-route-name-static" class="form-control" placeholder="Ex: Entrega Região Sul" style="max-width: 400px">
                 </div>
                 
                 <div class="mt-3">
-                    <button id="save-route" class="btn btn-outline-success" disabled>Salvar Rota</button>
-                    <button id="print-route" class="btn btn-outline-primary ms-2" disabled>Imprimir</button>
+                    <button id="save-route-static" class="btn btn-primary">Salvar Rota</button>
+                    <button id="print-route-static" class="btn btn-secondary ms-2">Imprimir</button>
                 </div>
+                
+                <p class="text-muted mt-3" id="no-route-message-static">Otimize uma rota para ver o relatório completo.</p>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Scripts externos -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places"></script>
@@ -1940,15 +1969,55 @@
 
     // Inicializa a navegação por abas (novas abas inferiores)
     function initTabNavigation() {
-        // Inicializar abas inferiores (abaixo do mapa)
+        // Inicializar abas inferiores (abaixo do mapa) - SISTEMA ANTIGO 
         const bottomTabButtons = document.querySelectorAll('.bottom-tab-btn');
         const bottomTabContents = document.querySelectorAll('.bottom-tab-content');
+        
+        // Inicializar NOVO sistema de abas fluido
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
         
         // Verificar se estamos no GitHub Pages (para aplicar animações avançadas)
         const isGitHubPages = window.location.href.includes('github.io');
         
+        // Inicializar as novas abas fluidas
+        if (tabButtons.length > 0) {
+            console.log("Inicializando novo sistema de navegação para tabs fluidas");
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.getAttribute('data-tab');
+                    console.log("Tab fluida clicada:", tabId);
+                    
+                    // Desativar todas as abas
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Ativar a aba clicada
+                    button.classList.add('active');
+                    
+                    // Ativar o conteúdo correspondente
+                    const contentId = `${tabId}-content`;
+                    const contentElement = document.getElementById(contentId);
+                    
+                    if (contentElement) {
+                        contentElement.classList.add('active');
+                        
+                        // Rolar suavemente até o conteúdo da aba
+                        contentElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                        console.error(`Elemento de conteúdo não encontrado: ${contentId}`);
+                    }
+                });
+            });
+            
+            // Adicionar função de sincronização do conteúdo
+            setupContentSync();
+        }
+        
+        // Inicializar sistema antigo de abas (mantido para compatibilidade)
         if (bottomTabButtons.length > 0) {
-            console.log("Inicializando sistema de navegação para tabs inferiores");
+            console.log("Inicializando sistema antigo de navegação para tabs inferiores");
             
             bottomTabButtons.forEach(button => {
                 button.addEventListener('click', () => {
