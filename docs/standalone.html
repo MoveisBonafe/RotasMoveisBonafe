@@ -36,7 +36,7 @@
             overflow: hidden;
         }
         .sidebar {
-            width: 380px;
+            width: 420px; /* Aumentado de 380px para 420px */
             height: 100%;
             background-color: #f8f9fa;
             padding: 20px;
@@ -1441,11 +1441,24 @@
         document.getElementById('toggle-poi').addEventListener('click', togglePointsOfInterest);
         
         // Botões da aba de relatório
-        document.getElementById('save-route').addEventListener('click', saveRoute);
-        document.getElementById('print-route').addEventListener('click', printRoute);
+        const saveRouteButton = document.getElementById('save-route');
+        if (saveRouteButton) {
+            saveRouteButton.addEventListener('click', saveRoute);
+        } else {
+            console.error("Botão para salvar rota não encontrado!");
+        }
+        
+        const printRouteButton = document.getElementById('print-route');
+        if (printRouteButton) {
+            printRouteButton.addEventListener('click', printRoute);
+        } else {
+            console.error("Botão para imprimir rota não encontrado!");
+        }
         
         // Seletor de rotas alternativas
-        document.getElementById('alternative-routes').addEventListener('change', function(e) {
+        const alternativeRoutesSelect = document.getElementById('alternative-routes');
+        if (alternativeRoutesSelect) {
+            alternativeRoutesSelect.addEventListener('change', function(e) {
             const selectedIndex = parseInt(e.target.value);
             if (alternativeRoutes && alternativeRoutes.length > selectedIndex) {
                 const selectedRoute = alternativeRoutes[selectedIndex];
