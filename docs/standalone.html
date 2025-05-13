@@ -3106,6 +3106,37 @@
         eventMarkers.forEach(marker => marker.setMap(null));
         eventMarkers = [];
     }
+    
+    // Função para garantir que as abas fiquem sempre na parte inferior
+    function ensureBottomTabsPosition() {
+        const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+        if (bottomTabsContainer) {
+            console.log("Garantindo posição inferior para as abas");
+            
+            // Forçar posicionamento na parte inferior
+            bottomTabsContainer.style.position = 'fixed';
+            bottomTabsContainer.style.bottom = '0';
+            bottomTabsContainer.style.top = 'auto';
+            bottomTabsContainer.style.left = '0';
+            bottomTabsContainer.style.right = '0';
+            bottomTabsContainer.style.zIndex = '1000';
+            
+            // Adicionar classe para expandir para baixo (não para cima)
+            if (!bottomTabsContainer.classList.contains('expand-down')) {
+                bottomTabsContainer.classList.add('expand-down');
+            }
+            
+            // Garantir que apenas a aba ativa esteja visível
+            const bottomTabContents = document.querySelectorAll('.bottom-tab-content');
+            bottomTabContents.forEach(content => {
+                if (content.classList.contains('active')) {
+                    content.style.display = 'block';
+                } else {
+                    content.style.display = 'none';
+                }
+            });
+        }
+    }
 
     // Otimizar a rota
     function optimizeRoute() {
@@ -3120,6 +3151,9 @@
         
         // Mostrar as abas inferiores quando houver destinos
         toggleBottomTabsVisibility(true);
+        
+        // Garantir que as abas permaneçam na parte inferior
+        ensureBottomTabsPosition();
         
         // Mostrar spinner de carregamento centralizado no mapa
         showLoadingSpinner();
@@ -3148,6 +3182,9 @@
     function calculateOptimizedRoute(vehicleType, includeOriginReturn, savedMarkers = null) {
         try {
             console.log("Calculando rota otimizada...");
+            
+            // Garantir que as abas permaneçam na parte inferior
+            ensureBottomTabsPosition();
             
             // Limpar rotas alternativas existentes
             alternativeRoutes = [];
