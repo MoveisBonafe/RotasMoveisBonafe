@@ -1,13 +1,15 @@
 /**
- * CORREÇÃO DIRETA PARA DATAS DE FUNDAÇÃO
- * Este script aplica uma correção direta e agressiva na interface
+ * CORREÇÃO DIRETA PARA DATAS DE FUNDAÇÃO - VERSÃO SIMPLIFICADA
+ * Este script aplica uma correção direta na interface
  * para garantir que as datas de fundação sejam exibidas corretamente
  * no ambiente do GitHub Pages
+ * 
+ * VERSÃO SIMPLIFICADA - Sem uso de MutationObserver para evitar loops
  */
 
 // Garantir que seja carregado no contexto global
 window.applyCityFoundingDateCorrection = function() {
-  console.log("[CORREÇÃO DIRETA] Iniciando correção aggressiva de datas de fundação...");
+  console.log("[CORREÇÃO DIRETA] Iniciando correção simplificada de datas de fundação...");
   
   // Dados históricos vem do arquivo carregado fundacao-dados.js
   const DATAS_CORRETAS = window.dadosFundacao ? window.dadosFundacao.DATAS_FUNDACAO : {
@@ -37,15 +39,28 @@ window.applyCityFoundingDateCorrection = function() {
     console.log("[CORREÇÃO DIRETA] Idades atualizadas para o ano atual:", anoAtual);
   }
   
+  // VERSÃO SIMPLIFICADA: Função com limite de tentativas
+  let attemptCount = 0;
+  const MAX_ATTEMPTS = 3;
+  
   // Função para aplicar correção forçada
   function forceCorrectEventDate() {
+    // Incrementar contador de tentativas
+    attemptCount++;
+    
+    // Verificar limite de tentativas
+    if (attemptCount > MAX_ATTEMPTS) {
+      console.log(`[CORREÇÃO DIRETA] Limite de ${MAX_ATTEMPTS} tentativas atingido. Parando correções.`);
+      return;
+    }
+    
     // Primeiro atualizar as idades para o ano atual
     atualizarIdades();
     
     // Obter todos os eventos na lista
     let eventItems = document.querySelectorAll('#events-list .event-item');
     if (!eventItems || eventItems.length === 0) {
-      console.log("[CORREÇÃO DIRETA] Nenhum evento encontrado, tentando novamente em 3 segundos...");
+      console.log(`[CORREÇÃO DIRETA] Nenhum evento encontrado (tentativa ${attemptCount}/${MAX_ATTEMPTS}), tentando novamente em 3 segundos...`);
       setTimeout(forceCorrectEventDate, 3000);
       return;
     }
@@ -111,99 +126,79 @@ window.applyCityFoundingDateCorrection = function() {
   // Aplicar correção inicial
   forceCorrectEventDate();
   
-  // E também quando eventos forem filtrados (aba de eventos)
-  const originalUpdateEventsList = window.updateEventsList;
-  if (originalUpdateEventsList) {
-    // Guardar referência para proteção contra loops
-    let isUpdating = false;
-    
-    window.updateEventsList = function(...args) {
-      // Evitar recursão infinita
-      if (isUpdating) {
-        console.log("[CORREÇÃO DIRETA] Evitando recursão em updateEventsList");
-        return originalUpdateEventsList.apply(this, args);
-      }
-      
-      // Definir flag de proteção
-      isUpdating = true;
-      
-      try {
-        // Chamar função original
-        const result = originalUpdateEventsList.apply(this, args);
-        
-        // Após atualizar a lista, aplicar correção com atraso para evitar conflitos
-        setTimeout(() => {
-          forceCorrectEventDate();
-          // Liberar flag após processamento completo
-          setTimeout(() => { isUpdating = false; }, 100);
-        }, 500);
-        
-        return result;
-      } catch (err) {
-        console.error("[CORREÇÃO DIRETA] Erro ao processar updateEventsList:", err);
-        isUpdating = false; // Garantir que a flag seja liberada em caso de erro
-        return null;
-      }
-    };
-    console.log("[CORREÇÃO DIRETA] Interceptação segura de updateEventsList ativada");
-  }
+  // VERSÃO SIMPLIFICADA: Não interceptamos mais a função de atualização
+  // Apenas adicionamos botões específicos para acionar a correção
   
-  // Também monitorar cliques no botão de filtro de eventos
-  const filterButton = document.querySelector('#filter-events-btn');
-  if (filterButton) {
-    filterButton.addEventListener('click', function() {
-      console.log("[CORREÇÃO DIRETA] Filtro de eventos clicado, aplicando correção em 1s...");
-      setTimeout(forceCorrectEventDate, 1000);
-    });
-  }
+  console.log("[CORREÇÃO DIRETA] Versão simplificada: sem interceptação de funções");
   
-  // Observer para monitorar mudanças na lista de eventos
-  const eventsContainer = document.querySelector('#events-list');
-  if (eventsContainer) {
-    // Variável para evitar loops infinitos
-    let isProcessing = false;
-    
-    const observer = new MutationObserver(function(mutations) {
-      // Se já estiver processando, não fazer nada para evitar loop
-      if (isProcessing) return;
+  // Adicionar botão de ajuda para correção manual se necessário
+  setTimeout(function() {
+    // Verificar se o botão de filtro de eventos existe
+    const filterButton = document.querySelector('#filter-events-btn');
+    if (filterButton && filterButton.parentNode) {
       
-      // Verificar se alguma mutação realmente afetou elementos de eventos
-      let eventItemsChanged = false;
-      mutations.forEach(mutation => {
-        if (mutation.type === 'childList') {
-          const addedNodes = Array.from(mutation.addedNodes);
-          eventItemsChanged = addedNodes.some(node => 
-            node.nodeType === 1 && 
-            (node.classList?.contains('event-item') || 
-             node.querySelector?.('.event-item'))
-          );
-        }
+      // Criar botão auxiliar de correção
+      const fixButton = document.createElement('button');
+      fixButton.className = 'btn btn-sm btn-outline-secondary mt-2';
+      fixButton.style.fontSize = '0.8rem';
+      fixButton.innerHTML = '<i class="fa fa-magic"></i> Corrigir Datas';
+      fixButton.setAttribute('title', 'Clique para corrigir as datas de fundação');
+      
+      // Adicionar evento de clique
+      fixButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log("[CORREÇÃO DIRETA] Correção manual acionada pelo usuário");
+        forceCorrectEventDate();
       });
       
-      // Se não houver mudanças em itens de eventos, ignorar
-      if (!eventItemsChanged) return;
+      // Adicionar ao DOM próximo ao botão de filtro
+      filterButton.parentNode.appendChild(document.createElement('br'));
+      filterButton.parentNode.appendChild(fixButton);
       
-      console.log("[CORREÇÃO DIRETA] Mudanças relevantes detectadas na lista de eventos");
+      console.log("[CORREÇÃO DIRETA] Botão de correção manual adicionado");
+    }
+  }, 2000);
+  
+  // Simplificado: Apenas agendar uma correção única após cliques no filtro 
+  // ao invés de adicionar event listeners que podem acumular
+  setTimeout(function() {
+    // Uma única correção após algum tempo para eventos já filtrados
+    console.log("[CORREÇÃO DIRETA] Agendando correção única após 5 segundos...");
+    setTimeout(forceCorrectEventDate, 5000);
+  }, 2000);
+  
+  // VERSÃO SIMPLIFICADA: Sem uso de MutationObserver (que pode causar loops)
+  // Ao invés disso, usamos um intervalo regular para verificar e corrigir
+  
+  // Um intervalo de 10 segundos para verificar e corrigir periódicamente
+  // Só ativa após o carregamento inicial da página
+  setTimeout(function() {
+    console.log("[CORREÇÃO DIRETA] Configurando verificação periódica a cada 10 segundos");
+    
+    // Contador para limitar o número de verificações (evita consumo excessivo)
+    let checkCount = 0;
+    const MAX_CHECKS = 12; // 2 minutos total (12 x 10s)
+    
+    const periodicCheck = setInterval(function() {
+      // Incrementar contador
+      checkCount++;
       
-      // Ativar flag para evitar loops
-      isProcessing = true;
-      
-      // Aplicar correção e depois liberar a flag
-      setTimeout(function() {
+      // Checar se ainda há eventos para corrigir
+      const eventItems = document.querySelectorAll('#events-list .event-item');
+      if (eventItems && eventItems.length > 0) {
+        console.log(`[CORREÇÃO DIRETA] Verificação periódica #${checkCount}: ${eventItems.length} eventos encontrados`);
         forceCorrectEventDate();
-        // Liberar flag após processamento
-        setTimeout(() => { isProcessing = false; }, 100);
-      }, 200);
-    });
+      }
+      
+      // Se atingiu o limite, parar as verificações
+      if (checkCount >= MAX_CHECKS) {
+        console.log("[CORREÇÃO DIRETA] Limite de verificações periódicas atingido. Parando verificações.");
+        clearInterval(periodicCheck);
+      }
+    }, 10000); // 10 segundos
     
-    observer.observe(eventsContainer, { 
-      childList: true,
-      subtree: true,
-      characterData: false
-    });
-    
-    console.log("[CORREÇÃO DIRETA] Observer configurado para a lista de eventos com proteção anti-loop");
-  }
+    console.log("[CORREÇÃO DIRETA] Verificação periódica configurada com sucesso");
+  }, 3000);
   
   console.log("[CORREÇÃO DIRETA] Inicialização concluída com sucesso");
 };
