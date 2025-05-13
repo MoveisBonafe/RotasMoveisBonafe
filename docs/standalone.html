@@ -2883,12 +2883,30 @@
             return locations.find(loc => String(loc.id) === idStr);
         });
         
-        // Verificar se todos os IDs foram encontrados
+        // Verificar se todos os IDs foram encontrados e corrigir IDs que são objetos
         if (pathLocations.some(loc => !loc)) {
             console.error("Algumas localizações não foram encontradas.",
-                "IDs da rota:", optimizedPathIds.map(id => String(id)));
-            // Continuar mesmo com algumas localizações faltando
-            // return;
+                "IDs da rota:", optimizedPathIds);
+            
+            // Tentar corrigir IDs que são objetos em vez de valores primitivos
+            optimizedPathIds = optimizedPathIds.map(id => {
+                if (typeof id === 'object' && id !== null && id.id) {
+                    return id.id; // Extrair o ID do objeto
+                }
+                return id;
+            });
+            
+            // Tentar encontrar as localizações novamente
+            console.log("Tentando novamente com IDs corrigidos:", optimizedPathIds);
+            pathLocations = optimizedPathIds.map(id => {
+                const idStr = String(id);
+                return locations.find(loc => String(loc.id) === idStr);
+            });
+            
+            // Se ainda houver localizações não encontradas, registrar mas continuar
+            if (pathLocations.some(loc => !loc)) {
+                console.error("Ainda há localizações não encontradas após correção.");
+            }
         }
         
         // Verificar se é possível reutilizar marcadores existentes
@@ -5589,6 +5607,18 @@
         
         const result = solveBasicTSP(origin, destinations, includeReturn);
         console.log("TSP básico, distância total:", result.distance.toFixed(1), "km");
+        
+        // Garantir que o caminho contém apenas IDs e não objetos completos
+        if (result.path && Array.isArray(result.path)) {
+            result.pathIds = result.path.map(loc => {
+                if (typeof loc === 'object' && loc !== null && loc.id !== undefined) {
+                    return loc.id;
+                }
+                return loc;
+            });
+            console.log("Caminho convertido para IDs:", result.pathIds);
+        }
+        
         return result;
     }
     
