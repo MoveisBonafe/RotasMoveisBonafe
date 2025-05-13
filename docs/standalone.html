@@ -653,35 +653,57 @@
         
         /* Ajuste para que o mapa ocupe todo o espaço disponível */
         .map-container {
-            width: calc(100% - 380px); /* Largura ajustada para alinhar com a sidebar */
-            margin-left: 380px; /* Afastado para alinhar com a sidebar */
-            position: fixed; /* Posicionamento fixo para cobrir toda a área */
-            top: 0;
-            right: 0;
-            bottom: 60px; /* Altura das abas minimizadas */
-            left: 380px; /* Começa onde termina a sidebar */
-            height: auto; /* Altura automática para preencher o espaço disponível */
+            position: fixed !important; /* Posicionamento fixo para cobrir toda a área */
+            top: 0 !important;
+            right: 0 !important;
+            bottom: 60px !important; /* Altura das abas minimizadas */
+            left: 380px !important; /* Começa onde termina a sidebar */
+            width: calc(100% - 380px) !important; /* Largura ajustada para alinhar com a sidebar */
+            height: calc(100vh - 60px) !important; /* Altura total menos as abas minimizadas */
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
             z-index: 5; /* Garantir que fique acima do corpo da página, mas abaixo da sidebar e abas */
         }
         
         /* Garantir que o mapa ocupe 100% do container */
         #map {
-            width: 100% !important;
-            height: 100% !important;
             position: absolute !important;
             top: 0 !important;
             left: 0 !important;
             right: 0 !important;
             bottom: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
         
         /* Classe especial para forçar tamanho completo */
         .full-size-map {
             width: 100% !important;
-            height: 100vh !important;
-            min-height: calc(100vh - 60px) !important;
+            height: 100% !important;
+            min-height: 100% !important;
             max-height: none !important;
             display: block !important;
+            position: absolute !important;
+        }
+        
+        /* Estilo para garantir que a estrutura HTML permita que o mapa ocupe 100% */
+        html, body {
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+        }
+        
+        /* Estilo para contêiner principal */
+        .container-fluid {
+            height: 100vh !important;
+            width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: hidden !important;
         }
         
         /* Botão de expandir/minimizar removido - funcionalidade incorporada nos botões das abas */
@@ -1234,6 +1256,30 @@
             initAutocomplete();
             initTabNavigation();
             initEventListeners();
+            
+            // Verificar se estamos no GitHub Pages para ajustes adicionais
+            if (window.location.href.includes('github.io')) {
+                console.log("Detectado GitHub Pages - aplicando ajustes especiais de layout");
+                
+                // Aplicar correções específicas para GitHub Pages após um breve atraso
+                setTimeout(() => {
+                    const mapContainer = document.querySelector('.map-container');
+                    const mapElement = document.getElementById('map');
+                    
+                    if (mapContainer && mapElement) {
+                        // Forçar tamanhos explicitamente
+                        mapContainer.style.height = 'calc(100vh - 60px)';
+                        mapElement.style.height = '100%';
+                        
+                        // Forçar redesenho do mapa
+                        if (typeof google !== 'undefined' && google.maps && map) {
+                            google.maps.event.trigger(map, 'resize');
+                        }
+                        
+                        console.log("Ajustes de layout para GitHub Pages aplicados");
+                    }
+                }, 500);
+            }
         } catch (initError) {
             console.error("Erro ao inicializar a aplicação:", initError);
         }
@@ -1292,12 +1338,31 @@
                 const windowHeight = window.innerHeight;
                 console.log('Redimensionando mapa para altura da janela:', windowHeight);
                 
+                // Ajustar posição e tamanho do container
+                mapContainer.style.position = 'fixed';
+                mapContainer.style.top = '0';
+                mapContainer.style.right = '0';
+                mapContainer.style.bottom = '60px'; // Altura das abas minimizadas
+                mapContainer.style.left = '380px'; // Começa onde termina a sidebar
+                mapContainer.style.width = 'calc(100% - 380px)';
+                mapContainer.style.height = 'calc(100vh - 60px)'; // Toda a altura menos as abas
+                
                 // Forçar tamanho do elemento do mapa para ocupar todo o container
+                mapElement.style.position = 'absolute';
+                mapElement.style.top = '0';
+                mapElement.style.left = '0';
+                mapElement.style.right = '0';
+                mapElement.style.bottom = '0';
                 mapElement.style.width = '100%';
                 mapElement.style.height = '100%';
                 
                 // Adicionar classe para forçar tamanho completo
                 mapElement.classList.add('full-size-map');
+                
+                // Forçar renderização do mapa
+                if (typeof google !== 'undefined' && google.maps && map) {
+                    google.maps.event.trigger(map, 'resize');
+                }
             }
         }
         
@@ -1542,16 +1607,45 @@
     function toggleTabsExpansion() {
         const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
         const toggleIcon = document.getElementById('toggle-icon');
+        const mapContainer = document.querySelector('.map-container');
         
         if (bottomTabsContainer) {
             if (bottomTabsContainer.classList.contains('minimized')) {
                 // Expandir
                 bottomTabsContainer.classList.remove('minimized');
                 if (toggleIcon) toggleIcon.textContent = '▼ Minimizar';
+                
+                // Ajustar altura do mapa quando as abas estão expandidas
+                if (mapContainer) {
+                    // Ajustar a altura do container do mapa para considerar o tamanho expandido das abas
+                    const tabsHeight = bottomTabsContainer.offsetHeight;
+                    mapContainer.style.bottom = tabsHeight + 'px';
+                    
+                    // Forçar redesenho do mapa
+                    if (typeof google !== 'undefined' && google.maps && map) {
+                        setTimeout(() => {
+                            google.maps.event.trigger(map, 'resize');
+                            console.log("Mapa redimensionado após expandir abas, altura das abas:", tabsHeight);
+                        }, 100);
+                    }
+                }
             } else {
                 // Minimizar
                 bottomTabsContainer.classList.add('minimized');
                 if (toggleIcon) toggleIcon.textContent = '▲ Expandir';
+                
+                // Restaurar altura original do mapa quando as abas estão minimizadas
+                if (mapContainer) {
+                    mapContainer.style.bottom = '60px'; // Altura das abas minimizadas
+                    
+                    // Forçar redesenho do mapa
+                    if (typeof google !== 'undefined' && google.maps && map) {
+                        setTimeout(() => {
+                            google.maps.event.trigger(map, 'resize');
+                            console.log("Mapa redimensionado após minimizar abas");
+                        }, 100);
+                    }
+                }
             }
         }
     }
