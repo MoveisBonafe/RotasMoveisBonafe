@@ -606,9 +606,34 @@
             background-color: #f9f9f9;
             border-top: 1px solid #ddd;
             overflow: hidden;
-            /* Inicialmente oculto até que uma rota seja otimizada */
-            display: none;
+            /* Inicialmente minimizada ao invés de oculta */
+            display: flex;
             height: auto;
+        }
+        
+        /* Estado minimizado para container de abas */
+        .bottom-tabs-container.minimized {
+            height: 60px;
+            overflow: hidden;
+        }
+        
+        /* Botão de expandir/minimizar */
+        .tabs-toggle-btn {
+            background-color: #e1e8f0;
+            border: none;
+            border-radius: 4px 4px 0 0;
+            padding: 5px 15px;
+            margin: 0 auto -1px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .tabs-toggle-btn:hover {
+            background-color: #d0d9e6;
         }
         
         .bottom-tabs-nav {
@@ -869,8 +894,12 @@
         </div>
         </div>
         
-        <!-- NOVO: Tabs fixas na parte inferior do layout -->
-        <div class="bottom-tabs-container">
+        <!-- NOVO: Tabs fixas na parte inferior do layout (inicialmente minimizadas) -->
+        <div class="bottom-tabs-container minimized">
+            <!-- Botão para expandir/minimizar -->
+            <button class="tabs-toggle-btn" id="tabs-toggle">
+                <span id="toggle-icon">▲ Expandir</span>
+            </button>
             <!-- Navegação das abas inferiores -->
             <div class="bottom-tabs-nav">
                 <button class="bottom-tab-btn active" data-tab="bottom-events">Eventos na Rota</button>
@@ -1114,8 +1143,21 @@
     document.addEventListener("DOMContentLoaded", function() {
         console.log("DOM carregado - inicializando aplicação");
         
-        // Esconder as abas inferiores inicialmente - deve ser chamado primeiro
-        toggleBottomTabsVisibility(false);
+        // Adicionar event listener para o botão de toggle das abas
+        const tabsToggleBtn = document.getElementById('tabs-toggle');
+        if (tabsToggleBtn) {
+            tabsToggleBtn.addEventListener('click', toggleTabsExpansion);
+        }
+        
+        // Inicializar conteúdo das abas com a origem
+        // Ativar a primeira aba
+        const firstTabButton = document.querySelector('.bottom-tab-btn[data-tab="bottom-events"]');
+        if (firstTabButton) {
+            firstTabButton.click();
+        }
+        
+        // Mostrar informações iniciais nas abas
+        showInitialTabsContent();
         
         // Verificar se temos acesso ao Google Maps
         if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
@@ -1341,45 +1383,78 @@
         const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
         if (bottomTabsContainer) {
             if (show) {
-                // Remover qualquer estilo display antigo e mostrar como flex
+                // Garante que o container está visível 
                 bottomTabsContainer.style.removeProperty('display');
                 bottomTabsContainer.style.display = 'flex';
                 
-                // Adiciona animação de entrada suave
-                bottomTabsContainer.style.animation = 'none';
-                // Trigger reflow
-                void bottomTabsContainer.offsetWidth;
-                bottomTabsContainer.style.animation = 'fadeIn 0.5s ease forwards';
+                // Remover a classe minimizada para mostrar o conteúdo completo
+                bottomTabsContainer.classList.remove('minimized');
                 
-                console.log("Abas inferiores exibidas com sucesso");
-                
-                // Se estamos no GitHub Pages, ativa a primeira aba automaticamente
-                if (window.location.href.includes('github.io')) {
-                    const firstTabButton = document.querySelector('.bottom-tab-btn[data-tab="bottom-events"]');
-                    if (firstTabButton) {
-                        firstTabButton.click();
-                    }
+                // Atualizar o texto do botão de toggle
+                const toggleIcon = document.getElementById('toggle-icon');
+                if (toggleIcon) {
+                    toggleIcon.textContent = '▼ Minimizar';
                 }
                 
-                // Ajusta o layout do mapa para acomodar as abas inferiores
-                adjustMapForBottomTabs(true);
-            } else {
-                // Esconder diretamente sem animação para evitar problemas de layout
-                bottomTabsContainer.style.display = 'none';
-                console.log("Abas inferiores ocultadas com sucesso");
+                console.log("Abas inferiores expandidas com sucesso");
                 
-                // Restaura o layout original do mapa
-                adjustMapForBottomTabs(false);
+                // Mostrar informações iniciais relevantes (origem)
+                showInitialTabsContent();
+            } else {
+                // Apenas minimiza, sem ocultar completamente
+                bottomTabsContainer.classList.add('minimized');
+                
+                // Atualizar o texto do botão de toggle
+                const toggleIcon = document.getElementById('toggle-icon');
+                if (toggleIcon) {
+                    toggleIcon.textContent = '▲ Expandir';
+                }
+                
+                console.log("Abas inferiores minimizadas com sucesso");
             }
         } else {
             console.warn("Container de abas inferiores não encontrado!");
         }
     }
     
-    // Função para ajustar o mapa quando as abas inferiores são exibidas
-    function adjustMapForBottomTabs(showTabs) {
-        // Não precisamos mais ajustar o layout do mapa, pois ele agora
-        // é gerenciado automaticamente pelo flexbox no novo layout
+    // Função para mostrar conteúdo inicial relevante nas abas
+    function showInitialTabsContent() {
+        // Mostrar eventos da cidade de origem (Dois Córregos)
+        const routeIds = [mockData.origin.id];
+        showEventsForCitiesOnRoute(routeIds);
+        
+        // Mostrar restrições para a cidade de origem
+        showTruckRestrictionsForCitiesOnRoute(routeIds, null);
+        
+        // Mostrar mensagem no relatório
+        const reportContent = document.getElementById('bottom-report-content');
+        if (reportContent) {
+            const routeSummary = document.getElementById('route-summary');
+            if (routeSummary) {
+                routeSummary.innerHTML = `
+                    <p>Adicione destinos e otimize uma rota para ver o relatório detalhado.</p>
+                    <p>Origem atual: <strong>Dois Córregos-SP</strong></p>
+                `;
+            }
+        }
+    }
+    
+    // Função para expandir/colapsar as abas inferiores
+    function toggleTabsExpansion() {
+        const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+        const toggleIcon = document.getElementById('toggle-icon');
+        
+        if (bottomTabsContainer) {
+            if (bottomTabsContainer.classList.contains('minimized')) {
+                // Expandir
+                bottomTabsContainer.classList.remove('minimized');
+                if (toggleIcon) toggleIcon.textContent = '▼ Minimizar';
+            } else {
+                // Minimizar
+                bottomTabsContainer.classList.add('minimized');
+                if (toggleIcon) toggleIcon.textContent = '▲ Expandir';
+            }
+        }
     }
     
     // Configura todos os event listeners
