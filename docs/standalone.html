@@ -4811,10 +4811,20 @@
         } else {
             // Se não tivermos rota, mostrar apenas para origem
             console.log("Sem rota, mostrando apenas para origem");
+            
+            // Usar a ID da origem como último recurso
+            if (mockData && mockData.origin && mockData.origin.id) {
+                routeIds = [mockData.origin.id];
+            } else {
+                console.error("Não foi possível obter nem mesmo a ID da origem!");
+                return; // Sair da função se não conseguirmos nem a origem
+            }
+            
             // Mostrar notificação para indicar que é necessário calcular uma rota
             const notifyInfo = document.createElement('div');
             notifyInfo.className = 'alert alert-info mt-2';
             notifyInfo.innerHTML = `Calcule uma rota primeiro para ver os eventos e restrições no percurso.`;
+            
             // Usar a primeira aba inferior ativa como container para notificação
             const tabContent = document.querySelector('.bottom-tab-content.active');
             if (tabContent) {
@@ -4826,6 +4836,7 @@
                     optimizeSection.appendChild(notifyInfo);
                 }
             }
+            
             // Remover a notificação após alguns segundos
             setTimeout(() => {
                 if (notifyInfo && notifyInfo.parentNode) {
@@ -4833,8 +4844,6 @@
                 }
             }, 5000);
         }
-        
-        routeIds = [mockData.origin.id];
         
         // Mostrar eventos para as cidades da rota com filtro por data
         showEventsForCitiesOnRoute(routeIds);
