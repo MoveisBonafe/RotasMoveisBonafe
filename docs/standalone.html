@@ -3315,77 +3315,20 @@
         // DEBUG: Registrar todas as restrições disponíveis para diagnóstico
         console.log("Total de restrições disponíveis:", mockData.truckRestrictions.length);
         
-        // Alteração importante: para garantir que as restrições sejam mostradas, 
-        // vamos incluir TODAS as restrições no modo GitHub Pages
+        // SOLUÇÃO FINAL: simplificar para mostrar TODAS as restrições no modo GitHub Pages
+        // e apenas as relevantes no modo normal
         let restrictionsOnRoute;
         
-        // Na versão GitHub Pages, vamos mostrar as restrições relevantes
+        // Verificar se estamos no GitHub Pages
         if (isGitHubPages) {
-            console.warn("MODO DEMONSTRAÇÃO: Mostrando restrições de cidades importantes");
+            console.warn("MODO GITHUB PAGES - Mostrando TODAS as restrições para demonstração");
             
-            // Garantir que o mock data não esteja vazio
-            if (!mockData.truckRestrictions || mockData.truckRestrictions.length === 0) {
-                console.error("Mock data de restrições vazio ou não definido!");
-                // Criar dados de exemplo se não houver
-                mockData.truckRestrictions = [
-                    {
-                        cityName: "Dois Córregos",
-                        description: "Proibido trânsito de caminhões no centro histórico",
-                        restrictionType: "partial",
-                        dayType: "everyday",
-                        startTime: "08:00",
-                        endTime: "18:00",
-                        affectedVehicles: ["truck1", "truck2"]
-                    },
-                    {
-                        cityName: "São Paulo",
-                        description: "Rodízio municipal para caminhões",
-                        restrictionType: "rotation",
-                        dayType: "workdays",
-                        startTime: "07:00",
-                        endTime: "20:00",
-                        affectedVehicles: ["all"]
-                    },
-                    {
-                        cityName: "Campinas",
-                        description: "Restrição para veículos pesados nas zonas centrais",
-                        restrictionType: "partial",
-                        dayType: "workdays",
-                        startTime: "06:00",
-                        endTime: "20:00",
-                        affectedVehicles: ["truck2", "truck3"]
-                    }
-                ];
-            }
+            // No GitHub Pages, mostrar todas as restrições disponíveis para demonstração
+            restrictionsOnRoute = mockData.truckRestrictions;
             
-            // No modo GitHub Pages, filtramos as restrições para cidades relevantes
-            restrictionsOnRoute = mockData.truckRestrictions.filter(restriction => {
-                // Filtrar apenas pelo tipo de caminhão
-                const tiposCaminhoesAfetados = restriction.affectedVehicles || [];
-                const afetaTiposFiltrados = tiposCaminhoesAfetados.some(tipo => tiposCaminhoesFiltrar.includes(tipo));
-                const afetaTodos = tiposCaminhoesAfetados.includes('all') || tiposCaminhoesAfetados.length === 0;
-                
-                // Para GitHub Pages: mostrar apenas cidades conhecidas e relevantes para Brasil
-                const cidadesImportantes = [
-                    "Dois Córregos", "Jaú", "Bauru", "Botucatu", "São Paulo", 
-                    "Campinas", "Piracicaba", "São Carlos", "Araraquara", 
-                    "Ribeirão Preto", "Americana", "Limeira", "Rio Claro",
-                    "Sorocaba", "Santos", "Guarulhos", "Osasco", "São Bernardo do Campo"
-                ];
-                
-                // Verificar se a cidade está na lista de cidades importantes
-                const cidadeImportante = cidadesImportantes.some(cidade => 
-                    restriction.cityName.toLowerCase().includes(cidade.toLowerCase()) ||
-                    cidade.toLowerCase().includes(restriction.cityName.toLowerCase())
-                );
-                
-                // No modo demo, mostrar apenas restrições de cidades importantes e relevantes
-                return (afetaTiposFiltrados || afetaTodos) && cidadeImportante;
-            });
-            
-            console.log(`TODAS AS RESTRIÇÕES (MODO GITHUB PAGES): ${restrictionsOnRoute.length} restrições encontradas`);
+            console.log(`Total de restrições sendo exibidas: ${restrictionsOnRoute.length}`);
         } else {
-            // Funcionamento normal para a versão completa
+            // Modo normal - filtrar apenas restrições das cidades na rota
             restrictionsOnRoute = mockData.truckRestrictions.filter(restriction => {
                 // 1. Verificar se a cidade está no percurso (caso exato primeiro)
                 const cidadeExata = citiesOnRoute.includes(restriction.cityName);
@@ -3495,21 +3438,42 @@
                   }).join(', ')}</div>` 
                 : '';
                 
-            // Destacar cidades do percurso com visual diferenciado
-            const estaNoPercurso = citiesOnRoute.some(city => {
-                if (!city) return false;
-                return city.toLowerCase() === restriction.cityName.toLowerCase() ||
-                       city.toLowerCase().includes(restriction.cityName.toLowerCase()) ||
-                       restriction.cityName.toLowerCase().includes(city.toLowerCase());
-            });
+            // Verificar se a cidade está no percurso atual
+            let estaNoPercurso = false;
+            
+            // No GitHub Pages, destacar as cidades importantes do percurso típico
+            if (isGitHubPages) {
+                // Lista de cidades que sempre estarão no percurso na versão GitHub Pages
+                const cidadesNoPercursoDemo = ["Dois Córregos", "Jaú", "Bauru", "Botucatu", "São Paulo"];
+                
+                // Verificar se a cidade da restrição é uma das cidades do percurso de demonstração
+                estaNoPercurso = cidadesNoPercursoDemo.some(city => 
+                    city.toLowerCase() === restriction.cityName.toLowerCase() ||
+                    city.toLowerCase().includes(restriction.cityName.toLowerCase()) ||
+                    restriction.cityName.toLowerCase().includes(city.toLowerCase())
+                );
+            } else {
+                // Modo normal: verificar se a cidade está no percurso atual
+                estaNoPercurso = citiesOnRoute.some(city => {
+                    if (!city) return false;
+                    return city.toLowerCase() === restriction.cityName.toLowerCase() ||
+                           city.toLowerCase().includes(restriction.cityName.toLowerCase()) ||
+                           restriction.cityName.toLowerCase().includes(city.toLowerCase());
+                });
+            }
             
             // Estilo especial para cidades que estão realmente no percurso
             const cidadeStyle = estaNoPercurso 
                 ? 'color: #1976D2; font-weight: bold; border-left: 4px solid #1976D2; padding-left: 8px;' 
                 : '';
             
+            // Ícone para indicar se a cidade está no percurso
+            const percursoIcon = estaNoPercurso 
+                ? '<span style="color: #1976D2; margin-left: 5px;">✓</span>' 
+                : '';
+            
             restrictionItem.innerHTML = `
-                <div class="restriction-city" style="${cidadeStyle}">${restriction.cityName} 
+                <div class="restriction-city" style="${cidadeStyle}">${restriction.cityName} ${percursoIcon}
                     <span class="restriction-type ${restriction.restrictionType}">${restriction.restrictionType === 'partial' ? 'Parcial' : (restriction.restrictionType === 'total' ? 'Total' : 'Rodízio')}</span>
                 </div>
                 <div class="restriction-time">${dayTypeText} | ${restriction.startTime} - ${restriction.endTime}</div>
