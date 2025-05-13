@@ -1371,13 +1371,13 @@
             }
         }
         
-        // Inicializar com a data atual e data atual + 30 dias
+        // Inicializar com a data atual e data atual + 7 dias
         const today = new Date();
         const formattedToday = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
         
-        // Calcular a data final (hoje + 30 dias)
+        // Calcular a data final (hoje + 7 dias - requisito do cliente)
         const endDate = new Date();
-        endDate.setDate(today.getDate() + 30);
+        endDate.setDate(today.getDate() + 7);
         const formattedEndDate = endDate.toISOString().split('T')[0];
         
         // Definir os valores dos campos de data (com verificações null)
@@ -1398,19 +1398,61 @@
         
         console.log(`Datas definidas automaticamente na inicialização do mapa: de ${formattedToday} até ${formattedEndDate}`);
         
-        // Opções do mapa
-        const mapOptions = {
-            center: { lat: -22.3673, lng: -48.3822 }, // Dois Córregos
-            zoom: 8,
-            mapTypeControl: true,
-            fullscreenControl: true,
-            streetViewControl: true,
-            zoomControl: true,
-            gestureHandling: 'greedy' // Permite zoom com scroll sem precionar Ctrl
-        };
-        
-        // Criar o mapa
-        map = new google.maps.Map(document.getElementById("map"), mapOptions);
+        try {
+            // Verificação explícita do elemento do mapa
+            const mapElement = document.getElementById("map");
+            
+            if (!mapElement) {
+                console.error("Elemento do mapa não encontrado no DOM");
+                handleGoogleMapsError();
+                return;
+            }
+            
+            // Para GitHub Pages: verificar se o elemento tem dimensões válidas
+            const isGitHubPages = window.location.href.includes('github.io');
+            if (isGitHubPages) {
+                if (mapElement.offsetWidth === 0 || mapElement.offsetHeight === 0) {
+                    console.warn("Elemento do mapa tem dimensões zero, tentando ajustar...");
+                    mapElement.style.width = "100%";
+                    mapElement.style.height = "500px";
+                }
+                
+                // Forçar reflow
+                void mapElement.offsetHeight;
+            }
+            
+            // Opções do mapa
+            const mapOptions = {
+                center: { lat: -22.3673, lng: -48.3822 }, // Dois Córregos
+                zoom: 8,
+                mapTypeControl: true,
+                fullscreenControl: true,
+                streetViewControl: true,
+                zoomControl: true,
+                gestureHandling: 'greedy', // Permite zoom com scroll sem precionar Ctrl
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            
+            // Criar o mapa com tratamento de erro
+            console.log("Criando instância do mapa Google...");
+            map = new google.maps.Map(mapElement, mapOptions);
+            
+            // Verificar se o mapa foi criado corretamente
+            if (!map) {
+                throw new Error("Falha ao criar instância do mapa");
+            }
+            
+            // Para GitHub Pages: aguardar carregamento completo do mapa
+            if (isGitHubPages) {
+                google.maps.event.addListenerOnce(map, 'idle', function() {
+                    console.log("Mapa completamente carregado e renderizado!");
+                });
+            }
+        } catch (mapError) {
+            console.error("Erro ao inicializar o mapa:", mapError);
+            handleGoogleMapsError();
+            return;
+        }
         
         // Inicializar o serviço de direções
         directionsService = new google.maps.DirectionsService();
