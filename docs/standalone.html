@@ -667,14 +667,23 @@
             height: calc(70vh) !important; /* Altura limitada a 70% da tela */
             max-height: calc(100vh - 380px) !important; /* Preservando espaço para a sidebar */
             top: auto !important; /* Não fixar no topo */
-            bottom: auto !important; /* Não fixar na parte inferior */
-            border-bottom: 2px solid #1976D2; /* Borda mais visível quando expandido (abaixo) */
+            bottom: 60px !important; /* Manter a barra de abas na parte inferior */
+            border-top: 2px solid #1976D2; /* Borda mais visível quando expandido (acima) */
             border-left: 2px solid #1976D2; /* Borda na lateral para separar da sidebar */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Sombra ajustada para baixo */
+            box-shadow: 0 10px 15px rgba(0,0,0,0.3); /* Sombra ajustada para baixo */
             overflow-y: auto !important; /* Garantir rolagem vertical */
             z-index: 2000 !important; /* Garantir que fique por cima de todos os elementos */
-            position: absolute !important; /* Posicionamento absoluto para expandir para baixo */
-            margin-top: 60px !important; /* Margem no topo para posicionar abaixo da barra de abas */
+            position: fixed !important; /* Posicionamento fixo na janela */
+            transform: translateY(-100%) !important; /* Mover para cima da sua própria altura */
+        }
+        
+        /* Classe específica para expansão para baixo */
+        .bottom-tabs-container.expand-down {
+            transform: translateY(0) !important; /* Remover transformação quando expandido para baixo */
+            height: 70vh !important;
+            border-bottom: 2px solid #1976D2;
+            border-top: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
         }
         
         /* Ajuste específico para GitHub Pages */
@@ -1858,6 +1867,16 @@
         // Inicializar abas inferiores (abaixo do mapa)
         const bottomTabButtons = document.querySelectorAll('.bottom-tab-btn');
         const bottomTabContents = document.querySelectorAll('.bottom-tab-content');
+        const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+        
+        // Configuração inicial para posicionamento na parte inferior
+        if (bottomTabsContainer) {
+            bottomTabsContainer.classList.add('minimized');
+            bottomTabsContainer.style.position = 'fixed';
+            bottomTabsContainer.style.bottom = '0';
+            bottomTabsContainer.style.top = 'auto';
+            bottomTabsContainer.style.marginTop = '0';
+        }
         
         // Verificar se estamos no GitHub Pages (para aplicar animações avançadas)
         const isGitHubPages = window.location.href.includes('github.io');
@@ -1913,7 +1932,7 @@
                             // Se estiver em tela cheia, ajustar altura do conteúdo
                             if (isFullScreen) {
                                 console.log("Ajustando altura para conteúdo da aba em modo tela cheia:", contentId);
-                                contentElement.style.height = 'calc(100vh - 450px)';
+                                contentElement.style.height = 'auto';
                                 contentElement.style.maxHeight = 'calc(70vh - 80px)';
                                 contentElement.style.overflow = 'auto';
                                 
@@ -1921,7 +1940,6 @@
                                 if (contentId === 'bottom-restrictions-content') {
                                     const restrictionsList = contentElement.querySelector('.restrictions-list');
                                     if (restrictionsList) {
-                                        restrictionsList.style.minHeight = 'calc(70vh - 150px)';
                                         restrictionsList.style.maxHeight = 'calc(70vh - 150px)';
                                         restrictionsList.style.paddingBottom = '50px';
                                         restrictionsList.style.overflow = 'auto';
@@ -1971,7 +1989,7 @@
                 // Atualizar o texto do botão de toggle
                 const toggleIcon = document.getElementById('toggle-icon');
                 if (toggleIcon) {
-                    toggleIcon.textContent = '▲ Minimizar';
+                    toggleIcon.textContent = '▼ Minimizar';
                 }
                 
                 console.log("Abas inferiores expandidas com sucesso");
@@ -2027,19 +2045,21 @@
             if (bottomTabsContainer.classList.contains('minimized')) {
                 // Expandir
                 bottomTabsContainer.classList.remove('minimized');
-                if (toggleIcon) toggleIcon.textContent = '▲ Minimizar';
+                if (toggleIcon) toggleIcon.textContent = '▼ Minimizar';
                 
                 // Implementação especial para GitHub Pages
                 const isGitHubPages = window.location.href.includes('github.io');
                 
                 // Configurar para expandir para baixo
                 bottomTabsContainer.style.top = 'auto';
-                bottomTabsContainer.style.bottom = 'auto';
-                bottomTabsContainer.style.position = 'absolute';
-                bottomTabsContainer.style.marginTop = '60px';
+                bottomTabsContainer.style.bottom = '60px'; // Manter a barra de abas visível na parte inferior
+                bottomTabsContainer.style.position = 'fixed';
+                bottomTabsContainer.style.marginTop = '0';
+                bottomTabsContainer.style.transform = 'translateY(0)'; // Reset qualquer transformação
                 
-                // Adicionar classe para indicar que está em modo de tela cheia
+                // Adicionar classe para expandir para baixo e modo tela cheia
                 bottomTabsContainer.classList.add('fullscreen-mode');
+                bottomTabsContainer.classList.add('expand-down');
                 
                 if (isGitHubPages) {
                     console.log("Aplicando ajustes de tela cheia especiais para GitHub Pages");
@@ -2121,8 +2141,9 @@
                 bottomTabsContainer.classList.add('minimized');
                 if (toggleIcon) toggleIcon.textContent = '▼ Expandir';
                 
-                // Remover classe de modo tela cheia
+                // Remover classes de modo tela cheia e expansão para baixo
                 bottomTabsContainer.classList.remove('fullscreen-mode');
+                bottomTabsContainer.classList.remove('expand-down');
                 
                 // Resetar propriedades para posição fixa na parte inferior
                 bottomTabsContainer.style.position = 'fixed';
