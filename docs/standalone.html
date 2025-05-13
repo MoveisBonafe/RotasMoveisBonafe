@@ -998,8 +998,37 @@
         }
     </script>
     
-    <!-- Carregamento condicional da API Google Maps para melhor compatibilidade -->
+    <!-- Sistema de carregamento robusto para Google Maps API -->
     <script>
+        // Variáveis de controle para carregamento seguro do Maps API
+        window.mapsApiLoaded = false;
+        window.mapsInitialized = false;
+        window.mapsCallbacks = [];
+        
+        // Registrar uma função para ser executada quando o Maps API estiver carregado
+        function whenMapsLoaded(callback) {
+            if (window.mapsApiLoaded && typeof google !== 'undefined' && google.maps) {
+                // Se já estiver carregado, executar imediatamente
+                setTimeout(callback, 0);
+            } else {
+                // Caso contrário, adicionar à fila
+                window.mapsCallbacks.push(callback);
+            }
+        }
+        
+        // Função para executar todos os callbacks registrados
+        function runMapsCallbacks() {
+            console.log(`Executando ${window.mapsCallbacks.length} callbacks pendentes do Maps API`);
+            while (window.mapsCallbacks.length > 0) {
+                try {
+                    const callback = window.mapsCallbacks.shift();
+                    callback();
+                } catch (error) {
+                    console.error("Erro ao executar callback do Maps:", error);
+                }
+            }
+        }
+        
         // Função de carregamento seguro do Google Maps API
         function loadGoogleMapsAPI() {
             console.log("Iniciando carregamento da Google Maps API...");
@@ -1007,61 +1036,80 @@
             // Verificar se já está carregado
             if (typeof google !== 'undefined' && google.maps) {
                 console.log("Google Maps API já está carregada");
+                window.mapsApiLoaded = true;
+                runMapsCallbacks();
                 return;
             }
             
-            const script = document.createElement('script');
-            script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places&callback=googleMapsCallback";
-            script.async = true;
-            script.defer = true;
-            script.onerror = handleGoogleMapsError;
-            document.head.appendChild(script);
-            
-            console.log("Script da Google Maps API adicionado ao documento");
-        }
-        
-        // Callback quando a API for carregada
-        window.googleMapsCallback = function() {
-            console.log("Google Maps API loaded");
-            
-            // Executar inicialização após garantir que a página está totalmente carregada
-            if (document.readyState === "complete") {
-                // Inicializar o mapa
-                initMap();
+            // Definir callback global para a API
+            window.googleMapsCallback = function() {
+                console.log("Google Maps API carregada com sucesso!");
+                window.mapsApiLoaded = true;
                 
-                // Configurar overlay do mapa apenas após inicialização completa
-                setTimeout(function() {
-                    if (typeof setupMapOverlay === 'function') {
-                        setupMapOverlay();
-                    }
-                }, 1000);
-            }
-            
-            // Modificar comportamento de zoom para dispositivos móveis
-            try {
-                google.maps.event.addDomListener(window, 'load', function() {
+                // Para segurança em ambientes problemáticos como GitHub Pages
+                try {
+                    // Modificar comportamento de zoom para dispositivos móveis
                     if (google.maps && google.maps.MapOptions) {
                         google.maps.MapOptions.prototype.gestureHandling = 'greedy';
                         console.log("Google Maps gesture handling modificado para permitir zoom sem Ctrl");
                     }
                     
-                    // Configurar overlay do mapa após evento de carregamento
-                    if (typeof setupMapOverlay === 'function' && map) {
-                        setupMapOverlay();
+                    // Inicializar o mapa se o documento estiver pronto
+                    if (document.readyState === "complete") {
+                        setTimeout(function() {
+                            if (!window.mapsInitialized && typeof initMap === 'function') {
+                                initMap();
+                                window.mapsInitialized = true;
+                            }
+                        }, 500);
+                    } else {
+                        // Esperar que o documento carregue completamente
+                        document.addEventListener('DOMContentLoaded', function() {
+                            setTimeout(function() {
+                                if (!window.mapsInitialized && typeof initMap === 'function') {
+                                    initMap();
+                                    window.mapsInitialized = true;
+                                }
+                            }, 500);
+                        });
                     }
-                });
-            } catch (e) {
-                console.warn("Não foi possível modificar gestureHandling:", e);
-            }
+                    
+                    // Executar callbacks pendentes
+                    setTimeout(runMapsCallbacks, 100);
+                    
+                } catch (error) {
+                    console.error("Erro ao inicializar após carregamento do Maps:", error);
+                }
+            };
             
-            // Explicitar Google Places API carregada
-            if (google.maps && google.maps.places) {
-                console.log("Google Places API loaded");
+            // Criar e adicionar o script com parâmetros corretos para ambientes sensíveis
+            try {
+                const script = document.createElement('script');
+                script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places&callback=googleMapsCallback";
+                script.async = true;
+                script.defer = true;
+                script.onerror = function(error) {
+                    console.error("Erro ao carregar Google Maps API:", error);
+                    handleGoogleMapsError();
+                };
+                document.head.appendChild(script);
+                console.log("Script da Google Maps API adicionado ao documento");
+            } catch (error) {
+                console.error("Erro ao adicionar script do Google Maps:", error);
+                handleGoogleMapsError();
             }
-        };
+        }
         
         // Iniciar carregamento da API
         loadGoogleMapsAPI();
+        
+        // Verificação de segurança após 10 segundos
+        setTimeout(function() {
+            if (!window.mapsApiLoaded) {
+                console.warn("Google Maps API não carregou após 10 segundos - tentando recarregar");
+                loadGoogleMapsAPI();
+            }
+        }, 10000);
     </script>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -1418,24 +1466,26 @@
     
     // Inicializa o mapa com sistema de retry
     function initMap() {
-        // Contador de tentativas para debug
-        mapInitAttempts++;
-        console.log(`Tentativa #${mapInitAttempts} de inicializar o mapa`);
+        // Usar o sistema seguro de carregamento
+        // Esta função será apenas um wrapper que usa o whenMapsLoaded
+        whenMapsLoaded(function() {
+            // Inicializar o mapa com segurança
+            initMapSafely();
+        });
+    }
+    
+    // A versão real da inicialização do mapa que será executada quando o Google Maps estiver carregado
+    function initMapSafely() {
+        console.log("Inicializando mapa com Google Maps API garantidamente carregada");
         
-        // Verificar se o Google Maps API está disponível
+        // Verificação extra de segurança
         if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-            console.warn(`API do Google Maps não disponível. Tentativa ${mapInitAttempts} de ${MAX_MAP_INIT_ATTEMPTS}`);
-            
-            if (mapInitAttempts < MAX_MAP_INIT_ATTEMPTS) {
-                // Tentar novamente após um atraso
-                setTimeout(initMap, 1000);
-                return;
-            } else {
-                console.error("Número máximo de tentativas atingido. Desistindo.");
-                handleGoogleMapsError();
-                return;
-            }
+            console.error("Google Maps API ainda não está disponível mesmo após verificação");
+            handleGoogleMapsError();
+            return;
         }
+        
+        // O Google Maps está garantidamente disponível aqui
         
         // Inicializar com a data atual e data atual + 7 dias
         const today = new Date();
@@ -1512,6 +1562,22 @@
             if (isGitHubPages) {
                 google.maps.event.addListenerOnce(map, 'idle', function() {
                     console.log("Mapa completamente carregado e renderizado!");
+                    
+                    // Configurar o overlay do mapa (com segurança)
+                    setupMapOverlay();
+                    
+                    // Adicionar origem no mapa
+                    setTimeout(function() {
+                        try {
+                            // Adicionar o marcador da origem
+                            if (mockData && mockData.origin) {
+                                console.log("Adicionando marcador para origem...");
+                                addMarkerForLocation(mockData.origin, 0);
+                            }
+                        } catch (error) {
+                            console.error("Erro ao adicionar origem no mapa:", error);
+                        }
+                    }, 500);
                 });
             }
         } catch (mapError) {
@@ -5883,67 +5949,84 @@
         return deg * (Math.PI/180);
     }
 
-    // Esta função será chamada quando o mapa estiver carregado e pronto
+    // Esta função configura o overlay de forma segura usando o sistema de whenMapsLoaded
     function setupMapOverlay() {
-        // Verificar se o Google Maps API está disponível
-        if (typeof google === 'undefined' || !google.maps || !map) {
-            console.warn("Google Maps API não disponível para configurar overlay");
-            return;
-        }
-        
-        try {
-            // Definir a classe para projeção de overlay personalizado
-            class SafeOverlayProjection {
-                fromLatLngToDivPixel(latLng) {
-                    try {
-                        const scale = Math.pow(2, map.getZoom());
-                        const proj = map.getProjection();
-                        const bounds = map.getBounds();
-                        
-                        if (!proj || !bounds) {
+        // Usar o sistema seguro de carregamento
+        whenMapsLoaded(function() {
+            // Verificação extra de segurança
+            if (typeof google === 'undefined' || !google.maps || !map) {
+                console.warn("Maps API ou mapa não disponível para configurar overlay");
+                
+                // Tentar novamente em 1 segundo
+                setTimeout(setupMapOverlay, 1000);
+                return;
+            }
+            
+            console.log("Configurando overlay do mapa após garantir carregamento do Maps API");
+            
+            try {
+                // Definir a classe para projeção de overlay personalizado
+                class SafeOverlayProjection {
+                    fromLatLngToDivPixel(latLng) {
+                        try {
+                            if (!map || !map.getZoom) {
+                                return { x: 0, y: 0 };
+                            }
+                            
+                            const scale = Math.pow(2, map.getZoom());
+                            const proj = map.getProjection();
+                            const bounds = map.getBounds();
+                            
+                            if (!proj || !bounds) {
+                                return { x: 0, y: 0 };
+                            }
+                            
+                            try {
+                                const nw = proj.fromLatLngToPoint(
+                                    new google.maps.LatLng(
+                                        bounds.getNorthEast().lat(),
+                                        bounds.getSouthWest().lng()
+                                    )
+                                );
+                                
+                                const point = proj.fromLatLngToPoint(latLng);
+                                
+                                return {
+                                    x: Math.floor((point.x - nw.x) * scale),
+                                    y: Math.floor((point.y - nw.y) * scale)
+                                };
+                            } catch (innerError) {
+                                console.error("Erro interno de projeção:", innerError);
+                                return { x: 0, y: 0 };
+                            }
+                        } catch (error) {
+                            console.error("Erro ao calcular projeção:", error);
                             return { x: 0, y: 0 };
                         }
-                        
-                        const nw = proj.fromLatLngToPoint(
-                            new google.maps.LatLng(
-                                bounds.getNorthEast().lat(),
-                                bounds.getSouthWest().lng()
-                            )
-                        );
-                        
-                        const point = proj.fromLatLngToPoint(latLng);
-                        
-                        return {
-                            x: Math.floor((point.x - nw.x) * scale),
-                            y: Math.floor((point.y - nw.y) * scale)
-                        };
-                    } catch (error) {
-                        console.error("Erro ao calcular projeção:", error);
-                        return { x: 0, y: 0 };
+                    }
+                    
+                    fromDivPixelToLatLng(pixel) {
+                        return null; // Não precisamos desta funcionalidade
                     }
                 }
                 
-                fromDivPixelToLatLng(pixel) {
-                    return null; // Não precisamos desta funcionalidade
-                }
+                // Criar um overlay personalizado para a projeção
+                const safeOverlay = new google.maps.OverlayView();
+                safeOverlay.draw = function() {};
+                safeOverlay.setMap(map);
+                safeOverlay.getProjection = function() {
+                    return new SafeOverlayProjection();
+                };
+                
+                console.log("Overlay do mapa configurado com sucesso");
+            } catch (error) {
+                console.error("Erro ao configurar overlay do mapa:", error);
             }
-            
-            // Criar um overlay personalizado para a projeção
-            const safeOverlay = new google.maps.OverlayView();
-            safeOverlay.draw = function() {};
-            safeOverlay.setMap(map);
-            safeOverlay.getProjection = function() {
-                return new SafeOverlayProjection();
-            };
-            
-            console.log("Overlay do mapa configurado com sucesso");
-        } catch (error) {
-            console.error("Erro ao configurar overlay do mapa:", error);
-        }
+        });
     }
     
-    // A função setupMapOverlay será chamada após o carregamento do mapa
-    // na callback googleMapsCallback ou no final da inicialização do mapa
+    // A função setupMapOverlay será registrada para execução 
+    // quando o Google Maps API estiver completamente carregado
 
     // Expor funções necessárias globalmente
     window.removeLocation = removeLocation;
