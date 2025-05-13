@@ -4322,14 +4322,55 @@
             const eventItem = document.createElement('div');
             eventItem.className = 'event-item';
             
-            // Formatar datas
-            const startDate = new Date(event.startDate);
-            const endDate = new Date(event.endDate);
-            const formattedStartDate = startDate.toLocaleDateString('pt-BR');
-            const formattedEndDate = endDate.toLocaleDateString('pt-BR');
-            const dateText = formattedStartDate === formattedEndDate ? 
-                            formattedStartDate : 
-                            `${formattedStartDate} - ${formattedEndDate}`;
+            // Formatar datas com tratamento de erro
+            let formattedStartDate, formattedEndDate, dateText;
+            
+            try {
+                const startDate = new Date(event.startDate);
+                const endDate = new Date(event.endDate);
+                
+                // Validar se são datas válidas
+                if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                    throw new Error("Datas inválidas");
+                }
+                
+                // Corrigir para o ano atual se for um aniversário ou feriado
+                const currentYear = new Date().getFullYear();
+                if (event.name.includes("Aniversário") || event.isHoliday || event.foundationDate) {
+                    startDate.setFullYear(currentYear);
+                    endDate.setFullYear(currentYear);
+                }
+                
+                formattedStartDate = startDate.toLocaleDateString('pt-BR');
+                formattedEndDate = endDate.toLocaleDateString('pt-BR');
+                dateText = formattedStartDate === formattedEndDate ? 
+                        formattedStartDate : 
+                        `${formattedStartDate} - ${formattedEndDate}`;
+            } catch (error) {
+                console.error(`Erro ao formatar datas do evento ${event.name}:`, error);
+                
+                // Solução de recuperação para exibição
+                const currentYear = new Date().getFullYear();
+                // Extração das partes da data do formato YYYY-MM-DD
+                try {
+                    const startParts = event.startDate.split('-');
+                    const endParts = event.endDate.split('-');
+                    
+                    if (startParts.length === 3 && endParts.length === 3) {
+                        formattedStartDate = `${startParts[2]}/${startParts[1]}/${currentYear}`;
+                        formattedEndDate = `${endParts[2]}/${endParts[1]}/${currentYear}`;
+                        dateText = formattedStartDate === formattedEndDate ? 
+                                formattedStartDate : 
+                                `${formattedStartDate} - ${formattedEndDate}`;
+                    } else {
+                        // Último recurso
+                        dateText = "Data não disponível";
+                    }
+                } catch (recoveryError) {
+                    console.error("Falha na recuperação da exibição de data:", recoveryError);
+                    dateText = "Data não disponível";
+                }
+            }
             
             // Definir classe baseada no tipo de evento
             const eventTypeClass = event.isHoliday ? 'holiday' : 'event';
