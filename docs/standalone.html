@@ -22,8 +22,10 @@
         }
         .app-container {
             display: flex;
+            flex-direction: row; /* Garante que os elementos ficam lado a lado */
             height: 100vh;
             overflow: hidden;
+            width: 100%;
         }
         .sidebar {
             width: 380px;
@@ -755,8 +757,17 @@
             <div id="locations-content">
                     <!-- O conteúdo de locais fica no sidebar -->
                 
+                    <!-- Filtro de eventos por data (movido para cima da origem) -->
+                    <div class="form-group mb-3">
+                        <label>Filtrar eventos por data:</label>
+                        <div class="date-range-container d-flex gap-2">
+                            <input type="date" id="start-date" class="form-control form-control-sm">
+                            <input type="date" id="end-date" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    
                     <!-- Origem fixa -->
-                    <div class="form-group mt-3">
+                    <div class="form-group">
                         <label for="origin">Origem:</label>
                         <input type="text" id="origin" class="form-control" value="Dois Córregos, SP" readonly>
                     </div>
