@@ -958,6 +958,14 @@
 
     // Inicialização
     document.addEventListener("DOMContentLoaded", function() {
+        // Verificar se estamos no GitHub Pages para ajustar a UI
+        const isGitHubPages = window.location.href.includes('github.io');
+        window.isGitHubPages = isGitHubPages;
+        
+        if (isGitHubPages) {
+            console.log("Versão GitHub Pages detectada - Ajustando interface...");
+        }
+        
         initMap();
         initAutocomplete();
         initTabNavigation();
@@ -1123,6 +1131,112 @@
                 document.getElementById(`${tabId}-tab`).classList.add('active');
             });
         });
+    }
+    
+    // Função para inicializar abas na parte inferior do mapa (específico para GitHub Pages)
+    function initBottomTabs() {
+        console.log("Inicializando abas na parte inferior para GitHub Pages");
+        
+        // Selecionar botões de abas e conteúdos na parte inferior
+        const bottomTabButtons = document.querySelectorAll('.bottom-tab-button');
+        const toggleButton = document.getElementById('toggle-bottom-tabs');
+        const bottomTabsContainer = document.getElementById('bottom-tabs-container');
+        
+        // Inicializar comportamento de abas na parte inferior
+        bottomTabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remover a classe active de todos os botões e abas
+                document.querySelectorAll('.bottom-tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.bottom-tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Adicionar classe active ao botão clicado
+                this.classList.add('active');
+                
+                // Mostrar a aba correspondente
+                const tabId = this.getAttribute('data-bottom-tab');
+                document.getElementById(`${tabId}-bottom-tab`).classList.add('active');
+                
+                // Garantir que a área de abas está completamente visível
+                bottomTabsContainer.classList.remove('minimized');
+            });
+        });
+        
+        // Botão para minimizar/maximizar as abas inferiores
+        if (toggleButton) {
+            toggleButton.addEventListener('click', function() {
+                bottomTabsContainer.classList.toggle('minimized');
+                // Ajustar o ícone conforme o estado (▲/▼)
+                this.textContent = bottomTabsContainer.classList.contains('minimized') ? '▼' : '▲';
+            });
+        }
+        
+        // Configurar sincronização entre as abas normais e abas inferiores
+        syncBottomTabsWithContent();
+    }
+    
+    // Função para sincronizar conteúdo das abas inferiores com as abas da sidebar
+    function syncBottomTabsWithContent() {
+        // Mover conteúdo para os elementos corretos no GitHub Pages
+        const isGitHubPages = window.location.href.includes('github.io');
+        
+        if (isGitHubPages) {
+            // Configurar redirecionamento para eventos
+            const originalShowEvents = window.showCityEvents;
+            if (originalShowEvents) {
+                window.showCityEvents = function(cities, startDate, endDate) {
+                    // Chamar função original
+                    originalShowEvents(cities, startDate, endDate);
+                    
+                    // Copiar conteúdo para aba inferior
+                    const eventsListOriginal = document.getElementById('events-list');
+                    const eventsListBottom = document.getElementById('events-list-bottom');
+                    
+                    if (eventsListOriginal && eventsListBottom) {
+                        eventsListBottom.innerHTML = eventsListOriginal.innerHTML;
+                    }
+                };
+            }
+            
+            // Configurar redirecionamento para restrições
+            const originalShowRestrictions = window.showTruckRestrictionsForCitiesOnRoute;
+            if (originalShowRestrictions) {
+                window.showTruckRestrictionsForCitiesOnRoute = function(pathIds, vehicleType) {
+                    // Chamar a função original e guardar seu resultado
+                    const result = originalShowRestrictions(pathIds, vehicleType);
+                    
+                    // Fazer cópia do conteúdo para aba inferior
+                    setTimeout(() => {
+                        const restrictionsListOriginal = document.getElementById('restrictions-list');
+                        const restrictionsListBottom = document.getElementById('restrictions-list-bottom');
+                        
+                        if (restrictionsListOriginal && restrictionsListBottom) {
+                            restrictionsListBottom.innerHTML = restrictionsListOriginal.innerHTML;
+                        }
+                    }, 100);
+                    
+                    return result;
+                };
+            }
+            
+            // Configurar redirecionamento para relatório
+            const originalUpdateRouteInfo = window.updateRouteInfo;
+            if (originalUpdateRouteInfo) {
+                window.updateRouteInfo = function(tspResult) {
+                    // Chamar função original
+                    originalUpdateRouteInfo(tspResult);
+                    
+                    // Copiar conteúdo para aba inferior
+                    setTimeout(() => {
+                        const routeSummaryOriginal = document.getElementById('route-summary');
+                        const routeSummaryBottom = document.getElementById('route-summary-bottom');
+                        
+                        if (routeSummaryOriginal && routeSummaryBottom) {
+                            routeSummaryBottom.innerHTML = routeSummaryOriginal.innerHTML;
+                        }
+                    }, 100);
+                };
+            }
+        }
     }
 
     // Configura todos os event listeners
