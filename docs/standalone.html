@@ -20,6 +20,14 @@
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        
+        /* Estilo para destacar informações de data de fundação */
+        .fundacao-info {
+            font-style: italic;
+            color: #666;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
         .app-container {
             display: flex;
             flex-direction: column;
@@ -4074,9 +4082,14 @@
                 
                 // AJUSTE PARA ANIVERSÁRIOS DE CIDADES E FERIADOS: 
                 // Manter o mês e dia originais da fundação, mudando apenas o ano para o atual
+                // Importante: Manter a data original como propriedade adicional para exibição
                 if (event.name.includes("Aniversário") || event.name.includes("Fundação") || event.isHoliday) {
-                    // Preservar a data original para diagnóstico
-                    const originalDateStr = eventStart.toLocaleDateString('pt-BR');
+                    // Guardar a data original de fundação antes de modificar
+                    event.originalStartDate = new Date(event.startDate);
+                    event.originalEndDate = new Date(event.endDate);
+                    
+                    // Formato local para diagnóstico
+                    const originalDateStr = event.originalStartDate.toLocaleDateString('pt-BR');
                     
                     // Preservar mês e dia exatos da data de fundação
                     const originalMonth = eventStart.getMonth();
@@ -4091,6 +4104,22 @@
                     eventStart.setDate(originalDay);
                     eventEnd.setMonth(originalMonth);
                     eventEnd.setDate(originalDay);
+                    
+                    // Para eventos de fundação/aniversário, adicionar notas especiais
+                    if (event.name.includes("Aniversário") || event.name.includes("Fundação")) {
+                        // Extrair ano original (data de fundação real)
+                        const fundacaoAno = event.originalStartDate.getFullYear();
+                        
+                        // Formatar dia e mês com zero à esquerda se necessário
+                        const diaPadded = originalDay.toString().padStart(2, '0');
+                        const mesPadded = (originalMonth+1).toString().padStart(2, '0');
+                        
+                        // Calcular idade
+                        const idadeCidade = currentYear - fundacaoAno;
+                        
+                        // Adicionar informação adicional para exibição
+                        event.fundacaoInfo = `Fundada em ${diaPadded}/${mesPadded}/${fundacaoAno} (${idadeCidade} anos)`;
+                    }
                     
                     console.log(`[ANIVERSÁRIO] ${event.name}: data original ${originalDateStr} → ajustada para ${eventStart.toLocaleDateString('pt-BR')}`);
                 }
@@ -4229,12 +4258,29 @@
             // Definir classe baseada no tipo de evento
             const eventTypeClass = event.isHoliday ? 'holiday' : 'event';
             
+            // Verificar se é um evento de aniversário/fundação para mostrar a data original
+            const isFundacao = event.name.includes("Aniversário") || event.name.includes("Fundação");
+            
+            // Formatar a data de exibição especificamente para aniversários de cidade
+            let displayDateText = dateText;
+            
+            // Se é um evento de aniversário/fundação e temos a informação de fundação
+            if (isFundacao && event.fundacaoInfo) {
+                // Exibir a data atual e a data original de fundação com estilo especial
+                const currentYear = new Date().getFullYear();
+                const currentDate = `${dateText}`; // Data atual (aniversário este ano)
+                const foundingInfo = `<span class="fundacao-info">${event.fundacaoInfo}</span>`; // Data de fundação real
+                
+                // Combinar informações
+                displayDateText = `${currentDate} ${foundingInfo}`;
+            }
+            
             eventItem.innerHTML = `
                 <div class="event-name">${event.name} 
                     <span class="event-type ${eventTypeClass}">${event.isHoliday ? 'Feriado' : 'Evento'}</span>
                     <span class="restriction-level ${event.restrictionLevel}">${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</span>
                 </div>
-                <div class="event-date">${event.cityName} | ${dateText}</div>
+                <div class="event-date">${event.cityName} | ${displayDateText}</div>
                 <div class="event-description">${event.description}</div>
             `;
             
