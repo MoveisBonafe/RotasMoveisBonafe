@@ -635,6 +635,18 @@
             }
         }
         
+        /* Classe especial para modo de tela cheia nas abas */
+        .bottom-tabs-container.fullscreen-mode {
+            top: 0 !important;
+            height: 100vh !important;
+            max-height: 100vh !important;
+            background-color: rgba(255, 255, 255, 0.98) !important;
+            z-index: 9999 !important;
+            width: calc(100% - 380px) !important;
+            margin-left: 380px !important;
+            overflow-y: auto !important;
+        }
+        
         /* Estado minimizado para container de abas */
         .bottom-tabs-container.minimized {
             height: 60px; /* Altura quando minimizado */
@@ -643,10 +655,13 @@
         
         /* Estado expandido para container de abas */
         .bottom-tabs-container:not(.minimized) {
-            height: calc(100vh - 10px); /* Quase altura total da tela quando expandido */
+            height: 100vh !important; /* Altura total da tela quando expandido */
+            top: 0 !important; /* Garantir que vai até o topo */
             border-top: 2px solid #1976D2; /* Borda mais visível quando expandido */
             border-left: 2px solid #1976D2; /* Borda na lateral para separar da sidebar */
             box-shadow: -5px -5px 15px rgba(0,0,0,0.2); /* Sombra ajustada */
+            overflow-y: auto !important; /* Garantir rolagem vertical */
+            z-index: 2000 !important; /* Garantir que fique por cima de todos os elementos */
         }
         
         /* Botão de fechar removido - usando apenas os botões das abas para controlar expandir/minimizar */
@@ -828,17 +843,33 @@
         
         /* Ajustes para quando as abas estão expandidas até o topo */
         .bottom-tabs-container:not(.minimized) .bottom-tab-content {
-            height: calc(100vh - 140px); /* Quase altura total da tela quando expandido */
+            height: calc(100vh - 140px) !important; /* Quase altura total da tela quando expandido */
+            max-height: calc(100vh - 140px) !important; /* Limitando altura máxima */
             padding: 25px;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
             border-radius: 0 0 8px 8px;
             border: 1px solid #e0e0e0;
             margin: 0 15px 15px;
+            overflow-y: auto !important; /* Garantir que todos os conteúdos tenham rolagem */
+            position: relative !important; /* Importante para o posicionamento absoluto dos filhos */
         }
         
         /* Ajustes específicos para a aba de restrições */
         #bottom-restrictions-content {
-            overflow-y: auto;
+            overflow-y: auto !important;
+            min-height: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+        
+        /* Garantir que todas as listas dentro das abas tenham altura completa */
+        .bottom-tab-content .restrictions-list,
+        .bottom-tab-content .events-list,
+        .bottom-tab-content .report-section {
+            flex-grow: 1 !important;
+            height: auto !important;
+            min-height: 100% !important;
+            overflow-y: auto !important;
         }
         
         .bottom-tab-content.active {
@@ -1615,17 +1646,40 @@
                 bottomTabsContainer.classList.remove('minimized');
                 if (toggleIcon) toggleIcon.textContent = '▼ Minimizar';
                 
+                // Ajuste especial para tela cheia
+                // Definir top=0 para garantir que a aba vá até o topo
+                bottomTabsContainer.style.top = '0';
+                
+                // Adicionar classe para indicar que está em modo de tela cheia
+                bottomTabsContainer.classList.add('fullscreen-mode');
+                
+                // Verificar tamanho para todos os conteúdos
+                const tabContents = document.querySelectorAll('.bottom-tab-content');
+                tabContents.forEach(content => {
+                    if (content.classList.contains('active')) {
+                        // Ajustar altura do conteúdo para preencher todo o espaço
+                        content.style.height = 'calc(100vh - 140px)';
+                        content.style.maxHeight = 'calc(100vh - 140px)';
+                        content.style.overflow = 'auto';
+                    }
+                });
+                
                 // Ajustar altura do mapa quando as abas estão expandidas
                 if (mapContainer) {
-                    // Ajustar a altura do container do mapa para considerar o tamanho expandido das abas
-                    const tabsHeight = bottomTabsContainer.offsetHeight;
-                    mapContainer.style.bottom = tabsHeight + 'px';
+                    // Ocultar o mapa quando as abas estão em tela cheia (GitHub Pages)
+                    if (window.location.href.includes('github.io')) {
+                        mapContainer.style.visibility = 'hidden';
+                    } else {
+                        // Ajustar a altura do container do mapa para considerar o tamanho expandido das abas
+                        const tabsHeight = bottomTabsContainer.offsetHeight;
+                        mapContainer.style.bottom = tabsHeight + 'px';
+                    }
                     
                     // Forçar redesenho do mapa
                     if (typeof google !== 'undefined' && google.maps && map) {
                         setTimeout(() => {
                             google.maps.event.trigger(map, 'resize');
-                            console.log("Mapa redimensionado após expandir abas, altura das abas:", tabsHeight);
+                            console.log("Mapa redimensionado após expandir abas, altura das abas:", bottomTabsContainer.offsetHeight);
                         }, 100);
                     }
                 }
@@ -1634,9 +1688,17 @@
                 bottomTabsContainer.classList.add('minimized');
                 if (toggleIcon) toggleIcon.textContent = '▲ Expandir';
                 
+                // Remover classe de modo tela cheia
+                bottomTabsContainer.classList.remove('fullscreen-mode');
+                
                 // Restaurar altura original do mapa quando as abas estão minimizadas
                 if (mapContainer) {
                     mapContainer.style.bottom = '60px'; // Altura das abas minimizadas
+                    
+                    // Mostrar o mapa novamente se estiver no GitHub Pages
+                    if (window.location.href.includes('github.io')) {
+                        mapContainer.style.visibility = 'visible';
+                    }
                     
                     // Forçar redesenho do mapa
                     if (typeof google !== 'undefined' && google.maps && map) {
