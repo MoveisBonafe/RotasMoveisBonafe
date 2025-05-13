@@ -615,18 +615,19 @@
             flex-direction: column;
             animation: fadeIn 0.5s ease;
             background-color: #f9f9f9;
-            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd; /* Alterado de border-top para border-bottom */
             overflow: auto; /* Alterado para auto para permitir rolagem */
             /* Inicialmente minimizada ao invés de oculta */
             display: flex;
             height: auto;
-            /* Ajustes para expandir até o topo quando aberto */
+            /* Ajustes para expandir de cima para baixo */
             position: fixed; /* Alterado para fixed para cobrir toda a tela */
-            bottom: 0;
+            top: 0; /* Alterado de bottom para top */
             left: 0;
             right: 0;
             z-index: 1000; /* Aumentado para ficar sobre todos os elementos */
             transition: height 0.3s ease-in-out;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Sombra para baixo */
             box-sizing: border-box; /* Garantir que padding e border não afetem o tamanho */
         }
         
@@ -650,31 +651,31 @@
             overflow-y: auto !important;
         }
         
-        /* Estado minimizado para container de abas */
+        /* Estado minimizado para container de abas (agora no topo) */
         .bottom-tabs-container.minimized {
             height: 60px; /* Altura quando minimizado */
             overflow: hidden;
         }
         
-        /* Estado expandido para container de abas */
+        /* Estado expandido para container de abas (expandindo de cima para baixo) */
         .bottom-tabs-container:not(.minimized) {
             height: 100vh !important; /* Altura total da tela quando expandido */
-            top: 0 !important; /* Garantir que vai até o topo */
-            border-top: 2px solid #1976D2; /* Borda mais visível quando expandido */
+            top: 0 !important; /* Garantir que começa no topo */
+            border-bottom: 2px solid #1976D2; /* Borda mais visível quando expandido (abaixo) */
             border-left: 2px solid #1976D2; /* Borda na lateral para separar da sidebar */
-            box-shadow: -5px -5px 15px rgba(0,0,0,0.2); /* Sombra ajustada */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Sombra ajustada para baixo */
             overflow-y: auto !important; /* Garantir rolagem vertical */
             z-index: 2000 !important; /* Garantir que fique por cima de todos os elementos */
         }
         
         /* Botão de fechar removido - usando apenas os botões das abas para controlar expandir/minimizar */
         
-        /* Ajuste para que o mapa ocupe todo o espaço disponível */
+        /* Ajuste para que o mapa ocupe todo o espaço disponível (considerando abas no topo) */
         .map-container {
             position: fixed !important; /* Posicionamento fixo para cobrir toda a área */
-            top: 0 !important;
+            top: 60px !important; /* Começa abaixo das abas minimizadas */
             right: 0 !important;
-            bottom: 60px !important; /* Altura das abas minimizadas */
+            bottom: 0 !important; /* Vai até o final da página (sem abas no bottom) */
             left: 380px !important; /* Começa onde termina a sidebar */
             width: calc(100% - 380px) !important; /* Largura ajustada para alinhar com a sidebar */
             height: calc(100vh - 60px) !important; /* Altura total menos as abas minimizadas */
@@ -682,6 +683,7 @@
             padding: 0 !important;
             overflow: hidden !important;
             z-index: 5; /* Garantir que fique acima do corpo da página, mas abaixo da sidebar e abas */
+            transition: top 0.3s ease-in-out; /* Animação suave para ajuste quando as abas mudam */
         }
         
         /* Garantir que o mapa ocupe 100% do container */
