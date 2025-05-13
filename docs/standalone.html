@@ -3315,18 +3315,30 @@
         // DEBUG: Registrar todas as restrições disponíveis para diagnóstico
         console.log("Total de restrições disponíveis:", mockData.truckRestrictions.length);
         
-        // SOLUÇÃO FINAL: simplificar para mostrar TODAS as restrições no modo GitHub Pages
-        // e apenas as relevantes no modo normal
+        // SOLUÇÃO FINAL: no GitHub Pages mostrar apenas restrições das cidades no percurso
+        // e no modo normal mostrar apenas as cidades da rota calculada
         let restrictionsOnRoute;
         
         // Verificar se estamos no GitHub Pages
         if (isGitHubPages) {
-            console.warn("MODO GITHUB PAGES - Mostrando TODAS as restrições para demonstração");
+            console.warn("MODO GITHUB PAGES - Mostrando restrições apenas para cidades importantes");
             
-            // No GitHub Pages, mostrar todas as restrições disponíveis para demonstração
-            restrictionsOnRoute = mockData.truckRestrictions;
+            // Lista de cidades que queremos mostrar no modo GitHub Pages
+            const cidadesImportantes = [
+                "Dois Córregos", "Jaú", "Bauru", "Botucatu", "São Paulo", 
+                "Campinas", "Piracicaba", "São Carlos", "Araraquara"
+            ];
             
-            console.log(`Total de restrições sendo exibidas: ${restrictionsOnRoute.length}`);
+            // Filtrar restrições apenas para cidades importantes no percurso
+            restrictionsOnRoute = mockData.truckRestrictions.filter(restriction => {
+                return cidadesImportantes.some(cidade => 
+                    cidade.toLowerCase() === restriction.cityName.toLowerCase() ||
+                    cidade.toLowerCase().includes(restriction.cityName.toLowerCase()) ||
+                    restriction.cityName.toLowerCase().includes(cidade.toLowerCase())
+                );
+            });
+            
+            console.log(`Restrições apenas para cidades importantes: ${restrictionsOnRoute.length}`);
         } else {
             // Modo normal - filtrar apenas restrições das cidades na rota
             restrictionsOnRoute = mockData.truckRestrictions.filter(restriction => {
@@ -3441,13 +3453,14 @@
             // Verificar se a cidade está no percurso atual
             let estaNoPercurso = false;
             
-            // No GitHub Pages, destacar as cidades importantes do percurso típico
+            // No GitHub Pages, destacar apenas as cidades que estão na rota atual
             if (isGitHubPages) {
-                // Lista de cidades que sempre estarão no percurso na versão GitHub Pages
-                const cidadesNoPercursoDemo = ["Dois Córregos", "Jaú", "Bauru", "Botucatu", "São Paulo"];
+                // Para o GitHub Pages, consideramos que a rota típica inclui:
+                // Dois Córregos -> Jaú -> Bauru -> (São Paulo ou outras cidades)
+                const rotaTipica = ["Dois Córregos", "Jaú", "Bauru"];
                 
-                // Verificar se a cidade da restrição é uma das cidades do percurso de demonstração
-                estaNoPercurso = cidadesNoPercursoDemo.some(city => 
+                // Verificar se a cidade da restrição está na rota típica
+                estaNoPercurso = rotaTipica.some(city => 
                     city.toLowerCase() === restriction.cityName.toLowerCase() ||
                     city.toLowerCase().includes(restriction.cityName.toLowerCase()) ||
                     restriction.cityName.toLowerCase().includes(city.toLowerCase())
