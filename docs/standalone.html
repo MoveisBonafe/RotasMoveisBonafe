@@ -1194,9 +1194,8 @@
         
         // Eventos de cidades (com aniversários atualizados para 2025)
         cityEvents: [
-            // Aniversários das principais cidades (eventos fixos - feriados municipais com datas reais de fundação)
-            // Evento atual para testes - usando datas do ano atual para garantir que apareça nos filtros
-            { id: 99, cityName: "Dois Córregos", name: "Festival de Verão", startDate: "2023-01-01", endDate: "2025-12-31", isHoliday: false, description: "Festival com atividades durante todo o ano", restrictionLevel: "low" },
+            // Aniversários das principais cidades (eventos fixos - feriados municipais)
+            { id: 99, cityName: "Dois Córregos", name: "Festival de Verão", startDate: "2023-01-01", endDate: "2024-12-31", isHoliday: false, description: "Festival com atividades durante todo o ano", restrictionLevel: "low" },
             { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2023-02-04", endDate: "2023-02-04", isHoliday: true, description: "Feriado municipal do aniversário de Dois Córregos (fundação: 04/02/1883)", restrictionLevel: "low" },
             { id: 2, cityName: "Jaú", name: "Aniversário da Cidade", startDate: "2023-08-15", endDate: "2023-08-15", isHoliday: true, description: "Feriado municipal do aniversário de Jaú (fundação: 15/08/1853)", restrictionLevel: "low" },
             { id: 3, cityName: "Botucatu", name: "Aniversário da Cidade", startDate: "2023-04-14", endDate: "2023-04-14", isHoliday: true, description: "Feriado municipal do aniversário de Botucatu (fundação: 14/04/1855)", restrictionLevel: "low" },
@@ -2862,13 +2861,8 @@
             optimizeBtn.disabled = false;
         }
         
-        // Navegar para a aba de relatório
-        const reportTabButton = document.querySelector('.bottom-tab-btn[data-tab="bottom-report"]');
-        if (reportTabButton) {
-            reportTabButton.click();
-        } else {
-            console.warn("Botão da aba de relatório não encontrado");
-        }
+        // Não navegar automaticamente para nenhuma aba após a otimização
+        console.log("Rota otimizada com sucesso, mantendo a aba atual");
     }
     
     // Reordenar os marcadores para corresponder à sequência otimizada
