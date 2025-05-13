@@ -2537,109 +2537,148 @@
     
     // Configura todos os event listeners
     function initEventListeners() {
-        // Toggle para mostrar/esconder a sidebar
-        document.getElementById('toggle-sidebar').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('sidebar-hidden');
-        });
-        
-        // Botão para fechar a sidebar em telas pequenas
-        document.querySelector('.sidebar-close').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.add('sidebar-hidden');
-        });
-        
-        // Upload de arquivo com suporte para drag and drop
-        const fileUploadInput = document.getElementById('file-upload');
-        const uploadArea = document.getElementById('upload-area');
-        
-        // Evento para quando o arquivo é selecionado pelo input
-        fileUploadInput.addEventListener('change', handleFileUpload);
-        
-        // Eventos de drag and drop
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, preventDefaults, false);
-        });
-        
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-        
-        // Adicionar classe visual quando o arquivo está sendo arrastado sobre a área
-        ['dragenter', 'dragover'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, () => {
-                uploadArea.classList.add('dragover');
-            }, false);
-        });
-        
-        // Remover classe visual quando o arquivo sai da área ou é solto
-        ['dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, () => {
-                uploadArea.classList.remove('dragover');
-            }, false);
-        });
-        
-        // Processar o arquivo quando for solto na área
-        uploadArea.addEventListener('drop', (e) => {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            
-            if (files.length) {
-                fileUploadInput.files = files;
-                handleFileUpload({target: fileUploadInput});
+        try {
+            // Toggle para mostrar/esconder a sidebar
+            const toggleSidebarBtn = document.getElementById('toggle-sidebar');
+            if (toggleSidebarBtn) {
+                toggleSidebarBtn.addEventListener('click', function() {
+                    document.getElementById('sidebar').classList.toggle('sidebar-hidden');
+                });
             }
-        }, false);
-        
-        // Botão para otimizar rota
-        const optimizeButton = document.getElementById('optimize-route');
-        if (optimizeButton) {
-            optimizeButton.addEventListener('click', optimizeRoute);
-        } else {
-            console.error("Botão de otimização de rota não encontrado!");
+            
+            // Botão para fechar a sidebar em telas pequenas
+            const sidebarCloseBtn = document.querySelector('.sidebar-close');
+            if (sidebarCloseBtn) {
+                sidebarCloseBtn.addEventListener('click', function() {
+                    document.getElementById('sidebar').classList.add('sidebar-hidden');
+                });
+            }
+            
+            // Upload de arquivo com suporte para drag and drop
+            const fileUploadInput = document.getElementById('file-upload');
+            const uploadArea = document.getElementById('upload-area');
+            
+            // Eventos para upload de arquivo
+            if (fileUploadInput && uploadArea) {
+                // Evento para quando o arquivo é selecionado pelo input
+                fileUploadInput.addEventListener('change', handleFileUpload);
+                
+                // Eventos de drag and drop
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }, false);
+                });
+                
+                // Adicionar classe visual quando o arquivo está sendo arrastado sobre a área
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, () => {
+                        uploadArea.classList.add('dragover');
+                    }, false);
+                });
+                
+                // Remover classe visual quando o arquivo sai da área ou é solto
+                ['dragleave', 'drop'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, () => {
+                        uploadArea.classList.remove('dragover');
+                    }, false);
+                });
+                
+                // Processar o arquivo quando for solto na área
+                uploadArea.addEventListener('drop', (e) => {
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    
+                    if (files.length) {
+                        fileUploadInput.files = files;
+                        handleFileUpload({target: fileUploadInput});
+                    }
+                }, false);
+            }
+            
+            // Botão para otimizar rota
+            const optimizeButton = document.getElementById('optimize-route');
+            if (optimizeButton) {
+                optimizeButton.addEventListener('click', optimizeRoute);
+            } else {
+                console.warn("Botão de otimização de rota não encontrado!");
+            }
+            
+            // Filtrar eventos automaticamente ao mudar as datas
+            const startDateInput = document.getElementById('start-date');
+            if (startDateInput) {
+                startDateInput.addEventListener('change', filterEventsByDate);
+            }
+            
+            const endDateInput = document.getElementById('end-date');
+            if (endDateInput) {
+                endDateInput.addEventListener('change', filterEventsByDate);
+            }
+            
+            // Botões de controle do mapa
+            const zoomToFitBtn = document.getElementById('zoom-to-fit');
+            if (zoomToFitBtn) {
+                zoomToFitBtn.addEventListener('click', zoomToFitAllMarkers);
+            }
+            
+            const togglePoiBtn = document.getElementById('toggle-poi');
+            if (togglePoiBtn) {
+                togglePoiBtn.addEventListener('click', togglePointsOfInterest);
+            }
+            
+            // Botões da aba de relatório
+            const saveRouteBtn = document.getElementById('save-route');
+            if (saveRouteBtn) {
+                saveRouteBtn.addEventListener('click', saveRoute);
+            }
+            
+            const printRouteBtn = document.getElementById('print-route');
+            if (printRouteBtn) {
+                printRouteBtn.addEventListener('click', printRoute);
+            }
+            
+            console.log("Event listeners inicializados com sucesso!");
+        } catch (error) {
+            console.error("Erro ao inicializar event listeners:", error);
         }
-        
-        // Filtrar eventos automaticamente ao mudar as datas
-        document.getElementById('start-date').addEventListener('change', filterEventsByDate);
-        document.getElementById('end-date').addEventListener('change', filterEventsByDate);
-        
-        // Botões de controle do mapa
-        document.getElementById('zoom-to-fit').addEventListener('click', zoomToFitAllMarkers);
-        document.getElementById('toggle-poi').addEventListener('click', togglePointsOfInterest);
-        
-        // Botões da aba de relatório
-        document.getElementById('save-route').addEventListener('click', saveRoute);
-        document.getElementById('print-route').addEventListener('click', printRoute);
         
         // Seletor de rotas alternativas
-        document.getElementById('alternative-routes').addEventListener('change', function(e) {
-            const selectedIndex = parseInt(e.target.value);
-            if (alternativeRoutes && alternativeRoutes.length > selectedIndex) {
-                const selectedRoute = alternativeRoutes[selectedIndex];
-                
-                console.log("Selecionando rota alternativa:", selectedIndex);
-                console.log("Caminho da rota selecionada:", selectedRoute.path);
-                
-                // Informar sobre a troca de rota
-                console.log("Alternando para rota: " + selectedIndex + ", reconstruindo elementos...");
-                showNotification("Alternando para rota " + (selectedIndex + 1) + "...", "info");
-                
-                // Salvar o caminho selecionado para uso após a limpeza
-                const pathToUse = selectedRoute.path;
-                
-                // Parar qualquer animação em andamento
-                if (routeAnimationTimeout) {
-                    clearTimeout(routeAnimationTimeout);
-                    routeAnimationTimeout = null;
+        const alternativeRoutesSelect = document.getElementById('alternative-routes');
+        if (alternativeRoutesSelect) {
+            alternativeRoutesSelect.addEventListener('change', function(e) {
+                const selectedIndex = parseInt(e.target.value);
+                if (alternativeRoutes && alternativeRoutes.length > selectedIndex) {
+                    const selectedRoute = alternativeRoutes[selectedIndex];
+                    
+                    console.log("Selecionando rota alternativa:", selectedIndex);
+                    console.log("Caminho da rota selecionada:", selectedRoute.path);
+                    
+                    // Informar sobre a troca de rota
+                    console.log("Alternando para rota: " + selectedIndex + ", reconstruindo elementos...");
+                    showNotification("Alternando para rota " + (selectedIndex + 1) + "...", "info");
+                    
+                    // Salvar o caminho selecionado para uso após a limpeza
+                    const pathToUse = selectedRoute.path;
+                    
+                    // Parar qualquer animação em andamento
+                    if (routeAnimationTimeout) {
+                        clearTimeout(routeAnimationTimeout);
+                        routeAnimationTimeout = null;
+                    }
+                    
+                    // Limpar TUDO - todas as rotas, marcadores, eventos, e estado
+                    clearRoute();
+                    clearAllPolylines();
+                    clearPOIMarkers();
+                    clearEventMarkers();
                 }
+            });
+        }
                 
-                // Limpar TUDO - todas as rotas, marcadores, eventos, e estado
-                clearRoute();
-                clearAllPolylines();
-                clearPOIMarkers();
-                clearEventMarkers();
-                
-                // Resetar o mapa para forçar atualização
-                if (map) {
-                    try {
+        // Resetar o mapa para forçar atualização (parte do código da função de rotas alternativas)
+        if (map) {
+            try {
                         const mapCenter = map.getCenter();
                         map.setCenter(mapCenter);
                     } catch (e) {
