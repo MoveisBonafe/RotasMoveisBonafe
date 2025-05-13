@@ -9,16 +9,28 @@ Identificamos os seguintes problemas na versão GitHub Pages da aplicação:
 3. Pegman (Street View) ausente no mapa
 4. Necessidade de segurar CTRL para zoom com mouse
 5. Marcadores/pinos não aparecendo no mapa
+6. Datas históricas de fundação não exibidas corretamente
+7. Cálculo incorreto da idade das cidades
 
 ## Solução Implementada
 
-Para resolver todos esses problemas de uma vez, criamos uma **versão standalone completa** em `docs/standalone.html` que:
+### 1. Versão Standalone Completa
+
+Criamos uma **versão standalone completa** em `docs/standalone.html` que:
 
 1. Não depende do React ou qualquer outro framework
 2. Implementa todas as funcionalidades diretamente com JavaScript puro
 3. Integra diretamente com a API do Google Maps sem intermediários
 4. Inclui todos os dados necessários embutidos no próprio HTML
 5. Funciona completamente offline, sem necessidade de servidor
+
+### 2. Sistema Multi-camada para Datas Históricas
+
+Para resolver os problemas específicos com datas históricas:
+
+1. **Banco de Dados Centralizado** (`fundacao-dados.js`): Contém as datas precisas de fundação de cada cidade
+2. **Processamento Automático** (`fix-event-dates.js`): Corrige os dados no carregamento inicial
+3. **Sistema de Correção DOM** (`direct-fix.js`): Monitora e corrige elementos na interface em tempo real
 
 ## Como Utilizar
 
@@ -65,5 +77,26 @@ A solução utiliza:
 4. Implementação própria do algoritmo TSP para otimização de rotas
 5. MockData embutido diretamente no JavaScript
 6. Funções de geolocalização para coordenadas precisas
+7. Banco de dados histórico para datas de fundação de cidades
+8. MutationObserver para detectar alterações na DOM
+9. Sistema de tentativas múltiplas para garantir correção de elementos da interface
+
+### Sistema de Correção de Datas
+
+Para o problema específico de datas históricas, implementamos:
+
+1. **Técnicas de Monkey Patching**: Intercepção de funções nativas para corrigir dados
+2. **Observadores DOM**: Monitoramento constante de mudanças na interface
+3. **Sistema de Retry**: Tentativas repetidas para garantir a correção
+4. **Temporizadores**: Aplicação de correções em momentos estratégicos do carregamento
+5. **Highlighting Visual**: Destaque visual para datas históricas importantes
 
 Devido às restrições do GitHub Pages (que não permite executar código backend), esta solução standalone é a melhor abordagem para garantir o funcionamento de todas as funcionalidades sem comprometer a experiência do usuário.
+
+## Arquivos de Teste e Demonstração
+
+Para facilitar testes e validação:
+
+1. **test-ceps.txt**: Arquivo com CEPs para teste de importação
+2. **DEMO_GUIDE.md**: Instruções passo-a-passo para demonstração
+3. **SOLUÇÕES_APLICADAS.md**: Documentação técnica detalhada

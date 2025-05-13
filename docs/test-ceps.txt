@@ -1,0 +1,10 @@
+13560-000,São Carlos-SP
+14409-270,Franca-SP
+18600-000,Botucatu-SP
+17510-000,Marília-SP
+14000-000,Ribeirão Preto-SP
+17200-000,Jaú-SP
+13400-000,Piracicaba-SP
+17040-000,Bauru-SP
+14800-000,Araraquara-SP
+13010-000,Campinas-SP
