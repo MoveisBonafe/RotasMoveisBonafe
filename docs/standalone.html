@@ -1012,8 +1012,15 @@
             padding-bottom: 40px;
             background-color: #f9f9f9;
             border-top: 1px solid #ddd;
-            margin-top: 20px;
             width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            max-height: 50vh;
+            overflow-y: auto;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
         }
         
         .tabs-container {
@@ -1024,16 +1031,16 @@
         
         .tabs-header {
             position: sticky;
-            top: 0;
+            bottom: 0;
             background-color: #fff;
             padding: 15px 0;
             margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             z-index: 900;
             display: flex;
             justify-content: center;
             gap: 10px;
-            border-radius: 0 0 8px 8px;
+            border-radius: 8px 8px 0 0;
         }
         
         .tab-btn {
