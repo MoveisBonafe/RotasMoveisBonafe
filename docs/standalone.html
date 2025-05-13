@@ -671,7 +671,7 @@
         
         /* Estado expandido para container de abas (expandindo para baixo) */
         .bottom-tabs-container:not(.minimized) {
-            height: calc(70vh) !important; /* Altura limitada a 70% da tela */
+            height: calc(60vh) !important; /* Altura limitada a 60% da tela */
             max-height: calc(100vh - 380px) !important; /* Preservando espaço para a sidebar */
             top: auto !important; /* Não fixar no topo */
             bottom: 60px !important; /* Manter a barra de abas na parte inferior */
@@ -695,8 +695,8 @@
         
         /* Ajuste específico para GitHub Pages */
         body.tabs-expanded .bottom-tabs-container:not(.minimized) {
-            height: calc(70vh) !important;
-            max-height: 70vh !important;
+            height: calc(60vh) !important;
+            max-height: 60vh !important;
             bottom: 0 !important;
             top: auto !important;
             position: fixed !important;
@@ -709,7 +709,7 @@
             top: auto !important;
             position: fixed !important;
             margin-top: 0 !important;
-            height: 70vh !important;
+            height: 60vh !important;
         }
         
         /* Garantir que quando o container expande para baixo, se expande corretamente */
@@ -731,7 +731,10 @@
             margin-top: 0 !important;
             padding-top: 10px !important;
             overflow-y: auto !important;
-            max-height: calc(70vh - 60px) !important;
+            max-height: calc(60vh - 60px) !important;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
         }
         
         /* Botão de fechar removido - usando apenas os botões das abas para controlar expandir/minimizar */
@@ -1963,14 +1966,15 @@
                             if (isFullScreen) {
                                 console.log("Ajustando altura para conteúdo da aba em modo tela cheia:", contentId);
                                 contentElement.style.height = 'auto';
-                                contentElement.style.maxHeight = 'calc(70vh - 80px)';
+                                contentElement.style.maxHeight = 'calc(60vh - 80px)';
                                 contentElement.style.overflow = 'auto';
+                                contentElement.style.paddingBottom = '20px';
                                 
                                 // Ajustes específicos para diferentes tipos de conteúdo
                                 if (contentId === 'bottom-restrictions-content') {
                                     const restrictionsList = contentElement.querySelector('.restrictions-list');
                                     if (restrictionsList) {
-                                        restrictionsList.style.maxHeight = 'calc(70vh - 150px)';
+                                        restrictionsList.style.maxHeight = 'calc(60vh - 150px)';
                                         restrictionsList.style.paddingBottom = '50px';
                                         restrictionsList.style.overflow = 'auto';
                                     }
