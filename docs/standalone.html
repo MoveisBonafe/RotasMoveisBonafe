@@ -4724,7 +4724,7 @@
         // Limpar o array de rotas alternativas
         alternativeRoutes = [];
         
-        // Limpar o seletor de rotas alternativas na sidebar
+        // Limpar o seletor de rotas alternativas na sidebar (para compatibilidade)
         const alternativeSelectSidebar = document.getElementById('alternative-routes-sidebar');
         if (alternativeSelectSidebar) {
             alternativeSelectSidebar.innerHTML = '';
@@ -4733,6 +4733,15 @@
             defaultOptionSidebar.text = "Rota Otimizada (Padrão)";
             defaultOptionSidebar.selected = true;
             alternativeSelectSidebar.appendChild(defaultOptionSidebar);
+        }
+        
+        // Resetar seleção visual nos cards
+        document.querySelectorAll('.route-option-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        const defaultCard = document.getElementById('route-card-0');
+        if (defaultCard) {
+            defaultCard.classList.add('selected');
         }
         
         // 1. Rota principal (otimizada pelo algoritmo principal)
@@ -4807,6 +4816,9 @@
         if (routeAlternativesSidebarEl) {
             routeAlternativesSidebarEl.style.display = alternativeRoutes.length > 1 ? 'block' : 'none';
             console.log('Exibindo seletor de rotas alternativas na sidebar:', alternativeRoutes.length > 1);
+            
+            // Atualizar detalhes nos cards de rotas alternativas
+            updateRouteCardDetails(alternativeRoutes);
         }
         
         // Evento para o select de rotas alternativas já configurado na inicialização
