@@ -5387,9 +5387,9 @@
             return;
         }
         
-        const startDate = startDateInput.value;
-        const endDate = endDateInput.value;
-        console.log(`Datas selecionadas: ${startDate || 'vazia'} até ${endDate || 'vazia'}`);
+        const startDateStr = startDateInput.value;
+        const endDateStr = endDateInput.value;
+        console.log(`Datas selecionadas para filtragem: ${startDateStr || 'vazia'} até ${endDateStr || 'vazia'}`);
         
         let routeIds = [];
         
@@ -5434,8 +5434,8 @@
         }
         
         // Mostrar eventos para as cidades da rota com filtro por data
-        console.log("Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas:", startDate, endDate);
-        showEventsForCitiesOnRoute(routeIds, startDate, endDate);
+        console.log("Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas:", startDateStr, endDateStr);
+        showEventsForCitiesOnRoute(routeIds, startDateStr, endDateStr);
         
         // Mostrar restrições para TODOS os tipos de caminhões nas cidades da rota
         // Passando null para indicar que queremos mostrar para todos os tipos
