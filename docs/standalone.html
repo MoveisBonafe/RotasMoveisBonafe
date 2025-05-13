@@ -736,12 +736,21 @@
         }
         
         /* Ajuste para o conteúdo das abas quando expandido para baixo */
+        /* Container para organizar as abas com rolagem independente */
+        .bottom-tabs-content-container {
+            position: relative;
+            overflow: hidden;
+            max-height: calc(60vh - 60px);
+            background-color: #fff;
+        }
+        
         .bottom-tabs-container.expand-down:not(.minimized) .bottom-tab-content {
             display: none !important; /* Esconde todos por padrão */
             position: relative !important;
             margin-top: 0 !important;
-            padding-top: 10px !important;
+            padding: 15px !important;
             overflow-y: auto !important;
+            height: calc(60vh - 60px) !important; /* Altura fixa para evitar que todas as abas apareçam na rolagem */
             max-height: calc(60vh - 60px) !important;
             background-color: #fff;
             border-radius: 4px;
@@ -1469,28 +1478,30 @@
                 <button class="bottom-tab-btn" data-tab="bottom-report">Relatório da Rota</button>
             </div>
             
-            <!-- Conteúdo da aba Eventos -->
-            <div class="bottom-tab-content active" id="bottom-events-content">
-                <h5>Eventos nas cidades da rota:</h5>
-                <div class="events-list" id="events-list">
-                    <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
+            <!-- Container das abas com rolagem independente para cada aba -->
+            <div class="bottom-tabs-content-container">
+                <!-- Conteúdo da aba Eventos -->
+                <div class="bottom-tab-content active" id="bottom-events-content">
+                    <h5>Eventos nas cidades da rota:</h5>
+                    <div class="events-list" id="events-list">
+                        <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Conteúdo da aba Restrições -->
-            <div class="bottom-tab-content" id="bottom-restrictions-content">
-                <h5>Restrições para caminhões do percurso:</h5>
-                <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
-                <div class="restrictions-list" id="restrictions-list">
-                    <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
+                
+                <!-- Conteúdo da aba Restrições -->
+                <div class="bottom-tab-content" id="bottom-restrictions-content">
+                    <h5>Restrições para caminhões do percurso:</h5>
+                    <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
+                    <div class="restrictions-list" id="restrictions-list">
+                        <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Conteúdo da aba Relatório -->
-            <div class="bottom-tab-content" id="bottom-report-content">
-                <div id="route-summary" class="mb-4">
-                    <p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>
-                </div>
+                
+                <!-- Conteúdo da aba Relatório -->
+                <div class="bottom-tab-content" id="bottom-report-content">
+                    <div id="route-summary" class="mb-4">
+                        <p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>
+                    </div>
                 
                 <!-- Seleção de Rota Alternativa -->
                 <div id="route-alternatives" class="mb-4" style="display: none;">
@@ -1983,10 +1994,15 @@
                     
                     // Desativar todas as abas inferiores
                     bottomTabButtons.forEach(btn => btn.classList.remove('active'));
-                    bottomTabContents.forEach(content => content.classList.remove('active'));
+                    bottomTabContents.forEach(content => {
+                        content.classList.remove('active');
+                        content.style.display = 'none'; // Esconde explicitamente todos os conteúdos
+                    });
                     
                     // Ativar a aba inferior clicada
                     button.classList.add('active');
+                    
+                    console.log("Atualizando para mostrar apenas a aba:", tabId);
                     
                     // Mapear o data-tab para o ID do conteúdo correto
                     const contentMap = {
@@ -2000,6 +2016,10 @@
                         const contentElement = document.getElementById(contentId);
                         if (contentElement) {
                             contentElement.classList.add('active');
+                            contentElement.style.display = 'block'; // Mostra explicitamente o conteúdo da aba ativa
+                            
+                            // Limpa qualquer scroll anterior
+                            contentElement.scrollTop = 0;
                             
                             // Verificar se estamos no modo tela cheia
                             const isFullScreen = document.body.classList.contains('tabs-expanded') || 
