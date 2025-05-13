@@ -4075,13 +4075,15 @@
                 // Log detalhado
                 console.log(`[EVENTO] ${event.name} (${event.cityName}): ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')}`);
                 
-                // PARTE 3: APLICAR FILTRO DE DATA
+                // PARTE 3: APLICAR FILTRO DE DATA CORRETAMENTE
                 if (startDateValue && endDateValue) {
-                    // Tratamento especial para o Festival de Verão
+                    console.log(`[FILTRO] Aplicando filtro de data: ${startDateValue} a ${endDateValue}`);
+                    
+                    // Tratamento especial para o Festival de Verão (evento de longa duração)
                     if (isFestivalVerao) {
-                        console.log(`[FESTIVAL] Festival de Verão excluído quando há filtro de data`);
+                        console.log(`[FESTIVAL] O Festival de Verão é excluído quando há filtro de data específico`);
                         includeEvent = false;
-                        return;
+                        return; // Pular para o próximo evento
                     }
                     
                     try {
