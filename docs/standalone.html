@@ -1475,13 +1475,28 @@
             }
             
             // Inicializar com a data atual e data atual + 7 dias
+            // Garantir que estamos sempre usando o ano atual
             const today = new Date();
-            const formattedToday = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+            const currentYear = today.getFullYear();
+            console.log(`[DATA] Usando ano atual: ${currentYear} para inicialização de datas`);
+            
+            // Formatar manualmente para garantir o uso do ano atual
+            const formatDateWithCurrentYear = (date) => {
+                const year = currentYear;
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+            
+            // Usar nossa função customizada em vez de toISOString
+            const formattedToday = formatDateWithCurrentYear(today);
             
             // Calcular a data final (hoje + 7 dias)
             const futureDate = new Date();
             futureDate.setDate(today.getDate() + 7);
-            const formattedFuture = futureDate.toISOString().split('T')[0];
+            const formattedFuture = formatDateWithCurrentYear(futureDate);
+            
+            console.log(`[DATA] Datas formatadas: ${formattedToday} até ${formattedFuture}`);
             
             // Definir os valores apenas se estiverem vazios
             if (!startDate.value) {
