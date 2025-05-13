@@ -1330,6 +1330,14 @@
                 bottomTabsContainer.style.animation = 'fadeInUp 0.5s ease forwards';
                 
                 console.log("Abas inferiores exibidas com sucesso");
+                
+                // Se estamos no GitHub Pages, ativa a primeira aba automaticamente
+                if (window.location.href.includes('github.io')) {
+                    const firstTabButton = document.querySelector('.bottom-tab-btn[data-tab="bottom-events"]');
+                    if (firstTabButton) {
+                        firstTabButton.click();
+                    }
+                }
             } else {
                 // Primeiramente, aplica animação de saída
                 bottomTabsContainer.style.animation = 'fadeOutDown 0.3s ease forwards';
@@ -4668,8 +4676,17 @@
         console.log("Filtrando eventos por datas e atualizando restrições para caminhões");
         
         // Obter valores atuais das datas para filtro
-        const startDate = document.getElementById('start-date').value;
-        const endDate = document.getElementById('end-date').value;
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        
+        // Verificação de segurança para GitHub Pages
+        if (!startDateInput || !endDateInput) {
+            console.error("Campos de data não encontrados no DOM");
+            return;
+        }
+        
+        const startDate = startDateInput.value;
+        const endDate = endDateInput.value;
         console.log(`Datas selecionadas: ${startDate || 'vazia'} até ${endDate || 'vazia'}`);
         
         let routeIds = [];
