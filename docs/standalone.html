@@ -1271,11 +1271,14 @@
         // Processar a fila de geocodificação para CEPs desconhecidos
         if (geocodeQueue.length > 0) {
             // Adicionar uma notificação inline sobre o processo de geocodificação
-            const statusElement = document.createElement('div');
-            statusElement.className = 'alert alert-info mt-3';
-            statusElement.id = 'geocode-status';
-            statusElement.innerHTML = `Processando ${geocodeQueue.length} endereços adicionais...`;
-            document.querySelector('.file-upload').appendChild(statusElement);
+            const fileUploadElement = document.querySelector('.file-upload');
+            if (fileUploadElement) {
+                const statusElement = document.createElement('div');
+                statusElement.className = 'alert alert-info mt-3';
+                statusElement.id = 'geocode-status';
+                statusElement.innerHTML = `Processando ${geocodeQueue.length} endereços adicionais...`;
+                fileUploadElement.appendChild(statusElement);
+            }
             
             let processedCount = 0;
             
@@ -1283,7 +1286,10 @@
             function processGeocodingQueue() {
                 if (geocodeQueue.length === 0) {
                     // Todos os geocodes foram processados
-                    document.getElementById('geocode-status').remove();
+                    const statusElement = document.getElementById('geocode-status');
+                    if (statusElement && statusElement.parentNode) {
+                        statusElement.parentNode.removeChild(statusElement);
+                    }
                     return;
                 }
                 
