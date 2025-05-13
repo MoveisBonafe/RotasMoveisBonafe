@@ -1192,172 +1192,26 @@
             { id: 8, name: "Borracharia 24h (Botucatu)", type: "mechanic", latitude: -22.8900, longitude: -48.4500, highway: "SP-300", cityName: "Botucatu", services: ["tire"] }
         ],
         
-        // Eventos de cidades (com aniversários atualizados para o ano atual)
+        // Eventos de cidades (com aniversários atualizados para 2025)
         cityEvents: [
-            // Festival de Verão é um evento especial o ano inteiro
-            { 
-              id: 99, 
-              cityName: "Dois Córregos", 
-              name: "Festival de Verão", 
-              startDate: new Date().getFullYear() + "-01-01", 
-              endDate: new Date().getFullYear() + "-12-31", 
-              isHoliday: false, 
-              description: "Festival com atividades durante todo o ano", 
-              restrictionLevel: "low",
-              foundationDate: null
-            },
+            // Aniversários das principais cidades (eventos fixos - feriados municipais)
+            { id: 99, cityName: "Dois Córregos", name: "Festival de Verão", startDate: "2025-01-01", endDate: "2025-12-31", isHoliday: false, description: "Festival com atividades durante todo o ano", restrictionLevel: "low" },
+            { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2025-02-04", endDate: "2025-02-04", isHoliday: true, description: "Aniversário de fundação de Dois Córregos em 04/02/1883", restrictionLevel: "low" },
+            { id: 2, cityName: "Jaú", name: "Aniversário da Cidade", startDate: "2025-08-15", endDate: "2025-08-15", isHoliday: true, description: "Aniversário de fundação de Jaú em 15/08/1853", restrictionLevel: "low" },
+            { id: 3, cityName: "Botucatu", name: "Aniversário da Cidade", startDate: "2025-04-14", endDate: "2025-04-14", isHoliday: true, description: "Aniversário de fundação de Botucatu em 14/04/1855", restrictionLevel: "low" },
+            { id: 4, cityName: "Bauru", name: "Aniversário da Cidade", startDate: "2025-08-01", endDate: "2025-08-01", isHoliday: true, description: "Aniversário de fundação de Bauru em 01/08/1896", restrictionLevel: "low" },
+            { id: 5, cityName: "Ribeirão Preto", name: "Aniversário da Cidade", startDate: "2025-06-19", endDate: "2025-06-19", isHoliday: true, description: "Aniversário de fundação de Ribeirão Preto em 19/06/1856", restrictionLevel: "low" },
+            { id: 6, cityName: "São Paulo", name: "Aniversário da Cidade", startDate: "2025-01-25", endDate: "2025-01-25", isHoliday: true, description: "Aniversário de fundação de São Paulo em 25/01/1554", restrictionLevel: "high" },
+            { id: 7, cityName: "Campinas", name: "Aniversário da Cidade", startDate: "2025-07-14", endDate: "2025-07-14", isHoliday: true, description: "Aniversário de fundação de Campinas em 14/07/1774", restrictionLevel: "medium" },
+            { id: 8, cityName: "São Carlos", name: "Aniversário da Cidade", startDate: "2025-11-04", endDate: "2025-11-04", isHoliday: true, description: "Aniversário de fundação de São Carlos em 04/11/1857", restrictionLevel: "low" },
             
-            // Datas de aniversário atualizadas com o ano atual
-            { 
-              id: 1, 
-              cityName: "Dois Córregos", 
-              name: "Aniversário da Cidade", 
-              startDate: new Date().getFullYear() + "-02-04", 
-              endDate: new Date().getFullYear() + "-02-04", 
-              isHoliday: true, 
-              description: "Aniversário da fundação de Dois Córregos (04/02/1883)", 
-              restrictionLevel: "low",
-              foundationDate: "1883-02-04"
-            },
-            { 
-              id: 2, 
-              cityName: "Jaú", 
-              name: "Aniversário da Cidade", 
-              startDate: new Date().getFullYear() + "-08-15", 
-              endDate: new Date().getFullYear() + "-08-15", 
-              isHoliday: true, 
-              description: "Aniversário da fundação de Jaú (15/08/1853)", 
-              restrictionLevel: "low",
-              foundationDate: "1853-08-15"
-            },
-            { 
-              id: 3, 
-              cityName: "Botucatu", 
-              name: "Aniversário da Cidade", 
-              startDate: new Date().getFullYear() + "-04-14", 
-              endDate: new Date().getFullYear() + "-04-14", 
-              isHoliday: true, 
-              description: "Aniversário da fundação de Botucatu (14/04/1855)", 
-              restrictionLevel: "low",
-              foundationDate: "1855-04-14"
-            },
-            { 
-              id: 4, 
-              cityName: "Bauru", 
-              name: "Aniversário da Cidade", 
-              startDate: new Date().getFullYear() + "-08-01", 
-              endDate: new Date().getFullYear() + "-08-01", 
-              isHoliday: true, 
-              description: "Aniversário da fundação de Bauru (01/08/1896)", 
-              restrictionLevel: "low",
-              foundationDate: "1896-08-01"
-            },
-            { 
-              id: 5, 
-              cityName: "Ribeirão Preto", 
-              name: "Aniversário da Cidade", 
-              startDate: new Date().getFullYear() + "-06-19", 
-              endDate: new Date().getFullYear() + "-06-19", 
-              isHoliday: true, 
-              description: "Aniversário da fundação de Ribeirão Preto (19/06/1856)", 
-              restrictionLevel: "low",
-              foundationDate: "1856-06-19"
-            },
-            { 
-              id: 6, 
-              cityName: "São Paulo", 
-              name: "Aniversário da Cidade", 
-              startDate: new Date().getFullYear() + "-01-25", 
-              endDate: new Date().getFullYear() + "-01-25", 
-              isHoliday: true, 
-              description: "Aniversário da fundação de São Paulo (25/01/1554)", 
-              restrictionLevel: "high",
-              foundationDate: "1554-01-25"
-            },
-            { 
-              id: 7, 
-              cityName: "Campinas", 
-              name: "Aniversário da Cidade", 
-              startDate: new Date().getFullYear() + "-07-14", 
-              endDate: new Date().getFullYear() + "-07-14", 
-              isHoliday: true, 
-              description: "Aniversário da fundação de Campinas (14/07/1774)", 
-              restrictionLevel: "medium",
-              foundationDate: "1774-07-14"
-            },
-            { 
-              id: 8, 
-              cityName: "São Carlos", 
-              name: "Aniversário da Cidade", 
-              startDate: new Date().getFullYear() + "-11-04", 
-              endDate: new Date().getFullYear() + "-11-04", 
-              isHoliday: true, 
-              description: "Aniversário da fundação de São Carlos (04/11/1857)", 
-              restrictionLevel: "low",
-              foundationDate: "1857-11-04"
-            },
-            
-            // Eventos regulares - Usamos o ano atual para estes também
-            { 
-              id: 9, 
-              cityName: "Jaú", 
-              name: "Festa do Rodeio", 
-              startDate: new Date().getFullYear() + "-06-10", 
-              endDate: new Date().getFullYear() + "-06-20", 
-              isHoliday: false, 
-              description: "Evento com grande circulação de veículos", 
-              restrictionLevel: "medium" 
-            },
-            { 
-              id: 10, 
-              cityName: "Botucatu", 
-              name: "Festival de Inverno", 
-              startDate: new Date().getFullYear() + "-07-15", 
-              endDate: new Date().getFullYear() + "-07-30", 
-              isHoliday: false, 
-              description: "Evento cultural e gastronômico", 
-              restrictionLevel: "low" 
-            },
-            { 
-              id: 11, 
-              cityName: "Bauru", 
-              name: "Exposição Agropecuária", 
-              startDate: new Date().getFullYear() + "-08-05", 
-              endDate: new Date().getFullYear() + "-08-15", 
-              isHoliday: false, 
-              description: "Feira agropecuária com shows", 
-              restrictionLevel: "high" 
-            },
-            { 
-              id: 12, 
-              cityName: "Ribeirão Preto", 
-              name: "Agrishow", 
-              startDate: new Date().getFullYear() + "-04-25", 
-              endDate: new Date().getFullYear() + "-04-29", 
-              isHoliday: false, 
-              description: "Maior feira de agronegócio da América Latina", 
-              restrictionLevel: "high" 
-            },
-            { 
-              id: 13, 
-              cityName: "São Paulo", 
-              name: "Virada Cultural", 
-              startDate: new Date().getFullYear() + "-05-17", 
-              endDate: new Date().getFullYear() + "-05-18", 
-              isHoliday: false, 
-              description: "Festival de 24 horas com eventos culturais pela cidade", 
-              restrictionLevel: "medium" 
-            },
-            { 
-              id: 14, 
-              cityName: "Ribeirão Preto", 
-              name: "Feira Tecnológica", 
-              startDate: new Date().getFullYear() + "-05-15", 
-              endDate: new Date().getFullYear() + "-05-18", 
-              isHoliday: false, 
-              description: "Exposição de novas tecnologias agrícolas", 
-              restrictionLevel: "medium" 
-            }
+            // Eventos regulares
+            { id: 9, cityName: "Jaú", name: "Festa do Rodeio", startDate: "2025-06-10", endDate: "2025-06-20", isHoliday: false, description: "Evento com grande circulação de veículos", restrictionLevel: "medium" },
+            { id: 10, cityName: "Botucatu", name: "Festival de Inverno", startDate: "2025-07-15", endDate: "2025-07-30", isHoliday: false, description: "Evento cultural e gastronômico", restrictionLevel: "low" },
+            { id: 11, cityName: "Bauru", name: "Exposição Agropecuária", startDate: "2025-08-05", endDate: "2025-08-15", isHoliday: false, description: "Feira agropecuária com shows", restrictionLevel: "high" },
+            { id: 12, cityName: "Ribeirão Preto", name: "Agrishow", startDate: "2025-04-25", endDate: "2025-04-29", isHoliday: false, description: "Maior feira de agronegócio da América Latina com forte impacto no tráfego local", restrictionLevel: "high" },
+            { id: 13, cityName: "São Paulo", name: "Virada Cultural", startDate: "2025-05-17", endDate: "2025-05-18", isHoliday: false, description: "Festival de 24 horas com eventos culturais pela cidade", restrictionLevel: "medium" },
+            { id: 14, cityName: "Ribeirão Preto", name: "Feira Tecnológica", startDate: "2025-05-15", endDate: "2025-05-18", isHoliday: false, description: "Exposição de novas tecnologias agrícolas", restrictionLevel: "medium" }
         ],
         
         // Restrições para caminhões
@@ -3988,46 +3842,110 @@
         });
     }
 
-    // Mostrar eventos para as cidades na rota
+    // Mostrar eventos para as cidades na rota - FUNÇÃO COMPLETAMENTE REESCRITA
     function showEventsForCitiesOnRoute(pathIds, startDateStr, endDateStr) {
         console.log("=================== NOVA EXECUÇÃO ===================");
         console.log("Mostrando eventos para rota com IDs:", pathIds);
         console.log("Datas de filtro (string):", startDateStr, endDateStr);
         
-        // Valores para filtragem por data - garantir que são strings válidas
-        let startDateValue = startDateStr || "";
-        let endDateValue = endDateStr || "";
+        // ========================================================================================
+        // ETAPA 1: CONFIGURAÇÃO E VALIDAÇÃO INICIAL
+        // ========================================================================================
+        
+        // Verificar e validar as datas de entrada
+        let startDateValue = startDateStr;
+        let endDateValue = endDateStr;
+        
+        // Obter o ano atual (usado para ajustar as datas de aniversário)
+        const currentYear = new Date().getFullYear();
+        
+        // Se não fornecidas, usar valores padrão: hoje e uma semana depois
+        if (!startDateValue || !endDateValue) {
+            console.warn("Datas não fornecidas, usando período padrão", startDateValue, endDateValue);
+            
+            const today = new Date();
+            const oneWeekLater = new Date(today.getTime());
+            oneWeekLater.setDate(today.getDate() + 7);
+            
+            // Converter para formato de string YYYY-MM-DD
+            startDateValue = !startDateValue ? today.toISOString().split('T')[0] : startDateValue;
+            endDateValue = !endDateValue ? oneWeekLater.toISOString().split('T')[0] : endDateValue;
+            
+            console.log("Datas ajustadas para:", startDateValue, "até", endDateValue);
+        }
         
         // Verificações de segurança
         if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
             console.error("IDs de rota inválidos ou vazios:", pathIds);
-            const originLocations = locations.filter(loc => loc.isOrigin);
-            if (originLocations.length > 0) {
-                pathIds = originLocations.map(loc => loc.id);
-                console.log("Usando apenas a origem para mostrar eventos:", pathIds);
-            } else {
-                console.error("Impossível encontrar até mesmo a origem. Abortando exibição de eventos.");
-                return;
-            }
+            return;
+        }
+        
+        // Converter datas de string para objetos Date para comparação
+        const startDate = new Date(startDateValue);
+        const endDate = new Date(endDateValue);
+        
+        // Verificar se as datas são válidas
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+            console.error("Datas inválidas:", startDateValue, endDateValue);
+            return;
+        }
+        
+        // Garantir que a data final é após a data inicial
+        if (endDate < startDate) {
+            console.warn("Data final é anterior à data inicial. Invertendo as datas.");
+            const tempDate = endDateValue;
+            endDateValue = startDateValue;
+            startDateValue = tempDate;
+        }
+        
+        console.log("Datas de filtro (final):", 
+            startDateValue, "→", new Date(startDateValue).toLocaleDateString('pt-BR'),
+            endDateValue, "→", new Date(endDateValue).toLocaleDateString('pt-BR'));
+        
+        // ========================================================================================
+        // ETAPA 2: DETERMINAÇÃO DAS CIDADES NA ROTA
+        // ========================================================================================
+        
+        // Garantir que temos localizações válidas para trabalhar
+        if (!locations || !Array.isArray(locations) || locations.length === 0) {
+            console.error("Nenhuma localização disponível para mostrar eventos");
+            return;
         }
         
         // Limpar a lista de eventos
         const eventsListContainer = document.getElementById('events-list');
+        if (!eventsListContainer) {
+            console.error("Container de eventos não encontrado no DOM");
+            return;
+        }
         eventsListContainer.innerHTML = '';
         
         // Log para diagnóstico
         console.log("Eventos disponíveis:", mockData.cityEvents);
         
+        // Verificar novamente se temos IDs de rota válidos
         if (!pathIds || pathIds.length === 0) {
-            eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos.</p>';
-            return;
+            // Se não tivermos IDs de caminho, usar pelo menos a origem
+            const origin = locations.find(loc => loc.isOrigin);
+            if (origin) {
+                pathIds = [origin.id];
+                console.log("Usando apenas a origem para mostrar eventos:", pathIds);
+            } else {
+                console.error("Nenhuma origem encontrada. Impossível mostrar eventos.");
+                eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos.</p>';
+                return;
+            }
         }
         
-        // CORREÇÃO: Converter IDs para objetos de localização de forma mais robusta
+        // Converter IDs para objetos de localização de forma mais robusta
         const pathLocations = [];
         for (const id of pathIds) {
+            // Garantir que estamos trabalhando com strings para comparação
             const idStr = String(id);
+            
+            // Procurar localização com este ID
             const location = locations.find(loc => String(loc.id) === idStr);
+            
             if (location) {
                 pathLocations.push(location);
                 console.log(`Localização encontrada para ID ${idStr}:`, location);
@@ -4127,154 +4045,81 @@
                 }
                 
                 // PARTE 2: AJUSTAR DATAS DO EVENTO PARA O ANO ATUAL
-                console.log("=========== PROCESSANDO EVENTO ==========");
-                console.log(`Evento: ${event.name} (${event.cityName})`);
-                console.log(`Data original: ${event.startDate} até ${event.endDate}`);
-                
                 // Evento especial: Festival de Verão
                 const isFestivalVerao = event.id === 99 && event.name === "Festival de Verão";
                 
-                // Obter o ano atual do sistema
+                // Obter o ano atual
                 const currentYear = new Date().getFullYear();
-                console.log(`Ano atual do sistema: ${currentYear}`);
                 
-                // CRIAR NOVAS VARIÁVEIS para as datas do evento (não modificar o original)
-                let eventDateStart, eventDateEnd;
+                // Criar novas datas para o evento ajustadas para o ano atual
+                const eventStart = new Date(event.startDate);
+                const eventEnd = new Date(event.endDate);
                 
-                try {
-                    // Tentar o formato padrão first (YYYY-MM-DD)
-                    eventDateStart = new Date(event.startDate);
-                    eventDateEnd = new Date(event.endDate);
-                    
-                    // Verificar se as datas são válidas
-                    if (isNaN(eventDateStart.getTime()) || isNaN(eventDateEnd.getTime())) {
-                        throw new Error("Datas inválidas no formato original");
-                    }
-                    
-                    console.log(`Datas do evento (originais): ${eventDateStart.toISOString()} até ${eventDateEnd.toISOString()}`);
-                } catch (error) {
-                    console.error("Erro ao processar datas de evento:", error);
-                    
-                    // Recuperação de emergência: extrair partes da data
-                    try {
-                        // Tentar criar a partir de partes ano-mes-dia
-                        const startParts = event.startDate.split('-');
-                        const endParts = event.endDate.split('-');
-                        
-                        if (startParts.length === 3 && endParts.length === 3) {
-                            eventDateStart = new Date(parseInt(startParts[0]), parseInt(startParts[1]) - 1, parseInt(startParts[2]));
-                            eventDateEnd = new Date(parseInt(endParts[0]), parseInt(endParts[1]) - 1, parseInt(endParts[2]));
-                            console.log("Recuperação de data bem-sucedida usando split");
-                        } else {
-                            throw new Error("Formato de data não reconhecido");
-                        }
-                    } catch (recoveryError) {
-                        console.error("Falha na recuperação de data:", recoveryError);
-                        
-                        // Último recurso: criar datas para o dia atual
-                        const today = new Date();
-                        eventDateStart = new Date(today);
-                        eventDateEnd = new Date(today);
-                        console.warn("USANDO DATAS DO DIA ATUAL COMO ÚLTIMO RECURSO");
-                    }
-                }
-                
-                // AJUSTE CRÍTICO: Garantir que eventos como "Aniversário da Cidade" usem o ano atual
-                // Isso é crucial para que os eventos de aniversário sejam exibidos corretamente
-                if (event.name.includes("Aniversário") || event.isHoliday || event.foundationDate) {
-                    const originalYear = eventDateStart.getFullYear();
-                    
-                    console.log(`Ajustando aniversário/feriado do ano ${originalYear} para ${currentYear}`);
-                    eventDateStart.setFullYear(currentYear);
-                    eventDateEnd.setFullYear(currentYear);
+                // Garantir que estamos usando o ano atual para eventos anuais (aniversários)
+                if (event.name.includes("Aniversário") || event.isHoliday) {
+                    eventStart.setFullYear(currentYear);
+                    eventEnd.setFullYear(currentYear);
                 }
                 
                 // Ajustar horas para garantir dias completos
-                eventDateStart.setHours(0,0,0,0);
-                eventDateEnd.setHours(23,59,59,999);
+                eventStart.setHours(0,0,0,0);
+                eventEnd.setHours(23,59,59,999);
                 
-                // Log após ajustes
-                console.log(`[EVENTO AJUSTADO] ${event.name} (${event.cityName}): ${eventDateStart.toISOString()} até ${eventDateEnd.toISOString()}`);
+                // Log detalhado
+                console.log(`[EVENTO] ${event.name} (${event.cityName}): ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')}`);
                 
                 // PARTE 3: APLICAR FILTRO DE DATA
                 if (startDateValue && endDateValue) {
-                    console.log(`Aplicando filtro de data: ${startDateValue} até ${endDateValue}`);
-                    
                     // Tratamento especial para o Festival de Verão
                     if (isFestivalVerao) {
-                        console.log(`[FESTIVAL] Festival de Verão recebe tratamento especial`);
-                        // O festival de verão está sempre ativo, então podemos incluí-lo se o usuário
-                        // selecionou datas dentro do ano atual
-                        includeEvent = true;
+                        console.log(`[FESTIVAL] Festival de Verão excluído quando há filtro de data`);
+                        includeEvent = false;
                         return;
                     }
                     
                     try {
-                        // Criar objetos Date a partir das strings de filtro
-                        let filterStart, filterEnd;
+                        // Criar objetos Date para as datas do filtro
+                        let filterStart = new Date(startDateValue);
+                        let filterEnd = new Date(endDateValue);
                         
-                        try {
-                            // Primeira tentativa: formato padrão
-                            filterStart = new Date(startDateValue);
-                            filterEnd = new Date(endDateValue);
+                        // Verificar se as datas são objetos Date válidos
+                        if (isNaN(filterStart.getTime()) || isNaN(filterEnd.getTime())) {
+                            console.error(`[ERRO] Datas de filtro inválidas: ${startDateValue}, ${endDateValue}`);
                             
-                            // Verificar validade
-                            if (isNaN(filterStart.getTime()) || isNaN(filterEnd.getTime())) {
-                                throw new Error("Datas de filtro inválidas no formato padrão");
+                            // Tentar corrigir formatos de data (pode ser ISO ou MM/DD/YYYY)
+                            if (startDateValue.includes('/')) {
+                                const parts = startDateValue.split('/');
+                                filterStart = new Date(parts[2], parts[0]-1, parts[1]);
                             }
-                        } catch (dateFormatError) {
-                            console.warn("Erro no formato de data:", dateFormatError);
                             
-                            // Segunda tentativa: formatos alternativos
-                            try {
-                                // Tentar formato MM/DD/YYYY
-                                if (startDateValue.includes('/')) {
-                                    const parts = startDateValue.split('/');
-                                    filterStart = new Date(parts[2], parts[0]-1, parts[1]);
-                                } else if (startDateValue.includes('-')) {
-                                    const parts = startDateValue.split('-');
-                                    filterStart = new Date(parts[0], parts[1]-1, parts[2]);
-                                }
-                                
-                                if (endDateValue.includes('/')) {
-                                    const parts = endDateValue.split('/');
-                                    filterEnd = new Date(parts[2], parts[0]-1, parts[1]);
-                                } else if (endDateValue.includes('-')) {
-                                    const parts = endDateValue.split('-');
-                                    filterEnd = new Date(parts[0], parts[1]-1, parts[2]);
-                                }
-                                
-                                // Verificar novamente
-                                if (isNaN(filterStart.getTime()) || isNaN(filterEnd.getTime())) {
-                                    throw new Error("Datas de filtro inválidas mesmo após tentativas de correção");
-                                }
-                            } catch (recoveryError) {
-                                console.error("Falha total na recuperação de datas:", recoveryError);
-                                // Último recurso: mostrar evento de qualquer forma
-                                includeEvent = true;
+                            if (endDateValue.includes('/')) {
+                                const parts = endDateValue.split('/');
+                                filterEnd = new Date(parts[2], parts[0]-1, parts[1]);
+                            }
+                            
+                            // Verificar novamente
+                            if (isNaN(filterStart.getTime()) || isNaN(filterEnd.getTime())) {
+                                console.error(`[ERRO] Impossível corrigir datas inválidas`);
+                                includeEvent = true; // Em caso de erro, mostrar evento
                                 return;
                             }
                         }
                         
-                        // Garantir dia completo para o filtro
+                        // Garantir dia completo
                         filterStart.setHours(0,0,0,0);
                         filterEnd.setHours(23,59,59,999);
                         
-                        console.log(`Filtro final: ${filterStart.toISOString()} até ${filterEnd.toISOString()}`);
-                        console.log(`Evento final: ${eventDateStart.toISOString()} até ${eventDateEnd.toISOString()}`);
-                        
-                        // LÓGICA DE SOBREPOSIÇÃO CORRIGIDA
-                        // Verificar sobreposição entre as datas de evento e o filtro
+                        // Verificar sobreposição entre as datas
                         const hasOverlap = (
-                            // Evento começa durante o período do filtro
-                            (eventDateStart >= filterStart && eventDateStart <= filterEnd) ||
-                            // Evento termina durante o período do filtro
-                            (eventDateEnd >= filterStart && eventDateEnd <= filterEnd) ||
-                            // Evento engloba todo o período do filtro
-                            (eventDateStart <= filterStart && eventDateEnd >= filterEnd)
+                            // Evento começa dentro do período do filtro
+                            (eventStart >= filterStart && eventStart <= filterEnd) ||
+                            // Evento termina dentro do período do filtro
+                            (eventEnd >= filterStart && eventEnd <= filterEnd) ||
+                            // Evento abrange todo o período do filtro
+                            (eventStart <= filterStart && eventEnd >= filterEnd)
                         );
                         
-                        console.log(`[VERIFICAÇÃO] Data evento ${eventDateStart.toLocaleDateString('pt-BR')}-${eventDateEnd.toLocaleDateString('pt-BR')} vs. Filtro ${filterStart.toLocaleDateString('pt-BR')}-${filterEnd.toLocaleDateString('pt-BR')}`);
+                        console.log(`[VERIFICAÇÃO] Data evento ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')} vs. Filtro ${filterStart.toLocaleDateString('pt-BR')}-${filterEnd.toLocaleDateString('pt-BR')}`);
                         
                         if (hasOverlap) {
                             console.log(`[ACEITO] Evento '${event.name}' está no período filtrado`);
@@ -4322,55 +4167,14 @@
             const eventItem = document.createElement('div');
             eventItem.className = 'event-item';
             
-            // Formatar datas com tratamento de erro
-            let formattedStartDate, formattedEndDate, dateText;
-            
-            try {
-                const startDate = new Date(event.startDate);
-                const endDate = new Date(event.endDate);
-                
-                // Validar se são datas válidas
-                if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-                    throw new Error("Datas inválidas");
-                }
-                
-                // Corrigir para o ano atual se for um aniversário ou feriado
-                const currentYear = new Date().getFullYear();
-                if (event.name.includes("Aniversário") || event.isHoliday || event.foundationDate) {
-                    startDate.setFullYear(currentYear);
-                    endDate.setFullYear(currentYear);
-                }
-                
-                formattedStartDate = startDate.toLocaleDateString('pt-BR');
-                formattedEndDate = endDate.toLocaleDateString('pt-BR');
-                dateText = formattedStartDate === formattedEndDate ? 
-                        formattedStartDate : 
-                        `${formattedStartDate} - ${formattedEndDate}`;
-            } catch (error) {
-                console.error(`Erro ao formatar datas do evento ${event.name}:`, error);
-                
-                // Solução de recuperação para exibição
-                const currentYear = new Date().getFullYear();
-                // Extração das partes da data do formato YYYY-MM-DD
-                try {
-                    const startParts = event.startDate.split('-');
-                    const endParts = event.endDate.split('-');
-                    
-                    if (startParts.length === 3 && endParts.length === 3) {
-                        formattedStartDate = `${startParts[2]}/${startParts[1]}/${currentYear}`;
-                        formattedEndDate = `${endParts[2]}/${endParts[1]}/${currentYear}`;
-                        dateText = formattedStartDate === formattedEndDate ? 
-                                formattedStartDate : 
-                                `${formattedStartDate} - ${formattedEndDate}`;
-                    } else {
-                        // Último recurso
-                        dateText = "Data não disponível";
-                    }
-                } catch (recoveryError) {
-                    console.error("Falha na recuperação da exibição de data:", recoveryError);
-                    dateText = "Data não disponível";
-                }
-            }
+            // Formatar datas
+            const startDate = new Date(event.startDate);
+            const endDate = new Date(event.endDate);
+            const formattedStartDate = startDate.toLocaleDateString('pt-BR');
+            const formattedEndDate = endDate.toLocaleDateString('pt-BR');
+            const dateText = formattedStartDate === formattedEndDate ? 
+                            formattedStartDate : 
+                            `${formattedStartDate} - ${formattedEndDate}`;
             
             // Definir classe baseada no tipo de evento
             const eventTypeClass = event.isHoliday ? 'holiday' : 'event';
@@ -5834,13 +5638,14 @@
         }
     }
 
-    // Filtrar eventos por data - atualiza automaticamente ao mudar datas
+    // Filtrar eventos por data - COMPLETAMENTE REESCRITO
     function filterEventsByDate() {
         console.log("==========================================");
-        console.log("FILTRO DE EVENTOS POR DATA SOLICITADO");
+        console.log("NOVA VERSÃO: FILTRO DE EVENTOS POR DATA");
         console.log("==========================================");
         
-        // Obter valores atuais das datas para filtro
+        // ETAPA 1: OBTER E VALIDAR AS DATAS DE FILTRO
+        // ------------------------------------------
         const startDateInput = document.getElementById('start-date');
         const endDateInput = document.getElementById('end-date');
         
@@ -6137,300 +5942,37 @@
     // Implementação avançada do algoritmo do Caixeiro Viajante (TSP)
     // Idêntico ao comportamento da versão Replit
     function solveAdvancedTSP(origin, destinations, includeReturn) {
-        console.log("===========================================");
-        console.log("INICIANDO TSP AVANÇADO E ROBUSTO");
-        console.log("===========================================");
-        console.log(`Origem: ${origin ? origin.name : 'desconhecida'}`);
-        console.log(`Número de destinos: ${destinations ? destinations.length : 0}`);
+        console.log("Iniciando TSP avançado com", destinations.length, "destinos");
         
-        try {
-            // VERIFICAÇÃO CRÍTICA 1: Validar origem
-            if (!origin) {
-                console.error("ERRO FATAL: Origem inválida ou indefinida");
-                
-                // Criar uma origem padrão para emergência (Dois Córregos)
-                origin = {
-                    id: 1,
-                    name: "Dois Córregos",
-                    address: "Dois Córregos, SP",
-                    latitude: -22.3673,
-                    longitude: -48.3822,
-                    isOrigin: true
-                };
-                
-                console.log("Origem padrão criada para recuperação do sistema");
-            }
-            
-            // VERIFICAÇÃO CRÍTICA 2: Validar destinos
-            if (!destinations || !Array.isArray(destinations)) {
-                console.error("ERRO FATAL: Lista de destinos inválida ou indefinida");
-                // Criar um destino fictício próximo à origem para que o sistema não falhe
-                destinations = [{
-                    id: 99,
-                    name: "Ponto Emergencial",
-                    address: "Ponto próximo à origem",
-                    latitude: origin.latitude + 0.05,
-                    longitude: origin.longitude + 0.05,
-                    isOrigin: false
-                }];
-                console.log("Lista de destinos padrão criada para recuperação");
-            }
-            
-            // Se não houver destinos, retornar apenas a origem
-            if (destinations.length === 0) {
-                console.log("Sem destinos, retornando apenas origem");
-                return {
-                    path: [origin],
-                    pathIds: [origin.id],
-                    distance: 0,
-                    estimatedTime: 0
-                };
-            }
-            
-            // VERIFICAÇÃO CRÍTICA 3: Garantir IDs válidos
-            if (typeof origin.id === 'undefined') {
-                console.warn("Origem sem ID. Atribuindo ID temporário");
-                origin.id = 0;
-            }
-            
-            for (let i = 0; i < destinations.length; i++) {
-                if (typeof destinations[i].id === 'undefined') {
-                    console.warn(`Destino ${i} sem ID. Atribuindo ID temporário`);
-                    destinations[i].id = i + 100; // IDs arbitrários para não conflitar
-                }
-            }
-            
-            // VERIFICAÇÃO CRÍTICA 4: Garantir coordenadas válidas
-            if (!origin.latitude || !origin.longitude || 
-                isNaN(origin.latitude) || isNaN(origin.longitude)) {
-                console.error("Origem com coordenadas inválidas:", origin);
-                // Criar coordenadas padrão para Dois Córregos
-                origin.latitude = -22.3673;
-                origin.longitude = -48.3822;
-                console.log("Coordenadas da origem corrigidas");
-            }
-            
-            // Verificar e corrigir destinos sem coordenadas
-            let destinosCorrigidos = 0;
-            for (let i = 0; i < destinations.length; i++) {
-                if (!destinations[i].latitude || !destinations[i].longitude || 
-                    isNaN(destinations[i].latitude) || isNaN(destinations[i].longitude)) {
-                    console.error("Destino com coordenadas inválidas:", destinations[i]);
-                    // Atribuir coordenadas aproximadas baseadas em Dois Córregos com deslocamento
-                    destinations[i].latitude = -22.3673 + (Math.random() - 0.5) * 0.1;
-                    destinations[i].longitude = -48.3822 + (Math.random() - 0.5) * 0.1;
-                    destinosCorrigidos++;
-                }
-            }
-            
-            if (destinosCorrigidos > 0) {
-                console.log(`${destinosCorrigidos} destinos tiveram coordenadas corrigidas automaticamente`);
-            }
-            
-            // Inicializar a distância total
-            let totalDistance = 0;
-            
-            // ALGORITMO PRINCIPAL - SUPER ROBUSTO
-            try {
-                // Verificar se há pontos na mesma cidade da origem
-                const sameCity = [];
-                const otherCities = [];
-                
-                for (const dest of destinations) {
-                    try {
-                        if (isSameCity(dest, origin)) {
-                            sameCity.push(dest);
-                        } else {
-                            otherCities.push(dest);
-                        }
-                    } catch (e) {
-                        console.error("Erro ao verificar cidade:", e);
-                        otherCities.push(dest);
-                    }
-                }
-                
-                // Se há pontos na mesma cidade, priorizá-los
-                if (sameCity.length > 0) {
-                    console.log(`Encontrado ${sameCity.length} pontos na mesma cidade da origem. Priorizando.`);
-                    
-                    // Calcular a distância com segurança
-                    let sameCityDist = 0;
-                    const sameCityPath = [origin, ...sameCity];
-                    
-                    for (let i = 0; i < sameCityPath.length - 1; i++) {
-                        try {
-                            const dist = calculateDistance(
-                                sameCityPath[i].latitude, sameCityPath[i].longitude,
-                                sameCityPath[i+1].latitude, sameCityPath[i+1].longitude
-                            );
-                            
-                            if (isNaN(dist) || dist <= 0) {
-                                console.warn(`Distância inválida (${dist}) entre ${sameCityPath[i].name} e ${sameCityPath[i+1].name}. Usando valor fixo.`);
-                                sameCityDist += 5; // Valor fixo para cidades próximas
-                            } else {
-                                sameCityDist += dist;
-                            }
-                        } catch (e) {
-                            console.error("Erro ao calcular distância:", e);
-                            sameCityDist += 5; // Valor fixo em caso de erro
-                        }
-                    }
-                    
-                    // Se não temos outros pontos, retornar apenas os da mesma cidade
-                    if (otherCities.length === 0) {
-                        console.log("Apenas pontos na mesma cidade, distância total:", sameCityDist.toFixed(1), "km");
-                        
-                        // Garantir que temos pathIds
-                        const pathIds = sameCityPath.map(loc => loc.id);
-                        
-                        return {
-                            path: sameCityPath,
-                            pathIds: pathIds,
-                            distance: Math.max(sameCityDist, 1) // Garantir distância positiva
-                        };
-                    }
-                    
-                    // Resolver o TSP para os outros pontos
-                    const otherResult = solveBasicTSP(sameCityPath[sameCityPath.length-1], otherCities, includeReturn);
-                    
-                    // Combinar os caminhos
-                    const fullPath = [...sameCityPath.slice(0, -1), ...otherResult.path];
-                    const fullDistance = Math.max(sameCityDist + otherResult.distance, 1);
-                    
-                    // Extrair IDs para uso posterior
-                    const pathIds = fullPath.map(loc => {
-                        if (typeof loc === 'object' && loc !== null && loc.id !== undefined) {
-                            return loc.id;
-                        }
-                        return loc;
-                    });
-                    
-                    console.log("Combinando caminhos, distância final:", fullDistance.toFixed(1), "km");
-                    
-                    return {
-                        path: fullPath,
-                        pathIds: pathIds,
-                        distance: fullDistance,
-                        estimatedTime: fullDistance / 60
-                    };
-                }
-                
-                // Se não temos pontos na mesma cidade, usar algoritmo básico
-                console.log("Utilizando algoritmo TSP básico para todos os pontos");
-                const result = solveBasicTSP(origin, destinations, includeReturn);
-                
-                // Verificar se o resultado tem uma distância válida
-                if (!result.distance || isNaN(result.distance) || result.distance <= 0) {
-                    console.error("ERRO: Distância inválida retornada pelo TSP básico:", result.distance);
-                    
-                    // Calcular distância manualmente como fallback
-                    let manualDistance = 0;
-                    const path = result.path || [];
-                    
-                    if (path.length > 1) {
-                        for (let i = 0; i < path.length - 1; i++) {
-                            try {
-                                const p1 = path[i];
-                                const p2 = path[i+1];
-                                
-                                if (p1 && p2 && p1.latitude && p1.longitude && p2.latitude && p2.longitude) {
-                                    const segmentDist = calculateDistance(
-                                        p1.latitude, p1.longitude,
-                                        p2.latitude, p2.longitude
-                                    );
-                                    
-                                    if (!isNaN(segmentDist) && segmentDist > 0) {
-                                        manualDistance += segmentDist;
-                                    } else {
-                                        manualDistance += 30; // Valor seguro
-                                    }
-                                } else {
-                                    manualDistance += 30; // Valor seguro
-                                }
-                            } catch (distError) {
-                                console.error("Erro ao calcular segmento de distância:", distError);
-                                manualDistance += 30; // Valor seguro em caso de erro
-                            }
-                        }
-                    }
-                    
-                    // Se ainda for inválida, usar valor baseado no número de destinos
-                    if (manualDistance <= 0) {
-                        manualDistance = destinations.length * 50; // Estimativa grosseira
-                    }
-                    
-                    result.distance = manualDistance;
-                    result.estimatedTime = manualDistance / 60;
-                    
-                    console.log("Distância corrigida para:", result.distance.toFixed(1), "km");
-                }
-                
-                // Garantir que o caminho contém apenas IDs para consistência
-                if (result.path && Array.isArray(result.path)) {
-                    result.pathIds = result.path.map(loc => {
-                        if (typeof loc === 'object' && loc !== null && loc.id !== undefined) {
-                            return loc.id;
-                        }
-                        return loc;
-                    });
-                }
-                
-                return result;
-            } catch (algorithmError) {
-                // Recuperação em caso de falha completa do algoritmo
-                console.error("ERRO FATAL no algoritmo TSP:", algorithmError);
-                
-                // Criar uma rota de emergência visitando todos os pontos em ordem arbitrária
-                const emergencyPath = [origin, ...destinations];
-                let totalDist = 0;
-                
-                // Calcular distância aproximada para esta rota de emergência
-                for (let i = 0; i < emergencyPath.length - 1; i++) {
-                    try {
-                        const dist = calculateDistance(
-                            emergencyPath[i].latitude, emergencyPath[i].longitude,
-                            emergencyPath[i+1].latitude, emergencyPath[i+1].longitude
-                        );
-                        if (!isNaN(dist) && dist > 0) {
-                            totalDist += dist;
-                        } else {
-                            totalDist += 30; // Valor fixo seguro
-                        }
-                    } catch (e) {
-                        totalDist += 30; // Valor fixo seguro
-                    }
-                }
-                
-                // Garantir distância mínima
-                if (totalDist <= 0) {
-                    totalDist = destinations.length * 50;
-                }
-                
-                // Extrair IDs
-                const emergencyPathIds = emergencyPath.map(loc => loc.id);
-                
-                console.log("Retornando rota de emergência com distância:", totalDist.toFixed(1), "km");
-                
-                return {
-                    path: emergencyPath,
-                    pathIds: emergencyPathIds,
-                    distance: totalDist,
-                    estimatedTime: totalDist / 60
-                };
-            }
-        } catch (error) {
-            // Recuperação de erro fatal
-            console.error("ERRO CATASTRÓFICO no TSP. Recuperação de emergência ativada:", error);
-            
-            // Criar uma resposta mínima que não quebra o resto do sistema
+        // Se não houver destinos, retornar apenas a origem
+        if (!destinations.length) {
+            console.log("Sem destinos, retornando apenas origem");
             return {
                 path: [origin],
-                pathIds: [origin.id],
-                distance: 100,
-                estimatedTime: 100 / 60
+                distance: 0
             };
         }
-    }
+        
+        // Verificar se os objetos têm as propriedades necessárias
+        if (!origin.latitude || !origin.longitude) {
+            console.error("Origem sem coordenadas:", origin);
+            // Criar coordenadas padrão para Dois Córregos se não existirem
+            origin.latitude = origin.latitude || -22.3673;
+            origin.longitude = origin.longitude || -48.3822;
+        }
+        
+        // Verificar e corrigir destinos sem coordenadas
+        for (let i = 0; i < destinations.length; i++) {
+            if (!destinations[i].latitude || !destinations[i].longitude) {
+                console.error("Destino sem coordenadas:", destinations[i]);
+                // Atribuir coordenadas aproximadas baseadas em Dois Córregos com deslocamento
+                destinations[i].latitude = -22.3673 + (Math.random() - 0.5) * 0.1;
+                destinations[i].longitude = -48.3822 + (Math.random() - 0.5) * 0.1;
+            }
+        }
+        
+        // Inicializar a distância total
+        let totalDistance = 0;
         
         // Verificar se há pontos na mesma cidade da origem
         // Se houver, devem ser visitados primeiro
