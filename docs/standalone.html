@@ -1570,7 +1570,7 @@
     </section>
 
     <!-- Scripts externos -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places&callback=Function.prototype"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="cep-database.js"></script>
     <script src="geocode-fix.js"></script>
@@ -2090,23 +2090,23 @@
                 const contentId = contentMap[tabId];
                 if (contentId) {
                     const contentElement = document.getElementById(contentId);
-                        if (contentElement) {
-                            contentElement.classList.add('active');
+                    if (contentElement) {
+                        contentElement.classList.add('active');
                             
-                            // Verificar se estamos no modo tela cheia
-                            const isFullScreen = document.body.classList.contains('tabs-expanded') || 
-                                                bottomTabsContainer.classList.contains('fullscreen-mode');
+                        // Verificar se estamos no modo tela cheia
+                        const isFullScreen = document.body.classList.contains('tabs-expanded') || 
+                                            bottomTabsContainer.classList.contains('fullscreen-mode');
+                        
+                        // Se estiver em tela cheia, ajustar altura do conteúdo
+                        if (isFullScreen) {
+                            console.log("Ajustando altura para conteúdo da aba em modo tela cheia:", contentId);
+                            contentElement.style.height = 'calc(100vh - 450px)';
+                            contentElement.style.maxHeight = 'calc(70vh - 80px)';
+                            contentElement.style.overflow = 'auto';
                             
-                            // Se estiver em tela cheia, ajustar altura do conteúdo
-                            if (isFullScreen) {
-                                console.log("Ajustando altura para conteúdo da aba em modo tela cheia:", contentId);
-                                contentElement.style.height = 'calc(100vh - 450px)';
-                                contentElement.style.maxHeight = 'calc(70vh - 80px)';
-                                contentElement.style.overflow = 'auto';
-                                
-                                // Ajustes específicos para diferentes tipos de conteúdo
-                                if (contentId === 'bottom-restrictions-content') {
-                                    const restrictionsList = contentElement.querySelector('.restrictions-list');
+                            // Ajustes específicos para diferentes tipos de conteúdo
+                            if (contentId === 'bottom-restrictions-content') {
+                                const restrictionsList = contentElement.querySelector('.restrictions-list');
                                     if (restrictionsList) {
                                         restrictionsList.style.minHeight = 'calc(70vh - 150px)';
                                         restrictionsList.style.maxHeight = 'calc(70vh - 150px)';
