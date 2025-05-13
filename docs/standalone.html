@@ -3842,65 +3842,26 @@
         });
     }
 
-    // Mostrar eventos para as cidades na rota - FUNÇÃO COMPLETAMENTE REESCRITA
+    // Mostrar TODOS os eventos para as cidades na rota - SEM FILTRO DE DATA
     function showEventsForCitiesOnRoute(pathIds, startDateStr, endDateStr) {
-        console.log("=================== NOVA EXECUÇÃO ===================");
-        console.log("Mostrando eventos para rota com IDs:", pathIds);
-        console.log("Datas de filtro (string):", startDateStr, endDateStr);
+        console.log("=================== NOVA EXECUÇÃO SEM FILTRO ===================");
+        console.log("Mostrando TODOS os eventos para rota com IDs:", pathIds);
+        console.log("Datas ignoradas conforme solicitado pelo usuário");
         
         // ========================================================================================
-        // ETAPA 1: CONFIGURAÇÃO E VALIDAÇÃO INICIAL
+        // ETAPA 1: CONFIGURAÇÃO INICIAL
         // ========================================================================================
         
-        // Verificar e validar as datas de entrada
-        let startDateValue = startDateStr;
-        let endDateValue = endDateStr;
-        
-        // Obter o ano atual (usado para ajustar as datas de aniversário)
+        // Obter o ano atual (apenas para referência nas descrições)
         const currentYear = new Date().getFullYear();
         
-        // Se não fornecidas, usar valores padrão: hoje e uma semana depois
-        if (!startDateValue || !endDateValue) {
-            console.warn("Datas não fornecidas, usando período padrão", startDateValue, endDateValue);
-            
-            const today = new Date();
-            const oneWeekLater = new Date(today.getTime());
-            oneWeekLater.setDate(today.getDate() + 7);
-            
-            // Converter para formato de string YYYY-MM-DD
-            startDateValue = !startDateValue ? today.toISOString().split('T')[0] : startDateValue;
-            endDateValue = !endDateValue ? oneWeekLater.toISOString().split('T')[0] : endDateValue;
-            
-            console.log("Datas ajustadas para:", startDateValue, "até", endDateValue);
-        }
-        
-        // Verificações de segurança
+        // Verificações de segurança básicas
         if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
             console.error("IDs de rota inválidos ou vazios:", pathIds);
             return;
         }
         
-        // Converter datas de string para objetos Date para comparação
-        const startDate = new Date(startDateValue);
-        const endDate = new Date(endDateValue);
-        
-        // Verificar se as datas são válidas
-        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-            console.error("Datas inválidas:", startDateValue, endDateValue);
-            return;
-        }
-        
-        // Garantir que a data final é após a data inicial
-        if (endDate < startDate) {
-            console.warn("Data final é anterior à data inicial. Invertendo as datas.");
-            const tempDate = endDateValue;
-            endDateValue = startDateValue;
-            startDateValue = tempDate;
-        }
-        
-        console.log("Datas de filtro (final):", 
-            startDateValue, "→", new Date(startDateValue).toLocaleDateString('pt-BR'),
-            endDateValue, "→", new Date(endDateValue).toLocaleDateString('pt-BR'));
+        console.log("TODOS os eventos serão exibidos sem filtro de data");
         
         // ========================================================================================
         // ETAPA 2: DETERMINAÇÃO DAS CIDADES NA ROTA
@@ -4055,10 +4016,15 @@
                 const eventStart = new Date(event.startDate);
                 const eventEnd = new Date(event.endDate);
                 
-                // Garantir que estamos usando o ano atual para eventos anuais (aniversários)
+                // Garantir que estamos usando o ano atual para eventos anuais (aniversários/feriados)
                 if (event.name.includes("Aniversário") || event.isHoliday) {
                     eventStart.setFullYear(currentYear);
                     eventEnd.setFullYear(currentYear);
+                    
+                    // Também ajusta a descrição para enfatizar que é data de fundação
+                    if (event.name.includes("Aniversário") && !event.description.includes("Data de Fundação:")) {
+                        event.description = event.description.replace("Aniversário de fundação de", "Data de Fundação:");
+                    }
                 }
                 
                 // Ajustar horas para garantir dias completos
@@ -4068,75 +4034,10 @@
                 // Log detalhado
                 console.log(`[EVENTO] ${event.name} (${event.cityName}): ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')}`);
                 
-                // PARTE 3: APLICAR FILTRO DE DATA
-                if (startDateValue && endDateValue) {
-                    // Tratamento especial para o Festival de Verão
-                    if (isFestivalVerao) {
-                        console.log(`[FESTIVAL] Festival de Verão excluído quando há filtro de data`);
-                        includeEvent = false;
-                        return;
-                    }
-                    
-                    try {
-                        // Criar objetos Date para as datas do filtro
-                        let filterStart = new Date(startDateValue);
-                        let filterEnd = new Date(endDateValue);
-                        
-                        // Verificar se as datas são objetos Date válidos
-                        if (isNaN(filterStart.getTime()) || isNaN(filterEnd.getTime())) {
-                            console.error(`[ERRO] Datas de filtro inválidas: ${startDateValue}, ${endDateValue}`);
-                            
-                            // Tentar corrigir formatos de data (pode ser ISO ou MM/DD/YYYY)
-                            if (startDateValue.includes('/')) {
-                                const parts = startDateValue.split('/');
-                                filterStart = new Date(parts[2], parts[0]-1, parts[1]);
-                            }
-                            
-                            if (endDateValue.includes('/')) {
-                                const parts = endDateValue.split('/');
-                                filterEnd = new Date(parts[2], parts[0]-1, parts[1]);
-                            }
-                            
-                            // Verificar novamente
-                            if (isNaN(filterStart.getTime()) || isNaN(filterEnd.getTime())) {
-                                console.error(`[ERRO] Impossível corrigir datas inválidas`);
-                                includeEvent = true; // Em caso de erro, mostrar evento
-                                return;
-                            }
-                        }
-                        
-                        // Garantir dia completo
-                        filterStart.setHours(0,0,0,0);
-                        filterEnd.setHours(23,59,59,999);
-                        
-                        // Verificar sobreposição entre as datas
-                        const hasOverlap = (
-                            // Evento começa dentro do período do filtro
-                            (eventStart >= filterStart && eventStart <= filterEnd) ||
-                            // Evento termina dentro do período do filtro
-                            (eventEnd >= filterStart && eventEnd <= filterEnd) ||
-                            // Evento abrange todo o período do filtro
-                            (eventStart <= filterStart && eventEnd >= filterEnd)
-                        );
-                        
-                        console.log(`[VERIFICAÇÃO] Data evento ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')} vs. Filtro ${filterStart.toLocaleDateString('pt-BR')}-${filterEnd.toLocaleDateString('pt-BR')}`);
-                        
-                        if (hasOverlap) {
-                            console.log(`[ACEITO] Evento '${event.name}' está no período filtrado`);
-                            includeEvent = true;
-                        } else {
-                            console.log(`[REJEITADO] Evento '${event.name}' fora do período filtrado`);
-                            includeEvent = false;
-                        }
-                    } catch (dateError) {
-                        console.error(`[ERRO] Falha ao processar datas do filtro:`, dateError);
-                        includeEvent = true; // Em caso de erro mostrar o evento
-                    }
-                } else {
-                    // Sem filtro de data, mostrar todos os eventos
-                    console.log(`[ACEITO] Evento '${event.name}' aceito (sem filtro de data)`);
-                    includeEvent = true;
-                }
+                // PARTE 3: FILTRO DE DATA REMOVIDO - MOSTRAR TODOS OS EVENTOS SEMPRE
+                // Incluir sempre todos os eventos sem filtro de data
+                console.log(`[ACEITO] Evento '${event.name}' aceito (filtro de data removido conforme solicitado)`);
+                includeEvent = true;
                 
             } catch (error) {
                 console.error(`[ERRO GERAL] Falha ao processar evento ${event.name}:`, error);
@@ -4152,7 +4053,7 @@
         
         // Se não houver eventos, mostrar mensagem
         if (eventsOnRoute.length === 0) {
-            eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado para o período e cidades selecionados.</p>';
+            eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado para as cidades na rota.</p>';
             return;
         }
         
