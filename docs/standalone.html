@@ -3471,6 +3471,9 @@
     function showEventsForCitiesOnRoute(pathIds) {
         console.log("Mostrando eventos para rota com IDs:", pathIds);
         
+        // Verificar se os elementos críticos existem antes de prosseguir
+        ensureCriticalElementsExist();
+        
         // Verificações de segurança
         if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
             console.error("IDs de rota inválidos ou vazios:", pathIds);
@@ -3767,6 +3770,9 @@
         
         // Adicionar timestamp ao log para debug
         console.log("Timestamp:", new Date().toISOString());
+        
+        // Verificar se os elementos críticos existem antes de prosseguir
+        ensureCriticalElementsExist();
         
         // Verificar se estamos no GitHub Pages
         const isGitHubPages = window.location.href.includes('github.io');
