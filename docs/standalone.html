@@ -587,6 +587,11 @@
         .event-type.event {
             background-color: #ff9800;
         }
+        .event-type.foundation-event {
+            background-color: #4caf50;
+            font-weight: bold;
+            border: 1px solid #388e3c;
+        }
         .restriction-level {
             display: inline-block;
             padding: 2px 6px;
@@ -4055,10 +4060,12 @@
                 const eventStart = new Date(event.startDate);
                 const eventEnd = new Date(event.endDate);
                 
-                // Garantir que estamos usando o ano atual para eventos anuais (aniversários)
-                if (event.name.includes("Aniversário") || event.isHoliday) {
+                // Garantir que estamos usando o ano atual para datas de fundação e feriados 
+                if (event.name.includes("Data de Fundação") || event.name.includes("Aniversário") || event.isHoliday) {
+                    // Definir o ano atual para estes eventos anuais
                     eventStart.setFullYear(currentYear);
                     eventEnd.setFullYear(currentYear);
+                    console.log(`[AJUSTE] Data ajustada para ano atual (${currentYear}): ${event.name}`);
                 }
                 
                 // Ajustar horas para garantir dias completos
@@ -4109,23 +4116,38 @@
                         filterStart.setHours(0,0,0,0);
                         filterEnd.setHours(23,59,59,999);
                         
-                        // Verificar sobreposição entre as datas
+                        // NOVA LÓGICA APRIMORADA DE SOBREPOSIÇÃO DE DATAS
+                        // Necessária para garantir que apenas eventos no período selecionado apareçam
+                        
+                        // Garantir que as comparações sejam feitas em timestamps
+                        const eventStartTime = eventStart.getTime();
+                        const eventEndTime = eventEnd.getTime();
+                        const filterStartTime = filterStart.getTime();
+                        const filterEndTime = filterEnd.getTime();
+                        
+                        // Verificar se há qualquer sobreposição entre o evento e o filtro
                         const hasOverlap = (
-                            // Evento começa dentro do período do filtro
-                            (eventStart >= filterStart && eventStart <= filterEnd) ||
-                            // Evento termina dentro do período do filtro
-                            (eventEnd >= filterStart && eventEnd <= filterEnd) ||
-                            // Evento abrange todo o período do filtro
-                            (eventStart <= filterStart && eventEnd >= filterEnd)
+                            // Caso 1: Evento começa dentro do período do filtro
+                            (eventStartTime >= filterStartTime && eventStartTime <= filterEndTime) ||
+                            
+                            // Caso 2: Evento termina dentro do período do filtro
+                            (eventEndTime >= filterStartTime && eventEndTime <= filterEndTime) ||
+                            
+                            // Caso 3: Evento abrange completamente o período do filtro
+                            (eventStartTime <= filterStartTime && eventEndTime >= filterEndTime)
                         );
                         
-                        console.log(`[VERIFICAÇÃO] Data evento ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')} vs. Filtro ${filterStart.toLocaleDateString('pt-BR')}-${filterEnd.toLocaleDateString('pt-BR')}`);
+                        // Log detalhado da comparação para depuração
+                        console.log(`[VERIFICAÇÃO] ${event.name} (${event.cityName}):`);
+                        console.log(`  Evento: ${eventStart.toLocaleDateString('pt-BR')} a ${eventEnd.toLocaleDateString('pt-BR')}`);
+                        console.log(`  Filtro: ${filterStart.toLocaleDateString('pt-BR')} a ${filterEnd.toLocaleDateString('pt-BR')}`);
+                        console.log(`  Overlap: ${hasOverlap ? "SIM" : "NÃO"}`);
                         
                         if (hasOverlap) {
-                            console.log(`[ACEITO] Evento '${event.name}' está no período filtrado`);
+                            console.log(`[ACEITO] Evento '${event.name}' ESTÁ no período filtrado`);
                             includeEvent = true;
                         } else {
-                            console.log(`[REJEITADO] Evento '${event.name}' fora do período filtrado`);
+                            console.log(`[REJEITADO] Evento '${event.name}' NÃO ESTÁ no período filtrado`);
                             includeEvent = false;
                         }
                     } catch (dateError) {
@@ -4179,9 +4201,15 @@
             // Definir classe baseada no tipo de evento
             const eventTypeClass = event.isHoliday ? 'holiday' : 'event';
             
+            // Verificar se é um evento de fundação para destacar de forma especial
+            const isFoundationEvent = event.name.includes("Data de Fundação") || 
+                                     (event.name.includes("Aniversário") && event.description.includes("fundação"));
+            
+            // HTML estruturado com destaque para eventos de fundação
             eventItem.innerHTML = `
-                <div class="event-name">${event.name} 
-                    <span class="event-type ${eventTypeClass}">${event.isHoliday ? 'Feriado' : 'Evento'}</span>
+                <div class="event-name">
+                    ${event.name} 
+                    <span class="event-type ${eventTypeClass} ${isFoundationEvent ? 'foundation-event' : ''}">${event.isHoliday ? 'Feriado' : 'Evento'}</span>
                     <span class="restriction-level ${event.restrictionLevel}">${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</span>
                 </div>
                 <div class="event-date">${event.cityName} | ${dateText}</div>
