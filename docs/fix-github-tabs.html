@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Correção de Abas para GitHub Pages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        h1 {
+            color: #1976D2;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .instructions {
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #e3f2fd;
+            border-left: 4px solid #1976D2;
+            border-radius: 4px;
+        }
+        
+        .code-block {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: monospace;
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #1976D2;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+        }
+        
+        .btn:hover {
+            background-color: #1565C0;
+        }
+        
+        .step {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .step h2 {
+            color: #1976D2;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Correção de Abas para GitHub Pages</h1>
+        
+        <div class="instructions">
+            <p><strong>Este guia explica como corrigir o problema de sobreposição das abas na versão GitHub Pages.</strong></p>
+            <p>O problema ocorre quando o conteúdo de uma aba (como "Restrições de Tráfego") aparece indevidamente em outra aba (como "Relatório" ou "Eventos").</p>
+        </div>
+        
+        <div class="step">
+            <h2>Passo 1: Substituir o container de abas</h2>
+            <p>Localize o código do container de abas no arquivo HTML e substitua pelo seguinte:</p>
+            <div class="code-block">&lt;!-- NOVO: Tabs fixas na parte inferior do layout (inicialmente minimizadas) --&gt;
+&lt;div class="bottom-tabs-container minimized"&gt;
+    &lt;!-- Navegação das abas inferiores --&gt;
+    &lt;div class="bottom-tabs-nav"&gt;
+        &lt;button class="bottom-tab-btn active" data-tab="bottom-events" onclick="showTab('bottom-events-content')"&gt;Eventos na Rota&lt;/button&gt;
+        &lt;button class="bottom-tab-btn" data-tab="bottom-restrictions" onclick="showTab('bottom-restrictions-content')"&gt;Restrições de Tráfego&lt;/button&gt;
+        &lt;button class="bottom-tab-btn" data-tab="bottom-report" onclick="showTab('bottom-report-content')"&gt;Relatório da Rota&lt;/button&gt;
+    &lt;/div&gt;
+    
+    &lt;!-- Container das abas com rolagem independente para cada aba --&gt;
+    &lt;div class="bottom-tabs-content-container"&gt;
+        &lt;!-- Conteúdo da aba Eventos --&gt;
+        &lt;div class="bottom-tab-content active" id="bottom-events-content" style="display: block;"&gt;
+            &lt;h5&gt;Eventos nas cidades da rota:&lt;/h5&gt;
+            &lt;div class="events-list" id="events-list"&gt;
+                &lt;p class="text-muted"&gt;Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        
+        &lt;!-- Conteúdo da aba Restrições --&gt;
+        &lt;div class="bottom-tab-content" id="bottom-restrictions-content" style="display: none;"&gt;
+            &lt;h5&gt;Restrições de tráfego para caminhões:&lt;/h5&gt;
+            &lt;div class="restrictions-list" id="restrictions-list"&gt;
+                &lt;p class="text-muted"&gt;Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver as restrições de tráfego.&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        
+        &lt;!-- Conteúdo da aba Relatório --&gt;
+        &lt;div class="bottom-tab-content" id="bottom-report-content" style="display: none;"&gt;
+            &lt;h5&gt;Resumo da rota otimizada:&lt;/h5&gt;
+            &lt;div class="route-info p-3 border rounded mb-3 bg-light" id="route-info"&gt;
+                &lt;p class="text-muted"&gt;Otimize a rota para ver o relatório detalhado.&lt;/p&gt;
+            &lt;/div&gt;
+            
+            &lt;h5&gt;Sequência de entrega:&lt;/h5&gt;
+            &lt;div class="route-sequence border rounded p-3" id="route-sequence"&gt;
+                &lt;p class="text-muted"&gt;A sequência de rota será exibida aqui após a otimização.&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</div>
+        </div>
+        
+        <div class="step">
+            <h2>Passo 2: Adicionar função de controle de abas</h2>
+            <p>Adicione esta função JavaScript antes do fechamento da tag &lt;/body&gt;:</p>
+            <div class="code-block">&lt;script&gt;
+// Função simplificada para controlar as abas
+function showTab(tabContentId) {
+    // Esconder todos os conteúdos de abas
+    var allTabContents = document.querySelectorAll('.bottom-tab-content');
+    allTabContents.forEach(function(content) {
+        content.style.display = 'none';
+        content.classList.remove('active');
+    });
+    
+    // Mostrar o conteúdo da aba selecionada
+    var selectedContent = document.getElementById(tabContentId);
+    if (selectedContent) {
+        selectedContent.style.display = 'block';
+        selectedContent.classList.add('active');
+    }
+    
+    // Atualizar classes ativas nos botões
+    var allTabButtons = document.querySelectorAll('.bottom-tab-btn');
+    allTabButtons.forEach(function(button) {
+        button.classList.remove('active');
+        
+        // Adicionar classe active ao botão correspondente
+        if (button.getAttribute('data-tab') === tabContentId.replace('-content', '')) {
+            button.classList.add('active');
+        }
+    });
+    
+    // Expandir o container se estiver minimizado
+    var tabsContainer = document.querySelector('.bottom-tabs-container');
+    if (tabsContainer && tabsContainer.classList.contains('minimized')) {
+        tabsContainer.classList.remove('minimized');
+    }
+}
+
+// Verificar e corrigir após otimização de rota
+document.addEventListener('DOMContentLoaded', function() {
+    var optimizeButton = document.getElementById('optimize-route');
+    if (optimizeButton) {
+        optimizeButton.addEventListener('click', function() {
+            // Aguardar a conclusão da otimização
+            setTimeout(function() {
+                // Corrigir a exibição das abas após otimização
+                var reportTabButton = document.querySelector('.bottom-tab-btn[data-tab="bottom-report"]');
+                if (reportTabButton) {
+                    reportTabButton.click();
+                }
+            }, 2000);
+        });
+    }
+});
+&lt;/script&gt;</div>
+        </div>
+        
+        <div class="step">
+            <h2>Passo 3: Modificar o evento de clique em "Otimizar Rota"</h2>
+            <p>Localize a função que trata o clique no botão "Otimizar Rota" e adicione o seguinte código ao final:</p>
+            <div class="code-block">// Navegar para a aba de relatório
+const reportTabButton = document.querySelector('.bottom-tab-btn[data-tab="bottom-report"]');
+if (reportTabButton) {
+    reportTabButton.click();
+    // Garantir exibição adequada do conteúdo
+    showTab('bottom-report-content');
+}</div>
+        </div>
+        
+        <p><a href="index.html" class="btn">Voltar para a aplicação</a></p>
+    </div>
+</body>
+</html>
