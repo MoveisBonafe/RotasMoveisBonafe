@@ -3823,136 +3823,76 @@
         mockData.cityEvents.forEach(event => {
             let includeEvent = false;
             
-            // ETAPA 1: FILTRAR POR CIDADE - CORRESPONDÊNCIA EXATA APENAS (REGRA RÍGIDA)
-            const cityMatch = citiesOnRoute.includes(event.cityName);
-            
-            // Se a cidade não estiver no percurso, não inclua este evento
-            if (!cityMatch) {
-                console.log(`[CIDADE] Evento '${event.name}' em '${event.cityName}' REJEITADO - cidade não está no percurso`);
-                return; // Pular para o próximo evento
-            }
-            
-            // Verificar se é o Festival de Verão
-            const isFestivalAnual = event.id === 99 && event.name === "Festival de Verão";
-            
-            // Se for o evento especial "Festival de Verão", só incluímos se não há filtro de data 
-            // ou quando o filtro está dentro do período do festival
-            if (isFestivalAnual) {
-                // Por padrão, não incluímos o Festival de Verão quando há filtro de data
-                includeEvent = false;
-            }
-            
-            // ETAPA INTERMEDIÁRIA: Ajustar as datas dos eventos para o ano atual
-            // Isto garante que aniversários de cidades e eventos anuais apareçam no ano correto
-            const currentYear = new Date().getFullYear(); // Usa o ano atual do sistema
-            const eventDate = new Date(event.startDate);
-            const eventYear = eventDate.getFullYear();
-            
-            // Se o evento é um aniversário de cidade ou evento recorrente anual
-            if (event.name.includes("Aniversário") || event.isHoliday) {
-                // Ajustar as datas para este ano apenas para comparação
-                const adjustedStartDate = new Date(event.startDate);
-                adjustedStartDate.setFullYear(currentYear);
-                
-                const adjustedEndDate = new Date(event.endDate);
-                adjustedEndDate.setFullYear(currentYear);
-                
-                // Usar estas datas ajustadas para a comparação
-                event._tempStartDate = adjustedStartDate;
-                event._tempEndDate = adjustedEndDate;
-                
-                console.log(`[AJUSTE] Evento '${event.name}' ajustado para ${adjustedStartDate.toISOString().split('T')[0]}`);
-            } else {
-                // Para outros eventos, usar as datas originais
-                event._tempStartDate = new Date(event.startDate);
-                event._tempEndDate = new Date(event.endDate);
-            }
-            
-            // ETAPA 2: FILTRAR POR DATA (APÓS VERIFICAÇÃO DA CIDADE)
-            // Sempre aplicar filtragem de data, mesmo sem datas especificadas
             try {
-                // Definir valores padrão para filtro se não especificados
-                const currentYear = new Date().getFullYear();
-                const startFilterDate = startDateValue ? new Date(startDateValue) : new Date(`${currentYear}-01-01`);
-                const endFilterDate = endDateValue ? new Date(endDateValue) : new Date(`${currentYear}-12-31`);
-                
-                // Sempre usar eventos com data no ano atual
-                const eventStartObj = new Date(event.startDate);
-                const eventEndObj = new Date(event.endDate);
-                
-                // Garantir que estamos usando o ano atual
-                eventStartObj.setFullYear(currentYear);
-                eventEndObj.setFullYear(currentYear);
-                
-                // Formatação para diagnóstico
-                const eventStartStr = eventStartObj.toLocaleDateString('pt-BR');
-                const eventEndStr = eventEndObj.toLocaleDateString('pt-BR');
-                
-                const filterStartStr = startFilterDate.toLocaleDateString('pt-BR');
-                const filterEndStr = endFilterDate.toLocaleDateString('pt-BR');
-                
-                console.log(`[DATA] Verificando se evento ${event.name} (${eventStartStr} a ${eventEndStr}) está no período ${filterStartStr} a ${filterEndStr}`);
-                
-                // LÓGICA DE FILTRAGEM ESTRITA PARA EVENTOS
-                try {
-                    // Determinar se é o evento especial Festival de Verão
-                    const isFestivalAnual = event.id === 99 && event.name === "Festival de Verão";
-                    
-                    // Verificar se o filtro de data está sendo utilizado
-                    if (startDateValue && endDateValue) {
-                        // Se um filtro de data específico foi fornecido
-                        console.log(`[FILTRO] Filtrando com período específico: ${startDateValue} até ${endDateValue}`);
-                        
-                        // Se for o festival de verão, tratamento especial
-                        if (isFestivalAnual) {
-                            console.log(`[FESTIVAL] Festival de Verão REJEITADO quando filtro de data está ativo`);
-                            includeEvent = false;
-                            return; // Pular para o próximo evento
-                        }
-                        
-                        // Converter datas para comparação - usar o ano atual para todos
-                        const currentYear = new Date().getFullYear();
-                        
-                        // Datas do evento
-                        const eventStart = new Date(event.startDate);
-                        eventStart.setFullYear(currentYear);
-                        eventStart.setHours(0,0,0,0);
-                        
-                        const eventEnd = new Date(event.endDate);
-                        eventEnd.setFullYear(currentYear);
-                        eventEnd.setHours(23,59,59,999);
-                        
-                        // Datas do filtro (datas do range selecionado pelo usuário)
-                        const filterStart = new Date(startDateValue);
-                        filterStart.setHours(0,0,0,0);
-                        
-                        const filterEnd = new Date(endDateValue);
-                        filterEnd.setHours(23,59,59,999);
-                        
-                        // Verificar sobreposição de intervalos (se o evento está dentro do período filtrado)
-                        const hasOverlap = (eventStart <= filterEnd && eventEnd >= filterStart);
-                        
-                        // Logs para diagnóstico
-                        console.log(`[DATAS] Evento: ${eventStart.toLocaleDateString()} a ${eventEnd.toLocaleDateString()} | Filtro: ${filterStart.toLocaleDateString()} a ${filterEnd.toLocaleDateString()}`);
-                        console.log(`[RESULTADO] Evento "${event.name}" tem sobreposição: ${hasOverlap}`);
-                        
-                        // Incluir apenas se estiver dentro do intervalo
-                        includeEvent = hasOverlap;
-                    } else {
-                        // Se não houver filtro de data, mostrar todos os eventos exceto Festival de Verão
-                        if (isFestivalAnual) {
-                            console.log(`[FESTIVAL] Festival de Verão aceito sem filtro de data`);
-                        }
-                        console.log(`[DATA] Evento '${event.name}' ACEITO - nenhum filtro de data aplicado`);
-                        includeEvent = true;
-                    }
-                } catch (err) {
-                    console.error(`[ERRO CRÍTICO] Falha ao processar filtro de data para evento ${event.name}:`, err);
-                    includeEvent = false;
+                // PARTE 1: VERIFICAÇÃO DE CIDADE - Evento deve estar em uma cidade do percurso
+                const cityMatch = citiesOnRoute.includes(event.cityName);
+                if (!cityMatch) {
+                    console.log(`[CIDADE] Evento '${event.name}' em '${event.cityName}' REJEITADO - cidade não está no percurso`);
+                    return; // Pular para o próximo evento
                 }
-            } catch (e) {
-                console.error(`[ERRO] Falha ao processar datas para evento ${event.name}:`, e);
-                includeEvent = false; // Em caso de erro, não incluir o evento
+                
+                // PARTE 2: PREPARAR DATAS PARA COMPARAÇÃO
+                // Identificar o evento especial Festival de Verão
+                const isFestivalVerao = event.id === 99 && event.name === "Festival de Verão";
+                
+                // Usar o ano atual para todas as datas (para corrigir aniversários de cidades)
+                const currentYear = new Date().getFullYear();
+                
+                // Datas do evento ajustadas para o ano atual
+                const eventStart = new Date(event.startDate);
+                eventStart.setFullYear(currentYear);
+                eventStart.setHours(0,0,0,0);
+                
+                const eventEnd = new Date(event.endDate);
+                eventEnd.setFullYear(currentYear);
+                eventEnd.setHours(23,59,59,999);
+                
+                // Log para debug
+                console.log(`[EVENTO] ${event.name} em ${event.cityName}: ${eventStart.toLocaleDateString()} a ${eventEnd.toLocaleDateString()}`);
+                
+                // PARTE 3: FILTRAR POR DATA (se filtro estiver ativo)
+                if (startDateValue && endDateValue) {
+                    // Festival de Verão tem tratamento especial - excluir quando há filtro de data
+                    if (isFestivalVerao) {
+                        console.log(`[FESTIVAL] Festival de Verão excluído pois filtro de data está ativo`);
+                        includeEvent = false;
+                        return;
+                    }
+                    
+                    // Configurar datas do filtro
+                    const filterStart = new Date(startDateValue);
+                    filterStart.setHours(0,0,0,0);
+                    
+                    const filterEnd = new Date(endDateValue);
+                    filterEnd.setHours(23,59,59,999);
+                    
+                    // Log para debug
+                    console.log(`[FILTRO] Período: ${filterStart.toLocaleDateString()} a ${filterEnd.toLocaleDateString()}`);
+                    
+                    // Verificar sobreposição entre evento e filtro
+                    // Um evento está no período se:
+                    // - Começa dentro do período do filtro, OU
+                    // - Termina dentro do período do filtro, OU
+                    // - Abrange todo o período do filtro
+                    const hasOverlap = (eventStart <= filterEnd && eventEnd >= filterStart);
+                    
+                    // Resultado da filtragem
+                    if (hasOverlap) {
+                        console.log(`[ACEITO] Evento '${event.name}' está no período do filtro`);
+                        includeEvent = true;
+                    } else {
+                        console.log(`[REJEITADO] Evento '${event.name}' está fora do período do filtro`);
+                        includeEvent = false;
+                    }
+                } else {
+                    // Sem filtro de data, aceitar todos os eventos
+                    console.log(`[ACEITO] Evento '${event.name}' aceito pois não há filtro de data`);
+                    includeEvent = true;
+                }
+            } catch (error) {
+                // Tratamento de erros robusto
+                console.error(`[ERRO] Falha ao processar evento ${event.name}:`, error);
+                includeEvent = false;
             }
             
             // Se passou por todos os filtros, incluir o evento
@@ -5452,7 +5392,9 @@
 
     // Filtrar eventos por data - atualiza automaticamente ao mudar datas
     function filterEventsByDate() {
-        console.log("Filtrando eventos por datas e atualizando restrições para caminhões");
+        console.log("==========================================");
+        console.log("FILTRO DE EVENTOS POR DATA SOLICITADO");
+        console.log("==========================================");
         
         // Obter valores atuais das datas para filtro
         const startDateInput = document.getElementById('start-date');
@@ -5464,9 +5406,42 @@
             return;
         }
         
-        const startDateStr = startDateInput.value;
-        const endDateStr = endDateInput.value;
-        console.log(`Datas selecionadas para filtragem: ${startDateStr || 'vazia'} até ${endDateStr || 'vazia'}`);
+        // Obter datas do filtro
+        let startDateStr = startDateInput.value;
+        let endDateStr = endDateInput.value;
+        
+        // Validar datas de filtro
+        if (!startDateStr || !endDateStr) {
+            console.warn("Pelo menos uma das datas de filtro está vazia:", {start: startDateStr, end: endDateStr});
+            
+            // Atribuir valores padrão se as datas estiverem vazias
+            const today = new Date();
+            const oneWeekLater = new Date();
+            oneWeekLater.setDate(today.getDate() + 7);
+            
+            // Converter para formato YYYY-MM-DD
+            const formatDate = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+            
+            // Atualizar elementos do formulário apenas se estiverem vazios
+            if (!startDateStr) {
+                startDateStr = formatDate(today);
+                startDateInput.value = startDateStr;
+                console.log("Data inicial ajustada para hoje:", startDateStr);
+            }
+            
+            if (!endDateStr) {
+                endDateStr = formatDate(oneWeekLater);
+                endDateInput.value = endDateStr;
+                console.log("Data final ajustada para uma semana depois:", endDateStr);
+            }
+        }
+        
+        console.log(`Datas finais para filtragem: ${startDateStr} até ${endDateStr}`);
         
         let routeIds = [];
         
