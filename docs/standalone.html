@@ -4122,13 +4122,32 @@
             zIndex: 30
         });
         
-        // Conteúdo do tooltip
+        // Preparar data do evento para exibição
+        let dateDisplay, descriptionText;
+        
+        if (event.name.includes("Aniversário")) {
+            // Para aniversários, mostrar data de fundação claramente
+            const dateParts = event.description.split(/em |\//).filter(part => part.trim());
+            const foundationDate = dateParts.length >= 2 ? dateParts[1] : "";
+            
+            dateDisplay = `<strong>Data da comemoração:</strong> ${new Date(event.startDate).toLocaleDateString('pt-BR')}`;
+            descriptionText = `<strong>Data de Fundação:</strong> ${foundationDate}`;
+        } else {
+            // Para outros eventos, mostrar datas normalmente
+            dateDisplay = `<strong>Período:</strong> ${new Date(event.startDate).toLocaleDateString('pt-BR')}`;
+            if (event.startDate !== event.endDate) {
+                dateDisplay += ` - ${new Date(event.endDate).toLocaleDateString('pt-BR')}`;
+            }
+            descriptionText = event.description;
+        }
+        
+        // Conteúdo do tooltip melhorado
         const tooltipContent = `
             <div class="tooltip-title">${event.name}</div>
-            <div>${event.cityName}</div>
-            <div>${new Date(event.startDate).toLocaleDateString('pt-BR')} - ${new Date(event.endDate).toLocaleDateString('pt-BR')}</div>
-            <div>${event.description}</div>
-            <div>Nível de restrição: ${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</div>
+            <div><strong>Cidade:</strong> ${event.cityName}</div>
+            <div>${dateDisplay}</div>
+            <div>${descriptionText}</div>
+            <div><strong>Restrição de tráfego:</strong> ${event.restrictionLevel === 'high' ? 'Alta' : (event.restrictionLevel === 'medium' ? 'Média' : 'Baixa')}</div>
         `;
         
         // Adicionar listener para mostrar tooltip ao passar o mouse
