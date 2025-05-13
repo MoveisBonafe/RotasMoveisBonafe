@@ -3679,9 +3679,13 @@
     }
 
     // Mostrar eventos para as cidades na rota
-    function showEventsForCitiesOnRoute(pathIds, startDate, endDate) {
+    function showEventsForCitiesOnRoute(pathIds, startDateStr, endDateStr) {
         console.log("Mostrando eventos para rota com IDs:", pathIds);
-        console.log("Datas de filtro:", startDate, endDate);
+        console.log("Datas de filtro (string):", startDateStr, endDateStr);
+        
+        // Valores para filtragem por data
+        let startDateValue = startDateStr;
+        let endDateValue = endDateStr;
         
         // Verificações de segurança
         if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
@@ -3763,25 +3767,26 @@
         
         console.log("APENAS ESTAS CIDADES ESTÃO NA ROTA REAL:", citiesOnRoute);
         
-        // Usar as datas de filtro recebidas como parâmetros
-        // Se não recebemos datas, tentar obter do formulário como fallback
-        let startDateValue = startDate;
-        let endDateValue = endDate;
-        
-        if (!startDateValue || !endDateValue) {
-            const startDateInput = document.getElementById('start-date');
-            const endDateInput = document.getElementById('end-date');
-            
-            if (startDateInput) startDateValue = startDateInput.value;
-            if (endDateInput) endDateValue = endDateInput.value;
-            
-            console.log("Usando datas dos inputs como fallback:", startDateValue, endDateValue);
-        }
-        
         // NOVA IMPLEMENTAÇÃO DE FILTRAGEM DE EVENTOS
         console.log("NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data");
         console.log(`Filtrando eventos para cidades: ${citiesOnRoute.join(', ')}`);
         console.log(`Filtro de data: ${startDateValue || 'sem data inicial'} a ${endDateValue || 'sem data final'}`);
+        
+        // Ajuste condicional das datas - garantir que temos valores válidos
+        if (!startDateValue || !endDateValue) {
+            // Se não recebemos alguma data, verificar se temos eventos de aniversário
+            // e ajustar as datas para incluí-los automaticamente
+            const hasAnniversaryEvents = mockData.cityEvents.some(event => 
+                event.name.includes("Aniversário") && citiesOnRoute.includes(event.cityName)
+            );
+            
+            if (hasAnniversaryEvents) {
+                console.log("[AJUSTE AUTOMÁTICO] Expandindo datas para incluir aniversários de cidades");
+                // Usar um intervalo grande o suficiente para incluir todos os aniversários
+                if (!startDateValue) startDateValue = "2023-01-01";
+                if (!endDateValue) endDateValue = "2023-12-31";
+            }
+        }
         
         // Array para armazenar eventos filtrados
         let eventsOnRoute = [];
