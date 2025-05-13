@@ -2178,13 +2178,32 @@
         return false;
     }
     
+    // Funções para controlar o spinner de carregamento
+    function showLoadingSpinner() {
+        const spinner = document.getElementById('loading-spinner');
+        if (spinner) {
+            spinner.style.display = 'block';
+        }
+    }
+    
+    function hideLoadingSpinner() {
+        const spinner = document.getElementById('loading-spinner');
+        if (spinner) {
+            spinner.style.display = 'none';
+        }
+    }
+    
     // Traçar a rota no mapa
     function drawRouteOnMap(pathIds, vehicleType) {
         console.log("Desenhando rota para IDs:", pathIds);
         
+        // Mostrar spinner durante o carregamento
+        showLoadingSpinner();
+        
         // Verificações de segurança
         if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
             console.error("IDs de caminho inválidos ou vazios:", pathIds);
+            hideLoadingSpinner();
             return; // Interromper execução para evitar erros
         }
         
@@ -2321,11 +2340,8 @@
         };
         
         directionsService.route(request, (result, status) => {
-            // Esconder indicador de progresso se existir
-            const loadingSpinner = document.getElementById('loading-spinner');
-            if (loadingSpinner) {
-                loadingSpinner.style.display = 'none';
-            }
+            // Esconder indicador de progresso
+            hideLoadingSpinner();
             
             if (status === google.maps.DirectionsStatus.OK) {
                 // Verificar se o DirectionsRenderer foi inicializado corretamente
