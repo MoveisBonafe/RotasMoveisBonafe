@@ -1195,6 +1195,8 @@
         // Eventos de cidades (com aniversários atualizados para 2025)
         cityEvents: [
             // Aniversários das principais cidades (eventos fixos - feriados municipais)
+            // Evento atual para testes - usando datas do ano atual para garantir que apareça nos filtros
+            { id: 99, cityName: "Dois Córregos", name: "Festival de Verão", startDate: "2023-01-01", endDate: "2025-12-31", isHoliday: false, description: "Festival com atividades durante todo o ano", restrictionLevel: "low" },
             { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2025-02-04", endDate: "2025-02-04", isHoliday: true, description: "Feriado municipal do aniversário de Dois Córregos (fundação: 04/02/1883)", restrictionLevel: "low" },
             { id: 2, cityName: "Jaú", name: "Aniversário da Cidade", startDate: "2025-08-15", endDate: "2025-08-15", isHoliday: true, description: "Feriado municipal do aniversário de Jaú (fundação: 15/08/1853)", restrictionLevel: "low" },
             { id: 3, cityName: "Botucatu", name: "Aniversário da Cidade", startDate: "2025-04-14", endDate: "2025-04-14", isHoliday: true, description: "Feriado municipal do aniversário de Botucatu (fundação: 14/04/1855)", restrictionLevel: "low" },
@@ -1435,6 +1437,9 @@
         document.getElementById('end-date').value = formattedEndDate;
         
         console.log(`Datas definidas automaticamente na inicialização do mapa: de ${formattedToday} até ${formattedEndDate}`);
+        
+        // Invocar a filtragem de eventos inicial para exibir eventos para a origem
+        filterEventsByDate();
         
         // Ajustar a altura do container e do mapa para preencher todo o espaço disponível
         function resizeMap() {
@@ -5428,10 +5433,15 @@
             }, 5000);
         }
         
-        routeIds = [mockData.origin.id];
+        // Se ainda não temos IDs de rota, usar pelo menos a origem
+        if (!routeIds || routeIds.length === 0) {
+            routeIds = [mockData.origin.id];
+            console.log("Usando apenas a origem para eventos:", routeIds);
+        }
         
         // Mostrar eventos para as cidades da rota com filtro por data
-        showEventsForCitiesOnRoute(routeIds);
+        console.log("Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas:", startDate, endDate);
+        showEventsForCitiesOnRoute(routeIds, startDate, endDate);
         
         // Mostrar restrições para TODOS os tipos de caminhões nas cidades da rota
         // Passando null para indicar que queremos mostrar para todos os tipos
