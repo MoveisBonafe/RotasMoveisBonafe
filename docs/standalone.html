@@ -1185,6 +1185,9 @@
     document.addEventListener("DOMContentLoaded", function() {
         console.log("DOM carregado - inicializando aplicação");
         
+        // Verificar e criar elementos críticos antes de qualquer outra coisa
+        ensureCriticalElementsExist();
+        
         // Esconder as abas inferiores inicialmente - deve ser chamado primeiro
         toggleBottomTabsVisibility(false);
         
@@ -1198,43 +1201,37 @@
             console.log("Google Maps API disponível");
         }
         
-        // Criar função para garantir que elementos essenciais existam
-        function ensureEssentialElements() {
-            // Verificar e criar container de eventos se não existir
-            const eventsContainer = document.getElementById('events-list');
-            if (!eventsContainer) {
-                console.warn("Container de eventos não encontrado - criando elemento");
-                const eventsContent = document.getElementById('bottom-events-content');
-                if (eventsContent) {
-                    const newEventsContainer = document.createElement('div');
-                    newEventsContainer.id = 'events-list';
-                    newEventsContainer.className = 'events-list';
-                    newEventsContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado.</p>';
-                    eventsContent.appendChild(newEventsContainer);
-                }
-            }
+        // Para GitHub Pages: configurar verificação adicional para elementos críticos
+        // que possam ser carregados com atraso
+        if (window.location.href.includes('github.io')) {
+            console.log("GitHub Pages detectado - configurando verificações adicionais para carregamento tardio");
             
-            // Verificar e criar container de restrições se não existir
-            const restrictionsContainer = document.getElementById('restrictions-list');
-            if (!restrictionsContainer) {
-                console.warn("Container de restrições não encontrado - criando elemento");
-                const restrictionsContent = document.getElementById('bottom-restrictions-content');
-                if (restrictionsContent) {
-                    const newRestrictionsContainer = document.createElement('div');
-                    newRestrictionsContainer.id = 'restrictions-list';
-                    newRestrictionsContainer.className = 'restrictions-list';
-                    newRestrictionsContainer.innerHTML = '<p class="text-muted">Nenhuma restrição encontrada.</p>';
-                    restrictionsContent.appendChild(newRestrictionsContainer);
+            // Verificar elementos críticos a cada 1 segundo até que todos existam ou tempo limite seja atingido
+            let checkCount = 0;
+            const maxChecks = 10;
+            
+            const delayedElementCheck = setInterval(function() {
+                console.log(`Verificação de elementos críticos #${checkCount + 1}`);
+                ensureCriticalElementsExist();
+                
+                checkCount++;
+                if (checkCount >= maxChecks) {
+                    console.log("Verificações periódicas de elementos concluídas.");
+                    clearInterval(delayedElementCheck);
                 }
-            }
+            }, 1000);
         }
+        
+        // Removida função duplicada - agora usamos ensureCriticalElementsExist
+        // que já foi definida anteriormente e garante que todos os containers
+        // essenciais existam
             
         // Atrasar a inicialização para garantir que o Google Maps esteja totalmente carregado (especialmente no GitHub Pages)
         setTimeout(function() {
             // Inicializar componentes principais
             try {
                 console.log("Iniciando carregamento de componentes com atraso");
-                ensureEssentialElements(); // Garantir que elementos essenciais existam ANTES da inicialização
+                ensureCriticalElementsExist(); // Garantir que elementos essenciais existam ANTES da inicialização
                 initMap();
                 initAutocomplete();
                 initTabNavigation();
