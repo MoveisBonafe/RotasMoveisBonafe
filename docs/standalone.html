@@ -3843,142 +3843,127 @@
     }
 
     // Mostrar eventos para as cidades na rota
+    // Função reescrita para mostrar eventos de forma simples e direta para GitHub Pages
     function showEventsForCitiesOnRoute(pathIds, startDateStr, endDateStr) {
-        console.log("=================== NOVA EXECUÇÃO ===================");
-        console.log("Mostrando eventos para rota com IDs:", pathIds);
-        console.log("Datas de filtro (string):", startDateStr, endDateStr);
+        // 1. INICIALIZAÇÃO BÁSICA
+        console.log("==== FILTRAGEM DE EVENTOS SIMPLIFICADA ====");
         
-        // Valores para filtragem por data - garantir que são strings válidas
-        let startDateValue = startDateStr || "";
-        let endDateValue = endDateStr || "";
+        // Obter o elemento container da lista de eventos
+        const eventsListContainer = document.getElementById('events-list');
+        if (!eventsListContainer) {
+            console.error("Container da lista de eventos não encontrado");
+            return;
+        }
         
-        // Verificações de segurança
+        // Limpar a lista atual
+        eventsListContainer.innerHTML = '';
+        
+        // 2. GARANTIR ROTA VÁLIDA
         if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
-            console.error("IDs de rota inválidos ou vazios:", pathIds);
-            const originLocations = locations.filter(loc => loc.isOrigin);
-            if (originLocations.length > 0) {
-                pathIds = originLocations.map(loc => loc.id);
-                console.log("Usando apenas a origem para mostrar eventos:", pathIds);
+            // Se não há rota, usar apenas a origem
+            const origin = locations.find(loc => loc.isOrigin);
+            if (origin) {
+                pathIds = [origin.id];
             } else {
-                console.error("Impossível encontrar até mesmo a origem. Abortando exibição de eventos.");
+                eventsListContainer.innerHTML = '<p class="text-muted">Nenhuma rota definida.</p>';
                 return;
             }
         }
         
-        // Limpar a lista de eventos
-        const eventsListContainer = document.getElementById('events-list');
-        eventsListContainer.innerHTML = '';
-        
-        // Log para diagnóstico
-        console.log("Eventos disponíveis:", mockData.cityEvents);
-        
-        if (!pathIds || pathIds.length === 0) {
-            eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos.</p>';
-            return;
-        }
-        
-        // CORREÇÃO: Converter IDs para objetos de localização de forma mais robusta
-        const pathLocations = [];
-        for (const id of pathIds) {
-            const idStr = String(id);
-            const location = locations.find(loc => String(loc.id) === idStr);
-            if (location) {
-                pathLocations.push(location);
-                console.log(`Localização encontrada para ID ${idStr}:`, location);
-            }
-        }
-        
-        if (pathLocations.length === 0) {
-            console.error("Nenhuma localização válida encontrada na rota");
-            eventsListContainer.innerHTML = '<p class="text-muted">Erro ao encontrar localizações na rota.</p>';
-            return;
-        }
-        
-        // EXTRAÇÃO MELHORADA DE CIDADES DO PERCURSO
-        // Array para armazenar os nomes das cidades que estão REALMENTE na rota
+        // 3. DEFINIR CIDADES NA ROTA
         const citiesOnRoute = [];
         
-        // Cidade de origem (sempre incluir Dois Córregos)
+        // Sempre incluir a origem (Dois Córregos)
         citiesOnRoute.push("Dois Córregos");
-        console.log(`[ROTA] Adicionada cidade de origem: Dois Córregos`);
         
-        // Processar CADA destino na rota para extrair nomes de cidades
-        for (const location of pathLocations) {
-            // Apenas adicionar se tivermos um nome válido
-            if (location && location.name) {
-                // Verificar se o nome é uma cidade conhecida (estratégia 1)
-                const knownCities = [
-                    "Dois Córregos", "Jaú", "Botucatu", "Bauru", "Ribeirão Preto", 
-                    "São Paulo", "Campinas", "São Carlos", "Piracicaba", "Araraquara",
-                    "Americana", "Sorocaba", "Limeira", "Rio Claro"
-                ];
-                
-                // Se o nome exato da localização é uma cidade conhecida
-                if (knownCities.includes(location.name) && !citiesOnRoute.includes(location.name)) {
-                    citiesOnRoute.push(location.name);
-                    console.log(`[ROTA] Adicionada cidade conhecida: ${location.name}`);
-                    continue; // Ir para o próximo local
-                }
-                
-                // Estratégia 2: Usar o nome da localização diretamente
-                if (!citiesOnRoute.includes(location.name)) {
-                    citiesOnRoute.push(location.name);
-                    console.log(`[ROTA] Adicionado local como possível cidade: ${location.name}`);
-                }
+        // Adicionar cidades dos destinos na rota
+        pathIds.forEach(id => {
+            const location = locations.find(loc => loc.id === id);
+            if (location && location.name && !citiesOnRoute.includes(location.name)) {
+                citiesOnRoute.push(location.name);
             }
-        }
+        });
         
-        console.log(`[ROTA] Cidades encontradas no percurso (${citiesOnRoute.length}): ${citiesOnRoute.join(', ')}`);
+        console.log("Cidades na rota:", citiesOnRoute);
         
-        console.log("APENAS ESTAS CIDADES ESTÃO NA ROTA REAL:", citiesOnRoute);
+        // 4. DEFINIR PERÍODO DO FILTRO
+        let startDate, endDate;
         
-        // NOVA IMPLEMENTAÇÃO DE FILTRAGEM DE EVENTOS
-        console.log("NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data");
-        console.log(`Filtrando eventos para cidades: ${citiesOnRoute.join(', ')}`);
-        console.log(`Filtro de data: ${startDateValue || 'sem data inicial'} a ${endDateValue || 'sem data final'}`);
-        
-        // Ajuste condicional das datas - garantir que temos valores válidos
-        // Usar o ano atual do sistema
+        // Usar data atual
         const currentYear = new Date().getFullYear();
         
-        if (!startDateValue || !endDateValue) {
-            // Se datas não foram especificadas, usar intervalo padrão do ano atual
-            console.log(`[AJUSTE AUTOMÁTICO] Definindo intervalo padrão para o ano ${currentYear}`);
+        // Definir datas a partir dos parâmetros ou usar padrão
+        if (startDateStr && endDateStr) {
+            startDate = new Date(startDateStr);
+            endDate = new Date(endDateStr);
             
-            // Usar o ano atual para filtrar eventos
-            if (!startDateValue) startDateValue = `${currentYear}-01-01`;
-            if (!endDateValue) endDateValue = `${currentYear}-12-31`;
-            
-            console.log(`[DATA] Intervalo ajustado para: ${startDateValue} até ${endDateValue}`);
-        } else {
-            // Se as datas foram especificadas, garantir que estamos no ano correto
-            // Extrair apenas os valores de data (sem hora)
-            const startParts = startDateValue.split('T')[0].split('-');
-            const endParts = endDateValue.split('T')[0].split('-');
-            
-            // Verificar se o ano é diferente de 2025
-            if (startParts[0] !== String(currentYear) || endParts[0] !== String(currentYear)) {
-                console.log(`[AVISO] Ajustando datas para o ano ${currentYear}`);
-                // Manter mês e dia, mas ajustar o ano
-                startDateValue = `${currentYear}-${startParts[1]}-${startParts[2]}`;
-                endDateValue = `${currentYear}-${endParts[1]}-${endParts[2]}`;
+            // Verificar se as datas são válidas
+            if (isNaN(startDate) || isNaN(endDate)) {
+                console.warn("Datas de filtro inválidas, usando padrão");
+                startDate = new Date();
+                endDate = new Date();
+                endDate.setDate(startDate.getDate() + 7);
             }
+        } else {
+            // Usar período padrão: hoje + 7 dias
+            startDate = new Date();
+            endDate = new Date();
+            endDate.setDate(startDate.getDate() + 7);
         }
         
-        // Array para armazenar eventos filtrados
-        let eventsOnRoute = [];
+        // Garantir horário completo nos dias
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(23, 59, 59, 999);
+        
+        console.log("Período do filtro:", 
+            startDate.toLocaleDateString(), "a", 
+            endDate.toLocaleDateString()
+        );
+        
+        // 5. FILTRAR EVENTOS
+        const eventsOnRoute = [];
         
         // Para cada evento nos dados...
         mockData.cityEvents.forEach(event => {
-            let includeEvent = false;
+            // FILTRO 1: CIDADE - O evento deve estar em uma cidade na rota
+            if (!citiesOnRoute.includes(event.cityName)) {
+                return; // Pular para o próximo evento
+            }
             
+            // FILTRO 2: DATA - O evento deve estar no período do filtro
             try {
-                // PARTE 1: VERIFICAÇÃO DE CIDADE - Evento deve estar em uma cidade do percurso
-                const cityMatch = citiesOnRoute.includes(event.cityName);
-                if (!cityMatch) {
-                    console.log(`[CIDADE] Evento '${event.name}' em '${event.cityName}' REJEITADO - cidade não está no percurso`);
-                    return; // Pular para o próximo evento
+                // Ajustar datas do evento para o ano atual
+                const eventStart = new Date(event.startDate);
+                const eventEnd = new Date(event.endDate);
+                
+                // Para eventos anuais (aniversários e feriados), usar o ano atual
+                if (event.name.includes("Aniversário") || event.isHoliday) {
+                    eventStart.setFullYear(currentYear);
+                    eventEnd.setFullYear(currentYear);
                 }
+                
+                // Garantir dia completo
+                eventStart.setHours(0, 0, 0, 0);
+                eventEnd.setHours(23, 59, 59, 999);
+                
+                // Verificar sobreposição de datas:
+                // 1. Evento começa durante o período do filtro, OU
+                // 2. Evento termina durante o período do filtro, OU
+                // 3. Evento abrange todo o período do filtro
+                const hasOverlap = (
+                    (eventStart >= startDate && eventStart <= endDate) ||
+                    (eventEnd >= startDate && eventEnd <= endDate) ||
+                    (eventStart <= startDate && eventEnd >= endDate)
+                );
+                
+                if (hasOverlap) {
+                    eventsOnRoute.push(event);
+                }
+            } catch (error) {
+                console.error("Erro ao processar datas do evento:", event.name, error);
+            }
+            
+        });
                 
                 // PARTE 2: AJUSTAR DATAS DO EVENTO PARA O ANO ATUAL
                 // Evento especial: Festival de Verão
