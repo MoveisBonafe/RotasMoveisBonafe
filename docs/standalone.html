@@ -1408,7 +1408,12 @@
         }, false);
         
         // Botão para otimizar rota
-        document.getElementById('optimize-route').addEventListener('click', optimizeRoute);
+        const optimizeButton = document.getElementById('optimize-route');
+        if (optimizeButton) {
+            optimizeButton.addEventListener('click', optimizeRoute);
+        } else {
+            console.error("Botão de otimização de rota não encontrado!");
+        }
         
         // Filtrar eventos automaticamente ao mudar as datas
         document.getElementById('start-date').addEventListener('change', filterEventsByDate);
@@ -2406,7 +2411,12 @@
         }
         
         // Navegar para a aba de relatório
-        document.querySelector('.tab-button[data-tab="report"]').click();
+        const reportTabButton = document.querySelector('.bottom-tab-btn[data-tab="bottom-report"]');
+        if (reportTabButton) {
+            reportTabButton.click();
+        } else {
+            console.warn("Botão da aba de relatório não encontrado");
+        }
     }
     
     // Reordenar os marcadores para corresponder à sequência otimizada
@@ -4706,13 +4716,21 @@
             const notifyInfo = document.createElement('div');
             notifyInfo.className = 'alert alert-info mt-2';
             notifyInfo.innerHTML = `Calcule uma rota primeiro para ver os eventos e restrições no percurso.`;
-            const tabContent = document.querySelector('.tab-content');
+            // Usar a primeira aba inferior ativa como container para notificação
+            const tabContent = document.querySelector('.bottom-tab-content.active');
             if (tabContent) {
                 tabContent.appendChild(notifyInfo);
-                // Remover a notificação após alguns segundos
-                setTimeout(() => {
-                    if (notifyInfo && notifyInfo.parentNode) {
-                        notifyInfo.parentNode.removeChild(notifyInfo);
+            } else {
+                // Fallback para a seção de otimização caso as abas não existam
+                const optimizeSection = document.querySelector('.optimize-btn-container');
+                if (optimizeSection) {
+                    optimizeSection.appendChild(notifyInfo);
+                }
+            }
+            // Remover a notificação após alguns segundos
+            setTimeout(() => {
+                if (notifyInfo && notifyInfo.parentNode) {
+                    notifyInfo.parentNode.removeChild(notifyInfo);
                     }
                 }, 5000);
             }
