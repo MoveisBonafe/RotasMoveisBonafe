@@ -739,9 +739,11 @@
         /* Container para organizar as abas com rolagem independente */
         .bottom-tabs-content-container {
             position: relative;
-            overflow: hidden;
+            overflow: hidden; /* Esconde o overflow para que as abas não-ativas não apareçam */
             max-height: calc(60vh - 60px);
             background-color: #fff;
+            display: flex;
+            flex-direction: column;
         }
         
         .bottom-tabs-container.expand-down:not(.minimized) .bottom-tab-content {
@@ -1011,7 +1013,7 @@
         
         /* Ajustes para quando as abas estão expandidas para baixo */
         .bottom-tabs-container:not(.minimized) .bottom-tab-content {
-            height: auto !important; 
+            height: calc(60vh - 80px) !important; /* Altura fixa para conter cada aba individualmente */
             max-height: calc(60vh - 80px) !important; /* Limitando altura para 60vh */
             padding: 25px;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
@@ -1021,6 +1023,7 @@
             margin: 15px 15px 0; /* Margem no topo agora */
             overflow-y: auto !important; /* Garantir que todos os conteúdos tenham rolagem */
             position: relative !important; /* Importante para o posicionamento absoluto dos filhos */
+            scroll-behavior: smooth; /* Rolagem suave */
         }
         
         /* Ajustes específicos para a aba de restrições */
@@ -1731,6 +1734,16 @@
         
         // Mostrar informações iniciais nas abas
         showInitialTabsContent();
+        
+        // Garantir que apenas a aba ativa esteja visível no início
+        const bottomTabContents = document.querySelectorAll('.bottom-tab-content');
+        bottomTabContents.forEach(content => {
+            if (content.classList.contains('active')) {
+                content.style.display = 'block';
+            } else {
+                content.style.display = 'none';
+            }
+        });
         
         // Verificar se temos acesso ao Google Maps
         if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
