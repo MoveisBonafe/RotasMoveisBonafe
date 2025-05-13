@@ -3163,6 +3163,66 @@
         // Extrair nomes das cidades na rota (ignorar localizações não encontradas)
         console.log("Detectando cidades na rota para restrições de caminhões...");
         
+        // Obter todos os waypoints da rota, se disponíveis
+        let citiesFromWaypoints = [];
+        
+        // Verificar se temos uma rota ativa com direções
+        if (directionsRenderer && directionsRenderer.getDirections()) {
+            const route = directionsRenderer.getDirections().routes[0];
+            if (route && route.legs) {
+                // Extrair cidades de todos os waypoints na rota
+                route.legs.forEach(leg => {
+                    if (leg.start_address) {
+                        const startCity = extractCityFromAddress(leg.start_address);
+                        if (startCity) citiesFromWaypoints.push(startCity);
+                    }
+                    if (leg.end_address) {
+                        const endCity = extractCityFromAddress(leg.end_address);
+                        if (endCity) citiesFromWaypoints.push(endCity);
+                    }
+                });
+                console.log("Cidades extraídas de waypoints da rota:", citiesFromWaypoints);
+            }
+        }
+        
+        // Função auxiliar para extrair nome da cidade de um endereço
+        function extractCityFromAddress(address) {
+            if (!address) return null;
+            
+            // Verificar cidades conhecidas no endereço
+            const lowerAddress = address.toLowerCase();
+            const knownCities = [
+                "campinas", "ribeirão preto", "são carlos", "piracicaba", "são paulo", 
+                "sorocaba", "americana", "limeira", "rio claro", "araraquara", "bauru", 
+                "botucatu", "jaú", "dois córregos"
+            ];
+            
+            let cityName = null;
+            
+            // Verificar cidades conhecidas primeiro
+            for (const city of knownCities) {
+                if (lowerAddress.includes(city)) {
+                    cityName = city.split(' ').map(word => 
+                        word.charAt(0).toUpperCase() + word.slice(1)
+                    ).join(' ');
+                    console.log(`Cidade conhecida detectada: ${cityName}`);
+                    return cityName;
+                }
+            }
+            
+            // Se não encontrou cidade conhecida, tentar extrair do endereço
+            const addressParts = address.split(',');
+            if (addressParts.length > 0) {
+                cityName = addressParts[0].trim();
+                // Se parece ser um nome de rua, tentar o segundo componente
+                if (cityName.includes('R.') || cityName.includes('Av.') || cityName.includes('Rod.')) {
+                    cityName = addressParts.length > 1 ? addressParts[1].trim() : null;
+                }
+            }
+            
+            return cityName;
+        }
+        
         const citiesOnRoute = pathLocations
             .filter(loc => loc) // Remover localizações nulas
             .map(loc => {
@@ -3170,40 +3230,22 @@
                     console.log("Localização sem endereço:", loc);
                     return loc.name || "Desconhecido";
                 }
+                
                 // Extrair cidade do endereço ou usar nome da localização
-                let cityName;
-                if (loc.address) {
-                    // Melhorar extração da cidade para funcionar com mais formatos
-                    const addressParts = loc.address.split(',');
-                    cityName = addressParts[0].trim();
-                    
-                    // Verificar se temos nome de cidades conhecidas no endereço
-                    const lowerAddress = loc.address.toLowerCase();
-                    const knownCities = [
-                        "campinas", "ribeirão preto", "são carlos", "piracicaba", "são paulo", 
-                        "sorocaba", "americana", "limeira", "rio claro", "araraquara", "bauru", 
-                        "botucatu", "jaú", "dois córregos"
-                    ];
-                    
-                    knownCities.forEach(cityToCheck => {
-                        if (lowerAddress.includes(cityToCheck)) {
-                            cityName = cityToCheck.split(' ').map(word => 
-                                word.charAt(0).toUpperCase() + word.slice(1)
-                            ).join(' ');
-                            console.log(`Cidade específica detectada no endereço: ${cityName}`);
-                        }
-                    });
-                } else {
-                    cityName = loc.name.trim();
-                }
+                const cityName = extractCityFromAddress(loc.address) || loc.name.trim();
                 
                 console.log(`DEBUG - Localização: ${loc.name}, Endereço: ${loc.address}, Cidade extraída: ${cityName}`);
-                console.log(`Cidade detectada: ${cityName} de endereço ${loc.address}`);
                 return cityName;
             });
         
-        // CORREÇÃO: Adicionar apenas a origem (Dois Córregos) e o destino
-        // NÃO adicionar mais cidades manualmente para a demonstração
+        // Adicionar cidades detectadas dos waypoints
+        citiesFromWaypoints.forEach(city => {
+            if (city && !citiesOnRoute.includes(city)) {
+                citiesOnRoute.push(city);
+            }
+        });
+        
+        // Garantir que a origem (Dois Córregos) esteja incluída
         if (!citiesOnRoute.includes("Dois Córregos")) citiesOnRoute.push("Dois Córregos");
         
         // Extrair o destino final corretamente
