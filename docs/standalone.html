@@ -662,31 +662,37 @@
             overflow: hidden;
         }
         
-        /* Estado expandido para container de abas (expandindo de baixo para cima) */
+        /* Estado expandido para container de abas (expandindo para baixo) */
         .bottom-tabs-container:not(.minimized) {
             height: calc(70vh) !important; /* Altura limitada a 70% da tela */
             max-height: calc(100vh - 380px) !important; /* Preservando espaço para a sidebar */
-            bottom: 0 !important; /* Garantir que começa na parte inferior */
-            top: auto !important; /* Remover posicionamento do topo */
-            border-top: 2px solid #1976D2; /* Borda mais visível quando expandido (acima) */
+            top: auto !important; /* Não fixar no topo */
+            bottom: auto !important; /* Não fixar na parte inferior */
+            border-bottom: 2px solid #1976D2; /* Borda mais visível quando expandido (abaixo) */
             border-left: 2px solid #1976D2; /* Borda na lateral para separar da sidebar */
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.2); /* Sombra ajustada para cima */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Sombra ajustada para baixo */
             overflow-y: auto !important; /* Garantir rolagem vertical */
             z-index: 2000 !important; /* Garantir que fique por cima de todos os elementos */
+            position: absolute !important; /* Posicionamento absoluto para expandir para baixo */
+            margin-top: 60px !important; /* Margem no topo para posicionar abaixo da barra de abas */
         }
         
         /* Ajuste específico para GitHub Pages */
         body.tabs-expanded .bottom-tabs-container:not(.minimized) {
             height: calc(100vh - 380px) !important;
             max-height: 70vh !important;
-            bottom: 0 !important;
+            bottom: auto !important;
             top: auto !important;
+            position: absolute !important;
+            margin-top: 60px !important;
         }
         
         /* Ajustes para modo de tela cheia com abas na parte inferior */
         .bottom-tabs-container.fullscreen-mode {
-            bottom: 0 !important;
+            bottom: auto !important;
             top: auto !important;
+            position: absolute !important;
+            margin-top: 60px !important;
         }
         
         /* Botão de fechar removido - usando apenas os botões das abas para controlar expandir/minimizar */
@@ -1979,7 +1985,7 @@
                 // Atualizar o texto do botão de toggle
                 const toggleIcon = document.getElementById('toggle-icon');
                 if (toggleIcon) {
-                    toggleIcon.textContent = '▲ Expandir';
+                    toggleIcon.textContent = '▼ Expandir';
                 }
                 
                 console.log("Abas inferiores minimizadas com sucesso");
@@ -2026,9 +2032,11 @@
                 // Implementação especial para GitHub Pages
                 const isGitHubPages = window.location.href.includes('github.io');
                 
-                // Definir bottom=0 para garantir que a aba vá até o fundo
-                bottomTabsContainer.style.bottom = '0';
+                // Configurar para expandir para baixo
                 bottomTabsContainer.style.top = 'auto';
+                bottomTabsContainer.style.bottom = 'auto';
+                bottomTabsContainer.style.position = 'absolute';
+                bottomTabsContainer.style.marginTop = '60px';
                 
                 // Adicionar classe para indicar que está em modo de tela cheia
                 bottomTabsContainer.classList.add('fullscreen-mode');
@@ -2111,10 +2119,16 @@
             } else {
                 // Minimizar
                 bottomTabsContainer.classList.add('minimized');
-                if (toggleIcon) toggleIcon.textContent = '▲ Expandir';
+                if (toggleIcon) toggleIcon.textContent = '▼ Expandir';
                 
                 // Remover classe de modo tela cheia
                 bottomTabsContainer.classList.remove('fullscreen-mode');
+                
+                // Resetar propriedades para posição fixa na parte inferior
+                bottomTabsContainer.style.position = 'fixed';
+                bottomTabsContainer.style.bottom = '0';
+                bottomTabsContainer.style.top = 'auto';
+                bottomTabsContainer.style.marginTop = '0';
                 
                 // Verificar se estamos no GitHub Pages
                 const isGitHubPages = window.location.href.includes('github.io');
