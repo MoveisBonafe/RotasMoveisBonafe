@@ -1045,6 +1045,33 @@
     let locationId = 2; // Começa em 2 porque 1 é reservado para a origem
     let locations = [mockData.origin];
     let activeInfoWindow = null;
+    
+    // Função para verificar e criar elementos essenciais antes de usá-los
+    function ensureCriticalElementsExist() {
+        // Verificar se os containers de conteúdo das abas existem
+        const eventsTab = document.getElementById('bottom-events-content');
+        const restrictionsTab = document.getElementById('bottom-restrictions-content');
+        
+        // Verificar e criar o container de eventos se necessário
+        if (eventsTab && !document.getElementById('events-list')) {
+            console.warn("Criando container de eventos que não existe");
+            const eventsContainer = document.createElement('div');
+            eventsContainer.id = 'events-list';
+            eventsContainer.className = 'events-list';
+            eventsContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado.</p>';
+            eventsTab.appendChild(eventsContainer);
+        }
+        
+        // Verificar e criar o container de restrições se necessário
+        if (restrictionsTab && !document.getElementById('restrictions-list')) {
+            console.warn("Criando container de restrições que não existe");
+            const restrictionsContainer = document.createElement('div');
+            restrictionsContainer.id = 'restrictions-list';
+            restrictionsContainer.className = 'restrictions-list';
+            restrictionsContainer.innerHTML = '<p class="text-muted">Nenhuma restrição encontrada.</p>';
+            restrictionsTab.appendChild(restrictionsContainer);
+        }
+    }
     let routePath = null;
     let routeAnimationTimeout = null;
     let showPOIs = true;
@@ -1150,11 +1177,43 @@
             console.log("Google Maps API disponível");
         }
         
+        // Criar função para garantir que elementos essenciais existam
+        function ensureEssentialElements() {
+            // Verificar e criar container de eventos se não existir
+            const eventsContainer = document.getElementById('events-list');
+            if (!eventsContainer) {
+                console.warn("Container de eventos não encontrado - criando elemento");
+                const eventsContent = document.getElementById('bottom-events-content');
+                if (eventsContent) {
+                    const newEventsContainer = document.createElement('div');
+                    newEventsContainer.id = 'events-list';
+                    newEventsContainer.className = 'events-list';
+                    newEventsContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado.</p>';
+                    eventsContent.appendChild(newEventsContainer);
+                }
+            }
+            
+            // Verificar e criar container de restrições se não existir
+            const restrictionsContainer = document.getElementById('restrictions-list');
+            if (!restrictionsContainer) {
+                console.warn("Container de restrições não encontrado - criando elemento");
+                const restrictionsContent = document.getElementById('bottom-restrictions-content');
+                if (restrictionsContent) {
+                    const newRestrictionsContainer = document.createElement('div');
+                    newRestrictionsContainer.id = 'restrictions-list';
+                    newRestrictionsContainer.className = 'restrictions-list';
+                    newRestrictionsContainer.innerHTML = '<p class="text-muted">Nenhuma restrição encontrada.</p>';
+                    restrictionsContent.appendChild(newRestrictionsContainer);
+                }
+            }
+        }
+            
         // Atrasar a inicialização para garantir que o Google Maps esteja totalmente carregado (especialmente no GitHub Pages)
         setTimeout(function() {
             // Inicializar componentes principais
             try {
                 console.log("Iniciando carregamento de componentes com atraso");
+                ensureEssentialElements(); // Garantir que elementos essenciais existam ANTES da inicialização
                 initMap();
                 initAutocomplete();
                 initTabNavigation();
@@ -1437,9 +1496,36 @@
                 }
             } else {
                 // Limpar conteúdo das abas, mas manter elas visíveis
-                if (eventsTab) eventsTab.innerHTML = '<p class="text-muted">Adicione destinos e otimize a rota para ver eventos.</p>';
-                if (restrictionsTab) restrictionsTab.innerHTML = '<p class="text-muted">Adicione destinos e otimize a rota para ver restrições.</p>';
-                if (reportTab) reportTab.innerHTML = '<p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>';
+                // Modificado para preservar elementos essenciais
+                if (eventsTab) {
+                    // Preservar ou criar o elemento events-list
+                    let eventsContainer = document.getElementById('events-list');
+                    if (!eventsContainer) {
+                        eventsContainer = document.createElement('div');
+                        eventsContainer.id = 'events-list';
+                        eventsContainer.className = 'events-list';
+                        eventsTab.innerHTML = '';
+                        eventsTab.appendChild(eventsContainer);
+                    }
+                    eventsContainer.innerHTML = '<p class="text-muted">Adicione destinos e otimize a rota para ver eventos.</p>';
+                }
+                
+                if (restrictionsTab) {
+                    // Preservar ou criar o elemento restrictions-list
+                    let restrictionsContainer = document.getElementById('restrictions-list');
+                    if (!restrictionsContainer) {
+                        restrictionsContainer = document.createElement('div');
+                        restrictionsContainer.id = 'restrictions-list';
+                        restrictionsContainer.className = 'restrictions-list';
+                        restrictionsTab.innerHTML = '';
+                        restrictionsTab.appendChild(restrictionsContainer);
+                    }
+                    restrictionsContainer.innerHTML = '<p class="text-muted">Adicione destinos e otimize a rota para ver restrições.</p>';
+                }
+                
+                if (reportTab) {
+                    reportTab.innerHTML = '<p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>';
+                }
             }
         } else {
             console.warn("Container de abas inferiores não encontrado!");
