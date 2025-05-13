@@ -22,11 +22,18 @@
         }
         .app-container {
             display: flex;
-            flex-direction: row !important; /* Força elementos lado a lado sempre */
+            flex-direction: column;
             height: 100vh;
             overflow: hidden;
             width: 100%;
-            position: relative; /* Permite posicionamento absoluto das abas inferiores */
+        }
+        
+        /* Layout principal que contém sidebar e mapa lado a lado */
+        .main-layout {
+            display: flex;
+            flex-direction: row;
+            flex: 1;
+            overflow: hidden;
         }
         .sidebar {
             width: 380px;
@@ -598,21 +605,11 @@
             flex-direction: column;
             animation: fadeIn 0.5s ease;
             background-color: #f9f9f9;
-            border-radius: 12px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 -2px 15px rgba(0,0,0,0.08);
             overflow: hidden;
-            max-width: calc(100% - 40px); /* Largura responsiva com margens */
-            margin-left: auto;
-            margin-right: auto;
             /* Inicialmente oculto até que uma rota seja otimizada */
             display: none;
-            /* Posicionamento absoluto para não afetar o layout principal */
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            z-index: 1000;
-            max-height: 40vh; /* Altura máxima de 40% da tela */
         }
         
         .bottom-tabs-nav {
@@ -716,17 +713,18 @@
         
         .bottom-tab-content {
             display: none;
-            padding: 20px;
+            padding: 25px;
             background-color: white;
             animation: fadeInUp 0.5s ease forwards;
             opacity: 0;
             transform: translateY(20px);
-            height: calc(40vh - 100px); /* Ajusta para o espaço disponível considerando a altura da aba */
+            min-height: 300px;
             overflow-y: auto; /* Permite rolagem vertical para todos os conteúdos */
         }
         
         /* Aumentando tamanho específico para a aba de restrições */
         #bottom-restrictions-content {
+            min-height: 350px;
             overflow-y: auto;
         }
         
@@ -778,17 +776,19 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar para controles e informações -->
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <h2 class="m-0">Otimizador de Rotas</h2>
-                <button type="button" class="btn-close sidebar-close" aria-label="Close"></button>
-            </div>
-            <div class="sidebar-content">
-            
-            <!-- A aba de Locais fica no sidebar -->
-            <div id="locations-content">
-                    <!-- O conteúdo de locais fica no sidebar -->
+        <!-- Layout principal: Sidebar + Mapa -->
+        <div class="main-layout">
+            <!-- Sidebar para controles e informações -->
+            <div class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <h2 class="m-0">Otimizador de Rotas</h2>
+                    <button type="button" class="btn-close sidebar-close" aria-label="Close"></button>
+                </div>
+                <div class="sidebar-content">
+                
+                <!-- A aba de Locais fica no sidebar -->
+                <div id="locations-content">
+                        <!-- O conteúdo de locais fica no sidebar -->
                 
                     <!-- Filtro de eventos por data (movido para cima da origem) -->
                     <div class="form-group mb-3">
