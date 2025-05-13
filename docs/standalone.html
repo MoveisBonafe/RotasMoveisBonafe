@@ -587,11 +587,6 @@
         .event-type.event {
             background-color: #ff9800;
         }
-        .event-type.foundation-event {
-            background-color: #4caf50;
-            font-weight: bold;
-            border: 1px solid #388e3c;
-        }
         .restriction-level {
             display: inline-block;
             padding: 2px 6px;
@@ -1197,18 +1192,18 @@
             { id: 8, name: "Borracharia 24h (Botucatu)", type: "mechanic", latitude: -22.8900, longitude: -48.4500, highway: "SP-300", cityName: "Botucatu", services: ["tire"] }
         ],
         
-        // Eventos de cidades (aniversários com data de fundação)
+        // Eventos de cidades (com aniversários atualizados para 2025)
         cityEvents: [
-            // Aniversários das principais cidades com data exata de fundação
-            { id: 99, cityName: "Dois Córregos", name: "Festival de Verão", startDate: "2023-01-01", endDate: "2023-12-31", isHoliday: false, description: "Festival com atividades durante todo o ano", restrictionLevel: "low" },
-            { id: 1, cityName: "Dois Córregos", name: "Data de Fundação (04/02/1883)", startDate: "2023-02-04", endDate: "2023-02-04", isHoliday: true, description: "Comemoração dos 140 anos de fundação de Dois Córregos", restrictionLevel: "low" },
-            { id: 2, cityName: "Jaú", name: "Data de Fundação (15/08/1853)", startDate: "2023-08-15", endDate: "2023-08-15", isHoliday: true, description: "Comemoração dos 170 anos de fundação de Jaú", restrictionLevel: "low" },
-            { id: 3, cityName: "Botucatu", name: "Data de Fundação (14/04/1855)", startDate: "2023-04-14", endDate: "2023-04-14", isHoliday: true, description: "Comemoração dos 168 anos de fundação de Botucatu", restrictionLevel: "low" },
-            { id: 4, cityName: "Bauru", name: "Data de Fundação (01/08/1896)", startDate: "2023-08-01", endDate: "2023-08-01", isHoliday: true, description: "Comemoração dos 127 anos de fundação de Bauru", restrictionLevel: "low" },
-            { id: 5, cityName: "Ribeirão Preto", name: "Data de Fundação (19/06/1856)", startDate: "2023-06-19", endDate: "2023-06-19", isHoliday: true, description: "Comemoração dos 167 anos de fundação de Ribeirão Preto", restrictionLevel: "low" },
-            { id: 6, cityName: "São Paulo", name: "Data de Fundação (25/01/1554)", startDate: "2023-01-25", endDate: "2023-01-25", isHoliday: true, description: "Comemoração dos 469 anos de fundação de São Paulo", restrictionLevel: "high" },
-            { id: 7, cityName: "Campinas", name: "Data de Fundação (14/07/1774)", startDate: "2023-07-14", endDate: "2023-07-14", isHoliday: true, description: "Comemoração dos 249 anos de fundação de Campinas", restrictionLevel: "medium" },
-            { id: 8, cityName: "São Carlos", name: "Data de Fundação (04/11/1857)", startDate: "2023-11-04", endDate: "2023-11-04", isHoliday: true, description: "Comemoração dos 166 anos de fundação de São Carlos", restrictionLevel: "low" },
+            // Aniversários das principais cidades (eventos fixos - feriados municipais)
+            { id: 99, cityName: "Dois Córregos", name: "Festival de Verão", startDate: "2025-01-01", endDate: "2025-12-31", isHoliday: false, description: "Festival com atividades durante todo o ano", restrictionLevel: "low" },
+            { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2025-02-04", endDate: "2025-02-04", isHoliday: true, description: "Aniversário de fundação de Dois Córregos em 04/02/1883", restrictionLevel: "low" },
+            { id: 2, cityName: "Jaú", name: "Aniversário da Cidade", startDate: "2025-08-15", endDate: "2025-08-15", isHoliday: true, description: "Aniversário de fundação de Jaú em 15/08/1853", restrictionLevel: "low" },
+            { id: 3, cityName: "Botucatu", name: "Aniversário da Cidade", startDate: "2025-04-14", endDate: "2025-04-14", isHoliday: true, description: "Aniversário de fundação de Botucatu em 14/04/1855", restrictionLevel: "low" },
+            { id: 4, cityName: "Bauru", name: "Aniversário da Cidade", startDate: "2025-08-01", endDate: "2025-08-01", isHoliday: true, description: "Aniversário de fundação de Bauru em 01/08/1896", restrictionLevel: "low" },
+            { id: 5, cityName: "Ribeirão Preto", name: "Aniversário da Cidade", startDate: "2025-06-19", endDate: "2025-06-19", isHoliday: true, description: "Aniversário de fundação de Ribeirão Preto em 19/06/1856", restrictionLevel: "low" },
+            { id: 6, cityName: "São Paulo", name: "Aniversário da Cidade", startDate: "2025-01-25", endDate: "2025-01-25", isHoliday: true, description: "Aniversário de fundação de São Paulo em 25/01/1554", restrictionLevel: "high" },
+            { id: 7, cityName: "Campinas", name: "Aniversário da Cidade", startDate: "2025-07-14", endDate: "2025-07-14", isHoliday: true, description: "Aniversário de fundação de Campinas em 14/07/1774", restrictionLevel: "medium" },
+            { id: 8, cityName: "São Carlos", name: "Aniversário da Cidade", startDate: "2025-11-04", endDate: "2025-11-04", isHoliday: true, description: "Aniversário de fundação de São Carlos em 04/11/1857", restrictionLevel: "low" },
             
             // Eventos regulares
             { id: 9, cityName: "Jaú", name: "Festa do Rodeio", startDate: "2025-06-10", endDate: "2025-06-20", isHoliday: false, description: "Evento com grande circulação de veículos", restrictionLevel: "medium" },
@@ -4060,12 +4055,10 @@
                 const eventStart = new Date(event.startDate);
                 const eventEnd = new Date(event.endDate);
                 
-                // Garantir que estamos usando o ano atual para datas de fundação e feriados 
-                if (event.name.includes("Data de Fundação") || event.name.includes("Aniversário") || event.isHoliday) {
-                    // Definir o ano atual para estes eventos anuais
+                // Garantir que estamos usando o ano atual para eventos anuais (aniversários)
+                if (event.name.includes("Aniversário") || event.isHoliday) {
                     eventStart.setFullYear(currentYear);
                     eventEnd.setFullYear(currentYear);
-                    console.log(`[AJUSTE] Data ajustada para ano atual (${currentYear}): ${event.name}`);
                 }
                 
                 // Ajustar horas para garantir dias completos
@@ -4075,15 +4068,13 @@
                 // Log detalhado
                 console.log(`[EVENTO] ${event.name} (${event.cityName}): ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')}`);
                 
-                // PARTE 3: APLICAR FILTRO DE DATA CORRETAMENTE
+                // PARTE 3: APLICAR FILTRO DE DATA
                 if (startDateValue && endDateValue) {
-                    console.log(`[FILTRO] Aplicando filtro de data: ${startDateValue} a ${endDateValue}`);
-                    
-                    // Tratamento especial para o Festival de Verão (evento de longa duração)
+                    // Tratamento especial para o Festival de Verão
                     if (isFestivalVerao) {
-                        console.log(`[FESTIVAL] O Festival de Verão é excluído quando há filtro de data específico`);
+                        console.log(`[FESTIVAL] Festival de Verão excluído quando há filtro de data`);
                         includeEvent = false;
-                        return; // Pular para o próximo evento
+                        return;
                     }
                     
                     try {
@@ -4118,38 +4109,23 @@
                         filterStart.setHours(0,0,0,0);
                         filterEnd.setHours(23,59,59,999);
                         
-                        // NOVA LÓGICA APRIMORADA DE SOBREPOSIÇÃO DE DATAS
-                        // Necessária para garantir que apenas eventos no período selecionado apareçam
-                        
-                        // Garantir que as comparações sejam feitas em timestamps
-                        const eventStartTime = eventStart.getTime();
-                        const eventEndTime = eventEnd.getTime();
-                        const filterStartTime = filterStart.getTime();
-                        const filterEndTime = filterEnd.getTime();
-                        
-                        // Verificar se há qualquer sobreposição entre o evento e o filtro
+                        // Verificar sobreposição entre as datas
                         const hasOverlap = (
-                            // Caso 1: Evento começa dentro do período do filtro
-                            (eventStartTime >= filterStartTime && eventStartTime <= filterEndTime) ||
-                            
-                            // Caso 2: Evento termina dentro do período do filtro
-                            (eventEndTime >= filterStartTime && eventEndTime <= filterEndTime) ||
-                            
-                            // Caso 3: Evento abrange completamente o período do filtro
-                            (eventStartTime <= filterStartTime && eventEndTime >= filterEndTime)
+                            // Evento começa dentro do período do filtro
+                            (eventStart >= filterStart && eventStart <= filterEnd) ||
+                            // Evento termina dentro do período do filtro
+                            (eventEnd >= filterStart && eventEnd <= filterEnd) ||
+                            // Evento abrange todo o período do filtro
+                            (eventStart <= filterStart && eventEnd >= filterEnd)
                         );
                         
-                        // Log detalhado da comparação para depuração
-                        console.log(`[VERIFICAÇÃO] ${event.name} (${event.cityName}):`);
-                        console.log(`  Evento: ${eventStart.toLocaleDateString('pt-BR')} a ${eventEnd.toLocaleDateString('pt-BR')}`);
-                        console.log(`  Filtro: ${filterStart.toLocaleDateString('pt-BR')} a ${filterEnd.toLocaleDateString('pt-BR')}`);
-                        console.log(`  Overlap: ${hasOverlap ? "SIM" : "NÃO"}`);
+                        console.log(`[VERIFICAÇÃO] Data evento ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')} vs. Filtro ${filterStart.toLocaleDateString('pt-BR')}-${filterEnd.toLocaleDateString('pt-BR')}`);
                         
                         if (hasOverlap) {
-                            console.log(`[ACEITO] Evento '${event.name}' ESTÁ no período filtrado`);
+                            console.log(`[ACEITO] Evento '${event.name}' está no período filtrado`);
                             includeEvent = true;
                         } else {
-                            console.log(`[REJEITADO] Evento '${event.name}' NÃO ESTÁ no período filtrado`);
+                            console.log(`[REJEITADO] Evento '${event.name}' fora do período filtrado`);
                             includeEvent = false;
                         }
                     } catch (dateError) {
@@ -4203,15 +4179,9 @@
             // Definir classe baseada no tipo de evento
             const eventTypeClass = event.isHoliday ? 'holiday' : 'event';
             
-            // Verificar se é um evento de fundação para destacar de forma especial
-            const isFoundationEvent = event.name.includes("Data de Fundação") || 
-                                     (event.name.includes("Aniversário") && event.description.includes("fundação"));
-            
-            // HTML estruturado com destaque para eventos de fundação
             eventItem.innerHTML = `
-                <div class="event-name">
-                    ${event.name} 
-                    <span class="event-type ${eventTypeClass} ${isFoundationEvent ? 'foundation-event' : ''}">${event.isHoliday ? 'Feriado' : 'Evento'}</span>
+                <div class="event-name">${event.name} 
+                    <span class="event-type ${eventTypeClass}">${event.isHoliday ? 'Feriado' : 'Evento'}</span>
                     <span class="restriction-level ${event.restrictionLevel}">${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</span>
                 </div>
                 <div class="event-date">${event.cityName} | ${dateText}</div>
