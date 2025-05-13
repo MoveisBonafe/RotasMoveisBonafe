@@ -608,6 +608,9 @@
             overflow: hidden;
             /* Visível desde o início em estado minimizado */
             height: 52px; /* Apenas altura suficiente para mostrar os botões das abas */
+            transition: height 0.3s ease;
+            position: relative;
+            z-index: 100;
         }
         
         .bottom-tabs-nav {
@@ -669,29 +672,27 @@
             overflow: hidden;
         }
         
-        /* Estilo para o botão quando a aba está expandida */
-        .bottom-tab-btn.expanded {
+        .bottom-tab-btn.active.expanded {
             background-color: #115293;
-            box-shadow: 0 4px 12px rgba(17, 82, 147, 0.5);
+            position: relative;
         }
         
-        /* Indicador visual de expandido/minimizado */
-        .bottom-tab-btn.expanded::before {
+        .bottom-tab-btn.active.expanded::after {
             content: "▼";
-            font-size: 9px;
             position: absolute;
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
+            font-size: 10px;
         }
         
-        .bottom-tab-btn.active:not(.expanded)::before {
+        .bottom-tab-btn.active:not(.expanded)::after {
             content: "▲";
-            font-size: 9px;
             position: absolute;
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
+            font-size: 10px;
         }
         
         /* Adicionar indicador sob a aba ativa */
