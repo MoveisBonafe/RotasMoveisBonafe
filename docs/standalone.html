@@ -578,25 +578,9 @@
             <h2 class="mb-4">Otimizador de Rotas</h2>
             <button type="button" class="btn-close sidebar-close" aria-label="Close"></button>
             
-            <!-- Container de abas -->
-            <div class="tab-container">
-                <div class="tab-buttons">
-                    <button class="tab-button active" data-tab="locations">Locais</button>
-                    <button class="tab-button" data-tab="events">Eventos</button>
-                    <button class="tab-button" data-tab="report">Relatório</button>
-                </div>
-                
-                <!-- Aba de Locais -->
-                <div class="tab-content active" id="locations-tab">
-                    <!-- Filtro de eventos por data (sem botão filtrar) -->
-                    <div class="form-group">
-                        <label>Filtrar eventos por data:</label>
-                        <div class="date-range-container">
-                            <input type="date" id="start-date" class="form-control">
-                            <input type="date" id="end-date" class="form-control">
-                        </div>
-                        <!-- Botão de filtrar removido - filtro aplicado automaticamente -->
-                    </div>
+            <!-- A aba de Locais fica no sidebar -->
+            <div id="locations-content">
+                    <!-- O conteúdo de locais fica no sidebar -->
                 
                     <!-- Origem fixa -->
                     <div class="form-group mt-3">
