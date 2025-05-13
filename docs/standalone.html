@@ -2543,8 +2543,15 @@
             return;
         }
         
-        // Mostrar as abas inferiores quando houver destinos
-        toggleBottomTabsVisibility(true);
+        // Mostrar as abas inferiores quando houver destinos, mas mantê-las minimizadas
+        // Deixamos visível mas não expandimos automaticamente
+        const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+        if (bottomTabsContainer) {
+            bottomTabsContainer.style.removeProperty('display');
+            bottomTabsContainer.style.display = 'flex';
+            // Mantém minimizado deliberadamente, o usuário deve clicar para expandir
+            bottomTabsContainer.classList.add('minimized');
+        }
         
         // Mostrar spinner de carregamento centralizado no mapa
         showLoadingSpinner();
@@ -3775,8 +3782,8 @@
         console.log(`Filtro de data: ${startDateValue || 'sem data inicial'} a ${endDateValue || 'sem data final'}`);
         
         // Ajuste condicional das datas - garantir que temos valores válidos
-        // Usar o ano 2025 como ano atual para esta aplicação
-        const currentYear = 2025;
+        // Usar o ano atual do sistema
+        const currentYear = new Date().getFullYear();
         
         if (!startDateValue || !endDateValue) {
             // Se datas não foram especificadas, usar intervalo padrão do ano atual
@@ -3818,9 +3825,9 @@
                 return; // Pular para o próximo evento
             }
             
-            // ETAPA INTERMEDIÁRIA: Ajustar as datas dos eventos para o ano 2025
+            // ETAPA INTERMEDIÁRIA: Ajustar as datas dos eventos para o ano atual
             // Isto garante que aniversários de cidades e eventos anuais apareçam no ano correto
-            const currentYear = 2025; // Fixado em 2025 para esta aplicação
+            const currentYear = new Date().getFullYear(); // Usa o ano atual do sistema
             const eventDate = new Date(event.startDate);
             const eventYear = eventDate.getFullYear();
             
@@ -3848,16 +3855,17 @@
             // Sempre aplicar filtragem de data, mesmo sem datas especificadas
             try {
                 // Definir valores padrão para filtro se não especificados
-                const startFilterDate = startDateValue ? new Date(startDateValue) : new Date('2025-01-01');
-                const endFilterDate = endDateValue ? new Date(endDateValue) : new Date('2025-12-31');
+                const currentYear = new Date().getFullYear();
+                const startFilterDate = startDateValue ? new Date(startDateValue) : new Date(`${currentYear}-01-01`);
+                const endFilterDate = endDateValue ? new Date(endDateValue) : new Date(`${currentYear}-12-31`);
                 
-                // Sempre usar eventos com data no ano 2025
+                // Sempre usar eventos com data no ano atual
                 const eventStartObj = new Date(event.startDate);
                 const eventEndObj = new Date(event.endDate);
                 
-                // Garantir que estamos usando o ano 2025
-                eventStartObj.setFullYear(2025);
-                eventEndObj.setFullYear(2025);
+                // Garantir que estamos usando o ano atual
+                eventStartObj.setFullYear(currentYear);
+                eventEndObj.setFullYear(currentYear);
                 
                 // Formatação para diagnóstico
                 const eventStartStr = eventStartObj.toLocaleDateString('pt-BR');
