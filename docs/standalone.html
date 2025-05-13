@@ -1781,6 +1781,27 @@
                             google.maps.event.trigger(map, 'resize');
                         }
                         
+                        // Ativar o sistema de abas fluido para GitHub Pages
+                        const scrollTabsSection = document.querySelector('.tabs-section');
+                        const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+                        
+                        if (scrollTabsSection && bottomTabsContainer) {
+                            console.log("Ativando o sistema de abas fluidas para GitHub Pages");
+                            
+                            // Desativar o sistema antigo de abas
+                            bottomTabsContainer.style.display = 'none';
+                            
+                            // Ativar o sistema novo de abas fluidas
+                            scrollTabsSection.style.display = 'block';
+                            
+                            // Atualizar o estilo do mapa para não considerar as abas inferiores
+                            mapContainer.style.paddingBottom = '0';
+                            mapElement.style.paddingBottom = '0';
+                            
+                            // Sincronizar abas antigas com as novas
+                            setupContentSync();
+                        }
+                        
                         console.log("Ajustes de layout para GitHub Pages aplicados");
                     }
                 }, 500);
@@ -4335,9 +4356,11 @@
             }
         }
         
-        // Limpar a lista de eventos
+        // Limpar a lista de eventos (funciona para ambos os sistemas de abas)
         const eventsListContainer = document.getElementById('events-list');
-        eventsListContainer.innerHTML = '';
+        if (eventsListContainer) {
+            eventsListContainer.innerHTML = '';
+        }
         
         // Log para diagnóstico
         console.log("Eventos disponíveis:", mockData.cityEvents);
@@ -4684,9 +4707,17 @@
             
             console.log("Cidades detectadas na rota:", citiesInRoute);
             
-            // Limpar a lista
+            // Limpar a lista - funciona para ambos os sistemas de abas
             const restrictionsListContainer = document.getElementById('restrictions-list');
-            restrictionsListContainer.innerHTML = '';
+            const restrictionsListStatic = document.getElementById('restrictions-list-static');
+            
+            if (restrictionsListContainer) {
+                restrictionsListContainer.innerHTML = '';
+            }
+            
+            if (restrictionsListStatic) {
+                restrictionsListStatic.innerHTML = '';
+            }
             
             // Adicionar título explicativo
             const titleElement = document.createElement('div');
@@ -4705,7 +4736,14 @@
                                     citiesSequence +
                                     '</span>';
             
-            restrictionsListContainer.appendChild(titleElement);
+            // Adicionar título a ambos os containers (sistema antigo e novo)
+            if (restrictionsListContainer) {
+                restrictionsListContainer.appendChild(titleElement.cloneNode(true));
+            }
+            
+            if (restrictionsListStatic) {
+                restrictionsListStatic.appendChild(titleElement.cloneNode(true));
+            }
             
             // Para cada cidade na rota, gerar uma restrição representativa
             citiesInRoute.forEach(city => {
