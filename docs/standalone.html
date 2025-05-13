@@ -180,9 +180,9 @@
         .file-upload {
             margin-top: 15px;
             border: 2px dashed #3498db;
-            padding: 25px 15px;
+            padding: 15px 10px;
             text-align: center;
-            border-radius: 10px;
+            border-radius: 8px;
             background-color: #f0f8ff;
             transition: all 0.3s ease;
             position: relative;
@@ -201,20 +201,20 @@
         }
         .file-upload-icon {
             display: block;
-            margin: 0 auto 10px;
-            font-size: 32px;
+            margin: 0 auto 5px;
+            font-size: 24px;
             color: #3498db;
         }
         .file-format-example {
             background-color: #e2f3ff;
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 4px 8px;
+            border-radius: 4px;
             font-family: monospace;
             display: inline-block;
-            margin: 8px auto;
+            margin: 4px auto;
             color: #2c3e50;
             border: 1px solid #bde0ff;
-            font-size: 14px;
+            font-size: 12px;
         }
         .file-upload input[type="file"] {
             opacity: 0;
@@ -813,12 +813,12 @@
                     
                     <!-- Seleção de veículo removida, agora usa caminhão padrão automaticamente -->
                     
-                    <!-- Upload de arquivo melhorado -->
+                    <!-- Upload de arquivo melhorado e compacto -->
                     <div class="file-upload" id="upload-area">
                         <i class="file-upload-icon fas fa-cloud-upload-alt" aria-hidden="true"></i>
-                        <p>Importe múltiplos endereços via arquivo</p>
-                        <div class="file-format-example">CEP,Nome do Local</div>
-                        <span class="file-upload-text">Arraste e solte seu arquivo aqui ou clique para selecionar</span>
+                        <p style="margin: 0">Importar CEPs via arquivo</p>
+                        <div class="file-format-example">CEP,Nome</div>
+                        <span class="file-upload-text">Arraste arquivo ou clique aqui</span>
                         <input type="file" id="file-upload" accept=".txt,.csv">
                     </div>
                     
