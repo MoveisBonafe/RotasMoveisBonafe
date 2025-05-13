@@ -599,9 +599,10 @@
         
         /* NOVO LAYOUT - Tabs na parte inferior do mapa (fixas) */
         .bottom-tabs-container {
-            width: 100%;
+            width: calc(100% - 380px); /* Ajustado para não sobrepor a sidebar */
             margin-top: 0;
             margin-bottom: 0;
+            margin-left: 380px; /* Afastado para alinhar com a sidebar */
             display: flex;
             flex-direction: column;
             animation: fadeIn 0.5s ease;
@@ -630,7 +631,8 @@
         .bottom-tabs-container:not(.minimized) {
             height: calc(100vh - 10px); /* Quase altura total da tela quando expandido */
             border-top: 2px solid #1976D2; /* Borda mais visível quando expandido */
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.2); /* Sombra mais evidente */
+            border-left: 2px solid #1976D2; /* Borda na lateral para separar da sidebar */
+            box-shadow: -5px -5px 15px rgba(0,0,0,0.2); /* Sombra ajustada */
         }
         
         /* Botão de fechar removido - usando apenas os botões das abas para controlar expandir/minimizar */
@@ -638,6 +640,8 @@
         /* Ajuste para evitar que o mapa seja coberto pelas abas */
         .map-container {
             margin-bottom: 60px; /* Espaço para as abas minimizadas */
+            width: calc(100% - 380px); /* Largura ajustada para alinhar com a sidebar */
+            margin-left: 380px; /* Afastado para alinhar com a sidebar */
         }
         
         /* Botão de expandir/minimizar removido - funcionalidade incorporada nos botões das abas */
