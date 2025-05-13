@@ -773,7 +773,16 @@
         .bottom-tab-content.active {
             display: block;
             opacity: 1;
-            transform: translateY(0);
+            padding: 10px;
+            max-height: 0;
+            overflow: hidden;
+        }
+        
+        .bottom-tab-content.active.expanded {
+            max-height: 350px;
+            padding: 20px;
+            overflow-y: auto;
+            opacity: 1;
         }
         
         @keyframes fadeIn {
@@ -1336,16 +1345,26 @@
         if (bottomTabButtons.length > 0) {
             console.log("Inicializando sistema de navegação para tabs inferiores");
             
-            // Definir altura inicial das abas (minimizadas)
+            // Configurar o container de abas
             const tabsContainer = document.querySelector('.bottom-tabs-container');
-            if (tabsContainer) {
-                tabsContainer.style.height = '52px';
+            
+            // Pegar a primeira aba (Eventos na Rota) e expandir por padrão
+            const firstTabButton = bottomTabButtons[0];
+            const firstTabContent = document.getElementById('bottom-events-content');
+            
+            if (tabsContainer && firstTabButton && firstTabContent) {
+                // Deixar a primeira aba expandida por padrão
+                tabsContainer.style.height = '400px';
+                firstTabButton.classList.add('expanded');
+                firstTabContent.classList.add('expanded');
                 
                 // Configurar os indicadores de expansão/contração iniciais
                 bottomTabButtons.forEach(btn => {
                     const indicator = btn.querySelector('.expand-indicator');
                     if (indicator) {
-                        indicator.textContent = btn.classList.contains('active') ? '▼' : '▲';
+                        // Se for a primeira aba (active), mostra seta para baixo (expandido)
+                        // Demais abas mostram seta para cima (colapsadas)
+                        indicator.textContent = btn === firstTabButton ? '▼' : '▲';
                     }
                 });
             }
@@ -3370,6 +3389,23 @@
     // Mostrar eventos para as cidades na rota
     function showEventsForCitiesOnRoute(pathIds) {
         console.log("Mostrando eventos para rota com IDs:", pathIds);
+        
+        // Garantir que a aba esteja visível
+        const eventsTab = document.getElementById('bottom-events-content');
+        if (eventsTab) {
+            // Verificar se a aba está ativa
+            if (!eventsTab.classList.contains('active')) {
+                // Se não estiver ativa, ativar apenas para atualizar o conteúdo, sem expandir
+                const bottomTabButtons = document.querySelectorAll('.bottom-tab-btn');
+                bottomTabButtons.forEach(btn => {
+                    if (btn.getAttribute('data-tab') === 'bottom-events') {
+                        // Manter o botão ativo para garantir que a função de atualização será chamada
+                        btn.classList.add('active');
+                    }
+                });
+                eventsTab.classList.add('active');
+            }
+        }
         
         // Verificações de segurança
         if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
