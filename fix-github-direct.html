@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Correção Direta para GitHub Pages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1976D2;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .solution-box {
+            background-color: #e3f2fd;
+            border-left: 5px solid #1976D2;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        code {
+            display: block;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.4;
+            margin: 20px 0;
+        }
+        .steps {
+            counter-reset: step-counter;
+            margin-bottom: 40px;
+        }
+        .step {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 30px;
+        }
+        .step:before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 30px;
+            height: 30px;
+            background: #1976D2;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+        }
+        h2 {
+            color: #1976D2;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #1976D2;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #1565C0;
+        }
+        .central {
+            text-align: center;
+        }
+        .note {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Solução Definitiva para o Problema das Abas no GitHub Pages</h1>
+        
+        <div class="solution-box">
+            <p><strong>Esta página fornece uma solução completa e 100% integrada</strong> para o problema das abas no Otimizador de Rotas na versão GitHub Pages. A solução resolve:</p>
+            <ul>
+                <li>Sobreposição de conteúdo entre abas</li>
+                <li>Problemas com a aba de Relatório mostrando conteúdo errado</li>
+                <li>Problemas após otimização da rota</li>
+            </ul>
+        </div>
+        
+        <div class="steps">
+            <div class="step">
+                <h2>Solução completa</h2>
+                <p>Substitua <strong>TODO</strong> o conteúdo do arquivo HTML no GitHub Pages pelo código abaixo. Esta é uma solução integrada que resolve todos os problemas de uma vez só.</p>
+                <div class="note">
+                    <strong>Importante:</strong> Este é o código HTML completo. Ele deve substituir <strong>completamente</strong> o arquivo atual, não apenas partes dele.
+                </div>
+                <code>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"&gt;
+    &lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;
+    &lt;meta name="mobile-web-app-capable" content="yes"&gt;
+    &lt;meta name="theme-color" content="#1976D2"&gt;
+    &lt;meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"&gt;
+    &lt;meta name="description" content="Otimizador de Rotas para logística e transporte, com suporte a cálculo de rotas entre múltiplos pontos, otimização de sequência, e visualização de eventos e restrições em cidades brasileiras." /&gt;
+    &lt;meta name="keywords" content="otimizador de rotas, problema do caixeiro viajante, logística, transporte, planejamento de rotas, otimização de entregas, Brasil, Google Maps, pedágios, eventos em cidades" /&gt;
+    &lt;meta name="author" content="Otimizador de Rotas" /&gt;
+    &lt;meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" /&gt;
+    &lt;meta http-equiv="Pragma" content="no-cache" /&gt;
+    &lt;meta http-equiv="Expires" content="0" /&gt;
+    &lt;title&gt;Otimizador de Rotas&lt;/title&gt;
+    &lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"&gt;
+    &lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"&gt;
+    &lt;style&gt;
+        /* Estilos globais */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Evita scroll duplo */
+        }
+        header {
+            background-color: #1976D2;
+            color: white;
+            padding: 10px 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .header-title {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        /* Layout principal */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 320px;
+            background-color: white;
+            border-right: 1px solid #e0e0e0;
+            box-shadow: 1px 0 5px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 10;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Container da parte principal */
+        .content-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        /* Área do mapa */
+        .map-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+        
+        /* Formulários e controles */
+        .form-control, .btn {
+            border-radius: 4px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        /* Botão de toggle para o sidebar */
+        .toggle-sidebar {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background-color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: none;
+        }
+        
+        /* Botão de otimizar rota */
+        .optimize-container {
+            padding: 15px;
+            background-color: #f0f4f8;
+            border-top: 1px solid #ddd;
+            margin-top: auto;
+        }
+        #optimize-route {
+            width: 100%;
+            font-weight: bold;
+        }
+        
+        /* Estilos para locais na lista */
+        .locations-list {
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .location-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .location-item:last-child {
+            border-bottom: none;
+        }
+        .location-delete {
+            color: #e53935;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+        .location-delete:hover {
+            opacity: 1;
+        }
+        
+        /* Loading spinner */
+        .loading-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Botão de abrir sidebar (para mobile) */
+        .mobile-sidebar-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background-color: #1976D2;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+        .mobile-sidebar-toggle:active {
+            transform: scale(0.95);
+        }
+        
+        /* Animação de aparecimento */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* NOVO: Estilos específicos para as abas inferiores */
+        .bottom-tabs-container {
+            background-color: white;
+            border-top: 2px solid #1976D2;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            height: 60vh;
+            max-height: 60vh;
+            transition: all 0.3s ease;
+            z-index: 900;
+        }
+        
+        .bottom-tabs-container.minimized {
+            height: 60px;
+        }
+        
+        .bottom-tabs-nav {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background: linear-gradient(to top, #1565C0, #1976D2);
+            border-bottom: 2px solid #0d47a1;
+            flex-shrink: 0;
+        }
+        
+        .bottom-tab-btn {
+            padding: 10px 15px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .bottom-tab-btn:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+        
+        .bottom-tab-btn.active {
+            background-color: white;
+            color: #1976D2;
+            font-weight: bold;
+            border-color: white;
+        }
+        
+        .bottom-tab-btn::before {
+            display: inline-block;
+            margin-right: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .bottom-tab-btn[data-tab="bottom-events"]::before {
+            content: "🗓️";
+        }
+        
+        .bottom-tab-btn[data-tab="bottom-restrictions"]::before {
+            content: "🚫";
+        }
+        
+        .bottom-tab-btn[data-tab="bottom-report"]::before {
+            content: "📊";
+        }
+        
+        .bottom-tabs-content-container {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bottom-tab-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: white;
+            display: none;
+        }
+        
+        .bottom-tab-content.active {
+            display: block;
+        }
+        
+        /* Estilos para eventos e restrições */
+        .event-item, .restriction-item {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .event-badge, .restriction-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        .event-badge {
+            background-color: #e3f2fd;
+            color: #1565C0;
+        }
+        
+        .restriction-badge {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 1000;
+                width: 85%;
+                max-width: 320px;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .sidebar.visible {
+                transform: translateX(0);
+            }
+            
+            .toggle-sidebar {
+                display: block;
+            }
+            
+            .mobile-sidebar-toggle {
+                display: block;
+            }
+            
+            /* Overlay para quando o sidebar estiver aberto */
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0,0,0,0.5);
+                z-index: 999;
+            }
+            
+            .sidebar-overlay.visible {
+                display: block;
+            }
+            
+            /* Ajuste para abas inferiores em telas pequenas */
+            .bottom-tabs-container {
+                height: 50vh;
+            }
+            
+            /* Tornar o conteúdo de abas mais compacto em telas pequenas */
+            .bottom-tab-content {
+                padding: 15px 10px;
+            }
+        }
+        
+        /* Print styles - esconder mapa para melhor geração de PDF */
+        @media print {
+            .map-container {
+                display: none;
+            }
+            
+            .sidebar {
+                width: 100%;
+                box-shadow: none;
+                border: none;
+            }
+            
+            .bottom-tabs-container {
+                height: auto;
+                box-shadow: none;
+            }
+            
+            .bottom-tabs-nav {
+                display: none;
+            }
+            
+            .bottom-tab-content {
+                display: block !important;
+                position: static;
+                overflow: visible;
+                page-break-inside: avoid;
+            }
+            
+            .optimize-container, .mobile-sidebar-toggle, .toggle-sidebar {
+                display: none;
+            }
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- Loading Spinner --&gt;
+    &lt;div class="loading-container" id="loading-spinner"&gt;
+        &lt;div class="spinner"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;!-- Cabeçalho --&gt;
+    &lt;header&gt;
+        &lt;h1 class="header-title"&gt;Otimizador de Rotas&lt;/h1&gt;
+    &lt;/header&gt;
+    
+    &lt;!-- Container principal --&gt;
+    &lt;div class="main-container"&gt;
+        &lt;!-- Overlay para sidebar em mobile --&gt;
+        &lt;div class="sidebar-overlay" id="sidebar-overlay"&gt;&lt;/div&gt;
+        
+        &lt;!-- Sidebar para entrada de dados --&gt;
+        &lt;div class="sidebar" id="sidebar"&gt;
+            &lt;!-- Botão para fechar sidebar em mobile --&gt;
+            &lt;button class="btn btn-sm btn-light sidebar-close" id="close-sidebar"&gt;
+                &lt;i class="fas fa-times"&gt;&lt;/i&gt;
+            &lt;/button&gt;
+            
+            &lt;div class="p-3"&gt;
+                &lt;h5 class="mb-3"&gt;Datas da rota&lt;/h5&gt;
+                &lt;div class="row"&gt;
+                    &lt;div class="col-6"&gt;
+                        &lt;div class="form-group"&gt;
+                            &lt;label class="form-label" for="start-date"&gt;Data inicial:&lt;/label&gt;
+                            &lt;input type="date" class="form-control" id="start-date"&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;div class="col-6"&gt;
+                        &lt;div class="form-group"&gt;
+                            &lt;label class="form-label" for="end-date"&gt;Data final:&lt;/label&gt;
+                            &lt;input type="date" class="form-control" id="end-date"&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+                
+                &lt;h5 class="mb-3 mt-4"&gt;Origem&lt;/h5&gt;
+                &lt;div class="form-group"&gt;
+                    &lt;label class="form-label" for="origin"&gt;Ponto de partida:&lt;/label&gt;
+                    &lt;input type="text" class="form-control" id="origin" readonly&gt;
+                &lt;/div&gt;
+                
+                &lt;h5 class="mb-3 mt-4"&gt;Destinos&lt;/h5&gt;
+                
+                &lt;div class="form-group"&gt;
+                    &lt;label class="form-label" for="address-input"&gt;Adicionar endereço:&lt;/label&gt;
+                    &lt;div class="input-group mb-3"&gt;
+                        &lt;input type="text" class="form-control" id="address-input" placeholder="Digite um endereço ou CEP"&gt;
+                        &lt;button class="btn btn-primary" id="add-location"&gt;
+                            &lt;i class="fas fa-plus"&gt;&lt;/i&gt;
+                        &lt;/button&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+                
+                &lt;div class="form-group"&gt;
+                    &lt;label class="form-label"&gt;Ou envie um arquivo com CEPs:&lt;/label&gt;
+                    &lt;div class="input-group mb-3"&gt;
+                        &lt;input type="file" class="form-control" id="cep-file" accept=".txt,.csv"&gt;
+                        &lt;button class="btn btn-outline-secondary" id="upload-cep"&gt;
+                            &lt;i class="fas fa-upload"&gt;&lt;/i&gt;
+                        &lt;/button&gt;
+                    &lt;/div&gt;
+                    &lt;small class="text-muted"&gt;Formato: CEP,nome (um por linha)&lt;/small&gt;
+                &lt;/div&gt;
+                
+                &lt;h5 class="mb-2"&gt;Locais adicionados&lt;/h5&gt;
+                &lt;div class="locations-list" id="locations-list"&gt;
+                    &lt;div class="p-3 text-muted"&gt;Nenhum local adicionado.&lt;/div&gt;
+                &lt;/div&gt;
+                
+                &lt;div class="form-group"&gt;
+                    &lt;label class="form-label" for="vehicle-type"&gt;Tipo de veículo:&lt;/label&gt;
+                    &lt;select class="form-select" id="vehicle-type"&gt;
+                        &lt;option value="truck1"&gt;Caminhão 1 eixo&lt;/option&gt;
+                        &lt;option value="truck2"&gt;Caminhão 2 eixos&lt;/option&gt;
+                        &lt;option value="truck3"&gt;Caminhão 3 eixos&lt;/option&gt;
+                        &lt;option value="truck4"&gt;Caminhão 4 eixos&lt;/option&gt;
+                        &lt;option value="truck5"&gt;Caminhão 5 eixos&lt;/option&gt;
+                        &lt;option value="truck6"&gt;Caminhão 6 eixos+&lt;/option&gt;
+                    &lt;/select&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            
+            &lt;!-- Botão de otimizar (fixo na parte inferior) --&gt;
+            &lt;div class="optimize-container"&gt;
+                &lt;button class="btn btn-success" id="optimize-route"&gt;Otimizar Rota&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        
+        &lt;!-- Container do conteúdo principal --&gt;
+        &lt;div class="content-container"&gt;
+            &lt;!-- Botão para mostrar sidebar em mobile --&gt;
+            &lt;button class="toggle-sidebar" id="toggle-sidebar"&gt;
+                &lt;i class="fas fa-bars"&gt;&lt;/i&gt;
+            &lt;/button&gt;
+            
+            &lt;!-- Container do mapa --&gt;
+            &lt;div class="map-container"&gt;
+                &lt;div id="map"&gt;&lt;/div&gt;
+            &lt;/div&gt;
+            
+            &lt;!-- NOVO: Tabs fixas na parte inferior do layout (inicialmente minimizadas) --&gt;
+            &lt;div class="bottom-tabs-container minimized"&gt;
+                &lt;!-- Navegação das abas inferiores --&gt;
+                &lt;div class="bottom-tabs-nav"&gt;
+                    &lt;button class="bottom-tab-btn active" data-tab="bottom-events" onclick="showTab('bottom-events')"&gt;
+                        Eventos na Rota
+                    &lt;/button&gt;
+                    &lt;button class="bottom-tab-btn" data-tab="bottom-restrictions" onclick="showTab('bottom-restrictions')"&gt;
+                        Restrições de Tráfego
+                    &lt;/button&gt;
+                    &lt;button class="bottom-tab-btn" data-tab="bottom-report" onclick="showTab('bottom-report')"&gt;
+                        Relatório da Rota
+                    &lt;/button&gt;
+                &lt;/div&gt;
+                
+                &lt;!-- Container das abas com rolagem independente para cada aba --&gt;
+                &lt;div class="bottom-tabs-content-container"&gt;
+                    &lt;!-- Conteúdo da aba Eventos --&gt;
+                    &lt;div class="bottom-tab-content active" id="bottom-events-content"&gt;
+                        &lt;h5&gt;Eventos nas cidades da rota:&lt;/h5&gt;
+                        &lt;div class="events-list" id="events-list"&gt;
+                            &lt;p class="text-muted"&gt;Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.&lt;/p&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                    
+                    &lt;!-- Conteúdo da aba Restrições --&gt;
+                    &lt;div class="bottom-tab-content" id="bottom-restrictions-content"&gt;
+                        &lt;h5&gt;Restrições de tráfego para caminhões:&lt;/h5&gt;
+                        &lt;div class="restrictions-list" id="restrictions-list"&gt;
+                            &lt;p class="text-muted"&gt;Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver as restrições de tráfego.&lt;/p&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                    
+                    &lt;!-- Conteúdo da aba Relatório --&gt;
+                    &lt;div class="bottom-tab-content" id="bottom-report-content"&gt;
+                        &lt;h5&gt;Resumo da rota otimizada:&lt;/h5&gt;
+                        &lt;div class="route-info p-3 border rounded mb-3 bg-light" id="route-info"&gt;
+                            &lt;p class="text-muted"&gt;Otimize a rota para ver o relatório detalhado.&lt;/p&gt;
+                        &lt;/div&gt;
+                        
+                        &lt;h5&gt;Sequência de entrega:&lt;/h5&gt;
+                        &lt;div class="route-sequence border rounded p-3" id="route-sequence"&gt;
+                            &lt;p class="text-muted"&gt;A sequência de rota será exibida aqui após a otimização.&lt;/p&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;!-- Botão flutuante para abrir o sidebar em mobile --&gt;
+    &lt;button class="mobile-sidebar-toggle" id="mobile-sidebar-toggle"&gt;
+        &lt;i class="fas fa-edit"&gt;&lt;/i&gt;
+    &lt;/button&gt;
+    
+    &lt;!-- Google Maps API --&gt;
+    &lt;script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places"&gt;&lt;/script&gt;
+    
+    &lt;!-- jQuery para operações mais simples --&gt;
+    &lt;script src="https://code.jquery.com/jquery-3.6.0.min.js"&gt;&lt;/script&gt;
+    
+    &lt;!-- Bootstrap JS --&gt;
+    &lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;
+    
+    &lt;!-- Controle de abas --&gt;
+    &lt;script&gt;
+    // Função para controlar as abas
+    function showTab(tabName) {
+        console.log('Mostrando aba:', tabName);
+        
+        // Primeiro, esconder todos os conteúdos das abas
+        var allContents = document.querySelectorAll('.bottom-tab-content');
+        allContents.forEach(function(content) {
+            content.style.display = 'none';
+            content.classList.remove('active');
+        });
+        
+        // Depois, mostrar apenas o conteúdo da aba selecionada
+        var selectedContent = document.getElementById(tabName + '-content');
+        if (selectedContent) {
+            selectedContent.style.display = 'block';
+            selectedContent.classList.add('active');
+            console.log('Ativado conteúdo:', tabName + '-content');
+        } else {
+            console.error('Conteúdo não encontrado para aba:', tabName);
+        }
+        
+        // Atualizar classes ativas nos botões
+        var allButtons = document.querySelectorAll('.bottom-tab-btn');
+        allButtons.forEach(function(button) {
+            button.classList.remove('active');
+            
+            if (button.getAttribute('data-tab') === tabName) {
+                button.classList.add('active');
+            }
+        });
+        
+        // Expandir o container se estiver minimizado
+        var tabsContainer = document.querySelector('.bottom-tabs-container');
+        if (tabsContainer && tabsContainer.classList.contains('minimized')) {
+            tabsContainer.classList.remove('minimized');
+        }
+    }
+    
+    // Garantir que as abas funcionem corretamente após otimização
+    document.addEventListener('DOMContentLoaded', function() {
+        // Modificar o botão de otimização
+        var optimizeButton = document.getElementById('optimize-route');
+        if (optimizeButton) {
+            // Guardar o onclick original
+            var originalOnclick = optimizeButton.onclick;
+            
+            // Definir novo onclick
+            optimizeButton.onclick = function(event) {
+                // Chamar o handler original se ele existir
+                if (typeof originalOnclick === 'function') {
+                    originalOnclick.call(this, event);
+                }
+                
+                // Agendar navegação para a aba de relatório
+                setTimeout(function() {
+                    showTab('bottom-report');
+                }, 2000);
+            };
+        }
+        
+        // Inicialização - mostrar aba de eventos
+        setTimeout(function() {
+            showTab('bottom-events');
+        }, 500);
+    });
+    &lt;/script&gt;
+    
+    &lt;!-- Script Principal --&gt;
+    &lt;script&gt;
+        // Variáveis globais
+        let map;
+        let markers = [];
+        let locations = [];
+        let origin = null;
+        let autocomplete;
+        let directionsService;
+        let directionsRenderer;
+        let currentOptimizedPath = null;
+        let currentRouteSummary = null;
+        let allPolylines = [];
+        let autocompleteService;
+        let placesService;
+        let geocoder;
+        let currentStepIndex = 0;
+        let animationTimeout;
+        
+        // Pontos de interesse (pedágios, balanças, etc.)
+        let pointsOfInterest = [];
+        let poiMarkers = [];
+        
+        // ID do último local adicionado
+        let lastLocationId = 0;
+        
+        // Configurações padrão
+        const DEFAULT_SPEED = 80; // km/h
+        
+        // Constantes para POIs
+        const POI_TYPES = {
+            TOLL: 'toll',
+            WEIGHING: 'weighing',
+            GAS: 'gas',
+            REST: 'rest'
+        };
+        
+        // Mapeamento de ícones para POIs
+        const POI_ICONS = {
+            [POI_TYPES.TOLL]: '💰',
+            [POI_TYPES.WEIGHING]: '⚖️',
+            [POI_TYPES.GAS]: '⛽',
+            [POI_TYPES.REST]: '🛌'
+        };
+        
+        // Inicialização após o carregamento da página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se estamos usando dados mocked ou não
+            const useMockData = true;
+            console.log("Using mock data:", useMockData);
+            
+            // Inicializar o mapa quando a API Google Maps estiver pronta
+            initMap();
+            
+            // Inicializar a interface do usuário
+            initUI();
+            
+            // Preencher com dados iniciais
+            if (useMockData) {
+                fetchMockData()
+                .then(() => {
+                    console.log("Seed data loaded successfully");
+                    // Atualizar a lista de cidades para eventos
+                    updateEventCitiesList();
+                })
+                .catch(error => {
+                    console.error("Error loading seed data:", error);
+                });
+            }
+        });
+        
+        // Inicializar o mapa
+        function initMap() {
+            console.log("Iniciando carregamento da Google Maps API...");
+            
+            // Criar o mapa
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: -22.3636, lng: -48.3798 }, // Dois Córregos, SP
+                zoom: 13,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                gestureHandling: 'greedy', // Permitir zoom sem Ctrl
+                zoomControl: true,
+                mapTypeControl: true,
+                scaleControl: true,
+                streetViewControl: true,
+                rotateControl: true,
+                fullscreenControl: true
+            });
+            
+            // Modificar gestureHandling para permitir zoom sem Ctrl
+            try {
+                // Este é um hack para permitir zoom sem Ctrl
+                map.setOptions({ gestureHandling: 'auto' });
+                console.log("Google Maps gesture handling modificado para permitir zoom sem Ctrl");
+            } catch (e) {
+                console.error("Erro ao modificar gesture handling:", e);
+            }
+            
+            // Inicializar serviços do Google Maps
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                map: map,
+                suppressMarkers: true, // Não mostrar marcadores automáticos
+                polylineOptions: {
+                    strokeColor: '#1976D2',
+                    strokeWeight: 5,
+                    strokeOpacity: 0.7
+                }
+            });
+            
+            geocoder = new google.maps.Geocoder();
+            
+            // Inicializar o serviço de autocompletar para endereços
+            autocomplete = new google.maps.places.Autocomplete(
+                document.getElementById('address-input'),
+                { types: ['geocode'], componentRestrictions: { country: 'br' } }
+            );
+            
+            // Inicializar o serviço de autocompletar para busca programática
+            autocompleteService = new google.maps.places.AutocompleteService();
+            placesService = new google.maps.places.PlacesService(map);
+            
+            console.log("Google Maps API loaded");
+            
+            // Configurar a API Places
+            const placesOptions = {
+                types: ['geocode'],
+                componentRestrictions: { country: 'br' }
+            };
+            
+            try {
+                // Inicializar o autocomplete do Places
+                autocomplete = new google.maps.places.Autocomplete(
+                    document.getElementById('address-input'),
+                    placesOptions
+                );
+                
+                // Prevenir submissão do formulário ao pressionar Enter
+                document.getElementById('address-input').addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+                
+                console.log("Google Places API loaded");
+            } catch (e) {
+                console.error("Erro ao inicializar Google Places API:", e);
+            }
+            
+            // Adicionar eventos para detectar quando o mapa está totalmente carregado
+            google.maps.event.addListenerOnce(map, 'idle', function() {
+                // O mapa está totalmente carregado
+                try {
+                    // Tentar aplicar o helper de zoom
+                    setTimeout(applyZoomHelper, 1000);
+                } catch (e) {
+                    console.error("Erro ao aplicar helper de zoom:", e);
+                }
+            });
+        }
+        
+        // Helper para facilitar o zoom no mapa
+        function applyZoomHelper() {
+            // Encontrar o elemento .gm-style dentro do mapa
+            const gmStyleElement = document.querySelector('.gm-style');
+            
+            if (gmStyleElement) {
+                // Adicionar um evento para capturar scroll e transformar em zoom
+                gmStyleElement.addEventListener('wheel', function(e) {
+                    // Se a tecla Ctrl não estiver pressionada, ainda assim permitir o zoom
+                    if (!e.ctrlKey) {
+                        e.stopPropagation();
+                        
+                        // Criar um novo evento com a tecla Ctrl pressionada
+                        const newEvent = new WheelEvent('wheel', {
+                            bubbles: true,
+                            cancelable: true,
+                            composed: true,
+                            deltaMode: e.deltaMode,
+                            deltaX: e.deltaX,
+                            deltaY: e.deltaY,
+                            deltaZ: e.deltaZ,
+                            ctrlKey: true
+                        });
+                        
+                        // Disparar o novo evento
+                        gmStyleElement.dispatchEvent(newEvent);
+                    }
+                }, { passive: false });
+                
+                console.log("Helper de zoom aplicado ao mapa do Google");
+            } else {
+                console.log("Nenhum elemento .gm-style encontrado para aplicar helper de zoom");
+            }
+        }
+        
+        // Inicializar a interface do usuário
+        function initUI() {
+            // Eventos para o sidebar em dispositivos móveis
+            document.getElementById('toggle-sidebar').addEventListener('click', toggleSidebar);
+            document.getElementById('close-sidebar').addEventListener('click', toggleSidebar);
+            document.getElementById('sidebar-overlay').addEventListener('click', toggleSidebar);
+            document.getElementById('mobile-sidebar-toggle').addEventListener('click', toggleSidebar);
+            
+            // Evento para adicionar um local
+            document.getElementById('add-location').addEventListener('click', addLocation);
+            
+            // Evento para o upload de arquivo de CEPs
+            document.getElementById('upload-cep').addEventListener('click', uploadCEPFile);
+            
+            // Evento para otimizar a rota
+            document.getElementById('optimize-route').addEventListener('click', optimizeRoute);
+            
+            // Inicializar as datas padrão (hoje e hoje + 7 dias)
+            const today = new Date();
+            const nextWeek = new Date();
+            nextWeek.setDate(today.getDate() + 7);
+            
+            document.getElementById('start-date').valueAsDate = today;
+            document.getElementById('end-date').valueAsDate = nextWeek;
+        }
+        
+        // Toggle para o sidebar em dispositivos móveis
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            
+            sidebar.classList.toggle('visible');
+            overlay.classList.toggle('visible');
+        }
+        
+        // Exibir/ocultar o spinner de carregamento
+        function toggleLoadingSpinner(show) {
+            const spinner = document.getElementById('loading-spinner');
+            spinner.style.display = show ? 'flex' : 'none';
+        }
+        
+        // Mostrar uma notificação na interface
+        function showNotification(message, isError = false) {
+            // Verificar se já existe uma notificação
+            let notification = document.querySelector('.notification');
+            
+            // Se não existir, criar uma nova
+            if (!notification) {
+                notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.style.position = 'fixed';
+                notification.style.top = '20px';
+                notification.style.right = '20px';
+                notification.style.padding = '15px 20px';
+                notification.style.borderRadius = '4px';
+                notification.style.color = 'white';
+                notification.style.zIndex = '2000';
+                notification.style.maxWidth = '300px';
+                notification.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+                notification.style.transition = 'all 0.3s ease';
+                notification.style.fontWeight = 'bold';
+                
+                document.body.appendChild(notification);
+            }
+            
+            // Configurar a aparência com base no tipo
+            notification.style.backgroundColor = isError ? '#f44336' : '#4caf50';
+            notification.textContent = message;
+            
+            // Mostrar a notificação
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateY(0)';
+            
+            // Esconder após alguns segundos
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(-20px)';
+                
+                // Remover do DOM após a animação
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+        
+        // Adicionar um marcador ao mapa
+        function addMarker(location, title, id, isOrigin = false) {
+            // Verificar se é um marcador de origem
+            const markerOptions = {
+                position: location,
+                map: map,
+                title: title
+            };
+            
+            // Usar ícones ou cores diferentes para distinguir
+            if (isOrigin) {
+                markerOptions.icon = {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: '#ff6600',
+                    fillOpacity: 1,
+                    strokeColor: '#ffffff',
+                    strokeWeight: 2,
+                    scale: 10
+                };
+            }
+            
+            const marker = new google.maps.Marker(markerOptions);
+            
+            // Armazenar o ID no marcador para referência futura
+            marker.set('id', id);
+            
+            // Adicionar evento de clique para mostrar info
+            marker.addListener('click', function() {
+                // Implementar conforme necessário
+            });
+            
+            markers.push(marker);
+            return marker;
+        }
+        
+        // Adicionar um local à lista
+        function addLocation() {
+            const input = document.getElementById('address-input');
+            const address = input.value.trim();
+            
+            if (!address) {
+                showNotification('Por favor, digite um endereço válido', true);
+                return;
+            }
+            
+            // Mostrar o spinner
+            toggleLoadingSpinner(true);
+            
+            // Usar o geocoder para obter coordenadas
+            geocoder.geocode({ address: address + ', Brasil' }, function(results, status) {
+                // Ocultar o spinner
+                toggleLoadingSpinner(false);
+                
+                if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
+                    const result = results[0];
+                    const location = result.geometry.location;
+                    
+                    // Criar um novo ID para este local
+                    const id = ++lastLocationId;
+                    
+                    // Guardar o local
+                    locations.push({
+                        id: id,
+                        name: result.formatted_address,
+                        address: result.formatted_address,
+                        lat: location.lat(),
+                        lng: location.lng(),
+                        isOrigin: false
+                    });
+                    
+                    // Adicionar marcador ao mapa
+                    addMarker(location, result.formatted_address, id);
+                    
+                    // Ajustar o zoom do mapa para mostrar todos os marcadores
+                    fitMapToMarkers();
+                    
+                    // Atualizar a lista de locais na interface
+                    updateLocationsList();
+                    
+                    // Atualizar a lista de cidades para eventos
+                    updateEventCitiesList();
+                    
+                    // Mostrar notificação de sucesso
+                    showNotification('Local adicionado com sucesso');
+                } else {
+                    showNotification('Não foi possível geocodificar o endereço: ' + status, true);
+                }
+                
+                // Limpar o campo de busca
+                input.value = '';
+            });
+        }
+        
+        // Ajustar o zoom do mapa para mostrar todos os marcadores
+        function fitMapToMarkers() {
+            if (markers.length === 0) return;
+            
+            const bounds = new google.maps.LatLngBounds();
+            
+            markers.forEach(marker => {
+                bounds.extend(marker.getPosition());
+            });
+            
+            map.fitBounds(bounds);
+            
+            // Se houver apenas um marcador, zoom mais próximo
+            if (markers.length === 1) {
+                map.setZoom(14);
+            }
+        }
+        
+        // Atualizar a lista de locais na interface
+        function updateLocationsList() {
+            const listElement = document.getElementById('locations-list');
+            
+            // Limpar a lista atual
+            listElement.innerHTML = '';
+            
+            // Verificar se há locais
+            if (locations.length === 0) {
+                listElement.innerHTML = '<div class="p-3 text-muted">Nenhum local adicionado.</div>';
+                return;
+            }
+            
+            // Adicionar cada local à lista
+            locations.forEach(location => {
+                if (!location.isOrigin) { // Não incluir a origem na lista de destinos
+                    const item = document.createElement('div');
+                    item.className = 'location-item';
+                    item.innerHTML = `
+                        <div>${location.name}</div>
+                        <div class="location-delete" data-id="${location.id}" title="Remover">
+                            <i class="fas fa-trash"></i>
+                        </div>
+                    `;
+                    
+                    listElement.appendChild(item);
+                }
+            });
+            
+            // Adicionar evento de clique para remover locais
+            const deleteButtons = document.querySelectorAll('.location-delete');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    removeLocation(id);
+                });
+            });
+        }
+        
+        // Remover um local da lista
+        function removeLocation(id) {
+            // Encontrar o índice do local
+            const index = locations.findIndex(loc => loc.id === id);
+            
+            if (index !== -1) {
+                // Remover do array de locais
+                locations.splice(index, 1);
+                
+                // Remover o marcador correspondente
+                const markerIndex = markers.findIndex(marker => marker.get('id') === id);
+                if (markerIndex !== -1) {
+                    markers[markerIndex].setMap(null);
+                    markers.splice(markerIndex, 1);
+                }
+                
+                // Atualizar a lista na interface
+                updateLocationsList();
+                
+                // Atualizar a lista de cidades para eventos
+                updateEventCitiesList();
+                
+                // Mostrar notificação
+                showNotification('Local removido com sucesso');
+                
+                // Limpar quaisquer rotas existentes
+                clearAllPolylines();
+                if (directionsRenderer) {
+                    directionsRenderer.setDirections({ routes: [] });
+                }
+                
+                // Limpar informações de rota
+                document.getElementById('route-info').innerHTML = `
+                    <p class="text-muted">Otimize a rota para ver o relatório detalhado.</p>
+                `;
+                document.getElementById('route-sequence').innerHTML = `
+                    <p class="text-muted">A sequência de rota será exibida aqui após a otimização.</p>
+                `;
+            }
+        }
+        
+        // Limpar todas as polylines no mapa
+        function clearAllPolylines() {
+            allPolylines.forEach(polyline => {
+                polyline.setMap(null);
+            });
+            allPolylines = [];
+        }
+        
+        // Processar o upload de arquivo de CEPs
+        function uploadCEPFile() {
+            const fileInput = document.getElementById('cep-file');
+            
+            if (!fileInput.files || fileInput.files.length === 0) {
+                showNotification('Por favor, selecione um arquivo', true);
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            // Mostrar o spinner
+            toggleLoadingSpinner(true);
+            
+            reader.onload = function(e) {
+                const content = e.target.result;
+                
+                // Processar o conteúdo do arquivo
+                processCepFile(content);
+                
+                // Limpar o input de arquivo
+                fileInput.value = '';
+                
+                // Ocultar o spinner
+                toggleLoadingSpinner(false);
+            };
+            
+            reader.onerror = function() {
+                toggleLoadingSpinner(false);
+                showNotification('Erro ao ler o arquivo', true);
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        // Processar o conteúdo do arquivo de CEPs
+        function processCepFile(content) {
+            // Dividir por linhas
+            const lines = content.split(/\r?\n/);
+            
+            // Verificar se há linhas
+            if (lines.length === 0) {
+                showNotification('Arquivo vazio', true);
+                return;
+            }
+            
+            // Contador para geocodificações bem-sucedidas
+            let successCount = 0;
+            let errorCount = 0;
+            
+            // Processar cada linha
+            lines.forEach(line => {
+                line = line.trim();
+                if (!line) return; // Pular linhas vazias
+                
+                // Tentar extrair CEP e nome
+                let cep, name;
+                
+                if (line.includes(',')) {
+                    // Formato CEP,nome
+                    [cep, name] = line.split(',', 2).map(s => s.trim());
+                } else {
+                    // Apenas CEP
+                    cep = line.trim();
+                    name = 'Local ' + (++lastLocationId);
+                }
+                
+                // Validar CEP (formato brasileiro: 8 dígitos)
+                cep = cep.replace(/\D/g, '');
+                if (cep.length !== 8) {
+                    console.warn('CEP inválido:', cep);
+                    errorCount++;
+                    return;
+                }
+                
+                // Formatar CEP para exibição
+                const formattedCep = cep.substring(0, 5) + '-' + cep.substring(5);
+                
+                // Geocodificar o CEP
+                geocodeCEP(cep, formattedCep, name, function(success) {
+                    if (success) {
+                        successCount++;
+                    } else {
+                        errorCount++;
+                    }
+                    
+                    // Verificar se terminou
+                    if (successCount + errorCount === lines.filter(l => l.trim()).length) {
+                        showNotification(`Processados ${successCount} CEPs com sucesso. ${errorCount} erros.`, errorCount > 0);
+                    }
+                });
+            });
+        }
+        
+        // Geocodificar um CEP
+        function geocodeCEP(cep, formattedCep, name, callback) {
+            const address = formattedCep + ', Brasil';
+            
+            geocoder.geocode({ address: address }, function(results, status) {
+                if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
+                    const result = results[0];
+                    const location = result.geometry.location;
+                    
+                    // Criar um novo ID para este local
+                    const id = ++lastLocationId;
+                    
+                    // Guardar o local
+                    locations.push({
+                        id: id,
+                        name: name,
+                        address: formattedCep + ' - ' + result.formatted_address,
+                        lat: location.lat(),
+                        lng: location.lng(),
+                        isOrigin: false
+                    });
+                    
+                    // Adicionar marcador ao mapa
+                    addMarker(location, name, id);
+                    
+                    // Ajustar o zoom do mapa para mostrar todos os marcadores
+                    fitMapToMarkers();
+                    
+                    // Atualizar a lista de locais na interface
+                    updateLocationsList();
+                    
+                    // Atualizar a lista de cidades para eventos
+                    updateEventCitiesList();
+                    
+                    callback(true);
+                } else {
+                    console.error('Erro ao geocodificar CEP:', cep, status);
+                    callback(false);
+                }
+            });
+        }
+        
+        // Otimizar a rota
+        function optimizeRoute() {
+            // Verificar se há locais suficientes
+            if (locations.length <= 1) {
+                showNotification('Adicione ao menos um destino para otimizar a rota', true);
+                return;
+            }
+            
+            // Mostrar o spinner
+            toggleLoadingSpinner(true);
+            
+            // Desativar o botão de otimizar
+            const optimizeBtn = document.getElementById('optimize-route');
+            optimizeBtn.disabled = true;
+            optimizeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Calculando...';
+            
+            // Limpar polylines existentes
+            clearAllPolylines();
+            
+            // Encontrar a origem
+            const originLocation = locations.find(loc => loc.isOrigin) || locations[0];
+            
+            // Se não houver origem definida, usar o primeiro local
+            if (!originLocation.isOrigin) {
+                originLocation.isOrigin = true;
+            }
+            
+            // Coletar todos os locais para otimização
+            const originLatLng = new google.maps.LatLng(originLocation.lat, originLocation.lng);
+            const waypoints = locations.filter(loc => !loc.isOrigin).map(loc => ({
+                location: new google.maps.LatLng(loc.lat, loc.lng),
+                id: loc.id,
+                name: loc.name
+            }));
+            
+            // Se não houver waypoints, não há como calcular rota
+            if (waypoints.length === 0) {
+                toggleLoadingSpinner(false);
+                optimizeBtn.disabled = false;
+                optimizeBtn.innerHTML = 'Otimizar Rota';
+                showNotification('Adicione destinos para calcular a rota', true);
+                return;
+            }
+            
+            // Calcular a rota usando o serviço de direções do Google Maps
+            calculateOptimizedRoute(originLocation, waypoints)
+                .then(result => {
+                    // Renderizar a rota no mapa
+                    renderOptimizedRoute(result);
+                    
+                    // Ocultar o spinner
+                    toggleLoadingSpinner(false);
+                    
+                    // Restaurar o botão de otimizar
+                    optimizeBtn.disabled = false;
+                    optimizeBtn.innerHTML = 'Otimizar Rota';
+                    
+                    // Navegar para a aba de relatório
+                    showTab('bottom-report');
+                })
+                .catch(error => {
+                    console.error('Erro ao otimizar rota:', error);
+                    
+                    // Ocultar o spinner
+                    toggleLoadingSpinner(false);
+                    
+                    // Restaurar o botão de otimizar
+                    optimizeBtn.disabled = false;
+                    optimizeBtn.innerHTML = 'Otimizar Rota';
+                    
+                    // Mostrar erro
+                    showNotification('Erro ao calcular a rota: ' + error.message, true);
+                });
+        }
+        
+        // Calcular a rota otimizada
+        function calculateOptimizedRoute(origin, waypoints) {
+            return new Promise((resolve, reject) => {
+                // Configurar a solicitação de rota
+                const request = {
+                    origin: new google.maps.LatLng(origin.lat, origin.lng),
+                    destination: new google.maps.LatLng(origin.lat, origin.lng),  // Retorno ao ponto de origem
+                    waypoints: waypoints.map(wp => ({
+                        location: wp.location,
+                        stopover: true
+                    })),
+                    optimizeWaypoints: true,
+                    travelMode: google.maps.TravelMode.DRIVING,
+                    avoidHighways: false,
+                    avoidTolls: false
+                };
+                
+                // Solicitar a rota
+                directionsService.route(request, function(result, status) {
+                    if (status === google.maps.DirectionsStatus.OK) {
+                        // Armazenar o caminho otimizado e resumo
+                        currentOptimizedPath = {
+                            origin: origin,
+                            waypoints: waypoints,
+                            order: result.routes[0].waypoint_order,
+                            route: result
+                        };
+                        
+                        // Calcular resumo da rota
+                        currentRouteSummary = calculateRouteSummary(result, waypoints);
+                        
+                        resolve({
+                            directions: result,
+                            summary: currentRouteSummary,
+                            order: result.routes[0].waypoint_order,
+                            originalWaypoints: waypoints
+                        });
+                    } else {
+                        reject(new Error('Erro no cálculo da rota: ' + status));
+                    }
+                });
+            });
+        }
+        
+        // Calcular resumo da rota
+        function calculateRouteSummary(directions, waypoints) {
+            let totalDistance = 0;
+            let totalDuration = 0;
+            
+            // Somar distâncias e durações de todas as pernas da rota
+            const legs = directions.routes[0].legs;
+            legs.forEach(leg => {
+                totalDistance += leg.distance.value;
+                totalDuration += leg.duration.value;
+            });
+            
+            // Converter distância de metros para km
+            totalDistance = Math.round(totalDistance / 1000);
+            
+            // Converter duração de segundos para horas e minutos
+            const hours = Math.floor(totalDuration / 3600);
+            const minutes = Math.round((totalDuration % 3600) / 60);
+            
+            // Calcular pedágios estimados (dados mockados)
+            const estimatedTolls = Math.ceil(totalDistance / 100) * 15;
+            
+            // Formato do resumo
+            return {
+                totalDistance: totalDistance,
+                totalDuration: totalDuration,
+                formattedDistance: totalDistance + ' km',
+                formattedDuration: hours + 'h ' + minutes + 'min',
+                estimatedTolls: 'R$ ' + estimatedTolls.toFixed(2)
+            };
+        }
+        
+        // Renderizar a rota otimizada no mapa
+        function renderOptimizedRoute(result) {
+            // Mostrar a rota no mapa
+            directionsRenderer.setDirections(result.directions);
+            
+            // Atualizar os marcadores para mostrar a sequência
+            updateMarkersWithSequence(result.originalWaypoints, result.order, result.directions);
+            
+            // Atualizar o relatório de rota
+            updateRouteReport(result.summary, result.directions, result.originalWaypoints, result.order);
+            
+            // Atualizar eventos
+            updateEventsList();
+            
+            // Atualizar restrições
+            updateRestrictionsList();
+        }
+        
+        // Atualizar marcadores com a sequência otimizada
+        function updateMarkersWithSequence(waypoints, order, directions) {
+            // Remover marcadores existentes
+            markers.forEach(marker => {
+                marker.setMap(null);
+            });
+            markers = [];
+            
+            // Adicionar marcador de origem
+            const origin = locations.find(loc => loc.isOrigin);
+            const originMarker = new google.maps.Marker({
+                position: new google.maps.LatLng(origin.lat, origin.lng),
+                map: map,
+                label: { text: 'A', color: 'white' },
+                title: origin.name,
+                icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: '#ff6600',
+                    fillOpacity: 1,
+                    strokeColor: '#ffffff',
+                    strokeWeight: 2,
+                    scale: 12
+                }
+            });
+            markers.push(originMarker);
+            
+            // Adicionar marcadores para os pontos de parada na ordem otimizada
+            order.forEach((index, i) => {
+                const waypoint = waypoints[index];
+                const marker = new google.maps.Marker({
+                    position: waypoint.location,
+                    map: map,
+                    label: { text: String(i + 1), color: 'white' },
+                    title: waypoint.name,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: '#1976D2',
+                        fillOpacity: 1,
+                        strokeColor: '#ffffff',
+                        strokeWeight: 2,
+                        scale: 12
+                    }
+                });
+                markers.push(marker);
+            });
+        }
+        
+        // Atualizar o relatório de rota
+        function updateRouteReport(summary, directions, waypoints, order) {
+            // Atualizar o resumo da rota
+            const routeInfo = document.getElementById('route-info');
+            routeInfo.innerHTML = `
+                <div class="mb-2"><strong>Distância total:</strong> ${summary.formattedDistance}</div>
+                <div class="mb-2"><strong>Tempo estimado:</strong> ${summary.formattedDuration}</div>
+                <div><strong>Pedágios estimados:</strong> ${summary.estimatedTolls}</div>
+            `;
+            
+            // Atualizar a sequência de entrega
+            const routeSequence = document.getElementById('route-sequence');
+            
+            // Começar com a origem
+            const origin = locations.find(loc => loc.isOrigin);
+            let sequenceHTML = `
+                <div class="origin-point mb-3">
+                    <strong>A.</strong> ${origin.name} (Origem)
+                </div>
+            `;
+            
+            // Adicionar cada parada na ordem otimizada
+            order.forEach((index, i) => {
+                const waypoint = waypoints[index];
+                const leg = directions.routes[0].legs[i];
+                
+                sequenceHTML += `
+                    <div class="mb-2">
+                        <strong>${i + 1}.</strong> ${waypoint.name} 
+                        <span class="text-muted">- ${leg.distance.text}</span>
+                    </div>
+                `;
+            });
+            
+            routeSequence.innerHTML = sequenceHTML;
+            
+            // Disparar evento de rota otimizada
+            window.dispatchEvent(new Event('route-optimized'));
+        }
+        
+        // Atualizar a lista de cidades com base nos locais
+        function updateEventCitiesList() {
+            // Extrair cidades dos locais
+            const cities = [];
+            
+            locations.forEach(location => {
+                // Tentar extrair a cidade do endereço
+                let city = extractCityFromAddress(location.address);
+                if (city) {
+                    cities.push(city);
+                }
+            });
+            
+            // Remover duplicatas
+            const uniqueCities = [...new Set(cities)];
+            
+            console.log("Cidades detectadas para eventos:", uniqueCities);
+        }
+        
+        // Extrair cidade de um endereço
+        function extractCityFromAddress(address) {
+            // Lista de cidades conhecidas para detectar
+            const knownCities = [
+                'São Paulo', 'Rio de Janeiro', 'Brasília', 'Salvador', 'Fortaleza',
+                'Belo Horizonte', 'Manaus', 'Curitiba', 'Recife', 'Porto Alegre',
+                'Belém', 'Goiânia', 'Guarulhos', 'Campinas', 'São Luís',
+                'São Gonçalo', 'Maceió', 'Duque de Caxias', 'Natal', 'Teresina',
+                'Jaú', 'Bauru', 'Dois Córregos', 'Araraquara', 'São Carlos'
+            ];
+            
+            // Verificar se alguma cidade conhecida está no endereço
+            for (const city of knownCities) {
+                if (address.includes(city)) {
+                    return city;
+                }
+            }
+            
+            // Outra tentativa: verificar palavras que começam com maiúscula e não são abreviações
+            const words = address.split(/[\s,-]+/);
+            for (const word of words) {
+                if (word.length > 2 && 
+                    word === word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() &&
+                    !word.match(/^[A-Z]{2,3}$/)) {  // Excluir abreviações como "SP", "RJ"
+                    return word;
+                }
+            }
+            
+            return null;
+        }
+        
+        // Atualizar a lista de eventos
+        function updateEventsList() {
+            // Verificar se há uma rota otimizada
+            if (!currentOptimizedPath) {
+                return;
+            }
+            
+            // Extrair cidades da rota otimizada
+            const cities = [];
+            const allLocations = [currentOptimizedPath.origin, ...currentOptimizedPath.waypoints];
+            
+            allLocations.forEach(location => {
+                // Para waypoints, location é diferente
+                const address = location.address || location.name;
+                let city = extractCityFromAddress(address);
+                if (city) {
+                    cities.push(city);
+                }
+            });
+            
+            // Remover duplicatas
+            const uniqueCities = [...new Set(cities)];
+            
+            // Obter as datas selecionadas
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            
+            // Obter eventos mockados nas cidades e datas
+            const events = getMockEvents(uniqueCities, startDate, endDate);
+            
+            // Atualizar a interface
+            const eventsContainer = document.getElementById('events-list');
+            
+            if (events.length === 0) {
+                eventsContainer.innerHTML = `
+                    <p class="text-muted">Nenhum evento encontrado nas cidades da rota para as datas selecionadas.</p>
+                `;
+                return;
+            }
+            
+            let eventsHTML = '';
+            
+            events.forEach(event => {
+                // Formatar data
+                const eventDate = new Date(event.date);
+                const formattedDate = eventDate.toLocaleDateString('pt-BR');
+                
+                eventsHTML += `
+                    <div class="event-item">
+                        <span class="event-badge">Evento</span>
+                        <h5>${event.name}</h5>
+                        <p><strong>Cidade:</strong> ${event.city}</p>
+                        <p><strong>Data:</strong> ${formattedDate}</p>
+                        <p>${event.description}</p>
+                    </div>
+                `;
+            });
+            
+            eventsContainer.innerHTML = eventsHTML;
+        }
+        
+        // Obter eventos mockados
+        function getMockEvents(cities, startDate, endDate) {
+            // Verificar se temos datas válidas
+            if (!startDate || !endDate) {
+                return [];
+            }
+            
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            
+            // Lista de eventos mockados
+            const allEvents = [
+                {
+                    name: "Feriado Municipal",
+                    city: "Dois Córregos",
+                    date: "2025-05-13",
+                    description: "Feriado municipal em comemoração à fundação da cidade."
+                },
+                {
+                    name: "Festival de Música",
+                    city: "Jaú",
+                    date: "2025-05-15",
+                    description: "Festival de música com apresentações em praça pública."
+                },
+                {
+                    name: "Feira Agropecuária",
+                    city: "Bauru",
+                    date: "2025-05-17",
+                    description: "Exposição agropecuária com demonstrações de equipamentos."
+                },
+                {
+                    name: "Congresso de Tecnologia",
+                    city: "São Carlos",
+                    date: "2025-05-20",
+                    description: "Congresso de inovação tecnológica na universidade."
+                }
+            ];
+            
+            // Filtrar eventos por cidade e data
+            return allEvents.filter(event => {
+                const eventDate = new Date(event.date);
+                const isInDateRange = eventDate >= start && eventDate <= end;
+                const isInCity = cities.includes(event.city);
+                
+                return isInDateRange && isInCity;
+            });
+        }
+        
+        // Atualizar a lista de restrições
+        function updateRestrictionsList() {
+            // Verificar se há uma rota otimizada
+            if (!currentOptimizedPath) {
+                return;
+            }
+            
+            // Extrair cidades da rota otimizada
+            const cities = [];
+            const allLocations = [currentOptimizedPath.origin, ...currentOptimizedPath.waypoints];
+            
+            allLocations.forEach(location => {
+                // Para waypoints, location é diferente
+                const address = location.address || location.name;
+                let city = extractCityFromAddress(address);
+                if (city) {
+                    cities.push(city);
+                }
+            });
+            
+            // Remover duplicatas
+            const uniqueCities = [...new Set(cities)];
+            
+            // Obter o tipo de veículo selecionado
+            const vehicleType = document.getElementById('vehicle-type').value;
+            
+            // Obter restrições mockadas nas cidades para o tipo de veículo
+            const restrictions = getMockRestrictions(uniqueCities, vehicleType);
+            
+            // Atualizar a interface
+            const restrictionsContainer = document.getElementById('restrictions-list');
+            
+            if (restrictions.length === 0) {
+                restrictionsContainer.innerHTML = `
+                    <p class="text-muted">Nenhuma restrição encontrada para o tipo de veículo selecionado nas cidades da rota.</p>
+                `;
+                return;
+            }
+            
+            let restrictionsHTML = '';
+            
+            restrictions.forEach(restriction => {
+                restrictionsHTML += `
+                    <div class="restriction-item">
+                        <span class="restriction-badge">Restrição</span>
+                        <h5>${restriction.city}</h5>
+                        <p><strong>Tipo:</strong> ${restriction.type}</p>
+                        <p><strong>Veículos afetados:</strong> ${restriction.vehicleTypes.join(', ')}</p>
+                        <p><strong>Horário:</strong> ${restriction.time}</p>
+                        <p>${restriction.description}</p>
+                    </div>
+                `;
+            });
+            
+            restrictionsContainer.innerHTML = restrictionsHTML;
+        }
+        
+        // Obter restrições mockadas
+        function getMockRestrictions(cities, vehicleType) {
+            // Mapear o tipo de veículo para o nome legível
+            const vehicleTypeMapping = {
+                'truck1': 'Caminhão 1 eixo',
+                'truck2': 'Caminhão 2 eixos',
+                'truck3': 'Caminhão 3 eixos',
+                'truck4': 'Caminhão 4 eixos',
+                'truck5': 'Caminhão 5 eixos',
+                'truck6': 'Caminhão 6 eixos+'
+            };
+            
+            const selectedVehicleTypeName = vehicleTypeMapping[vehicleType] || vehicleType;
+            
+            // Lista de restrições mockadas
+            const allRestrictions = [
+                {
+                    city: "Dois Córregos",
+                    type: "Parcial",
+                    vehicleTypes: ["Caminhão 3 eixos", "Caminhão 4 eixos", "Caminhão 5 eixos", "Caminhão 6 eixos+"],
+                    time: "Dias úteis das 07:00 às 09:00 e das 17:00 às 19:00",
+                    description: "Restrição de circulação no centro da cidade."
+                },
+                {
+                    city: "Jaú",
+                    type: "Parcial",
+                    vehicleTypes: ["Caminhão 2 eixos", "Caminhão 3 eixos", "Caminhão 4 eixos", "Caminhão 5 eixos", "Caminhão 6 eixos+"],
+                    time: "Dias úteis das 08:00 às 19:00",
+                    description: "Restrição de circulação no quadrilátero central."
+                },
+                {
+                    city: "Bauru",
+                    type: "Parcial",
+                    vehicleTypes: ["Caminhão 3 eixos", "Caminhão 4 eixos", "Caminhão 5 eixos", "Caminhão 6 eixos+"],
+                    time: "Todos os dias das 07:00 às 20:00",
+                    description: "Restrição de circulação nas avenidas principais."
+                },
+                {
+                    city: "São Carlos",
+                    type: "Total",
+                    vehicleTypes: ["Caminhão 4 eixos", "Caminhão 5 eixos", "Caminhão 6 eixos+"],
+                    time: "Dias úteis das 07:00 às 19:00",
+                    description: "Proibida a circulação dentro do perímetro urbano."
+                }
+            ];
+            
+            // Filtrar restrições por cidade e tipo de veículo
+            return allRestrictions.filter(restriction => {
+                const isInCity = cities.includes(restriction.city);
+                const appliesToVehicle = restriction.vehicleTypes.includes(selectedVehicleTypeName);
+                
+                return isInCity && appliesToVehicle;
+            });
+        }
+        
+        // Carregar dados mockados
+        async function fetchMockData() {
+            // Carregar a origem (Dois Córregos-SP)
+            const originData = {
+                id: 0,
+                name: "Dois Córregos",
+                address: "Dois Córregos, SP, Brasil",
+                lat: -22.3636,
+                lng: -48.3798,
+                isOrigin: true
+            };
+            
+            // Guardar a origem
+            locations.push(originData);
+            origin = originData;
+            
+            // Adicionar marcador para a origem
+            const originLocation = new google.maps.LatLng(originData.lat, originData.lng);
+            addMarker(originLocation, originData.name, originData.id, true);
+            
+            // Centralizar o mapa na origem
+            map.setCenter(originLocation);
+            map.setZoom(13);
+            
+            // Atualizar o campo de origem no formulário
+            document.getElementById('origin').value = originData.address;
+            
+            return true;
+        }
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code>
+            </div>
+            
+            <div class="step">
+                <h2>Como fazer o deploy</h2>
+                <p>Para implementar esta solução:</p>
+                <ol>
+                    <li>Copie todo o código acima</li>
+                    <li>Substitua completamente o conteúdo do arquivo HTML principal no GitHub Pages</li>
+                    <li>Faça o commit e push das alterações para o GitHub</li>
+                    <li>Aguarde alguns minutos para o GitHub Pages atualizar</li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="central">
+            <a href="/" class="btn">Voltar para a aplicação</a>
+        </div>
+    </div>
+</body>
+</html>
