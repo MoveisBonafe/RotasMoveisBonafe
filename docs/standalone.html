@@ -4950,12 +4950,15 @@
             
             // Construir o caminho
             const path = [origin.id];
+            // Criar um array separado para IDs primitivos
+            const pathIds = [String(origin.id)];
             let totalDistance = 0;
             let currentLocation = origin;
             
             // Adicionar destinos em ordem de proximidade à origem
             for (const dest of sortedDestinations) {
                 path.push(dest.id);
+                pathIds.push(String(dest.id));
                 const dist = calculateDistance(
                     currentLocation.latitude, currentLocation.longitude,
                     dest.latitude, dest.longitude
@@ -4967,6 +4970,7 @@
             // Adicionar retorno à origem se solicitado
             if (includeOriginReturn) {
                 path.push(origin.id);
+                pathIds.push(String(origin.id));
                 totalDistance += calculateDistance(
                     currentLocation.latitude, currentLocation.longitude,
                     origin.latitude, origin.longitude
@@ -4978,7 +4982,8 @@
             
             return {
                 path: path,
-                distance: totalDistance,
+                pathIds: pathIds,
+                totalDistance: totalDistance,
                 estimatedTime: estimatedTime
             };
         } catch (error) {
