@@ -6445,6 +6445,12 @@
             return 10; // Valor padrão seguro para evitar distância zero
         }
         
+        // Verificar se é o mesmo ponto (mesmas coordenadas)
+        if (lat1 === lat2 && lon1 === lon2) {
+            console.log("Mesmo ponto detectado, usando distância mínima padrão");
+            return 0.1; // Valor mínimo para evitar distância zero sem afetar demais cálculos
+        }
+        
         // Verificar se os valores são numéricos
         if (isNaN(lat1) || isNaN(lon1) || isNaN(lat2) || isNaN(lon2)) {
             console.error("Coordenadas NaN no cálculo de distância:", lat1, lon1, lat2, lon2);
@@ -6460,12 +6466,21 @@
                 Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
                 Math.sin(dLon/2) * Math.sin(dLon/2); 
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-            const distance = R * c; // Distância em km
+            let distance = R * c; // Distância em km
             
             // Verificar se a distância é válida
             if (isNaN(distance) || distance <= 0) {
-                console.error("Distância calculada inválida:", distance);
-                return 20; // Valor padrão seguro para evitar distância zero
+                console.warn("Distância calculada inválida:", distance, "para pontos:", lat1, lon1, lat2, lon2);
+                // Recalcular usando um método simplificado como fallback
+                const latDiff = Math.abs(lat1 - lat2);
+                const lonDiff = Math.abs(lon1 - lon2);
+                distance = Math.sqrt(latDiff * latDiff + lonDiff * lonDiff) * 111.32; // Aproximação simples (1 grau ~= 111.32 km)
+                
+                // Se ainda for inválido, usar valor padrão
+                if (isNaN(distance) || distance <= 0) {
+                    console.error("Falha no cálculo alternativo, usando valor padrão");
+                    return 20; // Valor padrão seguro
+                }
             }
             
             return distance;
