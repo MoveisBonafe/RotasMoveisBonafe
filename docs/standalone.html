@@ -4059,13 +4059,19 @@
                         filterStart.setHours(0,0,0,0);
                         filterEnd.setHours(23,59,59,999);
                         
-                        // NOVA LÓGICA SIMPLIFICADA PARA FILTRAGEM DE DATAS
-                        // Um evento deve ser mostrado se:
-                        // 1. A data de início do evento é >= a data inicial do filtro E
-                        // 2. A data de início do evento é <= a data final do filtro
-                        // (Estamos considerando apenas a data de início do evento para compatibilidade)
+                        // LÓGICA CORRETA DE FILTRAGEM CONFORME ESPECIFICAÇÃO:
+                        // Para exibir um evento, as seguintes condições devem ser atendidas:
+                        // 1. A data de início do filtro (start-date) deve ser <= data de início do evento
+                        // 2. A data de fim do filtro (end-date) deve ser >= data de início do evento
                         
-                        const isEventInFilterRange = eventStart >= filterStart && eventStart <= filterEnd;
+                        // Por exemplo:
+                        // Evento de aniversário em 04/02/2025:
+                        // - Será exibido se start-date <= 04/02/2025 E end-date >= 04/02/2025
+                        
+                        // Evento que ocorre de 04/08/2025 a 14/08/2025:
+                        // - Será exibido se start-date <= 04/08/2025 E end-date >= 04/08/2025
+                        
+                        const isEventInFilterRange = filterStart <= eventStart && filterEnd >= eventStart;
                         
                         console.log(`[VERIFICAÇÃO DE DATA]`, {
                             evento: event.name,
@@ -4073,16 +4079,18 @@
                             eventEnd: eventEnd.toLocaleDateString('pt-BR'),
                             filterStart: filterStart.toLocaleDateString('pt-BR'),
                             filterEnd: filterEnd.toLocaleDateString('pt-BR'),
-                            condicao1: eventStart >= filterStart ? "SIM" : "NÃO",
-                            condicao2: eventStart <= filterEnd ? "SIM" : "NÃO",
+                            // Verificar se a data início do filtro é <= data início do evento
+                            condicao1: filterStart <= eventStart ? "SIM" : "NÃO",
+                            // Verificar se a data fim do filtro é >= data início do evento
+                            condicao2: filterEnd >= eventStart ? "SIM" : "NÃO",
                             resultado: isEventInFilterRange ? "ACEITO" : "REJEITADO"
                         });
                         
                         if (isEventInFilterRange) {
-                            console.log(`[ACEITO] Evento '${event.name}' está no período filtrado (início: ${eventStart.toLocaleDateString('pt-BR')})`);
+                            console.log(`[ACEITO] Evento '${event.name}' (${eventStart.toLocaleDateString('pt-BR')}) está dentro do período de filtro: ${filterStart.toLocaleDateString('pt-BR')} a ${filterEnd.toLocaleDateString('pt-BR')}`);
                             includeEvent = true;
                         } else {
-                            console.log(`[REJEITADO] Evento '${event.name}' fora do período filtrado (início: ${eventStart.toLocaleDateString('pt-BR')})`);
+                            console.log(`[REJEITADO] Evento '${event.name}' (${eventStart.toLocaleDateString('pt-BR')}) está fora do período de filtro: ${filterStart.toLocaleDateString('pt-BR')} a ${filterEnd.toLocaleDateString('pt-BR')}`);
                             includeEvent = false;
                         }
                     } catch (dateError) {
