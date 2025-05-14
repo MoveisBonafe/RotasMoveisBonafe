@@ -158,21 +158,6 @@
             height: 100%;
             width: 100%;
         }
-        
-        /* Controle de visibilidade de pontos de pedágio */
-        .tollControl {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: white;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            padding: 5px 10px;
-            font-size: 12px;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-        }
         /* Botão toggle-sidebar removido */
         .form-group {
             margin-bottom: 15px;
@@ -729,37 +714,6 @@
             height: 100%; /* Garantir que ocupe toda a altura disponível */
             transition: all 0.3s ease; /* Transição suave ao expandir */
         }
-        
-        /* Estilos para os marcadores e informações de pedágio e balança */
-        .toll-info {
-            padding: 5px;
-            min-width: 150px;
-        }
-        
-        .weighing-station-info {
-            padding: 5px;
-            min-width: 150px;
-            background-color: #f8f9fa;
-            border-left: 3px solid #28a745;
-        }
-        
-        /* Controle para mostrar/ocultar marcadores de pedágio */
-        .toll-control {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-            z-index: 100;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-        .toll-control input {
-            margin-right: 5px;
-        }
         .restriction-item {
             padding: 8px;
             border-bottom: 1px solid #eee;
@@ -1282,28 +1236,6 @@
                         <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
                     </svg>
                 </button>
-                <button class="map-control-btn" id="toggle-tolls" title="Mostrar/ocultar pedágios">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2zM3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8zm9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5zm.754-4.246a.389.389 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.389.389 0 0 0-.029-.518z"/>
-                    </svg>
-                </button>
-                <button class="map-control-btn" id="toggle-weighing-stations" title="Mostrar/ocultar balanças">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2zM3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8zm9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5zm.754-4.246a.389.389 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.389.389 0 0 0-.029-.518z"/>
-                    </svg>
-                </button>
-            </div>
-            
-            <!-- Controle para mostrar/ocultar pedágios -->
-            <div class="tollControl" id="toll-control" style="display: none;">
-                <input type="checkbox" id="show-tolls" checked>
-                <label for="show-tolls">Mostrar Pedágios</label>
-            </div>
-            
-            <!-- Controle para mostrar/ocultar balanças -->
-            <div class="tollControl" id="weighing-station-control" style="display: none; top: 50px;">
-                <input type="checkbox" id="show-weighing-stations" checked>
-                <label for="show-weighing-stations">Mostrar Balanças</label>
             </div>
         </div>
         </div>
@@ -1460,16 +1392,12 @@
     let currentOptimizedPath = []; // Array para armazenar os IDs do caminho otimizado atual
     let poiMarkers = [];
     let eventMarkers = [];
-    let tollMarkers = []; // Array para armazenar marcadores de pedágio
-    let weighingStationMarkers = []; // Array para armazenar marcadores de balanças
     let locationId = 2; // Começa em 2 porque 1 é reservado para a origem
     let locations = [mockData.origin];
     let activeInfoWindow = null;
     let routePath = null;
     let routeAnimationTimeout = null;
     let showPOIs = true;
-    let showTolls = true; // Controla a visibilidade dos pedágios
-    let showWeighingStations = true; // Controla a visibilidade das balanças
     let customTooltip = null;
     let directionsRendererInitialized = false; // Flag para rastrear inicialização correta do renderer
     // Variáveis para rotas alternativas
@@ -1478,8 +1406,6 @@
     let currentDisplayedRoute = null; // Guarda referência à rota atualmente exibida
     let allRoutePolylines = []; // Armazena referências a todas as polylines criadas
     let tspSolver = null; // Instância do solver TSP
-    let tollsData = []; // Array para armazenar dados dos pontos de pedágio
-    let weighingStationsData = []; // Array para armazenar dados dos pontos de balança
     
     // Função para processar CEP em formato x.y.z.w-abcd
     function formatCEP(cep) {
@@ -1642,220 +1568,11 @@
 
     // Inicializa o mapa
     function initMap() {
-        // Criar o mapa
-        map = new google.maps.Map(document.getElementById('map'), {
-            center: { lat: -22.3674, lng: -48.3798 }, // Dois Córregos-SP
-            zoom: 12,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            gestureHandling: 'greedy' // Permite zoom sem usar Ctrl
-        });
-
-        // Inicializar serviços do Google Maps
-        directionsService = new google.maps.DirectionsService();
-        directionsRenderer = new google.maps.DirectionsRenderer({
-            suppressMarkers: true, // Não mostrar marcadores padrão do Google
-            preserveViewport: false
-        });
-        directionsRenderer.setMap(map);
-        directionsRendererInitialized = true;
-
         // Definir valores iniciais aos campos de data
         initDatePickers();
         
-        // Remover quaisquer pontos que não sejam dos arquivos JSON
-        clearAllCustomMarkers();
-        
-        // Carregar pontos de pedágio do arquivo JSON
-        loadTollPoints();
-        
-        // Carregar pontos de balança do arquivo JSON
-        loadWeighingStationPoints();
-        
         // Invocar a filtragem de eventos inicial para exibir eventos para a origem
         filterEventsByDate();
-    }
-    
-    // Função para limpar todos os marcadores personalizados que não venham dos arquivos JSON
-    function clearAllCustomMarkers() {
-        console.log("Limpando todos os marcadores personalizados que não vêm dos arquivos JSON");
-        
-        // Limpar marcadores de pedágio
-        clearTollMarkers();
-        
-        // Limpar marcadores de balança
-        clearWeighingStationMarkers();
-        
-        // Limpar quaisquer outros marcadores de POIs
-        poiMarkers.forEach(marker => marker.setMap(null));
-        poiMarkers = [];
-    }
-    
-    // Função para carregar e exibir pontos de pedágio
-    function loadTollPoints() {
-        // Carregar o arquivo JSON
-        fetch('pontos_pedagio.json')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erro ao carregar pontos de pedágio: ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                tollsData = data;
-                console.log(`Carregados ${tollsData.length} pontos de pedágio`);
-                
-                // Limpar marcadores existentes
-                clearTollMarkers();
-                
-                // Adicionar marcadores para cada ponto de pedágio
-                tollsData.forEach((toll, index) => {
-                    addTollMarker(toll);
-                });
-            })
-            .catch(error => {
-                console.error('Erro ao carregar ou processar pontos de pedágio:', error);
-                showNotification('Não foi possível carregar os pontos de pedágio: ' + error.message, 'warning');
-            });
-    }
-    
-    // Função para adicionar um marcador de pedágio no mapa
-    function addTollMarker(toll) {
-        if (!toll || !toll.lat || !toll.lng) {
-            console.warn("Ponto de pedágio inválido:", toll);
-            return;
-        }
-        
-        console.log("Adicionando marcador de pedágio:", toll.name, "em", toll.lat, toll.lng);
-        
-        const marker = new google.maps.Marker({
-            position: { lat: toll.lat, lng: toll.lng },
-            map: showTolls ? map : null,
-            title: toll.name,
-            icon: {
-                path: google.maps.SymbolPath.CIRCLE,
-                fillColor: '#ffc107', // Amarelo para pedágios
-                fillOpacity: 0.9,
-                strokeColor: '#000000',
-                strokeWeight: 2,
-                scale: 7
-            },
-            zIndex: 5
-        });
-        
-        // Adicionar info window com informações completas ao clicar no marcador
-        marker.addListener('click', function() {
-            if (activeInfoWindow) {
-                activeInfoWindow.close();
-            }
-            
-            const infoWindow = new google.maps.InfoWindow({
-                content: `
-                    <div class="toll-info">
-                        <h5>${toll.name}</h5>
-                        ${toll.rodovia ? `<p>Rodovia: ${toll.rodovia}</p>` : ''}
-                    </div>
-                `
-            });
-            
-            infoWindow.open(map, marker);
-            activeInfoWindow = infoWindow;
-        });
-        
-        // Adicionar o marcador à lista global
-        tollMarkers.push(marker);
-    }
-    
-    // Função para limpar todos os marcadores de pedágio
-    function clearTollMarkers() {
-        tollMarkers.forEach(marker => {
-            marker.setMap(null);
-        });
-        tollMarkers = [];
-    }
-    
-    // Função para carregar e exibir pontos de balança
-    function loadWeighingStationPoints() {
-        // Carregar o arquivo JSON
-        fetch('pontos_balanca.json')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erro ao carregar pontos de balança: ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                weighingStationsData = data;
-                console.log(`Carregados ${weighingStationsData.length} pontos de balança`);
-                
-                // Limpar marcadores existentes
-                clearWeighingStationMarkers();
-                
-                // Adicionar marcadores para cada ponto de balança
-                weighingStationsData.forEach((station, index) => {
-                    addWeighingStationMarker(station);
-                });
-            })
-            .catch(error => {
-                console.error('Erro ao carregar ou processar pontos de balança:', error);
-                showNotification('Não foi possível carregar os pontos de balança: ' + error.message, 'warning');
-            });
-    }
-    
-    // Função para adicionar um marcador de balança no mapa
-    function addWeighingStationMarker(station) {
-        if (!station || !station.latitude || !station.longitude) {
-            console.warn("Ponto de balança inválido:", station);
-            return;
-        }
-        
-        console.log("Adicionando marcador de balança:", station.name, "em", station.latitude, station.longitude);
-        
-        const marker = new google.maps.Marker({
-            position: { lat: station.latitude, lng: station.longitude },
-            map: showWeighingStations ? map : null,
-            title: station.name,
-            icon: {
-                path: google.maps.SymbolPath.CIRCLE,
-                fillColor: '#28a745', // Verde para diferenciar dos pedágios
-                fillOpacity: 0.9,
-                strokeColor: '#000000',
-                strokeWeight: 2,
-                scale: 6
-            },
-            zIndex: 4
-        });
-        
-        // Adicionar info window ao clicar no marcador
-        marker.addListener('click', function() {
-            if (activeInfoWindow) {
-                activeInfoWindow.close();
-            }
-            
-            const infoWindow = new google.maps.InfoWindow({
-                content: `
-                    <div class="weighing-station-info">
-                        <h5>${station.name}</h5>
-                        <p>${station.address || ''}</p>
-                        ${station.Município ? `<p>Município: ${station.Município}</p>` : ''}
-                        ${station.Rodovia ? `<p>Rodovia: ${station.Rodovia} ${station.Denominação ? `- ${station.Denominação}` : ''}</p>` : ''}
-                    </div>
-                `
-            });
-            
-            infoWindow.open(map, marker);
-            activeInfoWindow = infoWindow;
-        });
-        
-        // Adicionar o marcador à lista global
-        weighingStationMarkers.push(marker);
-    }
-    
-    // Função para limpar todos os marcadores de balança
-    function clearWeighingStationMarkers() {
-        weighingStationMarkers.forEach(marker => {
-            marker.setMap(null);
-        });
-        weighingStationMarkers = [];
     }
     
     // Função centralizada para inicializar os campos de data
@@ -2339,18 +2056,6 @@
         // Botões de controle do mapa
         document.getElementById('zoom-to-fit').addEventListener('click', zoomToFitAllMarkers);
         document.getElementById('toggle-poi').addEventListener('click', togglePointsOfInterest);
-        document.getElementById('toggle-tolls').addEventListener('click', toggleTollControl);
-        document.getElementById('toggle-weighing-stations').addEventListener('click', toggleWeighingStationControl);
-        
-        // Checkbox para controlar a visibilidade dos pedágios
-        document.getElementById('show-tolls').addEventListener('change', function() {
-            toggleTollMarkers(this.checked);
-        });
-        
-        // Checkbox para controlar a visibilidade das balanças
-        document.getElementById('show-weighing-stations').addEventListener('change', function() {
-            toggleWeighingStationMarkers(this.checked);
-        });
         
         // Botões da aba de relatório
         document.getElementById('save-route').addEventListener('click', saveRoute);
@@ -2959,62 +2664,6 @@
         });
     }
 
-    // Funções para controlar a exibição dos pedágios
-    function toggleTollControl() {
-        const tollControl = document.getElementById('toll-control');
-        if (tollControl) {
-            if (tollControl.style.display === 'none') {
-                tollControl.style.display = 'flex';
-            } else {
-                tollControl.style.display = 'none';
-            }
-        }
-    }
-    
-    function toggleTollMarkers(show) {
-        tollMarkers.forEach(marker => {
-            marker.setMap(show ? map : null);
-        });
-        showTolls = show;
-        console.log(`${show ? 'Exibindo' : 'Ocultando'} marcadores de pedágio`);
-    }
-    
-    // Funções para controlar a exibição das balanças
-    function toggleWeighingStationControl() {
-        const weighingStationControl = document.getElementById('weighing-station-control');
-        if (weighingStationControl) {
-            if (weighingStationControl.style.display === 'none') {
-                weighingStationControl.style.display = 'flex';
-            } else {
-                weighingStationControl.style.display = 'none';
-            }
-        }
-    }
-    
-    function toggleWeighingStationMarkers(show) {
-        weighingStationMarkers.forEach(marker => {
-            marker.setMap(show ? map : null);
-        });
-        showWeighingStations = show;
-        console.log(`${show ? 'Exibindo' : 'Ocultando'} marcadores de balança`);
-    }
-    
-    // Função para alternar a exibição de pontos de interesse no mapa
-    function togglePointsOfInterest() {
-        showPOIs = !showPOIs;
-        
-        // Se estiver desativando, remover todos os marcadores
-        if (!showPOIs) {
-            poiMarkers.forEach(marker => marker.setMap(null));
-            poiMarkers = [];
-            console.log("Pontos de interesse ocultados");
-        } else {
-            // Se estiver ativando, exibir os POIs
-            addPointsOfInterestToMap();
-            console.log("Pontos de interesse exibidos");
-        }
-    }
-    
     // Limpar rota atual e marcadores relacionados
     // Função para limpar todas as polylines do mapa
     function clearAllPolylines() {
