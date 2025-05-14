@@ -2158,8 +2158,11 @@
             // Atualizar a lista de locais
             updateLocationsList();
             
-            // Ajustar o zoom para mostrar todos os pontos
+            // Ajustar o zoom para mostrar todos os pontos com padding para melhor visualização
             zoomToFitAllMarkers();
+            
+            // Exibir notificação de sucesso
+            showNotification(`${newLocations.length} locais adicionados com sucesso.`, "success");
         }
         
         // Processar a fila de geocodificação para CEPs desconhecidos
@@ -3516,6 +3519,15 @@
                     bounds.extend(new google.maps.LatLng(location.latitude, location.longitude));
                 });
                 map.fitBounds(bounds);
+                
+                // Adicionar um pequeno padding ao mapa para melhor visualização
+                const padding = {
+                    top: 50,
+                    right: 50,
+                    bottom: 50,
+                    left: 50
+                };
+                map.fitBounds(bounds, padding);
             } else {
                 // Substituir alert por notificação inline mais suave
                 console.error(`Erro ao calcular rota: ${status}`);
@@ -3954,7 +3966,10 @@
                 const knownCities = [
                     "Dois Córregos", "Jaú", "Botucatu", "Bauru", "Ribeirão Preto", 
                     "São Paulo", "Campinas", "São Carlos", "Piracicaba", "Araraquara",
-                    "Americana", "Sorocaba", "Limeira", "Rio Claro"
+                    "Americana", "Sorocaba", "Limeira", "Rio Claro", "Mineiros do Tietê",
+                    "Barra Bonita", "Igaraçu do Tietê", "Macatuba", "Pederneiras", "Bocaina",
+                    "Brotas", "Torrinha", "Itirapina", "São Manuel", "Lençóis Paulista",
+                    "Agudos", "Marília", "Ourinhos", "Assis", "Presidente Prudente"
                 ];
                 
                 // Se o nome exato da localização é uma cidade conhecida
