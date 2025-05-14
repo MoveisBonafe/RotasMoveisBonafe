@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="4" fill="#FFFFFF"/>
+  <g transform="translate(2, 5)">
+    <!-- MOVERS text -->
+    <text x="2" y="7" font-family="Arial, sans-serif" font-size="5" font-weight="bold" fill="#000000">MÓVEIS</text>
+    <!-- BONAFÉ text -->
+    <text x="2" y="15" font-family="Arial, sans-serif" font-size="7.5" font-weight="bold" fill="#FFC107">BONAFÉ</text>
+    <!-- Yellow semi-circles -->
+    <path d="M 8 18 A 4 4 0 0 0 12 22 A 4 4 0 0 0 16 18 Z" fill="#FFC107" />
+    <path d="M 16 18 A 4 4 0 0 0 20 22 A 4 4 0 0 0 24 18 Z" fill="#FFC107" />
+  </g>
+</svg>
