@@ -1113,9 +1113,12 @@
             
             <!-- Conteúdo da aba Eventos -->
             <div class="bottom-tab-content" id="bottom-events-content">
-                <h5>Eventos nas cidades da rota:</h5>
+                <h5>Informações de eventos</h5>
                 <div class="events-list" id="events-list">
-                    <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
+                    <div class="alert alert-info text-center mt-4 mb-4">
+                        <h3>Aba de eventos desativada</h3>
+                        <p>Conforme solicitado, todas as informações de eventos foram removidas desta aba.</p>
+                    </div>
                 </div>
             </div>
             
@@ -1190,26 +1193,11 @@
             { id: 8, name: "Borracharia 24h (Botucatu)", type: "mechanic", latitude: -22.8900, longitude: -48.4500, highway: "SP-300", cityName: "Botucatu", services: ["tire"] }
         ],
         
-        // Eventos de cidades (com aniversários atualizados para 2025)
+        // Eventos de cidades foram removidos conforme solicitado
         cityEvents: [
-            // Aniversários das principais cidades (eventos fixos - feriados municipais)
-            { id: 99, cityName: "Dois Córregos", name: "Festival de Verão", startDate: "2025-01-01", endDate: "2025-12-31", isHoliday: false, description: "Festival com atividades durante todo o ano", restrictionLevel: "low" },
-            { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2025-02-04", endDate: "2025-02-04", isHoliday: true, description: "Aniversário de fundação de Dois Córregos em 04/02/1883", restrictionLevel: "low" },
-            { id: 2, cityName: "Jaú", name: "Aniversário da Cidade", startDate: "2025-08-15", endDate: "2025-08-15", isHoliday: true, description: "Aniversário de fundação de Jaú em 15/08/1853", restrictionLevel: "low" },
-            { id: 3, cityName: "Botucatu", name: "Aniversário da Cidade", startDate: "2025-04-14", endDate: "2025-04-14", isHoliday: true, description: "Aniversário de fundação de Botucatu em 14/04/1855", restrictionLevel: "low" },
-            { id: 4, cityName: "Bauru", name: "Aniversário da Cidade", startDate: "2025-08-01", endDate: "2025-08-01", isHoliday: true, description: "Aniversário de fundação de Bauru em 01/08/1896", restrictionLevel: "low" },
-            { id: 5, cityName: "Ribeirão Preto", name: "Aniversário da Cidade", startDate: "2025-06-19", endDate: "2025-06-19", isHoliday: true, description: "Aniversário de fundação de Ribeirão Preto em 19/06/1856", restrictionLevel: "low" },
-            { id: 6, cityName: "São Paulo", name: "Aniversário da Cidade", startDate: "2025-01-25", endDate: "2025-01-25", isHoliday: true, description: "Aniversário de fundação de São Paulo em 25/01/1554", restrictionLevel: "high" },
-            { id: 7, cityName: "Campinas", name: "Aniversário da Cidade", startDate: "2025-07-14", endDate: "2025-07-14", isHoliday: true, description: "Aniversário de fundação de Campinas em 14/07/1774", restrictionLevel: "medium" },
-            { id: 8, cityName: "São Carlos", name: "Aniversário da Cidade", startDate: "2025-11-04", endDate: "2025-11-04", isHoliday: true, description: "Aniversário de fundação de São Carlos em 04/11/1857", restrictionLevel: "low" },
-            
-            // Eventos regulares
-            { id: 9, cityName: "Jaú", name: "Festa do Rodeio", startDate: "2025-06-10", endDate: "2025-06-20", isHoliday: false, description: "Evento com grande circulação de veículos", restrictionLevel: "medium" },
-            { id: 10, cityName: "Botucatu", name: "Festival de Inverno", startDate: "2025-07-15", endDate: "2025-07-30", isHoliday: false, description: "Evento cultural e gastronômico", restrictionLevel: "low" },
-            { id: 11, cityName: "Bauru", name: "Exposição Agropecuária", startDate: "2025-08-05", endDate: "2025-08-15", isHoliday: false, description: "Feira agropecuária com shows", restrictionLevel: "high" },
-            { id: 12, cityName: "Ribeirão Preto", name: "Agrishow", startDate: "2025-04-25", endDate: "2025-04-29", isHoliday: false, description: "Maior feira de agronegócio da América Latina com forte impacto no tráfego local", restrictionLevel: "high" },
-            { id: 13, cityName: "São Paulo", name: "Virada Cultural", startDate: "2025-05-17", endDate: "2025-05-18", isHoliday: false, description: "Festival de 24 horas com eventos culturais pela cidade", restrictionLevel: "medium" },
-            { id: 14, cityName: "Ribeirão Preto", name: "Feira Tecnológica", startDate: "2025-05-15", endDate: "2025-05-18", isHoliday: false, description: "Exposição de novas tecnologias agrícolas", restrictionLevel: "medium" }
+            // Array vazio mantido para compatibilidade com o código existente
+            // Eventos removidos - mantendo apenas um para compatibilidade de código
+            { id: 999, cityName: "Desativado", name: "Desativado", startDate: "2025-01-01", endDate: "2025-01-01", isHoliday: false, description: "Eventos desativados conforme solicitado", restrictionLevel: "low" }
         ],
         
         // Restrições para caminhões
