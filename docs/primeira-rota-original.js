@@ -9,11 +9,16 @@
     let botaoOtimizarMonitorado = false;
     let primeiraOtimizacao = true;
     
-    // Iniciar monitoramento do botão de otimizar
+    // Iniciar monitoramento do botão de otimizar imediatamente
+    inicializar();
+    
+    // Também inicializar nos eventos padrão
     document.addEventListener('DOMContentLoaded', inicializar);
     window.addEventListener('load', inicializar);
     
-    // Garantir inicialização em qualquer contexto
+    // Garantir inicialização em qualquer contexto com maior prioridade
+    setTimeout(inicializar, 100);
+    setTimeout(inicializar, 500);
     setTimeout(inicializar, 1000);
     setTimeout(inicializar, 2000);
     
@@ -50,6 +55,10 @@
         botao.onclick = function(e) {
             console.log('[PrimeiraRotaOriginal] Botão de otimizar clicado');
             
+            // Impedir a execução padrão imediatamente para garantir nossa prioridade
+            e.preventDefault();
+            e.stopPropagation();
+                
             // Se for a primeira otimização, usar ordem original
             if (primeiraOtimizacao) {
                 console.log('[PrimeiraRotaOriginal] Primeira otimização, usando ordem original');
@@ -58,15 +67,35 @@
                 const destinos = obterDestinosAtuais();
                 
                 if (destinos.length > 0) {
-                    // Calcular rota na ordem original
-                    setTimeout(() => calcularRotaNaOrdemOriginal(destinos), 100);
+                    // Calcular rota na ordem original IMEDIATAMENTE
+                    calcularRotaNaOrdemOriginal(destinos);
                     
-                    // Marcar como não sendo mais a primeira
+                    // Marcar como processado
                     primeiraOtimizacao = false;
+                    
+                    // Selecionar o tipo "Rota Personalizada" se disponível
+                    setTimeout(selecionarTipoRotaPersonalizada, 1000);
+                    
+                    console.log('[PrimeiraRotaOriginal] Primeira otimização processada');
+                    
+                    // Executar handler original com atraso para não sobrescrever nossa rota
+                    setTimeout(() => {
+                        if (typeof handlerOriginal === 'function') {
+                            try {
+                                // Executar usando um novo evento para evitar problemas
+                                const novoEvento = new Event('click');
+                                handlerOriginal.call(this, novoEvento);
+                            } catch (err) {
+                                console.error('[PrimeiraRotaOriginal] Erro ao executar handler original:', err);
+                            }
+                        }
+                    }, 1500);
+                    
+                    return false;
                 }
             }
             
-            // Executar handler original
+            // Se não é a primeira otimização, executar comportamento padrão
             if (typeof handlerOriginal === 'function') {
                 try {
                     handlerOriginal.call(this, e);
@@ -80,6 +109,43 @@
         
         // Marcar como monitorado
         botaoOtimizarMonitorado = true;
+    }
+    
+    /**
+     * Selecionar o tipo "Rota Personalizada" nas alternativas
+     */
+    function selecionarTipoRotaPersonalizada() {
+        console.log('[PrimeiraRotaOriginal] Tentando selecionar rota personalizada');
+        
+        // Encontrar container das rotas alternativas
+        const container = document.querySelector('.alternative-routes-section') || 
+                          document.querySelector('[class*="alternative-routes"]');
+        
+        if (!container) {
+            console.log('[PrimeiraRotaOriginal] Container de rotas alternativas não encontrado');
+            return;
+        }
+        
+        // Procurar por um card que mencione "personalizada"
+        const cards = container.querySelectorAll('.route-option-card, .route-card, [class*="route-option"]');
+        
+        for (const card of cards) {
+            if (card.textContent.toLowerCase().includes('personalizada')) {
+                // Encontramos o card da rota personalizada
+                console.log('[PrimeiraRotaOriginal] Card de rota personalizada encontrado');
+                
+                // Simular clique
+                try {
+                    card.click();
+                    console.log('[PrimeiraRotaOriginal] Rota personalizada selecionada');
+                    return;
+                } catch (e) {
+                    console.error('[PrimeiraRotaOriginal] Erro ao selecionar rota personalizada:', e);
+                }
+            }
+        }
+        
+        console.log('[PrimeiraRotaOriginal] Card de rota personalizada não encontrado');
     }
     
     /**
@@ -185,6 +251,18 @@
                 if (status === google.maps.DirectionsStatus.OK) {
                     console.log('[PrimeiraRotaOriginal] Rota na ordem original calculada com sucesso');
                     directionsRenderer.setDirections(result);
+                    
+                    // Salvar globalmente para que outros scripts possam acessar
+                    window.directionsResultOriginal = result;
+                    
+                    // Salvar no renderer global, se existir
+                    if (window.directionsRenderer) {
+                        try {
+                            window.directionsRenderer.setDirections(result);
+                        } catch (e) {
+                            console.error('[PrimeiraRotaOriginal] Erro ao definir directions no renderer global:', e);
+                        }
+                    }
                 } else {
                     console.error('[PrimeiraRotaOriginal] Erro ao calcular rota na ordem original:', status);
                 }
