@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "name": "DR 01 - SP 324",
+    "name": "Balança SP-324 - Campinas",
     "address": "KM 84+350 - Indaiatuba/Vinhedo",
     "latitude": -23.0532826,
     "longitude": -47.0545045,
@@ -12,7 +12,7 @@
   },
   {
     "id": 2,
-    "name": "DR 01 - SP 008",
+    "name": "Balança SP-008 - Bragança Paulista",
     "address": "KM 100+140 - Socorro/Bragança Paulista",
     "latitude": -23.0370714,
     "longitude": -46.5543706,
@@ -23,7 +23,7 @@
   },
   {
     "id": 3,
-    "name": "DR 01 - SP 008",
+    "name": "Balança SP-008 - Bragança Paulista",
     "address": "KM 102+350 - Bragança Paulista/Socorro",
     "latitude": -23.0370714,
     "longitude": -46.5543706,
@@ -34,7 +34,7 @@
   },
   {
     "id": 4,
-    "name": "DR 01 - SP 063",
+    "name": "Balança SP-063 - Itatiba",
     "address": "KM 30+700 - Itatiba/Bragança Paulista",
     "latitude": -22.959751,
     "longitude": -46.7000807,
@@ -45,7 +45,7 @@
   },
   {
     "id": 5,
-    "name": "DR 01 - SP 095",
+    "name": "Balança SP-095 - Pedreira",
     "address": "KM 62+880 - Pedreira/Jaguariuna",
     "latitude": -22.7773747,
     "longitude": -46.7353239,
@@ -56,7 +56,7 @@
   },
   {
     "id": 6,
-    "name": "DR 01 - SP 133",
+    "name": "Balança SP-133 - Cosmópolis",
     "address": "KM 13+800 - Cosmópolis/Limeira",
     "latitude": -22.6273416,
     "longitude": -47.2682177,
@@ -67,7 +67,7 @@
   },
   {
     "id": 7,
-    "name": "DR 01 - SP 147",
+    "name": "Balança SP-147 - Itapira",
     "address": "KM 29+000 - Itapira/Lindóia",
     "latitude": -22.6575298,
     "longitude": -47.5219317,
@@ -78,7 +78,7 @@
   },
   {
     "id": 8,
-    "name": "DR 01 - SP 354",
+    "name": "Balança SP-354 - Jarinu",
     "address": "KM 63+050 - Campo Limpo Paulista/Jarinu",
     "latitude": -23.1813293,
     "longitude": -46.7781969,
@@ -89,7 +89,7 @@
   },
   {
     "id": 9,
-    "name": "DR 01 - SP 354",
+    "name": "Balança SP-354 - Atibaia",
     "address": "KM 79+200 - Jarinu/Campo Limpo Paulista",
     "latitude": -23.1813293,
     "longitude": -46.7781969,
@@ -100,7 +100,7 @@
   },
   {
     "id": 10,
-    "name": "DR 01 - SP 360",
+    "name": "Balança SP-360 - Amparo",
     "address": "KM 114+150 - Morungaba/Amparo",
     "latitude": -22.8056584,
     "longitude": -46.7552668,
@@ -110,8 +110,96 @@
     "Município": "Amparo"
   },
   {
+    "id": 11,
+    "name": "Balança SP-079 - Votorantim",
+    "address": "KM 100+200 - Piedade/Sorocaba",
+    "latitude": -23.7362677,
+    "longitude": -47.4302329,
+    "Regional": "DR 02",
+    "Rodovia": "SP 079",
+    "Denominação": "Raimundo Antunes Soares",
+    "Município": "Votorantim"
+  },
+  {
+    "id": 12,
+    "name": "Balança SP-079 - Piedade",
+    "address": "KM 112+000 - Sorocaba/Piedade",
+    "latitude": -23.7362677,
+    "longitude": -47.4302329,
+    "Regional": "DR 02",
+    "Rodovia": "SP 079",
+    "Denominação": "Raimundo Antunes Soares",
+    "Município": "Piedade"
+  },
+  {
+    "id": 13,
+    "name": "Balança SP-097 - Porto Feliz",
+    "address": "KM 19+000 - Sorocaba/Porto Feliz",
+    "latitude": -23.3418215,
+    "longitude": -47.529287,
+    "Regional": "DR 02",
+    "Rodovia": "SP 097",
+    "Denominação": "Doutor Antonio Pires de Almeida",
+    "Município": "Porto Feliz"
+  },
+  {
+    "id": 14,
+    "name": "Balança SP-129 - Itapetininga",
+    "address": "KM 63+200 - Tatui/Itapetininga",
+    "latitude": -23.357184,
+    "longitude": -47.8813361,
+    "Regional": "DR 02",
+    "Rodovia": "SP 129",
+    "Denominação": "Gladys Bernardes Minhoto",
+    "Município": "Itapetininga"
+  },
+  {
+    "id": 15,
+    "name": "Balança SP-129 - Itapetininga",
+    "address": "KM 65+500 - Itapetininga/Tatuí",
+    "latitude": -23.357184,
+    "longitude": -47.8813361,
+    "Regional": "DR 02",
+    "Rodovia": "SP 129",
+    "Denominação": "Gladys Bernardes Minhoto",
+    "Município": "Itapetininga"
+  },
+  {
+    "id": 16,
+    "name": "Balança SP-250 - Ibiúna",
+    "address": "KM 72+624 - Piedade/Ibiúna",
+    "latitude": -23.9285958,
+    "longitude": -48.1613191,
+    "Regional": "DR 02",
+    "Rodovia": "SP 250",
+    "Denominação": "Bunjiro Nakao",
+    "Município": "Ibiúna"
+  },
+  {
+    "id": 17,
+    "name": "Balança SP-250 - São Miguel Arcanjo",
+    "address": "KM 159+846 - São Miguel Arcanjo/Pilar do Sul",
+    "latitude": -23.9285958,
+    "longitude": -48.1613191,
+    "Regional": "DR 02",
+    "Rodovia": "SP 250",
+    "Denominação": "Nestor Fogaça",
+    "Município": "São Miguel Arcanjo"
+  },
+  {
+    "id": 18,
+    "name": "Balança SP-264 - Salto de Pirapora",
+    "address": "KM 111+805 - Salto Pirapora/Sorocaba",
+    "latitude": -23.6684192,
+    "longitude": -47.6003194,
+    "Regional": "DR 02",
+    "Rodovia": "SP 264",
+    "Denominação": "João Leme Dos Santos",
+    "Município": "Salto de Pirapora"
+  },
+  {
     "id": 19,
-    "name": "DR 03 - SP 304",
+    "name": "Balança SP-304 - Bariri",
     "address": "KM 324+500 - Bariri/Jau",
     "latitude": -22.1046535,
     "longitude": -48.6982877,
@@ -122,7 +210,7 @@
   },
   {
     "id": 20,
-    "name": "DR 03 - SP 321",
+    "name": "Balança SP-321 - Arealva",
     "address": "KM 369+600 - Bauru/Iacanga",
     "latitude": -21.6689667,
     "longitude": -49.0384046,
@@ -132,8 +220,30 @@
     "Município": "Arealva"
   },
   {
+    "id": 21,
+    "name": "Balança SP-253 - Guariba",
+    "address": "KM 207+000 - Jaboticabal/Pradopolis",
+    "latitude": -21.4922618,
+    "longitude": -47.449487,
+    "Regional": "DR 04",
+    "Rodovia": "SP 253",
+    "Denominação": "Cunha Bueno",
+    "Município": "Guariba"
+  },
+  {
+    "id": 22,
+    "name": "Balança SP-253 - Jaboticabal",
+    "address": "KM 209+000 - Pradopolis/Jaboticabal",
+    "latitude": -21.4922618,
+    "longitude": -47.449487,
+    "Regional": "DR 04",
+    "Rodovia": "SP 253",
+    "Denominação": "Cunha Bueno",
+    "Município": "Jaboticabal"
+  },
+  {
     "id": 23,
-    "name": "DR 04 - SP 304",
+    "name": "Balança SP-304 - Ibitinga",
     "address": "KM 354+000 - Itaju/Ibitinga",
     "latitude": -22.1046535,
     "longitude": -48.6982877,
@@ -143,8 +253,129 @@
     "Município": "Ibitinga"
   },
   {
+    "id": 24,
+    "name": "Balança SP-331 - Gavião Peixoto",
+    "address": "KM 12+000 - Gavião Peixoto/Araraquara",
+    "latitude": -21.8935422,
+    "longitude": -49.0565819,
+    "Regional": "DR 04",
+    "Rodovia": "SP 331",
+    "Denominação": "Victor Maida",
+    "Município": "Gavião Peixoto"
+  },
+  {
+    "id": 25,
+    "name": "Balança SP-139 - Sete Barras",
+    "address": "KM 10+200 - Sete Barras/Registro",
+    "latitude": -24.1361869,
+    "longitude": -47.995135,
+    "Regional": "DR 05",
+    "Rodovia": "SP 139",
+    "Denominação": "Empei Hiraide",
+    "Município": "Sete Barras"
+  },
+  {
+    "id": 26,
+    "name": "Balança SP-226 - Paruquera-Açú",
+    "address": "KM 1+300 - Registro/Pariquera-Açu",
+    "latitude": -24.8187498,
+    "longitude": -47.9019379,
+    "Regional": "DR 05",
+    "Rodovia": "SP 226",
+    "Denominação": "SP 226",
+    "Município": "Paruquera-Açú"
+  },
+  {
+    "id": 27,
+    "name": "Balança SP-050 - São José dos Campos",
+    "address": "KM 100+500 - Monteiro Lobato/São José dos Campos",
+    "latitude": -22.9625192,
+    "longitude": -45.8371077,
+    "Regional": "DR 06",
+    "Rodovia": "SP 050",
+    "Denominação": "Monteiro Lobato",
+    "Município": "São José dos Campos"
+  },
+  {
+    "id": 28,
+    "name": "Balança SP-052 - Cruzeiro",
+    "address": "KM 222+000 - Cruzeiro/Sul de Minas Gerais",
+    "latitude": -22.5655003,
+    "longitude": -44.9995909,
+    "Regional": "DR 06",
+    "Rodovia": "SP 052",
+    "Denominação": "Doutor Avelino Junior",
+    "Município": "Cruzeiro"
+  },
+  {
+    "id": 29,
+    "name": "Balança SP-123 - Pindamonhangaba",
+    "address": "KM 25+991 - Taubaté/Campos do Jordão",
+    "latitude": -22.8896855,
+    "longitude": -45.5965293,
+    "Regional": "DR 06",
+    "Rodovia": "SP 123",
+    "Denominação": "Floriano Rodrigues Pinheiro",
+    "Município": "Pindamonhangaba"
+  },
+  {
+    "id": 30,
+    "name": "Balança SP-171 - Guaratinguetá",
+    "address": "KM 2+800 - Cunha/BR 116",
+    "latitude": -23.0102905,
+    "longitude": -45.027421,
+    "Regional": "DR 06",
+    "Rodovia": "SP 171",
+    "Denominação": "Paulo Virgilio",
+    "Município": "Guaratinguetá"
+  },
+  {
+    "id": 31,
+    "name": "Balança SP-291 - Pradópolis",
+    "address": "KM 23+975 - Dumont/Pradópolis",
+    "latitude": -21.246779,
+    "longitude": -47.970858,
+    "Regional": "DR 08",
+    "Rodovia": "SP 291",
+    "Denominação": "Mario Donega",
+    "Município": "Pradópolis"
+  },
+  {
+    "id": 32,
+    "name": "Balança SP-333 - Santa Cruz da Esperança",
+    "address": "KM 16+940 - Cajuru/Serrana",
+    "latitude": -21.6093075,
+    "longitude": -49.1390354,
+    "Regional": "DR 08",
+    "Rodovia": "SP 333",
+    "Denominação": "Abrão Assed",
+    "Município": "Santa Cruz da Esperança"
+  },
+  {
+    "id": 33,
+    "name": "Balança SP-333 - Ribeirão Preto",
+    "address": "KM 48+100 - Ribeirão Preto/Serrana",
+    "latitude": -21.6093075,
+    "longitude": -49.1390354,
+    "Regional": "DR 08",
+    "Rodovia": "SP 333",
+    "Denominação": "Abrão Assed",
+    "Município": "Ribeirão Preto"
+  },
+  {
+    "id": 34,
+    "name": "Balança SP-351 - Altinópolis",
+    "address": "KM 18+900 - Santo Antonio Alegria/Altinópolis",
+    "latitude": -20.8432438,
+    "longitude": -48.2575,
+    "Regional": "DR 08",
+    "Rodovia": "SP 351",
+    "Denominação": "Altino Arantes",
+    "Município": "Altinópolis"
+  },
+  {
     "id": 35,
-    "name": "DR 09 - SP 304",
+    "name": "Balança SP-304 - Novo Horizonte",
     "address": "KM 410+000 - Ibitinga/Novo Horizonte",
     "latitude": -22.1046535,
     "longitude": -48.6982877,
@@ -154,8 +385,96 @@
     "Município": "Novo Horizonte"
   },
   {
+    "id": 36,
+    "name": "Balança SP-310 - Araraquara",
+    "address": "KM 258+700 - Araraquara/São Carlos",
+    "latitude": -21.6147765,
+    "longitude": -48.4194381,
+    "Regional": "DR 09",
+    "Rodovia": "SP 310",
+    "Denominação": "Feliciano Sales da Cunha",
+    "Município": "Araraquara"
+  },
+  {
+    "id": 37,
+    "name": "Balança SP-333 - Itápolis",
+    "address": "KM 152+500 - Itápolis/Borborema",
+    "latitude": -21.5820554,
+    "longitude": -48.8142472,
+    "Regional": "DR 09",
+    "Rodovia": "SP 333",
+    "Denominação": "Carlos Tonani",
+    "Município": "Itápolis"
+  },
+  {
+    "id": 38,
+    "name": "Balança SP-225 - Piratininga",
+    "address": "KM 177+100 - Piratininga/Bauru",
+    "latitude": -22.4168777,
+    "longitude": -49.1334839,
+    "Regional": "DR 10",
+    "Rodovia": "SP 225",
+    "Denominação": "Engenheiro Paulo Nilo Romano",
+    "Município": "Piratininga"
+  },
+  {
+    "id": 39,
+    "name": "Balança SP-191 - São Pedro",
+    "address": "KM 127+250 - Santa Maria da Serra/São Pedro",
+    "latitude": -22.5445424,
+    "longitude": -47.9094467,
+    "Regional": "DR 10",
+    "Rodovia": "SP 191",
+    "Denominação": "Wilson Finardi",
+    "Município": "São Pedro"
+  },
+  {
+    "id": 40,
+    "name": "Balança SP-261 - Pederneiras",
+    "address": "KM 123+750 - Pederneiras/Jaú",
+    "latitude": -22.3506954,
+    "longitude": -48.7783813,
+    "Regional": "DR 10",
+    "Rodovia": "SP 261",
+    "Denominação": "Osni Mateus",
+    "Município": "Pederneiras"
+  },
+  {
+    "id": 41,
+    "name": "Balança SP-191 - Rio Claro",
+    "address": "KM 69+950 - Rio Claro/Araras",
+    "latitude": -22.3977692,
+    "longitude": -47.5549088,
+    "Regional": "DR 10",
+    "Rodovia": "SP 191",
+    "Denominação": "SP 191",
+    "Município": "Rio Claro"
+  },
+  {
+    "id": 42,
+    "name": "Balança SP-191 - Araras",
+    "address": "KM 60+720 - Araras/Rio Claro",
+    "latitude": -22.3520582,
+    "longitude": -47.4525013,
+    "Regional": "DR 10",
+    "Rodovia": "SP 191",
+    "Denominação": "SP 191",
+    "Município": "Araras"
+  },
+  {
+    "id": 43,
+    "name": "Balança SP-304 - Torrinha",
+    "address": "KM 234+100 - Torrinha/Brotas",
+    "latitude": -22.4255621,
+    "longitude": -48.1682854,
+    "Regional": "DR 10",
+    "Rodovia": "SP 304",
+    "Denominação": "Ayrton Senna",
+    "Município": "Torrinha"
+  },
+  {
     "id": 44,
-    "name": "DR 10 - SP 225",
+    "name": "Balança SP-225 - Brotas",
     "address": "KM 206+000 - Itirapina/Brotas",
     "latitude": -22.2478775,
     "longitude": -48.0186461,
@@ -166,7 +485,7 @@
   },
   {
     "id": 45,
-    "name": "DR 10 - SP 225",
+    "name": "Balança SP-225 - Dois Córregos",
     "address": "KM 243+000 - Brotas/Jaú",
     "latitude": -22.2564336,
     "longitude": -48.3580127,

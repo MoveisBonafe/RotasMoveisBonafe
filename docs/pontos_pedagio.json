@@ -1,172 +1,68 @@
 [
   {
-    "name": "Praça de Pedágio - Jacarepaguá",
-    "lat": -22.9391,
-    "lng": -43.3886
+    "name": "Pedágio SP-225 (Brotas)",
+    "lat": -22.2759,
+    "lng": -48.1234,
+    "rodovia": "SP-225"
   },
   {
-    "name": "Praça de Pedágio - Linha Amarela",
-    "lat": -22.8794,
-    "lng": -43.2725
+    "name": "Pedágio SP-225 (Dois Córregos)",
+    "lat": -22.3674,
+    "lng": -48.3798,
+    "rodovia": "SP-225"
   },
   {
-    "name": "Praça de Pedágio - Nova Dutra (Km 207)",
-    "lat": -23.3974,
-    "lng": -46.3647
+    "name": "Pedágio SP-225 (Itirapina)",
+    "lat": -22.2478,
+    "lng": -47.9012,
+    "rodovia": "SP-225"
   },
   {
-    "name": "Praça de Pedágio - Bandeirantes",
-    "lat": -23.3574,
-    "lng": -46.7473
+    "name": "Pedágio SP-310 (São Carlos)",
+    "lat": -22.0167,
+    "lng": -47.8900,
+    "rodovia": "SP-310"
   },
   {
-    "name": "Praça de Pedágio - Anchieta",
-    "lat": -23.8519,
-    "lng": -46.4066
+    "name": "Pedágio SP-304 (Jaú)",
+    "lat": -22.2987,
+    "lng": -48.5580,
+    "rodovia": "SP-304"
   },
   {
-    "name": "Praça de Pedágio - Imigrantes",
-    "lat": -23.8814,
-    "lng": -46.4001
+    "name": "Pedágio SP-294 (Bauru)",
+    "lat": -22.3256,
+    "lng": -49.0777,
+    "rodovia": "SP-294"
   },
   {
-    "name": "Praça de Pedágio - Castello Branco",
-    "lat": -23.5046,
-    "lng": -47.1855
+    "name": "Pedágio SP-330 (Limeira)",
+    "lat": -22.5649,
+    "lng": -47.4012,
+    "rodovia": "SP-330"
   },
   {
-    "name": "Praça de Pedágio - Anhanguera",
-    "lat": -23.0532,
-    "lng": -47.1345
+    "name": "Pedágio SP-300 (Botucatu)",
+    "lat": -22.8859,
+    "lng": -48.4437,
+    "rodovia": "SP-300"
   },
   {
-    "name": "Praça de Pedágio - Régis Bittencourt",
-    "lat": -24.0941,
-    "lng": -47.1379
+    "name": "Pedágio SP-280 (Sorocaba)",
+    "lat": -23.5032,
+    "lng": -47.4583,
+    "rodovia": "SP-280"
   },
   {
-    "name": "Praça de Pedágio - Fernão Dias",
-    "lat": -22.7446,
-    "lng": -46.1317
+    "name": "Pedágio SP-127 (Tatuí)",
+    "lat": -23.3654,
+    "lng": -47.8521,
+    "rodovia": "SP-127"
   },
   {
-    "name": "Praça de Pedágio - SP-270 (Raposo Tavares)",
-    "lat": -23.5687,
-    "lng": -47.4583
-  },
-  {
-    "name": "Praça de Pedágio - SP-055 (Padre Manoel da Nóbrega)",
-    "lat": -24.1769,
-    "lng": -46.7928
-  },
-  {
-    "name": "Praça de Pedágio - SP-075 (Santos Dumont)",
-    "lat": -23.1078,
-    "lng": -47.2293
-  },
-  {
-    "name": "Praça de Pedágio - SP-330 (Anhanguera) Limeira - Norte",
-    "lat": -22.5849,
-    "lng": -47.4068
-  },
-  {
-    "name": "Praça de Pedágio - SP-330 (Anhanguera) Limeira - Sul",
-    "lat": -22.5949,
-    "lng": -47.4168
-  },
-  {
-    "name": "Praça de Pedágio - SP-348 (Bandeirantes) Caieiras",
-    "lat": -23.3675,
-    "lng": -46.7522
-  },
-  {
-    "name": "Praça de Pedágio - SP-021 (Rodoanel) Osasco",
-    "lat": -23.4841,
-    "lng": -46.835
-  },
-  {
-    "name": "Praça de Pedágio - SP-300 (Marechal Rondon) Bauru",
-    "lat": -22.3106,
-    "lng": -49.0471
-  },
-  {
-    "name": "Praça de Pedágio - SP-310 (Washington Luís) Araraquara - Norte",
-    "lat": -21.7944,
-    "lng": -48.1747
-  },
-  {
-    "name": "Praça de Pedágio - SP-310 (Washington Luís) Araraquara - Sul",
-    "lat": -21.8144,
-    "lng": -48.1947
-  },
-  {
-    "name": "Praça de Pedágio - SP-280 (Castello Branco) Boituva",
-    "lat": -23.2861,
-    "lng": -47.6658
-  },
-  {
-    "name": "Praça de Pedágio - SP-127 (Fausto Santomauro) Rio Claro",
-    "lat": -22.4114,
-    "lng": -47.5486
-  },
-  {
-    "name": "Praça de Pedágio - Via Lagos",
-    "lat": -22.8694,
-    "lng": -42.6219
-  },
-  {
-    "name": "Praça de Pedágio - Ponte Rio-Niterói",
-    "lat": -22.8667,
-    "lng": -43.1869
-  },
-  {
-    "name": "Praça de Pedágio - Rodovia dos Lagos",
-    "lat": -22.8089,
-    "lng": -42.4982
-  },
-  {
-    "name": "Praça de Pedágio - BR-101 (Casimiro de Abreu)",
-    "lat": -22.4789,
-    "lng": -42.2036
-  },
-  {
-    "name": "Praça de Pedágio - RJ-124 (Via Lagos) São Pedro da Aldeia",
-    "lat": -22.7361,
-    "lng": -42.1044
-  },
-  {
-    "name": "Praça de Pedágio - RJ-116 (Itaboraí-Nova Friburgo)",
-    "lat": -22.4522,
-    "lng": -42.7636
-  },
-  {
-    "name": "Praça de Pedágio - BR-040 (Rio-Petrópolis)",
-    "lat": -22.5322,
-    "lng": -43.2717
-  },
-  {
-    "name": "Praça de Pedágio - BR-116 (Rio-Teresópolis)",
-    "lat": -22.3958,
-    "lng": -42.9772
-  },
-  {
-    "name": "Praça de Pedágio - SP-255 (Boa Esperança do Sul)",
-    "lat": -21.9422,
-    "lng": -48.3953
-  },
-  {
-    "name": "Praça de Pedágio - SP-225 (Brotas)",
-    "lat": -22.2875,
-    "lng": -48.1253
-  },
-  {
-    "name": "Praça de Pedágio - SP-225 (Jaú)",
-    "lat": -22.2564,
-    "lng": -48.5578
-  },
-  {
-    "name": "Praça de Pedágio - SP-225 (Dois Córregos)",
-    "lat": -22.3647,
-    "lng": -48.3819
+    "name": "Pedágio SP-255 (Araraquara)",
+    "lat": -21.8154,
+    "lng": -48.1755,
+    "rodovia": "SP-255"
   }
 ]
