@@ -236,8 +236,9 @@
             width: 100%;
             padding: 10px 0;
             font-weight: 600;
-            background-color: #0d6efd;
-            border-color: #0d6efd;
+            background-color: #ffc107;
+            border-color: #ffab00;
+            color: #000;
             transition: all 0.3s ease;
         }
         
@@ -253,8 +254,8 @@
             margin-bottom: 15px;
         }
         .marker-label {
-            color: white;
-            background-color: #1976D2;
+            color: black;
+            background-color: #ffc107;
             font-weight: bold;
             padding: 2px 6px;
             border-radius: 50%;
@@ -469,9 +470,9 @@
         
         /* Estilo para os marcadores de pontos de interesse */
         .poi-marker {
-            background-color: #4caf50;
+            background-color: #ffc107;
             border-radius: 50%;
-            color: white;
+            color: black;
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -634,6 +635,7 @@
         }
         .event-name {
             font-weight: bold;
+            color: #ffc107;
         }
         .event-date {
             font-size: 0.8em;
@@ -687,6 +689,7 @@
         }
         .restriction-city {
             font-weight: bold;
+            color: #ffc107;
         }
         .restriction-time {
             font-size: 0.8em;
@@ -861,8 +864,8 @@
             justify-content: space-around; /* Espaçamento melhor distribuído */
             gap: 8px; /* Aumentado o espaço entre os botões */
             padding: 12px 0 6px; /* Aumentado padding vertical */
-            background: linear-gradient(to bottom, #f0f2f5, #ffffff);
-            border-bottom: 1px solid #e0e0e0;
+            background: linear-gradient(to bottom, #fff8e1, #ffffff);
+            border-bottom: 1px solid #ffe082;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -872,7 +875,7 @@
         .bottom-tab-btn {
             padding: 10px 20px; /* Aumentado o padding */
             background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
+            border: 1px solid #ffe082;
             border-radius: 20px; /* Aumentado o arredondamento */
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -899,9 +902,9 @@
         }
         
         .bottom-tab-btn:hover {
-            background-color: #e9ecef;
+            background-color: #fff8e1;
             transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(255, 193, 7, 0.2);
         }
         
         .bottom-tab-btn:hover::before {
