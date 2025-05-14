@@ -612,73 +612,16 @@
             overflow-y: auto;
         }
         .restriction-item {
-            padding: 15px;
-            margin-bottom: 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
             font-size: 0.9em;
-            background-color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
         }
-        
-        .restriction-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 12px rgba(0,0,0,0.08);
-            border-color: #bbdefb;
-        }
-        
         .restriction-city {
             font-weight: bold;
-            font-size: 1.1em;
-            margin-bottom: 8px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        /* Layout responsivo para itens de restrição */
-        @media (min-width: 768px) {
-            .bottom-tabs-container:not(.minimized) #restrictions-list {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                gap: 16px;
-                padding: 10px;
-            }
-            
-            .bottom-tabs-container:not(.minimized) .restriction-item {
-                margin-bottom: 0;
-                height: 100%;
-            }
         }
         .restriction-time {
-            font-size: 0.85em;
-            color: #555;
-            padding: 4px 0;
-            display: flex;
-            align-items: center;
-        }
-        
-        .restriction-time::before {
-            content: '🕒';
-            margin-right: 6px;
-            font-size: 0.9em;
-        }
-        
-        .restriction-description {
-            font-size: 0.9em;
-            color: #333;
-            margin: 6px 0;
-            line-height: 1.4;
-        }
-        
-        .affected-vehicles {
-            font-size: 0.85em;
-            color: #555;
-            margin-top: 8px;
-            background-color: #f8f9fa;
-            padding: 6px 10px;
-            border-radius: 6px;
-            border-left: 3px solid #1976D2;
+            font-size: 0.8em;
+            color: #666;
         }
         .restriction-type {
             display: inline-block;
@@ -975,34 +918,6 @@
         /* Ajustes específicos para a aba de restrições */
         #bottom-restrictions-content {
             overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        /* Cabeçalho de restrições */
-        .restrictions-header {
-            position: sticky;
-            top: 0;
-            background-color: white;
-            padding: 10px 0;
-            margin-bottom: 15px;
-            z-index: 10;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        /* Containers para as restrições */
-        #restrictions-list {
-            overflow-y: auto;
-            flex: 1;
-            max-height: calc(100vh - 200px);
-            padding-right: 10px;
-        }
-        
-        /* Layout responsivo para diferentes tamanhos de tela */
-        @media (min-height: 800px) {
-            .bottom-tabs-container:not(.minimized) #restrictions-list {
-                max-height: calc(100vh - 220px);
-            }
         }
         
         .bottom-tab-content.active {
@@ -1208,10 +1123,8 @@
             
             <!-- Conteúdo da aba Restrições -->
             <div class="bottom-tab-content" id="bottom-restrictions-content">
-                <div class="restrictions-header">
-                    <h5>Restrições para caminhões do percurso:</h5>
-                    <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
-                </div>
+                <h5>Restrições para caminhões do percurso:</h5>
+                <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
                 <div class="restrictions-list" id="restrictions-list">
                     <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
                 </div>
@@ -4311,16 +4224,6 @@
         console.log("DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso");
         console.log("Mostrando restrições de caminhões para rota com IDs:", pathIds);
         
-        // Verificar se a aba de restrições está ativa ou se devemos mostrar as restrições
-        const restrictionsTab = document.getElementById('bottom-restrictions-content');
-        // Se a aba de restrições não estiver ativa, não exibir as restrições
-        if (restrictionsTab && !restrictionsTab.classList.contains('active')) {
-            // Apenas armazenar os pathIds para uso posterior quando a aba for ativada
-            window.lastRestrictionPathIds = pathIds;
-            console.log("Aba de restrições não está ativa. Armazenando IDs para exibição posterior:", pathIds);
-            return;
-        }
-        
         // Adicionar timestamp ao log para debug
         console.log("Timestamp:", new Date().toISOString());
         
@@ -4410,20 +4313,10 @@
             
             // Construir nome das cidades para o título
             const citiesSequence = citiesInRoute.map(c => c.cityName).join(' → ');
-            titleElement.innerHTML = `
-                <div style="margin-bottom: 6px;">Restrições para caminhões na rota</div>
-                <div style="font-size: 0.9em; font-weight: normal; background-color: #e3f2fd; 
-                padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; color: #0d47a1;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" 
-                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
-                    stroke-linejoin="round" style="margin-right: 8px; min-width: 16px;">
-                    <path d="M17 11l2-2-3-3-2 2"></path>
-                    <path d="M9 13L7 15l3 3 2-2"></path>
-                    <path d="M15 5l-3-3-7 7 3 3z"></path>
-                    <path d="M19 15l-3-3-7 7 3 3z"></path>
-                    </svg>
-                    ${citiesSequence}
-                </div>`;
+            titleElement.innerHTML = 'Restrições para caminhões na rota<br>' + 
+                                    '<span style="font-size: 0.8em; font-weight: normal;">' +
+                                    citiesSequence +
+                                    '</span>';
             
             restrictionsListContainer.appendChild(titleElement);
             
@@ -4861,20 +4754,10 @@
                 titleElement.style.borderRadius = '4px';
                 titleElement.style.fontWeight = 'bold';
                 titleElement.style.textAlign = 'center';
-                titleElement.innerHTML = `
-                    <div style="margin-bottom: 6px;">Restrições para caminhões na rota</div>
-                    <div style="font-size: 0.9em; font-weight: normal; background-color: #e3f2fd; 
-                    padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; color: #0d47a1;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" 
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
-                        stroke-linejoin="round" style="margin-right: 8px; min-width: 16px;">
-                        <path d="M17 11l2-2-3-3-2 2"></path>
-                        <path d="M9 13L7 15l3 3 2-2"></path>
-                        <path d="M15 5l-3-3-7 7 3 3z"></path>
-                        <path d="M19 15l-3-3-7 7 3 3z"></path>
-                        </svg>
-                        Dois Córregos → Jaú → Bauru
-                    </div>`;
+                titleElement.innerHTML = 'Restrições para caminhões na rota<br>' + 
+                                        '<span style="font-size: 0.8em; font-weight: normal;">' +
+                                        'Dois Córregos → Jaú → Bauru' +
+                                        '</span>';
                 
                 // Adicionar título
                 restrictionsListContainer.appendChild(titleElement);
@@ -4985,10 +4868,7 @@
                 <div class="restriction-time">${dayTypeText} | ${restriction.startTime} - ${restriction.endTime}</div>
                 <div class="restriction-description">${restriction.description}</div>
                 ${vehiclesDisplay}
-                ${estaNoPercurso && !isGitHubPages ? 
-                    '<div class="city-in-route" style="color: #1976D2; font-size: 0.85em; margin-top: 8px; background-color: #e3f2fd; padding: 6px 10px; border-radius: 6px; display: flex; align-items: center;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>Esta cidade está no seu percurso</div>' 
-                    : ''
-                }
+                ${estaNoPercurso && !isGitHubPages ? '<div class="city-in-route" style="color: #1976D2; font-size: 0.8em; margin-top: 4px;">✓ Esta cidade está no seu percurso</div>' : ''}
             `;
             
             restrictionsListContainer.appendChild(restrictionItem);
@@ -6445,12 +6325,6 @@
             return 10; // Valor padrão seguro para evitar distância zero
         }
         
-        // Verificar se é o mesmo ponto (mesmas coordenadas)
-        if (lat1 === lat2 && lon1 === lon2) {
-            console.log("Mesmo ponto detectado, usando distância mínima padrão");
-            return 0.1; // Valor mínimo para evitar distância zero sem afetar demais cálculos
-        }
-        
         // Verificar se os valores são numéricos
         if (isNaN(lat1) || isNaN(lon1) || isNaN(lat2) || isNaN(lon2)) {
             console.error("Coordenadas NaN no cálculo de distância:", lat1, lon1, lat2, lon2);
@@ -6466,21 +6340,12 @@
                 Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
                 Math.sin(dLon/2) * Math.sin(dLon/2); 
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-            let distance = R * c; // Distância em km
+            const distance = R * c; // Distância em km
             
             // Verificar se a distância é válida
             if (isNaN(distance) || distance <= 0) {
-                console.warn("Distância calculada inválida:", distance, "para pontos:", lat1, lon1, lat2, lon2);
-                // Recalcular usando um método simplificado como fallback
-                const latDiff = Math.abs(lat1 - lat2);
-                const lonDiff = Math.abs(lon1 - lon2);
-                distance = Math.sqrt(latDiff * latDiff + lonDiff * lonDiff) * 111.32; // Aproximação simples (1 grau ~= 111.32 km)
-                
-                // Se ainda for inválido, usar valor padrão
-                if (isNaN(distance) || distance <= 0) {
-                    console.error("Falha no cálculo alternativo, usando valor padrão");
-                    return 20; // Valor padrão seguro
-                }
+                console.error("Distância calculada inválida:", distance);
+                return 20; // Valor padrão seguro para evitar distância zero
             }
             
             return distance;
