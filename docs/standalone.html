@@ -158,6 +158,21 @@
             height: 100%;
             width: 100%;
         }
+        
+        /* Controle de visibilidade de pontos de pedágio */
+        .tollControl {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            padding: 5px 10px;
+            font-size: 12px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+        }
         /* Botão toggle-sidebar removido */
         .form-group {
             margin-bottom: 15px;
@@ -1260,6 +1275,17 @@
                         <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
                     </svg>
                 </button>
+                <button class="map-control-btn" id="toggle-tolls" title="Mostrar/ocultar pedágios">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2zM3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8zm9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5zm.754-4.246a.389.389 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.389.389 0 0 0-.029-.518z"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Controle para mostrar/ocultar pedágios -->
+            <div class="tollControl" id="toll-control" style="display: none;">
+                <input type="checkbox" id="show-tolls" checked>
+                <label for="show-tolls">Mostrar Pedágios</label>
             </div>
         </div>
         </div>
