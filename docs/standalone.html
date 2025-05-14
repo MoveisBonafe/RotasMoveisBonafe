@@ -6698,82 +6698,69 @@
             customRouteButton.style.backgroundColor = '#ffc107';
             customRouteButton.style.borderColor = '#ffab00';
             
-            // Adicionar botões para mover para cima e para baixo (mais compatível com GitHub Pages)
+            // Identificar todos os itens não-origem
             const locationItems = locationsListElement.querySelectorAll('li:not(.origin-point)');
+            
+            // Adicionar HTML diretamente com botões para solução mais compatível
             locationItems.forEach(item => {
-                // Adicionar botões para mover para cima e para baixo
-                const controlsContainer = document.createElement('span');
-                controlsContainer.className = 'position-controls';
-                controlsContainer.style.marginRight = '10px';
+                // Criar o HTML para os botões de subir/descer
+                const buttonsHTML = `
+                    <span class="position-controls" style="margin-right: 10px;">
+                        <button type="button" class="btn btn-sm move-up" style="padding: 2px 5px; margin-right: 2px; color: #ffc107; background-color: transparent; border: 1px solid #ffc107;" title="Mover para cima">⬆</button>
+                        <button type="button" class="btn btn-sm move-down" style="padding: 2px 5px; color: #ffc107; background-color: transparent; border: 1px solid #ffc107;" title="Mover para baixo">⬇</button>
+                    </span>
+                `;
                 
-                // Botão para mover para cima
-                const upButton = document.createElement('button');
-                upButton.className = 'btn btn-sm move-up';
-                upButton.innerHTML = '&#9650;'; // Triângulo para cima
-                upButton.style.padding = '0 5px';
-                upButton.style.marginRight = '2px';
-                upButton.style.color = '#ffc107';
-                upButton.style.backgroundColor = 'transparent';
-                upButton.style.border = '1px solid #ffc107';
-                upButton.title = 'Mover para cima';
+                // Inserir no início do item
+                item.innerHTML = buttonsHTML + item.innerHTML;
                 
-                // Botão para mover para baixo
-                const downButton = document.createElement('button');
-                downButton.className = 'btn btn-sm move-down';
-                downButton.innerHTML = '&#9660;'; // Triângulo para baixo
-                downButton.style.padding = '0 5px';
-                downButton.style.color = '#ffc107';
-                downButton.style.backgroundColor = 'transparent';
-                downButton.style.border = '1px solid #ffc107';
-                downButton.title = 'Mover para baixo';
+                // Adicionar os event listeners após inserir o HTML
+                const upButton = item.querySelector('.move-up');
+                const downButton = item.querySelector('.move-down');
                 
-                // Adicionar botões ao container
-                controlsContainer.appendChild(upButton);
-                controlsContainer.appendChild(downButton);
-                
-                // Adicionar o container como primeiro filho do item
-                if (item.firstChild) {
-                    item.insertBefore(controlsContainer, item.firstChild);
-                } else {
-                    item.appendChild(controlsContainer);
+                if (upButton) {
+                    upButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const li = this.closest('li');
+                        const previousSibling = li.previousElementSibling;
+                        if (previousSibling && !previousSibling.classList.contains('origin-point')) {
+                            locationsListElement.insertBefore(li, previousSibling);
+                            updateCustomRoute();
+                        }
+                    });
                 }
                 
-                // Configurar eventos para os botões
-                upButton.onclick = function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    const previousSibling = item.previousElementSibling;
-                    if (previousSibling && !previousSibling.classList.contains('origin-point')) {
-                        locationsListElement.insertBefore(item, previousSibling);
-                        updateCustomRoute();
-                    }
-                };
-                
-                downButton.onclick = function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    const nextSibling = item.nextElementSibling;
-                    if (nextSibling) {
-                        locationsListElement.insertBefore(nextSibling, item);
-                        updateCustomRoute();
-                    }
-                };
+                if (downButton) {
+                    downButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const li = this.closest('li');
+                        const nextSibling = li.nextElementSibling;
+                        if (nextSibling) {
+                            locationsListElement.insertBefore(nextSibling, li);
+                            updateCustomRoute();
+                        }
+                    });
+                }
             });
             
-            showNotification('Modo de rota personalizada ativado. Use as setas para reordenar os locais.', 'info');
+            showNotification('Modo de rota personalizada ativado. Use as setas ⬆⬇ para reordenar os locais.', 'info');
         } else {
             // Desativar modo de rota personalizada
             locationsListElement.classList.remove('custom-route-active');
             customRouteButton.style.backgroundColor = '#f8f9fa';
             customRouteButton.style.borderColor = '#ced4da';
             
-            // Remover controles de posição
-            const positionControls = locationsListElement.querySelectorAll('.position-controls');
-            positionControls.forEach(control => {
-                if (control.parentNode) {
-                    control.parentNode.removeChild(control);
+            // Recriar a lista sem os controles
+            const items = locationsListElement.querySelectorAll('li');
+            items.forEach(item => {
+                // Remover controles de posição se existirem
+                const controls = item.querySelector('.position-controls');
+                if (controls) {
+                    controls.remove();
                 }
             });
             
