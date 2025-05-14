@@ -6698,141 +6698,83 @@
             customRouteButton.style.backgroundColor = '#ffc107';
             customRouteButton.style.borderColor = '#ffab00';
             
-            // Adicionar indicadores visuais e funcionalidade para arrastar
+            // Adicionar botões para mover para cima e para baixo (mais compatível com GitHub Pages)
             const locationItems = locationsListElement.querySelectorAll('li:not(.origin-point)');
             locationItems.forEach(item => {
-                // Adicionar classe draggable
-                item.classList.add('draggable');
+                // Adicionar botões para mover para cima e para baixo
+                const controlsContainer = document.createElement('span');
+                controlsContainer.className = 'position-controls';
+                controlsContainer.style.marginRight = '10px';
                 
-                // Adicionar um ícone de "arrastar" antes do conteúdo existente
-                const dragHandle = document.createElement('span');
-                dragHandle.innerHTML = '&#8942; &#8942;';  // Ícone de arrastar (linhas pontilhadas)
-                dragHandle.className = 'drag-handle';
-                dragHandle.style.cursor = 'move';
-                dragHandle.style.marginRight = '8px';
-                dragHandle.style.color = '#ffc107';
-                dragHandle.style.fontWeight = 'bold';
+                // Botão para mover para cima
+                const upButton = document.createElement('button');
+                upButton.className = 'btn btn-sm move-up';
+                upButton.innerHTML = '&#9650;'; // Triângulo para cima
+                upButton.style.padding = '0 5px';
+                upButton.style.marginRight = '2px';
+                upButton.style.color = '#ffc107';
+                upButton.style.backgroundColor = 'transparent';
+                upButton.style.border = '1px solid #ffc107';
+                upButton.title = 'Mover para cima';
                 
-                // Adicionar o ícone como primeiro filho do item
+                // Botão para mover para baixo
+                const downButton = document.createElement('button');
+                downButton.className = 'btn btn-sm move-down';
+                downButton.innerHTML = '&#9660;'; // Triângulo para baixo
+                downButton.style.padding = '0 5px';
+                downButton.style.color = '#ffc107';
+                downButton.style.backgroundColor = 'transparent';
+                downButton.style.border = '1px solid #ffc107';
+                downButton.title = 'Mover para baixo';
+                
+                // Adicionar botões ao container
+                controlsContainer.appendChild(upButton);
+                controlsContainer.appendChild(downButton);
+                
+                // Adicionar o container como primeiro filho do item
                 if (item.firstChild) {
-                    item.insertBefore(dragHandle, item.firstChild);
+                    item.insertBefore(controlsContainer, item.firstChild);
                 } else {
-                    item.appendChild(dragHandle);
+                    item.appendChild(controlsContainer);
                 }
                 
-                // Configurar manualmente o drag and drop sem usar eventos nativos
-                dragHandle.onmousedown = function(e) {
-                    const listItem = this.parentNode;
-                    const list = listItem.parentNode;
-                    
-                    // Criar um clone para visualização durante arraste
-                    const clone = listItem.cloneNode(true);
-                    clone.style.position = 'absolute';
-                    clone.style.opacity = '0.8';
-                    clone.style.width = listItem.offsetWidth + 'px';
-                    clone.style.backgroundColor = '#fffbeb';
-                    clone.style.zIndex = '1000';
-                    clone.style.pointerEvents = 'none';
-                    clone.style.border = '1px dashed #ffc107';
-                    document.body.appendChild(clone);
-                    
-                    // Esconder o item original durante o arraste
-                    listItem.style.opacity = '0.3';
-                    
-                    // Deslocamento do mouse em relação ao elemento
-                    const offsetX = e.clientX - listItem.getBoundingClientRect().left;
-                    const offsetY = e.clientY - listItem.getBoundingClientRect().top;
-                    
-                    // Função para mover o clone
-                    function moveAt(pageX, pageY) {
-                        clone.style.left = (pageX - offsetX) + 'px';
-                        clone.style.top = (pageY - offsetY) + 'px';
-                    }
-                    
-                    // Função para encontrar o destino
-                    function findDropTarget(e) {
-                        // Esconder temporariamente o clone para encontrar elementos abaixo
-                        clone.hidden = true;
-                        const elemBelow = document.elementFromPoint(e.clientX, e.clientY);
-                        clone.hidden = false;
-                        
-                        if (!elemBelow) return null;
-                        
-                        // Encontrar o item da lista mais próximo
-                        let target = elemBelow.closest('li:not(.origin-point)');
-                        if (target && target !== listItem && list.contains(target)) {
-                            return target;
-                        }
-                        
-                        return null;
-                    }
-                    
-                    // Movimento inicial
-                    moveAt(e.pageX, e.pageY);
-                    
-                    // Função para lidar com o movimento
-                    function onMouseMove(e) {
-                        moveAt(e.pageX, e.pageY);
-                        
-                        const target = findDropTarget(e);
-                        if (target) {
-                            const targetRect = target.getBoundingClientRect();
-                            const center = targetRect.top + targetRect.height / 2;
-                            
-                            // Verificar se deve inserir antes ou depois do target
-                            if (e.clientY < center) {
-                                list.insertBefore(listItem, target);
-                            } else {
-                                list.insertBefore(listItem, target.nextSibling);
-                            }
-                        }
-                    }
-                    
-                    // Adicionar event listeners temporários
-                    document.addEventListener('mousemove', onMouseMove);
-                    
-                    // Função para terminar o arraste
-                    document.onmouseup = function() {
-                        document.removeEventListener('mousemove', onMouseMove);
-                        if (clone.parentNode) {
-                            document.body.removeChild(clone);
-                        }
-                        listItem.style.opacity = '';
-                        document.onmouseup = null;
-                        
-                        // Atualizar a rota
-                        updateCustomRoute();
-                    };
-                    
-                    // Prevenir seleção de texto e outros efeitos
+                // Configurar eventos para os botões
+                upButton.onclick = function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const previousSibling = item.previousElementSibling;
+                    if (previousSibling && !previousSibling.classList.contains('origin-point')) {
+                        locationsListElement.insertBefore(item, previousSibling);
+                        updateCustomRoute();
+                    }
+                };
+                
+                downButton.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const nextSibling = item.nextElementSibling;
+                    if (nextSibling) {
+                        locationsListElement.insertBefore(nextSibling, item);
+                        updateCustomRoute();
+                    }
                 };
             });
             
-            showNotification('Modo de rota personalizada ativado. Arraste os locais para reordenar.', 'info');
+            showNotification('Modo de rota personalizada ativado. Use as setas para reordenar os locais.', 'info');
         } else {
             // Desativar modo de rota personalizada
             locationsListElement.classList.remove('custom-route-active');
             customRouteButton.style.backgroundColor = '#f8f9fa';
             customRouteButton.style.borderColor = '#ced4da';
             
-            // Remover ícones de arrastar e outros elementos
-            const dragHandles = locationsListElement.querySelectorAll('.drag-handle');
-            dragHandles.forEach(handle => {
-                if (handle.parentNode) {
-                    handle.parentNode.removeChild(handle);
+            // Remover controles de posição
+            const positionControls = locationsListElement.querySelectorAll('.position-controls');
+            positionControls.forEach(control => {
+                if (control.parentNode) {
+                    control.parentNode.removeChild(control);
                 }
-            });
-            
-            // Remover classes e atributos
-            const locationItems = locationsListElement.querySelectorAll('.draggable');
-            locationItems.forEach(item => {
-                item.classList.remove('draggable');
-                // Remover event listeners
-                if (item.firstChild && item.firstChild.onmousedown) {
-                    item.firstChild.onmousedown = null;
-                }
-                item.onmouseup = null;
             });
             
             // Atualizar a rota com a nova ordem
