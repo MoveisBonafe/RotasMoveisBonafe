@@ -23,6 +23,7 @@ cp ../docs/fix-github.js ./js/
 cp ../docs/route-optimizer.js ./js/
 cp ../docs/map-controls.js ./js/
 cp ../docs/geocode-fix.js ./js/
+cp ../docs/custom-route.js ./js/
 
 # Copiar index.html otimizado
 cp ../docs/index.html ./

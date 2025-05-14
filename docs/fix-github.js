@@ -342,11 +342,8 @@ document.addEventListener('DOMContentLoaded', function() {
   setTimeout(applyAllFixes, 1000);
   setTimeout(applyAllFixes, 2000);
   
-  // Carregar script de customização de rota
-  const customRouteScript = document.createElement('script');
-  customRouteScript.src = 'custom-route.js';
-  customRouteScript.async = true;
-  document.body.appendChild(customRouteScript);
+  // Referência para o arquivo de rota personalizada já incluída no HTML
+  console.log('[fix-github] Script de rota personalizada já deve estar carregado');
   
   // Adicionar função para cálculo de rota personalizada
   window.calculateRouteWithWaypoints = function(waypoints) {
