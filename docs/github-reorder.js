@@ -1,8 +1,9 @@
 /**
  * Script direto para reordenação via GitHub Pages
+ * Versão 1.1 - Diagnóstico avançado e detecção robusta
  */
 (function() {
-  console.log('[Reorder] Inicializando script direto v1.0');
+  console.log('[Reorder] Inicializando script direto v1.1');
   
   // Esperar pelo DOM
   document.addEventListener('DOMContentLoaded', inicializar);
@@ -13,6 +14,17 @@
   setTimeout(inicializar, 2000);
   setTimeout(inicializar, 3000);
   setTimeout(inicializar, 5000);
+  setTimeout(inicializar, 7000);
+  setTimeout(inicializar, 10000);
+  
+  // Tentar inicializar quando o mapa for carregado
+  const verificarObjetosMapa = setInterval(function() {
+    if (window.map && window.directionsService && window.locations) {
+      console.log('[Reorder] Objetos do mapa detectados, inicializando...');
+      inicializar();
+      clearInterval(verificarObjetosMapa);
+    }
+  }, 500);
   
   // Variáveis
   let botaoReordenar = null;

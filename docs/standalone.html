@@ -1353,6 +1353,19 @@
     <script src="geocode-fix.js"></script>
     <script src="github-reorder.js"></script>
     
+    <!-- Verificação do script de reordenação -->
+    <script>
+    console.log("Verificando script de reordenação...");
+    setTimeout(function() {
+        if (typeof inicializar !== 'function' && !document.getElementById('botao-reordenar-github')) {
+            console.log("Script de reordenação não carregado, tentando carregar manualmente...");
+            var script = document.createElement('script');
+            script.src = 'github-reorder.js';
+            document.body.appendChild(script);
+        }
+    }, 3000);
+    </script>
+    
     <script>
     // Dados de amostra para a aplicação standalone
     const mockData = {
