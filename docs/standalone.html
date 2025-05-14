@@ -2199,6 +2199,12 @@
         // Botões de controle do mapa
         document.getElementById('zoom-to-fit').addEventListener('click', zoomToFitAllMarkers);
         document.getElementById('toggle-poi').addEventListener('click', togglePointsOfInterest);
+        document.getElementById('toggle-tolls').addEventListener('click', toggleTollControl);
+        
+        // Checkbox para controlar a visibilidade dos pedágios
+        document.getElementById('show-tolls').addEventListener('change', function() {
+            toggleTollMarkers(this.checked);
+        });
         
         // Botões da aba de relatório
         document.getElementById('save-route').addEventListener('click', saveRoute);
