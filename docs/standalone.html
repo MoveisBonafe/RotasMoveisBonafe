@@ -4379,7 +4379,7 @@
         
         // Se não houver eventos, mostrar mensagem
         if (eventsOnRoute.length === 0) {
-            eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado para o período e cidades selecionados.</p>';
+            eventsListContainer.innerHTML = '<p class="text-muted" style="color: #666666;">Nenhum evento encontrado para o período e cidades selecionados.</p>';
             return;
         }
         
@@ -4407,12 +4407,12 @@
             const eventTypeClass = event.isHoliday ? 'holiday' : 'event';
             
             eventItem.innerHTML = `
-                <div class="event-name">${event.name} 
+                <div class="event-name" style="color: #000000;">${event.name} 
                     <span class="event-type ${eventTypeClass}">${event.isHoliday ? 'Feriado' : 'Evento'}</span>
                     <span class="restriction-level ${event.restrictionLevel}">${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</span>
                 </div>
-                <div class="event-date">${event.cityName} | ${event.name.includes("Aniversário") ? extrairDataFundacao(event.description) : dateText}</div>
-                <div class="event-description">${event.description}</div>
+                <div class="event-date" style="color: #000000;">${event.cityName} | ${event.name.includes("Aniversário") ? extrairDataFundacao(event.description) : dateText}</div>
+                <div class="event-description" style="color: #000000;">${event.description}</div>
             `;
             
             eventsListContainer.appendChild(eventItem);
