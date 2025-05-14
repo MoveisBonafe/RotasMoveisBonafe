@@ -2813,6 +2813,41 @@
         });
     }
 
+    // Funções para controlar a exibição dos pedágios
+    function toggleTollControl() {
+        const tollControl = document.getElementById('toll-control');
+        if (tollControl) {
+            if (tollControl.style.display === 'none') {
+                tollControl.style.display = 'flex';
+            } else {
+                tollControl.style.display = 'none';
+            }
+        }
+    }
+    
+    function toggleTollMarkers(show) {
+        tollMarkers.forEach(marker => {
+            marker.setMap(show ? map : null);
+        });
+        console.log(`${show ? 'Exibindo' : 'Ocultando'} marcadores de pedágio`);
+    }
+    
+    // Função para alternar a exibição de pontos de interesse no mapa
+    function togglePointsOfInterest() {
+        showPOIs = !showPOIs;
+        
+        // Se estiver desativando, remover todos os marcadores
+        if (!showPOIs) {
+            poiMarkers.forEach(marker => marker.setMap(null));
+            poiMarkers = [];
+            console.log("Pontos de interesse ocultados");
+        } else {
+            // Se estiver ativando, exibir os POIs
+            addPointsOfInterestToMap();
+            console.log("Pontos de interesse exibidos");
+        }
+    }
+    
     // Limpar rota atual e marcadores relacionados
     // Função para limpar todas as polylines do mapa
     function clearAllPolylines() {
