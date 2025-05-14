@@ -481,6 +481,26 @@
             height: 24px;
             font-size: 12px;
         }
+        /* Estilos para animação de input */
+        .input-animation-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .input-animation-effect {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #ffc107;
+            transition: width 0.3s ease;
+        }
+
+        .input-animation-container input:focus + .input-animation-effect {
+            width: 100%;
+        }
+        
         /* Estilos para tooltip personalizado */
         .custom-tooltip {
             position: absolute;
@@ -596,9 +616,27 @@
         .date-range-container {
             display: flex;
             gap: 10px;
+            margin-bottom: 20px;
         }
         .date-range-container input {
             flex: 1;
+            border: 1px solid #ffe082;
+            border-radius: 8px;
+            padding: 8px 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .date-range-container input:focus {
+            border-color: #ffc107;
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
+            outline: none;
+        }
+        .date-range-label {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+            display: block;
         }
         
         /* Estilos para ícones de evento */
@@ -703,16 +741,16 @@
             border-radius: 10px;
             font-size: 0.7em;
             margin-left: 5px;
-            color: white;
+            color: black;
         }
         .restriction-type.partial {
-            background-color: #ff9800;
+            background-color: #ffc107;
         }
         .restriction-type.total {
-            background-color: #f44336;
+            background-color: #ffab00;
         }
         .restriction-type.rodizio {
-            background-color: #9c27b0;
+            background-color: #ffe082;
         }
 
         /* Estilos para animação da rota */
@@ -1078,24 +1116,30 @@
                     <!-- O conteúdo de locais fica no sidebar -->
                 
                     <!-- Filtro de eventos por data (movido para cima da origem) -->
-                    <div class="form-group mb-3">
-                        <label>Filtrar eventos por data:</label>
-                        <div class="date-range-container d-flex gap-2">
-                            <input type="date" id="start-date" class="form-control form-control-sm">
-                            <input type="date" id="end-date" class="form-control form-control-sm">
+                    <div class="form-group mb-4">
+                        <label class="date-range-label">Filtrar eventos por data:</label>
+                        <div class="date-range-container">
+                            <input type="date" id="start-date">
+                            <input type="date" id="end-date">
                         </div>
                     </div>
                     
                     <!-- Origem fixa -->
-                    <div class="form-group">
-                        <label for="origin">Origem:</label>
-                        <input type="text" id="origin" class="form-control" value="Dois Córregos, SP" readonly>
+                    <div class="form-group mb-4">
+                        <label class="date-range-label">Origem:</label>
+                        <input type="text" id="origin" class="form-control" value="Dois Córregos, SP" readonly 
+                               style="background-color: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
                     </div>
                     
                     <!-- Campo de busca para adicionar novo local -->
-                    <div class="form-group">
-                        <label for="location-search">Adicionar local:</label>
-                        <input type="text" id="location-search" class="form-control" placeholder="Digite um endereço">
+                    <div class="form-group mb-4">
+                        <label class="date-range-label">Adicionar local:</label>
+                        <div class="input-animation-container">
+                            <input type="text" id="location-search" placeholder="Digite um endereço"
+                                   style="border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; width: 100%; 
+                                   box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.3s ease;">
+                            <div class="input-animation-effect"></div>
+                        </div>
                     </div>
                     
                     <!-- Seleção de veículo removida, agora usa caminhão padrão automaticamente -->
