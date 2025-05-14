@@ -295,9 +295,15 @@
         if (map && !directionsRenderer && window.google && window.google.maps) {
             directionsRenderer = new google.maps.DirectionsRenderer({
                 map: map,
-                suppressMarkers: false
+                suppressMarkers: false,
+                preserveViewport: true // Preservar a visualização atual do mapa
             });
             console.log('[CustomRouteGitHub] Renderer de direções criado');
+            
+            // Garantir que o marcador de origem seja mostrado
+            setTimeout(function() {
+                showOriginMarker();
+            }, 500);
         }
         
         // Encontrar localizações
@@ -351,6 +357,68 @@
         } else {
             console.log('[CustomRouteGitHub] Elemento do mapa não encontrado');
         }
+    }
+    
+    // Mostrar marcador de origem
+    function showOriginMarker() {
+        // Encontrar mapa e origem
+        if (!map) findMap();
+        
+        // Verificar se origem já existe
+        let existingMarker = null;
+        
+        // Verificar se já existe um marcador global de origem
+        if (window.originMarker && window.originMarker instanceof google.maps.Marker) {
+            existingMarker = window.originMarker;
+        }
+        
+        // Encontrar coordenadas da origem
+        findLocations();
+        let origin = locations.find(loc => loc.isOrigin);
+        
+        if (!origin && locations.length > 0) {
+            // Se não encontrou origem específica, usar primeiro elemento
+            origin = locations[0];
+        }
+        
+        if (!origin) {
+            // Usar coordenadas padrão de Dois Córregos-SP
+            origin = {
+                lat: -22.3731,
+                lng: -48.3796,
+                name: 'Dois Córregos'
+            };
+        }
+        
+        // Se já existe marcador, atualizar posição
+        if (existingMarker) {
+            existingMarker.setPosition(new google.maps.LatLng(origin.lat, origin.lng));
+            existingMarker.setMap(map);
+            console.log('[CustomRouteGitHub] Marcador de origem existente restaurado');
+            return;
+        }
+        
+        // Criar ícone padrão
+        const icon = {
+            url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+            scaledSize: new google.maps.Size(40, 40),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(20, 40)
+        };
+        
+        // Criar marcador
+        const marker = new google.maps.Marker({
+            position: new google.maps.LatLng(origin.lat, origin.lng),
+            map: map,
+            icon: icon,
+            title: origin.name || 'Origem',
+            zIndex: 1000
+        });
+        
+        // Guardar globalmente para referência futura
+        window.originMarker = marker;
+        
+        console.log('[CustomRouteGitHub] Marcador de origem criado');
     }
     
     // Encontrar localizações
@@ -660,6 +728,11 @@
                     // Criar um falso path para a animação não falhar
                     window.routePath = result.routes[0].overview_path || [];
                 }
+                
+                // Garantir que o marcador de origem seja visível
+                setTimeout(function() {
+                    showOriginMarker();
+                }, 500);
                 
                 // Atualizar informações da rota
                 updateRouteInfo(result, orderedPoints);
