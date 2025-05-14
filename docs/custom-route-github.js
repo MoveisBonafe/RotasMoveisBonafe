@@ -23,6 +23,58 @@
     setTimeout(init, 3000);
     
     // Função de inicialização
+    // Corrigir animação de rota
+    function fixRouteAnimation() {
+        // Procurar pela função de animação original
+        const scriptElements = document.getElementsByTagName('script');
+        let animateFunction = null;
+        
+        for (let i = 0; i < scriptElements.length; i++) {
+            const content = scriptElements[i].textContent || '';
+            if (content.includes('function animateRoute') || content.includes('function animate')) {
+                // Encontrou a função de animação
+                console.log('[CustomRouteGitHub] Encontrada função de animação de rota');
+                
+                // Sobrescrever a função original para ser mais resiliente
+                window.originalAnimateRoute = window.animateRoute;
+                window.animateRoute = function(path) {
+                    // Verificar se o path existe
+                    if (!path || !path.length) {
+                        console.log('[CustomRouteGitHub] Animação de rota chamada sem path válido');
+                        return;
+                    }
+                    
+                    // Chamar a função original se existir
+                    if (typeof window.originalAnimateRoute === 'function') {
+                        try {
+                            window.originalAnimateRoute(path);
+                        } catch (e) {
+                            console.log('[CustomRouteGitHub] Erro ao animar rota:', e);
+                        }
+                    }
+                };
+                
+                break;
+            }
+        }
+        
+        // Monitorar a variável routePath para evitar erros
+        let originalRoutePathDescriptor = Object.getOwnPropertyDescriptor(window, 'routePath');
+        
+        if (!originalRoutePathDescriptor) {
+            Object.defineProperty(window, 'routePath', {
+                configurable: true,
+                get: function() {
+                    return window._actualRoutePath || null;
+                },
+                set: function(newValue) {
+                    console.log('[CustomRouteGitHub] routePath sendo definido:', newValue ? 'valor válido' : 'valor inválido');
+                    window._actualRoutePath = newValue;
+                }
+            });
+        }
+    }
+    
     function init() {
         if (initialized) return;
         
@@ -52,6 +104,9 @@
         
         initialized = true;
         console.log('[CustomRouteGitHub] Inicialização concluída');
+        
+        // Aplicar correções específicas para animação de rota
+        fixRouteAnimation();
     }
     
     // Adicionar estilos CSS
@@ -596,6 +651,15 @@
                 
                 // Exibir no mapa
                 directionsRenderer.setDirections(result);
+                
+                // Desativar temporariamente a animação de rota original para evitar conflitos
+                if (window.routePath) {
+                    console.log('[CustomRouteGitHub] Preservando variável routePath para evitar erros de animação');
+                    // Guardar temporariamente
+                    window._tempRoutePath = window.routePath;
+                    // Criar um falso path para a animação não falhar
+                    window.routePath = result.routes[0].overview_path || [];
+                }
                 
                 // Atualizar informações da rota
                 updateRouteInfo(result, orderedPoints);
