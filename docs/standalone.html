@@ -2584,10 +2584,18 @@
         poiMarkers = [];
     }
 
-    // Limpar marcadores de eventos
+    // Função simplificada para limpeza de marcadores de eventos (compatibilidade)
     function clearEventMarkers() {
-        eventMarkers.forEach(marker => marker.setMap(null));
-        eventMarkers = [];
+        // Todos os marcadores de eventos foram removidos
+        console.log("Função clearEventMarkers chamada - aba de eventos desativada");
+        if (eventMarkers && Array.isArray(eventMarkers)) {
+            eventMarkers.forEach(marker => {
+                if (marker && typeof marker.setMap === 'function') {
+                    marker.setMap(null);
+                }
+            });
+            eventMarkers = [];
+        }
     }
 
     // Otimizar a rota
@@ -3997,48 +4005,10 @@
         });
     }
 
-    // Adicionar marcador para um evento
+    // Função de marcador de evento simplificada para compatibilidade - não faz nada
     function addEventMarker(event, location) {
-        // Seletor de ícone com base no tipo de evento
-        const markerColor = event.isHoliday ? '#f44336' : '#ff9800';
-        const markerIcon = {
-            path: google.maps.SymbolPath.CIRCLE,
-            fillColor: markerColor,
-            fillOpacity: 1,
-            strokeWeight: 1,
-            strokeColor: '#000',
-            scale: 8
-        };
-        
-        // Criar o marcador
-        const marker = new google.maps.Marker({
-            position: { lat: location.latitude, lng: location.longitude },
-            map: map,
-            title: event.name,
-            icon: markerIcon,
-            zIndex: 30
-        });
-        
-        // Conteúdo do tooltip
-        const tooltipContent = `
-            <div class="tooltip-title">${event.name}</div>
-            <div>${event.cityName}</div>
-            <div>${new Date(event.startDate).toLocaleDateString('pt-BR')} - ${new Date(event.endDate).toLocaleDateString('pt-BR')}</div>
-            <div>${event.description}</div>
-            <div>Nível de restrição: ${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</div>
-        `;
-        
-        // Adicionar listener para mostrar tooltip ao passar o mouse
-        marker.addListener('mouseover', function() {
-            showTooltip(marker, { tooltipContent });
-        });
-        
-        marker.addListener('mouseout', function() {
-            hideTooltip();
-        });
-        
-        // Armazenar o marcador
-        eventMarkers.push(marker);
+        console.log("Função addEventMarker desativada - eventos foram removidos");
+        // Todos os marcadores de eventos foram removidos
     }
 
     // Mostrar restrições para caminhões nas cidades da rota
