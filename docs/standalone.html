@@ -1730,8 +1730,9 @@
     
     // Função para mostrar conteúdo inicial relevante nas abas
     function showInitialTabsContent() {
-        // Mostrar eventos da cidade de origem (Dois Córregos)
+        // Eventos foram completamente removidos
         const routeIds = [mockData.origin.id];
+        // Mantida a chamada para compatibilidade
         showEventsForCitiesOnRoute(routeIds);
         
         // Mostrar restrições para a cidade de origem
@@ -3012,21 +3013,14 @@
         // Atualizar a variável global com o caminho otimizado
         currentOptimizedPath = [...optimizedPathIds];
         
-        // Atualizar eventos e restrições para o novo caminho otimizado
-        // Preparar dados para atualização sem mudar para a aba de eventos
-        const startDateInput = document.getElementById('start-date');
-        const endDateInput = document.getElementById('end-date');
-        if (startDateInput && endDateInput) {
-            // Atualizar dados dos eventos sem mudar de aba
-            console.log("Atualizando dados de eventos em segundo plano sem mudar de aba");
-            const routeIds = currentOptimizedPath;
-            // Não usamos mais os valores de data como filtro
-            showEventsForCitiesOnRoute(routeIds);
-            showTruckRestrictionsForCitiesOnRoute(routeIds, null);
-        } else {
-            // Fallback ao método antigo apenas se necessário
-            console.log("Usando método alternativo de atualização");
-        }
+        // Atualizar restrições para o novo caminho otimizado (eventos foram removidos)
+        // Esta seção foi simplificada para remover referências a eventos
+        console.log("Atualizando informações da rota");
+        const routeIds = currentOptimizedPath;
+        
+        // Eventos foram desativados, mantido apenas para compatibilidade
+        showEventsForCitiesOnRoute(routeIds);
+        showTruckRestrictionsForCitiesOnRoute(routeIds, null);
         console.log("Quantidade de marcadores antes:", markers.length);
         
         // Preservar os marcadores originais
