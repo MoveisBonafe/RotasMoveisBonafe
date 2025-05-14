@@ -4961,6 +4961,18 @@
                 route.pathIds = route.path.map(id => typeof id === 'object' ? id.toString() : id.toString());
             }
             
+            // Garantir que todas as rotas tenham tempo estimado calculado corretamente
+            // Usando velocidade padrão de 80km/h para todas as rotas
+            const distance = route.totalDistance || route.distance || 0;
+            if (distance > 0) {
+                // Calcular tempo em minutos (distância / velocidade * 60)
+                route.estimatedTime = (distance / 80) * 60;
+                console.log(`Rota ${routes.indexOf(route)}: Tempo recalculado para ${route.estimatedTime.toFixed(1)} minutos (${distance.toFixed(1)}km)`);
+            } else {
+                console.warn(`Rota com distância zero ou inválida: ${distance}`);
+                route.estimatedTime = 0;
+            }
+            
             return route;
         });
         
