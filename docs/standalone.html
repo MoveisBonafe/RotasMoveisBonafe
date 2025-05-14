@@ -1453,85 +1453,85 @@
     }
     
     // Função que existia para inicializar os campos de data (mantida por compatibilidade)
+    // Função auxiliar para formatar datas no formato YYYY-MM-DD
+    function formatDateForInput(date) {
+        return date.toISOString().split('T')[0];
+    }
+    
+    // Função para inicializar os botões de data na sidebar
     function initDatePickers() {
         try {
-            console.log("Função initDatePickers chamada - filtros de data foram removidos");
+            console.log("Inicializando botões de data dinâmicos");
             
-            // Os campos existem mas estão escondidos como inputs hidden
+            // Configurar os campos de data ocultos
             const startDateInput = document.getElementById('start-date');
             const endDateInput = document.getElementById('end-date');
             
+            // Botões de data
+            const todayButton = document.getElementById('date-button-today');
+            const weekButton = document.getElementById('date-button-week');
+            
             if (!startDateInput || !endDateInput) {
-                console.error("Campos de data não encontrados. Tentando encontrar container...");
-                
-                // Tentar criar os campos se não existirem
-                const dateContainer = document.querySelector('.date-filters');
-                if (dateContainer) {
-                    if (!startDateInput) {
-                        const newStart = document.createElement('input');
-                        newStart.type = 'date';
-                        newStart.id = 'start-date';
-                        newStart.className = 'form-control form-control-sm';
-                        dateContainer.appendChild(newStart);
-                        console.log("Campo de data inicial criado");
-                    }
-                    
-                    if (!endDateInput) {
-                        const newEnd = document.createElement('input');
-                        newEnd.type = 'date';
-                        newEnd.id = 'end-date';
-                        newEnd.className = 'form-control form-control-sm';
-                        dateContainer.appendChild(newEnd);
-                        console.log("Campo de data final criado");
-                    }
-                } else {
-                    console.error("Container de datas não encontrado!");
-                    return;
-                }
-            }
-            
-            // Referenciar os elementos (originais ou recém-criados)
-            const startDate = document.getElementById('start-date');
-            const endDate = document.getElementById('end-date');
-            
-            // Verificar novamente
-            if (!startDate || !endDate) {
-                console.error("Impossível criar ou localizar campos de data");
+                console.error("Campos de data ocultos não encontrados");
                 return;
             }
             
-            // Inicializar com a data atual e data atual + 7 dias
+            if (!todayButton || !weekButton) {
+                console.error("Botões de data não encontrados");
+                return;
+            }
+            
+            // Data atual e formatos
             const today = new Date();
-            const formattedToday = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+            const formattedToday = formatDateForInput(today);
             
-            // Calcular a data final (hoje + 7 dias)
-            const futureDate = new Date();
-            futureDate.setDate(today.getDate() + 7);
-            const formattedFuture = futureDate.toISOString().split('T')[0];
+            // Data da próxima semana
+            const nextWeek = new Date();
+            nextWeek.setDate(today.getDate() + 7);
+            const formattedNextWeek = formatDateForInput(nextWeek);
             
-            // Definir os valores apenas se estiverem vazios
-            if (!startDate.value) {
-                startDate.value = formattedToday;
-                console.log("Data inicial definida:", formattedToday);
-            }
+            // Configurar botão "Hoje"
+            todayButton.addEventListener('click', function() {
+                todayButton.classList.add('active');
+                weekButton.classList.remove('active');
+                
+                startDateInput.value = formattedToday;
+                endDateInput.value = formattedToday;
+                
+                console.log(`Filtro aplicado: Eventos de hoje (${formattedToday})`);
+                filterEventsByDate();
+            });
             
-            if (!endDate.value) {
-                endDate.value = formattedFuture;
-                console.log("Data final definida:", formattedFuture);
-            }
+            // Configurar botão "Semana"
+            weekButton.addEventListener('click', function() {
+                weekButton.classList.add('active');
+                todayButton.classList.remove('active');
+                
+                startDateInput.value = formattedToday;
+                endDateInput.value = formattedNextWeek;
+                
+                console.log(`Filtro aplicado: Eventos da semana (${formattedToday} até ${formattedNextWeek})`);
+                filterEventsByDate();
+            });
             
-            console.log(`Datas inicializadas: de ${startDate.value} até ${endDate.value}`);
+            // Inicializar valores padrão (Hoje)
+            startDateInput.value = formattedToday;
+            endDateInput.value = formattedToday;
+            
+            console.log(`Botões de data inicializados com sucesso`);
+            
         } catch (error) {
-            console.error("Erro ao inicializar seletores de data:", error);
+            console.error("Erro ao inicializar botões de data:", error);
         }
+    }
+    
+    // Função para redimensionar o mapa
+    function resizeMap() {
+        const mapContainer = document.querySelector('.map-container');
+        const mapElement = document.getElementById('map');
         
-        // Ajustar a altura do container e do mapa para preencher todo o espaço disponível
-        function resizeMap() {
-            const mapContainer = document.querySelector('.map-container');
-            const mapElement = document.getElementById('map');
-            
-            if (mapContainer && mapElement) {
-                const windowHeight = window.innerHeight;
+        if (mapContainer && mapElement) {
+            const windowHeight = window.innerHeight;
                 console.log('Redimensionando mapa para altura da janela:', windowHeight);
                 
                 // Ajustar posição e tamanho do container
