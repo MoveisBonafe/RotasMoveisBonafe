@@ -24,8 +24,7 @@ cp ../docs/route-optimizer.js ./js/
 cp ../docs/map-controls.js ./js/
 cp ../docs/geocode-fix.js ./js/
 cp ../docs/remove-duplicates.js ./js/remove-duplicates.js
-cp ../docs/drag-drop-alternative.js ./js/drag-drop-alternative.js
-cp ../docs/github-fix.js ./js/github-fix.js
+cp ../docs/direta-rota-personalizada.js ./js/direta-rota-personalizada.js
 
 # Copiar index.html otimizado
 cp ../docs/index.html ./
