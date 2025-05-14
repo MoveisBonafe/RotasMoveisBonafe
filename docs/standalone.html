@@ -396,6 +396,44 @@
             }
         }
         /* Estilo para o ponto de origem na lista da rota */
+        /* Estilos para os botões de filtro de data */
+        .date-buttons-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 0 5px;
+        }
+        
+        .date-button {
+            flex: 1;
+            padding: 8px 10px;
+            margin: 0 5px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            color: #495057;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .date-button i {
+            margin-right: 5px;
+        }
+        
+        .date-button:hover {
+            background-color: #e9ecef;
+        }
+        
+        .date-button.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
         .origin-point {
             color: #ff6600;
             font-weight: bold;
@@ -1575,14 +1613,15 @@
     
     // Criar o mapa
     map = new google.maps.Map(document.getElementById("map"), mapOptions);
-        // Redimensionar o mapa agora e quando a janela for redimensionada
-        resizeMap();
-        window.addEventListener('resize', resizeMap);
-        
-        // Inicializar o serviço de direções
-        directionsService = new google.maps.DirectionsService();
-        
-        try {
+    
+    // Redimensionar o mapa agora e quando a janela for redimensionada
+    resizeMap();
+    window.addEventListener('resize', resizeMap);
+    
+    // Inicializar o serviço de direções
+    directionsService = new google.maps.DirectionsService();
+    
+    try {
             console.log("Inicializando DirectionsRenderer...");
             directionsRenderer = new google.maps.DirectionsRenderer({
                 suppressMarkers: true, // Não mostrar marcadores padrão do Google
