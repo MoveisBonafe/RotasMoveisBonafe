@@ -185,9 +185,12 @@
     botaoReordenar.classList.add('ativo');
     botaoReordenar.textContent = 'Concluir Reordenação';
     
+    console.log('[Direct-Reorder] Ativando modo de reordenação...');
+    
     // Solução DIRETA: Usar uma abordagem manual para encontrar e substituir destinos
     const seletores = [
       '.locations-list', '.location-list', '#locations-list', 
+      '.locations-container', '#destinations-container',
       '[class*="location"]'
     ];
     
@@ -202,11 +205,16 @@
             el.innerHTML.includes('data-id') || 
             el.innerHTML.includes('badge')) {
           container = el;
-          console.log('[Direct-Reorder] Container de destinos encontrado:', selector);
+          console.log('[Direct-Reorder] Container de destinos encontrado:', selector, el);
           break;
         }
       }
     }
+    
+    console.log('[Direct-Reorder] Todos os elementos com "location" na classe:');
+    document.querySelectorAll('[class*="location"]').forEach((el, i) => {
+      console.log(`Elemento ${i}:`, el.tagName, el.className, 'HTML:', el.innerHTML.substring(0, 100));
+    });
     
     if (!container) {
       alert('Erro: Não foi possível encontrar a lista de destinos!');
@@ -346,12 +354,30 @@
     
     if (!itemArrastado) return;
     
-    const elementoApos = getElementoApos(this, e.clientY);
+    // Verifica se o item arrastado é filho deste container
+    // Se não for, é porque pode estar tentando arrastar entre containers diferentes
+    if (!this.contains(itemArrastado) && itemArrastado.parentNode) {
+      console.log('[Direct-Reorder] Item arrastado não é filho deste container');
+      return;
+    }
     
-    if (elementoApos) {
-      this.insertBefore(itemArrastado, elementoApos);
-    } else {
-      this.appendChild(itemArrastado);
+    try {
+      const elementoApos = getElementoApos(this, e.clientY);
+      
+      if (elementoApos) {
+        // Verificar se o elemento alvo é diferente do elemento arrastado
+        // e se o elemento arrastado não é pai do elemento alvo
+        if (elementoApos !== itemArrastado && !itemArrastado.contains(elementoApos)) {
+          this.insertBefore(itemArrastado, elementoApos);
+        }
+      } else {
+        // Verificar se o item já não é o último filho para evitar operações desnecessárias
+        if (this.lastChild !== itemArrastado) {
+          this.appendChild(itemArrastado);
+        }
+      }
+    } catch (error) {
+      console.error('[Direct-Reorder] Erro ao reordenar:', error);
     }
   }
   
