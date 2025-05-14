@@ -150,15 +150,22 @@
     // Procurar a lista de destinos (várias opções)
     console.log('[Reorder] Procurando lista de destinos...');
     
-    // Log de todas as listas no documento
+    // Log de todas as listas e elementos location no documento
     const todasUls = document.querySelectorAll('ul');
     console.log('[Reorder] Listas encontradas:', todasUls.length);
     todasUls.forEach((ul, i) => {
       console.log(`[Reorder] Lista ${i}:`, ul.id, ul.className, 'Itens:', ul.children.length);
     });
     
+    // Procurar por elementos com classes que contenham "location"
+    const elementosLocation = document.querySelectorAll('[class*="location"]');
+    console.log('[Reorder] Elementos com "location" na classe:', elementosLocation.length);
+    elementosLocation.forEach((el, i) => {
+      console.log(`[Reorder] Elemento location ${i}:`, el.tagName, el.id, el.className, 'Filhos:', el.children.length);
+    });
+    
     // Tentar vários seletores diferentes
-    let listaDestinos = document.querySelector('#destinations-list, #locations-list, ul.locations-list');
+    let listaDestinos = document.querySelector('#destinations-list, #locations-list, .locations-list, .location-list');
     
     // Se não encontrou, tentar outras abordagens
     if (!listaDestinos) {
@@ -198,39 +205,61 @@
     console.log('[Reorder] Lista encontrada:', listaDestinos.id, listaDestinos.className);
     console.log('[Reorder] Conteúdo da lista:', listaDestinos.innerHTML);
     
-    // Encontrar todos os itens da lista EXCETO a origem
-    // Primeiro tentar com o seletor de classe
-    let itensDestino = Array.from(listaDestinos.querySelectorAll('li:not(.origin-point)'));
-    console.log('[Reorder] Itens sem classe origin-point:', itensDestino.length);
+    // Agora sabemos que são DIVs, não LIs! Ajustar seletores
+    // Tentar encontrar os elementos DIV com classe location-item
+    let itensDestino = Array.from(listaDestinos.querySelectorAll('div.location-item'));
+    console.log('[Reorder] Itens com classe location-item:', itensDestino.length);
     
+    // Se não encontrou, tentar outros seletores comuns
     if (itensDestino.length === 0) {
-      // Se não encontrar, tentar outro seletor comum
-      itensDestino = Array.from(listaDestinos.querySelectorAll('li:not(.origin)'));
-      console.log('[Reorder] Itens sem classe origin:', itensDestino.length);
+      itensDestino = Array.from(listaDestinos.querySelectorAll('.location-item'));
+      console.log('[Reorder] Itens com classe .location-item (sem div):', itensDestino.length);
     }
     
+    // Tentar com qualquer elemento que tenha data-id
     if (itensDestino.length === 0) {
-      // Se ainda não encontrar, tentar identificar a origem pelo texto
-      const todosItens = Array.from(listaDestinos.querySelectorAll('li'));
-      console.log('[Reorder] Total de itens na lista:', todosItens.length);
+      itensDestino = Array.from(listaDestinos.querySelectorAll('[data-id]'));
+      console.log('[Reorder] Itens com atributo data-id:', itensDestino.length);
+    }
+    
+    // Tentar encontrar itens por conteúdo
+    if (itensDestino.length === 0) {
+      // Talvez sejam elementos <li> em algumas implementações
+      const todosLI = Array.from(listaDestinos.querySelectorAll('li'));
+      console.log('[Reorder] Total de elementos LI:', todosLI.length);
       
-      if (todosItens.length > 1) {
-        // Identificar origem pelo texto
-        const origemIdx = todosItens.findIndex(item => 
+      if (todosLI.length > 0) {
+        // Encontrar elementos que NÃO são a origem
+        const origemIdx = todosLI.findIndex(item => 
           item.textContent.toLowerCase().includes('origem') || 
           item.textContent.toLowerCase().includes('dois córregos') ||
           item.textContent.toLowerCase().includes('dois corrego')
         );
         
-        // Se encontrou a origem, remover do array
         if (origemIdx !== -1) {
-          console.log('[Reorder] Origem identificada pelo texto na posição:', origemIdx);
-          itensDestino = [...todosItens];
+          console.log('[Reorder] Origem identificada pelo texto na posição (LI):', origemIdx);
+          itensDestino = [...todosLI];
           itensDestino.splice(origemIdx, 1);
         } else {
           // Se não identificou, assumir que o primeiro é a origem
-          console.log('[Reorder] Assumindo primeiro item como origem');
-          itensDestino = todosItens.slice(1);
+          console.log('[Reorder] Assumindo primeiro item como origem (LI)');
+          itensDestino = todosLI.slice(1);
+        }
+      } else {
+        // Verificar filhos diretos (mesmo que não sejam LI ou DIV)
+        const todosFilhos = Array.from(listaDestinos.children);
+        console.log('[Reorder] Total de filhos diretos:', todosFilhos.length);
+        
+        if (todosFilhos.length > 0) {
+          // Pegar todos os elementos que parecem ser destinos
+          itensDestino = todosFilhos.filter(item => {
+            const texto = item.textContent.toLowerCase();
+            return !texto.includes('origem') && 
+                   !texto.includes('dois córregos') &&
+                   !texto.includes('dois corrego');
+          });
+          
+          console.log('[Reorder] Filhos filtrados (não origem):', itensDestino.length);
         }
       }
     }
@@ -252,8 +281,19 @@
     
     // Configurar cada item
     itensDestino.forEach(item => {
-      item.classList.add('github-drag');
+      console.log('[Reorder] Configurando item para drag:', item.textContent.trim().substring(0, 30));
+      
+      // Verificar se o item já tem a classe para evitar duplicação
+      if (!item.classList.contains('github-drag')) {
+        item.classList.add('github-drag');
+      }
+      
+      // Adicionar atributo draggable
       item.setAttribute('draggable', 'true');
+      
+      // Limpar eventos antigos (para evitar duplicação)
+      item.removeEventListener('dragstart', iniciarArrasto);
+      item.removeEventListener('dragend', finalizarArrasto);
       
       // Adicionar eventos
       item.addEventListener('dragstart', iniciarArrasto);
@@ -372,31 +412,45 @@
     console.log('[Reorder] Recalculando rota com nova ordem');
     
     // Usar a mesma lógica para encontrar a lista de destinos
-    let listaDestinos = document.querySelector('#destinations-list, #locations-list, ul.locations-list');
+    let listaDestinos = document.querySelector('#destinations-list, #locations-list, .locations-list, .location-list');
     
     // Se não encontrou, tentar outras abordagens
     if (!listaDestinos) {
       console.log('[Reorder] Tentando encontrar lista para recálculo...');
       
-      // Procurar qualquer lista que tenha mais de um item
-      const candidatos = Array.from(document.querySelectorAll('ul')).filter(ul => ul.children.length > 0);
+      // Procurar qualquer contêiner com classe que mencione location
+      const candidatosDiv = document.querySelectorAll('[class*="location"]');
+      console.log('[Reorder] Elementos com "location" na classe:', candidatosDiv.length);
       
-      for (const lista of candidatos) {
-        // Verificar se tem o texto "Origem" ou o nome da origem
-        const conteudoLista = lista.textContent.toLowerCase();
-        if (conteudoLista.includes('origem') || 
-            conteudoLista.includes('dois córregos') || 
-            conteudoLista.includes('dois corrego')) {
-          listaDestinos = lista;
-          console.log('[Reorder] Lista encontrada por conteúdo para recálculo');
+      for (const div of candidatosDiv) {
+        if (div.children.length > 0) {
+          listaDestinos = div;
+          console.log('[Reorder] Lista encontrada por classe location:', div.className);
           break;
         }
       }
       
-      // Se ainda não encontrou, pegar a primeira lista com mais de 1 item
-      if (!listaDestinos && candidatos.length > 0) {
-        listaDestinos = candidatos[0];
-        console.log('[Reorder] Usando primeira lista com itens para recálculo');
+      // Se ainda não encontrou, tentar com listas
+      if (!listaDestinos) {
+        const candidatosUl = Array.from(document.querySelectorAll('ul')).filter(ul => ul.children.length > 0);
+        
+        for (const lista of candidatosUl) {
+          // Verificar se tem o texto "Origem" ou o nome da origem
+          const conteudoLista = lista.textContent.toLowerCase();
+          if (conteudoLista.includes('origem') || 
+              conteudoLista.includes('dois córregos') || 
+              conteudoLista.includes('dois corrego')) {
+            listaDestinos = lista;
+            console.log('[Reorder] Lista encontrada por conteúdo para recálculo');
+            break;
+          }
+        }
+        
+        // Se ainda não encontrou, pegar a primeira lista com mais de 1 item
+        if (!listaDestinos && candidatosUl.length > 0) {
+          listaDestinos = candidatosUl[0];
+          console.log('[Reorder] Usando primeira lista com itens para recálculo');
+        }
       }
     }
     
@@ -405,6 +459,8 @@
       alert('Reordenação concluída. A lista foi atualizada.');
       return;
     }
+    
+    console.log('[Reorder] Lista para recálculo encontrada:', listaDestinos.className);
     
     // Verificar se temos os objetos necessários
     if (window.directionsService && window.directionsRenderer && window.locations) {
