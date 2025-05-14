@@ -24,7 +24,7 @@ cp ../docs/route-optimizer.js ./js/
 cp ../docs/map-controls.js ./js/
 cp ../docs/geocode-fix.js ./js/
 cp ../docs/remove-duplicates.js ./js/remove-duplicates.js
-cp ../docs/override-reorder.js ./js/override-reorder.js
+cp ../docs/drag-drop-alternative.js ./js/drag-drop-alternative.js
 
 # Copiar index.html otimizado
 cp ../docs/index.html ./
