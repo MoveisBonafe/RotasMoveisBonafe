@@ -3837,10 +3837,8 @@
         console.log("=================== EXIBINDO TODOS OS EVENTOS (SEM FILTRO) ===================");
         console.log("Mostrando eventos para rota com IDs:", pathIds);
         
-        // Nota: startDateStr e endDateStr são ignorados, pois a filtragem por data foi removida
-        // Mantidos apenas para compatibilidade com código existente
-        let startDateValue = ""; 
-        let endDateValue = "";
+        // Nota: startDateStr e endDateStr são ignorados intencionalmente
+        // Filtragem por data removida conforme solicitado
         
         // Verificações de segurança
         if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
