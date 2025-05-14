@@ -1392,6 +1392,7 @@
     let currentOptimizedPath = []; // Array para armazenar os IDs do caminho otimizado atual
     let poiMarkers = [];
     let eventMarkers = [];
+    let tollMarkers = []; // Array para armazenar marcadores de pedágio
     let locationId = 2; // Começa em 2 porque 1 é reservado para a origem
     let locations = [mockData.origin];
     let activeInfoWindow = null;
@@ -1406,6 +1407,7 @@
     let currentDisplayedRoute = null; // Guarda referência à rota atualmente exibida
     let allRoutePolylines = []; // Armazena referências a todas as polylines criadas
     let tspSolver = null; // Instância do solver TSP
+    let tollsData = []; // Array para armazenar dados dos pontos de pedágio
     
     // Função para processar CEP em formato x.y.z.w-abcd
     function formatCEP(cep) {
