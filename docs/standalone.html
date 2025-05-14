@@ -5573,6 +5573,33 @@
             }
         }
     }
+    
+    // Função para extrair a data de fundação e retornar com o ano atual
+    function extrairDataFundacao(descricao) {
+        try {
+            // Obter ano atual
+            const anoAtual = new Date().getFullYear();
+            
+            // Extrair a data de fundação da descrição
+            // Por exemplo: "Aniversário de fundação de Dois Córregos em 04/02/1883"
+            const regex = /(\d{2})\/(\d{2})\/\d{4}/;
+            const match = descricao.match(regex);
+            
+            if (match) {
+                // Formato é dia/mês/ano
+                const dia = match[1];
+                const mes = match[2];
+                
+                // Retorna a data no formato brasileiro com o ano atual
+                return `${dia}/${mes}/${anoAtual}`;
+            }
+            
+            return "Data não encontrada";
+        } catch (error) {
+            console.error("Erro ao extrair data de fundação:", error);
+            return "Erro na data";
+        }
+    }
 
     // Filtrar eventos por data - atualiza automaticamente ao mudar datas
     function filterEventsByDate() {
