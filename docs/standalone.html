@@ -1980,7 +1980,8 @@
                         // Mostrar pontos de interesse e eventos somente após desenhar a rota
                         setTimeout(() => {
                             showPointsOfInterestOnRoute(pathToUse);
-                            showEventsForCitiesOnRoute(pathToUse);
+                            // Eventos desativados
+                            showEventsForCitiesOnRoute(pathToUse); // Mantido para compatibilidade
                         }, 200);
                     }, 200);
                 }, 400);
@@ -2911,9 +2912,10 @@
                 const pathToUse = tspResult.pathIds || tspResult.path;
                 drawRouteOnMap(pathToUse, vehicleType);
                 
-                // Mostrar pontos de interesse e eventos ao longo da rota
+                // Mostrar pontos de interesse ao longo da rota
                 showPointsOfInterestOnRoute(pathToUse);
-                showEventsForCitiesOnRoute(pathToUse);
+                // Eventos desativados
+                showEventsForCitiesOnRoute(pathToUse); // Mantido para compatibilidade
                 showTruckRestrictionsForCitiesOnRoute(pathToUse, null); // null para mostrar todos os tipos
                 
                 // Atualizar a sequência de rota no relatório
