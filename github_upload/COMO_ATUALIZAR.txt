@@ -1,0 +1,16 @@
+Instruções para atualizar o GitHub Pages:
+
+1. Baixe o arquivo standalone.html desta pasta
+2. Acesse seu repositório GitHub onde está hospedada a aplicação
+3. Navegue até a pasta 'docs' 
+4. Faça upload e substitua o arquivo standalone.html existente
+5. Copie o conteúdo deste arquivo e também substitua o arquivo index.html para manter as duas versões atualizadas
+6. Faça commit das alterações com uma mensagem como "Correção do drag and drop e texto em eventos"
+
+Isso vai atualizar a versão publicada no GitHub Pages com as alterações:
+- Correção do drag and drop após otimizar a rota
+- Nova implementação de arraste e solte usando eventos de mouse
+- Ícone de menu amarelo (☰) para indicar itens arrastáveis
+- Cor de texto preta na aba de eventos
+
+As alterações estarão visíveis em seu site hospedado pelo GitHub Pages após alguns minutos.
