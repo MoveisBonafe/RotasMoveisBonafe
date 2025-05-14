@@ -343,14 +343,14 @@ document.addEventListener('DOMContentLoaded', function() {
   setTimeout(applyAllFixes, 2000);
   
   // Referência para o arquivo de rota personalizada já incluída no HTML
-  console.log('[fix-github] Script de drag and drop já deve estar carregado');
+  console.log('[fix-github] Script de drag and drop simplificado já deve estar carregado');
   
   // Verificar se o script foi carregado, senão carregá-lo
-  const scriptLoaded = document.querySelector('script[src="js/dragdrop.js"]');
+  const scriptLoaded = document.querySelector('script[src="js/simples-dragdrop.js"]');
   if (!scriptLoaded) {
-    console.log('[fix-github] Carregando script de drag and drop manualmente');
+    console.log('[fix-github] Carregando script de drag and drop simplificado manualmente');
     const script = document.createElement('script');
-    script.src = 'js/dragdrop.js';
+    script.src = 'js/simples-dragdrop.js';
     document.body.appendChild(script);
   }
   
