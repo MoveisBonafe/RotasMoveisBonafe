@@ -1872,8 +1872,8 @@
         }
         
         // Filtrar eventos automaticamente ao mudar as datas
-        document.getElementById('start-date').addEventListener('change', filterEventsByDate);
-        document.getElementById('end-date').addEventListener('change', filterEventsByDate);
+        // Event listeners de data removidos - filtro por data foi eliminado
+        // Campos de data escondidos e sem funcionalidade
         
         // Botões de controle do mapa
         document.getElementById('zoom-to-fit').addEventListener('click', zoomToFitAllMarkers);
@@ -5450,12 +5450,12 @@
     // Filtrar eventos por data - atualiza automaticamente ao mudar datas
     function filterEventsByDate() {
         console.log("==========================================");
-        console.log("FILTRO DE EVENTOS POR DATA SOLICITADO");
+        console.log("FUNÇÃO DE FILTRO POR DATA DESATIVADA");
+        console.log("TODOS OS EVENTOS SÃO MOSTRADOS SEM FILTRO");
         console.log("==========================================");
         
-        // Obter valores atuais das datas para filtro
-        const startDateInput = document.getElementById('start-date');
-        const endDateInput = document.getElementById('end-date');
+        // Função mantida para compatibilidade mas sem filtro
+        // Ignoramos qualquer data e mostramos todos os eventos
         
         // Verificação de segurança para GitHub Pages
         if (!startDateInput || !endDateInput) {
@@ -5581,9 +5581,9 @@
             console.log("Usando apenas a origem para eventos:", routeIds);
         }
         
-        // Mostrar eventos para as cidades da rota com filtro por data
-        console.log("Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas:", startDateStr, endDateStr);
-        showEventsForCitiesOnRoute(routeIds, startDateStr, endDateStr);
+        // Mostrar eventos para as cidades da rota (sem filtro por data)
+        console.log("Chamando showEventsForCitiesOnRoute (sem filtros de data)");
+        showEventsForCitiesOnRoute(routeIds);
         
         // Mostrar restrições para TODOS os tipos de caminhões nas cidades da rota
         // Passando null para indicar que queremos mostrar para todos os tipos
