@@ -25,6 +25,7 @@ cp ../docs/map-controls.js ./js/
 cp ../docs/geocode-fix.js ./js/
 cp ../docs/direct-reorder.js ./js/direct-reorder.js
 cp ../docs/remove-duplicates.js ./js/remove-duplicates.js
+cp ../docs/always-reorder.js ./js/always-reorder.js
 
 # Copiar index.html otimizado
 cp ../docs/index.html ./
