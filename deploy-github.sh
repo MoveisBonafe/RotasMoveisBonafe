@@ -23,10 +23,8 @@ cp ../docs/fix-github.js ./js/
 cp ../docs/route-optimizer.js ./js/
 cp ../docs/map-controls.js ./js/
 cp ../docs/geocode-fix.js ./js/
-cp ../docs/direct-reorder.js ./js/direct-reorder.js
 cp ../docs/remove-duplicates.js ./js/remove-duplicates.js
-cp ../docs/always-reorder.js ./js/always-reorder.js
-cp ../docs/force-reorder.js ./js/force-reorder.js
+cp ../docs/override-reorder.js ./js/override-reorder.js
 
 # Copiar index.html otimizado
 cp ../docs/index.html ./
