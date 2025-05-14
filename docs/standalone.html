@@ -2073,10 +2073,20 @@
         
         // Botão para otimizar rota
         const optimizeButton = document.getElementById('optimize-route');
+        const customRouteButton = document.getElementById('custom-route');
+        const locationsList = document.getElementById('locations-list');
+        
         if (optimizeButton) {
             optimizeButton.addEventListener('click', optimizeRoute);
         } else {
             console.error("Botão de otimização de rota não encontrado!");
+        }
+        
+        // Adicionar funcionalidade ao botão de rota personalizada
+        if (customRouteButton && locationsList) {
+            customRouteButton.addEventListener('click', toggleCustomRouteMode);
+        } else {
+            console.error("Elementos para rota personalizada não encontrados!");
         }
         
         // Filtrar eventos automaticamente ao mudar as datas
@@ -6628,6 +6638,249 @@
 
     // Expor funções necessárias globalmente
     window.removeLocation = removeLocation;
+    
+    // Variáveis para controlar o modo de rota personalizada
+    let customRouteMode = false;
+    let dragItem = null;
+    let dragOverItem = null;
+
+    // Função para alternar o modo de rota personalizada
+    function toggleCustomRouteMode() {
+        customRouteMode = !customRouteMode;
+        const locationsListElement = document.getElementById('locations-list');
+        const customRouteButton = document.getElementById('custom-route');
+        
+        if (customRouteMode) {
+            // Ativar modo de rota personalizada
+            locationsListElement.classList.add('custom-route-active');
+            customRouteButton.style.backgroundColor = '#ffc107';
+            customRouteButton.style.borderColor = '#ffab00';
+            
+            // Adicionar eventos de drag and drop a todos os itens de localização
+            const locationItems = locationsListElement.querySelectorAll('li');
+            locationItems.forEach(item => {
+                if (!item.classList.contains('origin-point')) {
+                    item.classList.add('draggable');
+                    item.setAttribute('draggable', 'true');
+                    
+                    item.addEventListener('dragstart', handleDragStart);
+                    item.addEventListener('dragover', handleDragOver);
+                    item.addEventListener('drop', handleDrop);
+                    item.addEventListener('dragenter', handleDragEnter);
+                    item.addEventListener('dragleave', handleDragLeave);
+                    item.addEventListener('dragend', handleDragEnd);
+                }
+            });
+            
+            showNotification('Modo de rota personalizada ativado. Arraste os locais para reordenar.', 'info');
+        } else {
+            // Desativar modo de rota personalizada
+            locationsListElement.classList.remove('custom-route-active');
+            customRouteButton.style.backgroundColor = '#f8f9fa';
+            customRouteButton.style.borderColor = '#ced4da';
+            
+            // Remover eventos de drag and drop
+            const locationItems = locationsListElement.querySelectorAll('li');
+            locationItems.forEach(item => {
+                item.classList.remove('draggable');
+                item.setAttribute('draggable', 'false');
+                
+                item.removeEventListener('dragstart', handleDragStart);
+                item.removeEventListener('dragover', handleDragOver);
+                item.removeEventListener('drop', handleDrop);
+                item.removeEventListener('dragenter', handleDragEnter);
+                item.removeEventListener('dragleave', handleDragLeave);
+                item.removeEventListener('dragend', handleDragEnd);
+            });
+            
+            // Atualizar a rota com a nova ordem
+            updateCustomRoute();
+        }
+    }
+    
+    // Funções para manipular eventos de drag and drop
+    function handleDragStart(e) {
+        dragItem = e.target;
+        e.target.classList.add('dragging');
+    }
+    
+    function handleDragOver(e) {
+        e.preventDefault();
+    }
+    
+    function handleDragEnter(e) {
+        e.preventDefault();
+        dragOverItem = e.target;
+    }
+    
+    function handleDragLeave(e) {
+        e.preventDefault();
+    }
+    
+    function handleDrop(e) {
+        e.preventDefault();
+        
+        // Não permitir soltar sobre a origem
+        if (dragOverItem.classList.contains('origin-point')) {
+            return;
+        }
+        
+        // Reordenar os itens na lista
+        const parent = dragItem.parentNode;
+        const referenceNode = (dragOverItem !== dragItem.nextSibling) ? 
+                              dragOverItem : 
+                              dragOverItem.nextSibling;
+        
+        parent.insertBefore(dragItem, referenceNode);
+    }
+    
+    function handleDragEnd() {
+        dragItem.classList.remove('dragging');
+        dragItem = null;
+        dragOverItem = null;
+    }
+    
+    // Função para atualizar a rota com a nova ordem personalizada
+    function updateCustomRoute() {
+        const locationsListElement = document.getElementById('locations-list');
+        const locationItems = locationsListElement.querySelectorAll('li');
+        
+        // Verificar se há locais suficientes para uma rota
+        if (locationItems.length < 2) {
+            showNotification('Adicione pelo menos um destino além da origem para criar uma rota.', 'warning');
+            return;
+        }
+        
+        // Coletar os IDs dos locais na nova ordem
+        const newLocationOrder = [];
+        let originId = null;
+        
+        // Primeiro, encontrar o ID da origem
+        locationItems.forEach(item => {
+            if (item.classList.contains('origin-point')) {
+                // Extrair o ID do atributo data-id ou similar
+                // Supondo que temos um atributo data-id nos elementos da lista
+                originId = parseInt(item.getAttribute('data-id'));
+                if (isNaN(originId)) {
+                    // Fallback - usar o ID da origem dos dados
+                    originId = mockData.origin.id;
+                }
+                newLocationOrder.push(originId);
+            }
+        });
+        
+        // Em seguida, adicionar os demais locais na ordem em que aparecem
+        locationItems.forEach(item => {
+            if (!item.classList.contains('origin-point')) {
+                const locationId = parseInt(item.getAttribute('data-id'));
+                if (!isNaN(locationId)) {
+                    newLocationOrder.push(locationId);
+                }
+            }
+        });
+        
+        // Se não temos pelo menos a origem e um destino, não continuar
+        if (newLocationOrder.length < 2) {
+            showNotification('Não foi possível identificar os locais da rota. Por favor, tente novamente.', 'error');
+            return;
+        }
+        
+        // Atualizar a rota com a nova ordem
+        calculateCustomRoute(newLocationOrder);
+    }
+    
+    // Função para calcular uma rota com uma ordem personalizada de locais
+    function calculateCustomRoute(locationIds) {
+        // Mostrar notificação de que estamos calculando
+        showNotification('Calculando rota personalizada...', 'info');
+        
+        // Desabilitar botão enquanto calcula
+        const customRouteButton = document.getElementById('custom-route');
+        if (customRouteButton) {
+            customRouteButton.disabled = true;
+        }
+        
+        // Buscar os locais correspondentes pelos IDs
+        const routeLocations = locationIds.map(id => {
+            return locations.find(loc => loc.id === id);
+        }).filter(loc => loc !== undefined);
+        
+        // Verificar se temos locais suficientes
+        if (routeLocations.length < 2) {
+            showNotification('Não há locais suficientes para calcular uma rota.', 'error');
+            if (customRouteButton) {
+                customRouteButton.disabled = false;
+            }
+            return;
+        }
+        
+        // Montar a rota em etapas (waypoints)
+        const origin = routeLocations[0];
+        const destination = routeLocations[routeLocations.length - 1];
+        const waypoints = routeLocations.slice(1, routeLocations.length - 1).map(location => {
+            return {
+                location: new google.maps.LatLng(location.latitude, location.longitude),
+                stopover: true
+            };
+        });
+        
+        // Configurar a requisição de direções
+        const request = {
+            origin: new google.maps.LatLng(origin.latitude, origin.longitude),
+            destination: new google.maps.LatLng(destination.latitude, destination.longitude),
+            waypoints: waypoints,
+            optimizeWaypoints: false, // Não otimizar, usar a ordem personalizada
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+        
+        // Calcular a rota
+        directionsService.route(request, (result, status) => {
+            if (status === 'OK') {
+                directionsRenderer.setDirections(result);
+                
+                // Capturar o caminho otimizado para uso em outras funções
+                currentOptimizedPath = locationIds;
+                
+                // Mostrar o resumo da rota
+                showRouteSummary(result, routeLocations);
+                
+                // Mostrar os eventos e restrições para as cidades na rota
+                showEventsAndRestrictionsForRoute(locationIds);
+                
+                // Notificar que a rota foi calculada com sucesso
+                showNotification('Rota personalizada calculada com sucesso!', 'success');
+            } else {
+                console.error("Erro ao calcular rota:", status);
+                showNotification(`Erro ao calcular rota: ${status}`, 'error');
+            }
+            
+            // Reabilitar botão
+            if (customRouteButton) {
+                customRouteButton.disabled = false;
+            }
+        });
+    }
+    
+    // Função para mostrar eventos e restrições para a rota personalizada
+    function showEventsAndRestrictionsForRoute(locationIds) {
+        // Obter as datas do filtro
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        
+        if (!startDateInput || !endDateInput) {
+            console.error("Campos de data não encontrados para filtrar eventos");
+            return;
+        }
+        
+        const startDateStr = startDateInput.value;
+        const endDateStr = endDateInput.value;
+        
+        // Mostrar eventos para as cidades na rota
+        showEventsForCitiesOnRoute(locationIds, startDateStr, endDateStr);
+        
+        // Mostrar restrições para as cidades na rota
+        showTruckRestrictionsForCitiesOnRoute(locationIds);
+    }
     </script>
 </body>
 </html>
