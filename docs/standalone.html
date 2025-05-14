@@ -5780,16 +5780,16 @@
                 });
                 
                 // Agora criar a lista formatada com as localizações ordenadas
-                locationsList = orderedLocations.map(location => {
+                locationsList = orderedLocations.map((location, index) => {
                     // Garantir que os nomes estão formatados corretamente
                     const locationName = formatLocationName(location.name || '');
                     const locationAddress = formatLocationName(location.address || '');
                     
                     // Verificar se é origem para destacar
                     if (location.isOrigin) {
-                        return `<li class="origin-point">${locationName} ${locationAddress ? `(${locationAddress})` : ''} (Origem)</li>`;
+                        return `<li class="origin-point">${index + 1}. ${locationName} ${locationAddress ? `(${locationAddress})` : ''} (Origem)</li>`;
                     } else {
-                        return `<li><strong>${locationName}</strong> ${locationAddress ? `(${locationAddress})` : ''}</li>`;
+                        return `<li><strong>${index + 1}. ${locationName}</strong> ${locationAddress ? `(${locationAddress})` : ''}</li>`;
                     }
                 }).join('');
             } else {
