@@ -1394,16 +1394,8 @@
         const today = new Date();
         const formattedToday = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
         
-        // Calcular a data final (hoje + 7 dias)
-        const endDate = new Date();
-        endDate.setDate(today.getDate() + 7);
-        const formattedEndDate = endDate.toISOString().split('T')[0];
-        
-        // Definir os valores dos campos de data
-        document.getElementById('start-date').value = formattedToday;
-        document.getElementById('end-date').value = formattedEndDate;
-        
-        console.log(`Datas definidas automaticamente: de ${formattedToday} até ${formattedEndDate}`);
+        // Removida a inicialização de datas para eventos pois a filtragem por data foi eliminada
+        console.log("Filtros de data para eventos foram removidos conforme solicitado");
         
         // Inicializar currentOptimizedPath com a origem para mostrar eventos/restrições iniciais
         currentOptimizedPath = [mockData.origin.id];
@@ -3842,13 +3834,13 @@
 
     // Mostrar eventos para as cidades na rota
     function showEventsForCitiesOnRoute(pathIds, startDateStr, endDateStr) {
-        console.log("=================== NOVA EXECUÇÃO ===================");
+        console.log("=================== EXIBINDO TODOS OS EVENTOS (SEM FILTRO) ===================");
         console.log("Mostrando eventos para rota com IDs:", pathIds);
-        console.log("Datas de filtro (string):", startDateStr, endDateStr);
         
-        // Valores para filtragem por data - garantir que são strings válidas
-        let startDateValue = startDateStr || "";
-        let endDateValue = endDateStr || "";
+        // Nota: startDateStr e endDateStr são ignorados, pois a filtragem por data foi removida
+        // Mantidos apenas para compatibilidade com código existente
+        let startDateValue = ""; 
+        let endDateValue = "";
         
         // Verificações de segurança
         if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
