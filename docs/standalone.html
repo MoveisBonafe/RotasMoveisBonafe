@@ -3834,37 +3834,26 @@
     }
 
     // Mostrar eventos para as cidades na rota
+    // Função completamente reescrita para remover TODAS as informações de eventos
     function showEventsForCitiesOnRoute(pathIds, startDateStr, endDateStr) {
-        console.log("=================== EXIBINDO TODOS OS EVENTOS (SEM FILTRO) ===================");
-        console.log("Mostrando eventos para rota com IDs:", pathIds);
+        console.log("=================== ABA DE EVENTOS COMPLETAMENTE DESATIVADA ===================");
+        console.log("Todas as informações de eventos foram removidas conforme solicitado");
         
-        // Nota: startDateStr e endDateStr são ignorados intencionalmente
-        // Filtragem por data removida conforme solicitado
-        
-        // Verificações de segurança
-        if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
-            console.error("IDs de rota inválidos ou vazios:", pathIds);
-            const originLocations = locations.filter(loc => loc.isOrigin);
-            if (originLocations.length > 0) {
-                pathIds = originLocations.map(loc => loc.id);
-                console.log("Usando apenas a origem para mostrar eventos:", pathIds);
-            } else {
-                console.error("Impossível encontrar até mesmo a origem. Abortando exibição de eventos.");
-                return;
-            }
-        }
-        
-        // Limpar a lista de eventos
+        // Limpar a lista de eventos e mostrar mensagem que a aba foi desativada
         const eventsListContainer = document.getElementById('events-list');
-        eventsListContainer.innerHTML = '';
-        
-        // Log para diagnóstico
-        console.log("Eventos disponíveis:", mockData.cityEvents);
-        
-        if (!pathIds || pathIds.length === 0) {
-            eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos.</p>';
-            return;
+        if (eventsListContainer) {
+            eventsListContainer.innerHTML = `
+                <div class="alert alert-info text-center mt-4 mb-4">
+                    <h3>Aba de eventos desativada</h3>
+                    <p>Conforme solicitado, todas as informações de eventos foram removidas desta aba.</p>
+                </div>`;
         }
+        
+        // Limpar marcadores de eventos do mapa
+        clearEventMarkers();
+        
+        // Encerrar a função aqui - nenhum evento será exibido
+        return;
         
         // CORREÇÃO: Converter IDs para objetos de localização de forma mais robusta
         const pathLocations = [];
