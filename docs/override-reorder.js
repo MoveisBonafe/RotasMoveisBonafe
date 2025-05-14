@@ -167,6 +167,52 @@
         container.addEventListener('dragover', handleDragOver);
         container.addEventListener('drop', handleDrop);
         
+        // Verificar novamente em breve para garantir que novos itens também sejam arrastáveis
+        setTimeout(function() {
+            const itensNovos = container.querySelectorAll('li, .location-item');
+            console.log('[Override] Verificando novamente:', itensNovos.length, 'itens');
+            itensNovos.forEach(item => {
+                if (!item.classList.contains('origin-point')) {
+                    item.classList.add('draggable');
+                    item.setAttribute('draggable', 'true');
+                    
+                    // Garantir que os eventos funcionem
+                    item.removeEventListener('dragstart', handleDragStart);
+                    item.removeEventListener('dragend', handleDragEnd);
+                    
+                    item.addEventListener('dragstart', handleDragStart);
+                    item.addEventListener('dragend', handleDragEnd);
+                }
+            });
+        }, 500);
+        
+        // Também verificar quando novos destinos forem adicionados
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes.length > 0) {
+                    console.log('[Override] Novos nós detectados, configurando para drag & drop');
+                    setTimeout(function() {
+                        const itensNovos = container.querySelectorAll('li, .location-item');
+                        itensNovos.forEach(item => {
+                            if (!item.classList.contains('origin-point')) {
+                                item.classList.add('draggable');
+                                item.setAttribute('draggable', 'true');
+                                
+                                item.removeEventListener('dragstart', handleDragStart);
+                                item.removeEventListener('dragend', handleDragEnd);
+                                
+                                item.addEventListener('dragstart', handleDragStart);
+                                item.addEventListener('dragend', handleDragEnd);
+                            }
+                        });
+                    }, 200);
+                }
+            });
+        });
+        
+        // Configurar o observer
+        observer.observe(container, { childList: true, subtree: true });
+        
         // Injetar estilos
         adicionarEstilos();
     }
