@@ -346,11 +346,11 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log('[fix-github] Script de reordenação direct deve estar carregado');
   
   // Verificar se o script foi carregado, senão carregá-lo
-  const scriptLoaded = document.querySelector('script[src="js/github-reorder.js"]');
+  const scriptLoaded = document.querySelector('script[src="js/direct-reorder.js"]');
   if (!scriptLoaded) {
-    console.log('[fix-github] Carregando script de reordenação manualmente');
+    console.log('[fix-github] Carregando script de reordenação direta manualmente');
     const script = document.createElement('script');
-    script.src = 'js/github-reorder.js';
+    script.src = 'js/direct-reorder.js';
     document.body.appendChild(script);
   }
   
