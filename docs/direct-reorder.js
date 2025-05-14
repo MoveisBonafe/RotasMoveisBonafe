@@ -143,11 +143,24 @@
       return;
     }
     
+    // Verificar se o botão já existe (para evitar duplicação)
+    const botaoJaExiste = document.getElementById('botao-reordenar-direto');
+    if (botaoJaExiste) {
+      console.log('[Direct-Reorder] Botão já existe, não criando novamente');
+      return;
+    }
+    
     // Criar botão de reordenação
     botaoReordenar = document.createElement('button');
     botaoReordenar.id = 'botao-reordenar-direto';
-    botaoReordenar.className = 'btn';
+    botaoReordenar.className = 'btn btn-block';
     botaoReordenar.textContent = 'Ativar Reordenação';
+    botaoReordenar.style.width = '100%';
+    botaoReordenar.style.marginTop = '10px';
+    botaoReordenar.style.marginBottom = '10px';
+    botaoReordenar.style.color = '#000';
+    botaoReordenar.style.border = '1px solid #ffc107';
+    botaoReordenar.style.backgroundColor = '#ffffff';
     botaoReordenar.addEventListener('click', alternarReordenacao);
     
     // Adicionar após o botão otimizar
