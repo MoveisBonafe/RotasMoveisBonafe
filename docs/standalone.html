@@ -2742,7 +2742,7 @@
                 path: [origin, ...destinations],
                 pathIds: [origin.id, ...destinations.map(d => d.id)],
                 distance: Math.max(100, straightLineDistance * 1.3),
-                time: Math.max(100, straightLineDistance * 1.3) / 80 * 60 // tempo estimado a 80km/h
+                time: calculateTravelTime(Math.max(100, straightLineDistance * 1.3)) // tempo usando função centralizada
             };
             
             // Verificar se temos alternativas geradas
@@ -5081,6 +5081,46 @@
             
             return route;
         });
+    }
+    
+    // Função para processar todos os resultados TSP finais e garantir cálculos consistentes
+    function postProcessTspResults(tspResults) {
+        console.log("Pós-processando resultados TSP:", tspResults);
+        
+        if (!tspResults || !Array.isArray(tspResults) || tspResults.length === 0) {
+            console.warn("Sem resultados TSP para processar");
+            return [];
+        }
+        
+        return tspResults.map(result => {
+            if (!result) return null;
+            
+            // Certificar que temos valores válidos de distância
+            if (!result.distance || isNaN(result.distance) || result.distance <= 0) {
+                console.warn("Resultado TSP com distância inválida ou zero:", result);
+                result.distance = Math.max(result.totalDistance || 0, 50); // valor mínimo seguro
+            }
+            
+            // Padronizar como lidamos com a distância total
+            if (!result.totalDistance && result.distance) {
+                result.totalDistance = result.distance;
+            }
+            
+            // Recalcular o tempo usando a função centralizada (80 km/h)
+            result.time = calculateTravelTime(result.distance);
+            result.estimatedTime = result.time;
+            
+            // Garantir que pathIds esteja disponível se path estiver presente
+            if (result.path && (!result.pathIds || !Array.isArray(result.pathIds))) {
+                result.pathIds = result.path.map(item => {
+                    return typeof item === 'object' && item !== null ? 
+                        (item.id !== undefined ? item.id : item) : item;
+                });
+            }
+            
+            console.log(`Rota processada: ${result.distance.toFixed(1)}km / ${result.time.toFixed(1)} minutos`);
+            return result;
+        }).filter(result => result !== null);
     }
     
     // Função para gerar rotas alternativas
