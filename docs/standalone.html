@@ -396,44 +396,6 @@
             }
         }
         /* Estilo para o ponto de origem na lista da rota */
-        /* Estilos para os botões de filtro de data */
-        .date-buttons-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            padding: 0 5px;
-        }
-        
-        .date-button {
-            flex: 1;
-            padding: 8px 10px;
-            margin: 0 5px;
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-            color: #495057;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .date-button i {
-            margin-right: 5px;
-        }
-        
-        .date-button:hover {
-            background-color: #e9ecef;
-        }
-        
-        .date-button.active {
-            background-color: #007bff;
-            color: white;
-            border-color: #007bff;
-        }
-
         .origin-point {
             color: #ff6600;
             font-weight: bold;
@@ -964,45 +926,6 @@
             transform: translateY(0);
         }
         
-        /* Estilo para os botões de data */
-        .date-buttons-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            gap: 8px;
-        }
-        
-        .date-button {
-            flex: 1;
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-            padding: 6px 10px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #495057;
-        }
-        
-        .date-button:hover {
-            background: #e9ecef;
-            border-color: #ced4da;
-        }
-        
-        .date-button i {
-            margin-right: 5px;
-            font-size: 0.9rem;
-        }
-        
-        .date-button.active {
-            background: #e7f5ff;
-            border-color: #4dabf7;
-            color: #1971c2;
-        }
-        
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -1058,20 +981,13 @@
             <div id="locations-content">
                     <!-- O conteúdo de locais fica no sidebar -->
                 
-                    <!-- Botões de data para filtrar eventos -->
-                    <div class="date-buttons-container">
-                        <button id="date-button-today" class="date-button active">
-                            <i class="bi bi-calendar-day"></i> Hoje
-                        </button>
-                        <button id="date-button-week" class="date-button">
-                            <i class="bi bi-calendar-week"></i> Semana
-                        </button>
-                    </div>
-                    
-                    <!-- Inputs de data ocultos para processamento -->
-                    <div style="display: none">
-                        <input type="hidden" id="start-date">
-                        <input type="hidden" id="end-date">
+                    <!-- Filtro de eventos por data (movido para cima da origem) -->
+                    <div class="form-group mb-3">
+                        <label>Filtrar eventos por data:</label>
+                        <div class="date-range-container d-flex gap-2">
+                            <input type="date" id="start-date" class="form-control form-control-sm">
+                            <input type="date" id="end-date" class="form-control form-control-sm">
+                        </div>
                     </div>
                     
                     <!-- Origem fixa -->
@@ -1192,19 +1108,16 @@
             <!-- Sem botão adicional - os próprios botões das abas controlam expandir/minimizar -->
             <!-- Navegação das abas inferiores -->
             <div class="bottom-tabs-nav">
-                <button class="bottom-tab-btn" data-tab="bottom-events">Eventos (Desativado)</button>
+                <button class="bottom-tab-btn" data-tab="bottom-events">Eventos na Rota</button>
                 <button class="bottom-tab-btn" data-tab="bottom-restrictions">Restrições de Tráfego</button>
                 <button class="bottom-tab-btn" data-tab="bottom-report">Relatório da Rota</button>
             </div>
             
             <!-- Conteúdo da aba Eventos -->
             <div class="bottom-tab-content" id="bottom-events-content">
-                <h5>Informações de eventos</h5>
+                <h5>Eventos nas cidades da rota:</h5>
                 <div class="events-list" id="events-list">
-                    <div class="alert alert-info text-center mt-4 mb-4">
-                        <h3>Aba de eventos desativada</h3>
-                        <p>Conforme solicitado, todas as informações de eventos foram removidas desta aba.</p>
-                    </div>
+                    <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
                 </div>
             </div>
             
@@ -1279,11 +1192,26 @@
             { id: 8, name: "Borracharia 24h (Botucatu)", type: "mechanic", latitude: -22.8900, longitude: -48.4500, highway: "SP-300", cityName: "Botucatu", services: ["tire"] }
         ],
         
-        // Eventos de cidades foram removidos conforme solicitado
+        // Eventos de cidades (com aniversários atualizados para 2025)
         cityEvents: [
-            // Array vazio mantido para compatibilidade com o código existente
-            // Eventos removidos - mantendo apenas um para compatibilidade de código
-            { id: 999, cityName: "Desativado", name: "Desativado", startDate: "2025-01-01", endDate: "2025-01-01", isHoliday: false, description: "Eventos desativados conforme solicitado", restrictionLevel: "low" }
+            // Aniversários das principais cidades (eventos fixos - feriados municipais)
+            { id: 99, cityName: "Dois Córregos", name: "Festival de Verão", startDate: "2025-01-01", endDate: "2025-12-31", isHoliday: false, description: "Festival com atividades durante todo o ano", restrictionLevel: "low" },
+            { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2025-02-04", endDate: "2025-02-04", isHoliday: true, description: "Aniversário de fundação de Dois Córregos em 04/02/1883", restrictionLevel: "low" },
+            { id: 2, cityName: "Jaú", name: "Aniversário da Cidade", startDate: "2025-08-15", endDate: "2025-08-15", isHoliday: true, description: "Aniversário de fundação de Jaú em 15/08/1853", restrictionLevel: "low" },
+            { id: 3, cityName: "Botucatu", name: "Aniversário da Cidade", startDate: "2025-04-14", endDate: "2025-04-14", isHoliday: true, description: "Aniversário de fundação de Botucatu em 14/04/1855", restrictionLevel: "low" },
+            { id: 4, cityName: "Bauru", name: "Aniversário da Cidade", startDate: "2025-08-01", endDate: "2025-08-01", isHoliday: true, description: "Aniversário de fundação de Bauru em 01/08/1896", restrictionLevel: "low" },
+            { id: 5, cityName: "Ribeirão Preto", name: "Aniversário da Cidade", startDate: "2025-06-19", endDate: "2025-06-19", isHoliday: true, description: "Aniversário de fundação de Ribeirão Preto em 19/06/1856", restrictionLevel: "low" },
+            { id: 6, cityName: "São Paulo", name: "Aniversário da Cidade", startDate: "2025-01-25", endDate: "2025-01-25", isHoliday: true, description: "Aniversário de fundação de São Paulo em 25/01/1554", restrictionLevel: "high" },
+            { id: 7, cityName: "Campinas", name: "Aniversário da Cidade", startDate: "2025-07-14", endDate: "2025-07-14", isHoliday: true, description: "Aniversário de fundação de Campinas em 14/07/1774", restrictionLevel: "medium" },
+            { id: 8, cityName: "São Carlos", name: "Aniversário da Cidade", startDate: "2025-11-04", endDate: "2025-11-04", isHoliday: true, description: "Aniversário de fundação de São Carlos em 04/11/1857", restrictionLevel: "low" },
+            
+            // Eventos regulares
+            { id: 9, cityName: "Jaú", name: "Festa do Rodeio", startDate: "2025-06-10", endDate: "2025-06-20", isHoliday: false, description: "Evento com grande circulação de veículos", restrictionLevel: "medium" },
+            { id: 10, cityName: "Botucatu", name: "Festival de Inverno", startDate: "2025-07-15", endDate: "2025-07-30", isHoliday: false, description: "Evento cultural e gastronômico", restrictionLevel: "low" },
+            { id: 11, cityName: "Bauru", name: "Exposição Agropecuária", startDate: "2025-08-05", endDate: "2025-08-15", isHoliday: false, description: "Feira agropecuária com shows", restrictionLevel: "high" },
+            { id: 12, cityName: "Ribeirão Preto", name: "Agrishow", startDate: "2025-04-25", endDate: "2025-04-29", isHoliday: false, description: "Maior feira de agronegócio da América Latina com forte impacto no tráfego local", restrictionLevel: "high" },
+            { id: 13, cityName: "São Paulo", name: "Virada Cultural", startDate: "2025-05-17", endDate: "2025-05-18", isHoliday: false, description: "Festival de 24 horas com eventos culturais pela cidade", restrictionLevel: "medium" },
+            { id: 14, cityName: "Ribeirão Preto", name: "Feira Tecnológica", startDate: "2025-05-15", endDate: "2025-05-18", isHoliday: false, description: "Exposição de novas tecnologias agrícolas", restrictionLevel: "medium" }
         ],
         
         // Restrições para caminhões
@@ -1468,17 +1396,25 @@
         const today = new Date();
         const formattedToday = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
         
-        // Removida a inicialização de datas para eventos pois a filtragem por data foi eliminada
-        console.log("Filtros de data para eventos foram removidos conforme solicitado");
+        // Calcular a data final (hoje + 7 dias)
+        const endDate = new Date();
+        endDate.setDate(today.getDate() + 7);
+        const formattedEndDate = endDate.toISOString().split('T')[0];
+        
+        // Definir os valores dos campos de data
+        document.getElementById('start-date').value = formattedToday;
+        document.getElementById('end-date').value = formattedEndDate;
+        
+        console.log(`Datas definidas automaticamente: de ${formattedToday} até ${formattedEndDate}`);
         
         // Inicializar currentOptimizedPath com a origem para mostrar eventos/restrições iniciais
         currentOptimizedPath = [mockData.origin.id];
         
-        // Chamar funções para mostrar eventos e restrições para a origem (sem filtro de data)
+        // Chamar funções para mostrar eventos e restrições para a origem com base nas datas atuais
         filterEventsByDate();
         
         // Mostrar mensagem de ajuda
-        console.log("Eventos mostrados para origem (filtragem por data desativada)");
+        console.log("Campos de data inicializados com datas atuais e eventos/restrições para origem configurados");
     });
 
     // Inicializa o mapa
@@ -1486,156 +1422,142 @@
         // Definir valores iniciais aos campos de data
         initDatePickers();
         
-        // Exibir eventos para a origem (sem filtro por data)
+        // Invocar a filtragem de eventos inicial para exibir eventos para a origem
         filterEventsByDate();
     }
     
-    // Função que existia para inicializar os campos de data (mantida por compatibilidade)
-    // Função auxiliar para formatar datas no formato YYYY-MM-DD
-    function formatDateForInput(date) {
-        return date.toISOString().split('T')[0];
-    }
-    
-    // Função para formatar data no formato brasileiro (DD/MM/YYYY)
-    function formatDateBR(dateStr) {
-        if (!dateStr) return '';
-        
-        // Verificar se já está no formato brasileiro
-        if (dateStr.includes('/')) return dateStr;
-        
-        const dateParts = dateStr.split('-');
-        if (dateParts.length !== 3) return dateStr;
-        
-        // Retornar no formato DD/MM/YYYY
-        return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-    }
-    
-    // Função para inicializar os botões de data na sidebar
+    // Função centralizada para inicializar os campos de data
     function initDatePickers() {
         try {
-            console.log("Inicializando botões de data dinâmicos");
+            console.log("Inicializando campos de data...");
             
-            // Configurar os campos de data ocultos
+            // Verificar se os campos existem
             const startDateInput = document.getElementById('start-date');
             const endDateInput = document.getElementById('end-date');
             
-            // Botões de data
-            const todayButton = document.getElementById('date-button-today');
-            const weekButton = document.getElementById('date-button-week');
-            
             if (!startDateInput || !endDateInput) {
-                console.error("Campos de data ocultos não encontrados");
+                console.error("Campos de data não encontrados. Tentando encontrar container...");
+                
+                // Tentar criar os campos se não existirem
+                const dateContainer = document.querySelector('.date-filters');
+                if (dateContainer) {
+                    if (!startDateInput) {
+                        const newStart = document.createElement('input');
+                        newStart.type = 'date';
+                        newStart.id = 'start-date';
+                        newStart.className = 'form-control form-control-sm';
+                        dateContainer.appendChild(newStart);
+                        console.log("Campo de data inicial criado");
+                    }
+                    
+                    if (!endDateInput) {
+                        const newEnd = document.createElement('input');
+                        newEnd.type = 'date';
+                        newEnd.id = 'end-date';
+                        newEnd.className = 'form-control form-control-sm';
+                        dateContainer.appendChild(newEnd);
+                        console.log("Campo de data final criado");
+                    }
+                } else {
+                    console.error("Container de datas não encontrado!");
+                    return;
+                }
+            }
+            
+            // Referenciar os elementos (originais ou recém-criados)
+            const startDate = document.getElementById('start-date');
+            const endDate = document.getElementById('end-date');
+            
+            // Verificar novamente
+            if (!startDate || !endDate) {
+                console.error("Impossível criar ou localizar campos de data");
                 return;
             }
             
-            if (!todayButton || !weekButton) {
-                console.error("Botões de data não encontrados");
-                return;
-            }
-            
-            // Data atual e formatos
+            // Inicializar com a data atual e data atual + 7 dias
             const today = new Date();
-            const formattedToday = formatDateForInput(today);
+            const formattedToday = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
             
-            // Data da próxima semana
-            const nextWeek = new Date();
-            nextWeek.setDate(today.getDate() + 7);
-            const formattedNextWeek = formatDateForInput(nextWeek);
+            // Calcular a data final (hoje + 7 dias)
+            const futureDate = new Date();
+            futureDate.setDate(today.getDate() + 7);
+            const formattedFuture = futureDate.toISOString().split('T')[0];
             
-            // Configurar botão "Hoje"
-            todayButton.addEventListener('click', function() {
-                todayButton.classList.add('active');
-                weekButton.classList.remove('active');
-                
-                startDateInput.value = formattedToday;
-                endDateInput.value = formattedToday;
-                
-                console.log(`Filtro aplicado: Eventos de hoje (${formattedToday})`);
-                filterEventsByDate();
-            });
+            // Definir os valores apenas se estiverem vazios
+            if (!startDate.value) {
+                startDate.value = formattedToday;
+                console.log("Data inicial definida:", formattedToday);
+            }
             
-            // Configurar botão "Semana"
-            weekButton.addEventListener('click', function() {
-                weekButton.classList.add('active');
-                todayButton.classList.remove('active');
-                
-                startDateInput.value = formattedToday;
-                endDateInput.value = formattedNextWeek;
-                
-                console.log(`Filtro aplicado: Eventos da semana (${formattedToday} até ${formattedNextWeek})`);
-                filterEventsByDate();
-            });
+            if (!endDate.value) {
+                endDate.value = formattedFuture;
+                console.log("Data final definida:", formattedFuture);
+            }
             
-            // Inicializar valores padrão (Hoje)
-            startDateInput.value = formattedToday;
-            endDateInput.value = formattedToday;
-            
-            console.log(`Botões de data inicializados com sucesso`);
-            
+            console.log(`Datas inicializadas: de ${startDate.value} até ${endDate.value}`);
         } catch (error) {
-            console.error("Erro ao inicializar botões de data:", error);
+            console.error("Erro ao inicializar seletores de data:", error);
         }
-    }
-    
-    // Função para redimensionar o mapa
-    function resizeMap() {
-        const mapContainer = document.querySelector('.map-container');
-        const mapElement = document.getElementById('map');
         
-        if (mapContainer && mapElement) {
-            const windowHeight = window.innerHeight;
-            console.log('Redimensionando mapa para altura da janela:', windowHeight);
+        // Ajustar a altura do container e do mapa para preencher todo o espaço disponível
+        function resizeMap() {
+            const mapContainer = document.querySelector('.map-container');
+            const mapElement = document.getElementById('map');
             
-            // Ajustar posição e tamanho do container
-            mapContainer.style.position = 'fixed';
-            mapContainer.style.top = '0';
-            mapContainer.style.right = '0';
-            mapContainer.style.bottom = '60px'; // Altura das abas minimizadas
-            mapContainer.style.left = '380px'; // Começa onde termina a sidebar
-            mapContainer.style.width = 'calc(100% - 380px)';
-            mapContainer.style.height = 'calc(100vh - 60px)'; // Toda a altura menos as abas
-            
-            // Forçar tamanho do elemento do mapa para ocupar todo o container
-            mapElement.style.position = 'absolute';
-            mapElement.style.top = '0';
-            mapElement.style.left = '0';
-            mapElement.style.right = '0';
-            mapElement.style.bottom = '0';
-            mapElement.style.width = '100%';
-            mapElement.style.height = '100%';
-            
-            // Adicionar classe para forçar tamanho completo
-            mapElement.classList.add('full-size-map');
-            
-            // Forçar renderização do mapa
-            if (typeof google !== 'undefined' && google.maps && map) {
-                google.maps.event.trigger(map, 'resize');
+            if (mapContainer && mapElement) {
+                const windowHeight = window.innerHeight;
+                console.log('Redimensionando mapa para altura da janela:', windowHeight);
+                
+                // Ajustar posição e tamanho do container
+                mapContainer.style.position = 'fixed';
+                mapContainer.style.top = '0';
+                mapContainer.style.right = '0';
+                mapContainer.style.bottom = '60px'; // Altura das abas minimizadas
+                mapContainer.style.left = '380px'; // Começa onde termina a sidebar
+                mapContainer.style.width = 'calc(100% - 380px)';
+                mapContainer.style.height = 'calc(100vh - 60px)'; // Toda a altura menos as abas
+                
+                // Forçar tamanho do elemento do mapa para ocupar todo o container
+                mapElement.style.position = 'absolute';
+                mapElement.style.top = '0';
+                mapElement.style.left = '0';
+                mapElement.style.right = '0';
+                mapElement.style.bottom = '0';
+                mapElement.style.width = '100%';
+                mapElement.style.height = '100%';
+                
+                // Adicionar classe para forçar tamanho completo
+                mapElement.classList.add('full-size-map');
+                
+                // Forçar renderização do mapa
+                if (typeof google !== 'undefined' && google.maps && map) {
+                    google.maps.event.trigger(map, 'resize');
+                }
             }
         }
-    }
-    
-    // Opções do mapa
-    const mapOptions = {
-        center: { lat: -22.3673, lng: -48.3822 }, // Dois Córregos
-        zoom: 8,
-        mapTypeControl: true,
-        fullscreenControl: true,
-        streetViewControl: true,
-        zoomControl: true,
-        gestureHandling: 'greedy' // Permite zoom com scroll sem precionar Ctrl
-    };
-    
-    // Criar o mapa
-    map = new google.maps.Map(document.getElementById("map"), mapOptions);
-    
-    // Redimensionar o mapa agora e quando a janela for redimensionada
-    resizeMap();
-    window.addEventListener('resize', resizeMap);
-    
-    // Inicializar o serviço de direções
-    directionsService = new google.maps.DirectionsService();
-    
-    try {
+        
+        // Opções do mapa
+        const mapOptions = {
+            center: { lat: -22.3673, lng: -48.3822 }, // Dois Córregos
+            zoom: 8,
+            mapTypeControl: true,
+            fullscreenControl: true,
+            streetViewControl: true,
+            zoomControl: true,
+            gestureHandling: 'greedy' // Permite zoom com scroll sem precionar Ctrl
+        };
+        
+        // Criar o mapa
+        map = new google.maps.Map(document.getElementById("map"), mapOptions);
+        
+        // Redimensionar o mapa agora e quando a janela for redimensionada
+        resizeMap();
+        window.addEventListener('resize', resizeMap);
+        
+        // Inicializar o serviço de direções
+        directionsService = new google.maps.DirectionsService();
+        
+        try {
             console.log("Inicializando DirectionsRenderer...");
             directionsRenderer = new google.maps.DirectionsRenderer({
                 suppressMarkers: true, // Não mostrar marcadores padrão do Google
@@ -1830,9 +1752,8 @@
     
     // Função para mostrar conteúdo inicial relevante nas abas
     function showInitialTabsContent() {
-        // Eventos foram completamente removidos
+        // Mostrar eventos da cidade de origem (Dois Córregos)
         const routeIds = [mockData.origin.id];
-        // Mantida a chamada para compatibilidade
         showEventsForCitiesOnRoute(routeIds);
         
         // Mostrar restrições para a cidade de origem
@@ -1961,8 +1882,8 @@
         }
         
         // Filtrar eventos automaticamente ao mudar as datas
-        // Event listeners de data removidos - filtro por data foi eliminado
-        // Campos de data escondidos e sem funcionalidade
+        document.getElementById('start-date').addEventListener('change', filterEventsByDate);
+        document.getElementById('end-date').addEventListener('change', filterEventsByDate);
         
         // Botões de controle do mapa
         document.getElementById('zoom-to-fit').addEventListener('click', zoomToFitAllMarkers);
@@ -2081,8 +2002,7 @@
                         // Mostrar pontos de interesse e eventos somente após desenhar a rota
                         setTimeout(() => {
                             showPointsOfInterestOnRoute(pathToUse);
-                            // Eventos desativados
-                            showEventsForCitiesOnRoute(pathToUse); // Mantido para compatibilidade
+                            showEventsForCitiesOnRoute(pathToUse);
                         }, 200);
                     }, 200);
                 }, 400);
@@ -2674,18 +2594,10 @@
         poiMarkers = [];
     }
 
-    // Função simplificada para limpeza de marcadores de eventos (compatibilidade)
+    // Limpar marcadores de eventos
     function clearEventMarkers() {
-        // Todos os marcadores de eventos foram removidos
-        console.log("Função clearEventMarkers chamada - aba de eventos desativada");
-        if (eventMarkers && Array.isArray(eventMarkers)) {
-            eventMarkers.forEach(marker => {
-                if (marker && typeof marker.setMap === 'function') {
-                    marker.setMap(null);
-                }
-            });
-            eventMarkers = [];
-        }
+        eventMarkers.forEach(marker => marker.setMap(null));
+        eventMarkers = [];
     }
 
     // Otimizar a rota
@@ -3013,10 +2925,9 @@
                 const pathToUse = tspResult.pathIds || tspResult.path;
                 drawRouteOnMap(pathToUse, vehicleType);
                 
-                // Mostrar pontos de interesse ao longo da rota
+                // Mostrar pontos de interesse e eventos ao longo da rota
                 showPointsOfInterestOnRoute(pathToUse);
-                // Eventos desativados
-                showEventsForCitiesOnRoute(pathToUse); // Mantido para compatibilidade
+                showEventsForCitiesOnRoute(pathToUse);
                 showTruckRestrictionsForCitiesOnRoute(pathToUse, null); // null para mostrar todos os tipos
                 
                 // Atualizar a sequência de rota no relatório
@@ -3113,14 +3024,20 @@
         // Atualizar a variável global com o caminho otimizado
         currentOptimizedPath = [...optimizedPathIds];
         
-        // Atualizar restrições para o novo caminho otimizado (eventos foram removidos)
-        // Esta seção foi simplificada para remover referências a eventos
-        console.log("Atualizando informações da rota");
-        const routeIds = currentOptimizedPath;
-        
-        // Eventos foram desativados, mantido apenas para compatibilidade
-        showEventsForCitiesOnRoute(routeIds);
-        showTruckRestrictionsForCitiesOnRoute(routeIds, null);
+        // Atualizar eventos e restrições para o novo caminho otimizado
+        // Preparar dados para atualização sem mudar para a aba de eventos
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        if (startDateInput && endDateInput) {
+            // Atualizar dados dos eventos sem mudar de aba
+            console.log("Atualizando dados de eventos em segundo plano sem mudar de aba");
+            const routeIds = currentOptimizedPath;
+            showEventsForCitiesOnRoute(routeIds, startDateInput.value, endDateInput.value);
+            showTruckRestrictionsForCitiesOnRoute(routeIds, null);
+        } else {
+            // Fallback ao método antigo apenas se necessário
+            console.log("Usando método alternativo de atualização");
+        }
         console.log("Quantidade de marcadores antes:", markers.length);
         
         // Preservar os marcadores originais
@@ -3926,151 +3843,127 @@
     }
 
     // Mostrar eventos para as cidades na rota
-    // Função completamente reescrita para remover TODAS as informações de eventos
     function showEventsForCitiesOnRoute(pathIds, startDateStr, endDateStr) {
-        console.log("Exibindo eventos filtrados por data");
+        console.log("=================== NOVA EXECUÇÃO ===================");
+        console.log("Mostrando eventos para rota com IDs:", pathIds);
+        console.log("Datas de filtro (string):", startDateStr, endDateStr);
         
-        // Verificar se foram passados filtros de data
-        if (startDateStr && endDateStr) {
-            console.log(`Filtro de data ativo: ${startDateStr} até ${endDateStr}`);
-        } else {
-            console.log("Sem filtro de data, exibindo todos os eventos");
+        // Valores para filtragem por data - garantir que são strings válidas
+        let startDateValue = startDateStr || "";
+        let endDateValue = endDateStr || "";
+        
+        // Verificações de segurança
+        if (!pathIds || !Array.isArray(pathIds) || pathIds.length === 0) {
+            console.error("IDs de rota inválidos ou vazios:", pathIds);
+            const originLocations = locations.filter(loc => loc.isOrigin);
+            if (originLocations.length > 0) {
+                pathIds = originLocations.map(loc => loc.id);
+                console.log("Usando apenas a origem para mostrar eventos:", pathIds);
+            } else {
+                console.error("Impossível encontrar até mesmo a origem. Abortando exibição de eventos.");
+                return;
+            }
         }
         
         // Limpar a lista de eventos
         const eventsListContainer = document.getElementById('events-list');
-        if (!eventsListContainer) {
-            console.error("Container de eventos não encontrado");
-            return;
-        }
-        
-        // Limpar conteúdo atual
         eventsListContainer.innerHTML = '';
         
-        // Criar cabeçalho com informações de filtro
-        let headerInfo = "";
-        if (startDateStr && endDateStr) {
-            if (startDateStr === endDateStr) {
-                // Exibindo eventos de hoje apenas
-                headerInfo = `<div class="alert alert-info">
-                    <i class="bi bi-calendar-day"></i> Exibindo eventos para ${formatDateBR(startDateStr)}
-                </div>`;
-            } else {
-                // Exibindo eventos de um período
-                headerInfo = `<div class="alert alert-info">
-                    <i class="bi bi-calendar-week"></i> Exibindo eventos de ${formatDateBR(startDateStr)} até ${formatDateBR(endDateStr)}
-                </div>`;
-            }
-        }
+        // Log para diagnóstico
+        console.log("Eventos disponíveis:", mockData.cityEvents);
         
-        // Adicionar o cabeçalho
-        eventsListContainer.innerHTML = headerInfo;
-        
-        // Limpar marcadores de eventos do mapa
-        clearEventMarkers();
-        
-        // Verificar se temos eventos para exibir
-        if (!mockData || !mockData.cityEvents || mockData.cityEvents.length === 0) {
-            eventsListContainer.innerHTML += `
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle"></i> Nenhum evento disponível.
-                </div>`;
+        if (!pathIds || pathIds.length === 0) {
+            eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos.</p>';
             return;
         }
         
-        // Obter localizações a partir dos IDs
+        // CORREÇÃO: Converter IDs para objetos de localização de forma mais robusta
         const pathLocations = [];
         for (const id of pathIds) {
             const idStr = String(id);
             const location = locations.find(loc => String(loc.id) === idStr);
             if (location) {
                 pathLocations.push(location);
+                console.log(`Localização encontrada para ID ${idStr}:`, location);
             }
         }
         
         if (pathLocations.length === 0) {
             console.error("Nenhuma localização válida encontrada na rota");
-            eventsListContainer.innerHTML += '<p class="text-muted">Erro ao encontrar localizações na rota.</p>';
+            eventsListContainer.innerHTML = '<p class="text-muted">Erro ao encontrar localizações na rota.</p>';
             return;
         }
         
-        // Extrair cidades da rota incluindo a origem
-        const citiesOnRoute = ["Dois Córregos"]; // Sempre incluir a origem
+        // EXTRAÇÃO MELHORADA DE CIDADES DO PERCURSO
+        // Array para armazenar os nomes das cidades que estão REALMENTE na rota
+        const citiesOnRoute = [];
         
-        // Adicionar outras cidades da rota
-        pathLocations.forEach(location => {
-            const cityName = extractCityName(location.address || location.name);
-            if (cityName && !citiesOnRoute.includes(cityName)) {
-                citiesOnRoute.push(cityName);
+        // Cidade de origem (sempre incluir Dois Córregos)
+        citiesOnRoute.push("Dois Córregos");
+        console.log(`[ROTA] Adicionada cidade de origem: Dois Córregos`);
+        
+        // Processar CADA destino na rota para extrair nomes de cidades
+        for (const location of pathLocations) {
+            // Apenas adicionar se tivermos um nome válido
+            if (location && location.name) {
+                // Verificar se o nome é uma cidade conhecida (estratégia 1)
+                const knownCities = [
+                    "Dois Córregos", "Jaú", "Botucatu", "Bauru", "Ribeirão Preto", 
+                    "São Paulo", "Campinas", "São Carlos", "Piracicaba", "Araraquara",
+                    "Americana", "Sorocaba", "Limeira", "Rio Claro"
+                ];
+                
+                // Se o nome exato da localização é uma cidade conhecida
+                if (knownCities.includes(location.name) && !citiesOnRoute.includes(location.name)) {
+                    citiesOnRoute.push(location.name);
+                    console.log(`[ROTA] Adicionada cidade conhecida: ${location.name}`);
+                    continue; // Ir para o próximo local
+                }
+                
+                // Estratégia 2: Usar o nome da localização diretamente
+                if (!citiesOnRoute.includes(location.name)) {
+                    citiesOnRoute.push(location.name);
+                    console.log(`[ROTA] Adicionado local como possível cidade: ${location.name}`);
+                }
             }
-        });
-        
-        console.log("Cidades na rota para filtragem de eventos:", citiesOnRoute);
-        
-        // Filtrar eventos por cidade e data
-        let filteredEvents = mockData.cityEvents.filter(event => {
-            // Verificar se o evento está em uma das cidades da rota
-            const eventInRoute = citiesOnRoute.some(city => 
-                event.city && event.city.toLowerCase().includes(city.toLowerCase())
-            );
-            
-            // Se não estiver na rota, não mostrar
-            if (!eventInRoute) return false;
-            
-            // Se não tiver filtro de data, mostrar todos
-            if (!startDateStr || !endDateStr) return true;
-            
-            // Verificar se a data do evento está dentro do período filtrado
-            const eventDate = new Date(event.date);
-            const startDate = new Date(startDateStr);
-            const endDate = new Date(endDateStr);
-            
-            // Ajustar para fim do dia para comparações inclusivas
-            endDate.setHours(23, 59, 59, 999);
-            
-            return eventDate >= startDate && eventDate <= endDate;
-        });
-        
-        // Ordenar eventos por data
-        filteredEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
-        
-        // Criar a lista de eventos
-        if (filteredEvents.length === 0) {
-            eventsListContainer.innerHTML += `
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle"></i> Nenhum evento encontrado para o período selecionado.
-                </div>`;
-            return;
         }
         
-        // Criar elementos para os eventos
-        const eventsList = document.createElement('div');
-        eventsList.className = 'events-list mt-3';
+        console.log(`[ROTA] Cidades encontradas no percurso (${citiesOnRoute.length}): ${citiesOnRoute.join(', ')}`);
         
-        filteredEvents.forEach(event => {
-            const eventDate = new Date(event.date);
-            const formattedDate = eventDate.toLocaleDateString('pt-BR');
-            
-            const eventItem = document.createElement('div');
-            eventItem.className = 'event-item card mb-2';
-            eventItem.innerHTML = `
-                <div class="card-body">
-                    <h5 class="card-title">${event.name}</h5>
-                    <p class="card-text">
-                        <i class="bi bi-geo-alt"></i> ${event.city}<br>
-                        <i class="bi bi-calendar"></i> ${formattedDate}
-                    </p>
-                    ${event.description ? `<p class="card-text small">${event.description}</p>` : ''}
-                </div>
-            `;
-            
-            eventsList.appendChild(eventItem);
-        });
+        console.log("APENAS ESTAS CIDADES ESTÃO NA ROTA REAL:", citiesOnRoute);
         
-        eventsListContainer.appendChild(eventsList);
+        // NOVA IMPLEMENTAÇÃO DE FILTRAGEM DE EVENTOS
+        console.log("NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data");
+        console.log(`Filtrando eventos para cidades: ${citiesOnRoute.join(', ')}`);
+        console.log(`Filtro de data: ${startDateValue || 'sem data inicial'} a ${endDateValue || 'sem data final'}`);
         
-        // Usamos o ano atual apenas para ajustar eventos anuais como aniversários de cidades
+        // Ajuste condicional das datas - garantir que temos valores válidos
+        // Usar o ano atual do sistema
         const currentYear = new Date().getFullYear();
+        
+        if (!startDateValue || !endDateValue) {
+            // Se datas não foram especificadas, usar intervalo padrão do ano atual
+            console.log(`[AJUSTE AUTOMÁTICO] Definindo intervalo padrão para o ano ${currentYear}`);
+            
+            // Usar o ano atual para filtrar eventos
+            if (!startDateValue) startDateValue = `${currentYear}-01-01`;
+            if (!endDateValue) endDateValue = `${currentYear}-12-31`;
+            
+            console.log(`[DATA] Intervalo ajustado para: ${startDateValue} até ${endDateValue}`);
+        } else {
+            // Se as datas foram especificadas, garantir que estamos no ano correto
+            // Extrair apenas os valores de data (sem hora)
+            const startParts = startDateValue.split('T')[0].split('-');
+            const endParts = endDateValue.split('T')[0].split('-');
+            
+            // Verificar se o ano é diferente de 2025
+            if (startParts[0] !== String(currentYear) || endParts[0] !== String(currentYear)) {
+                console.log(`[AVISO] Ajustando datas para o ano ${currentYear}`);
+                // Manter mês e dia, mas ajustar o ano
+                startDateValue = `${currentYear}-${startParts[1]}-${startParts[2]}`;
+                endDateValue = `${currentYear}-${endParts[1]}-${endParts[2]}`;
+            }
+        }
         
         // Array para armazenar eventos filtrados
         let eventsOnRoute = [];
@@ -4087,13 +3980,103 @@
                     return; // Pular para o próximo evento
                 }
                 
-                // SEM FILTRO DE DATA - MOSTRAR TODOS OS EVENTOS
-                console.log(`[ACEITO SEM FILTRO] Evento '${event.name}' em ${event.cityName}`);
-                includeEvent = true;
+                // PARTE 2: AJUSTAR DATAS DO EVENTO PARA O ANO ATUAL
+                // Evento especial: Festival de Verão
+                const isFestivalVerao = event.id === 99 && event.name === "Festival de Verão";
+                
+                // Obter o ano atual
+                const currentYear = new Date().getFullYear();
+                
+                // Criar novas datas para o evento ajustadas para o ano atual
+                const eventStart = new Date(event.startDate);
+                const eventEnd = new Date(event.endDate);
+                
+                // Garantir que estamos usando o ano atual para eventos anuais (aniversários)
+                if (event.name.includes("Aniversário") || event.isHoliday) {
+                    eventStart.setFullYear(currentYear);
+                    eventEnd.setFullYear(currentYear);
+                }
+                
+                // Ajustar horas para garantir dias completos
+                eventStart.setHours(0,0,0,0);
+                eventEnd.setHours(23,59,59,999);
+                
+                // Log detalhado
+                console.log(`[EVENTO] ${event.name} (${event.cityName}): ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')}`);
+                
+                // PARTE 3: APLICAR FILTRO DE DATA
+                if (startDateValue && endDateValue) {
+                    // Tratamento especial para o Festival de Verão
+                    if (isFestivalVerao) {
+                        console.log(`[FESTIVAL] Festival de Verão excluído quando há filtro de data`);
+                        includeEvent = false;
+                        return;
+                    }
+                    
+                    try {
+                        // Criar objetos Date para as datas do filtro
+                        let filterStart = new Date(startDateValue);
+                        let filterEnd = new Date(endDateValue);
+                        
+                        // Verificar se as datas são objetos Date válidos
+                        if (isNaN(filterStart.getTime()) || isNaN(filterEnd.getTime())) {
+                            console.error(`[ERRO] Datas de filtro inválidas: ${startDateValue}, ${endDateValue}`);
+                            
+                            // Tentar corrigir formatos de data (pode ser ISO ou MM/DD/YYYY)
+                            if (startDateValue.includes('/')) {
+                                const parts = startDateValue.split('/');
+                                filterStart = new Date(parts[2], parts[0]-1, parts[1]);
+                            }
+                            
+                            if (endDateValue.includes('/')) {
+                                const parts = endDateValue.split('/');
+                                filterEnd = new Date(parts[2], parts[0]-1, parts[1]);
+                            }
+                            
+                            // Verificar novamente
+                            if (isNaN(filterStart.getTime()) || isNaN(filterEnd.getTime())) {
+                                console.error(`[ERRO] Impossível corrigir datas inválidas`);
+                                includeEvent = true; // Em caso de erro, mostrar evento
+                                return;
+                            }
+                        }
+                        
+                        // Garantir dia completo
+                        filterStart.setHours(0,0,0,0);
+                        filterEnd.setHours(23,59,59,999);
+                        
+                        // Verificar sobreposição entre as datas
+                        const hasOverlap = (
+                            // Evento começa dentro do período do filtro
+                            (eventStart >= filterStart && eventStart <= filterEnd) ||
+                            // Evento termina dentro do período do filtro
+                            (eventEnd >= filterStart && eventEnd <= filterEnd) ||
+                            // Evento abrange todo o período do filtro
+                            (eventStart <= filterStart && eventEnd >= filterEnd)
+                        );
+                        
+                        console.log(`[VERIFICAÇÃO] Data evento ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')} vs. Filtro ${filterStart.toLocaleDateString('pt-BR')}-${filterEnd.toLocaleDateString('pt-BR')}`);
+                        
+                        if (hasOverlap) {
+                            console.log(`[ACEITO] Evento '${event.name}' está no período filtrado`);
+                            includeEvent = true;
+                        } else {
+                            console.log(`[REJEITADO] Evento '${event.name}' fora do período filtrado`);
+                            includeEvent = false;
+                        }
+                    } catch (dateError) {
+                        console.error(`[ERRO] Falha ao processar datas do filtro:`, dateError);
+                        includeEvent = true; // Em caso de erro mostrar o evento
+                    }
+                } else {
+                    // Sem filtro de data, mostrar todos os eventos
+                    console.log(`[ACEITO] Evento '${event.name}' aceito (sem filtro de data)`);
+                    includeEvent = true;
+                }
                 
             } catch (error) {
-                console.error(`[ERRO] Falha ao processar evento ${event.name}:`, error);
-                includeEvent = true; // Em caso de erro, mostrar o evento de qualquer forma
+                console.error(`[ERRO GERAL] Falha ao processar evento ${event.name}:`, error);
+                includeEvent = true; // Em caso de erro geral, mostrar o evento
             }
             
             // Se passou por todos os filtros, incluir o evento
@@ -4105,7 +4088,7 @@
         
         // Se não houver eventos, mostrar mensagem
         if (eventsOnRoute.length === 0) {
-            eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado nas cidades do percurso.</p>';
+            eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado para o período e cidades selecionados.</p>';
             return;
         }
         
@@ -4152,10 +4135,48 @@
         });
     }
 
-    // Função de marcador de evento simplificada para compatibilidade - não faz nada
+    // Adicionar marcador para um evento
     function addEventMarker(event, location) {
-        console.log("Função addEventMarker desativada - eventos foram removidos");
-        // Todos os marcadores de eventos foram removidos
+        // Seletor de ícone com base no tipo de evento
+        const markerColor = event.isHoliday ? '#f44336' : '#ff9800';
+        const markerIcon = {
+            path: google.maps.SymbolPath.CIRCLE,
+            fillColor: markerColor,
+            fillOpacity: 1,
+            strokeWeight: 1,
+            strokeColor: '#000',
+            scale: 8
+        };
+        
+        // Criar o marcador
+        const marker = new google.maps.Marker({
+            position: { lat: location.latitude, lng: location.longitude },
+            map: map,
+            title: event.name,
+            icon: markerIcon,
+            zIndex: 30
+        });
+        
+        // Conteúdo do tooltip
+        const tooltipContent = `
+            <div class="tooltip-title">${event.name}</div>
+            <div>${event.cityName}</div>
+            <div>${new Date(event.startDate).toLocaleDateString('pt-BR')} - ${new Date(event.endDate).toLocaleDateString('pt-BR')}</div>
+            <div>${event.description}</div>
+            <div>Nível de restrição: ${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</div>
+        `;
+        
+        // Adicionar listener para mostrar tooltip ao passar o mouse
+        marker.addListener('mouseover', function() {
+            showTooltip(marker, { tooltipContent });
+        });
+        
+        marker.addListener('mouseout', function() {
+            hideTooltip();
+        });
+        
+        // Armazenar o marcador
+        eventMarkers.push(marker);
     }
 
     // Mostrar restrições para caminhões nas cidades da rota
@@ -4865,8 +4886,8 @@
         // Mostrar eventos nas cidades da rota - pegando as datas do filtro
         const startDate = document.getElementById('start-date').value;
         const endDate = document.getElementById('end-date').value;
-        console.log("Chamando showEventsForCitiesOnRoute (sem filtros de data)");
-        showEventsForCitiesOnRoute(tspResult.pathIds || tspResult.path);
+        console.log("Chamando showEventsForCitiesOnRoute com datas:", startDate, endDate);
+        showEventsForCitiesOnRoute(tspResult.pathIds || tspResult.path, startDate, endDate);
             
         // Mostrar restrições para caminhões nas cidades da rota
         showTruckRestrictionsForCitiesOnRoute(tspResult.pathIds || tspResult.path, null); // null para mostrar todos os tipos
@@ -5553,44 +5574,146 @@
         }
     }
 
-    // Função para filtrar eventos por data - reimplementada para usar os novos botões
+    // Filtrar eventos por data - atualiza automaticamente ao mudar datas
     function filterEventsByDate() {
         console.log("==========================================");
-        console.log("FILTRO POR DATA USANDO BOTÕES DINÂMICOS");
+        console.log("FILTRO DE EVENTOS POR DATA SOLICITADO");
         console.log("==========================================");
         
-        // Determinar quais IDs usar para mostrar eventos
-        let routeIds = [];
-        
-        // Opção 1: Rota otimizada atual (melhor opção)
-        if (currentOptimizedPath && currentOptimizedPath.length > 0) {
-            routeIds = [...currentOptimizedPath];
-        } 
-        // Opção 2: Todas as localizações atuais
-        else if (locations && locations.length > 0) {
-            routeIds = locations.map(loc => loc.id);
-        }
-        
-        // Usar datas definidas nos inputs ocultos
+        // Obter valores atuais das datas para filtro
         const startDateInput = document.getElementById('start-date');
         const endDateInput = document.getElementById('end-date');
         
-        // Opção 3: Fallback para origem
-        if (routeIds.length === 0) {
-            routeIds = [mockData.origin.id];
+        // Verificação de segurança para GitHub Pages
+        if (!startDateInput || !endDateInput) {
+            console.error("Campos de data não encontrados no DOM");
+            
+            // Tentar criar os campos se estiverem ausentes (para GitHub Pages)
+            try {
+                // Verificar se temos o container de datas
+                const dateContainer = document.querySelector('.date-filters');
+                if (dateContainer) {
+                    if (!startDateInput) {
+                        const newStartInput = document.createElement('input');
+                        newStartInput.type = 'date';
+                        newStartInput.id = 'start-date';
+                        newStartInput.className = 'form-control form-control-sm';
+                        dateContainer.appendChild(newStartInput);
+                        console.log("Criado campo de data inicial ausente");
+                    }
+                    
+                    if (!endDateInput) {
+                        const newEndInput = document.createElement('input');
+                        newEndInput.type = 'date';
+                        newEndInput.id = 'end-date';
+                        newEndInput.className = 'form-control form-control-sm';
+                        dateContainer.appendChild(newEndInput);
+                        console.log("Criado campo de data final ausente");
+                    }
+                }
+            } catch (e) {
+                console.error("Falha ao criar campos de data:", e);
+            }
+            
+            // Tentar novamente após recriação
+            const retriedStartInput = document.getElementById('start-date');
+            const retriedEndInput = document.getElementById('end-date');
+            
+            if (!retriedStartInput || !retriedEndInput) {
+                console.error("Impossível recuperar campos de data, mesmo após tentativa de criação");
+                return;
+            } else {
+                console.log("Campos de data recuperados após recriação");
+                startDateInput = retriedStartInput;
+                endDateInput = retriedEndInput;
+            }
         }
         
-        if (startDateInput && endDateInput && startDateInput.value && endDateInput.value) {
-            // Filtrar eventos com as datas definidas
-            console.log("Filtrando eventos de", startDateInput.value, "até", endDateInput.value);
-            showEventsForCitiesOnRoute(routeIds, startDateInput.value, endDateInput.value);
+        // Obter datas do filtro
+        let startDateStr = startDateInput.value;
+        let endDateStr = endDateInput.value;
+        
+        // Validar datas de filtro
+        if (!startDateStr || !endDateStr) {
+            console.warn("Pelo menos uma das datas de filtro está vazia:", {start: startDateStr, end: endDateStr});
+            
+            // Atribuir valores padrão se as datas estiverem vazias
+            const today = new Date();
+            const oneWeekLater = new Date();
+            oneWeekLater.setDate(today.getDate() + 7);
+            
+            // Converter para formato YYYY-MM-DD
+            const formatDate = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+            
+            // Atualizar elementos do formulário apenas se estiverem vazios
+            if (!startDateStr) {
+                startDateStr = formatDate(today);
+                startDateInput.value = startDateStr;
+                console.log("Data inicial ajustada para hoje:", startDateStr);
+            }
+            
+            if (!endDateStr) {
+                endDateStr = formatDate(oneWeekLater);
+                endDateInput.value = endDateStr;
+                console.log("Data final ajustada para uma semana depois:", endDateStr);
+            }
+        }
+        
+        console.log(`Datas finais para filtragem: ${startDateStr} até ${endDateStr}`);
+        
+        let routeIds = [];
+        
+        // Se tivermos uma rota otimizada atual, usar os pontos dessa rota
+        if (currentOptimizedPath && currentOptimizedPath.length > 0) {
+            console.log("Usando rota otimizada atual:", currentOptimizedPath);
+            routeIds = [...currentOptimizedPath]; // Clonar para não modificar o original
+        } else if (directionsRenderer && directionsRenderer.getDirections()) {
+            // Se tivermos uma rota no renderer mas não otimizada, usar locais atuais
+            console.log("Usando locais atuais como rota");
+            routeIds = locations.map(loc => loc.id);
         } else {
-            // Sem datas definidas, mostrar todos os eventos
-            console.log("Exibindo todos os eventos das cidades da rota");
-            showEventsForCitiesOnRoute(routeIds);
+            // Se não tivermos rota, mostrar apenas para origem
+            console.log("Sem rota, mostrando apenas para origem");
+            // Mostrar notificação para indicar que é necessário calcular uma rota
+            const notifyInfo = document.createElement('div');
+            notifyInfo.className = 'alert alert-info mt-2';
+            notifyInfo.innerHTML = `Calcule uma rota primeiro para ver os eventos e restrições no percurso.`;
+            // Usar a primeira aba inferior ativa como container para notificação
+            const tabContent = document.querySelector('.bottom-tab-content.active');
+            if (tabContent) {
+                tabContent.appendChild(notifyInfo);
+            } else {
+                // Fallback para a seção de otimização caso as abas não existam
+                const optimizeSection = document.querySelector('.optimize-btn-container');
+                if (optimizeSection) {
+                    optimizeSection.appendChild(notifyInfo);
+                }
+            }
+            // Remover a notificação após alguns segundos
+            setTimeout(() => {
+                if (notifyInfo && notifyInfo.parentNode) {
+                    notifyInfo.parentNode.removeChild(notifyInfo);
+                }
+            }, 5000);
         }
         
-        // Mostrar também restrições para caminhões
+        // Se ainda não temos IDs de rota, usar pelo menos a origem
+        if (!routeIds || routeIds.length === 0) {
+            routeIds = [mockData.origin.id];
+            console.log("Usando apenas a origem para eventos:", routeIds);
+        }
+        
+        // Mostrar eventos para as cidades da rota com filtro por data
+        console.log("Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas:", startDateStr, endDateStr);
+        showEventsForCitiesOnRoute(routeIds, startDateStr, endDateStr);
+        
+        // Mostrar restrições para TODOS os tipos de caminhões nas cidades da rota
+        // Passando null para indicar que queremos mostrar para todos os tipos
         showTruckRestrictionsForCitiesOnRoute(routeIds, null);
     }
 
