@@ -28,6 +28,8 @@ cp ../docs/solucao-universal.js ./js/solucao-universal.js
 cp ../docs/correcao-relatorio.js ./js/correcao-relatorio.js
 cp ../docs/monitor-tipo-rota.js ./js/monitor-tipo-rota.js
 cp ../docs/corrigir-sequencia.js ./js/corrigir-sequencia.js
+cp ../docs/atualizar-painel.js ./js/atualizar-painel.js
+cp ../docs/sincronizar-painel.js ./js/sincronizar-painel.js
 
 # Copiar index.html otimizado
 cp ../docs/index.html ./
