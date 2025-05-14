@@ -81,55 +81,165 @@ function capturarDestinos() {
   
   var destinos = [];
   
-  // Encontrar container de destinos
-  var container = document.getElementById('locations-list') || 
-                  document.querySelector('.location-list') ||
-                  document.querySelector('[class*="location-container"]');
-  
-  if (!container) {
-    console.error('[BotaoDireto] Container de destinos não encontrado');
-    return destinos;
-  }
-  
-  // Obter todos os itens (exceto origem)
-  var items = container.querySelectorAll('li:not(.origin-point), .location-item:not(.origin-point), div[class*="location"]:not(.origin-point)');
-  
-  console.log('[BotaoDireto] Encontrados', items.length, 'destinos');
-  
-  // Processar cada item
-  for (var i = 0; i < items.length; i++) {
-    var item = items[i];
-    var lat = null, lng = null;
-    
-    // Tentar extrair coordenadas de várias formas
-    if (item.dataset && item.dataset.lat && item.dataset.lng) {
-      lat = parseFloat(item.dataset.lat);
-      lng = parseFloat(item.dataset.lng);
-    } else if (item.getAttribute('data-lat') && item.getAttribute('data-lng')) {
-      lat = parseFloat(item.getAttribute('data-lat'));
-      lng = parseFloat(item.getAttribute('data-lng'));
-    } else {
-      // Buscar coordenadas no HTML
-      var coordRegex = /(-?\d+\.\d+),\s*(-?\d+\.\d+)/;
-      var matches = item.innerHTML.match(coordRegex);
+  try {
+    // MÉTODO 1: Tentar acessar array global de locations se existir
+    if (typeof window.locations === 'object' && window.locations.length > 0) {
+      console.log('[BotaoDireto] Usando array global de locations:', window.locations.length);
       
-      if (matches && matches.length >= 3) {
-        lat = parseFloat(matches[1]);
-        lng = parseFloat(matches[2]);
+      // Filtrar apenas destinos (não a origem)
+      for (var i = 0; i < window.locations.length; i++) {
+        var loc = window.locations[i];
+        if (loc && loc.lat && loc.lng && 
+           (loc.lat !== ORIGEM_DOIS_CORREGOS.lat || loc.lng !== ORIGEM_DOIS_CORREGOS.lng)) {
+          destinos.push({
+            lat: loc.lat,
+            lng: loc.lng,
+            nome: loc.name || `Destino ${destinos.length + 1}`
+          });
+          console.log('[BotaoDireto] Adicionado do array global:', loc.lat, loc.lng);
+        }
+      }
+      
+      if (destinos.length > 0) {
+        return destinos;
       }
     }
     
-    // Se encontrou coordenadas válidas
-    if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
-      destinos.push({
-        lat: lat,
-        lng: lng,
-        nome: item.textContent.trim()
-      });
-      console.log('[BotaoDireto] Destino adicionado:', lat, lng);
+    // MÉTODO 2: Procurar todas as propriedades do objeto window
+    for (var prop in window) {
+      try {
+        // Procurar arrays com elementos que tenham lat/lng
+        if (Array.isArray(window[prop]) && window[prop].length > 0 && 
+            window[prop][0] && window[prop][0].lat && window[prop][0].lng) {
+          console.log('[BotaoDireto] Encontrado possível array de localizações:', prop);
+          
+          var locs = window[prop];
+          
+          // Adicionar os destinos (não a origem)
+          for (var j = 0; j < locs.length; j++) {
+            var loc = locs[j];
+            if (loc && loc.lat && loc.lng && 
+                (loc.lat !== ORIGEM_DOIS_CORREGOS.lat || loc.lng !== ORIGEM_DOIS_CORREGOS.lng)) {
+              destinos.push({
+                lat: loc.lat,
+                lng: loc.lng,
+                nome: loc.name || `Destino ${destinos.length + 1}`
+              });
+              console.log('[BotaoDireto] Adicionado do objeto window:', loc.lat, loc.lng);
+            }
+          }
+          
+          if (destinos.length > 0) {
+            return destinos;
+          }
+        }
+      } catch (e) {}
     }
+    
+    // MÉTODO 3: Extrair do DOM
+    var container = document.getElementById('locations-list') || 
+                    document.querySelector('.location-list') ||
+                    document.querySelector('[class*="location"]');
+    
+    if (container) {
+      // Obter todos os itens (exceto origem)
+      var items = container.querySelectorAll('li:not(.origin-point), .location-item:not(.origin-point), div[class*="location"]:not(.origin-point)');
+      
+      console.log('[BotaoDireto] Encontrados', items.length, 'itens no DOM');
+      
+      // Processar cada item
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        var lat = null, lng = null;
+        
+        // Método 3.1: Verificar data attributes
+        if (item.dataset && item.dataset.lat && item.dataset.lng) {
+          lat = parseFloat(item.dataset.lat);
+          lng = parseFloat(item.dataset.lng);
+        } else if (item.getAttribute('data-lat') && item.getAttribute('data-lng')) {
+          lat = parseFloat(item.getAttribute('data-lat'));
+          lng = parseFloat(item.getAttribute('data-lng'));
+        } 
+        // Método 3.2: Buscar no conteúdo HTML por padrão de coordenadas
+        else {
+          var coordRegex = /(-?\d+\.\d+),\s*(-?\d+\.\d+)/;
+          var matches = item.innerHTML.match(coordRegex);
+          
+          if (matches && matches.length >= 3) {
+            lat = parseFloat(matches[1]);
+            lng = parseFloat(matches[2]);
+          }
+        }
+        
+        // Método 3.3: Se não encontrou coordenadas, tente procurar em elementos filhos
+        if (!lat || !lng) {
+          var childNodes = item.querySelectorAll('*');
+          for (var j = 0; j < childNodes.length; j++) {
+            var child = childNodes[j];
+            if (child.dataset && child.dataset.lat && child.dataset.lng) {
+              lat = parseFloat(child.dataset.lat);
+              lng = parseFloat(child.dataset.lng);
+              break;
+            } else if (child.getAttribute('data-lat') && child.getAttribute('data-lng')) {
+              lat = parseFloat(child.getAttribute('data-lat'));
+              lng = parseFloat(child.getAttribute('data-lng'));
+              break;
+            }
+          }
+        }
+        
+        // Se encontrou coordenadas válidas
+        if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
+          // Verificar se não é Dois Córregos (origem)
+          if (lat !== ORIGEM_DOIS_CORREGOS.lat || lng !== ORIGEM_DOIS_CORREGOS.lng) {
+            destinos.push({
+              lat: lat,
+              lng: lng,
+              nome: item.textContent.trim()
+            });
+            console.log('[BotaoDireto] Destino adicionado do DOM:', lat, lng);
+          }
+        }
+      }
+    }
+    
+    // MÉTODO 4: Último recurso - procurar locais direto nos botões
+    if (destinos.length === 0) {
+      console.log('[BotaoDireto] Tentando extrair de botões de remoção...');
+      
+      var botoesRemover = document.querySelectorAll('button[id*="remove"], button[class*="remove"], [class*="delete-button"]');
+      
+      for (var i = 0; i < botoesRemover.length; i++) {
+        var btn = botoesRemover[i];
+        var locationId = btn.getAttribute('data-id') || btn.id;
+        
+        if (locationId) {
+          // Tentar encontrar o destino correspondente em algum array global
+          for (var prop in window) {
+            try {
+              if (Array.isArray(window[prop])) {
+                for (var j = 0; j < window[prop].length; j++) {
+                  var item = window[prop][j];
+                  if (item && item.id == locationId && item.lat && item.lng) {
+                    destinos.push({
+                      lat: item.lat,
+                      lng: item.lng,
+                      nome: item.name || `Destino ${destinos.length + 1}`
+                    });
+                    console.log('[BotaoDireto] Destino adicionado de botão:', item.lat, item.lng);
+                  }
+                }
+              }
+            } catch (e) {}
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error('[BotaoDireto] Erro ao capturar destinos:', err);
   }
   
+  console.log('[BotaoDireto] Total de destinos capturados:', destinos.length);
   return destinos;
 }
 
