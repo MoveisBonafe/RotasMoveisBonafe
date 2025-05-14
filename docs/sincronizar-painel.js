@@ -206,8 +206,8 @@
             return;
         }
         
-        // Se for rota personalizada, restaurar ordem original
-        if (tipo === 'personalizada') {
+        // Se for rota personalizada ou primeira execução, restaurar ordem original
+        if (tipo === 'personalizada' || tipo === 'ordem-adicionada') {
             // Garantir que temos a ordem original
             if (ordemOriginal.length === 0) {
                 capturarOrdemOriginal();
@@ -227,15 +227,17 @@
                 return;
             }
             
-            // Remover itens atuais
+            // Remover itens atuais com cuidado para evitar erros
             const elementosAtuais = Array.from(itensAtuais);
             elementosAtuais.forEach(elem => {
-                container.removeChild(elem);
+                if (elem.parentNode === container) {
+                    container.removeChild(elem);
+                }
             });
             
             // Adicionar na ordem original
             ordemOriginal.forEach(item => {
-                // Encontrar elemento correspondente
+                // Encontrar elemento correspondente pelo texto
                 const elemento = elementosAtuais.find(e => e.textContent.trim() === item.texto);
                 
                 if (elemento) {

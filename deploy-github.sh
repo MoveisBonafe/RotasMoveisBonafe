@@ -30,6 +30,7 @@ cp ../docs/monitor-tipo-rota.js ./js/monitor-tipo-rota.js
 cp ../docs/corrigir-sequencia.js ./js/corrigir-sequencia.js
 cp ../docs/atualizar-painel.js ./js/atualizar-painel.js
 cp ../docs/sincronizar-painel.js ./js/sincronizar-painel.js
+cp ../docs/primeira-rota-original.js ./js/primeira-rota-original.js
 
 # Copiar index.html otimizado
 cp ../docs/index.html ./
