@@ -1662,14 +1662,32 @@
         // Definir valores iniciais aos campos de data
         initDatePickers();
         
-        // Carregar pontos de pedágio
+        // Remover quaisquer pontos que não sejam dos arquivos JSON
+        clearAllCustomMarkers();
+        
+        // Carregar pontos de pedágio do arquivo JSON
         loadTollPoints();
         
-        // Carregar pontos de balança
+        // Carregar pontos de balança do arquivo JSON
         loadWeighingStationPoints();
         
         // Invocar a filtragem de eventos inicial para exibir eventos para a origem
         filterEventsByDate();
+    }
+    
+    // Função para limpar todos os marcadores personalizados que não venham dos arquivos JSON
+    function clearAllCustomMarkers() {
+        console.log("Limpando todos os marcadores personalizados que não vêm dos arquivos JSON");
+        
+        // Limpar marcadores de pedágio
+        clearTollMarkers();
+        
+        // Limpar marcadores de balança
+        clearWeighingStationMarkers();
+        
+        // Limpar quaisquer outros marcadores de POIs
+        poiMarkers.forEach(marker => marker.setMap(null));
+        poiMarkers = [];
     }
     
     // Função para carregar e exibir pontos de pedágio
@@ -1702,13 +1720,20 @@
     
     // Função para adicionar um marcador de pedágio no mapa
     function addTollMarker(toll) {
+        if (!toll || !toll.lat || !toll.lng) {
+            console.warn("Ponto de pedágio inválido:", toll);
+            return;
+        }
+        
+        console.log("Adicionando marcador de pedágio:", toll.name, "em", toll.lat, toll.lng);
+        
         const marker = new google.maps.Marker({
             position: { lat: toll.lat, lng: toll.lng },
-            map: map,
+            map: showTolls ? map : null,
             title: toll.name,
             icon: {
                 path: google.maps.SymbolPath.CIRCLE,
-                fillColor: '#ffc107',
+                fillColor: '#ffc107', // Amarelo para pedágios
                 fillOpacity: 0.9,
                 strokeColor: '#000000',
                 strokeWeight: 2,
@@ -1717,14 +1742,19 @@
             zIndex: 5
         });
         
-        // Adicionar info window ao clicar no marcador
+        // Adicionar info window com informações completas ao clicar no marcador
         marker.addListener('click', function() {
             if (activeInfoWindow) {
                 activeInfoWindow.close();
             }
             
             const infoWindow = new google.maps.InfoWindow({
-                content: `<div class="toll-info"><strong>${toll.name}</strong></div>`
+                content: `
+                    <div class="toll-info">
+                        <h5>${toll.name}</h5>
+                        ${toll.rodovia ? `<p>Rodovia: ${toll.rodovia}</p>` : ''}
+                    </div>
+                `
             });
             
             infoWindow.open(map, marker);
@@ -1773,6 +1803,13 @@
     
     // Função para adicionar um marcador de balança no mapa
     function addWeighingStationMarker(station) {
+        if (!station || !station.latitude || !station.longitude) {
+            console.warn("Ponto de balança inválido:", station);
+            return;
+        }
+        
+        console.log("Adicionando marcador de balança:", station.name, "em", station.latitude, station.longitude);
+        
         const marker = new google.maps.Marker({
             position: { lat: station.latitude, lng: station.longitude },
             map: showWeighingStations ? map : null,
@@ -1798,9 +1835,9 @@
                 content: `
                     <div class="weighing-station-info">
                         <h5>${station.name}</h5>
-                        <p>${station.address}</p>
-                        <p>Município: ${station.Município}</p>
-                        <p>Rodovia: ${station.Rodovia} - ${station.Denominação}</p>
+                        <p>${station.address || ''}</p>
+                        ${station.Município ? `<p>Município: ${station.Município}</p>` : ''}
+                        ${station.Rodovia ? `<p>Rodovia: ${station.Rodovia} ${station.Denominação ? `- ${station.Denominação}` : ''}</p>` : ''}
                     </div>
                 `
             });
