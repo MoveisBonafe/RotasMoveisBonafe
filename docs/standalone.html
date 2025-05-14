@@ -3951,33 +3951,40 @@
         console.log(`Filtrando eventos para cidades: ${citiesOnRoute.join(', ')}`);
         console.log(`Filtro de data: ${startDateValue || 'sem data inicial'} a ${endDateValue || 'sem data final'}`);
         
-        // Ajuste condicional das datas - garantir que temos valores válidos
-        // Usar o ano atual do sistema
-        const currentYear = new Date().getFullYear();
+        // ESTE É O PONTO CRÍTICO PARA A CORREÇÃO DO FILTRO DE DATAS
+        // Usar EXATAMENTE as datas informadas pelo usuário nos campos do formulário
+        console.log("[CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário:", startDateStr, endDateStr);
         
-        if (!startDateValue || !endDateValue) {
-            // Se datas não foram especificadas, usar intervalo padrão do ano atual
-            console.log(`[AJUSTE AUTOMÁTICO] Definindo intervalo padrão para o ano ${currentYear}`);
+        // Apenas ajustar se as datas estiverem totalmente vazias
+        if (!startDateValue && !endDateValue) {
+            // Obter os valores REAIS dos campos no formulário
+            const startDateField = document.getElementById('start-date');
+            const endDateField = document.getElementById('end-date');
             
-            // Usar o ano atual para filtrar eventos
-            if (!startDateValue) startDateValue = `${currentYear}-01-01`;
-            if (!endDateValue) endDateValue = `${currentYear}-12-31`;
+            if (startDateField && startDateField.value) {
+                startDateValue = startDateField.value;
+                console.log("[FILTRO] Obtida data de início do campo do formulário:", startDateValue);
+            }
             
-            console.log(`[DATA] Intervalo ajustado para: ${startDateValue} até ${endDateValue}`);
-        } else {
-            // Se as datas foram especificadas, garantir que estamos no ano correto
-            // Extrair apenas os valores de data (sem hora)
-            const startParts = startDateValue.split('T')[0].split('-');
-            const endParts = endDateValue.split('T')[0].split('-');
+            if (endDateField && endDateField.value) {
+                endDateValue = endDateField.value;
+                console.log("[FILTRO] Obtida data de fim do campo do formulário:", endDateValue);
+            }
             
-            // Verificar se o ano é diferente de 2025
-            if (startParts[0] !== String(currentYear) || endParts[0] !== String(currentYear)) {
-                console.log(`[AVISO] Ajustando datas para o ano ${currentYear}`);
-                // Manter mês e dia, mas ajustar o ano
-                startDateValue = `${currentYear}-${startParts[1]}-${startParts[2]}`;
-                endDateValue = `${currentYear}-${endParts[1]}-${endParts[2]}`;
+            // Se ainda estiver vazio, apenas então usar valores padrão
+            const currentYear = new Date().getFullYear();
+            if (!startDateValue) {
+                startDateValue = `${currentYear}-01-01`;
+                console.log("[FILTRO] Usando data de início padrão:", startDateValue);
+            }
+            
+            if (!endDateValue) {
+                endDateValue = `${currentYear}-12-31`;
+                console.log("[FILTRO] Usando data de fim padrão:", endDateValue);
             }
         }
+        
+        console.log(`[DATA] Filtro FINAL: ${startDateValue} até ${endDateValue}`);
         
         // Array para armazenar eventos filtrados
         let eventsOnRoute = [];
