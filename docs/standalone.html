@@ -1400,11 +1400,11 @@
         // Inicializar currentOptimizedPath com a origem para mostrar eventos/restrições iniciais
         currentOptimizedPath = [mockData.origin.id];
         
-        // Chamar funções para mostrar eventos e restrições para a origem com base nas datas atuais
+        // Chamar funções para mostrar eventos e restrições para a origem (sem filtro de data)
         filterEventsByDate();
         
         // Mostrar mensagem de ajuda
-        console.log("Campos de data inicializados com datas atuais e eventos/restrições para origem configurados");
+        console.log("Eventos mostrados para origem (filtragem por data desativada)");
     });
 
     // Inicializa o mapa
@@ -1412,16 +1412,16 @@
         // Definir valores iniciais aos campos de data
         initDatePickers();
         
-        // Invocar a filtragem de eventos inicial para exibir eventos para a origem
+        // Exibir eventos para a origem (sem filtro por data)
         filterEventsByDate();
     }
     
-    // Função centralizada para inicializar os campos de data
+    // Função que existia para inicializar os campos de data (mantida por compatibilidade)
     function initDatePickers() {
         try {
-            console.log("Inicializando campos de data...");
+            console.log("Função initDatePickers chamada - filtros de data foram removidos");
             
-            // Verificar se os campos existem
+            // Os campos existem mas estão escondidos como inputs hidden
             const startDateInput = document.getElementById('start-date');
             const endDateInput = document.getElementById('end-date');
             
@@ -5447,146 +5447,36 @@
         }
     }
 
-    // Filtrar eventos por data - atualiza automaticamente ao mudar datas
+    // Função que antes filtrava eventos por data - agora apenas exibe todos os eventos
+    // Função filterEventsByDate totalmente simplificada
+    // Filtro por data foi eliminado conforme solicitado pelo cliente
     function filterEventsByDate() {
         console.log("==========================================");
-        console.log("FUNÇÃO DE FILTRO POR DATA DESATIVADA");
+        console.log("FILTRO POR DATA DESATIVADO");
         console.log("TODOS OS EVENTOS SÃO MOSTRADOS SEM FILTRO");
         console.log("==========================================");
         
-        // Função mantida para compatibilidade mas sem filtro
-        // Ignoramos qualquer data e mostramos todos os eventos
-        
-        // Verificação de segurança para GitHub Pages
-        if (!startDateInput || !endDateInput) {
-            console.error("Campos de data não encontrados no DOM");
-            
-            // Tentar criar os campos se estiverem ausentes (para GitHub Pages)
-            try {
-                // Verificar se temos o container de datas
-                const dateContainer = document.querySelector('.date-filters');
-                if (dateContainer) {
-                    if (!startDateInput) {
-                        const newStartInput = document.createElement('input');
-                        newStartInput.type = 'date';
-                        newStartInput.id = 'start-date';
-                        newStartInput.className = 'form-control form-control-sm';
-                        dateContainer.appendChild(newStartInput);
-                        console.log("Criado campo de data inicial ausente");
-                    }
-                    
-                    if (!endDateInput) {
-                        const newEndInput = document.createElement('input');
-                        newEndInput.type = 'date';
-                        newEndInput.id = 'end-date';
-                        newEndInput.className = 'form-control form-control-sm';
-                        dateContainer.appendChild(newEndInput);
-                        console.log("Criado campo de data final ausente");
-                    }
-                }
-            } catch (e) {
-                console.error("Falha ao criar campos de data:", e);
-            }
-            
-            // Tentar novamente após recriação
-            const retriedStartInput = document.getElementById('start-date');
-            const retriedEndInput = document.getElementById('end-date');
-            
-            if (!retriedStartInput || !retriedEndInput) {
-                console.error("Impossível recuperar campos de data, mesmo após tentativa de criação");
-                return;
-            } else {
-                console.log("Campos de data recuperados após recriação");
-                startDateInput = retriedStartInput;
-                endDateInput = retriedEndInput;
-            }
-        }
-        
-        // Obter datas do filtro
-        let startDateStr = startDateInput.value;
-        let endDateStr = endDateInput.value;
-        
-        // Validar datas de filtro
-        if (!startDateStr || !endDateStr) {
-            console.warn("Pelo menos uma das datas de filtro está vazia:", {start: startDateStr, end: endDateStr});
-            
-            // Atribuir valores padrão se as datas estiverem vazias
-            const today = new Date();
-            const oneWeekLater = new Date();
-            oneWeekLater.setDate(today.getDate() + 7);
-            
-            // Converter para formato YYYY-MM-DD
-            const formatDate = (date) => {
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            };
-            
-            // Atualizar elementos do formulário apenas se estiverem vazios
-            if (!startDateStr) {
-                startDateStr = formatDate(today);
-                startDateInput.value = startDateStr;
-                console.log("Data inicial ajustada para hoje:", startDateStr);
-            }
-            
-            if (!endDateStr) {
-                endDateStr = formatDate(oneWeekLater);
-                endDateInput.value = endDateStr;
-                console.log("Data final ajustada para uma semana depois:", endDateStr);
-            }
-        }
-        
-        console.log(`Datas finais para filtragem: ${startDateStr} até ${endDateStr}`);
-        
+        // Determinar quais IDs usar para mostrar eventos
         let routeIds = [];
         
-        // Se tivermos uma rota otimizada atual, usar os pontos dessa rota
+        // Opção 1: Rota otimizada atual (melhor opção)
         if (currentOptimizedPath && currentOptimizedPath.length > 0) {
-            console.log("Usando rota otimizada atual:", currentOptimizedPath);
-            routeIds = [...currentOptimizedPath]; // Clonar para não modificar o original
-        } else if (directionsRenderer && directionsRenderer.getDirections()) {
-            // Se tivermos uma rota no renderer mas não otimizada, usar locais atuais
-            console.log("Usando locais atuais como rota");
+            routeIds = [...currentOptimizedPath];
+        } 
+        // Opção 2: Todas as localizações atuais
+        else if (locations && locations.length > 0) {
             routeIds = locations.map(loc => loc.id);
-        } else {
-            // Se não tivermos rota, mostrar apenas para origem
-            console.log("Sem rota, mostrando apenas para origem");
-            // Mostrar notificação para indicar que é necessário calcular uma rota
-            const notifyInfo = document.createElement('div');
-            notifyInfo.className = 'alert alert-info mt-2';
-            notifyInfo.innerHTML = `Calcule uma rota primeiro para ver os eventos e restrições no percurso.`;
-            // Usar a primeira aba inferior ativa como container para notificação
-            const tabContent = document.querySelector('.bottom-tab-content.active');
-            if (tabContent) {
-                tabContent.appendChild(notifyInfo);
-            } else {
-                // Fallback para a seção de otimização caso as abas não existam
-                const optimizeSection = document.querySelector('.optimize-btn-container');
-                if (optimizeSection) {
-                    optimizeSection.appendChild(notifyInfo);
-                }
-            }
-            // Remover a notificação após alguns segundos
-            setTimeout(() => {
-                if (notifyInfo && notifyInfo.parentNode) {
-                    notifyInfo.parentNode.removeChild(notifyInfo);
-                }
-            }, 5000);
         }
-        
-        // Se ainda não temos IDs de rota, usar pelo menos a origem
-        if (!routeIds || routeIds.length === 0) {
+        // Opção 3: Fallback para origem
+        else {
             routeIds = [mockData.origin.id];
-            console.log("Usando apenas a origem para eventos:", routeIds);
         }
         
-        // Mostrar eventos para as cidades da rota (sem filtro por data)
-        console.log("Chamando showEventsForCitiesOnRoute (sem filtros de data)");
+        // Mostrar eventos para as cidades na rota sem filtro
+        console.log("Exibindo todos os eventos das cidades da rota");
         showEventsForCitiesOnRoute(routeIds);
         
-        // Mostrar restrições para TODOS os tipos de caminhões nas cidades da rota
-        // Passando null para indicar que queremos mostrar para todos os tipos
+        // Mostrar também restrições para caminhões
         showTruckRestrictionsForCitiesOnRoute(routeIds, null);
     }
 
