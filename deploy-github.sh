@@ -23,10 +23,13 @@ cp ../docs/fix-github.js ./js/
 cp ../docs/route-optimizer.js ./js/
 cp ../docs/map-controls.js ./js/
 cp ../docs/geocode-fix.js ./js/
-cp ../docs/route-reorder.js ./js/
+cp ../docs/reorder-direct.js ./
 
 # Copiar index.html otimizado
 cp ../docs/index.html ./
+
+# Copiar página de solução direta e landing page para GitHub Pages
+cp ../docs/direct-fix.html ./
 
 # Adicionar uma meta tag para forçar recarregamento
 sed -i 's/<head>/<head>\n  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" \/>\n  <meta http-equiv="Pragma" content="no-cache" \/>\n  <meta http-equiv="Expires" content="0" \/>/' index.html
