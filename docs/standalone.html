@@ -918,6 +918,23 @@
         /* Ajustes específicos para a aba de restrições */
         #bottom-restrictions-content {
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Containers para as restrições */
+        #restrictions-list {
+            overflow-y: auto;
+            flex: 1;
+            max-height: calc(100vh - 200px);
+            padding-right: 10px;
+        }
+        
+        /* Layout responsivo para diferentes tamanhos de tela */
+        @media (min-height: 800px) {
+            .bottom-tabs-container:not(.minimized) #restrictions-list {
+                max-height: calc(100vh - 220px);
+            }
         }
         
         .bottom-tab-content.active {
