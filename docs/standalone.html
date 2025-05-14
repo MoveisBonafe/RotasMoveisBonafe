@@ -3234,6 +3234,31 @@
         // Não navegar automaticamente para nenhuma aba após a otimização
         console.log("Rota otimizada com sucesso, mantendo a aba atual");
         
+        // Restaurar o modo de Rota Personalizada se estava ativo
+        const customRouteButton = document.getElementById('custom-route');
+        if (customRouteMode && customRouteButton) {
+            // Reativar o modo de rota personalizada
+            const locationsListElement = document.getElementById('locations-list');
+            if (locationsListElement) {
+                locationsListElement.classList.add('custom-route-active');
+                
+                // Readicionar eventos de drag and drop a todos os itens de localização
+                const locationItems = locationsListElement.querySelectorAll('li');
+                locationItems.forEach(item => {
+                    if (!item.classList.contains('origin-point')) {
+                        item.classList.add('draggable');
+                        item.setAttribute('draggable', 'true');
+                        
+                        item.addEventListener('dragstart', handleDragStart);
+                        item.addEventListener('dragover', handleDragOver);
+                        item.addEventListener('dragleave', handleDragLeave);
+                        item.addEventListener('drop', handleDrop);
+                        item.addEventListener('dragend', handleDragEnd);
+                    }
+                });
+            }
+        }
+        
         // Garantir que os containers se ajustem ao conteúdo após o carregamento
         const restrictionsContainer = document.querySelector('.restrictions-container');
         const eventsContainer = document.querySelector('.events-container');
