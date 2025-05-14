@@ -3978,7 +3978,7 @@
             return;
         }
         
-        // Verificar cidades no caminho
+        // Obter localizações a partir dos IDs
         const pathLocations = [];
         for (const id of pathIds) {
             const idStr = String(id);
@@ -3988,10 +3988,22 @@
             }
         }
         
-        // Extrair nomes das cidades da rota
-        const citiesOnRoute = pathLocations
-            .map(loc => extractCityName(loc.address || loc.name))
-            .filter(city => city); // Remover valores vazios
+        if (pathLocations.length === 0) {
+            console.error("Nenhuma localização válida encontrada na rota");
+            eventsListContainer.innerHTML += '<p class="text-muted">Erro ao encontrar localizações na rota.</p>';
+            return;
+        }
+        
+        // Extrair cidades da rota incluindo a origem
+        const citiesOnRoute = ["Dois Córregos"]; // Sempre incluir a origem
+        
+        // Adicionar outras cidades da rota
+        pathLocations.forEach(location => {
+            const cityName = extractCityName(location.address || location.name);
+            if (cityName && !citiesOnRoute.includes(cityName)) {
+                citiesOnRoute.push(cityName);
+            }
+        });
         
         console.log("Cidades na rota para filtragem de eventos:", citiesOnRoute);
         
@@ -4056,61 +4068,6 @@
         });
         
         eventsListContainer.appendChild(eventsList);
-            const idStr = String(id);
-            const location = locations.find(loc => String(loc.id) === idStr);
-            if (location) {
-                pathLocations.push(location);
-                console.log(`Localização encontrada para ID ${idStr}:`, location);
-            }
-        }
-        
-        if (pathLocations.length === 0) {
-            console.error("Nenhuma localização válida encontrada na rota");
-            eventsListContainer.innerHTML = '<p class="text-muted">Erro ao encontrar localizações na rota.</p>';
-            return;
-        }
-        
-        // EXTRAÇÃO MELHORADA DE CIDADES DO PERCURSO
-        // Array para armazenar os nomes das cidades que estão REALMENTE na rota
-        const citiesOnRoute = [];
-        
-        // Cidade de origem (sempre incluir Dois Córregos)
-        citiesOnRoute.push("Dois Córregos");
-        console.log(`[ROTA] Adicionada cidade de origem: Dois Córregos`);
-        
-        // Processar CADA destino na rota para extrair nomes de cidades
-        for (const location of pathLocations) {
-            // Apenas adicionar se tivermos um nome válido
-            if (location && location.name) {
-                // Verificar se o nome é uma cidade conhecida (estratégia 1)
-                const knownCities = [
-                    "Dois Córregos", "Jaú", "Botucatu", "Bauru", "Ribeirão Preto", 
-                    "São Paulo", "Campinas", "São Carlos", "Piracicaba", "Araraquara",
-                    "Americana", "Sorocaba", "Limeira", "Rio Claro"
-                ];
-                
-                // Se o nome exato da localização é uma cidade conhecida
-                if (knownCities.includes(location.name) && !citiesOnRoute.includes(location.name)) {
-                    citiesOnRoute.push(location.name);
-                    console.log(`[ROTA] Adicionada cidade conhecida: ${location.name}`);
-                    continue; // Ir para o próximo local
-                }
-                
-                // Estratégia 2: Usar o nome da localização diretamente
-                if (!citiesOnRoute.includes(location.name)) {
-                    citiesOnRoute.push(location.name);
-                    console.log(`[ROTA] Adicionado local como possível cidade: ${location.name}`);
-                }
-            }
-        }
-        
-        console.log(`[ROTA] Cidades encontradas no percurso (${citiesOnRoute.length}): ${citiesOnRoute.join(', ')}`);
-        
-        console.log("APENAS ESTAS CIDADES ESTÃO NA ROTA REAL:", citiesOnRoute);
-        
-        // NOVA IMPLEMENTAÇÃO SEM FILTRAGEM POR DATA
-        console.log("IMPLEMENTAÇÃO ATUALIZADA: Exibindo todos os eventos das cidades na rota");
-        console.log(`Eventos serão mostrados para as cidades: ${citiesOnRoute.join(', ')}`);
         
         // Usamos o ano atual apenas para ajustar eventos anuais como aniversários de cidades
         const currentYear = new Date().getFullYear();
