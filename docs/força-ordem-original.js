@@ -5,6 +5,10 @@
 (function() {
     console.log('[ForçaOrdemOriginal] Inicializando...');
     
+    // Flag para controlar se já processamos o primeiro clique
+    let primeiroCliqueProcessado = false;
+    let botaoConfigurado = false;
+    
     // Capturar eventos iniciais
     document.addEventListener('DOMContentLoaded', inicializar);
     window.addEventListener('load', inicializar);
@@ -17,10 +21,6 @@
     setTimeout(inicializar, 500);
     setTimeout(inicializar, 1000);
     setTimeout(inicializar, 2000);
-    
-    // Flag para controlar se já processamos o primeiro clique
-    let primeiroCliqueProcessado = false;
-    let botaoConfigurado = false;
     
     /**
      * Inicializar o sistema
