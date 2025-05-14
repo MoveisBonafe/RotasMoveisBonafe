@@ -347,4 +347,68 @@ document.addEventListener('DOMContentLoaded', function() {
   customRouteScript.src = 'custom-route-github.js';
   customRouteScript.async = true;
   document.body.appendChild(customRouteScript);
+  
+  // Adicionar função para cálculo de rota personalizada
+  window.calculateRouteWithWaypoints = function(waypoints) {
+    if (!window.directionsService || !window.directionsRenderer || !waypoints || waypoints.length < 2) {
+        console.error('Serviço de direções não disponível ou waypoints insuficientes');
+        return;
+    }
+    
+    // Criar array de waypoints para o Google Maps
+    const gmWaypoints = waypoints.slice(1, -1).map(wp => ({
+        location: new google.maps.LatLng(wp.lat, wp.lng),
+        stopover: true
+    }));
+    
+    // Origem e destino
+    const origin = new google.maps.LatLng(waypoints[0].lat, waypoints[0].lng);
+    const destination = new google.maps.LatLng(waypoints[waypoints.length - 1].lat, waypoints[waypoints.length - 1].lng);
+    
+    // Configurar solicitação de rota
+    const request = {
+        origin: origin,
+        destination: destination,
+        waypoints: gmWaypoints,
+        optimizeWaypoints: false, // Não otimizar, usar ordem personalizada
+        travelMode: google.maps.TravelMode.DRIVING
+    };
+    
+    // Calcular rota
+    window.directionsService.route(request, function(result, status) {
+        if (status === google.maps.DirectionsStatus.OK) {
+            window.directionsRenderer.setDirections(result);
+            
+            // Calcular distância total
+            let totalDistance = 0;
+            const legs = result.routes[0].legs;
+            legs.forEach(leg => {
+                totalDistance += leg.distance.value;
+            });
+            
+            // Atualizar informações da rota
+            if (window.updateRouteInfo) {
+                const totalDistanceKm = (totalDistance / 1000).toFixed(1);
+                const estimatedTime = Math.ceil(totalDistance / 1000 / 80 * 60); // 80km/h
+                
+                const routeInfo = {
+                    distance: totalDistanceKm,
+                    duration: estimatedTime,
+                    path: waypoints.map(wp => wp.id)
+                };
+                
+                window.updateRouteInfo(routeInfo);
+            }
+            
+            console.log('Rota personalizada exibida com sucesso');
+        } else {
+            console.error('Erro ao calcular rota:', status);
+            if (window.showNotification) {
+                window.showNotification('Erro ao calcular rota personalizada. Tente novamente.', 'error');
+            } else {
+                alert('Erro ao calcular rota personalizada. Tente novamente.');
+            }
+        }
+    });
+  };
 });
