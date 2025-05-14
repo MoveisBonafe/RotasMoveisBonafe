@@ -25,11 +25,33 @@
       return;
     }
     
+    // Log para verificar se o script está sendo executado
+    console.log('[Reorder] Tentando inicializar script de reordenação');
+    console.log('[Reorder] Verificando todas as variáveis globais:', Object.keys(window));
+    
+    // Verificar se os objetos necessários estão prontos
+    if (window.map && window.locations) {
+      console.log('[Reorder] Objetos principais estão prontos');
+    } else {
+      console.log('[Reorder] Objetos principais ainda não disponíveis:', 
+                 'map:', !!window.map, 
+                 'locations:', !!window.locations);
+    }
+    
     // Encontrar botão de otimizar rota
     const botaoOtimizar = document.querySelector('#optimize-route, button.btn-warning');
     
+    // Se não encontrou o botão, procurar qualquer botão amarelo
     if (!botaoOtimizar) {
-      console.log('[Reorder] Botão otimizar não encontrado, tentando novamente depois');
+      console.log('[Reorder] Botão otimizar não encontrado, buscando alternativas...');
+      const botoes = document.querySelectorAll('button');
+      console.log('[Reorder] Total de botões:', botoes.length);
+      
+      // Listar todos os botões para debug
+      botoes.forEach((btn, i) => {
+        console.log(`[Reorder] Botão ${i}:`, btn.id, btn.className, btn.textContent.trim());
+      });
+      
       return;
     }
     
@@ -114,23 +136,90 @@
     botaoReordenar.textContent = 'Concluir Reordenação';
     
     // Procurar a lista de destinos (várias opções)
-    const listaDestinos = document.querySelector('#destinations-list, #locations-list, ul.locations-list');
+    console.log('[Reorder] Procurando lista de destinos...');
+    
+    // Log de todas as listas no documento
+    const todasUls = document.querySelectorAll('ul');
+    console.log('[Reorder] Listas encontradas:', todasUls.length);
+    todasUls.forEach((ul, i) => {
+      console.log(`[Reorder] Lista ${i}:`, ul.id, ul.className, 'Itens:', ul.children.length);
+    });
+    
+    // Tentar vários seletores diferentes
+    let listaDestinos = document.querySelector('#destinations-list, #locations-list, ul.locations-list');
+    
+    // Se não encontrou, tentar outras abordagens
+    if (!listaDestinos) {
+      console.log('[Reorder] Tentando encontrar lista por conteúdo...');
+      
+      // Procurar qualquer lista que tenha mais de um item
+      const candidatos = Array.from(document.querySelectorAll('ul')).filter(ul => ul.children.length > 0);
+      
+      for (const lista of candidatos) {
+        // Verificar se tem o texto "Origem" ou o nome da origem (ex: "Dois Córregos")
+        const conteudoLista = lista.textContent.toLowerCase();
+        if (conteudoLista.includes('origem') || 
+            conteudoLista.includes('dois córregos') || 
+            conteudoLista.includes('dois corrego')) {
+          listaDestinos = lista;
+          console.log('[Reorder] Lista encontrada por conteúdo:', listaDestinos);
+          break;
+        }
+      }
+      
+      // Se ainda não encontrou, pegar a primeira lista com mais de 1 item
+      if (!listaDestinos && candidatos.length > 0) {
+        listaDestinos = candidatos[0];
+        console.log('[Reorder] Usando primeira lista com itens:', listaDestinos);
+      }
+    }
     
     if (!listaDestinos) {
-      alert('Erro: Lista de destinos não encontrada!');
+      alert('Erro: Lista de destinos não encontrada! Por favor, adicione pelo menos um destino.');
       console.error('[Reorder] Lista de destinos não encontrada');
+      botaoReordenar.classList.remove('ativo');
+      botaoReordenar.textContent = 'Ativar Reordenação';
+      modoReordenacao = false;
       return;
     }
     
+    console.log('[Reorder] Lista encontrada:', listaDestinos.id, listaDestinos.className);
+    console.log('[Reorder] Conteúdo da lista:', listaDestinos.innerHTML);
+    
     // Encontrar todos os itens da lista EXCETO a origem
+    // Primeiro tentar com o seletor de classe
     let itensDestino = Array.from(listaDestinos.querySelectorAll('li:not(.origin-point)'));
+    console.log('[Reorder] Itens sem classe origin-point:', itensDestino.length);
     
     if (itensDestino.length === 0) {
-      // Se não encontrar com essa classe, pegar todos menos o primeiro (origem)
+      // Se não encontrar, tentar outro seletor comum
+      itensDestino = Array.from(listaDestinos.querySelectorAll('li:not(.origin)'));
+      console.log('[Reorder] Itens sem classe origin:', itensDestino.length);
+    }
+    
+    if (itensDestino.length === 0) {
+      // Se ainda não encontrar, tentar identificar a origem pelo texto
       const todosItens = Array.from(listaDestinos.querySelectorAll('li'));
+      console.log('[Reorder] Total de itens na lista:', todosItens.length);
       
       if (todosItens.length > 1) {
-        itensDestino = todosItens.slice(1);
+        // Identificar origem pelo texto
+        const origemIdx = todosItens.findIndex(item => 
+          item.textContent.toLowerCase().includes('origem') || 
+          item.textContent.toLowerCase().includes('dois córregos') ||
+          item.textContent.toLowerCase().includes('dois corrego')
+        );
+        
+        // Se encontrou a origem, remover do array
+        if (origemIdx !== -1) {
+          console.log('[Reorder] Origem identificada pelo texto na posição:', origemIdx);
+          itensDestino = [...todosItens];
+          itensDestino.splice(origemIdx, 1);
+        } else {
+          // Se não identificou, assumir que o primeiro é a origem
+          console.log('[Reorder] Assumindo primeiro item como origem');
+          itensDestino = todosItens.slice(1);
+        }
       }
     }
     
@@ -268,12 +357,40 @@
   
   // Calcular nova rota
   function calcularRota() {
-    // Encontrar lista de destinos
-    const listaDestinos = document.querySelector('#destinations-list, #locations-list, ul.locations-list');
+    console.log('[Reorder] Recalculando rota com nova ordem');
+    
+    // Usar a mesma lógica para encontrar a lista de destinos
+    let listaDestinos = document.querySelector('#destinations-list, #locations-list, ul.locations-list');
+    
+    // Se não encontrou, tentar outras abordagens
+    if (!listaDestinos) {
+      console.log('[Reorder] Tentando encontrar lista para recálculo...');
+      
+      // Procurar qualquer lista que tenha mais de um item
+      const candidatos = Array.from(document.querySelectorAll('ul')).filter(ul => ul.children.length > 0);
+      
+      for (const lista of candidatos) {
+        // Verificar se tem o texto "Origem" ou o nome da origem
+        const conteudoLista = lista.textContent.toLowerCase();
+        if (conteudoLista.includes('origem') || 
+            conteudoLista.includes('dois córregos') || 
+            conteudoLista.includes('dois corrego')) {
+          listaDestinos = lista;
+          console.log('[Reorder] Lista encontrada por conteúdo para recálculo');
+          break;
+        }
+      }
+      
+      // Se ainda não encontrou, pegar a primeira lista com mais de 1 item
+      if (!listaDestinos && candidatos.length > 0) {
+        listaDestinos = candidatos[0];
+        console.log('[Reorder] Usando primeira lista com itens para recálculo');
+      }
+    }
     
     if (!listaDestinos) {
       console.log('[Reorder] Lista de destinos não encontrada para calcular rota');
-      alert('Reordenação concluída. Lista atualizada.');
+      alert('Reordenação concluída. A lista foi atualizada.');
       return;
     }
     
