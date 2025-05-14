@@ -1144,7 +1144,7 @@
             
             <!-- Conteúdo da aba Relatório -->
             <div class="bottom-tab-content" id="bottom-report-content">
-                <div id="route-summary" class="mb-4">
+                <div id="route-summary" class="mb-4" style="width: 100%; max-height: 350px; overflow-y: auto;">
                     <p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>
                 </div>
                 
@@ -3045,6 +3045,20 @@
         
         // Não navegar automaticamente para nenhuma aba após a otimização
         console.log("Rota otimizada com sucesso, mantendo a aba atual");
+        
+        // Garantir que os containers se ajustem ao conteúdo após o carregamento
+        const restrictionsContainer = document.querySelector('.restrictions-container');
+        const eventsContainer = document.querySelector('.events-container');
+        
+        if (restrictionsContainer) {
+            restrictionsContainer.style.height = 'auto';
+            restrictionsContainer.style.minHeight = '200px';
+        }
+        
+        if (eventsContainer) {
+            eventsContainer.style.height = 'auto';
+            eventsContainer.style.minHeight = '200px';
+        }
     }
     
     // Reordenar os marcadores para corresponder à sequência otimizada
