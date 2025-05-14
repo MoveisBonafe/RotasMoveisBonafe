@@ -6275,16 +6275,23 @@
 
     // Calcular distância entre dois pontos usando a fórmula de Haversine
     function calculateDistance(lat1, lon1, lat2, lon2) {
+        // SISTEMA APRIMORADO DE VALIDAÇÃO DE COORDENADAS
         // Verificar se os parâmetros são válidos
         if (lat1 === undefined || lon1 === undefined || lat2 === undefined || lon2 === undefined) {
             console.error("Coordenadas inválidas no cálculo de distância:", lat1, lon1, lat2, lon2);
-            return 10; // Valor padrão seguro para evitar distância zero
+            return 50; // Valor padrão seguro para distância entre cidades
         }
         
         // Verificar se os valores são numéricos
         if (isNaN(lat1) || isNaN(lon1) || isNaN(lat2) || isNaN(lon2)) {
             console.error("Coordenadas NaN no cálculo de distância:", lat1, lon1, lat2, lon2);
-            return 15; // Valor padrão seguro para evitar distância zero
+            return 60; // Valor padrão seguro para distância entre cidades
+        }
+        
+        // Verificar se os pontos são idênticos
+        if (lat1 === lat2 && lon1 === lon2) {
+            console.warn("Pontos idênticos no cálculo de distância, retornando valor mínimo");
+            return 5; // Distância mínima para evitar zero
         }
         
         try {
@@ -6296,15 +6303,27 @@
                 Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
                 Math.sin(dLon/2) * Math.sin(dLon/2); 
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-            const distance = R * c; // Distância em km
+            let distance = R * c; // Distância em km
             
             // Verificar se a distância é válida
             if (isNaN(distance) || distance <= 0) {
                 console.error("Distância calculada inválida:", distance);
-                return 20; // Valor padrão seguro para evitar distância zero
+                
+                // MÉTODO ALTERNATIVO: Distância euclidiana aproximada
+                const latDistance = (lat2 - lat1) * 111; // 1 grau latitude ≈ 111 km
+                const lonDistance = (lon2 - lon1) * 111 * Math.cos(deg2rad((lat1 + lat2) / 2));
+                distance = Math.sqrt(latDistance*latDistance + lonDistance*lonDistance);
+                
+                if (!isNaN(distance) && distance > 0) {
+                    console.log("Usando distância alternativa:", distance);
+                    return Math.max(distance, 5); // Mínimo de 5 km
+                }
+                
+                return 20; // Valor padrão seguro como última opção
             }
             
-            return distance;
+            // Nunca retornar menos que 5 km para evitar problemas com o TSP
+            return Math.max(distance, 5);
         } catch (error) {
             console.error("Erro ao calcular distância:", error);
             return 25; // Valor padrão seguro em caso de erro
