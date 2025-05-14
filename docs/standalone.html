@@ -612,16 +612,73 @@
             overflow-y: auto;
         }
         .restriction-item {
-            padding: 8px;
-            border-bottom: 1px solid #eee;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
             font-size: 0.9em;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
         }
+        
+        .restriction-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.08);
+            border-color: #bbdefb;
+        }
+        
         .restriction-city {
             font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        /* Layout responsivo para itens de restrição */
+        @media (min-width: 768px) {
+            .bottom-tabs-container:not(.minimized) #restrictions-list {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 16px;
+                padding: 10px;
+            }
+            
+            .bottom-tabs-container:not(.minimized) .restriction-item {
+                margin-bottom: 0;
+                height: 100%;
+            }
         }
         .restriction-time {
-            font-size: 0.8em;
-            color: #666;
+            font-size: 0.85em;
+            color: #555;
+            padding: 4px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .restriction-time::before {
+            content: '🕒';
+            margin-right: 6px;
+            font-size: 0.9em;
+        }
+        
+        .restriction-description {
+            font-size: 0.9em;
+            color: #333;
+            margin: 6px 0;
+            line-height: 1.4;
+        }
+        
+        .affected-vehicles {
+            font-size: 0.85em;
+            color: #555;
+            margin-top: 8px;
+            background-color: #f8f9fa;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border-left: 3px solid #1976D2;
         }
         .restriction-type {
             display: inline-block;
