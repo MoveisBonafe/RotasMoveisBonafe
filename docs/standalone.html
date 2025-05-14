@@ -4120,7 +4120,7 @@
                     <span class="event-type ${eventTypeClass}">${event.isHoliday ? 'Feriado' : 'Evento'}</span>
                     <span class="restriction-level ${event.restrictionLevel}">${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</span>
                 </div>
-                <div class="event-date">${event.cityName} | ${dateText}</div>
+                <div class="event-date">${event.cityName} | ${event.name.includes("Aniversário") ? extrairDataFundacao(event.description) : dateText}</div>
                 <div class="event-description">${event.description}</div>
             `;
             
