@@ -23,13 +23,6 @@ cp ../docs/fix-github.js ./js/
 cp ../docs/route-optimizer.js ./js/
 cp ../docs/map-controls.js ./js/
 cp ../docs/geocode-fix.js ./js/
-cp ../docs/remove-duplicates.js ./js/remove-duplicates.js
-cp ../docs/botao-direto.js ./js/botao-direto.js
-cp ../docs/correcao-relatorio.js ./js/correcao-relatorio.js
-cp ../docs/monitor-tipo-rota.js ./js/monitor-tipo-rota.js
-cp ../docs/corrigir-sequencia.js ./js/corrigir-sequencia.js
-cp ../docs/atualizar-painel.js ./js/atualizar-painel.js
-cp ../docs/sincronizar-painel.js ./js/sincronizar-painel.js
 
 # Copiar index.html otimizado
 cp ../docs/index.html ./

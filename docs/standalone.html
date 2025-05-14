@@ -307,47 +307,6 @@
             margin-left: 10px;
             cursor: pointer;
         }
-        /* Estilos para rota personalizada */
-        .draggable {
-            cursor: move;
-            position: relative;
-            transition: background-color 0.2s ease;
-        }
-        
-        .draggable:hover {
-            background-color: #fffbeb;
-        }
-        
-        .draggable:hover::before {
-            content: '⇕';
-            position: absolute;
-            left: 5px;
-            color: #ffc107;
-        }
-        
-        .location-item.dragging {
-            opacity: 0.7;
-            background-color: #fffbeb;
-            border: 1px dashed #ffc107;
-        }
-        
-        .custom-route-active .location-item {
-            position: relative;
-            padding-left: 30px;
-        }
-        
-        .custom-route-active .location-item::before {
-            content: "≡";
-            position: absolute;
-            left: 10px;
-            color: #6c757d;
-            font-size: 18px;
-        }
-        
-        .custom-route-active .location-item:hover {
-            background-color: #f8f9fa;
-        }
-
         #route-summary {
             display: none;
             margin-top: 20px;
@@ -363,8 +322,6 @@
         .summary-header {
             font-weight: bold;
             margin-bottom: 10px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #333333;
         }
         /* Estilos para a área de upload de arquivo */
         .file-upload {
@@ -499,8 +456,11 @@
             border-bottom: 1px solid #ffc107;
             padding-bottom: 3px;
             margin-bottom: 5px;
-            color: #333333;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .origin-point strong {
+            color: #000000;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
         
         /* Estilo para os marcadores de pontos de interesse */
@@ -1200,13 +1160,10 @@
                         <!-- Locais serão adicionados aqui dinamicamente -->
                     </div>
                     
-                    <!-- Botões para gerenciar rota -->
+                    <!-- Botão para otimizar rota -->
                     <div class="optimize-btn-container">
-                        <button id="optimize-route" class="btn mb-2" style="background-color: #ffc107; color: #000000; font-weight: 600; border-color: #ffab00; width: 100%;">
+                        <button id="optimize-route" class="btn" style="background-color: #ffc107; color: #000000; font-weight: 600; border-color: #ffab00;">
                             Otimizar Rota
-                        </button>
-                        <button id="custom-route" class="btn" style="background-color: #f8f9fa; color: #000000; font-weight: 600; border-color: #ced4da; width: 100%;">
-                            Rota Personalizada
                         </button>
                     </div>
                     
@@ -1298,11 +1255,11 @@
             
             <!-- Conteúdo da aba Eventos -->
             <div class="bottom-tab-content" id="bottom-events-content">
-                <h5 style="color: #000000;">Eventos nas cidades da rota:</h5>
+                <h5>Eventos nas cidades da rota:</h5>
                 <!-- Container que se adapta à janela -->
-                <div class="events-container" style="width: 100%; height: 100%; min-height: 300px; overflow-y: auto; flex-grow: 1; color: #000000;">
-                    <div class="events-list" id="events-list" style="height: 100%; color: #000000;">
-                        <p class="text-muted" style="color: #666666;">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
+                <div class="events-container" style="width: 100%; height: 100%; min-height: 300px; overflow-y: auto; flex-grow: 1;">
+                    <div class="events-list" id="events-list" style="height: 100%;">
+                        <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
                     </div>
                 </div>
             </div>
@@ -1349,81 +1306,8 @@
     <!-- Scripts externos -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="cep-database.js"></script>
     <script src="geocode-fix.js"></script>
-    <script src="remove-duplicates.js"></script>
-    <script src="botao-direto.js"></script>
-    <script src="correcao-relatorio.js"></script>
-    <script src="monitor-tipo-rota.js"></script>
-    <script src="corrigir-sequencia.js"></script>
-    <script src="atualizar-painel.js"></script>
-    <script src="sincronizar-painel.js"></script>
-    
-    <!-- Script para remover botões duplicados -->
-    <script>
-    console.log("Inicializando limpeza de botões duplicados...");
-    
-    // Função para remover botões duplicados
-    function limparBotoesDuplicados() {
-        // Array de IDs de botões para manter apenas um
-        const botoesParaLimpar = [
-            {
-                // Diferentes IDs/classes para o mesmo botão "Ativar Reordenação"
-                seletores: [
-                    '#custom-route', 
-                    '#botao-reordenar-github', 
-                    'button:contains("Ativar Reordenação")',
-                    'button:contains("Rota Personalizada")',
-                    '.ativar-reordenacao'
-                ],
-                // Manter apenas o com ID 'botao-reordenar-direto'
-                manter: '#botao-reordenar-direto'
-            }
-        ];
-        
-        // Extensão do seletor :contains para jQuery
-        jQuery.expr[':'].contains = function(a, i, m) {
-            return jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
-        };
-        
-        // Processar cada grupo de botões
-        botoesParaLimpar.forEach(grupo => {
-            const botaoManter = document.querySelector(grupo.manter);
-            
-            // Se o botão que queremos manter existe
-            if (botaoManter) {
-                // Iterar sobre os seletores e remover exceto o que queremos manter
-                grupo.seletores.forEach(seletor => {
-                    try {
-                        const botoes = document.querySelectorAll(seletor);
-                        botoes.forEach(botao => {
-                            // Não remover o botão que queremos manter
-                            if (botao.id !== botaoManter.id) {
-                                console.log("Removendo botão duplicado:", botao.textContent?.trim());
-                                botao.remove();
-                            }
-                        });
-                    } catch (e) {
-                        // Seletores :contains podem falhar em navegadores antigos
-                        console.log("Erro ao processar seletor:", seletor, e);
-                    }
-                });
-            } else {
-                console.log("Botão principal não encontrado:", grupo.manter);
-            }
-        });
-    }
-    
-    // Executar limpeza várias vezes para garantir
-    setTimeout(limparBotoesDuplicados, 1000);
-    setTimeout(limparBotoesDuplicados, 2000);
-    setTimeout(limparBotoesDuplicados, 3000);
-    setTimeout(limparBotoesDuplicados, 5000);
-    
-    // Aplicar limpeza quando o DOM estiver pronto
-    document.addEventListener('DOMContentLoaded', limparBotoesDuplicados);
-    </script>
     
     <script>
     // Dados de amostra para a aplicação standalone
@@ -2162,20 +2046,10 @@
         
         // Botão para otimizar rota
         const optimizeButton = document.getElementById('optimize-route');
-        const customRouteButton = document.getElementById('custom-route');
-        const locationsList = document.getElementById('locations-list');
-        
         if (optimizeButton) {
             optimizeButton.addEventListener('click', optimizeRoute);
         } else {
             console.error("Botão de otimização de rota não encontrado!");
-        }
-        
-        // Adicionar funcionalidade ao botão de rota personalizada
-        if (customRouteButton && locationsList) {
-            customRouteButton.addEventListener('click', toggleCustomRouteMode);
-        } else {
-            console.error("Elementos para rota personalizada não encontrados!");
         }
         
         // Filtrar eventos automaticamente ao mudar as datas
@@ -2732,7 +2606,6 @@
         orderedLocations.forEach((location, index) => {
             const locationItem = document.createElement('div');
             locationItem.className = 'location-item';
-            locationItem.setAttribute('data-id', location.id); // Adicionar data-id para a funcionalidade de rota personalizada
             locationItem.innerHTML = `
                 <div>
                     <div><span class="badge bg-primary">${index + 1}</span> ${location.name}</div>
@@ -3262,7 +3135,7 @@
                         // Destacar a origem
                         if (location.isOrigin) {
                             item.className = 'origin-point';
-                            item.innerHTML = `${location.name} (Origem)`;
+                            item.innerHTML = `<strong>${location.name}</strong> (Origem)`;
                         } else {
                             item.innerHTML = location.name;
                         }
@@ -3320,31 +3193,6 @@
         
         // Não navegar automaticamente para nenhuma aba após a otimização
         console.log("Rota otimizada com sucesso, mantendo a aba atual");
-        
-        // Restaurar o modo de Rota Personalizada se estava ativo
-        const customRouteButton = document.getElementById('custom-route');
-        if (customRouteMode && customRouteButton) {
-            // Reativar o modo de rota personalizada
-            const locationsListElement = document.getElementById('locations-list');
-            if (locationsListElement) {
-                locationsListElement.classList.add('custom-route-active');
-                
-                // Readicionar eventos de drag and drop a todos os itens de localização
-                const locationItems = locationsListElement.querySelectorAll('li');
-                locationItems.forEach(item => {
-                    if (!item.classList.contains('origin-point')) {
-                        item.classList.add('draggable');
-                        item.setAttribute('draggable', 'true');
-                        
-                        item.addEventListener('dragstart', handleDragStart);
-                        item.addEventListener('dragover', handleDragOver);
-                        item.addEventListener('dragleave', handleDragLeave);
-                        item.addEventListener('drop', handleDrop);
-                        item.addEventListener('dragend', handleDragEnd);
-                    }
-                });
-            }
-        }
         
         // Garantir que os containers se ajustem ao conteúdo após o carregamento
         const restrictionsContainer = document.querySelector('.restrictions-container');
@@ -4466,7 +4314,7 @@
         
         // Se não houver eventos, mostrar mensagem
         if (eventsOnRoute.length === 0) {
-            eventsListContainer.innerHTML = '<p class="text-muted" style="color: #666666;">Nenhum evento encontrado para o período e cidades selecionados.</p>';
+            eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado para o período e cidades selecionados.</p>';
             return;
         }
         
@@ -4494,12 +4342,12 @@
             const eventTypeClass = event.isHoliday ? 'holiday' : 'event';
             
             eventItem.innerHTML = `
-                <div class="event-name" style="color: #000000;">${event.name} 
+                <div class="event-name">${event.name} 
                     <span class="event-type ${eventTypeClass}">${event.isHoliday ? 'Feriado' : 'Evento'}</span>
                     <span class="restriction-level ${event.restrictionLevel}">${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</span>
                 </div>
-                <div class="event-date" style="color: #000000;">${event.cityName} | ${event.name.includes("Aniversário") ? extrairDataFundacao(event.description) : dateText}</div>
-                <div class="event-description" style="color: #000000;">${event.description}</div>
+                <div class="event-date">${event.cityName} | ${event.name.includes("Aniversário") ? extrairDataFundacao(event.description) : dateText}</div>
+                <div class="event-description">${event.description}</div>
             `;
             
             eventsListContainer.appendChild(eventItem);
@@ -5939,9 +5787,9 @@
                     
                     // Verificar se é origem para destacar
                     if (location.isOrigin) {
-                        return `<li class="origin-point" data-id="${location.id}">${locationName} ${locationAddress ? `(${locationAddress})` : ''} (Origem)</li>`;
+                        return `<li class="origin-point"><strong>${locationName}</strong> ${locationAddress ? `(${locationAddress})` : ''} (Origem)</li>`;
                     } else {
-                        return `<li data-id="${location.id}"><strong>${locationName}</strong> ${locationAddress ? `(${locationAddress})` : ''}</li>`;
+                        return `<li><strong>${locationName}</strong> ${locationAddress ? `(${locationAddress})` : ''}</li>`;
                     }
                 }).join('');
             } else {
@@ -6753,351 +6601,6 @@
 
     // Expor funções necessárias globalmente
     window.removeLocation = removeLocation;
-    
-    // Variáveis para controlar o modo de rota personalizada
-    let customRouteMode = false;
-    let dragItem = null;
-    let dragOverItem = null;
-
-    // Função para alternar o modo de rota personalizada
-    function toggleCustomRouteMode() {
-        customRouteMode = !customRouteMode;
-        const locationsListElement = document.getElementById('locations-list');
-        const customRouteButton = document.getElementById('custom-route');
-        
-        if (customRouteMode) {
-            // Ativar modo de rota personalizada
-            locationsListElement.classList.add('custom-route-active');
-            customRouteButton.style.backgroundColor = '#ffc107';
-            customRouteButton.style.borderColor = '#ffab00';
-            
-            // Identificar todos os itens não-origem
-            const locationItems = locationsListElement.querySelectorAll('li:not(.origin-point)');
-            
-            // Adicionar HTML diretamente com botões para solução mais compatível
-            locationItems.forEach(item => {
-                // Criar o HTML para os botões de subir/descer
-                const buttonsHTML = `
-                    <span class="position-controls" style="margin-right: 10px;">
-                        <button type="button" class="btn btn-sm move-up" style="padding: 2px 5px; margin-right: 2px; color: #ffc107; background-color: transparent; border: 1px solid #ffc107;" title="Mover para cima">⬆</button>
-                        <button type="button" class="btn btn-sm move-down" style="padding: 2px 5px; color: #ffc107; background-color: transparent; border: 1px solid #ffc107;" title="Mover para baixo">⬇</button>
-                    </span>
-                `;
-                
-                // Inserir no início do item
-                item.innerHTML = buttonsHTML + item.innerHTML;
-                
-                // Adicionar os event listeners após inserir o HTML
-                const upButton = item.querySelector('.move-up');
-                const downButton = item.querySelector('.move-down');
-                
-                if (upButton) {
-                    upButton.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        const li = this.closest('li');
-                        const previousSibling = li.previousElementSibling;
-                        if (previousSibling && !previousSibling.classList.contains('origin-point')) {
-                            locationsListElement.insertBefore(li, previousSibling);
-                            updateCustomRoute();
-                        }
-                    });
-                }
-                
-                if (downButton) {
-                    downButton.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        const li = this.closest('li');
-                        const nextSibling = li.nextElementSibling;
-                        if (nextSibling) {
-                            locationsListElement.insertBefore(nextSibling, li);
-                            updateCustomRoute();
-                        }
-                    });
-                }
-            });
-            
-            showNotification('Modo de rota personalizada ativado. Use as setas ⬆⬇ para reordenar os locais.', 'info');
-        } else {
-            // Desativar modo de rota personalizada
-            locationsListElement.classList.remove('custom-route-active');
-            customRouteButton.style.backgroundColor = '#f8f9fa';
-            customRouteButton.style.borderColor = '#ced4da';
-            
-            // Recriar a lista sem os controles
-            const items = locationsListElement.querySelectorAll('li');
-            items.forEach(item => {
-                // Remover controles de posição se existirem
-                const controls = item.querySelector('.position-controls');
-                if (controls) {
-                    controls.remove();
-                }
-            });
-            
-            // Atualizar a rota com a nova ordem
-            updateCustomRoute();
-        }
-    }
-    
-    // Funções para manipular eventos de drag and drop
-    function handleDragStart(e) {
-        dragItem = e.target;
-        // Verificar se o elemento tem classList
-        if (e.target && e.target.classList) {
-            e.target.classList.add('dragging');
-            // Fornecer feedback visual e melhorar a experiência de arrastar
-            e.dataTransfer.effectAllowed = 'move';
-            // Definir uma imagem fantasma personalizada para melhorar a visualização
-            try {
-                const ghostElement = e.target.cloneNode(true);
-                ghostElement.style.opacity = '0.7';
-                ghostElement.style.position = 'absolute';
-                ghostElement.style.top = '-1000px';
-                document.body.appendChild(ghostElement);
-                e.dataTransfer.setDragImage(ghostElement, 20, 20);
-                setTimeout(() => {
-                    document.body.removeChild(ghostElement);
-                }, 0);
-            } catch (error) {
-                console.log("Erro ao criar imagem fantasma para drag:", error);
-            }
-        }
-    }
-    
-    function handleDragOver(e) {
-        e.preventDefault();
-        // Melhorar o feedback visual durante o drag over
-        e.dataTransfer.dropEffect = 'move';
-        
-        // Garantir que temos um elemento de lista (li)
-        let targetElement = e.target;
-        while (targetElement && targetElement.nodeName !== 'LI') {
-            targetElement = targetElement.parentNode;
-        }
-        
-        if (targetElement && !targetElement.classList.contains('origin-point')) {
-            dragOverItem = targetElement;
-        }
-    }
-    
-    function handleDragEnter(e) {
-        e.preventDefault();
-        
-        // Garantir que temos um elemento de lista (li)
-        let targetElement = e.target;
-        while (targetElement && targetElement.nodeName !== 'LI') {
-            targetElement = targetElement.parentNode;
-        }
-        
-        // Adicionar destaque visual quando entrar em uma área válida de drop
-        if (targetElement && !targetElement.classList.contains('origin-point')) {
-            targetElement.style.backgroundColor = '#fffbeb';
-            dragOverItem = targetElement;
-        }
-    }
-    
-    function handleDragLeave(e) {
-        e.preventDefault();
-        
-        // Garantir que temos um elemento de lista (li)
-        let targetElement = e.target;
-        while (targetElement && targetElement.nodeName !== 'LI') {
-            targetElement = targetElement.parentNode;
-        }
-        
-        // Remover destaque visual quando sair da área de drop
-        if (targetElement) {
-            targetElement.style.backgroundColor = '';
-        }
-    }
-    
-    function handleDrop(e) {
-        e.preventDefault();
-        
-        // Verificar se temos dragItem e dragOverItem válidos
-        if (!dragItem || !dragOverItem) {
-            console.error("Erro no drag and drop: dragItem ou dragOverItem é nulo");
-            return;
-        }
-        
-        // Não permitir soltar sobre a origem
-        if (dragOverItem.classList && dragOverItem.classList.contains('origin-point')) {
-            return;
-        }
-        
-        try {
-            // Reordenar os itens na lista
-            const parent = dragItem.parentNode;
-            if (!parent) {
-                console.error("Erro no drag and drop: parent é nulo");
-                return;
-            }
-            
-            const referenceNode = (dragOverItem !== dragItem.nextSibling) ? 
-                                dragOverItem : 
-                                dragOverItem.nextSibling;
-            
-            parent.insertBefore(dragItem, referenceNode);
-            
-            // Atualizar a rota imediatamente após o drop
-            updateCustomRoute();
-        } catch (error) {
-            console.error("Erro ao reordenar itens:", error);
-        }
-    }
-    
-    function handleDragEnd() {
-        if (dragItem && dragItem.classList) {
-            dragItem.classList.remove('dragging');
-        }
-        dragItem = null;
-        dragOverItem = null;
-    }
-    
-    // Função para atualizar a rota com a nova ordem personalizada
-    function updateCustomRoute() {
-        const locationsListElement = document.getElementById('locations-list');
-        const locationItems = locationsListElement.querySelectorAll('li');
-        
-        // Verificar se há locais suficientes para uma rota
-        if (locationItems.length < 2) {
-            showNotification('Adicione pelo menos um destino além da origem para criar uma rota.', 'warning');
-            return;
-        }
-        
-        // Coletar os IDs dos locais na nova ordem
-        const newLocationOrder = [];
-        let originId = null;
-        
-        // Primeiro, encontrar o ID da origem
-        locationItems.forEach(item => {
-            if (item.classList.contains('origin-point')) {
-                // Extrair o ID do atributo data-id ou similar
-                // Supondo que temos um atributo data-id nos elementos da lista
-                originId = parseInt(item.getAttribute('data-id'));
-                if (isNaN(originId)) {
-                    // Fallback - usar o ID da origem dos dados
-                    originId = mockData.origin.id;
-                }
-                newLocationOrder.push(originId);
-            }
-        });
-        
-        // Em seguida, adicionar os demais locais na ordem em que aparecem
-        locationItems.forEach(item => {
-            if (!item.classList.contains('origin-point')) {
-                const locationId = parseInt(item.getAttribute('data-id'));
-                if (!isNaN(locationId)) {
-                    newLocationOrder.push(locationId);
-                }
-            }
-        });
-        
-        // Se não temos pelo menos a origem e um destino, não continuar
-        if (newLocationOrder.length < 2) {
-            showNotification('Não foi possível identificar os locais da rota. Por favor, tente novamente.', 'error');
-            return;
-        }
-        
-        // Atualizar a rota com a nova ordem
-        calculateCustomRoute(newLocationOrder);
-    }
-    
-    // Função para calcular uma rota com uma ordem personalizada de locais
-    function calculateCustomRoute(locationIds) {
-        // Mostrar notificação de que estamos calculando
-        showNotification('Calculando rota personalizada...', 'info');
-        
-        // Desabilitar botão enquanto calcula
-        const customRouteButton = document.getElementById('custom-route');
-        if (customRouteButton) {
-            customRouteButton.disabled = true;
-        }
-        
-        // Buscar os locais correspondentes pelos IDs
-        const routeLocations = locationIds.map(id => {
-            return locations.find(loc => loc.id === id);
-        }).filter(loc => loc !== undefined);
-        
-        // Verificar se temos locais suficientes
-        if (routeLocations.length < 2) {
-            showNotification('Não há locais suficientes para calcular uma rota.', 'error');
-            if (customRouteButton) {
-                customRouteButton.disabled = false;
-            }
-            return;
-        }
-        
-        // Montar a rota em etapas (waypoints)
-        const origin = routeLocations[0];
-        const destination = routeLocations[routeLocations.length - 1];
-        const waypoints = routeLocations.slice(1, routeLocations.length - 1).map(location => {
-            return {
-                location: new google.maps.LatLng(location.latitude, location.longitude),
-                stopover: true
-            };
-        });
-        
-        // Configurar a requisição de direções
-        const request = {
-            origin: new google.maps.LatLng(origin.latitude, origin.longitude),
-            destination: new google.maps.LatLng(destination.latitude, destination.longitude),
-            waypoints: waypoints,
-            optimizeWaypoints: false, // Não otimizar, usar a ordem personalizada
-            travelMode: google.maps.TravelMode.DRIVING
-        };
-        
-        // Calcular a rota
-        directionsService.route(request, (result, status) => {
-            if (status === 'OK') {
-                directionsRenderer.setDirections(result);
-                
-                // Capturar o caminho otimizado para uso em outras funções
-                currentOptimizedPath = locationIds;
-                
-                // Mostrar o resumo da rota
-                showRouteSummary(result, routeLocations);
-                
-                // Mostrar os eventos e restrições para as cidades na rota
-                showEventsAndRestrictionsForRoute(locationIds);
-                
-                // Notificar que a rota foi calculada com sucesso
-                showNotification('Rota personalizada calculada com sucesso!', 'success');
-            } else {
-                console.error("Erro ao calcular rota:", status);
-                showNotification(`Erro ao calcular rota: ${status}`, 'error');
-            }
-            
-            // Reabilitar botão
-            if (customRouteButton) {
-                customRouteButton.disabled = false;
-            }
-        });
-    }
-    
-    // Função para mostrar eventos e restrições para a rota personalizada
-    function showEventsAndRestrictionsForRoute(locationIds) {
-        // Obter as datas do filtro
-        const startDateInput = document.getElementById('start-date');
-        const endDateInput = document.getElementById('end-date');
-        
-        if (!startDateInput || !endDateInput) {
-            console.error("Campos de data não encontrados para filtrar eventos");
-            return;
-        }
-        
-        const startDateStr = startDateInput.value;
-        const endDateStr = endDateInput.value;
-        
-        // Mostrar eventos para as cidades na rota
-        showEventsForCitiesOnRoute(locationIds, startDateStr, endDateStr);
-        
-        // Mostrar restrições para as cidades na rota
-        showTruckRestrictionsForCitiesOnRoute(locationIds);
-    }
     </script>
 </body>
 </html>

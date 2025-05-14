@@ -180,53 +180,5 @@
         
         <p>Para começar a usar, clique em um dos botões acima.</p>
     </div>
-    
-    <!-- Scripts principais -->
-    <script src="js/remove-duplicates.js"></script>
-    <script src="js/force-reorder.js"></script>
-    <script>
-    // Script para remover botões desnecessários
-    document.addEventListener('DOMContentLoaded', function() {
-        // Função para remover botões antigos
-        function removerBotoesAntigos() {
-            // Verificar e remover botão antigo de rota personalizada
-            const oldCustomRoute = document.getElementById('custom-route');
-            if (oldCustomRoute) {
-                console.log("Removendo botão 'Rota Personalizada' antigo");
-                oldCustomRoute.remove();
-            }
-            
-            // Verificar e remover botão github-reorder
-            const oldReorderBtn = document.getElementById('botao-reordenar-github');
-            if (oldReorderBtn) {
-                console.log("Removendo botão 'Ativar Reordenação' antigo");
-                oldReorderBtn.remove();
-            }
-            
-            // Verificar e remover botão direct-reorder
-            const directReorderBtn = document.getElementById('botao-reordenar-direto');
-            if (directReorderBtn) {
-                console.log("Removendo botão 'Reordenar Direto' antigo");
-                directReorderBtn.remove();
-            }
-            
-            // Remover qualquer botão com texto 'Ativar Reordenação'
-            const botoes = document.querySelectorAll('button');
-            botoes.forEach(btn => {
-                if (btn.textContent && btn.textContent.includes('Ativar Reordenação')) {
-                    console.log("Removendo botão com texto 'Ativar Reordenação'");
-                    btn.remove();
-                }
-            });
-        }
-        
-        // Executar várias vezes para garantir
-        setTimeout(removerBotoesAntigos, 500);
-        setTimeout(removerBotoesAntigos, 1000);
-        setTimeout(removerBotoesAntigos, 2000);
-        setTimeout(removerBotoesAntigos, 3000);
-        setTimeout(removerBotoesAntigos, 5000);
-    });
-    </script>
 </body>
 </html>
