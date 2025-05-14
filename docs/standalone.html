@@ -5438,13 +5438,10 @@
         }
     }
 
-    // Função que antes filtrava eventos por data - agora apenas exibe todos os eventos
-    // Função filterEventsByDate totalmente simplificada
-    // Filtro por data foi eliminado conforme solicitado pelo cliente
+    // Função para filtrar eventos por data - reimplementada para usar os novos botões
     function filterEventsByDate() {
         console.log("==========================================");
-        console.log("FILTRO POR DATA DESATIVADO");
-        console.log("TODOS OS EVENTOS SÃO MOSTRADOS SEM FILTRO");
+        console.log("FILTRO POR DATA USANDO BOTÕES DINÂMICOS");
         console.log("==========================================");
         
         // Determinar quais IDs usar para mostrar eventos
@@ -5458,14 +5455,25 @@
         else if (locations && locations.length > 0) {
             routeIds = locations.map(loc => loc.id);
         }
+        
+        // Usar datas definidas nos inputs ocultos
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        
         // Opção 3: Fallback para origem
-        else {
+        if (routeIds.length === 0) {
             routeIds = [mockData.origin.id];
         }
         
-        // Mostrar eventos para as cidades na rota sem filtro
-        console.log("Exibindo todos os eventos das cidades da rota");
-        showEventsForCitiesOnRoute(routeIds);
+        if (startDateInput && endDateInput && startDateInput.value && endDateInput.value) {
+            // Filtrar eventos com as datas definidas
+            console.log("Filtrando eventos de", startDateInput.value, "até", endDateInput.value);
+            showEventsForCitiesOnRoute(routeIds, startDateInput.value, endDateInput.value);
+        } else {
+            // Sem datas definidas, mostrar todos os eventos
+            console.log("Exibindo todos os eventos das cidades da rota");
+            showEventsForCitiesOnRoute(routeIds);
+        }
         
         // Mostrar também restrições para caminhões
         showTruckRestrictionsForCitiesOnRoute(routeIds, null);
