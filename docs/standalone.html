@@ -926,6 +926,45 @@
             transform: translateY(0);
         }
         
+        /* Estilo para os botões de data */
+        .date-buttons-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            gap: 8px;
+        }
+        
+        .date-button {
+            flex: 1;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #495057;
+        }
+        
+        .date-button:hover {
+            background: #e9ecef;
+            border-color: #ced4da;
+        }
+        
+        .date-button i {
+            margin-right: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .date-button.active {
+            background: #e7f5ff;
+            border-color: #4dabf7;
+            color: #1971c2;
+        }
+        
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
