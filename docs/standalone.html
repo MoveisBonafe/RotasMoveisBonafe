@@ -1020,8 +1020,17 @@
             <div id="locations-content">
                     <!-- O conteúdo de locais fica no sidebar -->
                 
-                    <!-- Filtro de eventos por data (movido para cima da origem) -->
-                    <!-- Removido filtro de eventos por data conforme solicitado -->
+                    <!-- Botões de data para filtrar eventos -->
+                    <div class="date-buttons-container">
+                        <button id="date-button-today" class="date-button active">
+                            <i class="bi bi-calendar-day"></i> Hoje
+                        </button>
+                        <button id="date-button-week" class="date-button">
+                            <i class="bi bi-calendar-week"></i> Semana
+                        </button>
+                    </div>
+                    
+                    <!-- Inputs de data ocultos para processamento -->
                     <div style="display: none">
                         <input type="hidden" id="start-date">
                         <input type="hidden" id="end-date">
