@@ -979,6 +979,17 @@
             flex-direction: column;
         }
         
+        /* Cabeçalho de restrições */
+        .restrictions-header {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            padding: 10px 0;
+            margin-bottom: 15px;
+            z-index: 10;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
         /* Containers para as restrições */
         #restrictions-list {
             overflow-y: auto;
@@ -1197,8 +1208,10 @@
             
             <!-- Conteúdo da aba Restrições -->
             <div class="bottom-tab-content" id="bottom-restrictions-content">
-                <h5>Restrições para caminhões do percurso:</h5>
-                <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
+                <div class="restrictions-header">
+                    <h5>Restrições para caminhões do percurso:</h5>
+                    <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
+                </div>
                 <div class="restrictions-list" id="restrictions-list">
                     <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
                 </div>
@@ -4387,10 +4400,20 @@
             
             // Construir nome das cidades para o título
             const citiesSequence = citiesInRoute.map(c => c.cityName).join(' → ');
-            titleElement.innerHTML = 'Restrições para caminhões na rota<br>' + 
-                                    '<span style="font-size: 0.8em; font-weight: normal;">' +
-                                    citiesSequence +
-                                    '</span>';
+            titleElement.innerHTML = `
+                <div style="margin-bottom: 6px;">Restrições para caminhões na rota</div>
+                <div style="font-size: 0.9em; font-weight: normal; background-color: #e3f2fd; 
+                padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; color: #0d47a1;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" 
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+                    stroke-linejoin="round" style="margin-right: 8px; min-width: 16px;">
+                    <path d="M17 11l2-2-3-3-2 2"></path>
+                    <path d="M9 13L7 15l3 3 2-2"></path>
+                    <path d="M15 5l-3-3-7 7 3 3z"></path>
+                    <path d="M19 15l-3-3-7 7 3 3z"></path>
+                    </svg>
+                    ${citiesSequence}
+                </div>`;
             
             restrictionsListContainer.appendChild(titleElement);
             
@@ -4828,10 +4851,20 @@
                 titleElement.style.borderRadius = '4px';
                 titleElement.style.fontWeight = 'bold';
                 titleElement.style.textAlign = 'center';
-                titleElement.innerHTML = 'Restrições para caminhões na rota<br>' + 
-                                        '<span style="font-size: 0.8em; font-weight: normal;">' +
-                                        'Dois Córregos → Jaú → Bauru' +
-                                        '</span>';
+                titleElement.innerHTML = `
+                    <div style="margin-bottom: 6px;">Restrições para caminhões na rota</div>
+                    <div style="font-size: 0.9em; font-weight: normal; background-color: #e3f2fd; 
+                    padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; color: #0d47a1;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" 
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+                        stroke-linejoin="round" style="margin-right: 8px; min-width: 16px;">
+                        <path d="M17 11l2-2-3-3-2 2"></path>
+                        <path d="M9 13L7 15l3 3 2-2"></path>
+                        <path d="M15 5l-3-3-7 7 3 3z"></path>
+                        <path d="M19 15l-3-3-7 7 3 3z"></path>
+                        </svg>
+                        Dois Córregos → Jaú → Bauru
+                    </div>`;
                 
                 // Adicionar título
                 restrictionsListContainer.appendChild(titleElement);
@@ -4942,7 +4975,10 @@
                 <div class="restriction-time">${dayTypeText} | ${restriction.startTime} - ${restriction.endTime}</div>
                 <div class="restriction-description">${restriction.description}</div>
                 ${vehiclesDisplay}
-                ${estaNoPercurso && !isGitHubPages ? '<div class="city-in-route" style="color: #1976D2; font-size: 0.8em; margin-top: 4px;">✓ Esta cidade está no seu percurso</div>' : ''}
+                ${estaNoPercurso && !isGitHubPages ? 
+                    '<div class="city-in-route" style="color: #1976D2; font-size: 0.85em; margin-top: 8px; background-color: #e3f2fd; padding: 6px 10px; border-radius: 6px; display: flex; align-items: center;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>Esta cidade está no seu percurso</div>' 
+                    : ''
+                }
             `;
             
             restrictionsListContainer.appendChild(restrictionItem);
