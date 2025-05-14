@@ -3922,38 +3922,12 @@
         
         console.log("APENAS ESTAS CIDADES ESTÃO NA ROTA REAL:", citiesOnRoute);
         
-        // NOVA IMPLEMENTAÇÃO DE FILTRAGEM DE EVENTOS
-        console.log("NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data");
-        console.log(`Filtrando eventos para cidades: ${citiesOnRoute.join(', ')}`);
-        console.log(`Filtro de data: ${startDateValue || 'sem data inicial'} a ${endDateValue || 'sem data final'}`);
+        // NOVA IMPLEMENTAÇÃO SEM FILTRAGEM POR DATA
+        console.log("IMPLEMENTAÇÃO ATUALIZADA: Exibindo todos os eventos das cidades na rota");
+        console.log(`Eventos serão mostrados para as cidades: ${citiesOnRoute.join(', ')}`);
         
-        // Ajuste condicional das datas - garantir que temos valores válidos
-        // Usar o ano atual do sistema
+        // Usamos o ano atual apenas para ajustar eventos anuais como aniversários de cidades
         const currentYear = new Date().getFullYear();
-        
-        if (!startDateValue || !endDateValue) {
-            // Se datas não foram especificadas, usar intervalo padrão do ano atual
-            console.log(`[AJUSTE AUTOMÁTICO] Definindo intervalo padrão para o ano ${currentYear}`);
-            
-            // Usar o ano atual para filtrar eventos
-            if (!startDateValue) startDateValue = `${currentYear}-01-01`;
-            if (!endDateValue) endDateValue = `${currentYear}-12-31`;
-            
-            console.log(`[DATA] Intervalo ajustado para: ${startDateValue} até ${endDateValue}`);
-        } else {
-            // Se as datas foram especificadas, garantir que estamos no ano correto
-            // Extrair apenas os valores de data (sem hora)
-            const startParts = startDateValue.split('T')[0].split('-');
-            const endParts = endDateValue.split('T')[0].split('-');
-            
-            // Verificar se o ano é diferente de 2025
-            if (startParts[0] !== String(currentYear) || endParts[0] !== String(currentYear)) {
-                console.log(`[AVISO] Ajustando datas para o ano ${currentYear}`);
-                // Manter mês e dia, mas ajustar o ano
-                startDateValue = `${currentYear}-${startParts[1]}-${startParts[2]}`;
-                endDateValue = `${currentYear}-${endParts[1]}-${endParts[2]}`;
-            }
-        }
         
         // Array para armazenar eventos filtrados
         let eventsOnRoute = [];
