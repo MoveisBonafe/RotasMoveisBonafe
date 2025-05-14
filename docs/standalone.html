@@ -897,13 +897,22 @@
         }
         
         .bottom-tab-content {
-            display: none;
+            display: none; /* Todas as abas começam ocultas */
             padding: 20px;
             background-color: white;
             animation: fadeInUp 0.5s ease forwards;
             opacity: 0;
             transform: translateY(20px);
             overflow-y: auto; /* Permite rolagem vertical para todos os conteúdos */
+            width: 100%; /* Usa toda a largura disponível */
+        }
+        
+        /* Mostra apenas o conteúdo ativo */
+        .bottom-tab-content.active {
+            display: flex;
+            flex-direction: column;
+            opacity: 1;
+            transform: translateY(0);
         }
         
         /* Ajustes para quando as abas estão minimizadas */
@@ -919,8 +928,7 @@
             border-radius: 0 0 8px 8px;
             border: 1px solid #e0e0e0;
             margin: 0 15px 15px;
-            display: flex;
-            flex-direction: column;
+            flex: 1; /* Cresce para preencher o espaço disponível */
         }
         
         /* Para garantir que os containers internos preencham o espaço disponível */
