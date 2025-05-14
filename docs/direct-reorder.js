@@ -16,7 +16,7 @@
   
   // Variáveis globais
   let botaoReordenar = null;
-  let modoReordenacao = false;
+  let modoReordenacao = true; // Sempre ativo por padrão
   
   function inicializar() {
     console.log('[Direct-Reorder] Tentando inicializar...');
@@ -150,18 +150,19 @@
       return;
     }
     
-    // Criar botão de reordenação
+    // Criar botão para calcular rota
     botaoReordenar = document.createElement('button');
     botaoReordenar.id = 'botao-reordenar-direto';
     botaoReordenar.className = 'btn btn-block';
-    botaoReordenar.textContent = 'Ativar Reordenação';
+    botaoReordenar.textContent = 'Calcular Rota Personalizada';
     botaoReordenar.style.width = '100%';
     botaoReordenar.style.marginTop = '10px';
     botaoReordenar.style.marginBottom = '10px';
     botaoReordenar.style.color = '#000';
     botaoReordenar.style.border = '1px solid #ffc107';
-    botaoReordenar.style.backgroundColor = '#ffffff';
-    botaoReordenar.addEventListener('click', alternarReordenacao);
+    botaoReordenar.style.backgroundColor = '#ffc107';
+    botaoReordenar.style.fontWeight = 'bold';
+    botaoReordenar.addEventListener('click', calcularRotaPersonalizada);
     
     // Adicionar após o botão otimizar
     botaoOtimizar.parentNode.insertBefore(botaoReordenar, botaoOtimizar.nextSibling);
@@ -169,21 +170,32 @@
     console.log('[Direct-Reorder] Botão adicionado com sucesso');
   }
   
-  function alternarReordenacao() {
-    modoReordenacao = !modoReordenacao;
-    console.log('[Direct-Reorder] Reordenação:', modoReordenacao);
+  // Função para calcular rota com a ordem atual
+  function calcularRotaPersonalizada() {
+    console.log('[Direct-Reorder] Calculando rota personalizada...');
     
-    if (modoReordenacao) {
-      ativarReordenacao();
-    } else {
-      desativarReordenacao();
-    }
+    // Aqui calculamos a rota com base na ordem dos itens na lista
+    // Não precisamos desativar o modo de reordenação, apenas calcular a rota
+    recalcularRota();
+    
+    alert('Rota calculada com a ordem atual dos destinos!');
   }
+  
+  // Ativar modo de reordenação ao inicializar
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      if (modoReordenacao) {
+        console.log('[Direct-Reorder] Ativando reordenação ao inicializar...');
+        ativarReordenacao();
+      }
+    }, 1000);
+  });
   
   function ativarReordenacao() {
     // Atualizar botão
-    botaoReordenar.classList.add('ativo');
-    botaoReordenar.textContent = 'Concluir Reordenação';
+    if (botaoReordenar) { // Verificar se o botão existe
+      botaoReordenar.classList.add('ativo');
+    }
     
     console.log('[Direct-Reorder] Ativando modo de reordenação...');
     
@@ -279,8 +291,9 @@
   }
   
   function desativarReordenacao() {
-    botaoReordenar.classList.remove('ativo');
-    botaoReordenar.textContent = 'Ativar Reordenação';
+    if (botaoReordenar) {
+      botaoReordenar.classList.remove('ativo');
+    }
     
     // Encontrar o container
     const container = document.querySelector('.github-drag').closest('[class*="location"]');
@@ -401,6 +414,68 @@
   }
   
   function recalcularRota(ids) {
+    console.log('[Direct-Reorder] Iniciando recálculo de rota...');
+    
+    // Se não temos IDs, tentar coletar da página
+    if (!ids) {
+      console.log('[Direct-Reorder] IDs não fornecidos, coletando da página...');
+      
+      // Tentar encontrar o container como no método ativarReordenacao
+      const seletores = [
+        '.locations-list', '.location-list', '#locations-list', 
+        '.locations-container', '#destinations-container',
+        '[class*="location"]'
+      ];
+      
+      let container = null;
+      for (const selector of seletores) {
+        const el = document.querySelector(selector);
+        if (el && (el.innerHTML.includes('location-item') || 
+                  el.innerHTML.includes('data-id') || 
+                  el.innerHTML.includes('badge'))) {
+          container = el;
+          console.log('[Direct-Reorder] Container encontrado para recálculo:', selector);
+          break;
+        }
+      }
+      
+      if (!container) {
+        console.error('[Direct-Reorder] Container não encontrado para recálculo');
+        alert('Erro: Não foi possível encontrar a lista de destinos para calcular a rota.');
+        return;
+      }
+      
+      // Extrair IDs da ordem atual
+      ids = [];
+      
+      // Verificar se temos elementos arrastáveis configurados
+      const itemsArrastaveis = container.querySelectorAll('.github-drag');
+      if (itemsArrastaveis.length > 0) {
+        console.log('[Direct-Reorder] Encontrados', itemsArrastaveis.length, 'itens arrastáveis');
+        itemsArrastaveis.forEach(item => {
+          const id = item.getAttribute('data-id');
+          if (id) {
+            ids.push(id);
+          }
+        });
+      } else {
+        // Se não temos elementos arrastáveis ainda, tentar extrair IDs diretamente do HTML
+        console.log('[Direct-Reorder] Extraindo IDs do HTML...');
+        const regex = /data-id="([^"]+)"/g;
+        let match;
+        while (match = regex.exec(container.innerHTML)) {
+          ids.push(match[1]);
+        }
+      }
+      
+      console.log('[Direct-Reorder] IDs coletados:', ids);
+      
+      if (ids.length === 0) {
+        alert('Adicione pelo menos um destino para calcular a rota.');
+        return;
+      }
+    }
+    
     // Verificar APIs disponíveis
     if (window.directionsService && window.directionsRenderer) {
       // Se temos acesso à array locations
