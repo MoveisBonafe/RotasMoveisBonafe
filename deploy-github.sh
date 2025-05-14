@@ -24,8 +24,7 @@ cp ../docs/route-optimizer.js ./js/
 cp ../docs/map-controls.js ./js/
 cp ../docs/geocode-fix.js ./js/
 cp ../docs/remove-duplicates.js ./js/remove-duplicates.js
-cp ../docs/solucao-universal.js ./js/solucao-universal.js
-cp ../docs/correcao-relatorio.js ./js/correcao-relatorio.js
+cp ../docs/rota-absolutamente-final.js ./js/rota-absolutamente-final.js
 
 # Copiar index.html otimizado
 cp ../docs/index.html ./
