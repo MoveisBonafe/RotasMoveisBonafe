@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Carregar script de customização de rota
   const customRouteScript = document.createElement('script');
-  customRouteScript.src = 'custom-route-github.js';
+  customRouteScript.src = 'custom-route.js';
   customRouteScript.async = true;
   document.body.appendChild(customRouteScript);
   
