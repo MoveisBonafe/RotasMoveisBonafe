@@ -608,8 +608,11 @@
         /* Estilos para restrições de caminhões */
         .restrictions-list {
             margin-top: 10px;
-            max-height: 200px;
+            max-height: 300px; /* Aumentado para acomodar mais conteúdo */
             overflow-y: auto;
+            width: 100%; /* Garantir que ocupe toda a largura disponível */
+            height: auto; /* Permitir que a altura se ajuste ao conteúdo */
+            transition: all 0.3s ease; /* Transição suave ao expandir */
         }
         .restriction-item {
             padding: 8px;
@@ -4311,8 +4314,8 @@
             titleElement.style.fontWeight = 'bold';
             titleElement.style.textAlign = 'center';
             
-            // Construir nome das cidades para o título
-            const citiesSequence = citiesInRoute.map(c => c.cityName).join(' → ');
+            // Construir nome das cidades para o título usando displayName em vez de cityName
+            const citiesSequence = citiesInRoute.map(c => c.displayName || c.cityName).join(' → ');
             titleElement.innerHTML = 'Restrições para caminhões na rota<br>' + 
                                     '<span style="font-size: 0.8em; font-weight: normal;">' +
                                     citiesSequence +
