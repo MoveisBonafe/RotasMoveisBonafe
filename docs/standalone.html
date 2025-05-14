@@ -2825,8 +2825,8 @@
                 tspResult.distance = Math.max(recalculatedDistance, destinations.length * 20, 30);
                 console.log("Distância final corrigida:", tspResult.distance.toFixed(1), "km");
                 
-                // Atualizar o tempo baseado na nova distância (velocidade média: 80km/h)
-                tspResult.time = (tspResult.distance / 80) * 60; // tempo em minutos
+                // Atualizar o tempo usando nossa função centralizada
+                tspResult.time = calculateTravelTime(tspResult.distance);
                 console.log("Tempo atualizado:", tspResult.time.toFixed(1), "minutos");
             }
             
@@ -4962,11 +4962,11 @@
             }
             
             // Garantir que todas as rotas tenham tempo estimado calculado corretamente
-            // Usando velocidade padrão de 80km/h para todas as rotas
+            // Usando nossa função centralizada para cálculo de tempo
             const distance = route.totalDistance || route.distance || 0;
             if (distance > 0) {
-                // Calcular tempo em minutos (distância / velocidade * 60)
-                route.estimatedTime = (distance / 80) * 60;
+                // Usar a função centralizada para cálculo consistente
+                route.estimatedTime = calculateTravelTime(distance);
                 console.log(`Rota ${routes.indexOf(route)}: Tempo recalculado para ${route.estimatedTime.toFixed(1)} minutos (${distance.toFixed(1)}km)`);
             } else {
                 console.warn(`Rota com distância zero ou inválida: ${distance}`);
@@ -5028,6 +5028,18 @@
                 unusedCard.style.display = 'none';
             }
         }
+    }
+    
+    // Função centralizada para calcular tempo com velocidade padrão
+    function calculateTravelTime(distanceInKm) {
+        if (!distanceInKm || distanceInKm <= 0 || isNaN(distanceInKm)) {
+            console.warn("Distância inválida para cálculo de tempo:", distanceInKm);
+            return 0;
+        }
+        // Velocidade padrão de 80km/h (solicitação do usuário)
+        const speedKmh = 80;
+        // Tempo em minutos: (distância / velocidade) * 60
+        return (distanceInKm / speedKmh) * 60;
     }
     
     // Função auxiliar para formatação de tempo
