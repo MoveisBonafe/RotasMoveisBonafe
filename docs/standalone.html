@@ -2643,6 +2643,7 @@
         orderedLocations.forEach((location, index) => {
             const locationItem = document.createElement('div');
             locationItem.className = 'location-item';
+            locationItem.setAttribute('data-id', location.id); // Adicionar data-id para a funcionalidade de rota personalizada
             locationItem.innerHTML = `
                 <div>
                     <div><span class="badge bg-primary">${index + 1}</span> ${location.name}</div>
@@ -5824,9 +5825,9 @@
                     
                     // Verificar se é origem para destacar
                     if (location.isOrigin) {
-                        return `<li class="origin-point">${locationName} ${locationAddress ? `(${locationAddress})` : ''} (Origem)</li>`;
+                        return `<li class="origin-point" data-id="${location.id}">${locationName} ${locationAddress ? `(${locationAddress})` : ''} (Origem)</li>`;
                     } else {
-                        return `<li><strong>${locationName}</strong> ${locationAddress ? `(${locationAddress})` : ''}</li>`;
+                        return `<li data-id="${location.id}"><strong>${locationName}</strong> ${locationAddress ? `(${locationAddress})` : ''}</li>`;
                     }
                 }).join('');
             } else {
