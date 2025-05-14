@@ -608,7 +608,7 @@
         /* Estilos para restrições de caminhões */
         .restrictions-list {
             margin-top: 10px;
-            max-height: 400px; /* Aumentado para mostrar mais restrições */
+            max-height: 200px;
             overflow-y: auto;
         }
         .restriction-item {
@@ -4516,62 +4516,10 @@
          * @param {string} addressOrName - Endereço completo ou nome de localização
          * @returns {string} - Nome da cidade extraído ou texto original como fallback
          */
-        // Mapeamento de CEPs para nomes de cidades
-        const cepToCityMap = {
-            "18530000": "Tietê",
-            "18290000": "Bofete",
-            "18425000": "Paranapanema",
-            "18280000": "Itatinga",
-            "18870000": "Fartura",
-            "18230000": "São Miguel Arcanjo",
-            "18520000": "Cerquilho",
-            "18500000": "Laranjal Paulista",
-            "17201320": "Jaú",
-            "17201330": "Jaú",
-            "17201340": "Jaú",
-            "17210190": "Jaú",
-            "17280000": "Pederneiras",
-            "17580000": "Pompeia",
-            "17380000": "Brotas",
-            "13426415": "Piracicaba",
-            "13484313": "Limeira",
-            "17340000": "Barra Bonita",
-            "17690000": "Lutécia",
-            "17270000": "Bocaina",
-            "17250000": "Bariri",
-            "17260000": "Itaju",
-            "18690000": "Itatinga",
-            "18254000": "Quadra",
-            "17490000": "Piratininga",
-            "14900000": "Itápolis",
-            "19880000": "Cândido Mota",
-            "19802000": "Palmital"
-        };
-        
         function extractCityName(addressOrName) {
             if (!addressOrName) return 'Desconhecido';
             
-            // Verificar se é um CEP no mapeamento
-            if (cepToCityMap[addressOrName]) {
-                return cepToCityMap[addressOrName];
-            }
-            
-            // Verificar por CEP no formato 00000-000
-            const cepWithDash = addressOrName.match(/(\d{5})-(\d{3})/);
-            if (cepWithDash) {
-                const cep = cepWithDash[1] + cepWithDash[2];
-                if (cepToCityMap[cep]) {
-                    return cepToCityMap[cep];
-                }
-            }
-            
-            // Verificar por CEP no formato 00000000 (8 dígitos)
-            const cepWithoutDash = addressOrName.match(/\d{8}/);
-            if (cepWithoutDash && cepToCityMap[cepWithoutDash[0]]) {
-                return cepToCityMap[cepWithoutDash[0]];
-            }
-            
-            // Tentar extrair cidade de endereço completo
+            // Tentar extrair cidade de endereço completo primeiro
             const cityFromAddress = extractCityFromAddress(addressOrName);
             if (cityFromAddress) return cityFromAddress;
             
@@ -4579,10 +4527,7 @@
             const knownCities = [
                 "Dois Córregos", "Jaú", "Botucatu", "Bauru", "Ribeirão Preto", 
                 "São Paulo", "Campinas", "São Carlos", "Piracicaba", "Araraquara",
-                "Americana", "Sorocaba", "Limeira", "Rio Claro", "Lençóis Paulista",
-                "Pederneiras", "Brotas", "Bocaina", "Bariri", "Barra Bonita",
-                "Tietê", "Bofete", "Paranapanema", "Itatinga", "Fartura",
-                "São Miguel Arcanjo", "Cerquilho", "Laranjal Paulista"
+                "Americana", "Sorocaba", "Limeira", "Rio Claro", "Lençóis Paulista"
             ];
             
             // Verificar se o nome já contém uma cidade conhecida
@@ -4805,31 +4750,9 @@
                 titleElement.style.borderRadius = '4px';
                 titleElement.style.fontWeight = 'bold';
                 titleElement.style.textAlign = 'center';
-                // Construir sequência de cidades para o título usando a função de extração aprimorada
-                let routeSequence = '';
-                
-                // Tentar obter os locais da rota atual
-                if (window.currentOptimizedPath && window.currentOptimizedPath.length > 0) {
-                    const routeLocations = ['Dois Córregos']; // Origem sempre primeiro
-                    
-                    // Adicionar as demais localizações
-                    for (const id of window.currentOptimizedPath) {
-                        const location = locations.find(loc => String(loc.id) === String(id));
-                        if (location) {
-                            // Usar nossa função aprimorada para extrair nomes de cidades dos CEPs
-                            const cityName = extractCityName(location.address || location.name);
-                            routeLocations.push(cityName);
-                        }
-                    }
-                    
-                    routeSequence = routeLocations.join(' → ');
-                } else {
-                    routeSequence = 'Dois Córregos → Jaú → Bauru'; // Fallback
-                }
-                
                 titleElement.innerHTML = 'Restrições para caminhões na rota<br>' + 
                                         '<span style="font-size: 0.8em; font-weight: normal;">' +
-                                        routeSequence +
+                                        'Dois Córregos → Jaú → Bauru' +
                                         '</span>';
                 
                 // Adicionar título
@@ -6352,23 +6275,16 @@
 
     // Calcular distância entre dois pontos usando a fórmula de Haversine
     function calculateDistance(lat1, lon1, lat2, lon2) {
-        // SISTEMA APRIMORADO DE VALIDAÇÃO DE COORDENADAS
         // Verificar se os parâmetros são válidos
         if (lat1 === undefined || lon1 === undefined || lat2 === undefined || lon2 === undefined) {
             console.error("Coordenadas inválidas no cálculo de distância:", lat1, lon1, lat2, lon2);
-            return 50; // Valor padrão seguro para distância entre cidades
+            return 10; // Valor padrão seguro para evitar distância zero
         }
         
         // Verificar se os valores são numéricos
         if (isNaN(lat1) || isNaN(lon1) || isNaN(lat2) || isNaN(lon2)) {
             console.error("Coordenadas NaN no cálculo de distância:", lat1, lon1, lat2, lon2);
-            return 60; // Valor padrão seguro para distância entre cidades
-        }
-        
-        // Verificar se os pontos são idênticos
-        if (lat1 === lat2 && lon1 === lon2) {
-            console.warn("Pontos idênticos no cálculo de distância, retornando valor mínimo");
-            return 5; // Distância mínima para evitar zero
+            return 15; // Valor padrão seguro para evitar distância zero
         }
         
         try {
@@ -6380,27 +6296,15 @@
                 Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
                 Math.sin(dLon/2) * Math.sin(dLon/2); 
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-            let distance = R * c; // Distância em km
+            const distance = R * c; // Distância em km
             
             // Verificar se a distância é válida
             if (isNaN(distance) || distance <= 0) {
                 console.error("Distância calculada inválida:", distance);
-                
-                // MÉTODO ALTERNATIVO: Distância euclidiana aproximada
-                const latDistance = (lat2 - lat1) * 111; // 1 grau latitude ≈ 111 km
-                const lonDistance = (lon2 - lon1) * 111 * Math.cos(deg2rad((lat1 + lat2) / 2));
-                distance = Math.sqrt(latDistance*latDistance + lonDistance*lonDistance);
-                
-                if (!isNaN(distance) && distance > 0) {
-                    console.log("Usando distância alternativa:", distance);
-                    return Math.max(distance, 5); // Mínimo de 5 km
-                }
-                
-                return 20; // Valor padrão seguro como última opção
+                return 20; // Valor padrão seguro para evitar distância zero
             }
             
-            // Nunca retornar menos que 5 km para evitar problemas com o TSP
-            return Math.max(distance, 5);
+            return distance;
         } catch (error) {
             console.error("Erro ao calcular distância:", error);
             return 25; // Valor padrão seguro em caso de erro
