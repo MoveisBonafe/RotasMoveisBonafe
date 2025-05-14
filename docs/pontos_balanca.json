@@ -1,0 +1,178 @@
+[
+  {
+    "id": 1,
+    "name": "DR 01 - SP 324",
+    "address": "KM 84+350 - Indaiatuba/Vinhedo",
+    "latitude": -23.0532826,
+    "longitude": -47.0545045,
+    "Regional": "DR 01",
+    "Rodovia": "SP 324",
+    "Denominação": "Miguel Melhado Campos",
+    "Município": "Campinas"
+  },
+  {
+    "id": 2,
+    "name": "DR 01 - SP 008",
+    "address": "KM 100+140 - Socorro/Bragança Paulista",
+    "latitude": -23.0370714,
+    "longitude": -46.5543706,
+    "Regional": "DR 01",
+    "Rodovia": "SP 008",
+    "Denominação": "Pedro Astenori Marigliani",
+    "Município": "Bragança Paulista"
+  },
+  {
+    "id": 3,
+    "name": "DR 01 - SP 008",
+    "address": "KM 102+350 - Bragança Paulista/Socorro",
+    "latitude": -23.0370714,
+    "longitude": -46.5543706,
+    "Regional": "DR 01",
+    "Rodovia": "SP 008",
+    "Denominação": "Pedro Astenori Marigliani",
+    "Município": "Bragança Paulista"
+  },
+  {
+    "id": 4,
+    "name": "DR 01 - SP 063",
+    "address": "KM 30+700 - Itatiba/Bragança Paulista",
+    "latitude": -22.959751,
+    "longitude": -46.7000807,
+    "Regional": "DR 01",
+    "Rodovia": "SP 063",
+    "Denominação": "Luciano Consoline",
+    "Município": "Itatiba"
+  },
+  {
+    "id": 5,
+    "name": "DR 01 - SP 095",
+    "address": "KM 62+880 - Pedreira/Jaguariuna",
+    "latitude": -22.7773747,
+    "longitude": -46.7353239,
+    "Regional": "DR 01",
+    "Rodovia": "SP 095",
+    "Denominação": "João Beira",
+    "Município": "Pedreira"
+  },
+  {
+    "id": 6,
+    "name": "DR 01 - SP 133",
+    "address": "KM 13+800 - Cosmópolis/Limeira",
+    "latitude": -22.6273416,
+    "longitude": -47.2682177,
+    "Regional": "DR 01",
+    "Rodovia": "SP 133",
+    "Denominação": "Deputado João Herrmann Neto",
+    "Município": "Cosmópolis"
+  },
+  {
+    "id": 7,
+    "name": "DR 01 - SP 147",
+    "address": "KM 29+000 - Itapira/Lindóia",
+    "latitude": -22.6575298,
+    "longitude": -47.5219317,
+    "Regional": "DR 01",
+    "Rodovia": "SP 147",
+    "Denominação": "Monsenhor Clodoaldo de Paiva",
+    "Município": "Itapira"
+  },
+  {
+    "id": 8,
+    "name": "DR 01 - SP 354",
+    "address": "KM 63+050 - Campo Limpo Paulista/Jarinu",
+    "latitude": -23.1813293,
+    "longitude": -46.7781969,
+    "Regional": "DR 01",
+    "Rodovia": "SP 354",
+    "Denominação": "Edgard Máximo Zambotto",
+    "Município": "Jarinu"
+  },
+  {
+    "id": 9,
+    "name": "DR 01 - SP 354",
+    "address": "KM 79+200 - Jarinu/Campo Limpo Paulista",
+    "latitude": -23.1813293,
+    "longitude": -46.7781969,
+    "Regional": "DR 01",
+    "Rodovia": "SP 354",
+    "Denominação": "Edgard Máximo Zambotto",
+    "Município": "Atibaia"
+  },
+  {
+    "id": 10,
+    "name": "DR 01 - SP 360",
+    "address": "KM 114+150 - Morungaba/Amparo",
+    "latitude": -22.8056584,
+    "longitude": -46.7552668,
+    "Regional": "DR 01",
+    "Rodovia": "SP 360",
+    "Denominação": "Constancio Cintra",
+    "Município": "Amparo"
+  },
+  {
+    "id": 19,
+    "name": "DR 03 - SP 304",
+    "address": "KM 324+500 - Bariri/Jau",
+    "latitude": -22.1046535,
+    "longitude": -48.6982877,
+    "Regional": "DR 03",
+    "Rodovia": "SP 304",
+    "Denominação": "Leonidas Pacheco Ferreira",
+    "Município": "Bariri"
+  },
+  {
+    "id": 20,
+    "name": "DR 03 - SP 321",
+    "address": "KM 369+600 - Bauru/Iacanga",
+    "latitude": -21.6689667,
+    "longitude": -49.0384046,
+    "Regional": "DR 03",
+    "Rodovia": "SP 321",
+    "Denominação": "Cezario José de Castilho",
+    "Município": "Arealva"
+  },
+  {
+    "id": 23,
+    "name": "DR 04 - SP 304",
+    "address": "KM 354+000 - Itaju/Ibitinga",
+    "latitude": -22.1046535,
+    "longitude": -48.6982877,
+    "Regional": "DR 04",
+    "Rodovia": "SP 304",
+    "Denominação": "Leonidas Pacheco Ferreira",
+    "Município": "Ibitinga"
+  },
+  {
+    "id": 35,
+    "name": "DR 09 - SP 304",
+    "address": "KM 410+000 - Ibitinga/Novo Horizonte",
+    "latitude": -22.1046535,
+    "longitude": -48.6982877,
+    "Regional": "DR 09",
+    "Rodovia": "SP 304",
+    "Denominação": "SP 304",
+    "Município": "Novo Horizonte"
+  },
+  {
+    "id": 44,
+    "name": "DR 10 - SP 225",
+    "address": "KM 206+000 - Itirapina/Brotas",
+    "latitude": -22.2478775,
+    "longitude": -48.0186461,
+    "Regional": "DR 10",
+    "Rodovia": "SP 225",
+    "Denominação": "SP 225",
+    "Município": "Brotas"
+  },
+  {
+    "id": 45,
+    "name": "DR 10 - SP 225",
+    "address": "KM 243+000 - Brotas/Jaú",
+    "latitude": -22.2564336,
+    "longitude": -48.3580127,
+    "Regional": "DR 10",
+    "Rodovia": "SP 225",
+    "Denominação": "SP 225",
+    "Município": "Dois Córregos"
+  }
+]

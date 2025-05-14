@@ -730,10 +730,17 @@
             transition: all 0.3s ease; /* Transição suave ao expandir */
         }
         
-        /* Estilos para os marcadores e informações de pedágio */
+        /* Estilos para os marcadores e informações de pedágio e balança */
         .toll-info {
             padding: 5px;
             min-width: 150px;
+        }
+        
+        .weighing-station-info {
+            padding: 5px;
+            min-width: 150px;
+            background-color: #f8f9fa;
+            border-left: 3px solid #28a745;
         }
         
         /* Controle para mostrar/ocultar marcadores de pedágio */
@@ -1280,12 +1287,23 @@
                         <path d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2zM3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8zm9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5zm.754-4.246a.389.389 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.389.389 0 0 0-.029-.518z"/>
                     </svg>
                 </button>
+                <button class="map-control-btn" id="toggle-weighing-stations" title="Mostrar/ocultar balanças">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2zM3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8zm9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5zm.754-4.246a.389.389 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.389.389 0 0 0-.029-.518z"/>
+                    </svg>
+                </button>
             </div>
             
             <!-- Controle para mostrar/ocultar pedágios -->
             <div class="tollControl" id="toll-control" style="display: none;">
                 <input type="checkbox" id="show-tolls" checked>
                 <label for="show-tolls">Mostrar Pedágios</label>
+            </div>
+            
+            <!-- Controle para mostrar/ocultar balanças -->
+            <div class="tollControl" id="weighing-station-control" style="display: none; top: 50px;">
+                <input type="checkbox" id="show-weighing-stations" checked>
+                <label for="show-weighing-stations">Mostrar Balanças</label>
             </div>
         </div>
         </div>
@@ -1443,12 +1461,15 @@
     let poiMarkers = [];
     let eventMarkers = [];
     let tollMarkers = []; // Array para armazenar marcadores de pedágio
+    let weighingStationMarkers = []; // Array para armazenar marcadores de balanças
     let locationId = 2; // Começa em 2 porque 1 é reservado para a origem
     let locations = [mockData.origin];
     let activeInfoWindow = null;
     let routePath = null;
     let routeAnimationTimeout = null;
     let showPOIs = true;
+    let showTolls = true; // Controla a visibilidade dos pedágios
+    let showWeighingStations = true; // Controla a visibilidade das balanças
     let customTooltip = null;
     let directionsRendererInitialized = false; // Flag para rastrear inicialização correta do renderer
     // Variáveis para rotas alternativas
@@ -1458,6 +1479,7 @@
     let allRoutePolylines = []; // Armazena referências a todas as polylines criadas
     let tspSolver = null; // Instância do solver TSP
     let tollsData = []; // Array para armazenar dados dos pontos de pedágio
+    let weighingStationsData = []; // Array para armazenar dados dos pontos de balança
     
     // Função para processar CEP em formato x.y.z.w-abcd
     function formatCEP(cep) {
@@ -2200,10 +2222,16 @@
         document.getElementById('zoom-to-fit').addEventListener('click', zoomToFitAllMarkers);
         document.getElementById('toggle-poi').addEventListener('click', togglePointsOfInterest);
         document.getElementById('toggle-tolls').addEventListener('click', toggleTollControl);
+        document.getElementById('toggle-weighing-stations').addEventListener('click', toggleWeighingStationControl);
         
         // Checkbox para controlar a visibilidade dos pedágios
         document.getElementById('show-tolls').addEventListener('change', function() {
             toggleTollMarkers(this.checked);
+        });
+        
+        // Checkbox para controlar a visibilidade das balanças
+        document.getElementById('show-weighing-stations').addEventListener('change', function() {
+            toggleWeighingStationMarkers(this.checked);
         });
         
         // Botões da aba de relatório
@@ -2829,7 +2857,28 @@
         tollMarkers.forEach(marker => {
             marker.setMap(show ? map : null);
         });
+        showTolls = show;
         console.log(`${show ? 'Exibindo' : 'Ocultando'} marcadores de pedágio`);
+    }
+    
+    // Funções para controlar a exibição das balanças
+    function toggleWeighingStationControl() {
+        const weighingStationControl = document.getElementById('weighing-station-control');
+        if (weighingStationControl) {
+            if (weighingStationControl.style.display === 'none') {
+                weighingStationControl.style.display = 'flex';
+            } else {
+                weighingStationControl.style.display = 'none';
+            }
+        }
+    }
+    
+    function toggleWeighingStationMarkers(show) {
+        weighingStationMarkers.forEach(marker => {
+            marker.setMap(show ? map : null);
+        });
+        showWeighingStations = show;
+        console.log(`${show ? 'Exibindo' : 'Ocultando'} marcadores de balança`);
     }
     
     // Função para alternar a exibição de pontos de interesse no mapa
