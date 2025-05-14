@@ -5058,6 +5058,31 @@
         }
     }
     
+    // Função para aplicar os cálculos corretos de distância e tempo em todas as rotas
+    function recalculateRouteTimeAndDistance(routes) {
+        if (!routes || !Array.isArray(routes) || routes.length === 0) {
+            console.warn("Nenhuma rota para recalcular tempo e distância");
+            return routes;
+        }
+        
+        return routes.map(route => {
+            // Garantir que temos uma distância válida
+            const distance = route.distance || route.totalDistance || 0;
+            
+            if (distance <= 0) {
+                console.warn("Rota com distância zero ou inválida!");
+                route.estimatedTime = 0;
+                return route;
+            }
+            
+            // Aplicar o cálculo de tempo padronizado (80 km/h)
+            route.estimatedTime = calculateTravelTime(distance);
+            console.log(`Rota recalculada: ${distance.toFixed(1)}km / ${route.estimatedTime.toFixed(1)} minutos`);
+            
+            return route;
+        });
+    }
+    
     // Função para gerar rotas alternativas
     function generateAlternativeRoutes(origin, destinations, includeOriginReturn) {
         // Limpar o array de rotas alternativas
@@ -5237,6 +5262,9 @@
         if (routeAlternativesSidebarEl) {
             routeAlternativesSidebarEl.style.display = alternativeRoutes.length > 1 ? 'block' : 'none';
             console.log('Exibindo seletor de rotas alternativas na sidebar:', alternativeRoutes.length > 1);
+            
+            // Recalcular tempos e distâncias para garantir consistência
+            alternativeRoutes = recalculateRouteTimeAndDistance(alternativeRoutes);
             
             // Atualizar detalhes nos cards de rotas alternativas
             updateRouteCardDetails(alternativeRoutes);
@@ -5531,8 +5559,8 @@
                 averageSpeed: 80 // km/h - velocidade média ajustada para 80km/h conforme solicitado
             };
             
-            // Tempo estimado (baseado na velocidade média padrão do caminhão)
-            const estimatedTime = tspResult.distance / selectedVehicle.averageSpeed; // em horas
+            // Tempo estimado usando nossa função centralizada (em minutos)
+            const estimatedTime = calculateTravelTime(tspResult.distance) / 60; // convertendo de minutos para horas
             
             // Atualizar o conteúdo do resumo
             const summaryContainer = document.getElementById('route-summary');
