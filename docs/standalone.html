@@ -4805,9 +4805,31 @@
                 titleElement.style.borderRadius = '4px';
                 titleElement.style.fontWeight = 'bold';
                 titleElement.style.textAlign = 'center';
+                // Construir sequência de cidades para o título usando a função de extração aprimorada
+                let routeSequence = '';
+                
+                // Tentar obter os locais da rota atual
+                if (window.currentOptimizedPath && window.currentOptimizedPath.length > 0) {
+                    const routeLocations = ['Dois Córregos']; // Origem sempre primeiro
+                    
+                    // Adicionar as demais localizações
+                    for (const id of window.currentOptimizedPath) {
+                        const location = locations.find(loc => String(loc.id) === String(id));
+                        if (location) {
+                            // Usar nossa função aprimorada para extrair nomes de cidades dos CEPs
+                            const cityName = extractCityName(location.address || location.name);
+                            routeLocations.push(cityName);
+                        }
+                    }
+                    
+                    routeSequence = routeLocations.join(' → ');
+                } else {
+                    routeSequence = 'Dois Córregos → Jaú → Bauru'; // Fallback
+                }
+                
                 titleElement.innerHTML = 'Restrições para caminhões na rota<br>' + 
                                         '<span style="font-size: 0.8em; font-weight: normal;">' +
-                                        'Dois Córregos → Jaú → Bauru' +
+                                        routeSequence +
                                         '</span>';
                 
                 // Adicionar título
