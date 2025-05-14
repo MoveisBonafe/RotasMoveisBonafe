@@ -1,0 +1,21 @@
+{
+  "name": "Otimizador de Rotas Móveis Bonafé",
+  "short_name": "Bonafé Rotas",
+  "description": "Otimizador de Rotas Móveis Bonafé - Solução para logística e transporte",
+  "start_url": "../index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffc107",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
