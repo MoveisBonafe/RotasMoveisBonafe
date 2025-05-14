@@ -1732,7 +1732,15 @@
                     if (contentId) {
                         const contentElement = document.getElementById(contentId);
                         if (contentElement) {
+                            // Ocultar TODOS os conteúdos primeiro
+                            bottomTabContents.forEach(content => {
+                                content.style.display = 'none';
+                                content.classList.remove('active');
+                            });
+                            
+                            // Ativar apenas o conteúdo da aba clicada
                             contentElement.classList.add('active');
+                            contentElement.style.display = 'flex';
                             
                             // Efeitos visuais adicionais para GitHub Pages
                             if (isGitHubPages) {
