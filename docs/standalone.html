@@ -4516,10 +4516,62 @@
          * @param {string} addressOrName - Endereço completo ou nome de localização
          * @returns {string} - Nome da cidade extraído ou texto original como fallback
          */
+        // Mapeamento de CEPs para nomes de cidades
+        const cepToCityMap = {
+            "18530000": "Tietê",
+            "18290000": "Bofete",
+            "18425000": "Paranapanema",
+            "18280000": "Itatinga",
+            "18870000": "Fartura",
+            "18230000": "São Miguel Arcanjo",
+            "18520000": "Cerquilho",
+            "18500000": "Laranjal Paulista",
+            "17201320": "Jaú",
+            "17201330": "Jaú",
+            "17201340": "Jaú",
+            "17210190": "Jaú",
+            "17280000": "Pederneiras",
+            "17580000": "Pompeia",
+            "17380000": "Brotas",
+            "13426415": "Piracicaba",
+            "13484313": "Limeira",
+            "17340000": "Barra Bonita",
+            "17690000": "Lutécia",
+            "17270000": "Bocaina",
+            "17250000": "Bariri",
+            "17260000": "Itaju",
+            "18690000": "Itatinga",
+            "18254000": "Quadra",
+            "17490000": "Piratininga",
+            "14900000": "Itápolis",
+            "19880000": "Cândido Mota",
+            "19802000": "Palmital"
+        };
+        
         function extractCityName(addressOrName) {
             if (!addressOrName) return 'Desconhecido';
             
-            // Tentar extrair cidade de endereço completo primeiro
+            // Verificar se é um CEP no mapeamento
+            if (cepToCityMap[addressOrName]) {
+                return cepToCityMap[addressOrName];
+            }
+            
+            // Verificar por CEP no formato 00000-000
+            const cepWithDash = addressOrName.match(/(\d{5})-(\d{3})/);
+            if (cepWithDash) {
+                const cep = cepWithDash[1] + cepWithDash[2];
+                if (cepToCityMap[cep]) {
+                    return cepToCityMap[cep];
+                }
+            }
+            
+            // Verificar por CEP no formato 00000000 (8 dígitos)
+            const cepWithoutDash = addressOrName.match(/\d{8}/);
+            if (cepWithoutDash && cepToCityMap[cepWithoutDash[0]]) {
+                return cepToCityMap[cepWithoutDash[0]];
+            }
+            
+            // Tentar extrair cidade de endereço completo
             const cityFromAddress = extractCityFromAddress(addressOrName);
             if (cityFromAddress) return cityFromAddress;
             
@@ -4527,7 +4579,10 @@
             const knownCities = [
                 "Dois Córregos", "Jaú", "Botucatu", "Bauru", "Ribeirão Preto", 
                 "São Paulo", "Campinas", "São Carlos", "Piracicaba", "Araraquara",
-                "Americana", "Sorocaba", "Limeira", "Rio Claro", "Lençóis Paulista"
+                "Americana", "Sorocaba", "Limeira", "Rio Claro", "Lençóis Paulista",
+                "Pederneiras", "Brotas", "Bocaina", "Bariri", "Barra Bonita",
+                "Tietê", "Bofete", "Paranapanema", "Itatinga", "Fartura",
+                "São Miguel Arcanjo", "Cerquilho", "Laranjal Paulista"
             ];
             
             // Verificar se o nome já contém uma cidade conhecida
