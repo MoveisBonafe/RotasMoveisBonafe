@@ -4045,23 +4045,30 @@
                         filterStart.setHours(0,0,0,0);
                         filterEnd.setHours(23,59,59,999);
                         
-                        // Verificar sobreposição entre as datas
-                        const hasOverlap = (
-                            // Evento começa dentro do período do filtro
-                            (eventStart >= filterStart && eventStart <= filterEnd) ||
-                            // Evento termina dentro do período do filtro
-                            (eventEnd >= filterStart && eventEnd <= filterEnd) ||
-                            // Evento abrange todo o período do filtro
-                            (eventStart <= filterStart && eventEnd >= filterEnd)
-                        );
+                        // NOVA LÓGICA SIMPLIFICADA PARA FILTRAGEM DE DATAS
+                        // Um evento deve ser mostrado se:
+                        // 1. A data de início do evento é >= a data inicial do filtro E
+                        // 2. A data de início do evento é <= a data final do filtro
+                        // (Estamos considerando apenas a data de início do evento para compatibilidade)
                         
-                        console.log(`[VERIFICAÇÃO] Data evento ${eventStart.toLocaleDateString('pt-BR')}-${eventEnd.toLocaleDateString('pt-BR')} vs. Filtro ${filterStart.toLocaleDateString('pt-BR')}-${filterEnd.toLocaleDateString('pt-BR')}`);
+                        const isEventInFilterRange = eventStart >= filterStart && eventStart <= filterEnd;
                         
-                        if (hasOverlap) {
-                            console.log(`[ACEITO] Evento '${event.name}' está no período filtrado`);
+                        console.log(`[VERIFICAÇÃO DE DATA]`, {
+                            evento: event.name,
+                            eventStart: eventStart.toLocaleDateString('pt-BR'),
+                            eventEnd: eventEnd.toLocaleDateString('pt-BR'),
+                            filterStart: filterStart.toLocaleDateString('pt-BR'),
+                            filterEnd: filterEnd.toLocaleDateString('pt-BR'),
+                            condicao1: eventStart >= filterStart ? "SIM" : "NÃO",
+                            condicao2: eventStart <= filterEnd ? "SIM" : "NÃO",
+                            resultado: isEventInFilterRange ? "ACEITO" : "REJEITADO"
+                        });
+                        
+                        if (isEventInFilterRange) {
+                            console.log(`[ACEITO] Evento '${event.name}' está no período filtrado (início: ${eventStart.toLocaleDateString('pt-BR')})`);
                             includeEvent = true;
                         } else {
-                            console.log(`[REJEITADO] Evento '${event.name}' fora do período filtrado`);
+                            console.log(`[REJEITADO] Evento '${event.name}' fora do período filtrado (início: ${eventStart.toLocaleDateString('pt-BR')})`);
                             includeEvent = false;
                         }
                     } catch (dateError) {
@@ -5598,6 +5605,58 @@
         } catch (error) {
             console.error("Erro ao extrair data de fundação:", error);
             return "Erro na data";
+        }
+    }
+
+    // Função especializada para verificar e corrigir problemas com datas
+    function ensureValidDateFormat(dateStr) {
+        if (!dateStr) return null;
+        
+        try {
+            // Tentar criar um objeto Date diretamente
+            let dateObj = new Date(dateStr);
+            
+            // Verificar se é uma data válida
+            if (!isNaN(dateObj.getTime())) {
+                return dateObj;
+            }
+            
+            // Tentar formatos comuns
+            if (dateStr.includes('/')) {
+                // Formato MM/DD/YYYY ou DD/MM/YYYY
+                const parts = dateStr.split('/');
+                if (parts.length === 3) {
+                    // Assumir MM/DD/YYYY (formato comum nos EUA)
+                    dateObj = new Date(parts[2], parts[0]-1, parts[1]);
+                    
+                    // Se ainda for inválido, tentar DD/MM/YYYY (formato brasileiro)
+                    if (isNaN(dateObj.getTime())) {
+                        dateObj = new Date(parts[2], parts[1]-1, parts[0]);
+                    }
+                    
+                    if (!isNaN(dateObj.getTime())) {
+                        return dateObj;
+                    }
+                }
+            }
+            
+            // Tentar formato ISO sem hora
+            if (dateStr.includes('-') && dateStr.length === 10) {
+                // Formato YYYY-MM-DD
+                const parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    dateObj = new Date(parts[0], parts[1]-1, parts[2]);
+                    if (!isNaN(dateObj.getTime())) {
+                        return dateObj;
+                    }
+                }
+            }
+            
+            console.error("Nenhum formato de data conhecido funcionou para:", dateStr);
+            return null;
+        } catch (e) {
+            console.error("Erro ao processar data:", e);
+            return null;
         }
     }
 
