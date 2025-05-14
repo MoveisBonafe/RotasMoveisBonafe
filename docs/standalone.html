@@ -4311,6 +4311,16 @@
         console.log("DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso");
         console.log("Mostrando restrições de caminhões para rota com IDs:", pathIds);
         
+        // Verificar se a aba de restrições está ativa ou se devemos mostrar as restrições
+        const restrictionsTab = document.getElementById('bottom-restrictions-content');
+        // Se a aba de restrições não estiver ativa, não exibir as restrições
+        if (restrictionsTab && !restrictionsTab.classList.contains('active')) {
+            // Apenas armazenar os pathIds para uso posterior quando a aba for ativada
+            window.lastRestrictionPathIds = pathIds;
+            console.log("Aba de restrições não está ativa. Armazenando IDs para exibição posterior:", pathIds);
+            return;
+        }
+        
         // Adicionar timestamp ao log para debug
         console.log("Timestamp:", new Date().toISOString());
         
