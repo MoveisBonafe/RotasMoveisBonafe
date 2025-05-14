@@ -1665,6 +1665,9 @@
         // Carregar pontos de pedágio
         loadTollPoints();
         
+        // Carregar pontos de balança
+        loadWeighingStationPoints();
+        
         // Invocar a filtragem de eventos inicial para exibir eventos para a origem
         filterEventsByDate();
     }
@@ -1738,6 +1741,84 @@
             marker.setMap(null);
         });
         tollMarkers = [];
+    }
+    
+    // Função para carregar e exibir pontos de balança
+    function loadWeighingStationPoints() {
+        // Carregar o arquivo JSON
+        fetch('pontos_balanca.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar pontos de balança: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                weighingStationsData = data;
+                console.log(`Carregados ${weighingStationsData.length} pontos de balança`);
+                
+                // Limpar marcadores existentes
+                clearWeighingStationMarkers();
+                
+                // Adicionar marcadores para cada ponto de balança
+                weighingStationsData.forEach((station, index) => {
+                    addWeighingStationMarker(station);
+                });
+            })
+            .catch(error => {
+                console.error('Erro ao carregar ou processar pontos de balança:', error);
+                showNotification('Não foi possível carregar os pontos de balança: ' + error.message, 'warning');
+            });
+    }
+    
+    // Função para adicionar um marcador de balança no mapa
+    function addWeighingStationMarker(station) {
+        const marker = new google.maps.Marker({
+            position: { lat: station.latitude, lng: station.longitude },
+            map: showWeighingStations ? map : null,
+            title: station.name,
+            icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: '#28a745', // Verde para diferenciar dos pedágios
+                fillOpacity: 0.9,
+                strokeColor: '#000000',
+                strokeWeight: 2,
+                scale: 6
+            },
+            zIndex: 4
+        });
+        
+        // Adicionar info window ao clicar no marcador
+        marker.addListener('click', function() {
+            if (activeInfoWindow) {
+                activeInfoWindow.close();
+            }
+            
+            const infoWindow = new google.maps.InfoWindow({
+                content: `
+                    <div class="weighing-station-info">
+                        <h5>${station.name}</h5>
+                        <p>${station.address}</p>
+                        <p>Município: ${station.Município}</p>
+                        <p>Rodovia: ${station.Rodovia} - ${station.Denominação}</p>
+                    </div>
+                `
+            });
+            
+            infoWindow.open(map, marker);
+            activeInfoWindow = infoWindow;
+        });
+        
+        // Adicionar o marcador à lista global
+        weighingStationMarkers.push(marker);
+    }
+    
+    // Função para limpar todos os marcadores de balança
+    function clearWeighingStationMarkers() {
+        weighingStationMarkers.forEach(marker => {
+            marker.setMap(null);
+        });
+        weighingStationMarkers = [];
     }
     
     // Função centralizada para inicializar os campos de data
