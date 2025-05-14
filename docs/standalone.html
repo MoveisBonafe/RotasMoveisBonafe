@@ -558,8 +558,11 @@
         /* Estilo para lista de eventos */
         .events-list {
             margin-top: 15px;
-            max-height: 200px;
+            max-height: 300px; /* Aumentado para acomodar mais conteúdo */
             overflow-y: auto;
+            width: 100%; /* Garantir que ocupe toda a largura disponível */
+            height: auto; /* Permitir que a altura se ajuste ao conteúdo */
+            transition: all 0.3s ease; /* Transição suave ao expandir */
         }
         .event-item {
             padding: 8px;
@@ -1119,8 +1122,11 @@
             <!-- Conteúdo da aba Eventos -->
             <div class="bottom-tab-content" id="bottom-events-content">
                 <h5>Eventos nas cidades da rota:</h5>
-                <div class="events-list" id="events-list">
-                    <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
+                <!-- Container com altura ajustável -->
+                <div class="events-container" style="width: 100%; height: auto; min-height: 150px;">
+                    <div class="events-list" id="events-list">
+                        <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
+                    </div>
                 </div>
             </div>
             
