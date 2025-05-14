@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Otimizador de Rotas para logística e transporte, com suporte a cálculo de rotas entre múltiplos pontos, otimização de sequência, e visualização de eventos e restrições em cidades brasileiras." />
-    <meta name="keywords" content="otimizador de rotas, problema do caixeiro viajante, logística, transporte, planejamento de rotas, otimização de entregas, Brasil, Google Maps, pedágios, eventos em cidades" />
-    <meta name="author" content="Otimizador de Rotas" />
+    <meta name="description" content="Otimizador de Rotas Móveis Bonafé - Solução para logística e transporte, com suporte a cálculo de rotas entre múltiplos pontos, otimização de sequência, e visualização de eventos e restrições em cidades brasileiras." />
+    <meta name="keywords" content="Bonafé, otimizador de rotas, problema do caixeiro viajante, logística, transporte, planejamento de rotas, otimização de entregas, Brasil, Google Maps, pedágios, eventos em cidades" />
+    <meta name="author" content="Otimizador de Rotas Móveis Bonafé" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    <title>Otimizador de Rotas</title>
+    <title>Otimizador de Rotas Móveis Bonafé</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
@@ -74,10 +74,44 @@
         
         /* Melhorar layout da sidebar para GitHub Pages */
         .sidebar-header {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        
+        /* Estilização do título da aplicação */
+        .app-title {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: -0.5px;
+        }
+        
+        .app-title-text {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #0a58ca;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        
+        .app-title-highlight {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ff6b00;
+            animation: slideInRight 1s ease-in-out;
+            margin-top: -5px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
         
         .sidebar-content {
@@ -996,7 +1030,10 @@
             <!-- Sidebar para controles e informações -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h2 class="m-0">Otimizador de Rotas</h2>
+                <h2 class="m-0 app-title">
+                    <span class="app-title-text">Otimizador de Rotas</span>
+                    <span class="app-title-highlight">Móveis Bonafé</span>
+                </h2>
                 <button type="button" class="btn-close sidebar-close" aria-label="Close"></button>
             </div>
             <div class="sidebar-content">
