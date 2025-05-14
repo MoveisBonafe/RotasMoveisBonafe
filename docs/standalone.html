@@ -3022,7 +3022,8 @@
             // Atualizar dados dos eventos sem mudar de aba
             console.log("Atualizando dados de eventos em segundo plano sem mudar de aba");
             const routeIds = currentOptimizedPath;
-            showEventsForCitiesOnRoute(routeIds, startDateInput.value, endDateInput.value);
+            // Não usamos mais os valores de data como filtro
+            showEventsForCitiesOnRoute(routeIds);
             showTruckRestrictionsForCitiesOnRoute(routeIds, null);
         } else {
             // Fallback ao método antigo apenas se necessário
@@ -3960,7 +3961,7 @@
         
         // Se não houver eventos, mostrar mensagem
         if (eventsOnRoute.length === 0) {
-            eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado para o período e cidades selecionados.</p>';
+            eventsListContainer.innerHTML = '<p class="text-muted">Nenhum evento encontrado nas cidades do percurso.</p>';
             return;
         }
         
@@ -4758,8 +4759,8 @@
         // Mostrar eventos nas cidades da rota - pegando as datas do filtro
         const startDate = document.getElementById('start-date').value;
         const endDate = document.getElementById('end-date').value;
-        console.log("Chamando showEventsForCitiesOnRoute com datas:", startDate, endDate);
-        showEventsForCitiesOnRoute(tspResult.pathIds || tspResult.path, startDate, endDate);
+        console.log("Chamando showEventsForCitiesOnRoute (sem filtros de data)");
+        showEventsForCitiesOnRoute(tspResult.pathIds || tspResult.path);
             
         // Mostrar restrições para caminhões nas cidades da rota
         showTruckRestrictionsForCitiesOnRoute(tspResult.pathIds || tspResult.path, null); // null para mostrar todos os tipos
