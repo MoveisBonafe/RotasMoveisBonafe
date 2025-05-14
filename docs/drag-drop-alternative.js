@@ -201,7 +201,42 @@
         
         console.log('[DragDropAlt] Botão de otimizar encontrado, adicionando evento');
         
-        // Adicionar evento para capturar a ordem atual antes de otimizar
+        // Substituir o comportamento padrão do botão para mostrar a rota personalizada
+        const originalOnClick = botaoOtimizar.onclick;
+        botaoOtimizar.onclick = function(e) {
+            console.log('[DragDropAlt] Intercetando clique no botão de otimizar');
+            
+            // Salvar a ordem atual dos destinos
+            salvarOrdemAtual();
+            
+            // Chamar a função original se existir
+            if (typeof originalOnClick === 'function') {
+                originalOnClick.call(this, e);
+            }
+            
+            // Aguardar um momento para que as rotas alternativas sejam calculadas
+            setTimeout(function() {
+                console.log('[DragDropAlt] Calculando rota personalizada automaticamente');
+                calcularRotaPersonalizada();
+                
+                // Selecionar o card de rota personalizada automaticamente
+                setTimeout(function() {
+                    const rotaPersonalizadaCard = document.querySelector('.rota-personalizada-card');
+                    if (rotaPersonalizadaCard) {
+                        // Remover seleção de outros cards
+                        const cards = document.querySelectorAll('.route-option-card');
+                        cards.forEach(card => card.classList.remove('selected'));
+                        
+                        // Selecionar o card de rota personalizada
+                        rotaPersonalizadaCard.classList.add('selected');
+                    }
+                }, 200);
+            }, 500);
+            
+            return false; // Impedir comportamento padrão
+        };
+        
+        // Adicionar evento para capturar a ordem atual antes de otimizar (backup)
         botaoOtimizar.addEventListener('click', function() {
             console.log('[DragDropAlt] Botão de otimizar clicado, salvando ordem atual');
             salvarOrdemAtual();
@@ -216,6 +251,20 @@
                 
                 // Adicionar nossa rota personalizada
                 adicionarRotaPersonalizada();
+                
+                // Selecionar automaticamente a rota personalizada
+                setTimeout(function() {
+                    const rotaPersonalizadaCard = document.querySelector('.rota-personalizada-card');
+                    if (rotaPersonalizadaCard) {
+                        // Simular clique no card
+                        rotaPersonalizadaCard.click();
+                        
+                        // Ou aplicar a seleção manualmente
+                        const cards = document.querySelectorAll('.route-option-card');
+                        cards.forEach(card => card.classList.remove('selected'));
+                        rotaPersonalizadaCard.classList.add('selected');
+                    }
+                }, 200);
             };
             console.log('[DragDropAlt] Função renderAlternativeRoutes interceptada');
         } else {
@@ -247,6 +296,25 @@
                     if (container.querySelector('.route-option-card') && !rotaPersonalizadaAdicionada) {
                         console.log('[DragDropAlt] Rotas alternativas detectadas, adicionando rota personalizada');
                         adicionarRotaPersonalizada();
+                        
+                        // Selecionar automaticamente a rota personalizada após adicioná-la
+                        setTimeout(function() {
+                            const rotaPersonalizadaCard = document.querySelector('.rota-personalizada-card');
+                            if (rotaPersonalizadaCard) {
+                                // Simular clique no card
+                                rotaPersonalizadaCard.click();
+                                
+                                // Garantir que está selecionado visualmente
+                                const cards = document.querySelectorAll('.route-option-card');
+                                cards.forEach(card => card.classList.remove('selected'));
+                                rotaPersonalizadaCard.classList.add('selected');
+                                
+                                // Calcular a rota personalizada
+                                setTimeout(function() {
+                                    calcularRotaPersonalizada();
+                                }, 100);
+                            }
+                        }, 200);
                     }
                 }
             });
@@ -433,12 +501,117 @@
             window.directionsService = new google.maps.DirectionsService();
         }
         
+        // Encontrar o mapa diretamente na página primeiro
+        if (!window.map && window.google && window.google.maps) {
+            console.log('[DragDropAlt] Buscando o mapa existente na página');
+            
+            // Primeiro, tentar obter mapa por iframe
+            const mapIframe = document.querySelector('iframe[src*="google.com/maps"]');
+            if (mapIframe && mapIframe.contentWindow && mapIframe.contentWindow.google && 
+                mapIframe.contentWindow.google.maps && mapIframe.contentWindow.google.maps.Map) {
+                window.map = mapIframe.contentWindow.google.maps.Map;
+                console.log('[DragDropAlt] Mapa encontrado via iframe');
+            }
+            
+            // Se não encontrou, procurar no DOM global
+            if (!window.map) {
+                // Procurar por elementos com o estilo do Google Maps
+                const mapElements = document.querySelectorAll('.gm-style');
+                if (mapElements.length > 0) {
+                    // Tentar encontrar o elemento do mapa
+                    const mapContainer = mapElements[0].closest('[id$="map"], [id*="map"], [class*="map"]');
+                    
+                    if (mapContainer) {
+                        console.log('[DragDropAlt] Container de mapa encontrado:', mapContainer.id || mapContainer.className);
+                        
+                        // Procurar globalmente por variáveis que possam ter o mapa
+                        for (const key in window) {
+                            if (key.includes('map') || key === 'map') {
+                                try {
+                                    const obj = window[key];
+                                    if (obj && typeof obj === 'object' && obj.getCenter && typeof obj.getCenter === 'function') {
+                                        window.map = obj;
+                                        console.log('[DragDropAlt] Encontrado objeto de mapa:', key);
+                                        break;
+                                    }
+                                } catch (e) {
+                                    // Ignorar erros de acesso a propriedades
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Se ainda não encontrou o mapa, procurar por identificadores comuns
+            if (!window.map) {
+                const mapElement = document.getElementById('map') || 
+                                 document.querySelector('.map') || 
+                                 document.querySelector('[id$="map"]') ||
+                                 document.querySelector('[class$="map"]');
+                
+                if (mapElement) {
+                    console.log('[DragDropAlt] Elemento do mapa encontrado, mas sem instância. Tentando criar um novo mapa');
+                    try {
+                        // Tentar criar um novo mapa
+                        window.map = new google.maps.Map(mapElement, {
+                            center: { lat: -22.3731, lng: -48.3796 }, // Dois Córregos-SP
+                            zoom: 8
+                        });
+                    } catch (e) {
+                        console.error('[DragDropAlt] Erro ao criar mapa:', e);
+                    }
+                }
+            }
+        }
+        
+        // Vamos procurar por um mapa existente diretamente na estrutura do DOM
+        if (!window.map) {
+            console.log('[DragDropAlt] Verificando se existe um mapa diretamente no DOM');
+            try {
+                // O Google Maps costuma criar um elemento div.gm-style no corpo da página
+                // dentro dele está a instância do mapa
+                const mapDiv = document.querySelector('div.gm-style');
+                if (mapDiv) {
+                    // Tentar obter o ID da div que contém o mapa
+                    const parentMap = mapDiv.closest('div[id]');
+                    if (parentMap && parentMap.id) {
+                        console.log('[DragDropAlt] Possível elemento de mapa encontrado com ID:', parentMap.id);
+                        
+                        // Tentar obter mapa da versão GitHub (referências globais geralmente presentes)
+                        if (typeof map !== 'undefined') {
+                            window.map = map;
+                            console.log('[DragDropAlt] Mapa global encontrado');
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error('[DragDropAlt] Erro ao procurar mapa no DOM:', e);
+            }
+        }
+        
+        console.log('[DragDropAlt] Status do mapa:', !!window.map);
+        
+        // Criar o renderer depois de ter encontrado o mapa
         if (!window.directionsRenderer && window.google && window.google.maps && window.google.maps.DirectionsRenderer) {
-            console.log('[DragDropAlt] Criando uma nova instância de DirectionsRenderer');
-            window.directionsRenderer = new google.maps.DirectionsRenderer({
-                map: window.map,
-                suppressMarkers: false
-            });
+            try {
+                console.log('[DragDropAlt] Criando uma nova instância de DirectionsRenderer');
+                // Se não temos mapa, criar sem o mapa e configurar depois
+                if (!window.map) {
+                    window.directionsRenderer = new google.maps.DirectionsRenderer({
+                        suppressMarkers: false
+                    });
+                    console.log('[DragDropAlt] DirectionsRenderer criado sem mapa');
+                } else {
+                    window.directionsRenderer = new google.maps.DirectionsRenderer({
+                        map: window.map,
+                        suppressMarkers: false
+                    });
+                    console.log('[DragDropAlt] DirectionsRenderer criado com mapa');
+                }
+            } catch (e) {
+                console.error('[DragDropAlt] Erro ao criar DirectionsRenderer:', e);
+            }
         }
         
         // Verificar se temos as APIs e os dados necessários
@@ -584,17 +757,128 @@
         }
         
         // Adicionar destinos na ordem salva
-        for (const destino of destinos) {
-            const loc = window.locations.find(l => !l.isOrigin && String(l.id) === String(destino.id));
-            if (loc) {
-                waypoints.push(loc);
+        // Se não temos destinos salvos, tentar extrair do DOM
+        if (destinos.length === 0) {
+            console.log('[DragDropAlt] Nenhum destino salvo, tentando extrair do DOM');
+            
+            // Encontrar todos os elementos de destino
+            const destinosElements = document.querySelectorAll('.destino-draggable, .location-item, li:not(.origin-point)');
+            
+            destinosElements.forEach((item, index) => {
+                let id = item.getAttribute('data-id') || `item-${index}`;
+                let nome = '';
+                
+                // Extrair nome
+                const nomeElement = item.querySelector('.location-name');
+                if (nomeElement) {
+                    nome = nomeElement.textContent.trim();
+                } else {
+                    nome = item.textContent.trim();
+                }
+                
+                // Adicionar ao array de destinos
+                destinos.push({
+                    id: id,
+                    nome: nome,
+                    elemento: item
+                });
+            });
+            
+            console.log('[DragDropAlt] Destinos extraídos do DOM:', destinos.length);
+        }
+        
+        // Se temos coordenadas nos locations, usar elas
+        if (window.locations && Array.isArray(window.locations)) {
+            for (const destino of destinos) {
+                // Procurar location pelo id ou pelo nome
+                let loc = window.locations.find(l => !l.isOrigin && String(l.id) === String(destino.id));
+                
+                // Se não encontrou pelo ID, tentar pelo nome
+                if (!loc) {
+                    loc = window.locations.find(l => !l.isOrigin && l.name && destino.nome && 
+                         l.name.toLowerCase().includes(destino.nome.toLowerCase()));
+                }
+                
+                if (loc) {
+                    waypoints.push(loc);
+                } else {
+                    console.log('[DragDropAlt] Não foi possível encontrar localização para destino:', destino.nome);
+                }
+            }
+        } else {
+            console.log('[DragDropAlt] Sem locations disponíveis, usando outra abordagem');
+            
+            // Se não temos coordenadas, vamos usar a versão mais básica que funciona
+            // Verificar se o Google Maps está disponível
+            if (window.google && window.google.maps) {
+                console.log('[DragDropAlt] Tentando obter coordenadas da API do Google Maps');
+                
+                // Criar geocoder se não existir
+                if (!window.geocoder && window.google.maps.Geocoder) {
+                    window.geocoder = new google.maps.Geocoder();
+                }
+                
+                // Usar variáveis globais de coordenadas, se disponíveis
+                if (window.markers && Array.isArray(window.markers)) {
+                    console.log('[DragDropAlt] Usando markers existentes para obter coordenadas');
+                    
+                    // Adicionar destinos da ordem dos IDs salvos
+                    for (const destino of destinos) {
+                        // Tentar encontrar o marker por atributos de dados
+                        let marker = window.markers.find(m => m.id && String(m.id) === String(destino.id));
+                        
+                        // Se não encontrou, tentar pelo título
+                        if (!marker && destino.nome) {
+                            marker = window.markers.find(m => m.title && 
+                                m.title.toLowerCase().includes(destino.nome.toLowerCase()));
+                        }
+                        
+                        if (marker && marker.position) {
+                            waypoints.push({
+                                id: destino.id,
+                                name: destino.nome,
+                                lat: marker.position.lat(),
+                                lng: marker.position.lng(),
+                                isOrigin: false
+                            });
+                        }
+                    }
+                } else {
+                    console.log('[DragDropAlt] Sem markers disponíveis');
+                }
             }
         }
         
+        // Verificar se temos destinos suficientes
         if (waypoints.length < 2) {
-            console.error('[DragDropAlt] Não há destinos suficientes');
-            alert('É necessário pelo menos um destino além da origem para calcular a rota.');
-            return;
+            console.error('[DragDropAlt] Não há destinos suficientes para calcular a rota');
+            
+            // Tente extrair coordenadas diretamente dos elementos DOM
+            const destinosElements = document.querySelectorAll('.destino-draggable, .location-item, li:not(.origin-point)');
+            let extraiuCoordenadasDOM = false;
+            
+            destinosElements.forEach((item) => {
+                // Verificar se tem coordenadas diretamente nos atributos
+                const lat = parseFloat(item.getAttribute('data-lat') || '0');
+                const lng = parseFloat(item.getAttribute('data-lng') || '0');
+                
+                if (lat && lng) {
+                    waypoints.push({
+                        id: item.getAttribute('data-id') || Math.random().toString(36).substring(7),
+                        name: item.textContent.trim(),
+                        lat: lat,
+                        lng: lng,
+                        isOrigin: false
+                    });
+                    extraiuCoordenadasDOM = true;
+                }
+            });
+            
+            if (!extraiuCoordenadasDOM || waypoints.length < 2) {
+                console.log('[DragDropAlt] Não foi possível extrair coordenadas suficientes');
+                alert('É necessário pelo menos um destino além da origem para calcular a rota.\nAdicione mais destinos e tente novamente.');
+                return;
+            }
         }
         
         // Exibir spinner de carregamento se existir
