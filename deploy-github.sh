@@ -26,6 +26,8 @@ cp ../docs/geocode-fix.js ./js/
 cp ../docs/remove-duplicates.js ./js/remove-duplicates.js
 cp ../docs/solucao-universal.js ./js/solucao-universal.js
 cp ../docs/correcao-relatorio.js ./js/correcao-relatorio.js
+cp ../docs/monitor-tipo-rota.js ./js/monitor-tipo-rota.js
+cp ../docs/corrigir-sequencia.js ./js/corrigir-sequencia.js
 
 # Copiar index.html otimizado
 cp ../docs/index.html ./
