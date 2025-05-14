@@ -34,30 +34,93 @@
     // Adicionar estilos
     adicionarEstilos();
     
-    // Encontrar o botão de otimizar rota
-    const botaoOtimizar = document.querySelector('#optimize-route, button.btn-warning');
-    if (!botaoOtimizar) {
-      console.log('[AlwaysReorder] Botão otimizar não encontrado, tentando novamente depois...');
+    // Verificar se o botão já existe para não duplicar
+    if (document.querySelector('#botao-calcular-rota, button:contains("Calcular Rota Personalizada")')) {
+      console.log('[AlwaysReorder] Botão já existe, pulando criação');
+      
+      // Mesmo com botão existente, ativar a reordenação
+      ativarReordenacao();
       return;
     }
     
-    // Criar botão de calcular rota
-    botaoCalcular = document.createElement('button');
-    botaoCalcular.id = 'botao-calcular-rota';
-    botaoCalcular.className = 'btn btn-warning btn-block';
-    botaoCalcular.style.backgroundColor = '#ffc107';
-    botaoCalcular.style.color = '#000';
-    botaoCalcular.style.fontWeight = 'bold';
-    botaoCalcular.style.width = '100%';
-    botaoCalcular.style.marginTop = '10px';
-    botaoCalcular.style.marginBottom = '10px';
-    botaoCalcular.textContent = 'Calcular Rota Personalizada';
-    botaoCalcular.addEventListener('click', calcularRotaPersonalizada);
+    // Tentar criar o botão depois do botão de otimizar
+    const botaoOtimizar = document.querySelector('#optimize-route, button.btn-warning, button:contains("Otimizar")');
     
-    // Adicionar após o botão original
-    botaoOtimizar.parentNode.insertBefore(botaoCalcular, botaoOtimizar.nextSibling);
-    
-    console.log('[AlwaysReorder] Botão adicionado');
+    if (botaoOtimizar) {
+      console.log('[AlwaysReorder] Botão otimizar encontrado, criando botão de rota personalizada');
+      
+      // Criar botão de calcular rota
+      botaoCalcular = document.createElement('button');
+      botaoCalcular.id = 'botao-calcular-rota';
+      botaoCalcular.className = 'btn btn-warning btn-block';
+      botaoCalcular.style.backgroundColor = '#ffc107';
+      botaoCalcular.style.color = '#000';
+      botaoCalcular.style.fontWeight = 'bold';
+      botaoCalcular.style.width = '100%';
+      botaoCalcular.style.marginTop = '10px';
+      botaoCalcular.style.marginBottom = '10px';
+      botaoCalcular.textContent = 'Calcular Rota Personalizada';
+      botaoCalcular.addEventListener('click', calcularRotaPersonalizada);
+      
+      // Adicionar após o botão original
+      botaoOtimizar.parentNode.insertBefore(botaoCalcular, botaoOtimizar.nextSibling);
+      
+      console.log('[AlwaysReorder] Botão adicionado após botão Otimizar');
+    } else {
+      // Tentar encontrar um container para o botão
+      console.log('[AlwaysReorder] Botão otimizar não encontrado, procurando container para o botão...');
+      
+      // Tentar encontrar o container dos locais adicionados
+      const locaisContainer = document.querySelector('#locais-adicionados-container, #locations-container');
+      if (locaisContainer) {
+        // Criar botão de calcular rota
+        botaoCalcular = document.createElement('button');
+        botaoCalcular.id = 'botao-calcular-rota';
+        botaoCalcular.className = 'btn btn-warning btn-block';
+        botaoCalcular.style.backgroundColor = '#ffc107';
+        botaoCalcular.style.color = '#000';
+        botaoCalcular.style.fontWeight = 'bold';
+        botaoCalcular.style.width = '100%';
+        botaoCalcular.style.marginTop = '10px';
+        botaoCalcular.style.marginBottom = '10px';
+        botaoCalcular.textContent = 'Calcular Rota Personalizada';
+        botaoCalcular.addEventListener('click', calcularRotaPersonalizada);
+        
+        // Adicionar no final do container
+        locaisContainer.appendChild(botaoCalcular);
+        
+        console.log('[AlwaysReorder] Botão adicionado ao container de locais');
+      } else {
+        // Último recurso: encontrar todos os botões e adicionar após o último
+        console.log('[AlwaysReorder] Procurando qualquer botão para inserir após ele...');
+        const todosOsBotoes = document.querySelectorAll('button');
+        if (todosOsBotoes.length > 0) {
+          const ultimoBotao = todosOsBotoes[todosOsBotoes.length - 1];
+          
+          // Criar botão de calcular rota
+          botaoCalcular = document.createElement('button');
+          botaoCalcular.id = 'botao-calcular-rota';
+          botaoCalcular.className = 'btn btn-warning btn-block';
+          botaoCalcular.style.backgroundColor = '#ffc107';
+          botaoCalcular.style.color = '#000';
+          botaoCalcular.style.fontWeight = 'bold';
+          botaoCalcular.style.width = '100%';
+          botaoCalcular.style.marginTop = '10px';
+          botaoCalcular.style.marginBottom = '10px';
+          botaoCalcular.textContent = 'Calcular Rota Personalizada';
+          botaoCalcular.addEventListener('click', calcularRotaPersonalizada);
+          
+          // Adicionar após o último botão
+          ultimoBotao.parentNode.insertBefore(botaoCalcular, ultimoBotao.nextSibling);
+          
+          console.log('[AlwaysReorder] Botão adicionado após o último botão encontrado');
+        } else {
+          console.log('[AlwaysReorder] Nenhum botão encontrado, tentando novamente depois...');
+          setTimeout(inicializar, 2000); // tentar novamente mais tarde
+          return;
+        }
+      }
+    }
     
     // Ativar a reordenação automaticamente
     ativarReordenacao();
@@ -150,6 +213,41 @@
   
   // Função para encontrar o container de destinos
   function encontrarContainerDestinos() {
+    console.log('[AlwaysReorder] Tentando encontrar container de destinos...');
+    
+    // Se não encontrarmos o container, vamos esperar até ele ser criado
+    if (!document.querySelector('.locations-list') && 
+        !document.querySelector('#locais-adicionados-container')) {
+      
+      // Vamos criar o container nós mesmos se ele não existir
+      console.log('[AlwaysReorder] Container não encontrado, tentando encontrar seu local para criá-lo');
+      
+      // Tentar encontrar o título "Locais adicionados:"
+      const titulosLocais = Array.from(document.querySelectorAll('h3, h4, h5, div, p, label, span'));
+      const tituloLocais = titulosLocais.find(el => 
+        el.textContent && el.textContent.trim().toLowerCase().includes('locais adicionados'));
+      
+      if (tituloLocais) {
+        console.log('[AlwaysReorder] Encontrei o título "Locais adicionados":', tituloLocais);
+        
+        // Verificar se já existe um container depois dele
+        if (tituloLocais.nextElementSibling && 
+            tituloLocais.nextElementSibling.querySelector('.location-item')) {
+          return tituloLocais.nextElementSibling;
+        }
+        
+        // Se não existe, vamos tentar encontrar o pai comum
+        let parent = tituloLocais.parentElement;
+        for (let i = 0; i < 3 && parent; i++) { // subir até 3 níveis
+          const potencialContainer = parent.querySelector('[class*="location"]');
+          if (potencialContainer) {
+            return potencialContainer;
+          }
+          parent = parent.parentElement;
+        }
+      }
+    }
+    
     // Tentar vários seletores para encontrar o container
     const seletores = [
       '.locations-list', 
@@ -157,19 +255,39 @@
       '#locations-list',
       '.destinations-list',
       '#destinations-list',
-      '[class*="location"]'
+      '[class*="location"]',
+      '#locais-adicionados-container',
+      // Seletores muito genéricos para último caso
+      '.row div:has(.badge)',
+      'div:has([data-id])'
     ];
     
     for (const seletor of seletores) {
-      const elementos = document.querySelectorAll(seletor);
-      
-      for (const el of elementos) {
-        // Verificar se parece ser o container certo
-        if (el.innerHTML.includes('data-id') || 
-            el.innerHTML.includes('badge') ||
-            el.innerHTML.toLowerCase().includes('location-item')) {
-          return el;
+      try {
+        const elementos = document.querySelectorAll(seletor);
+        
+        for (const el of elementos) {
+          // Verificar se parece ser o container certo
+          if (el.innerHTML.includes('data-id') || 
+              el.innerHTML.includes('badge') ||
+              el.innerHTML.toLowerCase().includes('location-item')) {
+            console.log('[AlwaysReorder] Container encontrado com seletor:', seletor);
+            return el;
+          }
         }
+      } catch (error) {
+        console.log('[AlwaysReorder] Erro ao tentar seletor:', seletor, error);
+      }
+    }
+    
+    // Tentar uma abordagem diferente: encontrar os elementos por conteúdo
+    console.log('[AlwaysReorder] Tentando encontrar por conteúdo...');
+    const todosElementos = document.querySelectorAll('div, ul, ol, section');
+    for (const el of todosElementos) {
+      if (el.innerHTML.includes('data-id') && 
+          (el.innerHTML.includes('badge') || el.innerHTML.includes('location-item'))) {
+        console.log('[AlwaysReorder] Container encontrado por conteúdo');
+        return el;
       }
     }
     
