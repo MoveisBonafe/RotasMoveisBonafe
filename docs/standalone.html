@@ -1496,6 +1496,20 @@
         return date.toISOString().split('T')[0];
     }
     
+    // Função para formatar data no formato brasileiro (DD/MM/YYYY)
+    function formatDateBR(dateStr) {
+        if (!dateStr) return '';
+        
+        // Verificar se já está no formato brasileiro
+        if (dateStr.includes('/')) return dateStr;
+        
+        const dateParts = dateStr.split('-');
+        if (dateParts.length !== 3) return dateStr;
+        
+        // Retornar no formato DD/MM/YYYY
+        return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+    }
+    
     // Função para inicializar os botões de data na sidebar
     function initDatePickers() {
         try {
@@ -3914,28 +3928,134 @@
     // Mostrar eventos para as cidades na rota
     // Função completamente reescrita para remover TODAS as informações de eventos
     function showEventsForCitiesOnRoute(pathIds, startDateStr, endDateStr) {
-        console.log("=================== ABA DE EVENTOS COMPLETAMENTE DESATIVADA ===================");
-        console.log("Todas as informações de eventos foram removidas conforme solicitado");
+        console.log("Exibindo eventos filtrados por data");
         
-        // Limpar a lista de eventos e mostrar mensagem que a aba foi desativada
-        const eventsListContainer = document.getElementById('events-list');
-        if (eventsListContainer) {
-            eventsListContainer.innerHTML = `
-                <div class="alert alert-info text-center mt-4 mb-4">
-                    <h3>Aba de eventos desativada</h3>
-                    <p>Conforme solicitado, todas as informações de eventos foram removidas desta aba.</p>
-                </div>`;
+        // Verificar se foram passados filtros de data
+        if (startDateStr && endDateStr) {
+            console.log(`Filtro de data ativo: ${startDateStr} até ${endDateStr}`);
+        } else {
+            console.log("Sem filtro de data, exibindo todos os eventos");
         }
+        
+        // Limpar a lista de eventos
+        const eventsListContainer = document.getElementById('events-list');
+        if (!eventsListContainer) {
+            console.error("Container de eventos não encontrado");
+            return;
+        }
+        
+        // Limpar conteúdo atual
+        eventsListContainer.innerHTML = '';
+        
+        // Criar cabeçalho com informações de filtro
+        let headerInfo = "";
+        if (startDateStr && endDateStr) {
+            if (startDateStr === endDateStr) {
+                // Exibindo eventos de hoje apenas
+                headerInfo = `<div class="alert alert-info">
+                    <i class="bi bi-calendar-day"></i> Exibindo eventos para ${formatDateBR(startDateStr)}
+                </div>`;
+            } else {
+                // Exibindo eventos de um período
+                headerInfo = `<div class="alert alert-info">
+                    <i class="bi bi-calendar-week"></i> Exibindo eventos de ${formatDateBR(startDateStr)} até ${formatDateBR(endDateStr)}
+                </div>`;
+            }
+        }
+        
+        // Adicionar o cabeçalho
+        eventsListContainer.innerHTML = headerInfo;
         
         // Limpar marcadores de eventos do mapa
         clearEventMarkers();
         
-        // Encerrar a função aqui - nenhum evento será exibido
-        return;
+        // Verificar se temos eventos para exibir
+        if (!mockData || !mockData.cityEvents || mockData.cityEvents.length === 0) {
+            eventsListContainer.innerHTML += `
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i> Nenhum evento disponível.
+                </div>`;
+            return;
+        }
         
-        // CORREÇÃO: Converter IDs para objetos de localização de forma mais robusta
+        // Verificar cidades no caminho
         const pathLocations = [];
         for (const id of pathIds) {
+            const idStr = String(id);
+            const location = locations.find(loc => String(loc.id) === idStr);
+            if (location) {
+                pathLocations.push(location);
+            }
+        }
+        
+        // Extrair nomes das cidades da rota
+        const citiesOnRoute = pathLocations
+            .map(loc => extractCityName(loc.address || loc.name))
+            .filter(city => city); // Remover valores vazios
+        
+        console.log("Cidades na rota para filtragem de eventos:", citiesOnRoute);
+        
+        // Filtrar eventos por cidade e data
+        let filteredEvents = mockData.cityEvents.filter(event => {
+            // Verificar se o evento está em uma das cidades da rota
+            const eventInRoute = citiesOnRoute.some(city => 
+                event.city && event.city.toLowerCase().includes(city.toLowerCase())
+            );
+            
+            // Se não estiver na rota, não mostrar
+            if (!eventInRoute) return false;
+            
+            // Se não tiver filtro de data, mostrar todos
+            if (!startDateStr || !endDateStr) return true;
+            
+            // Verificar se a data do evento está dentro do período filtrado
+            const eventDate = new Date(event.date);
+            const startDate = new Date(startDateStr);
+            const endDate = new Date(endDateStr);
+            
+            // Ajustar para fim do dia para comparações inclusivas
+            endDate.setHours(23, 59, 59, 999);
+            
+            return eventDate >= startDate && eventDate <= endDate;
+        });
+        
+        // Ordenar eventos por data
+        filteredEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+        // Criar a lista de eventos
+        if (filteredEvents.length === 0) {
+            eventsListContainer.innerHTML += `
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i> Nenhum evento encontrado para o período selecionado.
+                </div>`;
+            return;
+        }
+        
+        // Criar elementos para os eventos
+        const eventsList = document.createElement('div');
+        eventsList.className = 'events-list mt-3';
+        
+        filteredEvents.forEach(event => {
+            const eventDate = new Date(event.date);
+            const formattedDate = eventDate.toLocaleDateString('pt-BR');
+            
+            const eventItem = document.createElement('div');
+            eventItem.className = 'event-item card mb-2';
+            eventItem.innerHTML = `
+                <div class="card-body">
+                    <h5 class="card-title">${event.name}</h5>
+                    <p class="card-text">
+                        <i class="bi bi-geo-alt"></i> ${event.city}<br>
+                        <i class="bi bi-calendar"></i> ${formattedDate}
+                    </p>
+                    ${event.description ? `<p class="card-text small">${event.description}</p>` : ''}
+                </div>
+            `;
+            
+            eventsList.appendChild(eventItem);
+        });
+        
+        eventsListContainer.appendChild(eventsList);
             const idStr = String(id);
             const location = locations.find(loc => String(loc.id) === idStr);
             if (location) {
