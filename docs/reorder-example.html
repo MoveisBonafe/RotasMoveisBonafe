@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplo de Reordenação - Otimizador de Rotas Bonafé</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 350px;
+            padding: 20px;
+            background-color: white;
+            border-right: 1px solid #eee;
+        }
+        
+        .map-container {
+            flex: 1;
+            min-height: 600px;
+            background-color: #eee;
+            position: relative;
+        }
+        
+        .title {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .title-main {
+            color: #000;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .title-sub {
+            color: #ffc107;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .locations-list {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        
+        .location-item {
+            padding: 12px 15px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #6c757d;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .origin-item {
+            border-left-color: #28a745;
+            background-color: #f7fcf8;
+        }
+        
+        .btn-reorder {
+            width: 100%;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-reorder.active {
+            background-color: #ffc107;
+            border-color: #ffab00;
+        }
+        
+        .btn-optimize {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background-color: #ffc107;
+            border: 1px solid #ffab00;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-optimize:hover {
+            background-color: #ffab00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255,171,0,0.3);
+        }
+        
+        .btn-arrow {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 26px;
+            height: 26px;
+            background: transparent;
+            border: 1px solid #ffc107;
+            border-radius: 4px;
+            color: #ffc107;
+            margin-right: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .btn-arrow:hover {
+            background-color: #fff8e1;
+        }
+        
+        .controls-container {
+            display: inline-flex;
+            margin-right: 10px;
+        }
+        
+        .route-info {
+            background-color: #fff8e1;
+            border: 1px solid #ffe082;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .route-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #000;
+            font-size: 16px;
+        }
+        
+        .sequence-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .sequence-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            background-color: white;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .sequence-number {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 24px;
+            height: 24px;
+            background-color: #ffc107;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 6px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .notification.error {
+            background-color: #f44336;
+        }
+        
+        .notification.info {
+            background-color: #2196f3;
+        }
+        
+        .notification.warning {
+            background-color: #ff9800;
+        }
+        
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="title">
+                <div class="title-main">Otimizador de Rotas</div>
+                <div class="title-sub">Móveis Bonafé</div>
+            </div>
+            
+            <h6>Origem</h6>
+            <ul class="locations-list">
+                <li class="location-item origin-item" data-id="origin">
+                    <i class="bi bi-geo-alt-fill me-2"></i>
+                    <span>Dois Córregos, SP</span>
+                </li>
+            </ul>
+            
+            <h6>Destinos</h6>
+            <ul id="destinations-list" class="locations-list">
+                <li class="location-item" data-id="loc1">
+                    <span>Jaú, SP</span>
+                </li>
+                <li class="location-item" data-id="loc2">
+                    <span>Bauru, SP</span>
+                </li>
+                <li class="location-item" data-id="loc3">
+                    <span>Brotas, SP</span>
+                </li>
+                <li class="location-item" data-id="loc4">
+                    <span>São Carlos, SP</span>
+                </li>
+            </ul>
+            
+            <button id="btn-optimize" class="btn-optimize">Otimizar Rota</button>
+            <button id="btn-reorder" class="btn-reorder">Reordenar Destinos</button>
+            
+            <div id="route-info" class="route-info" style="display: none;">
+                <div class="route-title">Resumo da Rota</div>
+                <div id="route-details">
+                    <p><strong>Distância Total:</strong> <span id="total-distance">0</span> km</p>
+                    <p><strong>Tempo Estimado:</strong> <span id="total-time">0</span> min</p>
+                </div>
+                <div class="mt-3">
+                    <strong>Sequência de Visitas:</strong>
+                    <ul id="sequence-list" class="sequence-list mt-2">
+                        <!-- Sequência de visitas será inserida aqui -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+    </div>
+    
+    <div id="notification" class="notification"></div>
+    
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places&callback=initMap" async defer></script>
+    
+    <script>
+        // Dados dos locais
+        const locations = [
+            { id: 'origin', name: 'Dois Córregos', lat: -22.3642, lng: -48.3804, isOrigin: true },
+            { id: 'loc1', name: 'Jaú', lat: -22.2936, lng: -48.5592, isOrigin: false },
+            { id: 'loc2', name: 'Bauru', lat: -22.3146, lng: -49.0609, isOrigin: false },
+            { id: 'loc3', name: 'Brotas', lat: -22.2795, lng: -48.1250, isOrigin: false },
+            { id: 'loc4', name: 'São Carlos', lat: -22.0087, lng: -47.8909, isOrigin: false }
+        ];
+        
+        // Variáveis globais
+        let map;
+        let directionsService;
+        let directionsRenderer;
+        let markers = [];
+        let reorderMode = false;
+        
+        // Inicializar o mapa
+        function initMap() {
+            // Coordenadas iniciais (Dois Córregos)
+            const center = { lat: -22.3642, lng: -48.3804 };
+            
+            // Criar o mapa
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 9,
+                center: center,
+                mapTypeControl: true,
+                streetViewControl: true,
+                fullscreenControl: true,
+                gestureHandling: 'greedy' // Permitir zoom sem Ctrl
+            });
+            
+            // Inicializar serviços do Google Maps
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                map: map,
+                suppressMarkers: true, // Vamos usar nossos próprios marcadores
+                polylineOptions: {
+                    strokeColor: '#0066cc',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 5
+                }
+            });
+            
+            // Adicionar marcadores para todos os locais
+            locations.forEach(addMarker);
+            
+            // Configurar botões
+            document.getElementById('btn-optimize').addEventListener('click', optimizeRoute);
+            document.getElementById('btn-reorder').addEventListener('click', toggleReorderMode);
+        }
+        
+        // Adicionar um marcador no mapa
+        function addMarker(location) {
+            const marker = new google.maps.Marker({
+                position: { lat: location.lat, lng: location.lng },
+                map: map,
+                title: location.name,
+                icon: location.isOrigin ? 
+                    { url: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png' } : 
+                    { url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' }
+            });
+            
+            // Adicionar info window
+            const infoWindow = new google.maps.InfoWindow({
+                content: `<div><strong>${location.name}</strong></div>`
+            });
+            
+            marker.addListener('click', () => {
+                infoWindow.open(map, marker);
+            });
+            
+            // Armazenar o marcador
+            markers.push({ marker, infoWindow, location });
+        }
+        
+        // Otimizar a rota (implementação simplificada)
+        function optimizeRoute() {
+            showNotification('Calculando melhor rota...', 'info');
+            
+            // Ordenar os locais (simulação de otimização)
+            const sortedLocations = [...locations].sort((a, b) => {
+                if (a.isOrigin) return -1;
+                if (b.isOrigin) return 1;
+                return 0;
+            });
+            
+            // Atualizar o mapa e as informações
+            calculateAndDisplayRoute(sortedLocations);
+        }
+        
+        // Alternar modo de reordenação
+        function toggleReorderMode() {
+            reorderMode = !reorderMode;
+            const reorderButton = document.getElementById('btn-reorder');
+            const destinationsList = document.getElementById('destinations-list');
+            
+            if (reorderMode) {
+                // Ativar modo de reordenação
+                reorderButton.textContent = 'Concluir Reordenação';
+                reorderButton.classList.add('active');
+                
+                // Adicionar controles de reordenação
+                const items = destinationsList.querySelectorAll('li');
+                
+                items.forEach(item => {
+                    // Verificar se já tem controles
+                    if (item.querySelector('.controls-container')) {
+                        return;
+                    }
+                    
+                    // Criar controles
+                    const controls = document.createElement('div');
+                    controls.className = 'controls-container';
+                    
+                    // Botão para cima
+                    const upButton = document.createElement('button');
+                    upButton.className = 'btn-arrow';
+                    upButton.innerHTML = '&uarr;';
+                    upButton.title = 'Mover para cima';
+                    
+                    // Botão para baixo
+                    const downButton = document.createElement('button');
+                    downButton.className = 'btn-arrow';
+                    downButton.innerHTML = '&darr;';
+                    downButton.title = 'Mover para baixo';
+                    
+                    // Adicionar eventos
+                    upButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const li = this.closest('li');
+                        const prev = li.previousElementSibling;
+                        
+                        if (prev) {
+                            destinationsList.insertBefore(li, prev);
+                            updateCustomRoute();
+                        }
+                    });
+                    
+                    downButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const li = this.closest('li');
+                        const next = li.nextElementSibling;
+                        
+                        if (next) {
+                            destinationsList.insertBefore(next, li);
+                            updateCustomRoute();
+                        }
+                    });
+                    
+                    // Adicionar botões ao controle
+                    controls.appendChild(upButton);
+                    controls.appendChild(downButton);
+                    
+                    // Adicionar ao item
+                    item.insertBefore(controls, item.firstChild);
+                });
+                
+                showNotification('Modo de reordenação ativado. Use as setas para reordenar os destinos.');
+            } else {
+                // Desativar modo de reordenação
+                reorderButton.textContent = 'Reordenar Destinos';
+                reorderButton.classList.remove('active');
+                
+                // Remover controles
+                const controls = document.querySelectorAll('.controls-container');
+                controls.forEach(control => control.remove());
+                
+                // Atualizar rota
+                updateCustomRoute();
+            }
+        }
+        
+        // Atualizar a rota com a ordem personalizada
+        function updateCustomRoute() {
+            // Coletar IDs na nova ordem
+            const destinationsList = document.getElementById('destinations-list');
+            const items = destinationsList.querySelectorAll('li');
+            const locationIds = [];
+            
+            items.forEach(item => {
+                const id = item.getAttribute('data-id');
+                if (id) {
+                    locationIds.push(id);
+                }
+            });
+            
+            // Obter origem
+            const origin = locations.find(loc => loc.isOrigin);
+            
+            // Criar array de locais na ordem personalizada
+            const customLocations = [origin];
+            
+            locationIds.forEach(id => {
+                const location = locations.find(loc => loc.id === id);
+                if (location) {
+                    customLocations.push(location);
+                }
+            });
+            
+            // Calcular e exibir a rota
+            calculateAndDisplayRoute(customLocations);
+        }
+        
+        // Calcular e exibir a rota
+        function calculateAndDisplayRoute(routeLocations) {
+            if (routeLocations.length < 2) {
+                showNotification('São necessários pelo menos 2 locais para calcular uma rota', 'warning');
+                return;
+            }
+            
+            // Limpar rotas anteriores
+            directionsRenderer.setDirections({routes: []});
+            
+            // Criar origem e destino
+            const origin = routeLocations[0];
+            const destination = routeLocations[routeLocations.length - 1];
+            
+            // Criar waypoints para pontos intermediários
+            const waypoints = routeLocations.slice(1, routeLocations.length - 1).map(location => ({
+                location: new google.maps.LatLng(location.lat, location.lng),
+                stopover: true
+            }));
+            
+            // Configurar requisição
+            const request = {
+                origin: new google.maps.LatLng(origin.lat, origin.lng),
+                destination: new google.maps.LatLng(destination.lat, destination.lng),
+                waypoints: waypoints,
+                optimizeWaypoints: false,
+                travelMode: google.maps.TravelMode.DRIVING
+            };
+            
+            // Calcular a rota
+            directionsService.route(request, function(result, status) {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    directionsRenderer.setDirections(result);
+                    
+                    // Calcular distância total
+                    let totalDistance = 0;
+                    const legs = result.routes[0].legs;
+                    
+                    legs.forEach(leg => {
+                        totalDistance += leg.distance.value;
+                    });
+                    
+                    // Converter para km
+                    const distanceKm = (totalDistance / 1000).toFixed(1);
+                    
+                    // Calcular tempo (considerando 80km/h)
+                    const durationMin = Math.ceil(totalDistance / 1000 / 80 * 60);
+                    
+                    // Atualizar informações da rota
+                    document.getElementById('total-distance').textContent = distanceKm;
+                    document.getElementById('total-time').textContent = durationMin;
+                    
+                    // Atualizar sequência
+                    updateSequence(routeLocations);
+                    
+                    // Mostrar painel de informações
+                    document.getElementById('route-info').style.display = 'block';
+                    
+                    showNotification('Rota calculada com sucesso', 'success');
+                } else {
+                    showNotification('Erro ao calcular rota: ' + status, 'error');
+                }
+            });
+        }
+        
+        // Atualizar a sequência de visitas
+        function updateSequence(routeLocations) {
+            const sequenceList = document.getElementById('sequence-list');
+            sequenceList.innerHTML = '';
+            
+            routeLocations.forEach((location, index) => {
+                const item = document.createElement('li');
+                item.className = 'sequence-item';
+                
+                item.innerHTML = `
+                    <span class="sequence-number">${index}</span>
+                    <span>${location.name}</span>
+                `;
+                
+                sequenceList.appendChild(item);
+            });
+        }
+        
+        // Mostrar notificação
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification';
+            notification.classList.add(type);
+            
+            // Mostrar notificação
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+            
+            // Esconder após 3 segundos
+            setTimeout(() => {
+                notification.classList.remove('show');
+                
+                // Remover classes após fade out
+                setTimeout(() => {
+                    notification.className = 'notification';
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
