@@ -24,14 +24,13 @@ cp ../docs/route-optimizer.js ./js/
 cp ../docs/map-controls.js ./js/
 cp ../docs/geocode-fix.js ./js/
 cp ../docs/remove-duplicates.js ./js/remove-duplicates.js
-cp ../docs/força-ordem-original.js ./js/força-ordem-original.js
+cp ../docs/rota-original-simples.js ./js/rota-original-simples.js
 cp ../docs/solucao-universal.js ./js/solucao-universal.js
 cp ../docs/correcao-relatorio.js ./js/correcao-relatorio.js
 cp ../docs/monitor-tipo-rota.js ./js/monitor-tipo-rota.js
 cp ../docs/corrigir-sequencia.js ./js/corrigir-sequencia.js
 cp ../docs/atualizar-painel.js ./js/atualizar-painel.js
 cp ../docs/sincronizar-painel.js ./js/sincronizar-painel.js
-cp ../docs/primeira-rota-original.js ./js/primeira-rota-original.js
 
 # Copiar index.html otimizado
 cp ../docs/index.html ./
