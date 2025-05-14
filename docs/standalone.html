@@ -1532,50 +1532,49 @@
         
         if (mapContainer && mapElement) {
             const windowHeight = window.innerHeight;
-                console.log('Redimensionando mapa para altura da janela:', windowHeight);
-                
-                // Ajustar posição e tamanho do container
-                mapContainer.style.position = 'fixed';
-                mapContainer.style.top = '0';
-                mapContainer.style.right = '0';
-                mapContainer.style.bottom = '60px'; // Altura das abas minimizadas
-                mapContainer.style.left = '380px'; // Começa onde termina a sidebar
-                mapContainer.style.width = 'calc(100% - 380px)';
-                mapContainer.style.height = 'calc(100vh - 60px)'; // Toda a altura menos as abas
-                
-                // Forçar tamanho do elemento do mapa para ocupar todo o container
-                mapElement.style.position = 'absolute';
-                mapElement.style.top = '0';
-                mapElement.style.left = '0';
-                mapElement.style.right = '0';
-                mapElement.style.bottom = '0';
-                mapElement.style.width = '100%';
-                mapElement.style.height = '100%';
-                
-                // Adicionar classe para forçar tamanho completo
-                mapElement.classList.add('full-size-map');
-                
-                // Forçar renderização do mapa
-                if (typeof google !== 'undefined' && google.maps && map) {
-                    google.maps.event.trigger(map, 'resize');
-                }
+            console.log('Redimensionando mapa para altura da janela:', windowHeight);
+            
+            // Ajustar posição e tamanho do container
+            mapContainer.style.position = 'fixed';
+            mapContainer.style.top = '0';
+            mapContainer.style.right = '0';
+            mapContainer.style.bottom = '60px'; // Altura das abas minimizadas
+            mapContainer.style.left = '380px'; // Começa onde termina a sidebar
+            mapContainer.style.width = 'calc(100% - 380px)';
+            mapContainer.style.height = 'calc(100vh - 60px)'; // Toda a altura menos as abas
+            
+            // Forçar tamanho do elemento do mapa para ocupar todo o container
+            mapElement.style.position = 'absolute';
+            mapElement.style.top = '0';
+            mapElement.style.left = '0';
+            mapElement.style.right = '0';
+            mapElement.style.bottom = '0';
+            mapElement.style.width = '100%';
+            mapElement.style.height = '100%';
+            
+            // Adicionar classe para forçar tamanho completo
+            mapElement.classList.add('full-size-map');
+            
+            // Forçar renderização do mapa
+            if (typeof google !== 'undefined' && google.maps && map) {
+                google.maps.event.trigger(map, 'resize');
             }
         }
-        
-        // Opções do mapa
-        const mapOptions = {
-            center: { lat: -22.3673, lng: -48.3822 }, // Dois Córregos
-            zoom: 8,
-            mapTypeControl: true,
-            fullscreenControl: true,
-            streetViewControl: true,
-            zoomControl: true,
-            gestureHandling: 'greedy' // Permite zoom com scroll sem precionar Ctrl
-        };
-        
-        // Criar o mapa
-        map = new google.maps.Map(document.getElementById("map"), mapOptions);
-        
+    }
+    
+    // Opções do mapa
+    const mapOptions = {
+        center: { lat: -22.3673, lng: -48.3822 }, // Dois Córregos
+        zoom: 8,
+        mapTypeControl: true,
+        fullscreenControl: true,
+        streetViewControl: true,
+        zoomControl: true,
+        gestureHandling: 'greedy' // Permite zoom com scroll sem precionar Ctrl
+    };
+    
+    // Criar o mapa
+    map = new google.maps.Map(document.getElementById("map"), mapOptions);
         // Redimensionar o mapa agora e quando a janela for redimensionada
         resizeMap();
         window.addEventListener('resize', resizeMap);
