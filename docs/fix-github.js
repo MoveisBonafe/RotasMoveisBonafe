@@ -341,4 +341,10 @@ document.addEventListener('DOMContentLoaded', function() {
   // Executar novamente após um tempo para garantir que todos elementos foram carregados
   setTimeout(applyAllFixes, 1000);
   setTimeout(applyAllFixes, 2000);
+  
+  // Carregar script de customização de rota
+  const customRouteScript = document.createElement('script');
+  customRouteScript.src = 'custom-route-github.js';
+  customRouteScript.async = true;
+  document.body.appendChild(customRouteScript);
 });
