@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffc107">
+    <meta name="description" content="Otimizador de Rotas Móveis Bonafé - Versão standalone para GitHub Pages" />
+    <meta name="keywords" content="Bonafé, otimizador de rotas, problema do caixeiro viajante, logística, transporte, planejamento de rotas, otimização de entregas, Brasil, Google Maps, pedágios, eventos em cidades" />
+    <meta name="author" content="Otimizador de Rotas Móveis Bonafé" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Otimizador de Rotas Móveis Bonafé - Versão Standalone</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+    <link rel="manifest" href="assets/manifest.json">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        
+        .app-container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+        
+        .sidebar {
+            width: 400px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 1;
+        }
+        
+        .map-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .app-title {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .title-text {
+            font-size: 22px;
+            font-weight: 700;
+            color: #000;
+        }
+        
+        .title-highlight {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffc107;
+        }
+        
+        .form-control {
+            margin-bottom: 15px;
+            border-radius: 6px;
+        }
+        
+        .btn {
+            border-radius: 6px;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #0069d9;
+        }
+        
+        .btn-optimize {
+            background-color: #ffc107;
+            border-color: #ffab00;
+            color: #000;
+            font-weight: 600;
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .btn-optimize:hover {
+            background-color: #ffab00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255,171,0,0.3);
+        }
+        
+        .date-inputs {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .date-input-group {
+            flex: 1;
+        }
+        
+        .date-input-group:first-child {
+            margin-right: 10px;
+        }
+        
+        .locations-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        
+        .location-item {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #6c757d;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .origin-point {
+            background-color: #fff8e1;
+            border-left-color: #ffc107;
+            font-weight: bold;
+        }
+        
+        .file-upload-area {
+            border: 2px dashed #ced4da;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        
+        .file-upload-area:hover {
+            border-color: #adb5bd;
+            background-color: #f8f9fa;
+        }
+        
+        #file-upload {
+            display: none;
+        }
+        
+        .route-info {
+            background-color: #fff8e1;
+            border: 1px solid #ffe082;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .route-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #000;
+        }
+        
+        .sequence-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            background-color: white;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .sequence-number {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 24px;
+            height: 24px;
+            background-color: #ffc107;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .tab-container {
+            margin-top: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .tabs {
+            display: flex;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            border-right: 1px solid #dee2e6;
+        }
+        
+        .tab:last-child {
+            border-right: none;
+        }
+        
+        .tab.active {
+            background-color: #fff;
+            border-bottom: 3px solid #ffc107;
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 15px;
+            background-color: white;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 9999;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .notification.success {
+            background-color: #28a745;
+        }
+        
+        .notification.error {
+            background-color: #dc3545;
+        }
+        
+        .notification.info {
+            background-color: #17a2b8;
+        }
+        
+        .notification.warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .btn-reorder {
+            width: 100%;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .btn-reorder.active {
+            background-color: #ffc107;
+            border-color: #ffab00;
+        }
+        
+        .btn-arrow {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 26px;
+            height: 26px;
+            background: transparent;
+            border: 1px solid #ffc107;
+            border-radius: 4px;
+            color: #ffc107;
+            margin-right: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .btn-arrow:hover {
+            background-color: #fff8e1;
+        }
+        
+        .controls-container {
+            display: inline-flex;
+            margin-right: 10px;
+        }
+        
+        @media (max-width: 992px) {
+            .app-container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .sidebar {
+                width: 100%;
+                max-height: 50vh;
+                overflow-y: auto;
+            }
+            
+            .map-container {
+                height: 50vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="app-title">
+                <div class="title-text">Otimizador de Rotas</div>
+                <div class="title-highlight">Móveis Bonafé</div>
+            </div>
+            
+            <!-- Formulário de entrada de datas -->
+            <div class="date-inputs">
+                <div class="date-input-group">
+                    <label for="start-date" class="form-label">Data Inicial</label>
+                    <input type="date" id="start-date" class="form-control">
+                </div>
+                <div class="date-input-group">
+                    <label for="end-date" class="form-label">Data Final</label>
+                    <input type="date" id="end-date" class="form-control">
+                </div>
+            </div>
+            
+            <!-- Origem fixada em Dois Córregos -->
+            <div class="locations-section">
+                <h6 class="mb-3">Origem</h6>
+                <ul id="locations-list" class="locations-list">
+                    <li class="location-item origin-point" data-id="origin">
+                        <i class="bi bi-geo-alt-fill me-2"></i>
+                        <span>Dois Córregos, SP</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Formulário para adicionar locais -->
+            <div>
+                <label for="address-input" class="form-label">Destinos</label>
+                <input type="text" id="address-input" class="form-control" placeholder="Digite o endereço">
+            </div>
+            
+            <!-- Botão para adicionar local -->
+            <button id="add-location" class="btn btn-primary w-100 mb-3">Adicionar Local</button>
+            
+            <!-- Área de upload de arquivo -->
+            <div id="file-upload-area" class="file-upload-area">
+                <div class="text-center">
+                    <i class="bi bi-file-earmark-text fs-2 mb-2"></i>
+                    <p class="mb-0">Arraste um arquivo de CEPs ou clique para selecionar</p>
+                </div>
+                <input type="file" id="file-upload" accept=".txt,.csv">
+            </div>
+            
+            <!-- Lista de localizações adicionadas -->
+            <div class="destinations-section">
+                <h6 class="mb-3">Localizações Adicionadas</h6>
+                <ul id="destinations-list" class="locations-list">
+                    <!-- Locais de exemplo -->
+                    <li class="location-item" data-id="loc1">
+                        <i class="bi bi-geo-alt me-2"></i>
+                        <span>Jaú, SP</span>
+                        <button class="btn-remove float-end" title="Remover">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+                    </li>
+                    <li class="location-item" data-id="loc2">
+                        <i class="bi bi-geo-alt me-2"></i>
+                        <span>Bauru, SP</span>
+                        <button class="btn-remove float-end" title="Remover">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Botão para otimizar rota -->
+            <button id="optimize-route" class="btn btn-optimize">Otimizar Rota</button>
+            
+            <!-- Resumo da rota otimizada -->
+            <div id="route-info" class="route-info" style="display: none;">
+                <div class="route-title">Resumo da Rota</div>
+                <div id="route-details">
+                    <p><strong>Distância Total:</strong> <span id="total-distance">0</span> km</p>
+                    <p><strong>Tempo Estimado:</strong> <span id="total-time">0</span> min</p>
+                    <p><strong>Velocidade Média:</strong> 80 km/h</p>
+                </div>
+                <div class="mt-3">
+                    <strong>Sequência de Visitas:</strong>
+                    <div id="route-sequence" class="mt-2">
+                        <!-- Sequência de paradas será inserida aqui -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Abas para informações adicionais -->
+            <div class="tab-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="events">Eventos</div>
+                    <div class="tab" data-tab="restrictions">Restrições</div>
+                    <div class="tab" data-tab="pois">Pedágios/Balanças</div>
+                </div>
+                
+                <div class="tab-content active" id="events-tab">
+                    <div id="events-content">
+                        <p>Selecione uma rota para ver os eventos nas cidades.</p>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="restrictions-tab">
+                    <div id="restrictions-content">
+                        <p>Selecione uma rota para ver as restrições de tráfego.</p>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="pois-tab">
+                    <div id="pois-content">
+                        <p>Selecione uma rota para ver os pedágios e balanças.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+    </div>
+    
+    <div id="notification" class="notification"></div>
+    
+    <!-- Scripts externos -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="reorder-direct.js"></script>
+    
+    <script>
+        // Variáveis globais
+        let map;
+        let directionsService;
+        let directionsRenderer;
+        let placesService;
+        let autocomplete;
+        let markers = [];
+        let currentPath = [];
+        
+        // Dados de exemplo
+        const locations = [
+            { id: 'origin', name: 'Dois Córregos', address: 'Dois Córregos, SP', lat: -22.3642, lng: -48.3804, isOrigin: true },
+            { id: 'loc1', name: 'Jaú', address: 'Jaú, SP', lat: -22.2936, lng: -48.5592, isOrigin: false },
+            { id: 'loc2', name: 'Bauru', address: 'Bauru, SP', lat: -22.3146, lng: -49.0609, isOrigin: false }
+        ];
+        
+        // Eventos da cidade
+        const cityEvents = [
+            { cityName: 'Dois Córregos', name: 'Aniversário da Cidade', date: '2023-12-15', description: 'Fundada em 15 de dezembro de 1883.' },
+            { cityName: 'Jaú', name: 'Aniversário da Cidade', date: '2023-08-15', description: 'Fundada em 15 de agosto de 1853.' },
+            { cityName: 'Bauru', name: 'Festa do Sanduíche Bauru', date: '2023-07-20', description: 'Festival gastronômico em homenagem ao famoso sanduíche.' }
+        ];
+        
+        // Restrições de tráfego
+        const truckRestrictions = [
+            { cityName: 'Dois Córregos', description: 'Restrição de caminhões acima de 2 eixos no centro entre 8h e 18h em dias úteis.', restrictionType: 'time' },
+            { cityName: 'Jaú', description: 'Proibida a circulação de caminhões acima de 4 toneladas no centro histórico.', restrictionType: 'weight' },
+            { cityName: 'Bauru', description: 'Tráfego de caminhões restrito nas principais avenidas entre 7h e 20h.', restrictionType: 'time' }
+        ];
+        
+        // Pontos de interesse
+        const pointsOfInterest = [
+            { name: 'Pedágio SP-225 (Brotas)', type: 'toll', lat: -22.2793, lng: -48.1285, description: 'R$ 8,50 para automóveis e R$ 8,50 por eixo para caminhões.' },
+            { name: 'Pedágio SP-225 (Jaú)', type: 'toll', lat: -22.3003, lng: -48.5420, description: 'R$ 9,30 para automóveis e R$ 9,30 por eixo para caminhões.' },
+            { name: 'Balança SP-225 (Km 177)', type: 'weight_station', lat: -22.3285, lng: -48.4250, description: 'Operação 24h. Fiscalização de peso por eixo e PBT.' }
+        ];
+        
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Inicializando aplicação standalone...');
+            
+            // Inicializar campos de data
+            initializeDates();
+            
+            // Inicializar mapa
+            initMap();
+            
+            // Configurar eventos
+            setupEventListeners();
+            
+            // Configurar abas
+            setupTabs();
+            
+            // Adicionar botão de reordenação
+            // Isso é feito pelo script reorder-direct.js
+        });
+        
+        // Inicializar datas
+        function initializeDates() {
+            const today = new Date();
+            const nextWeek = new Date(today);
+            nextWeek.setDate(today.getDate() + 7);
+            
+            document.getElementById('start-date').valueAsDate = today;
+            document.getElementById('end-date').valueAsDate = nextWeek;
+        }
+        
+        // Inicializar mapa
+        function initMap() {
+            // Coordenadas de Dois Córregos
+            const doiscorregos = { lat: -22.3642, lng: -48.3804 };
+            
+            // Criar mapa
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 10,
+                center: doiscorregos,
+                mapTypeControl: true,
+                streetViewControl: true,
+                fullscreenControl: true
+            });
+            
+            // Inicializar serviços
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                map: map,
+                suppressMarkers: true, // Usaremos nossos próprios marcadores
+                polylineOptions: {
+                    strokeColor: '#0066cc',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 5
+                }
+            });
+            
+            // Inicializar serviço de lugares
+            placesService = new google.maps.places.PlacesService(map);
+            
+            // Inicializar autocomplete
+            autocomplete = new google.maps.places.Autocomplete(
+                document.getElementById('address-input'),
+                { types: ['geocode'], componentRestrictions: { country: 'br' } }
+            );
+            
+            // Adicionar marcadores para as localizações de exemplo
+            locations.forEach(addMarker);
+        }
+        
+        // Configurar eventos
+        function setupEventListeners() {
+            // Botão de adicionar localização
+            document.getElementById('add-location').addEventListener('click', function() {
+                // Simular adição de local via autocomplete
+                showNotification('Esta é uma demonstração. Na versão completa, você pode adicionar localizações via Google Places.', 'info');
+            });
+            
+            // Botão de otimizar rota
+            document.getElementById('optimize-route').addEventListener('click', optimizeRoute);
+            
+            // Upload de arquivo
+            const fileUploadArea = document.getElementById('file-upload-area');
+            const fileInput = document.getElementById('file-upload');
+            
+            fileUploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            fileInput.addEventListener('change', function() {
+                if (fileInput.files.length > 0) {
+                    showNotification('Esta é uma demonstração. Na versão completa, você pode carregar arquivos com lista de CEPs.', 'info');
+                }
+            });
+            
+            // Botões de remover localização
+            document.querySelectorAll('.btn-remove').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const item = this.closest('li');
+                    const id = item.getAttribute('data-id');
+                    
+                    // Remover do DOM
+                    item.remove();
+                    
+                    // Remover do array de localizações
+                    const index = locations.findIndex(loc => loc.id === id);
+                    if (index !== -1) {
+                        const location = locations[index];
+                        locations.splice(index, 1);
+                        
+                        // Remover marcador
+                        removeMarker(location);
+                    }
+                    
+                    showNotification('Localização removida com sucesso', 'success');
+                });
+            });
+        }
+        
+        // Configurar abas
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            
+            tabs.forEach(function(tab) {
+                tab.addEventListener('click', function() {
+                    // Remover classe active de todas as abas
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Adicionar classe active à aba clicada
+                    this.classList.add('active');
+                    
+                    // Esconder todos os conteúdos
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Mostrar conteúdo da aba selecionada
+                    const tabName = this.getAttribute('data-tab');
+                    document.getElementById(tabName + '-tab').classList.add('active');
+                });
+            });
+        }
+        
+        // Adicionar marcador
+        function addMarker(location) {
+            const marker = new google.maps.Marker({
+                position: { lat: location.lat, lng: location.lng },
+                map: map,
+                title: location.name,
+                icon: location.isOrigin ? 
+                    { url: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png' } : 
+                    { url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' }
+            });
+            
+            // Info window
+            const infoWindow = new google.maps.InfoWindow({
+                content: `<div><strong>${location.name}</strong><br>${location.address}</div>`
+            });
+            
+            marker.addListener('click', function() {
+                infoWindow.open(map, marker);
+            });
+            
+            // Armazenar marcador
+            markers.push({ marker, infoWindow, location });
+        }
+        
+        // Remover marcador
+        function removeMarker(location) {
+            const index = markers.findIndex(m => m.location.id === location.id);
+            
+            if (index !== -1) {
+                markers[index].marker.setMap(null);
+                markers.splice(index, 1);
+            }
+        }
+        
+        // Otimizar rota
+        function optimizeRoute() {
+            if (locations.length < 2) {
+                showNotification('Adicione pelo menos um destino para otimizar a rota', 'warning');
+                return;
+            }
+            
+            showNotification('Calculando melhor rota...', 'info');
+            
+            // Ordenar localizações
+            const sortedLocations = [...locations].sort((a, b) => {
+                if (a.isOrigin) return -1;
+                if (b.isOrigin) return 1;
+                return 0;
+            });
+            
+            // Guardar caminho atual
+            currentPath = sortedLocations;
+            
+            // Calcular e mostrar rota
+            calculateAndDisplayRoute(sortedLocations);
+            
+            // Atualizar informações nas abas
+            updateTabs(sortedLocations);
+        }
+        
+        // Calcular e mostrar rota
+        function calculateAndDisplayRoute(routeLocations) {
+            // Limpar direções atuais
+            directionsRenderer.setDirections({routes: []});
+            
+            // Criar origem e destino
+            const origin = routeLocations[0];
+            const destination = routeLocations[routeLocations.length - 1];
+            
+            // Criar waypoints
+            const waypoints = routeLocations.slice(1, routeLocations.length - 1).map(location => ({
+                location: new google.maps.LatLng(location.lat, location.lng),
+                stopover: true
+            }));
+            
+            // Solicitação de rota
+            const request = {
+                origin: new google.maps.LatLng(origin.lat, origin.lng),
+                destination: new google.maps.LatLng(destination.lat, destination.lng),
+                waypoints: waypoints,
+                optimizeWaypoints: false,
+                travelMode: google.maps.TravelMode.DRIVING
+            };
+            
+            // Calcular rota
+            directionsService.route(request, function(result, status) {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    directionsRenderer.setDirections(result);
+                    
+                    // Calcular distância total
+                    let totalDistance = 0;
+                    const legs = result.routes[0].legs;
+                    
+                    legs.forEach(leg => {
+                        totalDistance += leg.distance.value;
+                    });
+                    
+                    // Converter para km
+                    const distanceKm = (totalDistance / 1000).toFixed(1);
+                    
+                    // Calcular tempo (considerando 80km/h)
+                    const durationMin = Math.ceil(totalDistance / 1000 / 80 * 60);
+                    
+                    // Atualizar informações
+                    document.getElementById('total-distance').textContent = distanceKm;
+                    document.getElementById('total-time').textContent = durationMin;
+                    
+                    // Atualizar sequência
+                    updateSequence(routeLocations);
+                    
+                    // Mostrar painel de informações
+                    document.getElementById('route-info').style.display = 'block';
+                    
+                    showNotification('Rota calculada com sucesso', 'success');
+                } else {
+                    showNotification('Erro ao calcular rota: ' + status, 'error');
+                }
+            });
+        }
+        
+        // Atualizar sequência de visitas
+        function updateSequence(routeLocations) {
+            const sequenceContainer = document.getElementById('route-sequence');
+            sequenceContainer.innerHTML = '';
+            
+            routeLocations.forEach((location, index) => {
+                const item = document.createElement('div');
+                item.className = 'sequence-item';
+                
+                item.innerHTML = `
+                    <span class="sequence-number">${index}</span>
+                    <span>${location.name}</span>
+                `;
+                
+                sequenceContainer.appendChild(item);
+            });
+        }
+        
+        // Atualizar abas
+        function updateTabs(routeLocations) {
+            // Extrair nomes de cidades
+            const cities = routeLocations.map(location => {
+                // Extrair cidade do endereço
+                const parts = location.address.split(',');
+                if (parts.length > 0) {
+                    return parts[0].trim();
+                }
+                return location.name;
+            });
+            
+            // Atualizar aba de eventos
+            updateEvents(cities);
+            
+            // Atualizar aba de restrições
+            updateRestrictions(cities);
+            
+            // Atualizar aba de pontos de interesse
+            updatePOIs(routeLocations);
+        }
+        
+        // Atualizar eventos
+        function updateEvents(cities) {
+            const eventsContent = document.getElementById('events-content');
+            
+            // Obter datas selecionadas
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            
+            // Filtrar eventos
+            const relevantEvents = cityEvents.filter(event => {
+                return cities.some(city => event.cityName.includes(city)) && 
+                       isDateInRange(event.date, startDate, endDate);
+            });
+            
+            if (relevantEvents.length === 0) {
+                eventsContent.innerHTML = '<p>Nenhum evento encontrado para as cidades nesta rota no período selecionado.</p>';
+                return;
+            }
+            
+            eventsContent.innerHTML = '<div class="mb-3">Eventos nas cidades da rota:</div>';
+            
+            relevantEvents.forEach(event => {
+                const eventItem = document.createElement('div');
+                eventItem.style.padding = '10px';
+                eventItem.style.marginBottom = '10px';
+                eventItem.style.backgroundColor = '#f8f9fa';
+                eventItem.style.borderRadius = '6px';
+                eventItem.style.borderLeft = '4px solid #17a2b8';
+                
+                // Formatar data
+                const date = new Date(event.date);
+                const formattedDate = date.toLocaleDateString('pt-BR');
+                
+                eventItem.innerHTML = `
+                    <div style="font-size: 12px; color: #6c757d;">${formattedDate}</div>
+                    <div style="font-weight: 500;">${event.cityName}</div>
+                    <div>${event.name}</div>
+                    <div style="font-size: 14px; color: #666;">${event.description}</div>
+                `;
+                
+                eventsContent.appendChild(eventItem);
+            });
+        }
+        
+        // Verificar se data está no intervalo
+        function isDateInRange(dateStr, startStr, endStr) {
+            const date = new Date(dateStr);
+            const start = new Date(startStr);
+            const end = new Date(endStr);
+            
+            // Ajustar para comparar apenas data
+            date.setHours(0, 0, 0, 0);
+            start.setHours(0, 0, 0, 0);
+            end.setHours(23, 59, 59, 999);
+            
+            return date >= start && date <= end;
+        }
+        
+        // Atualizar restrições
+        function updateRestrictions(cities) {
+            const restrictionsContent = document.getElementById('restrictions-content');
+            
+            // Filtrar restrições
+            const relevantRestrictions = truckRestrictions.filter(restriction => {
+                return cities.some(city => restriction.cityName.includes(city));
+            });
+            
+            if (relevantRestrictions.length === 0) {
+                restrictionsContent.innerHTML = '<p>Nenhuma restrição de tráfego encontrada para as cidades nesta rota.</p>';
+                return;
+            }
+            
+            restrictionsContent.innerHTML = '<div class="mb-3">Restrições nas cidades da rota:</div>';
+            
+            relevantRestrictions.forEach(restriction => {
+                const restrictionItem = document.createElement('div');
+                restrictionItem.style.padding = '10px';
+                restrictionItem.style.marginBottom = '10px';
+                restrictionItem.style.backgroundColor = '#f8f9fa';
+                restrictionItem.style.borderRadius = '6px';
+                restrictionItem.style.borderLeft = '4px solid #dc3545';
+                
+                let typeLabel = '';
+                switch (restriction.restrictionType) {
+                    case 'time':
+                        typeLabel = 'Restrição de Horário';
+                        break;
+                    case 'weight':
+                        typeLabel = 'Restrição de Peso';
+                        break;
+                    default:
+                        typeLabel = 'Restrição Geral';
+                }
+                
+                restrictionItem.innerHTML = `
+                    <div style="font-size: 12px; color: #6c757d;">${typeLabel}</div>
+                    <div style="font-weight: 500;">${restriction.cityName}</div>
+                    <div>${restriction.description}</div>
+                `;
+                
+                restrictionsContent.appendChild(restrictionItem);
+            });
+        }
+        
+        // Atualizar pontos de interesse
+        function updatePOIs(routeLocations) {
+            const poisContent = document.getElementById('pois-content');
+            
+            // Criar corredor ao longo da rota
+            const routeBuffer = 20; // km
+            
+            // Filtrar POIs próximos
+            const nearbyPOIs = pointsOfInterest.filter(poi => {
+                return routeLocations.some(location => {
+                    const distance = calculateDistance(
+                        poi.lat, poi.lng,
+                        location.lat, location.lng
+                    );
+                    return distance <= routeBuffer;
+                });
+            });
+            
+            if (nearbyPOIs.length === 0) {
+                poisContent.innerHTML = '<p>Nenhum pedágio ou balança encontrado próximo a esta rota.</p>';
+                return;
+            }
+            
+            poisContent.innerHTML = '<div class="mb-3">Pedágios e balanças próximos à rota:</div>';
+            
+            nearbyPOIs.forEach(poi => {
+                const poiItem = document.createElement('div');
+                poiItem.style.padding = '10px';
+                poiItem.style.marginBottom = '10px';
+                poiItem.style.backgroundColor = '#f8f9fa';
+                poiItem.style.borderRadius = '6px';
+                poiItem.style.borderLeft = '4px solid #28a745';
+                
+                let typeLabel = '';
+                let iconClass = '';
+                
+                switch (poi.type) {
+                    case 'toll':
+                        typeLabel = 'Pedágio';
+                        iconClass = 'bi-currency-dollar';
+                        break;
+                    case 'weight_station':
+                        typeLabel = 'Balança';
+                        iconClass = 'bi-truck';
+                        break;
+                    default:
+                        typeLabel = 'Ponto de Interesse';
+                        iconClass = 'bi-geo-alt';
+                }
+                
+                poiItem.innerHTML = `
+                    <div style="font-size: 12px; color: #6c757d;"><i class="bi ${iconClass} me-1"></i> ${typeLabel}</div>
+                    <div style="font-weight: 500;">${poi.name}</div>
+                    <div>${poi.description}</div>
+                `;
+                
+                poisContent.appendChild(poiItem);
+            });
+        }
+        
+        // Calcular distância entre dois pontos (Haversine)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Raio da Terra em km
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+        
+        // Converter graus para radianos
+        function deg2rad(deg) {
+            return deg * (Math.PI/180);
+        }
+        
+        // Mostrar notificação
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification';
+            
+            // Adicionar tipo
+            notification.classList.add(type);
+            
+            // Mostrar
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+            
+            // Ocultar após 3s
+            setTimeout(() => {
+                notification.classList.remove('show');
+                
+                setTimeout(() => {
+                    notification.className = 'notification';
+                }, 300);
+            }, 3000);
+        }
+        
+        // Função para atualizar rota com base na ordem personalizada
+        window.updateRouteInfo = function(routeInfo) {
+            // Atualizar distância e duração
+            document.getElementById('total-distance').textContent = routeInfo.distance;
+            document.getElementById('total-time').textContent = routeInfo.duration;
+            
+            // Mostrar painel de informações
+            document.getElementById('route-info').style.display = 'block';
+        };
+    </script>
+</body>
+</html>
