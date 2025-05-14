@@ -513,6 +513,16 @@
     function calcularRotaPersonalizada() {
         console.log('[DragDropAlt] Calculando rota personalizada');
         
+        // Primeiro, forçar aplicação das correções do GitHub
+        if (window.corrigirProblemasGitHub) {
+            console.log('[DragDropAlt] Aplicando correções do GitHub antes de calcular');
+            try {
+                window.corrigirProblemasGitHub();
+            } catch (e) {
+                console.error('[DragDropAlt] Erro ao aplicar correções:', e);
+            }
+        }
+        
         // Na versão standalone, o Google Maps pode estar disponível de forma diferente
         // Verificar e configurar os serviços se necessário
         if (!window.directionsService && window.google && window.google.maps && window.google.maps.DirectionsService) {

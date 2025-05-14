@@ -202,24 +202,32 @@
             console.log('[GitHubFix] Origem padrão adicionada: Dois Córregos');
         }
         
+        // Coordenadas de algumas cidades próximas a Dois Córregos (SP)
+        // para garantir que temos localizações válidas para demonstração
+        const cidadesProximas = [
+            { nome: 'Jaú', lat: -22.2967, lng: -48.5578 },
+            { nome: 'Mineiros do Tietê', lat: -22.4119, lng: -48.4508 },
+            { nome: 'Barra Bonita', lat: -22.4908, lng: -48.5583 },
+            { nome: 'Bauru', lat: -22.3147, lng: -49.0606 },
+            { nome: 'Brotas', lat: -22.2794, lng: -48.1250 },
+            { nome: 'Igaraçu do Tietê', lat: -22.5089, lng: -48.5597 },
+            { nome: 'São Manuel', lat: -22.7319, lng: -48.5717 },
+            { nome: 'Torrinha', lat: -22.4269, lng: -48.1731 },
+            { nome: 'Botucatu', lat: -22.8837, lng: -48.4437 },
+            { nome: 'Pederneiras', lat: -22.3511, lng: -48.7781 }
+        ];
+        
         // Adicionar destinos
-        const destinos = document.querySelectorAll('li:not(.origin-point), .location-item');
+        const destinos = document.querySelectorAll('li:not(.origin-point), .location-item, div[class*="location"]');
+        
+        console.log('[GitHubFix] Encontrados', destinos.length, 'possíveis elementos de destino');
         
         let destinosAdicionados = 0;
+        let cidadeIndex = 0;
+        
         destinos.forEach((destino, index) => {
             // Verificar se é um destino e não um elemento da interface
             if (!destino.classList.contains('origin-point') && destino.textContent.trim()) {
-                // Tentar extrair coordenadas de atributos de dados
-                let lat = parseFloat(destino.getAttribute('data-lat')) || 0;
-                let lng = parseFloat(destino.getAttribute('data-lng')) || 0;
-                
-                // Se não tem coordenadas, criar algumas fictícias para demonstração (em torno de Dois Córregos)
-                if (!lat || !lng) {
-                    // Usar o índice para distribuir os pontos ao redor de Dois Córregos (apenas para visualização)
-                    lat = -22.3731 + (Math.random() * 0.2 - 0.1);
-                    lng = -48.3796 + (Math.random() * 0.2 - 0.1);
-                }
-                
                 // Extrair nome
                 let nome = '';
                 const nomeElement = destino.querySelector('.location-name');
@@ -228,6 +236,36 @@
                 } else {
                     // Limpar o texto para remover possíveis números de sequência
                     nome = destino.textContent.trim().replace(/^\d+[\s\.\-]*/, '');
+                }
+                
+                console.log('[GitHubFix] Nome do destino extraído:', nome);
+                
+                // Tentar extrair coordenadas de atributos de dados
+                let lat = parseFloat(destino.getAttribute('data-lat') || '0');
+                let lng = parseFloat(destino.getAttribute('data-lng') || '0');
+                
+                // Verificar se o nome corresponde a alguma cidade conhecida
+                const cidadeConhecida = cidadesProximas.find(cidade => 
+                    nome.toLowerCase().includes(cidade.nome.toLowerCase())
+                );
+                
+                if (cidadeConhecida) {
+                    console.log('[GitHubFix] Cidade conhecida encontrada:', cidadeConhecida.nome);
+                    lat = cidadeConhecida.lat;
+                    lng = cidadeConhecida.lng;
+                } 
+                // Se não tem coordenadas e não é cidade conhecida, usar coordenadas de cidades próximas
+                else if (!lat || !lng) {
+                    // Usar uma cidade próxima como coordenada para este destino
+                    const cidadeProxima = cidadesProximas[cidadeIndex % cidadesProximas.length];
+                    lat = cidadeProxima.lat;
+                    lng = cidadeProxima.lng;
+                    
+                    // Pequena variação para não ficarem todos no mesmo ponto
+                    lat += (Math.random() * 0.01 - 0.005);
+                    lng += (Math.random() * 0.01 - 0.005);
+                    
+                    cidadeIndex++;
                 }
                 
                 // Se após limpar ainda temos um nome
@@ -240,6 +278,8 @@
                         lng: lng,
                         isOrigin: false
                     });
+                    
+                    console.log('[GitHubFix] Destino adicionado:', nome, `(${lat}, ${lng})`);
                     destinosAdicionados++;
                 }
             }
