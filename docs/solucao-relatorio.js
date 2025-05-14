@@ -205,11 +205,12 @@
             return;
         }
         
-        // Obter todos os itens
+        // Obter todos os itens - IMPORTANTE: Usando apenas os elementos que estão sendo exibidos
         const itens = container.querySelectorAll('li:not(.origin-point), .location-item:not(.origin-point), div[class*="location"]:not(.origin-point)');
         
         console.log('[Relatorio] Encontrados', itens.length, 'destinos');
         
+        // Verificar a ordem dos itens
         itens.forEach((item, index) => {
             // Extrair texto
             let nome = '';
@@ -231,6 +232,43 @@
                 console.log('[Relatorio] Destino original salvo:', nome);
             }
         });
+        
+        // Verificar se é uma ordem lógica e corrigir se necessário
+        if (destinosOriginais.length >= 2) {
+            // Verificar se os primeiros dois elementos correspondem à ordem do painel
+            const primeirosLocaisPanel = [];
+            const locaisText = document.querySelectorAll('.location-name');
+            locaisText.forEach(local => {
+                primeirosLocaisPanel.push(local.textContent.trim());
+            });
+            
+            // Se os primeiros dois locais não coincidem com o painel, verificar se é preciso inverter
+            if (primeirosLocaisPanel.length >= 2 && 
+                primeirosLocaisPanel[0] !== destinosOriginais[0].nome) {
+                console.log('[Relatorio] Ordem detectada não corresponde ao painel, corrigindo...');
+                
+                // Se temos locais diferentes no painel, vamos reconstruir a ordem
+                const novaOrdem = [];
+                
+                // Adicionar os locais na ordem do painel
+                for (let i = 0; i < primeirosLocaisPanel.length; i++) {
+                    const localNome = primeirosLocaisPanel[i];
+                    if (localNome) {
+                        novaOrdem.push({
+                            id: `destino-${i}`,
+                            nome: localNome,
+                            ordem: i + 1
+                        });
+                    }
+                }
+                
+                // Substituir completamente
+                if (novaOrdem.length > 0) {
+                    destinosOriginais = novaOrdem;
+                    console.log('[Relatorio] Ordem corrigida para corresponder ao painel');
+                }
+            }
+        }
     }
     
     /**
