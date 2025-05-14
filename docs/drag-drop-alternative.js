@@ -426,18 +426,155 @@
     function calcularRotaPersonalizada() {
         console.log('[DragDropAlt] Calculando rota personalizada');
         
+        // Na versão standalone, o Google Maps pode estar disponível de forma diferente
+        // Verificar e configurar os serviços se necessário
+        if (!window.directionsService && window.google && window.google.maps && window.google.maps.DirectionsService) {
+            console.log('[DragDropAlt] Criando uma nova instância de DirectionsService');
+            window.directionsService = new google.maps.DirectionsService();
+        }
+        
+        if (!window.directionsRenderer && window.google && window.google.maps && window.google.maps.DirectionsRenderer) {
+            console.log('[DragDropAlt] Criando uma nova instância de DirectionsRenderer');
+            window.directionsRenderer = new google.maps.DirectionsRenderer({
+                map: window.map,
+                suppressMarkers: false
+            });
+        }
+        
         // Verificar se temos as APIs e os dados necessários
-        if (!window.directionsService || !window.directionsRenderer || !window.locations) {
-            console.error('[DragDropAlt] APIs ou dados necessários não disponíveis');
+        if (!window.directionsService || !window.directionsRenderer) {
+            console.error('[DragDropAlt] Serviços de direções não disponíveis');
+            console.log('[DragDropAlt] directionsService:', !!window.directionsService);
+            console.log('[DragDropAlt] directionsRenderer:', !!window.directionsRenderer);
+            console.log('[DragDropAlt] google.maps:', !!window.google?.maps);
             alert('Erro: Serviço de direções não está disponível.');
             return;
+        }
+        
+        // Se não temos locations, verificar se podemos obtê-las de outra fonte
+        if (!window.locations) {
+            console.log('[DragDropAlt] Array locations não encontrado, tentando alternativas');
+            
+            // Tentar encontrar locations em variáveis alternativas
+            if (window.locationsData) {
+                window.locations = window.locationsData;
+            } else if (window.waypoints) {
+                window.locations = window.waypoints;
+            } else {
+                // Última tentativa: reconstruir a partir dos elementos do DOM
+                const locations = [];
+                
+                // Adicionar origem
+                const origemElement = document.querySelector('.origin-point');
+                if (origemElement) {
+                    const nomeOrigem = origemElement.textContent.trim();
+                    // Coordenadas de Dois Córregos-SP - fallback
+                    locations.push({
+                        id: 'origem',
+                        name: nomeOrigem || 'Dois Córregos',
+                        lat: -22.3731,
+                        lng: -48.3796,
+                        isOrigin: true
+                    });
+                }
+                
+                // Adicionar destinos
+                const destinos = document.querySelectorAll('.destino-draggable, .location-item');
+                destinos.forEach((destino, index) => {
+                    // Tentar extrair coordenadas de atributos
+                    const lat = parseFloat(destino.getAttribute('data-lat') || '0');
+                    const lng = parseFloat(destino.getAttribute('data-lng') || '0');
+                    
+                    if (lat && lng) {
+                        locations.push({
+                            id: destino.getAttribute('data-id') || `destino-${index}`,
+                            name: destino.textContent.trim(),
+                            lat: lat,
+                            lng: lng,
+                            isOrigin: false
+                        });
+                    }
+                });
+                
+                if (locations.length > 0) {
+                    window.locations = locations;
+                }
+            }
+        }
+        
+        if (!window.locations || !Array.isArray(window.locations) || window.locations.length === 0) {
+            console.error('[DragDropAlt] Não foi possível obter os dados de localização');
+            alert('Erro: Dados de localização não estão disponíveis.');
+            return;
+        }
+        
+        // Encontrar mapa se não estiver disponível globalmente
+        if (!window.map && window.google && window.google.maps) {
+            console.log('[DragDropAlt] Procurando instância do mapa');
+            
+            // Procurar no DOM por instâncias do mapa
+            const mapElements = document.querySelectorAll('.gm-style');
+            if (mapElements.length > 0) {
+                // Encontrar elemento pai que possa conter a instância do mapa
+                const possibleMapContainer = mapElements[0].closest('[id$=map], [id*=map], [class$=map], [class*=map]');
+                
+                // Verificar objetos na página buscando instância do mapa
+                for (const key in window) {
+                    try {
+                        if (window[key] instanceof google.maps.Map) {
+                            window.map = window[key];
+                            console.log('[DragDropAlt] Instância do mapa encontrada:', key);
+                            break;
+                        }
+                    } catch (e) {
+                        // Ignorar erros
+                    }
+                }
+                
+                if (!window.map && possibleMapContainer && possibleMapContainer.__gm && possibleMapContainer.__gm.map) {
+                    window.map = possibleMapContainer.__gm.map;
+                    console.log('[DragDropAlt] Mapa encontrado pelo container');
+                }
+            }
+            
+            // Se ainda não temos mapa, criar um novo
+            if (!window.map) {
+                // Buscar o elemento do mapa
+                const mapElement = document.getElementById('map') || 
+                                  document.querySelector('.map-container') || 
+                                  document.querySelector('[id$=map]');
+                
+                if (mapElement) {
+                    console.log('[DragDropAlt] Criando nova instância do mapa');
+                    window.map = new google.maps.Map(mapElement, {
+                        center: { lat: -22.3731, lng: -48.3796 }, // Dois Córregos-SP
+                        zoom: 8
+                    });
+                }
+            }
+            
+            // Se encontramos/criamos o mapa, verificar renderer
+            if (window.map && !window.directionsRenderer) {
+                window.directionsRenderer = new google.maps.DirectionsRenderer({
+                    map: window.map,
+                    suppressMarkers: false
+                });
+                console.log('[DragDropAlt] Renderer criado com mapa encontrado');
+            }
         }
         
         // Construir waypoints
         const waypoints = [];
         
         // Adicionar origem
-        const origem = window.locations.find(loc => loc.isOrigin);
+        let origem = window.locations.find(loc => loc.isOrigin);
+        
+        // Se não encontrou por isOrigin, usar o primeiro elemento
+        if (!origem && window.locations.length > 0) {
+            console.log('[DragDropAlt] Origem não encontrada pelo isOrigin, usando primeiro elemento');
+            origem = window.locations[0];
+        }
+        
         if (origem) {
             waypoints.push(origem);
         } else {
