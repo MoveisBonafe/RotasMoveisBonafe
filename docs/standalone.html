@@ -2751,6 +2751,10 @@
                 alternativeRoutes = [backupRoute];
             }
             
+            // Processar todas as rotas alternativas para garantir consistência
+            alternativeRoutes = postProcessTspResults(alternativeRoutes);
+            console.log("Rotas alternativas após processamento:", alternativeRoutes);
+            
             // Usar a primeira rota como padrão
             let tspResult = alternativeRoutes[0];
             
@@ -4944,37 +4948,8 @@
             return;
         }
         
-        // Padronizar propriedades das rotas para garantir compatibilidade
-        const standardizedRoutes = routes.map(route => {
-            // Se a rota não tem totalDistance, verifica se tem distance
-            if (route.totalDistance === undefined && route.distance !== undefined) {
-                route.totalDistance = route.distance;
-            }
-            
-            // Se totalDistance ainda for undefined, defina como 0
-            if (route.totalDistance === undefined) {
-                route.totalDistance = 0;
-            }
-            
-            // Garantir que temos pathIds
-            if (!route.pathIds && route.path) {
-                route.pathIds = route.path.map(id => typeof id === 'object' ? id.toString() : id.toString());
-            }
-            
-            // Garantir que todas as rotas tenham tempo estimado calculado corretamente
-            // Usando nossa função centralizada para cálculo de tempo
-            const distance = route.totalDistance || route.distance || 0;
-            if (distance > 0) {
-                // Usar a função centralizada para cálculo consistente
-                route.estimatedTime = calculateTravelTime(distance);
-                console.log(`Rota ${routes.indexOf(route)}: Tempo recalculado para ${route.estimatedTime.toFixed(1)} minutos (${distance.toFixed(1)}km)`);
-            } else {
-                console.warn(`Rota com distância zero ou inválida: ${distance}`);
-                route.estimatedTime = 0;
-            }
-            
-            return route;
-        });
+        // Usar a função centralizada de pós-processamento para garantir consistência
+        const standardizedRoutes = postProcessTspResults(routes);
         
         standardizedRoutes.forEach((route, index) => {
             const detailsElement = document.getElementById(`route-${index}-details`);
@@ -5058,30 +5033,7 @@
         }
     }
     
-    // Função para aplicar os cálculos corretos de distância e tempo em todas as rotas
-    function recalculateRouteTimeAndDistance(routes) {
-        if (!routes || !Array.isArray(routes) || routes.length === 0) {
-            console.warn("Nenhuma rota para recalcular tempo e distância");
-            return routes;
-        }
-        
-        return routes.map(route => {
-            // Garantir que temos uma distância válida
-            const distance = route.distance || route.totalDistance || 0;
-            
-            if (distance <= 0) {
-                console.warn("Rota com distância zero ou inválida!");
-                route.estimatedTime = 0;
-                return route;
-            }
-            
-            // Aplicar o cálculo de tempo padronizado (80 km/h)
-            route.estimatedTime = calculateTravelTime(distance);
-            console.log(`Rota recalculada: ${distance.toFixed(1)}km / ${route.estimatedTime.toFixed(1)} minutos`);
-            
-            return route;
-        });
-    }
+    // Função removida - substituída pela função centralizada postProcessTspResults
     
     // Função para processar todos os resultados TSP finais e garantir cálculos consistentes
     function postProcessTspResults(tspResults) {
@@ -5303,8 +5255,8 @@
             routeAlternativesSidebarEl.style.display = alternativeRoutes.length > 1 ? 'block' : 'none';
             console.log('Exibindo seletor de rotas alternativas na sidebar:', alternativeRoutes.length > 1);
             
-            // Recalcular tempos e distâncias para garantir consistência
-            alternativeRoutes = recalculateRouteTimeAndDistance(alternativeRoutes);
+            // Usar nossa função centralizada de pós-processamento para garantir consistência
+            alternativeRoutes = postProcessTspResults(alternativeRoutes);
             
             // Atualizar detalhes nos cards de rotas alternativas
             updateRouteCardDetails(alternativeRoutes);
