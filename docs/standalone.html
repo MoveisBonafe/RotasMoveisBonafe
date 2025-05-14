@@ -483,9 +483,6 @@
             border-bottom: 1px solid #ffc107;
             padding-bottom: 3px;
             margin-bottom: 5px;
-        }
-        
-        .origin-point strong {
             color: #000000;
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
@@ -3165,7 +3162,7 @@
                         // Destacar a origem
                         if (location.isOrigin) {
                             item.className = 'origin-point';
-                            item.innerHTML = `<strong>${location.name}</strong> (Origem)`;
+                            item.innerHTML = `${location.name} (Origem)`;
                         } else {
                             item.innerHTML = location.name;
                         }
@@ -5817,7 +5814,7 @@
                     
                     // Verificar se é origem para destacar
                     if (location.isOrigin) {
-                        return `<li class="origin-point"><strong>${locationName}</strong> ${locationAddress ? `(${locationAddress})` : ''} (Origem)</li>`;
+                        return `<li class="origin-point">${locationName} ${locationAddress ? `(${locationAddress})` : ''} (Origem)</li>`;
                     } else {
                         return `<li><strong>${locationName}</strong> ${locationAddress ? `(${locationAddress})` : ''}</li>`;
                     }
