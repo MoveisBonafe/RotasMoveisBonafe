@@ -1495,6 +1495,20 @@
             }
             
             console.log(`Datas inicializadas: de ${startDate.value} até ${endDate.value}`);
+            
+            // Adicionar listeners para atualizar os eventos quando as datas mudarem
+            startDate.addEventListener('change', function() {
+                console.log("Data de início alterada para:", this.value);
+                filterEventsByDate();
+            });
+            
+            endDate.addEventListener('change', function() {
+                console.log("Data de fim alterada para:", this.value);
+                filterEventsByDate();
+            });
+            
+            // Chamar o filtro de eventos inicialmente para aplicar as datas padrão
+            setTimeout(filterEventsByDate, 500);
         } catch (error) {
             console.error("Erro ao inicializar seletores de data:", error);
         }
