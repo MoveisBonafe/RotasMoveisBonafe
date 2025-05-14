@@ -25,7 +25,7 @@ cp ../docs/map-controls.js ./js/
 cp ../docs/geocode-fix.js ./js/
 cp ../docs/remove-duplicates.js ./js/remove-duplicates.js
 cp ../docs/solucao-universal.js ./js/solucao-universal.js
-cp ../docs/corrigir-relatorio.js ./js/corrigir-relatorio.js
+cp ../docs/correcao-relatorio.js ./js/correcao-relatorio.js
 
 # Copiar index.html otimizado
 cp ../docs/index.html ./
