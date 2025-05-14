@@ -307,6 +307,33 @@
             margin-left: 10px;
             cursor: pointer;
         }
+        /* Estilos para rota personalizada */
+        .draggable {
+            cursor: move;
+        }
+        
+        .location-item.dragging {
+            opacity: 0.5;
+            background-color: #f8f9fa;
+        }
+        
+        .custom-route-active .location-item {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .custom-route-active .location-item::before {
+            content: "≡";
+            position: absolute;
+            left: 10px;
+            color: #6c757d;
+            font-size: 18px;
+        }
+        
+        .custom-route-active .location-item:hover {
+            background-color: #f8f9fa;
+        }
+
         #route-summary {
             display: none;
             margin-top: 20px;
@@ -1160,10 +1187,13 @@
                         <!-- Locais serão adicionados aqui dinamicamente -->
                     </div>
                     
-                    <!-- Botão para otimizar rota -->
+                    <!-- Botões para gerenciar rota -->
                     <div class="optimize-btn-container">
-                        <button id="optimize-route" class="btn" style="background-color: #ffc107; color: #000000; font-weight: 600; border-color: #ffab00;">
+                        <button id="optimize-route" class="btn mb-2" style="background-color: #ffc107; color: #000000; font-weight: 600; border-color: #ffab00; width: 100%;">
                             Otimizar Rota
+                        </button>
+                        <button id="custom-route" class="btn" style="background-color: #f8f9fa; color: #000000; font-weight: 600; border-color: #ced4da; width: 100%;">
+                            Rota Personalizada
                         </button>
                     </div>
                     
