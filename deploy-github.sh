@@ -25,6 +25,7 @@ cp ../docs/map-controls.js ./js/
 cp ../docs/geocode-fix.js ./js/
 cp ../docs/remove-duplicates.js ./js/remove-duplicates.js
 cp ../docs/drag-drop-alternative.js ./js/drag-drop-alternative.js
+cp ../docs/github-fix.js ./js/github-fix.js
 
 # Copiar index.html otimizado
 cp ../docs/index.html ./

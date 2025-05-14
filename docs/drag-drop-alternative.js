@@ -402,6 +402,8 @@
         
         // Adicionar evento de clique
         cardRotaPersonalizada.addEventListener('click', function() {
+            console.log('[DragDropAlt] Card de rota personalizada clicado');
+            
             // Remover seleção de outros cards
             const cards = container.querySelectorAll('.route-option-card');
             cards.forEach(card => card.classList.remove('selected'));
@@ -409,8 +411,25 @@
             // Selecionar este card
             cardRotaPersonalizada.classList.add('selected');
             
-            // Calcular e mostrar rota personalizada
-            calcularRotaPersonalizada();
+            // Certificar-se de que temos todas as informações necessárias antes de calcular
+            if (window.corrigirProblemasGitHub) {
+                console.log('[DragDropAlt] Aplicando correções do GitHub antes de calcular rota');
+                try {
+                    window.corrigirProblemasGitHub();
+                    window.github_fix_applied = true;
+                } catch (e) {
+                    console.error('[DragDropAlt] Erro ao aplicar correções:', e);
+                }
+            }
+            
+            // Recalcular destinos
+            salvarOrdemAtual();
+            
+            // Aguardar um momento para garantir que tudo está inicializado
+            setTimeout(function() {
+                // Calcular e mostrar rota personalizada
+                calcularRotaPersonalizada();
+            }, 100);
         });
         
         // Adicionar ao container
