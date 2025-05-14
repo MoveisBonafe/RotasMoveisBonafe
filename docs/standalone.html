@@ -1128,8 +1128,11 @@
             <div class="bottom-tab-content" id="bottom-restrictions-content">
                 <h5>Restrições para caminhões do percurso:</h5>
                 <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
-                <div class="restrictions-list" id="restrictions-list">
-                    <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
+                <!-- Container com altura ajustável -->
+                <div class="restrictions-container" style="width: 100%; height: auto; min-height: 150px;">
+                    <div class="restrictions-list" id="restrictions-list">
+                        <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
+                    </div>
                 </div>
             </div>
             
@@ -4313,11 +4316,12 @@
             titleElement.style.borderRadius = '4px';
             titleElement.style.fontWeight = 'bold';
             titleElement.style.textAlign = 'center';
+            titleElement.style.width = '100%'; // Ocupar toda a largura disponível
             
             // Construir nome das cidades para o título usando displayName em vez de cityName
             const citiesSequence = citiesInRoute.map(c => c.displayName || c.cityName).join(' → ');
             titleElement.innerHTML = 'Restrições para caminhões na rota<br>' + 
-                                    '<span style="font-size: 0.8em; font-weight: normal;">' +
+                                    '<span style="font-size: 0.9em; font-weight: normal; word-wrap: break-word; display: inline-block; width: 100%;">' +
                                     citiesSequence +
                                     '</span>';
             
@@ -4757,8 +4761,9 @@
                 titleElement.style.borderRadius = '4px';
                 titleElement.style.fontWeight = 'bold';
                 titleElement.style.textAlign = 'center';
+                titleElement.style.width = '100%'; // Ocupar toda a largura disponível
                 titleElement.innerHTML = 'Restrições para caminhões na rota<br>' + 
-                                        '<span style="font-size: 0.8em; font-weight: normal;">' +
+                                        '<span style="font-size: 0.9em; font-weight: normal; word-wrap: break-word; display: inline-block; width: 100%;">' +
                                         'Dois Córregos → Jaú → Bauru' +
                                         '</span>';
                 
