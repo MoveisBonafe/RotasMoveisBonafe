@@ -310,11 +310,25 @@
         /* Estilos para rota personalizada */
         .draggable {
             cursor: move;
+            position: relative;
+            transition: background-color 0.2s ease;
+        }
+        
+        .draggable:hover {
+            background-color: #fffbeb;
+        }
+        
+        .draggable:hover::before {
+            content: '⇕';
+            position: absolute;
+            left: 5px;
+            color: #ffc107;
         }
         
         .location-item.dragging {
-            opacity: 0.5;
-            background-color: #f8f9fa;
+            opacity: 0.7;
+            background-color: #fffbeb;
+            border: 1px dashed #ffc107;
         }
         
         .custom-route-active .location-item {
@@ -6729,41 +6743,114 @@
     // Funções para manipular eventos de drag and drop
     function handleDragStart(e) {
         dragItem = e.target;
-        e.target.classList.add('dragging');
+        // Verificar se o elemento tem classList
+        if (e.target && e.target.classList) {
+            e.target.classList.add('dragging');
+            // Fornecer feedback visual e melhorar a experiência de arrastar
+            e.dataTransfer.effectAllowed = 'move';
+            // Definir uma imagem fantasma personalizada para melhorar a visualização
+            try {
+                const ghostElement = e.target.cloneNode(true);
+                ghostElement.style.opacity = '0.7';
+                ghostElement.style.position = 'absolute';
+                ghostElement.style.top = '-1000px';
+                document.body.appendChild(ghostElement);
+                e.dataTransfer.setDragImage(ghostElement, 20, 20);
+                setTimeout(() => {
+                    document.body.removeChild(ghostElement);
+                }, 0);
+            } catch (error) {
+                console.log("Erro ao criar imagem fantasma para drag:", error);
+            }
+        }
     }
     
     function handleDragOver(e) {
         e.preventDefault();
+        // Melhorar o feedback visual durante o drag over
+        e.dataTransfer.dropEffect = 'move';
+        
+        // Garantir que temos um elemento de lista (li)
+        let targetElement = e.target;
+        while (targetElement && targetElement.nodeName !== 'LI') {
+            targetElement = targetElement.parentNode;
+        }
+        
+        if (targetElement && !targetElement.classList.contains('origin-point')) {
+            dragOverItem = targetElement;
+        }
     }
     
     function handleDragEnter(e) {
         e.preventDefault();
-        dragOverItem = e.target;
+        
+        // Garantir que temos um elemento de lista (li)
+        let targetElement = e.target;
+        while (targetElement && targetElement.nodeName !== 'LI') {
+            targetElement = targetElement.parentNode;
+        }
+        
+        // Adicionar destaque visual quando entrar em uma área válida de drop
+        if (targetElement && !targetElement.classList.contains('origin-point')) {
+            targetElement.style.backgroundColor = '#fffbeb';
+            dragOverItem = targetElement;
+        }
     }
     
     function handleDragLeave(e) {
         e.preventDefault();
+        
+        // Garantir que temos um elemento de lista (li)
+        let targetElement = e.target;
+        while (targetElement && targetElement.nodeName !== 'LI') {
+            targetElement = targetElement.parentNode;
+        }
+        
+        // Remover destaque visual quando sair da área de drop
+        if (targetElement) {
+            targetElement.style.backgroundColor = '';
+        }
     }
     
     function handleDrop(e) {
         e.preventDefault();
         
-        // Não permitir soltar sobre a origem
-        if (dragOverItem.classList.contains('origin-point')) {
+        // Verificar se temos dragItem e dragOverItem válidos
+        if (!dragItem || !dragOverItem) {
+            console.error("Erro no drag and drop: dragItem ou dragOverItem é nulo");
             return;
         }
         
-        // Reordenar os itens na lista
-        const parent = dragItem.parentNode;
-        const referenceNode = (dragOverItem !== dragItem.nextSibling) ? 
-                              dragOverItem : 
-                              dragOverItem.nextSibling;
+        // Não permitir soltar sobre a origem
+        if (dragOverItem.classList && dragOverItem.classList.contains('origin-point')) {
+            return;
+        }
         
-        parent.insertBefore(dragItem, referenceNode);
+        try {
+            // Reordenar os itens na lista
+            const parent = dragItem.parentNode;
+            if (!parent) {
+                console.error("Erro no drag and drop: parent é nulo");
+                return;
+            }
+            
+            const referenceNode = (dragOverItem !== dragItem.nextSibling) ? 
+                                dragOverItem : 
+                                dragOverItem.nextSibling;
+            
+            parent.insertBefore(dragItem, referenceNode);
+            
+            // Atualizar a rota imediatamente após o drop
+            updateCustomRoute();
+        } catch (error) {
+            console.error("Erro ao reordenar itens:", error);
+        }
     }
     
     function handleDragEnd() {
-        dragItem.classList.remove('dragging');
+        if (dragItem && dragItem.classList) {
+            dragItem.classList.remove('dragging');
+        }
         dragItem = null;
         dragOverItem = null;
     }
