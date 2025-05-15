@@ -1,0 +1,101 @@
+/* Estilo a ser inserido na sua página GitHub Pages para corrigir o layout */
+
+/* Container global para absoluto */
+.app-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Área de conteúdo principal com posicionamento absoluto */
+.main-content-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 60px; /* Altura fixa para barra inferior */
+    display: flex;
+    overflow: hidden;
+}
+
+/* Sidebar com posicionamento absoluto e altura fixa */
+.sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 380px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    overflow-y: auto;
+    z-index: 10;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+/* Área do mapa alinhada à sidebar */
+.map-container {
+    position: absolute;
+    top: 0;
+    left: 380px; /* Largura da sidebar */
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+/* Elemento do mapa preenchendo container */
+#map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Barra inferior com abas */
+.bottom-tabs-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px; /* Altura fixa */
+    background-color: #f1f3f5;
+    border-top: 1px solid #dee2e6;
+    z-index: 20;
+    overflow: hidden;
+}
+
+/* Versão minimizada das abas */
+.bottom-tabs-container.minimized {
+    height: 60px;
+}
+
+/* Versão expandida das abas */
+.bottom-tabs-container.expanded {
+    height: 300px; /* Ou outro valor apropriado */
+    overflow-y: auto;
+}
+
+/* Tabs na barra inferior */
+.bottom-tabs-container .tab-buttons {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    background-color: #f8f9fa;
+}
+
+/* Ajuste para telas menores */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 320px;
+    }
+    
+    .map-container {
+        left: 320px;
+    }
+    
+    .bottom-tabs-container {
+        left: 320px;
+        width: calc(100% - 320px);
+    }
+}

@@ -1,0 +1,29 @@
+PASSOS PARA ATUALIZAR O GITHUB PAGES
+
+1. FAZER BACKUP
+   - Antes de qualquer coisa, faça um backup da pasta docs atual
+   
+2. SUBSTITUIR index.html
+   - Renomeie o atual index.html para entrada.html (se quiser preservá-lo)
+   - Copie o arquivo standalone.html para index.html
+   
+3. CORRIGIR CSS
+   - Verifique se o CSS do arquivo css_a_inserir.css está incluído no novo index.html
+   - Este CSS garante que a sidebar ocupe toda a altura disponível até a barra inferior
+   
+4. TESTAR LOCALMENTE
+   - Abra o arquivo index.html em um navegador para testar antes de fazer upload
+   
+5. FAZER UPLOAD
+   - Faça upload dos arquivos atualizados para a pasta docs do seu repositório GitHub
+   
+6. VERIFICAR GITHUB PAGES
+   - Vá para Settings > Pages e verifique se a configuração está apontando para /docs
+   
+7. ACESSAR SITE
+   - Após alguns minutos, acesse https://moveisbonafe.github.io/RotasMoveisBonafe/
+   - Agora a aplicação deve carregar diretamente sem precisar adicionar standalone.html
+   
+OBSERVAÇÃO IMPORTANTE:
+Se encontrar problemas com caminhos de arquivos, verifique se todas as referências a 
+arquivos CSS, JavaScript e imagens estão usando caminhos relativos (./assets/, ./js/, etc).
