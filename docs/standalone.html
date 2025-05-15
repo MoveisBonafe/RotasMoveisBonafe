@@ -2155,8 +2155,13 @@
         if (isLegendVisible()) {
             // Se já existe, simplesmente remova-a (funcionamento como toggle)
             const existingLegend = document.querySelector('.region-legend');
-            if (existingLegend && existingLegend.parentNode) {
-                existingLegend.parentNode.removeChild(existingLegend);
+            if (existingLegend) {
+                if (existingLegend.parentNode) {
+                    existingLegend.parentNode.removeChild(existingLegend);
+                } else {
+                    // Se não tiver parentNode, simplesmente remova do DOM
+                    existingLegend.remove();
+                }
             }
             return;
         }
@@ -2172,8 +2177,9 @@
         legendDiv.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
         legendDiv.style.width = '200px';
         legendDiv.style.fontSize = '12px';
-        legendDiv.style.margin = '10px';
+        legendDiv.style.margin = '10px'; 
         legendDiv.style.position = 'relative';
+        legendDiv.style.zIndex = '1000';
         
         // Lista das regiões específicas de São Paulo (ordenadas alfabeticamente)
         const regioesSaoPaulo = [
@@ -2317,8 +2323,15 @@
         
         legendDiv.appendChild(scrollContainer);
         
-        // Posicionar a legenda no centro-direita do mapa
-        map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(legendDiv);
+        // Posicionar a legenda manualmente no centro-direita do mapa
+        legendDiv.style.position = 'absolute';
+        legendDiv.style.right = '10px';
+        legendDiv.style.top = '50%';
+        legendDiv.style.transform = 'translateY(-50%)';
+        legendDiv.style.maxHeight = '80%';
+        
+        // Adicionar a legenda ao DOM
+        document.querySelector('#map').appendChild(legendDiv);
     }
     
     // Inicializa o autocomplete
