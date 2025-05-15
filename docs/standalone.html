@@ -623,6 +623,18 @@
             }
         }
         
+        /* Estilo para personalizar a lista de sequência da rota */
+        .custom-route-list {
+            list-style-type: none;
+            padding-left: 10px;
+            margin-top: 10px;
+        }
+        
+        .custom-route-list li {
+            margin-bottom: 5px;
+            padding: 4px 0;
+        }
+        
         /* Estilo para datas */
         .date-range-container {
             display: flex;
@@ -7085,9 +7097,9 @@
                 
                 <div class="mt-3">
                     <div class="summary-header">Sequência da Rota</div>
-                    <ol id="route-steps">
+                    <ul id="route-steps" class="custom-route-list">
                         ${locationsList}
-                    </ol>
+                    </ul>
                 </div>
                 
                 <!-- Campo "Nome da rota" removido daqui para evitar duplicação, já existe na aba relatório -->
