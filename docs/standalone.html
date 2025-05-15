@@ -750,7 +750,6 @@
             width: 16px;
             height: 16px;
         }
-        }
         
         /* Estilo para lista de eventos */
         .events-list {
@@ -1339,14 +1338,21 @@
                 </button>
                 <button class="map-control-btn" id="show-sp-legend" title="Mostrar legenda de São Paulo">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FF8A33" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                        <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm0 14.5a6.5 6.5 0 1 1 0-13 6.5 6.5 0 0 1 0 13z"/>
+                        <path d="M9 5H7v2h2V5z"/>
+                        <path d="M7 8h2v3H7V8z"/>
                     </svg>
                 </button>
                 <button class="map-control-btn" id="show-mg-legend" title="Mostrar legenda de Minas Gerais">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#DAA520" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                        <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm0 14.5a6.5 6.5 0 1 1 0-13 6.5 6.5 0 0 1 0 13z"/>
+                        <path d="M9 5H7v2h2V5z"/>
+                        <path d="M7 8h2v3H7V8z"/>
+                    </svg>
+                </button>
+                <button class="map-control-btn" id="hide-legends" title="Ocultar todas as legendas">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                     </svg>
                 </button>
             </div>
@@ -2251,21 +2257,38 @@
         
         // Adicionar botão de fechar
         const closeButton = document.createElement('button');
-        closeButton.innerHTML = '&times;';
-        closeButton.style.position = 'absolute';
-        closeButton.style.top = '5px';
-        closeButton.style.right = '5px';
-        closeButton.style.background = 'none';
-        closeButton.style.border = 'none';
-        closeButton.style.fontSize = '16px';
-        closeButton.style.cursor = 'pointer';
-        closeButton.onclick = function() {
-            legendDiv.style.display = 'none';
-        };
-        legendDiv.appendChild(closeButton);
+        // Construir cabeçalho com título e botão de fechar
+        const legendHeader = document.createElement('div');
+        legendHeader.style.display = 'flex';
+        legendHeader.style.justifyContent = 'space-between';
+        legendHeader.style.alignItems = 'center';
+        legendHeader.style.marginBottom = '10px';
         
-        // Adicionar a legenda ao mapa
-        map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legendDiv);
+        // Título da legenda
+        const legendTitle = document.createElement('div');
+        legendTitle.textContent = estado === 'SP' ? 'Regiões de São Paulo' : 
+                                estado === 'MG' ? 'Regiões de Minas Gerais' : 
+                                'Regiões de São Paulo e Minas Gerais';
+        legendTitle.style.fontWeight = 'bold';
+        legendTitle.style.fontSize = '14px';
+        
+        // Botão de fechar
+        closeButton.innerHTML = '&times;';
+        closeButton.className = 'close-button';
+        closeButton.onclick = function() {
+            if (legendDiv.parentNode) {
+                legendDiv.parentNode.removeChild(legendDiv);
+            }
+        };
+        
+        legendHeader.appendChild(legendTitle);
+        legendHeader.appendChild(closeButton);
+        
+        // Adicionar o cabeçalho no topo da legenda
+        legendDiv.insertBefore(legendHeader, legendDiv.firstChild);
+        
+        // Adicionar a legenda ao mapa (à esquerda)
+        map.controls[google.maps.ControlPosition.LEFT_CENTER].push(legendDiv);
     }
     
     // Inicializa o autocomplete
@@ -2588,6 +2611,15 @@
         });
         document.getElementById('show-mg-legend').addEventListener('click', function() {
             createRegionLegend('MG');
+        });
+        document.getElementById('hide-legends').addEventListener('click', function() {
+            // Remover todas as legendas existentes
+            const legends = document.querySelectorAll('.region-legend');
+            legends.forEach(legend => {
+                if (legend && legend.parentNode) {
+                    legend.parentNode.removeChild(legend);
+                }
+            });
         });
         
         // Botões da aba de relatório
