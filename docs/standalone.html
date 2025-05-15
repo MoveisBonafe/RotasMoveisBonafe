@@ -3124,6 +3124,38 @@
         // Normalizar o nome da cidade (remover acentos, converter para minúsculas)
         const normalizedCityName = cityName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         
+        // Cores fixas para cada região de São Paulo (conforme legendas)
+        const coresPorRegiao = {
+            'Araçatuba': '#FF5733',
+            'Araraquara': '#900C3F',
+            'Bauru': '#FF8D33',
+            'Campinas': '#C70039',
+            'Marília': '#900C3F',
+            'Presidente Prudente': '#C70039',
+            'Ribeirão Preto': '#581845',
+            'São José do Rio Preto': '#FFC300',
+            'São José dos Campos': '#FF5733',
+            'São Paulo': '#337DFF',
+            'Sorocaba': '#33A8FF'
+        };
+        
+        // Cores fixas para regiões de Minas Gerais
+        const coresMG = {
+            'Barbacena': '#008080',
+            'Belo Horizonte': '#AB4500',
+            'Divinópolis': '#9932CC',
+            'Governador Valadares': '#20B2AA',
+            'Ipatinga': '#800080',
+            'Juiz de Fora': '#8B008B',
+            'Montes Claros': '#7B2343',
+            'Patos de Minas': '#FFD700',
+            'Pouso Alegre': '#4169E1',
+            'Teófilo Otoni': '#2F4F4F',
+            'Uberaba': '#DAA520',
+            'Uberlândia': '#8FBC8F',
+            'Varginha': '#708090'
+        };
+        
         // Verificar cada região
         for (const [regiao, dados] of Object.entries(regioesSP)) {
             // Verificar se a cidade está nesta região
@@ -3133,10 +3165,12 @@
             );
             
             if (cidadeEncontrada) {
-                console.log(`Cidade ${cityName} pertence à região ${regiao} (cor: ${dados.cor})`);
+                // Usar a cor da legenda para esta região
+                const cor = coresPorRegiao[regiao] || dados.cor;
+                console.log(`Cidade ${cityName} pertence à região ${regiao} (cor: ${cor})`);
                 return {
                     regiao: regiao,
-                    cor: dados.cor
+                    cor: cor
                 };
             }
         }
