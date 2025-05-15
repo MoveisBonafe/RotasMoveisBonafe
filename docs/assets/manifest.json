@@ -1,0 +1,16 @@
+{
+  "name": "Otimizador de Rotas Móveis Bonafé",
+  "short_name": "Rotas Bonafé",
+  "description": "Otimizador de rotas para entregas da Móveis Bonafé",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffc107",
+  "icons": [
+    {
+      "src": "../generated-icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
