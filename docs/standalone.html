@@ -1263,6 +1263,37 @@
             font-family: Arial, sans-serif;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
         }
+        
+        /* Estilo para os controles personalizados do mapa */
+        .custom-map-control {
+            margin: 10px;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+        }
+        
+        .map-control-button {
+            background-color: #fff;
+            border: none;
+            color: #666;
+            font-size: 16px;
+            line-height: 24px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .map-control-button:hover {
+            background-color: #f1f1f1;
+            color: #000;
+        }
+        
+        .map-control-button.active {
+            background-color: #ffc107;
+            color: #000;
+        }
     </style>
 </head>
 <body>
@@ -2296,6 +2327,20 @@
         // Redimensionar o mapa agora e quando a janela for redimensionada
         resizeMap();
         window.addEventListener('resize', resizeMap);
+        
+        // Adicionar controle personalizado para os balões contadores
+        const counterControlDiv = document.createElement('div');
+        counterControlDiv.className = 'custom-map-control';
+        counterControlDiv.title = 'Mostrar/esconder contadores regionais';
+        counterControlDiv.innerHTML = '<button id="counter-toggle" class="map-control-button" title="Mostrar/esconder contadores regionais">🔢</button>';
+        map.controls[google.maps.ControlPosition.LEFT_TOP].push(counterControlDiv);
+        
+        // Adicionar controle personalizado para a legenda de regiões
+        const legendControlDiv = document.createElement('div');
+        legendControlDiv.className = 'custom-map-control';
+        legendControlDiv.title = 'Mostrar/esconder legenda de regiões';
+        legendControlDiv.innerHTML = '<button id="legend-toggle" class="map-control-button" title="Mostrar/esconder legenda de regiões">L</button>';
+        map.controls[google.maps.ControlPosition.LEFT_TOP].push(legendControlDiv);
         
         // Inicializar o serviço de direções
         directionsService = new google.maps.DirectionsService();
