@@ -1833,8 +1833,61 @@
         
         // Criar o tooltip personalizado
         createCustomTooltip();
+        
+        // Adicionar legenda das regiões
+        createRegionLegend();
     }
 
+    // Cria e adiciona a legenda das regiões no mapa
+    function createRegionLegend() {
+        // Remover legenda existente se houver
+        const existingLegend = document.querySelector('.region-legend');
+        if (existingLegend && existingLegend.parentNode) {
+            existingLegend.parentNode.removeChild(existingLegend);
+        }
+        
+        // Criar elemento de legenda
+        const legendDiv = document.createElement('div');
+        legendDiv.className = 'region-legend';
+        legendDiv.innerHTML = '<h5>Regiões de São Paulo</h5>';
+        
+        // Adicionar cada região com sua cor
+        for (const [regiao, dados] of Object.entries(regioesSP)) {
+            const regionItem = document.createElement('div');
+            regionItem.className = 'region-item';
+            
+            const colorBox = document.createElement('div');
+            colorBox.className = 'color-box';
+            colorBox.style.backgroundColor = dados.cor;
+            
+            const regionName = document.createElement('div');
+            regionName.className = 'region-name';
+            regionName.textContent = regiao;
+            
+            regionItem.appendChild(colorBox);
+            regionItem.appendChild(regionName);
+            legendDiv.appendChild(regionItem);
+        }
+        
+        // Adicionar botão de fechar
+        const closeButton = document.createElement('button');
+        closeButton.innerHTML = '&times;';
+        closeButton.style.position = 'absolute';
+        closeButton.style.top = '5px';
+        closeButton.style.right = '5px';
+        closeButton.style.background = 'none';
+        closeButton.style.border = 'none';
+        closeButton.style.fontSize = '16px';
+        closeButton.style.cursor = 'pointer';
+        closeButton.onclick = function() {
+            legendDiv.style.display = 'none';
+        };
+        legendDiv.appendChild(closeButton);
+        
+        // Adicionar a legenda ao mapa
+        map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legendDiv);
+    }
+    
     // Inicializa o autocomplete
     function initAutocomplete() {
         const input = document.getElementById('location-search');
@@ -2723,7 +2776,19 @@
         if (!location.isOrigin && cidadeDaLocalizacao) {
             const infoRegiao = getRegionColorForCity(cidadeDaLocalizacao);
             if (infoRegiao && infoRegiao.regiao !== "Desconhecida") {
-                regiaoInfo = `<p style="margin-bottom: 5px;"><strong>Região:</strong> <span style="color:${infoRegiao.cor}">${infoRegiao.regiao}</span></p>`;
+                regiaoInfo = `
+                    <p style="margin-bottom: 8px;">
+                        <strong>Região:</strong> 
+                        <span style="
+                            color: white; 
+                            background-color: ${infoRegiao.cor}; 
+                            padding: 2px 6px; 
+                            border-radius: 4px; 
+                            font-weight: bold;
+                            display: inline-block;
+                            margin-left: 5px;
+                        ">${infoRegiao.regiao}</span>
+                    </p>`;
             }
         }
         
