@@ -2332,14 +2332,14 @@
         const counterControlDiv = document.createElement('div');
         counterControlDiv.className = 'custom-map-control';
         counterControlDiv.title = 'Mostrar/esconder contadores regionais';
-        counterControlDiv.innerHTML = '<button id="counter-toggle" class="map-control-button" title="Mostrar/esconder contadores regionais">🔢</button>';
+        counterControlDiv.innerHTML = '<button id="counter-toggle" class="map-control-button active" title="Esconder contadores regionais">🔢</button>';
         map.controls[google.maps.ControlPosition.LEFT_TOP].push(counterControlDiv);
         
         // Adicionar controle personalizado para a legenda de regiões
         const legendControlDiv = document.createElement('div');
         legendControlDiv.className = 'custom-map-control';
         legendControlDiv.title = 'Mostrar/esconder legenda de regiões';
-        legendControlDiv.innerHTML = '<button id="legend-toggle" class="map-control-button" title="Mostrar/esconder legenda de regiões">L</button>';
+        legendControlDiv.innerHTML = '<button id="legend-toggle" class="map-control-button" title="Mostrar legenda de regiões">L</button>';
         map.controls[google.maps.ControlPosition.LEFT_TOP].push(legendControlDiv);
         
         // Inicializar o serviço de direções
@@ -2389,11 +2389,11 @@
         const counterToggleBtn = document.getElementById('counter-toggle');
         if (counterToggleBtn) {
             if (countMarkersVisible) {
-                counterToggleBtn.innerHTML = '<i class="fas fa-map-pin"></i>';
-                counterToggleBtn.title = "Ocultar Contadores de Região";
+                counterToggleBtn.classList.add('active');
+                counterToggleBtn.title = 'Esconder contadores regionais';
             } else {
-                counterToggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
-                counterToggleBtn.title = "Mostrar Contadores de Região";
+                counterToggleBtn.classList.remove('active');
+                counterToggleBtn.title = 'Mostrar contadores regionais';
             }
         }
     }
@@ -2405,6 +2405,9 @@
 
     // Cria e adiciona a legenda das regiões no mapa
     function createRegionLegend(estado = null) {
+        // Pegar o botão de toggle da legenda para atualizar seu estado visual
+        const legendToggleBtn = document.getElementById('legend-toggle');
+        
         // Verificar se já existe uma legenda
         if (isLegendVisible()) {
             // Se já existe, simplesmente remova-a (funcionamento como toggle)
@@ -2417,7 +2420,20 @@
                     existingLegend.remove();
                 }
             }
+            
+            // Atualizar aparência do botão quando a legenda é fechada
+            if (legendToggleBtn) {
+                legendToggleBtn.classList.remove('active');
+                legendToggleBtn.title = 'Mostrar legenda de regiões';
+            }
+            
             return;
+        }
+        
+        // Atualizar aparência do botão quando a legenda é aberta
+        if (legendToggleBtn) {
+            legendToggleBtn.classList.add('active');
+            legendToggleBtn.title = 'Esconder legenda de regiões';
         }
         
         // Criar elemento de legenda
