@@ -2197,105 +2197,84 @@
         legendDiv.className = 'region-legend';
         legendDiv.setAttribute('data-state', estado);
         
-        // Aplicar estilo aprimorado para a legenda
-        legendDiv.style.position = 'absolute';
-        legendDiv.style.maxHeight = '70vh';
-        legendDiv.style.overflowY = 'auto';
-        legendDiv.style.padding = '10px 15px';
-        legendDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-        legendDiv.style.borderRadius = '6px';
-        legendDiv.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.2)';
-        legendDiv.style.zIndex = '10';
-        legendDiv.style.width = '220px';
+        // Aplicar estilo básico para a legenda
+        legendDiv.style.backgroundColor = 'white';
+        legendDiv.style.padding = '10px';
+        legendDiv.style.borderRadius = '4px';
+        legendDiv.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
+        legendDiv.style.maxWidth = '200px';
+        legendDiv.style.fontSize = '12px';
         legendDiv.style.margin = '10px';
         
         // Título principal
-        const titleElement = document.createElement('h5');
+        const titleElement = document.createElement('div');
         titleElement.textContent = estado === 'SP' ? 'Regiões de São Paulo' : 'Regiões de Minas Gerais';
-        titleElement.style.margin = '0 0 12px 0';
-        titleElement.style.fontWeight = '600';
-        titleElement.style.fontSize = '14px';
-        titleElement.style.borderBottom = '1px solid #ddd';
-        titleElement.style.paddingBottom = '8px';
+        titleElement.style.fontWeight = 'bold';
+        titleElement.style.marginBottom = '8px';
+        titleElement.style.borderBottom = '1px solid #ccc';
+        titleElement.style.paddingBottom = '5px';
         legendDiv.appendChild(titleElement);
         
-        // Container para os itens da legenda com rolagem
-        const itemsContainer = document.createElement('div');
-        itemsContainer.style.maxHeight = 'calc(70vh - 50px)';
-        itemsContainer.style.overflowY = 'auto';
+        // Lista das regiões específicas de São Paulo
+        const regioesSaoPaulo = [
+            { nome: 'São José dos Campos', cor: '#FF5733' },
+            { nome: 'Campinas', cor: '#C70039' },
+            { nome: 'Araraquara', cor: '#900C3F' },
+            { nome: 'Ribeirão Preto', cor: '#581845' },
+            { nome: 'São José do Rio Preto', cor: '#FFC300' },
+            { nome: 'Araçatuba', cor: '#FF5733' },
+            { nome: 'Presidente Prudente', cor: '#C70039' },
+            { nome: 'Marília', cor: '#900C3F' },
+            { nome: 'Bauru', cor: '#FF8D33' },
+            { nome: 'Sorocaba', cor: '#33A8FF' },
+            { nome: 'São Paulo', cor: '#337DFF' }
+        ];
         
-        // Lista de cores específicas para cada região
-        const coresMG = {
-            'Belo Horizonte': '#AB4500',
-            'Montes Claros': '#7B2343',
-            'Teófilo Otoni': '#2F4F4F',
-            'Governador Valadares': '#20B2AA',
-            'Ipatinga': '#800080',
-            'Juiz de Fora': '#8B008B',
-            'Barbacena': '#008080',
-            'Varginha': '#708090',
-            'Pouso Alegre': '#4169E1',
-            'Uberaba': '#DAA520',
-            'Uberlândia': '#8FBC8F',
-            'Patos de Minas': '#FFD700',
-            'Divinópolis': '#9932CC'
-        };
+        // Lista de cores específicas para cada região de Minas Gerais
+        const regioesMG = [
+            { nome: 'Belo Horizonte', cor: '#AB4500' },
+            { nome: 'Montes Claros', cor: '#7B2343' },
+            { nome: 'Teófilo Otoni', cor: '#2F4F4F' },
+            { nome: 'Governador Valadares', cor: '#20B2AA' },
+            { nome: 'Ipatinga', cor: '#800080' },
+            { nome: 'Juiz de Fora', cor: '#8B008B' },
+            { nome: 'Barbacena', cor: '#008080' },
+            { nome: 'Varginha', cor: '#708090' },
+            { nome: 'Pouso Alegre', cor: '#4169E1' },
+            { nome: 'Uberaba', cor: '#DAA520' },
+            { nome: 'Uberlândia', cor: '#8FBC8F' },
+            { nome: 'Patos de Minas', cor: '#FFD700' },
+            { nome: 'Divinópolis', cor: '#9932CC' }
+        ];
         
-        // Para São Paulo, extrair as regiões do objeto regioesSP,
-        // que contém o campo 'cidades' e 'cor'
-        if (estado === 'SP') {
-            for (const [regiao, dados] of Object.entries(regioesSP)) {
-                const regionItem = document.createElement('div');
-                regionItem.className = 'region-item';
-                regionItem.style.display = 'flex';
-                regionItem.style.alignItems = 'center';
-                regionItem.style.marginBottom = '6px';
-                regionItem.style.fontSize = '12px';
-                
-                const colorBox = document.createElement('div');
-                colorBox.style.width = '14px';
-                colorBox.style.height = '14px';
-                colorBox.style.backgroundColor = dados.cor;
-                colorBox.style.borderRadius = '3px';
-                colorBox.style.marginRight = '8px';
-                colorBox.style.border = '1px solid rgba(0,0,0,0.1)';
-                
-                const regionName = document.createElement('div');
-                regionName.textContent = regiao;
-                
-                regionItem.appendChild(colorBox);
-                regionItem.appendChild(regionName);
-                itemsContainer.appendChild(regionItem);
-            }
-        } 
-        // Para Minas Gerais, usar a lista específica de cores
-        else if (estado === 'MG') {
-            for (const [regiao, cor] of Object.entries(coresMG)) {
-                const regionItem = document.createElement('div');
-                regionItem.className = 'region-item';
-                regionItem.style.display = 'flex';
-                regionItem.style.alignItems = 'center';
-                regionItem.style.marginBottom = '6px';
-                regionItem.style.fontSize = '12px';
-                
-                const colorBox = document.createElement('div');
-                colorBox.style.width = '14px';
-                colorBox.style.height = '14px';
-                colorBox.style.backgroundColor = cor;
-                colorBox.style.borderRadius = '3px';
-                colorBox.style.marginRight = '8px';
-                colorBox.style.border = '1px solid rgba(0,0,0,0.1)';
-                
-                const regionName = document.createElement('div');
-                regionName.textContent = regiao;
-                
-                regionItem.appendChild(colorBox);
-                regionItem.appendChild(regionName);
-                itemsContainer.appendChild(regionItem);
-            }
-        }
+        // Selecionar as regiões do estado correspondente
+        const regioes = estado === 'SP' ? regioesSaoPaulo : regioesMG;
         
-        legendDiv.appendChild(itemsContainer);
+        // Criar lista de itens
+        const list = document.createElement('div');
+        
+        // Adicionar cada região à lista
+        regioes.forEach(regiao => {
+            const item = document.createElement('div');
+            item.style.display = 'flex';
+            item.style.alignItems = 'center';
+            item.style.marginBottom = '4px';
+            
+            const colorBox = document.createElement('div');
+            colorBox.style.width = '12px';
+            colorBox.style.height = '12px';
+            colorBox.style.backgroundColor = regiao.cor;
+            colorBox.style.marginRight = '5px';
+            
+            const label = document.createElement('span');
+            label.textContent = regiao.nome;
+            
+            item.appendChild(colorBox);
+            item.appendChild(label);
+            list.appendChild(item);
+        });
+        
+        legendDiv.appendChild(list);
         
         // Posicionar a legenda adequadamente no mapa sem sobrepor controles
         const position = estado === 'SP' ? 
