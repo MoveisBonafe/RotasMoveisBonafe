@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffc107">
+    <meta name="description" content="Otimizador de Rotas Móveis Bonafé - Solução para logística e transporte, com suporte a cálculo de rotas entre múltiplos pontos, otimização de sequência, e visualização de eventos e restrições em cidades brasileiras." />
+    <meta name="keywords" content="Bonafé, otimizador de rotas, problema do caixeiro viajante, logística, transporte, planejamento de rotas, otimização de entregas, Brasil, Google Maps, pedágios, eventos em cidades" />
+    <meta name="author" content="Otimizador de Rotas Móveis Bonafé" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Otimizador de Rotas Móveis Bonafé</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+    <link rel="manifest" href="assets/manifest.json">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places"></script>
+    <style>
+        /* Estilos globais - Layout corrigido */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+        
+        /* Container principal */
+        .app-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+        }
+        
+        /* Área de conteúdo principal */
+        .main-content-area {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 60px; /* Altura da barra inferior */
+            overflow: hidden;
+        }
+        
+        /* Sidebar com altura corrigida */
+        .sidebar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 380px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            overflow-y: auto;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        /* Cabeçalho da sidebar */
+        .sidebar-header {
+            margin-bottom: 20px;
+        }
+        
+        /* Conteúdo da sidebar com rolagem */
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        /* Container do mapa ajustado para não sobrepor a sidebar */
+        .map-container {
+            position: absolute;
+            top: 0;
+            left: 380px; /* Alinhado com o fim da sidebar */
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+        }
+        
+        /* Elemento do mapa preenche o container */
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Barra de abas inferior */
+        .bottom-tabs-container {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 60px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+        
+        /* When tabs are minimized */
+        .bottom-tabs-container.minimized {
+            height: 60px;
+        }
+        
+        /* Tabs expanded */
+        .bottom-tabs-container.expanded {
+            height: 300px;
+            overflow-y: auto;
+        }
+        
+        /* Botões das abas */
+        .tab-button {
+            padding: 8px 16px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        /* Adaptação para telas menores */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 320px;
+            }
+            
+            .map-container {
+                left: 320px;
+            }
+            
+            .bottom-tabs-container {
+                left: 320px;
+                width: calc(100% - 320px);
+            }
+        }
+        
+        /* Elementos de formulário */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        /* Botões coloridos */
+        .btn-action {
+            background-color: #ffc107;
+            color: #212121;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+        
+        /* Título da aplicação */
+        .app-title {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .app-title-text {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .app-title-highlight {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        
+        /* Área para upload de arquivos */
+        .upload-area {
+            border: 2px dashed #ddd;
+            padding: 20px;
+            text-align: center;
+            border-radius: 4px;
+            margin: 15px 0;
+            cursor: pointer;
+        }
+        
+        /* Estilos para controles do mapa */
+        .map-controls {
+            position: absolute;
+            bottom: 70px;
+            right: 10px;
+            z-index: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="main-content-area">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h2 class="app-title">
+                        <span class="app-title-text">Otimizador de Rotas</span>
+                        <span class="app-title-highlight">Móveis Bonafé</span>
+                    </h2>
+                </div>
+                
+                <div class="sidebar-content">
+                    <!-- Filtro de eventos por data -->
+                    <div class="form-group">
+                        <label>Filtrar eventos por data:</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="date" id="start-date" class="form-control">
+                            <input type="date" id="end-date" class="form-control">
+                        </div>
+                    </div>
+                    
+                    <!-- Origem fixa -->
+                    <div class="form-group">
+                        <label>Origem:</label>
+                        <input type="text" id="origin" class="form-control" value="Dois Córregos, SP" readonly>
+                    </div>
+                    
+                    <!-- Adicionar local -->
+                    <div class="form-group">
+                        <label>Adicionar local:</label>
+                        <div style="display: flex;">
+                            <input type="text" id="location-input" class="form-control" placeholder="Digite um endereço">
+                            <button id="add-location" style="margin-left: 5px; white-space: nowrap;">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Upload de arquivo -->
+                    <div class="upload-area" id="file-upload-area">
+                        <i class="fas fa-file-upload fa-2x" style="color: #ffc107; margin-bottom: 10px;"></i>
+                        <div>Importar CEPs via arquivo</div>
+                        <input type="file" id="file-upload" style="display: none;">
+                    </div>
+                    
+                    <!-- Locais adicionados -->
+                    <div>
+                        <h5>Locais adicionados:</h5>
+                        <div id="locations-list" style="height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+                            <!-- Lista de locais será preenchida via JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Botão de otimizar rota -->
+                    <button id="optimize-route" class="btn-action" style="margin-top: 20px;">
+                        Otimizar Rota
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Container do mapa -->
+            <div class="map-container">
+                <div id="map"></div>
+                
+                <!-- Controles do mapa -->
+                <div class="map-controls">
+                    <!-- Botões de controle serão adicionados via JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Barra de abas inferior -->
+        <div class="bottom-tabs-container minimized">
+            <button class="tab-button" data-tab="events">Eventos na Rota</button>
+            <button class="tab-button" data-tab="restrictions">Restrições de Tráfego</button>
+            <button class="tab-button" data-tab="report">Relatório da Rota</button>
+        </div>
+    </div>
+    
+    <script>
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar mapa
+            initMap();
+            
+            // Configurar seletores de data
+            setupDatePickers();
+            
+            // Configurar upload de arquivo
+            setupFileUpload();
+            
+            // Configurar botões da interface
+            setupUIControls();
+        });
+        
+        // Configurações globais
+        let map;
+        let markers = [];
+        let directionsService;
+        let directionsRenderer;
+        
+        // Inicializar o mapa do Google
+        function initMap() {
+            // Centro inicial (Dois Córregos)
+            const centerLatLng = { lat: -22.3673, lng: -48.3822 };
+            
+            // Opções do mapa
+            const mapOptions = {
+                center: centerLatLng,
+                zoom: 8,
+                mapTypeControl: true,
+                fullscreenControl: true,
+                streetViewControl: true,
+                gestureHandling: 'greedy' // Permite zoom sem precisar pressionar Ctrl
+            };
+            
+            // Criar o mapa
+            map = new google.maps.Map(document.getElementById('map'), mapOptions);
+            
+            // Inicializar serviços de direções
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                map: map,
+                suppressMarkers: true // Não mostrar os marcadores padrão
+            });
+            
+            // Adicionar marcador para a origem
+            addOriginMarker(centerLatLng);
+            
+            // Configurar autocompletar para entrada de endereços
+            setupAutocomplete();
+            
+            // Redimensionar o mapa quando a janela mudar de tamanho
+            window.addEventListener('resize', resizeMap);
+            
+            // Chamar resizeMap inicialmente para garantir layout correto
+            resizeMap();
+        }
+        
+        // Adicionar marcador para a origem
+        function addOriginMarker(position) {
+            const marker = new google.maps.Marker({
+                position: position,
+                map: map,
+                title: 'Dois Córregos - Origem',
+                icon: {
+                    url: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                    labelOrigin: new google.maps.Point(15, 10)
+                },
+                label: {
+                    text: '0',
+                    color: 'white',
+                    fontSize: '12px',
+                    fontWeight: 'bold'
+                }
+            });
+            
+            // Guardar o marcador
+            markers.push(marker);
+        }
+        
+        // Configurar autocompletar para endereços
+        function setupAutocomplete() {
+            const input = document.getElementById('location-input');
+            const autocomplete = new google.maps.places.Autocomplete(input, {
+                componentRestrictions: { country: 'br' }
+            });
+            
+            // Ao selecionar um lugar no autocompletar
+            autocomplete.addListener('place_changed', function() {
+                const place = autocomplete.getPlace();
+                if (!place.geometry) {
+                    alert('Local não encontrado. Por favor, selecione um local da lista.');
+                    return;
+                }
+                
+                // Adicionar o local à lista
+                addLocation(place);
+            });
+        }
+        
+        // Adicionar um local à lista
+        function addLocation(place) {
+            // Implementar adição de locais aqui
+            console.log('Local adicionado:', place.name);
+            
+            // Limpar campo de input
+            document.getElementById('location-input').value = '';
+        }
+        
+        // Configurar seletores de data
+        function setupDatePickers() {
+            const today = new Date();
+            const nextWeek = new Date();
+            nextWeek.setDate(today.getDate() + 7);
+            
+            const formatDate = date => date.toISOString().split('T')[0];
+            
+            document.getElementById('start-date').value = formatDate(today);
+            document.getElementById('end-date').value = formatDate(nextWeek);
+        }
+        
+        // Configurar upload de arquivo
+        function setupFileUpload() {
+            const uploadArea = document.getElementById('file-upload-area');
+            const fileInput = document.getElementById('file-upload');
+            
+            uploadArea.addEventListener('click', () => fileInput.click());
+            
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        processUploadedFile(event.target.result);
+                    };
+                    reader.readAsText(file);
+                }
+            });
+        }
+        
+        // Processar arquivo enviado
+        function processUploadedFile(content) {
+            // Implementar processamento de arquivo aqui
+            console.log('Arquivo processado', content.substring(0, 100) + '...');
+        }
+        
+        // Configurar controles da interface
+        function setupUIControls() {
+            // Botão de otimizar rota
+            document.getElementById('optimize-route').addEventListener('click', function() {
+                console.log('Otimizando rota...');
+                // Implementar otimização de rota aqui
+            });
+            
+            // Botões de abas
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    toggleTab(this.dataset.tab);
+                });
+            });
+        }
+        
+        // Alternar exibição das abas
+        function toggleTab(tabName) {
+            const tabsContainer = document.querySelector('.bottom-tabs-container');
+            
+            // Se já estiver expandido, verificar se estamos clicando na mesma aba
+            if (tabsContainer.classList.contains('expanded')) {
+                const activeTab = tabsContainer.dataset.activeTab;
+                
+                if (activeTab === tabName) {
+                    // Clicar na mesma aba minimiza
+                    tabsContainer.classList.remove('expanded');
+                    delete tabsContainer.dataset.activeTab;
+                } else {
+                    // Clicar em outra aba muda o conteúdo
+                    tabsContainer.dataset.activeTab = tabName;
+                    // Atualizar conteúdo da aba
+                    updateTabContent(tabName);
+                }
+            } else {
+                // Expandir as abas
+                tabsContainer.classList.add('expanded');
+                tabsContainer.dataset.activeTab = tabName;
+                // Atualizar conteúdo da aba
+                updateTabContent(tabName);
+            }
+        }
+        
+        // Atualizar conteúdo da aba ativa
+        function updateTabContent(tabName) {
+            // Implementar atualização de conteúdo aqui
+            console.log('Atualizando conteúdo da aba:', tabName);
+        }
+        
+        // Redimensionar o mapa para se ajustar ao layout
+        function resizeMap() {
+            const sidebar = document.querySelector('.sidebar');
+            const mapContainer = document.querySelector('.map-container');
+            const bottomTabs = document.querySelector('.bottom-tabs-container');
+            
+            if (sidebar && mapContainer && bottomTabs) {
+                const sidebarWidth = sidebar.offsetWidth;
+                
+                // Ajustar container do mapa
+                mapContainer.style.left = sidebarWidth + 'px';
+                mapContainer.style.width = 'calc(100% - ' + sidebarWidth + 'px)';
+                
+                // Ajustar barra inferior
+                bottomTabs.style.left = sidebarWidth + 'px';
+                bottomTabs.style.width = 'calc(100% - ' + sidebarWidth + 'px)';
+                
+                // Forçar o redimensionamento do mapa
+                if (map) {
+                    google.maps.event.trigger(map, 'resize');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
