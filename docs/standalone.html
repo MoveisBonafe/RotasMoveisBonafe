@@ -3449,15 +3449,23 @@
         let markerColor = '#1976D2'; // Cor padrão (azul)
         let infoRegiao = null;
         
+        // Extrair a cidade da localização
+        const cidadeDaLocalizacao = extractCityFromAddress(location.address) || location.name;
+        
         if (index === 0) {
             markerColor = '#FF0000'; // Origem sempre vermelho
         } else {
             // Determinar região e cor com base no nome da cidade
-            const cidadeDaLocalizacao = extractCityFromAddress(location.address) || location.name;
             infoRegiao = getRegionColorForCity(cidadeDaLocalizacao);
             
             if (infoRegiao) {
                 markerColor = infoRegiao.cor; // Usar a cor da região
+                
+                // Atualizar contador da região se for um novo local adicionado (não durante reordenação)
+                if (!targetArray && !location.contabilizado) {
+                    updateRegionCounter(cidadeDaLocalizacao);
+                    location.contabilizado = true; // Marcar para não contar novamente
+                }
             } else if (isSameCityAsOrigin) {
                 markerColor = '#FF9800'; // Fallback para ponto na mesma cidade (laranja)
             }
