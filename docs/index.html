@@ -1419,7 +1419,7 @@
             color: #000;
         }
     </style>
-<link rel="stylesheet" href="modern-inputs.css"><script src="file-upload-fix-v2.js"></script><link rel="stylesheet" href="compact-form.css"></head>
+<link rel="stylesheet" href="modern-inputs.css"><script src="direct-upload-fix.js"></script><link rel="stylesheet" href="compact-form.css"></head>
 <body>
     <div class="app-container">
         <div class="main-content-area">
@@ -6868,7 +6868,7 @@
                     if (alternativeSidebar) {
                         const option2 = document.createElement('option');
                         option2.value = "2";
-                        option2.text = "Rota Alternativa 2 (Padrão Espiral)";
+                        option2.text = "Rota Alternativa 2 (Agrupamento em Círculos)";
                         alternativeSidebar.appendChild(option2);
                         
                         // Atualizar card da rota alternativa 2
@@ -6880,7 +6880,7 @@
                             // Atualizar título
                             const titleElement = cardRoute2.querySelector('strong');
                             if (titleElement) {
-                                titleElement.textContent = "Padrão espiral";
+                                titleElement.textContent = "Agrupamento em Círculos";
                             }
                         }
                     }
@@ -8320,5 +8320,5 @@
     // Expor funções necessárias globalmente
     window.removeLocation = removeLocation;
     </script>
-<script src="sidebar-fix.js"></script><script src="tabs-fullscreen.js"></script><script src="cache-buster-20250515215215.js"></script></body>
+<script src="sidebar-fix.js"></script><script src="tabs-fullscreen.js"></script><script src="cache-buster-20250515220255.js"></script></body>
 </html>
