@@ -3265,6 +3265,33 @@
         // Normalizar o nome da cidade (remover acentos, converter para minúsculas)
         const normalizedCityName = cityName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         
+        // Tratamento específico para as cidades com classificação incorreta
+        if (normalizedCityName.includes('ribeirao branco')) {
+            console.log('Classificação corrigida: Ribeirão Branco pertence à região de Sorocaba, não Araraquara');
+            updateRegionCounter("SP", "Sorocaba");
+            return {
+                regiao: "Sorocaba",
+                cor: CORES_SP["Sorocaba"] || '#33FF8A',
+                estado: "SP"
+            };
+        } else if (normalizedCityName.includes('taquarivai') || normalizedCityName.includes('taquaritai')) {
+            console.log('Classificação corrigida: Taquarivaí pertence à região de Sorocaba, não Ribeirão Preto');
+            updateRegionCounter("SP", "Sorocaba");
+            return {
+                regiao: "Sorocaba",
+                cor: CORES_SP["Sorocaba"] || '#33FF8A',
+                estado: "SP"
+            };
+        } else if (normalizedCityName.includes('buri')) {
+            console.log('Classificação corrigida: Buri pertence à região de Sorocaba, não Ribeirão Preto');
+            updateRegionCounter("SP", "Sorocaba");
+            return {
+                regiao: "Sorocaba",
+                cor: CORES_SP["Sorocaba"] || '#33FF8A',
+                estado: "SP"
+            };
+        }
+        
         // Cores fixas para cada região de São Paulo (conforme legendas)
         // Usar as mesmas cores da FONTE OFICIAL (CORES_SP definido na função createRegionLegend)
         const coresPorRegiao = CORES_SP;
