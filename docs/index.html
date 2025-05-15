@@ -1426,11 +1426,16 @@
             <!-- Sidebar para controles e informações -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h2 class="m-0 app-title">
-                    <span class="app-title-text">Otimizador de Rotas</span>
-                    <span class="app-title-highlight">Móveis Bonafé</span>
-                </h2>
-
+                <div class="d-flex flex-column">
+                    <h2 class="m-0 app-title">
+                        <span class="app-title-text">Otimizador de Rotas</span>
+                        <span class="app-title-highlight">Móveis Bonafé</span>
+                    </h2>
+                    <div class="origin-mini mt-2 d-flex align-items-center">
+                        <span class="origin-icon-mini me-1">📍</span>
+                        <span class="origin-text-mini" id="origin-mini">Dois Córregos, SP</span>
+                    </div>
+                </div>
             </div>
             <div class="sidebar-content">
             
@@ -1453,16 +1458,7 @@
                         </div>
                     </div>
                     
-                    <!-- Origem fixa - DESIGN MODERNO -->
-                    <div class="origin-container">
-                        <h3>Origem</h3>
-                        <div class="origin-badge">
-                            <div class="input-group position-relative">
-                                <input type="text" id="origin" value="Dois Córregos, SP" readonly>
-                                <span class="input-icon origin-icon">📍</span>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Seção de origem movida para o cabeçalho -->
                     
                     <!-- Campo de busca para adicionar novo local - DESIGN MODERNO -->
                     <div class="location-form">

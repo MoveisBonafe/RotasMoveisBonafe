@@ -91,16 +91,104 @@ document.addEventListener('DOMContentLoaded', function() {
                     var content = e.target.result;
                     console.log("Conteúdo do arquivo carregado");
                     
+                    // Definir nossa própria função de processamento que protege contra erros
+                    function processarArquivo(conteudo) {
+                        try {
+                            // Separar o conteúdo em linhas
+                            const linhas = conteudo.split('\n');
+                            let locaisAdicionados = 0;
+                            
+                            // Encontrar o elemento da lista de locais
+                            const locationsList = document.getElementById('locations-list');
+                            if (!locationsList) {
+                                throw new Error("Elemento locations-list não encontrado");
+                            }
+                            
+                            // Processar cada linha
+                            for (let i = 0; i < linhas.length; i++) {
+                                const linha = linhas[i].trim();
+                                if (!linha) continue; // Ignorar linhas vazias
+                                
+                                // Dividir a linha em CEP e nome
+                                const partes = linha.split(',');
+                                if (partes.length < 2) continue;
+                                
+                                const cep = partes[0].trim();
+                                const nome = partes.slice(1).join(',').trim();
+                                
+                                // Criar elemento da localização
+                                const locationItem = document.createElement('div');
+                                locationItem.className = 'location-card card mb-2';
+                                locationItem.setAttribute('data-location-id', 'local_' + Date.now() + '_' + Math.floor(Math.random() * 1000));
+                                
+                                // Adicionar conteúdo da localização
+                                locationItem.innerHTML = `
+                                    <div class="card-body p-2">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <div class="location-name">${nome}</div>
+                                                <div class="location-address small text-muted">${cep}</div>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-danger remove-location" 
+                                                    onclick="removeLocation('${locationItem.getAttribute('data-location-id')}')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                `;
+                                
+                                // Adicionar à lista
+                                locationsList.appendChild(locationItem);
+                                locaisAdicionados++;
+                            }
+                            
+                            // Habilitar o botão de otimização se houver locais
+                            const optimizeButton = document.getElementById('optimize-route');
+                            if (optimizeButton) {
+                                optimizeButton.disabled = false;
+                            }
+                            
+                            console.log("Locais adicionados:", locaisAdicionados);
+                            return locaisAdicionados > 0;
+                        } catch (error) {
+                            console.error("Erro ao processar arquivo:", error);
+                            return false;
+                        }
+                    }
+                    
+                    // Tentar usar funções de processamento existentes ou nossa função segura
                     if (typeof processCepFile === 'function') {
-                        processCepFile(content);
-                        statusElement.style.backgroundColor = '#4CAF50';
-                        statusElement.style.color = 'white';
-                        statusElement.textContent = 'Arquivo processado com sucesso!';
+                        try {
+                            processCepFile(content);
+                            statusElement.style.backgroundColor = '#4CAF50';
+                            statusElement.style.color = 'white';
+                            statusElement.textContent = 'Arquivo processado com sucesso!';
+                        } catch (e) {
+                            console.error("Erro na função processCepFile:", e);
+                            // Tentar nossa função
+                            const resultadoSeguro = processarArquivo(content);
+                            if (resultadoSeguro) {
+                                statusElement.style.backgroundColor = '#4CAF50';
+                                statusElement.style.color = 'white';
+                                statusElement.textContent = 'Arquivo processado com sucesso!';
+                            } else {
+                                statusElement.style.backgroundColor = '#f44336';
+                                statusElement.style.color = 'white';
+                                statusElement.textContent = 'Erro ao processar arquivo. Verifique o formato.';
+                            }
+                        }
                     } else {
-                        console.error("Função processCepFile não encontrada");
-                        statusElement.style.backgroundColor = '#f44336';
-                        statusElement.style.color = 'white';
-                        statusElement.textContent = 'Erro: função de processamento não disponível';
+                        console.log("Função processCepFile não encontrada, usando processamento seguro");
+                        const resultadoSeguro = processarArquivo(content);
+                        if (resultadoSeguro) {
+                            statusElement.style.backgroundColor = '#4CAF50';
+                            statusElement.style.color = 'white';
+                            statusElement.textContent = 'Arquivo processado com sucesso!';
+                        } else {
+                            statusElement.style.backgroundColor = '#f44336';
+                            statusElement.style.color = 'white';
+                            statusElement.textContent = 'Erro ao processar arquivo. Verifique o formato.';
+                        }
                     }
                 } catch (error) {
                     console.error("Erro ao processar arquivo:", error);
