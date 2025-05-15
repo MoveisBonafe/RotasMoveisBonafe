@@ -1635,6 +1635,15 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
  * @returns Promise com as coordenadas refinadas, ou null em caso de falha
  */
 async function refineLocationCoordinates(placesService: any, poi: PointOfInterest): Promise<{ lat: string, lng: string } | null> {
+  // Verificar se estamos no GitHub Pages
+  const isGitHubPages = window.location.hostname.includes('github.io');
+  
+  if (isGitHubPages) {
+    // No GitHub Pages, retornar as coordenadas originais
+    console.log(`GitHub Pages: Usando coordenadas originais para ${poi.name}`);
+    return { lat: poi.lat, lng: poi.lng };
+  }
+
   if (!placesService || !poi || !poi.lat || !poi.lng) {
     return null;
   }
