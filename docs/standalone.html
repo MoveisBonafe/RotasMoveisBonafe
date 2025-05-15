@@ -3004,6 +3004,9 @@
                         locations.push(newLocation);
                         addMarkerForLocation(newLocation, locations.length - 1);
                         
+                        // Atualizar os contadores de região
+                        refreshRegionCounters();
+                        
                         // Atualizar a lista de locais
                         updateLocationsList();
                         
