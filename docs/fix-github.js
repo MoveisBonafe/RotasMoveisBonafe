@@ -101,8 +101,8 @@ document.addEventListener('DOMContentLoaded', function() {
       document.body && document.body.appendChild(container);
     }
 
-    // Function to show notifications
-    const showNotification = (message, type = 'warning') => {
+    // Função para mostrar notificações
+    function displayToast(message, type = 'warning') {
       if (!container) return; // Safety check
       const notification = document.createElement('div');
       notification.className = `alert alert-${type}`;
@@ -110,10 +110,12 @@ document.addEventListener('DOMContentLoaded', function() {
       notification.textContent = message;
       container.appendChild(notification);
       setTimeout(() => notification.remove(), 5000);
-    };
+    }
 
-    // Função para mostrar notificação
-    const showNotification = (message, type = 'warning') => {
+    // Usar a notificação já criada acima, não redefinir
+    const showLocalNotification = (message, type = 'warning') => {
+      if (!container) return; // Proteção contra null
+      
       const notification = document.createElement('div');
       notification.className = `alert alert-${type} mt-2`;
       notification.style.marginBottom = '10px';
@@ -121,14 +123,16 @@ document.addEventListener('DOMContentLoaded', function() {
       container.appendChild(notification);
       
       setTimeout(() => {
-        notification.remove();
+        if (notification && notification.parentNode) {
+          notification.parentNode.removeChild(notification);
+        }
       }, 5000);
     };
 
     // Dividir em linhas
     const lines = content.split(/\r\n|\n/);
     if (lines.length === 0) {
-      alert('Arquivo vazio ou inválido.');
+      displayToast('Arquivo vazio ou inválido.', 'danger');
       return;
     }
 
