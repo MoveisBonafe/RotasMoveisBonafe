@@ -1457,8 +1457,10 @@
                     <div class="origin-container">
                         <h3>Origem</h3>
                         <div class="origin-badge">
-                            <input type="text" id="origin" value="Dois Córregos, SP" readonly>
-                            <span class="origin-icon">📍</span>
+                            <div class="input-group position-relative">
+                                <input type="text" id="origin" value="Dois Córregos, SP" readonly>
+                                <span class="input-icon origin-icon">📍</span>
+                            </div>
                         </div>
                     </div>
                     
@@ -6857,7 +6859,7 @@
             try {
                 // 3. Rota alternativa - Caminho em espiral (se tiver 3+ destinos)
                 if (destinations.length >= 3) {
-                    console.log("Gerando rota alternativa 2: Padrão espiral...");
+                    console.log("Gerando rota alternativa 2: Agrupamento em Círculos...");
                     const spiralRoute = solveSpiralTSP(origin, destinations, includeOriginReturn);
                     alternativeRoutes.push(spiralRoute);
                     
