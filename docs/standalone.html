@@ -483,79 +483,42 @@
             }
         }
         
-        /* Estilos para aba superior moderna e animada */
+        /* Estilos para barra superior - design simplificado */
         .top-bar {
-            background-color: white;
+            background-color: #f8f9fa;
             border-bottom: 1px solid #e0e0e0;
-            padding: 12px 15px;
+            padding: 8px 15px;
             display: flex;
-            flex-wrap: wrap;
+            justify-content: space-between;
             align-items: center;
-            gap: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            animation: slide-down 0.4s ease;
             z-index: 10;
         }
         
-        @keyframes slide-down {
-            from {
-                transform: translateY(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        
-        .top-bar .filter-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .top-bar .filter-group label {
-            font-weight: 600;
+        /* Estilo para o campo de data */
+        .date-input {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 4px 8px;
             font-size: 14px;
-            color: #555;
-            margin-bottom: 0;
+            margin-right: 8px;
+        }
+        
+        /* Estilo para a origem */
+        .origin-chip {
+            display: inline-flex;
+            align-items: center;
+            background-color: #fff;
+            border: 1px solid #ffc107;
+            border-radius: 16px;
+            padding: 5px 12px;
+            font-size: 14px;
+            color: #333;
             white-space: nowrap;
         }
         
-        .top-bar .filter-group input[type="date"] {
-            border: 2px solid #ffc107;
-            border-radius: 6px;
-            padding: 8px 12px;
-            font-size: 14px;
-            background-color: white;
-            color: #333;
-            transition: all 0.3s ease;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        .top-bar .filter-group input[type="date"]:focus {
-            border-color: #e6ac00;
-            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
-            outline: none;
-        }
-        
-        .top-bar .origin-display {
-            background-color: #f8f8f8;
-            border: 2px solid #ffc107;
-            border-radius: 6px;
-            padding: 8px 15px;
-            font-weight: 600;
-            color: #333;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .top-bar .origin-display::before {
+        .origin-chip::before {
             content: '📍';
-            font-size: 16px;
+            margin-right: 6px;
         }
         /* Botão para fechar o sidebar em telas pequenas */
         .sidebar-close {
