@@ -1,0 +1,252 @@
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1764 Google Maps JavaScript API has been loaded directly without loading=async. This can result in suboptimal performance. For best-practice loading patterns please see https://goo.gle/js-api-loading
+rga @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1764
+tsp.js:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+geocode-fix.js:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+map-controls.js:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+route-optimizer.js:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+fix-github.js:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+fix-map-controls.js:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+cep-database.js:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+standalone.html:2163 DOM carregado - inicializando aplicação
+standalone.html:5600 =================== NOVA EXECUÇÃO ===================
+standalone.html:5601 Mostrando eventos para rota com IDs: Array(1)
+standalone.html:5602 Datas de filtro (string): undefined undefined
+standalone.html:5626 Eventos disponíveis: Array(15)
+standalone.html:5640 Localização encontrada para ID 1: Object
+standalone.html:5656 [ROTA] Adicionada cidade de origem: Dois Córregos
+standalone.html:5687 [ROTA] Cidades encontradas no percurso (1): Dois Córregos
+standalone.html:5689 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: Array(1)
+standalone.html:5692 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+standalone.html:5693 Filtrando eventos para cidades: Dois Córregos
+standalone.html:5694 Filtro de data: sem data inicial a sem data final
+standalone.html:5698 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: undefined undefined
+standalone.html:5720 [FILTRO] Usando data de início padrão: 2025-01-01
+standalone.html:5725 [FILTRO] Usando data de fim padrão: 2025-12-31
+standalone.html:5729 [DATA] Filtro FINAL: 2025-01-01 até 2025-12-31
+standalone.html:5768 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+standalone.html:5774 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+standalone.html:5768 [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+standalone.html:5825 [VERIFICAÇÃO DE DATA] Object
+standalone.html:5839 [ACEITO] Evento 'Aniversário da Cidade' (03/02/2025) está dentro do período de filtro: 31/12/2024 a 30/12/2025
+standalone.html:5862 [FINAL] Evento 'Aniversário da Cidade' em 'Dois Córregos' - INCLUÍDO NA LISTA FINAL
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1679 As of February 21st, 2024, google.maps.Marker is deprecated. Please use google.maps.marker.AdvancedMarkerElement instead. At this time, google.maps.Marker is not scheduled to be discontinued, but google.maps.marker.AdvancedMarkerElement is recommended over google.maps.Marker. While google.maps.Marker will continue to receive bug fixes for any major regressions, existing bugs in google.maps.Marker will not be addressed. At least 12 months notice will be given before support is discontinued. Please see https://developers.google.com/maps/deprecations for additional details and https://developers.google.com/maps/documentation/javascript/advanced-markers/migration for the migration guide.
+(anonymous) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1679
+standalone.html:5962 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+standalone.html:5963 Mostrando restrições de caminhões para rota com IDs: Array(1)
+standalone.html:5966 Timestamp: 2025-05-15T16:41:30.864Z
+standalone.html:5972 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ standalone.html:5972
+standalone.html:6009 Usando pathIds como fallback para identificar cidades
+standalone.html:6036 Cidades detectadas na rota: Array(1)
+standalone.html:6132 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+standalone.html:2179 Google Maps API disponível
+standalone.html:2341 Inicializando campos de data...
+standalone.html:2398 Data inicial definida: 2025-05-15
+standalone.html:2403 Data final definida: 2025-05-22
+standalone.html:2406 Datas inicializadas: de 2025-05-15 até 2025-05-22
+standalone.html:2431 Redimensionando mapa
+standalone.html:2480 Inicializando DirectionsRenderer...
+standalone.html:2492 DirectionsRenderer inicializado com sucesso
+standalone.html:7867 Tooltip personalizado criado com sucesso
+standalone.html:7643 ==========================================
+standalone.html:7644 FILTRO DE EVENTOS POR DATA SOLICITADO
+standalone.html:7645 ==========================================
+standalone.html:7731 Datas finais para filtragem: 2025-05-15 até 2025-05-22
+standalone.html:7745 Sem rota, mostrando apenas para origem
+standalone.html:7772 Usando apenas a origem para eventos: Array(1)
+standalone.html:7776 Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas: 2025-05-15 2025-05-22
+standalone.html:5600 =================== NOVA EXECUÇÃO ===================
+standalone.html:5601 Mostrando eventos para rota com IDs: Array(1)
+standalone.html:5602 Datas de filtro (string): 2025-05-15 2025-05-22
+standalone.html:5626 Eventos disponíveis: Array(15)
+standalone.html:5640 Localização encontrada para ID 1: Object
+standalone.html:5656 [ROTA] Adicionada cidade de origem: Dois Córregos
+standalone.html:5687 [ROTA] Cidades encontradas no percurso (1): Dois Córregos
+standalone.html:5689 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: Array(1)
+standalone.html:5692 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+standalone.html:5693 Filtrando eventos para cidades: Dois Córregos
+standalone.html:5694 Filtro de data: 2025-05-15 a 2025-05-22
+standalone.html:5698 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-15 2025-05-22
+standalone.html:5729 [DATA] Filtro FINAL: 2025-05-15 até 2025-05-22
+standalone.html:5768 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+standalone.html:5774 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+standalone.html:5768 [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+standalone.html:5825 [VERIFICAÇÃO DE DATA] Object
+standalone.html:5842 [REJEITADO] Evento 'Aniversário da Cidade' (03/02/2025) está fora do período de filtro: 14/05/2025 a 21/05/2025
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+standalone.html:5962 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+standalone.html:5963 Mostrando restrições de caminhões para rota com IDs: Array(1)
+standalone.html:5966 Timestamp: 2025-05-15T16:41:30.956Z
+standalone.html:5972 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ standalone.html:5972
+standalone.html:6009 Usando pathIds como fallback para identificar cidades
+standalone.html:6036 Cidades detectadas na rota: Array(1)
+standalone.html:6132 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+standalone.html:2732 Inicializando autocomplete para busca de endereços...
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:82 As of March 1st, 2025, google.maps.places.Autocomplete is not available to new customers. Please use google.maps.places.PlaceAutocompleteElement instead. At this time, google.maps.places.Autocomplete is not scheduled to be discontinued, but google.maps.places.PlaceAutocompleteElement is recommended over google.maps.places.Autocomplete. While google.maps.places.Autocomplete will continue to receive bug fixes for any major regressions, existing bugs in google.maps.places.Autocomplete will not be addressed. At least 12 months notice will be given before support is discontinued. Please see https://developers.google.com/maps/legacy for additional details and https://developers.google.com/maps/documentation/javascript/places-migration-overview for the migration guide.
+nB @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:82
+standalone.html:2755 Autocomplete inicializado com sucesso
+standalone.html:2822 Inicializando sistema de navegação para tabs inferiores
+standalone.html:2191 Detectado GitHub Pages - aplicando ajustes especiais de layout
+standalone.html:3960 Criando novo marcador para Dois Córregos (ID: 1)
+standalone.html:4899 Verificando se Dois Córregos e Dois Córregos estão na mesma cidade
+standalone.html:4920 Mesma cidade encontrada nos endereços: dois córregos
+standalone.html:4047 Configurando marcador para Dois Córregos - Mesma cidade da origem: true
+standalone.html:2232 Datas definidas automaticamente: de 2025-05-15 até 2025-05-22
+standalone.html:7643 ==========================================
+standalone.html:7644 FILTRO DE EVENTOS POR DATA SOLICITADO
+standalone.html:7645 ==========================================
+standalone.html:7731 Datas finais para filtragem: 2025-05-15 até 2025-05-22
+standalone.html:7737 Usando rota otimizada atual: Array(1)
+standalone.html:7776 Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas: 2025-05-15 2025-05-22
+standalone.html:5600 =================== NOVA EXECUÇÃO ===================
+standalone.html:5601 Mostrando eventos para rota com IDs: Array(1)
+standalone.html:5602 Datas de filtro (string): 2025-05-15 2025-05-22
+standalone.html:5626 Eventos disponíveis: Array(15)
+standalone.html:5640 Localização encontrada para ID 1: Object
+standalone.html:5656 [ROTA] Adicionada cidade de origem: Dois Córregos
+standalone.html:5687 [ROTA] Cidades encontradas no percurso (1): Dois Córregos
+standalone.html:5689 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: Array(1)
+standalone.html:5692 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+standalone.html:5693 Filtrando eventos para cidades: Dois Córregos
+standalone.html:5694 Filtro de data: 2025-05-15 a 2025-05-22
+standalone.html:5698 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-15 2025-05-22
+standalone.html:5729 [DATA] Filtro FINAL: 2025-05-15 até 2025-05-22
+standalone.html:5768 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+standalone.html:5774 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+standalone.html:5768 [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+standalone.html:5825 [VERIFICAÇÃO DE DATA] Object
+standalone.html:5842 [REJEITADO] Evento 'Aniversário da Cidade' (03/02/2025) está fora do período de filtro: 14/05/2025 a 21/05/2025
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+standalone.html:5962 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+standalone.html:5963 Mostrando restrições de caminhões para rota com IDs: Array(1)
+standalone.html:5966 Timestamp: 2025-05-15T16:41:30.961Z
+standalone.html:5972 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ standalone.html:5972
+standalone.html:6009 Usando pathIds como fallback para identificar cidades
+standalone.html:6036 Cidades detectadas na rota: Array(1)
+standalone.html:6132 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+standalone.html:2241 Campos de data inicializados com datas atuais e eventos/restrições para origem configurados
+docs/generated-icon.png:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+manifest.json:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+standalone.html:1 Manifest fetch from https://moveisbonafe.github.io/RotasMoveisBonafe/docs/assets/manifest.json failed, code 404
+standalone.html:7643 ==========================================
+standalone.html:7644 FILTRO DE EVENTOS POR DATA SOLICITADO
+standalone.html:7645 ==========================================
+standalone.html:7731 Datas finais para filtragem: 2025-05-15 até 2025-05-22
+standalone.html:7737 Usando rota otimizada atual: Array(1)
+standalone.html:7776 Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas: 2025-05-15 2025-05-22
+standalone.html:5600 =================== NOVA EXECUÇÃO ===================
+standalone.html:5601 Mostrando eventos para rota com IDs: Array(1)
+standalone.html:5602 Datas de filtro (string): 2025-05-15 2025-05-22
+standalone.html:5626 Eventos disponíveis: Array(15)
+standalone.html:5640 Localização encontrada para ID 1: Object
+standalone.html:5656 [ROTA] Adicionada cidade de origem: Dois Córregos
+standalone.html:5687 [ROTA] Cidades encontradas no percurso (1): Dois Córregos
+standalone.html:5689 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: Array(1)
+standalone.html:5692 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+standalone.html:5693 Filtrando eventos para cidades: Dois Córregos
+standalone.html:5694 Filtro de data: 2025-05-15 a 2025-05-22
+standalone.html:5698 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-15 2025-05-22
+standalone.html:5729 [DATA] Filtro FINAL: 2025-05-15 até 2025-05-22
+standalone.html:5768 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+standalone.html:5774 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+standalone.html:5768 [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+standalone.html:5825 [VERIFICAÇÃO DE DATA] Object
+standalone.html:5842 [REJEITADO] Evento 'Aniversário da Cidade' (03/02/2025) está fora do período de filtro: 14/05/2025 a 21/05/2025
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+standalone.html:5742 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+standalone.html:5962 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+standalone.html:5963 Mostrando restrições de caminhões para rota com IDs: Array(1)
+standalone.html:5966 Timestamp: 2025-05-15T16:41:31.378Z
+standalone.html:5972 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ standalone.html:5972
+standalone.html:6009 Usando pathIds como fallback para identificar cidades
+standalone.html:6036 Cidades detectadas na rota: Array(1)
+standalone.html:6132 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+standalone.html:2208 Ajustes de layout para GitHub Pages aplicados
+standalone.html:3017 Botões de contador encontrados: 4
+standalone.html:3025 Evento de clique adicionado ao botão de contador
+standalone.html:3025 Evento de clique adicionado ao botão de contador
+standalone.html:3025 Evento de clique adicionado ao botão de contador
+standalone.html:3025 Evento de clique adicionado ao botão de contador
+standalone.html:2431 Redimensionando mapa
+manifest.json:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
