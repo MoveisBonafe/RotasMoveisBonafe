@@ -3405,13 +3405,13 @@
                 fontWeight: 'bold'
             },
             icon: {
-                path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z',
                 fillColor: regionColor,
                 fillOpacity: 0.9,
                 strokeWeight: 1,
                 strokeColor: '#ffffff',
-                scale: 6,
-                rotation: 270  // Apontando para baixo como uma agulha
+                scale: 1.2,
+                anchor: new google.maps.Point(0, 0)
             },
             zIndex: 1000 // Para ficar acima dos outros marcadores
         });
@@ -3683,6 +3683,12 @@
         // Converter para string para garantir consistência na comparação
         const idStr = String(id);
         
+        // Obter o local antes de removê-lo para saber a região
+        const locationToRemove = locations.find(loc => String(loc.id) === idStr);
+        if (locationToRemove) {
+            console.log("Removendo local:", locationToRemove.name, locationToRemove.address);
+        }
+        
         // Remover o local da lista
         locations = locations.filter(loc => String(loc.id) !== idStr);
         
@@ -3696,8 +3702,12 @@
             console.log(`Nenhum marcador encontrado para o ID ${idStr}`);
         }
         
+        // Limpar e recalcular os contadores de região
+        clearRegionCounters();
+        
         // Atualizar a lista e reindexar os marcadores
         updateLocationsList();
+        refreshRegionCounters();
         reindexMarkers();
         
         // Se houver uma rota atual, limpá-la
