@@ -3361,28 +3361,34 @@
         const normalizedCityName = cityName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         
         // Tratamento específico para as cidades com classificação incorreta
-        if (normalizedCityName.includes('ribeirao branco')) {
-            console.log('Classificação corrigida: Ribeirão Branco pertence à região de Sorocaba, não Araraquara');
+        // Verificar de forma mais abrangente usando includes e várias variações
+        if (normalizedCityName.includes('ribeirao') && normalizedCityName.includes('branco')) {
+            console.log('Classificação manual: Ribeirão Branco pertence à região de Sorocaba');
             updateRegionCounter("SP", "Sorocaba");
             return {
                 regiao: "Sorocaba",
-                cor: CORES_SP["Sorocaba"] || '#33FF8A',
+                cor: '#33A8FF', // Cor da região de Sorocaba (azul claro)
                 estado: "SP"
             };
-        } else if (normalizedCityName.includes('taquarivai') || normalizedCityName.includes('taquaritai')) {
-            console.log('Classificação corrigida: Taquarivaí pertence à região de Sorocaba, não Ribeirão Preto');
+        } 
+        
+        if (normalizedCityName.includes('taquarivai') || normalizedCityName.includes('taquaritai') || 
+            normalizedCityName.includes('taquari') && normalizedCityName.includes('vai')) {
+            console.log('Classificação manual: Taquarivaí pertence à região de Sorocaba');
             updateRegionCounter("SP", "Sorocaba");
             return {
                 regiao: "Sorocaba",
-                cor: CORES_SP["Sorocaba"] || '#33FF8A',
+                cor: '#33A8FF', // Cor da região de Sorocaba (azul claro)
                 estado: "SP"
             };
-        } else if (normalizedCityName.includes('buri')) {
-            console.log('Classificação corrigida: Buri pertence à região de Sorocaba, não Ribeirão Preto');
+        } 
+        
+        if (normalizedCityName.includes('buri')) {
+            console.log('Classificação manual: Buri pertence à região de Sorocaba');
             updateRegionCounter("SP", "Sorocaba");
             return {
                 regiao: "Sorocaba",
-                cor: CORES_SP["Sorocaba"] || '#33FF8A',
+                cor: '#33A8FF', // Cor da região de Sorocaba (azul claro)
                 estado: "SP"
             };
         }
@@ -6953,7 +6959,7 @@
                     
                     // Verificar se é origem para destacar
                     if (location.isOrigin) {
-                        return `<li class="origin-point">${index + 1}. ${locationName} ${locationAddress ? `(${locationAddress})` : ''} (Origem)</li>`;
+                        return `<li class="origin-point"><strong>0. ${locationName}</strong> ${locationAddress ? `(${locationAddress})` : ''} (Origem)</li>`;
                     } else {
                         return `<li><strong>${index + 1}. ${locationName}</strong> ${locationAddress ? `(${locationAddress})` : ''}</li>`;
                     }
