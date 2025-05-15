@@ -1419,7 +1419,7 @@
             color: #000;
         }
     </style>
-</head>
+<link rel="stylesheet" href="modern-inputs.css"><script src="file-upload-fix.js"></script></head>
 <body>
     <div class="app-container">
         <div class="main-content-area">
@@ -1438,36 +1438,36 @@
             <div id="locations-content">
                     <!-- O conteúdo de locais fica no sidebar -->
                 
-                    <!-- Filtro de eventos por data (movido para cima da origem) -->
-                    <div class="form-group mb-4">
-                        <label class="date-range-label">Filtrar eventos por data:</label>
-                        <div class="date-range-container">
-                            <input type="date" id="start-date">
-                            <input type="date" id="end-date">
+                    <!-- Filtro de eventos por data - DESIGN MODERNO -->
+                    <div class="filter-container">
+                        <h3>Filtrar eventos por data</h3>
+                        <div class="date-filters">
+                            <div class="date-input">
+                                <label>Data inicial</label>
+                                <input type="date" id="start-date" class="modern-input">
+                            </div>
+                            <div class="date-input">
+                                <label>Data final</label>
+                                <input type="date" id="end-date" class="modern-input">
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- Origem fixa -->
-                    <div class="form-group mb-4">
-                        <label class="date-range-label">Origem:</label>
-                        <input type="text" id="origin" class="form-control" value="Dois Córregos, SP" readonly 
-                               style="background-color: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
+                    <!-- Origem fixa - DESIGN MODERNO -->
+                    <div class="origin-container">
+                        <h3>Origem</h3>
+                        <div class="origin-badge">
+                            <input type="text" id="origin" value="Dois Córregos, SP" readonly>
+                            <span class="origin-icon">📍</span>
+                        </div>
                     </div>
                     
-                    <!-- Campo de busca para adicionar novo local -->
-                    <div class="form-group mb-4">
-                        <label class="date-range-label">Adicionar local:</label>
-                        <div class="input-animation-container position-relative">
-                            <div class="position-relative">
-                                <input type="text" id="location-search" placeholder="Digite um endereço"
-                                       style="border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; width: 100%; 
-                                       box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.3s ease; padding-right: 35px;">
-                                <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); 
-                                       color: #444; opacity: 0.7;">
-                                    <i class="bi bi-search"></i>
-                                </span>
-                            </div>
-                            <div class="input-animation-effect"></div>
+                    <!-- Campo de busca para adicionar novo local - DESIGN MODERNO -->
+                    <div class="location-form">
+                        <h3>Adicionar local</h3>
+                        <div class="input-group">
+                            <input type="text" id="location-search" placeholder="Digite um endereço" class="animated-input">
+                            <span class="input-icon">🔍</span>
                         </div>
                     </div>
                     
@@ -8314,5 +8314,5 @@
     // Expor funções necessárias globalmente
     window.removeLocation = removeLocation;
     </script>
-<script src="sidebar-fix.js"></script><script src="tabs-fullscreen.js"></script><script src="cache-buster-20250515185722.js"></script></body>
+<script src="sidebar-fix.js"></script><script src="tabs-fullscreen.js"></script><script src="cache-buster-20250515190123.js"></script></body>
 </html>

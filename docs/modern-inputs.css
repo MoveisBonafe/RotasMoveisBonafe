@@ -1,0 +1,177 @@
+/* Estilos modernos para campos de formulário */
+
+/* Estilos gerais para inputs e selects */
+.sidebar input[type="text"],
+.sidebar input[type="date"],
+.sidebar select,
+.sidebar textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Efeito de foco */
+.sidebar input[type="text"]:focus,
+.sidebar input[type="date"]:focus,
+.sidebar select:focus,
+.sidebar textarea:focus {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+    outline: none;
+    transform: translateY(-2px);
+}
+
+/* Estilo para labels */
+.sidebar label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+/* Efeito hover nos labels */
+.sidebar label:hover {
+    color: #ffc107;
+}
+
+/* Container de filtros com animação */
+.filter-container, 
+.origin-container,
+.location-form {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    border-left: 3px solid #ffc107;
+}
+
+/* Efeito hover nos containers */
+.filter-container:hover, 
+.origin-container:hover,
+.location-form:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+/* Estilo para botões */
+.sidebar button {
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #ffc107;
+    color: #000;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.sidebar button:hover {
+    background-color: #ffb300;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.sidebar button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Efeito de digitação com brilho */
+.sidebar input[type="text"]:focus::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background-color: #ffc107;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.2; }
+    50% { opacity: 1; }
+    100% { opacity: 0.2; }
+}
+
+/* Estilo para a área de upload de arquivo */
+.file-upload-container {
+    border: 2px dashed #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.file-upload-container:hover {
+    border-color: #ffc107;
+    background-color: rgba(255, 193, 7, 0.05);
+}
+
+.file-upload-container input[type="file"] {
+    display: none;
+}
+
+.file-upload-container .upload-icon {
+    font-size: 24px;
+    color: #ffc107;
+    margin-bottom: 10px;
+}
+
+.file-upload-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Cabeçalhos das seções */
+.sidebar h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #333;
+    position: relative;
+    padding-bottom: 8px;
+}
+
+.sidebar h3:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background-color: #ffc107;
+    transition: all 0.3s ease;
+}
+
+.sidebar h3:hover:after {
+    width: 60px;
+}
+
+/* Ajustes específicos para filtro de datas */
+.date-filters {
+    display: flex;
+    gap: 10px;
+}
+
+.date-filters .date-input {
+    flex: 1;
+}
+
+.date-input input[type="date"] {
+    margin-bottom: 0;
+}
