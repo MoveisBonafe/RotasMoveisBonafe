@@ -3169,10 +3169,56 @@
         const file = event.target.files[0];
         if (!file) return;
         
+        // Limpar qualquer status anterior de upload
+        const fileUploadArea = document.getElementById('upload-area');
+        if (fileUploadArea) {
+            // Verificar se já existe um elemento de status e removê-lo
+            const existingStatus = document.querySelector('.file-upload-status');
+            if (existingStatus && existingStatus.parentNode) {
+                existingStatus.parentNode.removeChild(existingStatus);
+            }
+            
+            // Criar um novo elemento de status
+            const statusElement = document.createElement('div');
+            statusElement.className = 'file-upload-status';
+            statusElement.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processando arquivo...';
+            fileUploadArea.parentNode.appendChild(statusElement);
+        }
+        
         const reader = new FileReader();
         reader.onload = function(e) {
             const content = e.target.result;
-            parseCEPFile(content);
+            try {
+                parseCEPFile(content);
+                
+                // Atualizar status para sucesso
+                if (statusElement) {
+                    statusElement.className = 'file-upload-status success';
+                    statusElement.innerHTML = '<i class="fas fa-check-circle"></i> Arquivo processado com sucesso!';
+                    
+                    // Remover o status após alguns segundos
+                    setTimeout(() => {
+                        if (statusElement && statusElement.parentNode) {
+                            statusElement.parentNode.removeChild(statusElement);
+                        }
+                    }, 3000);
+                }
+            } catch (error) {
+                console.error("Erro ao processar arquivo:", error);
+                
+                // Atualizar status para erro
+                if (statusElement) {
+                    statusElement.className = 'file-upload-status error';
+                    statusElement.innerHTML = '<i class="fas fa-exclamation-circle"></i> Erro ao processar arquivo!';
+                    
+                    // Remover o status após alguns segundos
+                    setTimeout(() => {
+                        if (statusElement && statusElement.parentNode) {
+                            statusElement.parentNode.removeChild(statusElement);
+                        }
+                    }, 3000);
+                }
+            }
         };
         reader.readAsText(file);
     }
@@ -3195,11 +3241,12 @@
         // Verificar se content é válido
         if (!content || typeof content !== 'string') {
             console.error('Conteúdo do arquivo inválido:', content);
-            return;
+            throw new Error('Conteúdo do arquivo inválido');
         }
         
         const lines = content.split('\n');
         let newLocations = [];
+        let invalidLines = 0;
         
         // CEPs com coordenadas conhecidas para as principais cidades paulistas
         const knownCEPs = {
@@ -3218,7 +3265,9 @@
             '17400-000': {name: 'Garça', lat: -22.2132, lng: -49.6546},
             '17480-000': {name: 'Marília', lat: -22.2171, lng: -49.9501},
             '17300-000': {name: 'Dois Córregos', lat: -22.3673, lng: -48.3822},
-            '18430-035': {name: 'Ribeirão Branco', lat: -24.2231, lng: -48.7635} // Coordenadas corretas para Ribeirão Branco-SP
+            '18430-035': {name: 'Ribeirão Branco', lat: -24.2231, lng: -48.7635}, // Coordenadas corretas para Ribeirão Branco-SP
+            '18435-000': {name: 'Ribeirão Branco', lat: -24.2231, lng: -48.7635}, // Mais um formato para Ribeirão Branco
+            '18795-000': {name: 'Taquarivaí', lat: -23.9215, lng: -48.6948} // Taquarivaí
         };
         
         // Geocodificador para CEPs desconhecidos
@@ -3226,53 +3275,79 @@
         let geocodeQueue = [];
         
         for (const line of lines) {
-            if (!line.trim()) continue;
+            if (!line.trim()) {
+                invalidLines++;
+                continue;
+            }
             
             const parts = line.split(',');
-            if (parts.length < 2) continue;
+            if (parts.length < 2) {
+                invalidLines++;
+                continue;
+            }
             
             const cep = parts[0].trim();
             let name = parts[1].trim();
             
+            // Verificar se CEP e nome são válidos
+            if (!cep || !name) {
+                invalidLines++;
+                continue;
+            }
+            
             // Formatar nome (primeira letra maiúscula, resto minúscula)
             name = formatLocationName(name);
             
-            if (cep && name) {
-                // Formatar CEP para garantir consistência no formato xxxxx-xxx
-                const formattedCEP = formatCEP(cep);
+            // Verificar casos especiais como Taquarivaí-Eliana
+            let modifiedName = name.toLowerCase();
+            
+            // Checar casos especiais para Ribeirão Branco e Taquarivaí
+            if (modifiedName.includes('ribeirao branco') || 
+                modifiedName.includes('ribeira') || 
+                modifiedName.includes('ribeirão branco')) {
+                console.log("Detectado Ribeirão Branco no nome:", name);
+                name = "Ribeirão Branco";
+            } else if (modifiedName.includes('taquarivai') || 
+                      modifiedName.includes('oliveira ferreira') ||
+                      modifiedName.includes('oliveira')) {
+                console.log("Detectado Taquarivaí no nome:", name);
+                name = "Taquarivaí";
+            }
+            
+            // Formatar CEP para garantir consistência no formato xxxxx-xxx
+            const formattedCEP = formatCEP(cep);
+            
+            // Verificar se é um CEP conhecido (tentando com o formato fornecido ou com formato padronizado)
+            if (knownCEPs[cep] || knownCEPs[formattedCEP]) {
+                // Usar o CEP que for encontrado no banco de dados
+                const knownLocation = knownCEPs[cep] || knownCEPs[formattedCEP];
+                const formattedCityName = formatLocationName(knownLocation.name);
                 
-                // Verificar se é um CEP conhecido (tentando com o formato fornecido ou com formato padronizado)
-                if (knownCEPs[cep] || knownCEPs[formattedCEP]) {
-                    // Usar o CEP que for encontrado no banco de dados
-                    const knownLocation = knownCEPs[cep] || knownCEPs[formattedCEP];
-                    const formattedCityName = formatLocationName(knownLocation.name);
-                    
-                    // Log para depuração
-                    console.log(`CEP ${cep} encontrado na base de dados: ${knownLocation.name}, coordenadas: ${knownLocation.lat}, ${knownLocation.lng}`);
-                    
-                    newLocations.push({
-                        id: locationId++,
-                        name: name,
-                        address: `${name}, ${formattedCityName}, SP, Brasil`,
-                        zipCode: cep,
-                        latitude: knownLocation.lat,
-                        longitude: knownLocation.lng,
-                        isOrigin: false
-                    });
-                } else {
-                    // Adicionar à fila para geocodificação
-                    geocodeQueue.push({
-                        cep: cep,
-                        name: name // Nome já formatado
-                    });
-                }
+                // Log para depuração
+                console.log(`CEP ${cep} encontrado na base de dados: ${knownLocation.name}, coordenadas: ${knownLocation.lat}, ${knownLocation.lng}`);
+                
+                newLocations.push({
+                    id: locationId++,
+                    name: name,
+                    address: `${name}, ${formattedCityName}, SP, Brasil`,
+                    zipCode: cep,
+                    latitude: knownLocation.lat,
+                    longitude: knownLocation.lng,
+                    isOrigin: false
+                });
+            } else {
+                // Adicionar à fila para geocodificação
+                geocodeQueue.push({
+                    cep: cep,
+                    name: name // Nome já formatado
+                });
             }
         }
         
         // Processar os CEPs conhecidos imediatamente
         if (newLocations.length > 0) {
             // Para cada novo local, adicionar à lista e ao mapa
-            newLocations.forEach((location, index) => {
+            newLocations.forEach((location) => {
                 locations.push(location);
                 addMarkerForLocation(location, locations.length - 1);
             });
@@ -3286,8 +3361,7 @@
             // Ajustar o zoom para mostrar todos os pontos com padding para melhor visualização
             zoomToFitAllMarkers();
             
-            // Exibir notificação de sucesso
-            showNotification(`${newLocations.length} locais adicionados com sucesso.`, "success");
+            console.log(`Processados ${newLocations.length} locais com sucesso.`);
         }
         
         // Processar a fila de geocodificação para CEPs desconhecidos
