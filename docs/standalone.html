@@ -2331,13 +2331,20 @@
         
         legendDiv.appendChild(scrollContainer);
         
-        // Posicionar a legenda centralizada na área indicada (centro da tela)
+        // Aplicar o layout exato solicitado
+        legendDiv.style.backgroundColor = 'white';
+        legendDiv.style.padding = '10px';
+        legendDiv.style.borderRadius = '4px';
+        legendDiv.style.boxShadow = 'rgba(0, 0, 0, 0.3) 0px 2px 6px';
+        legendDiv.style.width = '200px';
+        legendDiv.style.fontSize = '12px';
+        legendDiv.style.margin = '10px';
         legendDiv.style.position = 'absolute';
-        legendDiv.style.left = '50%';
+        legendDiv.style.zIndex = '1000';
+        legendDiv.style.left = '0px';
         legendDiv.style.top = '50%';
         legendDiv.style.transform = 'translate(-50%, -50%)';
         legendDiv.style.maxHeight = '80%';
-        legendDiv.style.zIndex = '1000';
         
         // Adicionar a legenda ao DOM
         document.querySelector('#map').appendChild(legendDiv);
