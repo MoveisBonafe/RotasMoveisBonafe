@@ -1442,7 +1442,7 @@
         <div class="map-container">
             <div id="map">
                 <!-- Botão para mostrar/esconder marcadores de contagem (movido para canto inferior direito) -->
-                <button id="counter-toggle" class="btn btn-sm btn-info map-control-button active" style="position: absolute; bottom: 70px; right: 10px; z-index: 1000; padding: 5px 8px; background-color: rgba(0, 0, 0, 0.7); color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.3);" title="Esconder contadores regionais">
+                <button id="counter-toggle" class="btn btn-sm btn-info map-control-button active" style="position: absolute; bottom: 70px; right: 10px; z-index: 1000; padding: 5px 8px; background-color: rgba(0, 0, 0, 0.7); color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.3);" title="Esconder contadores regionais" onclick="toggleCountMarkers()">
                     🔢
                 </button>
             </div>
@@ -2342,12 +2342,8 @@
         counterControlDiv.innerHTML = '<button id="counter-toggle" class="map-control-button active" title="Esconder contadores regionais">🔢</button>';
         map.controls[google.maps.ControlPosition.LEFT_TOP].push(counterControlDiv);
         
-        // Adicionar controle personalizado para a legenda de regiões
-        const legendControlDiv = document.createElement('div');
-        legendControlDiv.className = 'custom-map-control';
-        legendControlDiv.title = 'Mostrar/esconder legenda de regiões';
-        legendControlDiv.innerHTML = '<button id="legend-toggle" class="map-control-button" title="Mostrar legenda de regiões">L</button>';
-        map.controls[google.maps.ControlPosition.LEFT_TOP].push(legendControlDiv);
+        // O botão de legenda já existe como elemento fixo, não precisamos adicionar outro
+        // Removido controle duplicado de legenda
         
         // Inicializar o serviço de direções
         directionsService = new google.maps.DirectionsService();
@@ -2392,17 +2388,25 @@
             }
         }
         
-        // Atualizar aparência do botão
-        const counterToggleBtn = document.getElementById('counter-toggle');
-        if (counterToggleBtn) {
+        // Atualizar aparência do botão - buscando todos os elementos que podem ser o botão de contador
+        const counterToggleBtns = [
+            document.getElementById('counter-toggle'),
+            document.querySelector('button[id="counter-toggle"]'),
+            ...Array.from(document.querySelectorAll('[title*="contadores regionais"]'))
+        ].filter(Boolean); // Remove null/undefined
+        
+        // Atualizar todos os botões encontrados
+        counterToggleBtns.forEach(btn => {
             if (countMarkersVisible) {
-                counterToggleBtn.classList.add('active');
-                counterToggleBtn.title = 'Esconder contadores regionais';
+                btn.classList.add('active');
+                btn.title = 'Esconder contadores regionais';
             } else {
-                counterToggleBtn.classList.remove('active');
-                counterToggleBtn.title = 'Mostrar contadores regionais';
+                btn.classList.remove('active');
+                btn.title = 'Mostrar contadores regionais';
             }
-        }
+        });
+        
+        console.log("Estado dos contadores regionais:", countMarkersVisible ? "Visíveis" : "Ocultos");
     }
     
     // Verifica se a legenda já está visível
@@ -2882,10 +2886,11 @@
                 });
             }
             
-            // Botão para alternar a legenda de regiões
-            const legendToggleBtn = document.getElementById('legend-toggle');
-            if (legendToggleBtn) {
-                legendToggleBtn.addEventListener('click', function() {
+            // Botão para alternar a legenda de regiões (usando o novo ID show-legend)
+            const showLegendBtn = document.getElementById('show-legend');
+            if (showLegendBtn) {
+                // Mantendo o evento - mesmo que já exista um onclick no HTML, para garantir
+                showLegendBtn.addEventListener('click', function() {
                     createRegionLegend();
                 });
             }
