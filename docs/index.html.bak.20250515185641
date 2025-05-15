@@ -39,7 +39,7 @@
             box-shadow: 0 0 3px rgba(0, 0, 0, 0.5) !important;
         }
         
-        /* Estilos globais */
+        /* Estilos globais - Versão corrigida */
         html, body {
             height: 100%;
             margin: 0;
@@ -47,58 +47,63 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden; /* Impedir rolagem na página inteira */
         }
-        .app-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-            width: 100%;
-            position: relative; /* Importante para posicionamento absoluto das abas */
-        }
         
-        .main-content-area {
-            display: flex;
-            flex-direction: row;
+        /* Container principal com posicionamento absoluto */
+        .app-container {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 60px; /* Espaço para a barra inferior de botões */
-            overflow: hidden;
-        }
-        
-        .map-container {
-            position: absolute;
-            top: 0;
             right: 0;
             bottom: 0;
-            left: 380px; /* Alinhado com o fim da sidebar */
             overflow: hidden;
         }
         
-        #map {
-            position: absolute; 
+        /* Área principal de conteúdo */
+        .main-content-area {
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            right: 0;
+            bottom: 60px; /* Reserva espaço para a barra inferior */
+            overflow: hidden;
         }
         
+        /* Sidebar com altura corrigida */
         .sidebar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
             width: 380px;
-            background-color: #f8f9fa;
             padding: 20px;
+            background-color: #f8f9fa;
             overflow-y: auto;
             z-index: 10;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
+            scrollbar-width: thin; /* Para Firefox */
+            scrollbar-color: #adb5bd #f8f9fa; /* Para Firefox */
+            box-sizing: border-box; /* Incluir padding na largura total */
+        }
+        
+        /* Container do mapa ajustado para não sobrepor a sidebar */
+        .map-container {
+            position: absolute;
+            top: 0;
+            left: 380px; /* Começa exatamente onde termina a sidebar */
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+        }
+        
+        /* Mapa ocupa 100% do container */
+        #map {
             position: absolute;
             top: 0;
             left: 0;
-            bottom: 0;
-            scrollbar-width: thin; /* Para Firefox */
-            scrollbar-color: #adb5bd #f8f9fa; /* Para Firefox */
+            width: 100%;
+            height: 100%;
         }
         
         /* Garantir que o conteúdo da sidebar tenha rolagem adequada */
@@ -565,7 +570,7 @@
             display: block; /* Apenas mostrar quando tiver sucesso */
         }
         
-        /* Responsividade */
+        /* Responsividade para telas menores */
         @media (max-width: 768px) {
             .sidebar {
                 position: absolute;
@@ -573,17 +578,25 @@
                 top: 0;
                 bottom: 0;
                 z-index: 1000;
-                width: 100%;
+                width: 320px; /* Largura reduzida para telas menores */
                 max-width: 320px;
-                overflow-y: auto; /* Garantir rolagem quando necessário */
+                overflow-y: auto;
+                box-sizing: border-box;
             }
             
             .map-container {
-                left: 320px; /* Menor largura da sidebar em telas pequenas */
+                position: absolute;
+                left: 320px; /* Alinhado com a sidebar menor */
+                right: 0;
+                top: 0;
+                bottom: 0;
             }
             
             .bottom-tabs-container {
+                position: absolute;
                 left: 320px;
+                right: 0;
+                bottom: 0;
                 width: calc(100% - 320px);
             }
         }
@@ -1052,6 +1065,7 @@
         .bottom-tabs-container {
             width: calc(100% - 380px); /* Ajustado para não sobrepor a sidebar */
             margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
             animation: fadeIn 0.5s ease;
@@ -1059,9 +1073,9 @@
             border-top: 1px solid #ddd;
             overflow: auto; /* Alterado para auto para permitir rolagem */
             height: 60px; /* Altura padrão quando minimizada */
-            position: absolute; /* Alinhado com layout principal */
+            position: absolute; /* Posicionamento absoluto para controle preciso */
             bottom: 0;
-            left: 380px; /* Inicia à direita da sidebar */
+            left: 380px; /* Alinhado exatamente com a borda direita da sidebar */
             right: 0;
             z-index: 1000; /* Aumentado para ficar sobre todos os elementos */
             transition: height 0.3s ease-in-out;
@@ -1082,15 +1096,32 @@
             overflow: hidden;
         }
         
-        /* Estado expandido para container de abas */
+        /* Estado expandido para container de abas - MODO FULLSCREEN */
         .bottom-tabs-container:not(.minimized) {
-            height: calc(100vh - 10px); /* Quase altura total da tela quando expandido */
-            border-top: 2px solid #1976D2; /* Borda mais visível quando expandido */
-            border-left: 2px solid #1976D2; /* Borda na lateral para separar da sidebar */
-            box-shadow: -5px -5px 15px rgba(0,0,0,0.2); /* Sombra ajustada */
+            position: fixed !important; /* IMPORTANTE: Posição fixa em relação à janela do navegador */
+            top: 0 !important; /* Começa no topo da página */
+            left: 380px !important; /* Alinhado com a sidebar */
+            right: 0 !important;
+            bottom: 0 !important;
+            height: 100vh !important; /* Altura total da tela */
+            width: calc(100% - 380px) !important; /* Largura ajustada para alinhar com a sidebar */
+            border-top: 2px solid #1976D2;
+            border-left: 2px solid #1976D2;
+            box-shadow: -5px -5px 15px rgba(0,0,0,0.2);
+            z-index: 9999 !important; /* Valor muito alto para garantir que fique sobre tudo */
+            background-color: white !important; /* Fundo branco para cobrir o mapa */
+            overflow: auto !important; /* Permitir rolagem quando necessário */
         }
         
         /* Botão de fechar removido - usando apenas os botões das abas para controlar expandir/minimizar */
+        
+        /* Estilo para conteúdo das abas quando maximizadas */
+        .bottom-tabs-container:not(.minimized) .bottom-tab-content {
+            display: block;
+            height: calc(100vh - 60px) !important; /* Altura total menos a altura da barra de navegação */
+            padding: 20px;
+            overflow-y: auto;
+        }
         
         /* Ajuste para que o mapa ocupe todo o espaço disponível */
         .map-container {
@@ -2421,14 +2452,26 @@
         function resizeMap() {
             const mapContainer = document.querySelector('.map-container');
             const mapElement = document.getElementById('map');
+            const sidebar = document.querySelector('.sidebar');
             
             if (mapContainer && mapElement) {
                 console.log('Redimensionando mapa');
                 
-                // Não precisamos mais definir estilos aqui pois os estilos CSS
-                // já estão corretos e posicionados adequadamente
+                // Garantir que o CSS seja respeitado
+                if (sidebar) {
+                    const sidebarWidth = sidebar.offsetWidth;
+                    mapContainer.style.left = sidebarWidth + 'px';
+                    mapContainer.style.width = 'calc(100% - ' + sidebarWidth + 'px)';
+                    
+                    // Ajustar a barra inferior também
+                    const bottomTabs = document.querySelector('.bottom-tabs-container');
+                    if (bottomTabs) {
+                        bottomTabs.style.left = sidebarWidth + 'px';
+                        bottomTabs.style.width = 'calc(100% - ' + sidebarWidth + 'px)';
+                    }
+                }
                 
-                // Apenas forçar o redimensionamento do mapa
+                // Forçar o redimensionamento do mapa
                 if (typeof google !== 'undefined' && google.maps && map) {
                     google.maps.event.trigger(map, 'resize');
                 }
@@ -2947,51 +2990,160 @@
         }
     }
     
-    // Função para expandir/colapsar as abas inferiores
+    // Função para expandir/colapsar as abas inferiores - IMPLEMENTAÇÃO FULLSCREEN
     function toggleTabsExpansion() {
         const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
-        const toggleIcon = document.getElementById('toggle-icon');
         const mapContainer = document.querySelector('.map-container');
         
         if (bottomTabsContainer) {
             if (bottomTabsContainer.classList.contains('minimized')) {
-                // Expandir
+                // EXPANDIR - MODO FULLSCREEN
+                console.log("Expandindo abas para tela cheia");
+                
+                // 1. Alterar classe para controlar estilos CSS
                 bottomTabsContainer.classList.remove('minimized');
-                if (toggleIcon) toggleIcon.textContent = '▼ Minimizar';
                 
-                // Ajustar altura do mapa quando as abas estão expandidas
+                // 2. Garantir que o estilo inline não atrapalhe
+                bottomTabsContainer.removeAttribute('style');
+                
+                // 3. Aplicar estilos diretamente (redundante com CSS, mas mais seguro)
+                bottomTabsContainer.style.position = 'fixed';
+                bottomTabsContainer.style.top = '0';
+                bottomTabsContainer.style.left = '380px';
+                bottomTabsContainer.style.right = '0';
+                bottomTabsContainer.style.bottom = '0';
+                bottomTabsContainer.style.width = 'calc(100% - 380px)';
+                bottomTabsContainer.style.height = '100vh';
+                bottomTabsContainer.style.zIndex = '9999';
+                
+                // 4. Ocultar o mapa completamente
                 if (mapContainer) {
-                    // Ajustar a altura do container do mapa para considerar o tamanho expandido das abas
-                    const tabsHeight = bottomTabsContainer.offsetHeight;
-                    mapContainer.style.bottom = tabsHeight + 'px';
-                    
-                    // Forçar redesenho do mapa
-                    if (typeof google !== 'undefined' && google.maps && map) {
-                        setTimeout(() => {
-                            google.maps.event.trigger(map, 'resize');
-                            console.log("Mapa redimensionado após expandir abas, altura das abas:", tabsHeight);
-                        }, 100);
-                    }
+                    mapContainer.style.visibility = 'hidden';
                 }
+                
+                // 5. Mostrar o conteúdo das abas, garantindo que esteja visível
+                const activeContent = document.querySelector('.bottom-tab-content.active');
+                if (activeContent) {
+                    activeContent.style.display = 'block';
+                    activeContent.style.height = 'calc(100vh - 60px)';
+                    activeContent.style.overflow = 'auto';
+                }
+                
+                console.log("Abas expandidas para tela cheia");
             } else {
-                // Minimizar
-                bottomTabsContainer.classList.add('minimized');
-                if (toggleIcon) toggleIcon.textContent = '▲ Expandir';
+                // MINIMIZAR
+                console.log("Minimizando abas");
                 
-                // Restaurar altura original do mapa quando as abas estão minimizadas
+                // 1. Alterar classe para controlar estilos CSS
+                bottomTabsContainer.classList.add('minimized');
+                
+                // 2. Restaurar a posição original
+                bottomTabsContainer.removeAttribute('style');
+                bottomTabsContainer.style.position = 'absolute';
+                bottomTabsContainer.style.top = 'auto';
+                bottomTabsContainer.style.bottom = '0';
+                bottomTabsContainer.style.left = '380px';
+                bottomTabsContainer.style.height = '60px';
+                bottomTabsContainer.style.width = 'calc(100% - 380px)';
+                
+                // 3. Esconder todos os conteúdos
+                document.querySelectorAll('.bottom-tab-content').forEach(content => {
+                    content.style.display = 'none';
+                });
+                
+                // 4. Mostrar o mapa novamente
                 if (mapContainer) {
-                    mapContainer.style.bottom = '60px'; // Altura das abas minimizadas
-                    
-                    // Forçar redesenho do mapa
-                    if (typeof google !== 'undefined' && google.maps && map) {
-                        setTimeout(() => {
-                            google.maps.event.trigger(map, 'resize');
-                            console.log("Mapa redimensionado após minimizar abas");
-                        }, 100);
-                    }
+                    mapContainer.style.visibility = 'visible';
                 }
+                
+                // 5. Remover classe ativa de todos os botões
+                document.querySelectorAll('.bottom-tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // 6. Força redesenho do mapa
+                if (typeof google !== 'undefined' && google.maps && map) {
+                    setTimeout(() => {
+                        google.maps.event.trigger(map, 'resize');
+                    }, 100);
+                }
+                
+                console.log("Abas minimizadas");
             }
         }
+    }
+    
+    // Inicializar as abas inferiores
+    function initBottomTabs() {
+        console.log("Inicializando abas inferiores com modo FULLSCREEN...");
+        
+        // Selecionar todos os botões de aba
+        const tabButtons = document.querySelectorAll('.bottom-tab-btn');
+        
+        // Adicionar listeners de clique para cada botão
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                const tabContent = document.getElementById(tabId + '-content');
+                const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+                
+                // Verificar se a aba já está ativa
+                const isActive = this.classList.contains('active');
+                
+                console.log("Clique em aba:", tabId, "- Ativa:", isActive, "- Minimizada:", bottomTabsContainer.classList.contains('minimized'));
+                
+                // Se a aba clicada já estava ativa e expandida, apenas minimizamos
+                if (isActive && !bottomTabsContainer.classList.contains('minimized')) {
+                    console.log("Minimizando aba ativa");
+                    
+                    // Remover classe ativa deste botão
+                    this.classList.remove('active');
+                    
+                    // Esconder conteúdo
+                    if (tabContent) {
+                        tabContent.classList.remove('active');
+                        tabContent.style.display = 'none';
+                    }
+                    
+                    // Minimizar as abas
+                    toggleTabsExpansion();
+                    return;
+                }
+                
+                // Remover classes ativas de todas as abas antes de ativar uma nova
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Ocultar todos os conteúdos
+                document.querySelectorAll('.bottom-tab-content').forEach(content => {
+                    content.classList.remove('active');
+                    content.style.display = 'none';
+                });
+                
+                // Ativar a aba clicada
+                this.classList.add('active');
+                
+                // Mostrar o conteúdo correspondente
+                if (tabContent) {
+                    tabContent.classList.add('active');
+                    tabContent.style.display = 'block';
+                    
+                    // Garantir que o container seja visível para a altura máxima
+                    tabContent.style.height = 'calc(100vh - 60px)';
+                    tabContent.style.overflow = 'auto';
+                    tabContent.style.padding = '20px';
+                }
+                
+                // Se as abas estavam minimizadas, expandir
+                if (bottomTabsContainer.classList.contains('minimized')) {
+                    console.log("Expandindo abas para mostrar conteúdo");
+                    toggleTabsExpansion();
+                }
+                
+                console.log("Aba ativada:", tabId);
+            });
+        });
+        
+        console.log("Abas inferiores inicializadas com sucesso");
     }
     
     // Configura todos os event listeners
@@ -3031,6 +3183,9 @@
         }, 1000); // Esperamos 1 segundo para garantir que a página esteja carregada
         
         // Sidebar sempre visível (botão de fechar removido)
+        
+        // Inicializar abas inferiores
+        initBottomTabs();
         
         // Upload de arquivo com suporte para drag and drop
         const fileUploadInput = document.getElementById('file-upload');
@@ -3230,21 +3385,8 @@
         const file = event.target.files[0];
         if (!file) return;
         
-        // Limpar qualquer status anterior de upload
-        const fileUploadArea = document.getElementById('upload-area');
-        if (fileUploadArea) {
-            // Verificar se já existe um elemento de status e removê-lo
-            const existingStatus = document.querySelector('.file-upload-status');
-            if (existingStatus && existingStatus.parentNode) {
-                existingStatus.parentNode.removeChild(existingStatus);
-            }
-            
-            // Criar um novo elemento de status
-            const statusElement = document.createElement('div');
-            statusElement.className = 'file-upload-status';
-            statusElement.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processando arquivo...';
-            fileUploadArea.parentNode.appendChild(statusElement);
-        }
+        // Mostrar notificação em vez de status
+        showNotification("Processando arquivo...", "info");
         
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -3252,33 +3394,13 @@
             try {
                 parseCEPFile(content);
                 
-                // Atualizar status para sucesso
-                if (statusElement) {
-                    statusElement.className = 'file-upload-status success';
-                    statusElement.innerHTML = '<i class="fas fa-check-circle"></i> Arquivo processado com sucesso!';
-                    
-                    // Remover o status após alguns segundos
-                    setTimeout(() => {
-                        if (statusElement && statusElement.parentNode) {
-                            statusElement.parentNode.removeChild(statusElement);
-                        }
-                    }, 3000);
-                }
+                // Mostrar notificação de sucesso
+                showNotification("Arquivo processado com sucesso!", "success");
             } catch (error) {
                 console.error("Erro ao processar arquivo:", error);
                 
-                // Atualizar status para erro
-                if (statusElement) {
-                    statusElement.className = 'file-upload-status error';
-                    statusElement.innerHTML = '<i class="fas fa-exclamation-circle"></i> Erro ao processar arquivo!';
-                    
-                    // Remover o status após alguns segundos
-                    setTimeout(() => {
-                        if (statusElement && statusElement.parentNode) {
-                            statusElement.parentNode.removeChild(statusElement);
-                        }
-                    }, 3000);
-                }
+                // Mostrar notificação de erro
+                showNotification("Erro ao processar arquivo: " + error.message, "error");
             }
         };
         reader.readAsText(file);
@@ -8314,5 +8436,8 @@
     // Expor funções necessárias globalmente
     window.removeLocation = removeLocation;
     </script>
-<script src="sidebar-fix.js"></script><script src="tabs-fullscreen.js"></script><script src="cache-buster-20250515185722.js"></script></body>
+    
+    <!-- Script para fixar problemas de layout -->
+    <script src="layout-fix.js?v=20250515182715"></script>
+</body>
 </html>
