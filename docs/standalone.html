@@ -2075,6 +2075,35 @@
     });
 
     // Inicializa o mapa
+    // Sincronizar campos de data entre aba superior e sidebar
+    function syncDateFields() {
+        // Definir valores iniciais (data atual e data atual + 7 dias)
+        const today = new Date();
+        const nextWeek = new Date();
+        nextWeek.setDate(today.getDate() + 7);
+        
+        // Formatar para YYYY-MM-DD
+        const todayFormatted = today.toISOString().split('T')[0];
+        const nextWeekFormatted = nextWeek.toISOString().split('T')[0];
+        
+        // Definir valores iniciais para todos os campos de data
+        document.getElementById('start-date').value = todayFormatted;
+        document.getElementById('end-date').value = nextWeekFormatted;
+        document.getElementById('start-date-top').value = todayFormatted;
+        document.getElementById('end-date-top').value = nextWeekFormatted;
+        
+        // Adicionar event listeners para sincronizar os campos
+        document.getElementById('start-date-top').addEventListener('change', function() {
+            document.getElementById('start-date').value = this.value;
+            filterEventsByDate();
+        });
+        
+        document.getElementById('end-date-top').addEventListener('change', function() {
+            document.getElementById('end-date').value = this.value;
+            filterEventsByDate();
+        });
+    }
+
     function initMap() {
         // Definir valores iniciais aos campos de data
         initDatePickers();
@@ -2091,6 +2120,8 @@
             // Verificar se os campos existem
             const startDateInput = document.getElementById('start-date');
             const endDateInput = document.getElementById('end-date');
+            const startDateTopInput = document.getElementById('start-date-top');
+            const endDateTopInput = document.getElementById('end-date-top');
             
             if (!startDateInput || !endDateInput) {
                 console.error("Campos de data não encontrados. Tentando encontrar container...");
@@ -2153,13 +2184,34 @@
             
             console.log(`Datas inicializadas: de ${startDate.value} até ${endDate.value}`);
             
+            // Inicializar também os campos da aba superior, se existirem
+            if (startDateTopInput && endDateTopInput) {
+                startDateTopInput.value = startDate.value;
+                endDateTopInput.value = endDate.value;
+                
+                // Adicionar listeners para sincronizar entre aba superior e sidebar
+                startDateTopInput.addEventListener('change', function() {
+                    startDate.value = this.value;
+                    console.log("Data de início (aba superior) alterada para:", this.value);
+                    filterEventsByDate();
+                });
+                
+                endDateTopInput.addEventListener('change', function() {
+                    endDate.value = this.value;
+                    console.log("Data de fim (aba superior) alterada para:", this.value);
+                    filterEventsByDate();
+                });
+            }
+            
             // Adicionar listeners para atualizar os eventos quando as datas mudarem
             startDate.addEventListener('change', function() {
+                if (startDateTopInput) startDateTopInput.value = this.value;
                 console.log("Data de início alterada para:", this.value);
                 filterEventsByDate();
             });
             
             endDate.addEventListener('change', function() {
+                if (endDateTopInput) endDateTopInput.value = this.value;
                 console.log("Data de fim alterada para:", this.value);
                 filterEventsByDate();
             });
