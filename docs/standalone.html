@@ -2007,6 +2007,9 @@
         
         // Invocar a filtragem de eventos inicial para exibir eventos para a origem
         filterEventsByDate();
+        
+        // Inicializar os contadores de região com base nos locais existentes (origem)
+        refreshRegionCounters();
     }
     
     // Função centralizada para inicializar os campos de data
