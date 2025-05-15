@@ -45,6 +45,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* Impedir rolagem na página inteira */
         }
         .app-container {
             display: flex;
@@ -63,9 +64,19 @@
             height: 100vh; /* Usar toda a altura da viewport */
             position: relative; /* Importante para posicionamento dos elementos filhos */
         }
+        
+        #map-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 60px; /* Espaço para a barra inferior */
+            left: 380px; /* Alinhado com o fim da sidebar */
+            height: calc(100vh - 60px);
+            width: calc(100% - 380px);
+        }
         .sidebar {
             width: 380px;
-            height: 100vh;
+            height: calc(100vh - 60px); /* Altura total menos a altura da barra de botões */
             background-color: #f8f9fa;
             padding: 20px;
             overflow-y: auto;
@@ -74,10 +85,10 @@
             transition: transform 0.3s ease;
             display: flex;
             flex-direction: column;
-            position: fixed; /* Fixado para garantir preenchimento completo */
+            position: absolute; /* Alterado para absolute para não sobrepor */
             top: 0;
             left: 0;
-            bottom: 0;
+            bottom: 60px; /* Deixar espaço para a barra de botões */
             scrollbar-width: thin; /* Para Firefox */
             scrollbar-color: #adb5bd #f8f9fa; /* Para Firefox */
         }
@@ -2407,13 +2418,13 @@
                 console.log('Redimensionando mapa para altura da janela:', windowHeight);
                 
                 // Ajustar posição e tamanho do container
-                mapContainer.style.position = 'fixed';
+                mapContainer.style.position = 'absolute';
                 mapContainer.style.top = '0';
                 mapContainer.style.right = '0';
                 mapContainer.style.bottom = '60px'; // Altura das abas minimizadas
                 mapContainer.style.left = '380px'; // Começa onde termina a sidebar
                 mapContainer.style.width = 'calc(100% - 380px)';
-                mapContainer.style.height = '100vh'; // Usar toda a altura da viewport
+                mapContainer.style.height = 'calc(100vh - 60px)'; // Altura menos a barra de botões
                 
                 // Forçar tamanho do elemento do mapa para ocupar todo o container
                 mapElement.style.position = 'absolute';
