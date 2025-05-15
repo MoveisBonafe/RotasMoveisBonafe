@@ -2803,6 +2803,16 @@
     function initEventListeners() {
         // Toggle para mostrar/esconder a sidebar removido
         
+        // Botão para alternar a visibilidade dos contadores de região
+        document.getElementById('counter-toggle').addEventListener('click', function() {
+            toggleCountMarkers();
+        });
+        
+        // Botão para alternar a legenda de regiões
+        document.getElementById('legend-toggle').addEventListener('click', function() {
+            createRegionLegend();
+        });
+        
         // Botão para fechar a sidebar em telas pequenas
         document.querySelector('.sidebar-close').addEventListener('click', function() {
             document.getElementById('sidebar').classList.add('sidebar-hidden');
