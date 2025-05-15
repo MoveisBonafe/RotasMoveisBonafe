@@ -2161,7 +2161,29 @@
     function extractCityName(addressOrName) {
         if (!addressOrName) return 'Desconhecido';
         
-        // Tentar extrair cidade de endereço completo primeiro
+        // Lista de casos especiais que precisam de tratamento específico
+        const specialCases = {
+            "taquarivai-eliana": "Taquarivaí",
+            "taquarivai": "Taquarivaí",
+            "oliveira ferreira": "Taquarivaí", // Caso específico relatado
+            "ribeirao branco": "Ribeirão Branco",
+            "ribeira": "Ribeirão Branco", // Caso específico relatado
+            "ribeirão branco-kelly": "Ribeirão Branco", // Caso específico relatado
+            "ribeirao branco-kelly": "Ribeirão Branco", // Caso específico relatado
+            "branco-kelly": "Ribeirão Branco", // Para evitar detecção errada
+            "cristina fernandes": "Ribeirão Branco", // Para evitar detecção errada
+            "buri": "Buri"
+        };
+        
+        // Verificar casos especiais primeiro
+        const lowerName = addressOrName.toLowerCase();
+        for (const [pattern, city] of Object.entries(specialCases)) {
+            if (lowerName.includes(pattern)) {
+                return city;
+            }
+        }
+        
+        // Tentar extrair cidade de endereço completo
         const cityFromAddress = extractCityFromAddress(addressOrName);
         if (cityFromAddress) return cityFromAddress;
         
@@ -2169,7 +2191,8 @@
         const knownCities = [
             "Dois Córregos", "Jaú", "Botucatu", "Bauru", "Ribeirão Preto", 
             "São Paulo", "Campinas", "São Carlos", "Piracicaba", "Araraquara",
-            "Americana", "Sorocaba", "Limeira", "Rio Claro", "Lençóis Paulista"
+            "Americana", "Sorocaba", "Limeira", "Rio Claro", "Lençóis Paulista",
+            "Taquarivaí", "Ribeirão Branco", "Buri"
         ];
         
         // Verificar se o nome já contém uma cidade conhecida

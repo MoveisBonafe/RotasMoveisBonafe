@@ -76,7 +76,10 @@ function fixRegionColors() {
     // Lista de cidades que devem ser corrigidas
     const fixCities = {
         "Ribeirão Branco": "Sorocaba",
+        "Ribeirao Branco": "Sorocaba",
+        "Ribeira": "Sorocaba",
         "Taquarivaí": "Sorocaba",
+        "Taquarivai": "Sorocaba",
         "Buri": "Sorocaba"
     };
     
