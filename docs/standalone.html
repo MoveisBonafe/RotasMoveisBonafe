@@ -2879,12 +2879,23 @@
         // Defer a adição dos listeners para garantir que os elementos existam
         setTimeout(function() {
             // Botão para alternar a visibilidade dos contadores de região
-            const counterToggleBtn = document.getElementById('counter-toggle');
-            if (counterToggleBtn) {
-                counterToggleBtn.addEventListener('click', function() {
+            // Tentamos encontrar por ID, seletor e atributo
+            const counterToggleBtns = [
+                document.getElementById('counter-toggle'),
+                document.querySelector('button[id="counter-toggle"]'),
+                ...Array.from(document.querySelectorAll('[title*="contadores regionais"]'))
+            ].filter(Boolean); // Remove null/undefined
+            
+            console.log("Botões de contador encontrados:", counterToggleBtns.length);
+            
+            // Adicionar evento a todos os botões encontrados
+            counterToggleBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
                     toggleCountMarkers();
+                    console.log("Botão de contador clicado, estado atual:", countMarkersVisible ? "Visível" : "Oculto");
                 });
-            }
+                console.log("Evento de clique adicionado ao botão de contador");
+            });
             
             // Botão para alternar a legenda de regiões (usando o novo ID show-legend)
             const showLegendBtn = document.getElementById('show-legend');
@@ -3777,7 +3788,7 @@
                         estado: "SP"
                     };
                     console.log("Região forçada para Sorocaba para Ribeirão Branco");
-                    return; // Sair da função após definir a região
+                    markerColor = infoRegiao.cor;
                 } 
                 else if (location.name.toLowerCase().startsWith("taquarivai") || 
                          location.name.toLowerCase().includes("taquarivai-")) {
@@ -3791,7 +3802,7 @@
                         estado: "SP"
                     };
                     console.log("Região forçada para Sorocaba para Taquarivaí");
-                    return; // Sair da função após definir a região
+                    markerColor = infoRegiao.cor;
                 }
                 else if (location.name.toLowerCase().startsWith("buri") ||
                          location.name.toLowerCase().includes("buri-")) {
@@ -3805,7 +3816,7 @@
                         estado: "SP"
                     };
                     console.log("Região forçada para Sorocaba para Buri");
-                    return; // Sair da função após definir a região
+                    markerColor = infoRegiao.cor;
                 }
                 else {
                     // Método padrão para outros locais
