@@ -91,21 +91,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Função de processamento de arquivo CEP melhorada
   function processCepFile(content) {
-    // Find the sidebar first
-    const sidebar = document.querySelector('.sidebar');
-    if (!sidebar) {
-      console.error('Sidebar element not found');
-      alert('Erro ao processar arquivo: elemento sidebar não encontrado');
-      return;
+    // Procurar container existente ou criar um novo
+    let container = document.querySelector('#notification-container');
+    
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'notification-container';
+      container.style.position = 'fixed';
+      container.style.top = '20px';
+      container.style.right = '20px';
+      container.style.zIndex = '9999';
+      document.body.appendChild(container);
     }
 
-    // Get or create notification container
-    let notificationContainer = document.querySelector('.file-upload');
-    if (!notificationContainer) {
-      notificationContainer = document.createElement('div');
-      notificationContainer.className = 'file-upload notification-container';
-      sidebar.appendChild(notificationContainer);
-    }
+    // Função para mostrar notificação
+    const showNotification = (message, type = 'warning') => {
+      const notification = document.createElement('div');
+      notification.className = `alert alert-${type} mt-2`;
+      notification.style.marginBottom = '10px';
+      notification.innerHTML = message;
+      container.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 5000);
+    };
 
     // Dividir em linhas
     const lines = content.split(/\r\n|\n/);
