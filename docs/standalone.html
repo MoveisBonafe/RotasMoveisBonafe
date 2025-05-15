@@ -1407,6 +1407,54 @@
     let allRoutePolylines = []; // Armazena referências a todas as polylines criadas
     let tspSolver = null; // Instância do solver TSP
     
+    // Definição das regiões de São Paulo e suas cidades para visualização regional
+    const regioesSP = {
+        'São José dos Campos': {
+            cidades: ['São José dos Campos', 'Taubaté', 'Jacareí', 'Caraguatatuba', 'Ubatuba', 'Caçapava', 'Campos do Jordão', 'São Sebastião', 'Ilhabela', 'Lorena'],
+            cor: '#FF5733' // Vermelho-alaranjado
+        },
+        'Campinas': {
+            cidades: ['Campinas', 'Jundiaí', 'Piracicaba', 'Limeira', 'Americana', 'Rio Claro', 'Indaiatuba', 'Hortolândia', 'Sumaré', 'Bragança Paulista'],
+            cor: '#33FF57' // Verde claro
+        },
+        'Araraquara': {
+            cidades: ['Araraquara', 'São Carlos', 'Matão', 'Ibitinga', 'Taquaritinga', 'Américo Brasiliense', 'Ibaté', 'Guariba', 'Rincão', 'Dobrada'],
+            cor: '#3357FF' // Azul
+        },
+        'Ribeirão Preto': {
+            cidades: ['Ribeirão Preto', 'Franca', 'Sertãozinho', 'Barretos', 'Bebedouro', 'Jaboticabal', 'Monte Alto', 'Orlândia', 'Batatais', 'Cravinhos'],
+            cor: '#FF33A8' // Rosa
+        },
+        'São José do Rio Preto': {
+            cidades: ['São José do Rio Preto', 'Catanduva', 'Fernandópolis', 'Votuporanga', 'Mirassol', 'Jales', 'José Bonifácio', 'Olímpia', 'Tanabi', 'Nova Granada'],
+            cor: '#33FFF6' // Ciano
+        },
+        'Araçatuba': {
+            cidades: ['Araçatuba', 'Andradina', 'Birigui', 'Penápolis', 'Mirandópolis', 'Pereira Barreto', 'Buritama', 'Guararapes', 'Ilha Solteira', 'Lavínia'],
+            cor: '#F6FF33' // Amarelo
+        },
+        'Presidente Prudente': {
+            cidades: ['Presidente Prudente', 'Presidente Epitácio', 'Dracena', 'Adamantina', 'Osvaldo Cruz', 'Álvares Machado', 'Teodoro Sampaio', 'Rancharia', 'Martinópolis', 'Presidente Venceslau'],
+            cor: '#FF33F6' // Magenta
+        },
+        'Marília': {
+            cidades: ['Marília', 'Tupã', 'Ourinhos', 'Assis', 'Garça', 'Paraguaçu Paulista', 'Santa Cruz do Rio Pardo', 'Pompéia', 'Palmital', 'Duartina'],
+            cor: '#8A33FF' // Roxo
+        },
+        'Bauru': {
+            cidades: ['Bauru', 'Jaú', 'Lins', 'Botucatu', 'Bariri', 'Pederneiras', 'Dois Córregos', 'Lençóis Paulista', 'Igaraçu do Tietê', 'Barra Bonita'],
+            cor: '#FF8A33' // Laranja
+        },
+        'Sorocaba': {
+            cidades: ['Sorocaba', 'Itapetininga', 'Itu', 'Votorantim', 'Tatuí', 'Salto', 'Boituva', 'Itapeva', 'Tietê', 'Porto Feliz'],
+            cor: '#33FF8A' // Verde esmeralda
+        },
+        'São Paulo': {
+            cidades: ['São Paulo', 'Guarulhos', 'Santo André', 'São Bernardo do Campo', 'Osasco', 'Mauá', 'Diadema', 'Carapicuíba', 'Mogi das Cruzes', 'Suzano'],
+            cor: '#338AFF' // Azul claro
+        }
+    };
+    
     // Função para processar CEP em formato x.y.z.w-abcd
     function formatCEP(cep) {
         // Remover qualquer caracter não numérico
@@ -2477,6 +2525,38 @@
         }
         return "";
     }
+    
+    // Função para determinar a região de uma cidade e obter sua cor correspondente
+    function getRegionColorForCity(cityName) {
+        if (!cityName) return null;
+        
+        // Normalizar o nome da cidade (remover acentos, converter para minúsculas)
+        const normalizedCityName = cityName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        
+        // Verificar cada região
+        for (const [regiao, dados] of Object.entries(regioesSP)) {
+            // Verificar se a cidade está nesta região
+            const cidadeEncontrada = dados.cidades.find(cidade => 
+                cidade.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(normalizedCityName) || 
+                normalizedCityName.includes(cidade.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase())
+            );
+            
+            if (cidadeEncontrada) {
+                console.log(`Cidade ${cityName} pertence à região ${regiao} (cor: ${dados.cor})`);
+                return {
+                    regiao: regiao,
+                    cor: dados.cor
+                };
+            }
+        }
+        
+        // Se não encontrar em nenhuma região, retornar valores padrão
+        console.log(`Cidade ${cityName} não encontrada em nenhuma região.`);
+        return {
+            regiao: "Desconhecida",
+            cor: "#808080" // Cinza
+        };
+    }
 
     // Adiciona um marcador no mapa para um local
     // targetArray permite especificar onde o marcador será armazenado (para reordenação segura)
@@ -2513,12 +2593,22 @@
         // Ícone personalizado com número de sequência
         const markerLabel = index === 0 ? 'O' : (index).toString();
         
-        // Cor específica para a origem e pontos na mesma cidade
+        // Cor específica com base na região da cidade
         let markerColor = '#1976D2'; // Cor padrão (azul)
+        let infoRegiao = null;
+        
         if (index === 0) {
-            markerColor = '#FF0000'; // Origem (vermelho)
-        } else if (isSameCityAsOrigin) {
-            markerColor = '#FF9800'; // Ponto na mesma cidade (laranja)
+            markerColor = '#FF0000'; // Origem sempre vermelho
+        } else {
+            // Determinar região e cor com base no nome da cidade
+            const cidadeDaLocalizacao = extractCityFromAddress(location.address) || location.name;
+            infoRegiao = getRegionColorForCity(cidadeDaLocalizacao);
+            
+            if (infoRegiao) {
+                markerColor = infoRegiao.cor; // Usar a cor da região
+            } else if (isSameCityAsOrigin) {
+                markerColor = '#FF9800'; // Fallback para ponto na mesma cidade (laranja)
+            }
         }
         
         // Verificar se deve animar o marcador (apenas pontos na mesma cidade)
