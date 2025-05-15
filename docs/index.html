@@ -2983,31 +2983,38 @@
         
         if (bottomTabsContainer) {
             if (bottomTabsContainer.classList.contains('minimized')) {
-                // Expandir
+                // Expandir - fazer as abas preencherem a tela inteira
                 bottomTabsContainer.classList.remove('minimized');
                 if (toggleIcon) toggleIcon.textContent = '▼ Minimizar';
                 
-                // Ajustar altura do mapa quando as abas estão expandidas
+                // Em modo expandido, as abas chegam até o topo da tela
+                bottomTabsContainer.style.top = '0';
+                bottomTabsContainer.style.height = '100vh';
+                
+                // Ocultar temporariamente o mapa para mostrar apenas as abas
                 if (mapContainer) {
-                    // Ajustar a altura do container do mapa para considerar o tamanho expandido das abas
-                    const tabsHeight = bottomTabsContainer.offsetHeight;
-                    mapContainer.style.bottom = tabsHeight + 'px';
-                    
-                    // Forçar redesenho do mapa
-                    if (typeof google !== 'undefined' && google.maps && map) {
-                        setTimeout(() => {
-                            google.maps.event.trigger(map, 'resize');
-                            console.log("Mapa redimensionado após expandir abas, altura das abas:", tabsHeight);
-                        }, 100);
-                    }
+                    mapContainer.style.visibility = 'hidden';
+                }
+                
+                // Forçar redesenho do mapa
+                if (typeof google !== 'undefined' && google.maps && map) {
+                    setTimeout(() => {
+                        google.maps.event.trigger(map, 'resize');
+                        console.log("Mapa redimensionado após expandir abas");
+                    }, 100);
                 }
             } else {
                 // Minimizar
                 bottomTabsContainer.classList.add('minimized');
                 if (toggleIcon) toggleIcon.textContent = '▲ Expandir';
                 
-                // Restaurar altura original do mapa quando as abas estão minimizadas
+                // Restaurar a posição original da barra de abas
+                bottomTabsContainer.style.top = 'auto';
+                bottomTabsContainer.style.height = '60px';
+                
+                // Restaurar a visibilidade do mapa
                 if (mapContainer) {
+                    mapContainer.style.visibility = 'visible';
                     mapContainer.style.bottom = '60px'; // Altura das abas minimizadas
                     
                     // Forçar redesenho do mapa
