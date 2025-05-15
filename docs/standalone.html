@@ -651,6 +651,50 @@
             color: black;
         }
         
+        /* Estilos para legenda de regiões */
+        .region-legend {
+            position: absolute;
+            bottom: 80px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            max-width: 220px;
+            z-index: 100;
+            font-size: 12px;
+        }
+        
+        .region-legend h5 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        
+        .region-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        
+        .color-box {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+            margin-right: 8px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .region-name {
+            font-size: 11px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
         /* Estilo para lista de eventos */
         .events-list {
             margin-top: 15px;
@@ -2526,6 +2570,41 @@
         return "";
     }
     
+    /**
+     * Extrai o nome da cidade a partir de um endereço completo
+     * @param address Endereço completo (ex: "R. Exemplo, 123 - Bairro, Cidade - UF, 12345-678, Brasil")
+     * @returns Nome da cidade ou endereço abreviado se não for possível extrair
+     */
+    function extractCityFromAddress(address) {
+        if (!address) return "";
+        
+        // Tenta encontrar o padrão "Cidade - UF" no endereço
+        const cityStateMatch = address.match(/([^,]+) - ([A-Z]{2})/);
+        if (cityStateMatch && cityStateMatch.length > 1) {
+            const cityWithNeighborhood = cityStateMatch[1].trim();
+            // Se tiver um traço antes do UF, pode conter bairro - pega só a cidade
+            const parts = cityWithNeighborhood.split('-');
+            return parts[parts.length - 1].trim();
+        }
+        
+        // Tenta encontrar o padrão mais simples: nome antes de SP, RJ, MG, etc.
+        const stateMatch = address.match(/([^,]+), ([A-Z]{2})/);
+        if (stateMatch && stateMatch.length > 1) {
+            return stateMatch[1].trim();
+        }
+        
+        // Se o endereço tem cidades conhecidas do estado de SP, retorna o nome da cidade
+        const todasCidadesSP = Object.values(regioesSP).flatMap(r => r.cidades);
+        for (const city of todasCidadesSP) {
+            if (address.includes(city)) {
+                return city;
+            }
+        }
+        
+        // Se não conseguiu extrair um nome claro, retorna a primeira parte do endereço
+        return address.split(',')[0].trim();
+    }
+    
     // Função para determinar a região de uma cidade e obter sua cor correspondente
     function getRegionColorForCity(cityName) {
         if (!cityName) return null;
@@ -2638,6 +2717,16 @@
             zIndex: index === 0 ? 1000 : (isSameCityAsOrigin ? 500 : 100) // Ordem: Origem > Mesma cidade > Outros
         });
         
+        // Obter informações regionais para mostrar no infowindow
+        let regiaoInfo = '';
+        const cidadeDaLocalizacao = extractCityFromAddress(location.address) || location.name;
+        if (!location.isOrigin && cidadeDaLocalizacao) {
+            const infoRegiao = getRegionColorForCity(cidadeDaLocalizacao);
+            if (infoRegiao && infoRegiao.regiao !== "Desconhecida") {
+                regiaoInfo = `<p style="margin-bottom: 5px;"><strong>Região:</strong> <span style="color:${infoRegiao.cor}">${infoRegiao.regiao}</span></p>`;
+            }
+        }
+        
         // Infowindow com detalhes do local
         const infowindow = new google.maps.InfoWindow({
             content: `
@@ -2645,6 +2734,7 @@
                     <h5>${location.name}</h5>
                     <p>${location.address}</p>
                     ${location.zipCode ? `<p>CEP: ${location.zipCode}</p>` : ''}
+                    ${regiaoInfo}
                     ${!location.isOrigin ? `<button onclick="removeLocation('${location.id}')" class="btn btn-sm btn-danger">Remover</button>` : ''}
                 </div>
             `
