@@ -3415,13 +3415,18 @@
         
         const regionColor = regionColorMap[estado]?.[regiao] || "#808080";
         
-        // Se já existe um marcador, apenas atualizar o conteúdo
+        // Se já existe um marcador, removê-lo e criar um novo
         if (regionCounterMarkers[regionKey]) {
-            const markerContent = document.createElement('div');
-            markerContent.className = 'region-counter-marker';
-            markerContent.innerHTML = `<div>${count}</div>`;
+            // Remover o marcador existente
+            regionCounterMarkers[regionKey].setMap(null);
             
-            regionCounterMarkers[regionKey].setContent(markerContent);
+            // Se a contagem for zero, não exibir o marcador
+            if (count === 0) {
+                delete regionCounterMarkers[regionKey];
+                return;
+            }
+        } else if (count === 0) {
+            // Se não existe um marcador e a contagem é zero, não criar
             return;
         }
         
