@@ -151,68 +151,8 @@
         }
         .map-container {
             flex: 1;
-            height: calc(100% - 60px); /* Ajustado para acomodar a aba superior */
-            margin-top: 60px; /* Espaço para a aba superior */
+            height: 100%;
             position: relative;
-        }
-        
-        /* Estilos para a aba superior */
-        .top-tabs-container {
-            width: calc(100% - 380px); /* Ajustado para não sobrepor a sidebar */
-            margin-bottom: 0;
-            margin-left: 380px; /* Afastado para alinhar com a sidebar */
-            display: flex;
-            flex-direction: column;
-            background-color: white;
-            border-radius: 0 0 8px 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: fixed;
-            top: 0;
-            right: 0;
-            z-index: 100;
-            border-bottom: 1px solid #e0e0e0;
-            height: 60px;
-        }
-        
-        .top-tabs-nav {
-            display: flex;
-            background-color: #f8f9fa;
-            padding: 10px 15px 0;
-            border-bottom: 1px solid #dee2e6;
-        }
-        
-        .top-tab-btn {
-            border: none;
-            background: transparent;
-            padding: 8px 16px;
-            cursor: pointer;
-            font-weight: 500;
-            color: #495057;
-            border-radius: 4px 4px 0 0;
-            margin-right: 2px;
-            transition: all 0.2s ease;
-        }
-        
-        .top-tab-btn:hover {
-            background-color: #e9ecef;
-        }
-        
-        .top-tab-btn.active {
-            background-color: white;
-            color: #1976D2;
-            border: 1px solid #dee2e6;
-            border-bottom: 2px solid white;
-            margin-bottom: -1px;
-        }
-        
-        .top-tab-content {
-            padding: 15px;
-            background-color: white;
-            display: none;
-        }
-        
-        .top-tab-content.active {
-            display: block;
         }
         #map {
             height: 100%;
@@ -481,44 +421,6 @@
                 transform: scale(1);
                 opacity: 1;
             }
-        }
-        
-        /* Estilos para barra superior - design simplificado */
-        .top-bar {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #e0e0e0;
-            padding: 8px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
-        }
-        
-        /* Estilo para o campo de data */
-        .date-input {
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-size: 14px;
-            margin-right: 8px;
-        }
-        
-        /* Estilo para a origem */
-        .origin-chip {
-            display: inline-flex;
-            align-items: center;
-            background-color: #fff;
-            border: 1px solid #ffc107;
-            border-radius: 16px;
-            padding: 5px 12px;
-            font-size: 14px;
-            color: #333;
-            white-space: nowrap;
-        }
-        
-        .origin-chip::before {
-            content: '📍';
-            margin-right: 6px;
         }
         /* Botão para fechar o sidebar em telas pequenas */
         .sidebar-close {
@@ -1305,24 +1207,8 @@
 <body>
     <div class="app-container">
         <div class="main-content-area">
-            <!-- Barra superior moderna e animada -->
-            <div class="top-bar">
-                <!-- Grupo de filtro de data -->
-                <div class="filter-group">
-                    <label>Filtrar eventos por data:</label>
-                    <input type="date" id="start-date-top">
-                    <span>até</span>
-                    <input type="date" id="end-date-top">
-                </div>
-                
-                <!-- Origem fixa com design moderno -->
-                <div class="origin-display">
-                    <span id="origin-location-top">Dois Córregos, SP</span>
-                </div>
-            </div>
-            
             <!-- Sidebar para controles e informações -->
-            <div class="sidebar" id="sidebar">
+        <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h2 class="m-0 app-title">
                     <span class="app-title-text">Otimizador de Rotas</span>
@@ -1336,7 +1222,21 @@
             <div id="locations-content">
                     <!-- O conteúdo de locais fica no sidebar -->
                 
-                    <!-- Campos de data e origem foram movidos para a barra superior -->
+                    <!-- Filtro de eventos por data (movido para cima da origem) -->
+                    <div class="form-group mb-4">
+                        <label class="date-range-label">Filtrar eventos por data:</label>
+                        <div class="date-range-container">
+                            <input type="date" id="start-date">
+                            <input type="date" id="end-date">
+                        </div>
+                    </div>
+                    
+                    <!-- Origem fixa -->
+                    <div class="form-group mb-4">
+                        <label class="date-range-label">Origem:</label>
+                        <input type="text" id="origin" class="form-control" value="Dois Córregos, SP" readonly 
+                               style="background-color: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
+                    </div>
                     
                     <!-- Campo de busca para adicionar novo local -->
                     <div class="form-group mb-4">
@@ -2076,35 +1976,6 @@
     });
 
     // Inicializa o mapa
-    // Sincronizar campos de data entre aba superior e sidebar
-    function syncDateFields() {
-        // Definir valores iniciais (data atual e data atual + 7 dias)
-        const today = new Date();
-        const nextWeek = new Date();
-        nextWeek.setDate(today.getDate() + 7);
-        
-        // Formatar para YYYY-MM-DD
-        const todayFormatted = today.toISOString().split('T')[0];
-        const nextWeekFormatted = nextWeek.toISOString().split('T')[0];
-        
-        // Definir valores iniciais para todos os campos de data
-        document.getElementById('start-date').value = todayFormatted;
-        document.getElementById('end-date').value = nextWeekFormatted;
-        document.getElementById('start-date-top').value = todayFormatted;
-        document.getElementById('end-date-top').value = nextWeekFormatted;
-        
-        // Adicionar event listeners para sincronizar os campos
-        document.getElementById('start-date-top').addEventListener('change', function() {
-            document.getElementById('start-date').value = this.value;
-            filterEventsByDate();
-        });
-        
-        document.getElementById('end-date-top').addEventListener('change', function() {
-            document.getElementById('end-date').value = this.value;
-            filterEventsByDate();
-        });
-    }
-
     function initMap() {
         // Definir valores iniciais aos campos de data
         initDatePickers();
@@ -2121,8 +1992,6 @@
             // Verificar se os campos existem
             const startDateInput = document.getElementById('start-date');
             const endDateInput = document.getElementById('end-date');
-            const startDateTopInput = document.getElementById('start-date-top');
-            const endDateTopInput = document.getElementById('end-date-top');
             
             if (!startDateInput || !endDateInput) {
                 console.error("Campos de data não encontrados. Tentando encontrar container...");
@@ -2185,34 +2054,13 @@
             
             console.log(`Datas inicializadas: de ${startDate.value} até ${endDate.value}`);
             
-            // Inicializar também os campos da aba superior, se existirem
-            if (startDateTopInput && endDateTopInput) {
-                startDateTopInput.value = startDate.value;
-                endDateTopInput.value = endDate.value;
-                
-                // Adicionar listeners para sincronizar entre aba superior e sidebar
-                startDateTopInput.addEventListener('change', function() {
-                    startDate.value = this.value;
-                    console.log("Data de início (aba superior) alterada para:", this.value);
-                    filterEventsByDate();
-                });
-                
-                endDateTopInput.addEventListener('change', function() {
-                    endDate.value = this.value;
-                    console.log("Data de fim (aba superior) alterada para:", this.value);
-                    filterEventsByDate();
-                });
-            }
-            
             // Adicionar listeners para atualizar os eventos quando as datas mudarem
             startDate.addEventListener('change', function() {
-                if (startDateTopInput) startDateTopInput.value = this.value;
                 console.log("Data de início alterada para:", this.value);
                 filterEventsByDate();
             });
             
             endDate.addEventListener('change', function() {
-                if (endDateTopInput) endDateTopInput.value = this.value;
                 console.log("Data de fim alterada para:", this.value);
                 filterEventsByDate();
             });
