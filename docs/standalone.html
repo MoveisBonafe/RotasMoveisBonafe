@@ -2431,6 +2431,9 @@
             
             // Adicionar marcador e atualizar a lista
             addMarkerForLocation(newLocation, locations.length - 1);
+            
+            // Atualizar os contadores de região
+            refreshRegionCounters();
             updateLocationsList();
             
             // Limpar o campo de busca
@@ -2942,6 +2945,9 @@
                 locations.push(location);
                 addMarkerForLocation(location, locations.length - 1);
             });
+            
+            // Atualizar os contadores de região
+            refreshRegionCounters();
             
             // Atualizar a lista de locais
             updateLocationsList();
