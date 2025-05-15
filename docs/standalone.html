@@ -549,7 +549,7 @@
         /* Responsividade */
         @media (max-width: 768px) {
             .sidebar {
-                position: absolute;
+                position: fixed;
                 left: 0;
                 top: 0;
                 bottom: 0;
@@ -559,12 +559,7 @@
                 overflow-y: auto; /* Garantir rolagem quando necessário */
                 height: 100vh; /* Altura cheia da viewport */
             }
-            .sidebar-close {
-                display: block;
-            }
-            .toggle-sidebar {
-                display: block;
-            }
+            /* Toggle button removido a pedido do usuário */
         }
         /* Estilo para o ponto de origem na lista da rota, usando o mesmo estilo do summary-header */
         .origin-point {
@@ -1045,7 +1040,7 @@
             /* Ajustes para expandir até o topo quando aberto */
             position: fixed; /* Alterado para fixed para cobrir toda a tela */
             bottom: 0;
-            left: 0;
+            left: 380px; /* Inicia à direita da sidebar */
             right: 0;
             z-index: 1000; /* Aumentado para ficar sobre todos os elementos */
             transition: height 0.3s ease-in-out;
@@ -1056,7 +1051,8 @@
         @media (min-width: 1024px) {
             .bottom-tabs-container {
                 width: calc(100% - 380px);
-                margin-left: 380px;
+                left: 380px;
+                margin-left: 0;
             }
         }
         
@@ -2417,7 +2413,7 @@
                 mapContainer.style.bottom = '60px'; // Altura das abas minimizadas
                 mapContainer.style.left = '380px'; // Começa onde termina a sidebar
                 mapContainer.style.width = 'calc(100% - 380px)';
-                mapContainer.style.height = 'calc(100vh - 60px)'; // Toda a altura menos as abas
+                mapContainer.style.height = '100vh'; // Usar toda a altura da viewport
                 
                 // Forçar tamanho do elemento do mapa para ocupar todo o container
                 mapElement.style.position = 'absolute';
