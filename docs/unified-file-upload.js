@@ -1,72 +1,126 @@
 /**
  * Script unificado para processar uploads de arquivo
  * Esta versão consolidada substitui todas as outras implementações
+ * E inclui proteções contra remoção acidental dos elementos
  */
+
+// Variável global para rastrear tentativas de inicialização
+window.fileUploadInitialized = false;
 
 // Executar quando o documento estiver carregado
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Inicializando processador de arquivo unificado');
+    initializeFileUpload();
+    
+    // Programar múltiplas tentativas para garantir que o upload funcione
+    setTimeout(initializeFileUpload, 1000);
+    setTimeout(initializeFileUpload, 2000);
+    setTimeout(initializeFileUpload, 3000);
+    setTimeout(initializeFileUpload, 5000);
+});
 
+// Função principal de inicialização
+function initializeFileUpload() {
+    console.log('Tentativa de inicialização do upload...');
+    
+    // Não executar se já estiver inicializado com sucesso
+    if (window.fileUploadInitialized) {
+        console.log('Upload já inicializado anteriormente');
+        return;
+    }
+    
     // Remover outros event listeners existentes
     removeExistingHandlers();
 
-    // Esperar um momento para garantir que todos os elementos estejam carregados
-    setTimeout(function() {
-        // Capturar elementos
-        const fileInput = document.getElementById('file-upload');
-        const uploadArea = document.getElementById('upload-area');
+    // Capturar elementos
+    const fileInput = document.getElementById('file-upload');
+    const uploadArea = document.getElementById('upload-area');
 
-        // Verificar se os elementos existem
-        if (!fileInput || !uploadArea) {
-            console.error('❌ Elementos de upload não encontrados');
-            if (!fileInput) console.error('❌ file-upload não encontrado');
-            if (!uploadArea) console.error('❌ upload-area não encontrado');
-            return;
-        }
+    // Verificar se os elementos existem
+    if (!fileInput || !uploadArea) {
+        console.error('❌ Elementos de upload não encontrados');
+        if (!fileInput) console.error('❌ file-upload não encontrado');
+        if (!uploadArea) console.error('❌ upload-area não encontrado');
+        return;
+    }
 
-        console.log('✅ Elementos de upload encontrados');
+    console.log('✅ Elementos de upload encontrados');
 
-        // Criar elemento de status se não existir
-        let statusElement = document.getElementById('upload-status');
-        if (!statusElement) {
-            statusElement = document.createElement('div');
-            statusElement.id = 'upload-status';
-            statusElement.style.display = 'none';
-            statusElement.style.marginTop = '10px';
-            statusElement.style.padding = '8px 12px';
-            statusElement.style.borderRadius = '4px';
-            statusElement.style.textAlign = 'center';
-            statusElement.style.fontSize = '13px';
-            statusElement.style.fontWeight = '500';
-            uploadArea.appendChild(statusElement);
-            console.log('✅ Elemento de status criado');
-        }
+    // Criar elemento de status se não existir
+    let statusElement = document.getElementById('upload-status');
+    if (!statusElement) {
+        statusElement = document.createElement('div');
+        statusElement.id = 'upload-status';
+        statusElement.style.display = 'none';
+        statusElement.style.marginTop = '10px';
+        statusElement.style.padding = '8px 12px';
+        statusElement.style.borderRadius = '4px';
+        statusElement.style.textAlign = 'center';
+        statusElement.style.fontSize = '13px';
+        statusElement.style.fontWeight = '500';
+        uploadArea.appendChild(statusElement);
+        console.log('✅ Elemento de status criado');
+    }
 
-        // Aplicar event listeners
-        setupEventListeners(fileInput, uploadArea, statusElement);
-
-    }, 1000);
+    // Aplicar event listeners
+    setupEventListeners(fileInput, uploadArea, statusElement);
+    
+    // Marcar como inicializado
+    window.fileUploadInitialized = true;
+    console.log('✅ Upload inicializado com sucesso!');
+    
+    // Criar um observador de mutação para detectar se os elementos são removidos
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList' && mutation.removedNodes.length > 0) {
+                // Verificar se nossos elementos foram removidos
+                if (!document.getElementById('file-upload') || !document.getElementById('upload-area')) {
+                    console.log('⚠️ Elementos de upload foram removidos! Reinicializando...');
+                    window.fileUploadInitialized = false;
+                    setTimeout(initializeFileUpload, 500);
+                }
+            }
+        });
+    });
+    
+    // Observar o documento inteiro para mudanças nos filhos
+    observer.observe(document.body, { childList: true, subtree: true });
 
     // Remover manipuladores de eventos existentes
     function removeExistingHandlers() {
-        const oldInput = document.getElementById('file-upload');
-        if (oldInput) {
-            const newInput = oldInput.cloneNode(true);
-            oldInput.parentNode.replaceChild(newInput, oldInput);
-            console.log('✅ Manipuladores de eventos antigos removidos');
-        }
-
-        const oldArea = document.getElementById('upload-area');
-        if (oldArea) {
-            const newArea = oldArea.cloneNode(true);
-            // Manter os filhos durante a substituição
-            while (oldArea.firstChild) {
-                newArea.appendChild(oldArea.firstChild);
+        try {
+            const oldInput = document.getElementById('file-upload');
+            if (oldInput && oldInput.parentNode) {
+                const newInput = oldInput.cloneNode(true);
+                oldInput.parentNode.replaceChild(newInput, oldInput);
+                console.log('✅ Manipuladores de eventos antigos removidos');
             }
-            if (oldArea.parentNode) {
+    
+            const oldArea = document.getElementById('upload-area');
+            if (oldArea && oldArea.parentNode) {
+                // Método 1: Clonar apenas o elemento sem os filhos
+                const newArea = document.createElement('div');
+                // Copiar todos os atributos
+                Array.from(oldArea.attributes).forEach(attr => {
+                    newArea.setAttribute(attr.name, attr.value);
+                });
+                
+                // Copiar os estilos computados
+                const styles = window.getComputedStyle(oldArea);
+                for (let i = 0; i < styles.length; i++) {
+                    const prop = styles[i];
+                    newArea.style[prop] = styles.getPropertyValue(prop);
+                }
+                
+                // Copiar conteúdo HTML
+                newArea.innerHTML = oldArea.innerHTML;
+                
+                // Substituir o elemento
                 oldArea.parentNode.replaceChild(newArea, oldArea);
+                console.log('✅ Manipuladores de eventos de área de upload removidos');
             }
-            console.log('✅ Manipuladores de eventos de área de upload removidos');
+        } catch (error) {
+            console.error('❌ Erro ao remover manipuladores existentes:', error);
         }
     }
 
