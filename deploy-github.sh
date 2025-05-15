@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Script para compilar e preparar o deploy para GitHub Pages
+# Script para compilar e preparar o deploy para GitHub Pages com correções de layout
 
-echo "Iniciando build para GitHub Pages..."
+echo "Iniciando build para GitHub Pages com correções de layout..."
 
 # Configurar variáveis de ambiente para build
 export VITE_USE_MOCK_DATA=true
@@ -24,11 +24,27 @@ cp ../docs/route-optimizer.js ./js/
 cp ../docs/map-controls.js ./js/
 cp ../docs/geocode-fix.js ./js/
 
+# Copiar standalone.html atualizado com layout corrigido
+cp ../docs/standalone.html ./
+cp ../solucao_alternativa.html ./
+cp ../solucao_sidebar.html ./
+cp ../css_a_inserir.css ./css/
+
+# Criar versão adicional com timestamp para evitar cache
+TIMESTAMP=$(date +%s)
+cp ../docs/standalone.html ./standalone-${TIMESTAMP}.html
+echo "Criada versão sem cache: standalone-${TIMESTAMP}.html"
+
 # Copiar index.html otimizado
 cp ../docs/index.html ./
 
-# Adicionar uma meta tag para forçar recarregamento
+# Atualizar index.html para incluir os novos arquivos
+sed -i "s#<a href=\"standalone.html\" class=\"btn\">Versão Standalone</a>#<a href=\"standalone.html\" class=\"btn\">Versão Standalone</a>\n<a href=\"standalone-${TIMESTAMP}.html\" class=\"btn\">Versão Atualizada</a>\n<a href=\"solucao_alternativa.html\" class=\"btn\">Demo Layout</a>#" index.html
+
+# Adicionar meta tags para forçar recarregamento
 sed -i 's/<head>/<head>\n  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" \/>\n  <meta http-equiv="Pragma" content="no-cache" \/>\n  <meta http-equiv="Expires" content="0" \/>/' index.html
+sed -i 's/<head>/<head>\n  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" \/>\n  <meta http-equiv="Pragma" content="no-cache" \/>\n  <meta http-equiv="Expires" content="0" \/>/' standalone.html
+sed -i 's/<head>/<head>\n  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" \/>\n  <meta http-equiv="Pragma" content="no-cache" \/>\n  <meta http-equiv="Expires" content="0" \/>/' standalone-${TIMESTAMP}.html
 
 # Verificar se precisamos corrigir caminhos
 if [[ -f ../fix-github-paths.js ]]; then
@@ -38,9 +54,14 @@ fi
 
 # Mover tudo para a pasta docs
 cd ..
-rm -rf docs
+echo "Fazendo backup da pasta docs atual..."
+if [ -d "docs_backup" ]; then
+  rm -rf docs_backup
+fi
+mv docs docs_backup
 mv github_build docs
 
 echo "Build concluído! Arquivos gerados na pasta docs/"
+echo "A pasta docs anterior foi salva como docs_backup"
 echo "Faça commit e push para o repositório GitHub."
 echo "Certifique-se de configurar o GitHub Pages para usar a pasta /docs."

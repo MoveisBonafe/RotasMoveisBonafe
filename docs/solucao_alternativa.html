@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajuste de Layout - Solução Alternativa</title>
+    <style>
+        /* Reset e estilos básicos */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+        
+        /* Container principal */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Área de conteúdo principal */
+        .main-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 60px; /* Altura da barra inferior */
+            display: flex;
+            overflow: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 380px;
+            height: 100%;
+            background-color: #f8f9fa;
+            padding: 20px;
+            overflow-y: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 10;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        /* Área do mapa */
+        .map-area {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 380px; /* Largura da sidebar */
+            overflow: hidden;
+            background-color: #e9ecef; /* Cor para simular o mapa */
+        }
+        
+        /* Barra inferior */
+        .bottom-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: #f1f3f5;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid #dee2e6;
+            z-index: 20;
+        }
+        
+        /* Conteúdo da sidebar */
+        .sidebar-header {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 15px;
+        }
+        
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin: 0;
+        }
+        
+        .app-title-highlight {
+            color: #ffc107;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #ffc107;
+            color: #212529;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background-color: #e0a800;
+        }
+        
+        /* Tabs na barra inferior */
+        .bottom-tab {
+            padding: 8px 16px;
+            background-color: #ffc107;
+            color: #212529;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        /* Media query para telas menores */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 320px;
+            }
+            
+            .map-area {
+                left: 320px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h2 class="app-title">
+                        <span>Otimizador de Rotas</span>
+                        <span class="app-title-highlight">Móveis Bonafé</span>
+                    </h2>
+                </div>
+                
+                <div class="form-group">
+                    <label>Filtrar eventos por data:</label>
+                    <div style="display: flex; gap: 10px; margin-top: 5px;">
+                        <input type="date" class="form-control" value="2025-05-15">
+                        <input type="date" class="form-control" value="2025-05-22">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Origem:</label>
+                    <input type="text" class="form-control" value="Dois Córregos, SP" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>Adicionar local:</label>
+                    <input type="text" class="form-control" placeholder="Digite um endereço">
+                </div>
+                
+                <div style="margin: 20px 0; padding: 20px 0; border-top: 1px solid #dee2e6; border-bottom: 1px solid #dee2e6;">
+                    <p>Importar CEPs via arquivo</p>
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100px; border: 2px dashed #ced4da; border-radius: 4px; margin-top: 10px;">
+                        <span>Arraste seu arquivo aqui</span>
+                    </div>
+                </div>
+                
+                <h3 style="margin: 20px 0 10px; font-size: 1.1rem;">Locais adicionados:</h3>
+                <div style="height: 150px; background-color: #f1f3f5; border-radius: 4px; padding: 10px; overflow-y: auto;">
+                    <p style="color: #6c757d; font-style: italic;">Nenhum local adicionado</p>
+                </div>
+                
+                <button class="btn" style="width: 100%; margin-top: 20px;">Otimizar Rota</button>
+            </div>
+            
+            <!-- Área do mapa -->
+            <div class="map-area">
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                    <h3>Área do Mapa</h3>
+                    <p>Esta é uma simulação visual do layout corrigido</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Barra inferior -->
+        <div class="bottom-bar">
+            <button class="bottom-tab">Eventos na Rota</button>
+            <button class="bottom-tab">Restrições de Tráfego</button>
+            <button class="bottom-tab">Relatório da Rota</button>
+        </div>
+    </div>
+    
+    <script>
+        // Código apenas para demonstração
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Demo de layout carregada');
+            
+            // Simulação de redimensionamento responsivo
+            window.addEventListener('resize', function() {
+                console.log('Janela redimensionada');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Event Marker</title>
+    <g id="Event" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="Background" fill="#4CAF50" cx="16" cy="16" r="16"></circle>
+        <g id="Calendar" transform="translate(8.000000, 8.000000)" fill="#FFFFFF" fill-rule="nonzero">
+            <path d="M14,2 L13,2 L13,1 C13,0.448 12.552,0 12,0 C11.448,0 11,0.448 11,1 L11,2 L5,2 L5,1 C5,0.448 4.552,0 4,0 C3.448,0 3,0.448 3,1 L3,2 L2,2 C0.895,2 0,2.895 0,4 L0,14 C0,15.105 0.895,16 2,16 L14,16 C15.105,16 16,15.105 16,14 L16,4 C16,2.895 15.105,2 14,2 Z M14,14 L2,14 L2,7 L14,7 L14,14 Z" id="Shape"></path>
+        </g>
+    </g>
+</svg>

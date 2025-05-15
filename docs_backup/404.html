@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Otimizador de Rotas - GitHub Pages</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      padding: 20px;
+      text-align: center;
+      background-color: #f5f7fb;
+      color: #333;
+    }
+    
+    h1 {
+      color: #3b82f6;
+      margin-bottom: 1rem;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: #3b82f6;
+      color: white;
+      padding: 10px 20px;
+      margin-top: 20px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background-color 0.3s;
+    }
+    
+    .btn:hover {
+      background-color: #2563eb;
+    }
+    
+    .error-code {
+      font-size: 120px;
+      font-weight: bold;
+      color: #3b82f6;
+      margin: 0;
+      line-height: 1;
+    }
+    
+    .message {
+      margin: 2rem 0;
+    }
+  </style>
+  <script>
+    // Redirecionar automaticamente para a página principal
+    window.onload = function() {
+      // Verificar se está no GitHub Pages
+      if (window.location.hostname.includes('github.io')) {
+        // Obter o nome do repositório
+        const pathSegments = window.location.pathname.split('/');
+        const repoName = pathSegments[1] || '';
+        
+        // Redirecionar para a página principal após 3 segundos
+        setTimeout(function() {
+          window.location.href = `/${repoName}/`;
+        }, 3000);
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1 class="error-code">404</h1>
+    <h2>Página não encontrada</h2>
+    
+    <div class="message">
+      <p>A página que você está procurando não existe ou foi movida.</p>
+      <p>Você será redirecionado automaticamente para a página principal em instantes...</p>
+    </div>
+    
+    <a href="index.html" class="btn">Ir para a página principal</a>
+  </div>
+</body>
+</html>
