@@ -2282,37 +2282,43 @@
         legendDiv.style.position = 'relative';
         legendDiv.style.zIndex = '1000';
         
-        // Lista das regiões específicas de São Paulo (ordenadas alfabeticamente)
-        const regioesSaoPaulo = [
-            { nome: 'Araçatuba', cor: '#FF5733' },
-            { nome: 'Araraquara', cor: '#900C3F' },
-            { nome: 'Bauru', cor: '#FF8D33' },
-            { nome: 'Campinas', cor: '#C70039' },
-            { nome: 'Marília', cor: '#900C3F' },
-            { nome: 'Presidente Prudente', cor: '#C70039' },
-            { nome: 'Ribeirão Preto', cor: '#581845' },
-            { nome: 'São José do Rio Preto', cor: '#FFC300' },
-            { nome: 'São José dos Campos', cor: '#FF5733' },
-            { nome: 'São Paulo', cor: '#337DFF' },
-            { nome: 'Sorocaba', cor: '#33A8FF' }
-        ];
+        // Definição das cores padrão das regiões de São Paulo - FONTE OFICIAL DE CORES
+    const CORES_SP = {
+        'Araçatuba': '#FF5733',        // Laranja
+        'Araraquara': '#900C3F',       // Vinho
+        'Bauru': '#FF8D33',            // Laranja claro
+        'Campinas': '#C70039',         // Vermelho
+        'Marília': '#900C3F',          // Vinho
+        'Presidente Prudente': '#C70039', // Vermelho
+        'Ribeirão Preto': '#581845',   // Roxo escuro
+        'São José do Rio Preto': '#FFC300', // Amarelo
+        'São José dos Campos': '#FF5733', // Laranja
+        'São Paulo': '#337DFF',        // Azul
+        'Sorocaba': '#33A8FF'          // Azul claro
+    };
+
+    // Lista das regiões específicas de São Paulo (ordenadas alfabeticamente)
+    const regioesSaoPaulo = Object.entries(CORES_SP).map(([nome, cor]) => ({ nome, cor }));
+        
+        // Definição das cores padrão das regiões de Minas Gerais - FONTE OFICIAL DE CORES
+        const CORES_MG = {
+            'Barbacena': '#008080',           // Turquesa
+            'Belo Horizonte': '#AB4500',      // Laranja queimado
+            'Divinópolis': '#9932CC',         // Roxo
+            'Governador Valadares': '#20B2AA', // Verde água
+            'Ipatinga': '#800080',            // Roxo escuro
+            'Juiz de Fora': '#8B008B',        // Magenta
+            'Montes Claros': '#7B2343',       // Bordô
+            'Patos de Minas': '#FFD700',      // Amarelo ouro
+            'Pouso Alegre': '#4169E1',        // Azul royal
+            'Teófilo Otoni': '#2F4F4F',       // Cinza escuro
+            'Uberaba': '#DAA520',             // Dourado
+            'Uberlândia': '#8FBC8F',          // Verde claro
+            'Varginha': '#708090'             // Cinza ardósia
+        };
         
         // Lista de cores específicas para cada região de Minas Gerais (ordenadas alfabeticamente)
-        const regioesMG = [
-            { nome: 'Barbacena', cor: '#008080' },
-            { nome: 'Belo Horizonte', cor: '#AB4500' },
-            { nome: 'Divinópolis', cor: '#9932CC' },
-            { nome: 'Governador Valadares', cor: '#20B2AA' },
-            { nome: 'Ipatinga', cor: '#800080' },
-            { nome: 'Juiz de Fora', cor: '#8B008B' },
-            { nome: 'Montes Claros', cor: '#7B2343' },
-            { nome: 'Patos de Minas', cor: '#FFD700' },
-            { nome: 'Pouso Alegre', cor: '#4169E1' },
-            { nome: 'Teófilo Otoni', cor: '#2F4F4F' },
-            { nome: 'Uberaba', cor: '#DAA520' },
-            { nome: 'Uberlândia', cor: '#8FBC8F' },
-            { nome: 'Varginha', cor: '#708090' }
-        ];
+        const regioesMG = Object.entries(CORES_MG).map(([nome, cor]) => ({ nome, cor }));
         
         // Botão de fechar
         const closeButton = document.createElement('button');
@@ -3257,37 +3263,11 @@
         const normalizedCityName = cityName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         
         // Cores fixas para cada região de São Paulo (conforme legendas)
-        // Usar as mesmas cores da legenda para consistência
-        const coresPorRegiao = {
-            'Araçatuba': '#FF5733',     // Laranja
-            'Araraquara': '#900C3F',    // Vinho
-            'Bauru': '#FF8D33',         // Laranja claro
-            'Campinas': '#C70039',      // Vermelho
-            'Marília': '#900C3F',       // Vinho
-            'Presidente Prudente': '#C70039', // Vermelho
-            'Ribeirão Preto': '#581845',     // Roxo escuro
-            'São José do Rio Preto': '#FFC300', // Amarelo
-            'São José dos Campos': '#FF5733',  // Laranja
-            'São Paulo': '#337DFF',     // Azul
-            'Sorocaba': '#33A8FF'       // Azul claro
-        };
+        // Usar as mesmas cores da FONTE OFICIAL (CORES_SP definido na função createRegionLegend)
+        const coresPorRegiao = CORES_SP;
         
-        // Cores fixas para regiões de Minas Gerais
-        const coresMG = {
-            'Barbacena': '#008080',
-            'Belo Horizonte': '#AB4500',
-            'Divinópolis': '#9932CC',
-            'Governador Valadares': '#20B2AA',
-            'Ipatinga': '#800080',
-            'Juiz de Fora': '#8B008B',
-            'Montes Claros': '#7B2343',
-            'Patos de Minas': '#FFD700',
-            'Pouso Alegre': '#4169E1',
-            'Teófilo Otoni': '#2F4F4F',
-            'Uberaba': '#DAA520',
-            'Uberlândia': '#8FBC8F',
-            'Varginha': '#708090'
-        };
+        // Usar as cores oficiais de Minas Gerais
+        const coresMG = CORES_MG;
         
         // Verificar cada região
         for (const [regiao, dados] of Object.entries(regioesSP)) {
@@ -3382,36 +3362,10 @@
         const regionCenter = getRegionCenter(estado, regiao);
         if (!regionCenter) return;
         
-        // Cor correspondente à região
+        // Cor correspondente à região - usando a FONTE OFICIAL DE CORES
         const regionColorMap = {
-            'SP': {
-                'Araçatuba': '#FF5733',
-                'Araraquara': '#900C3F',
-                'Bauru': '#FF8D33',
-                'Campinas': '#C70039',
-                'Marília': '#900C3F',
-                'Presidente Prudente': '#C70039',
-                'Ribeirão Preto': '#581845',
-                'São José do Rio Preto': '#FFC300',
-                'São José dos Campos': '#FF5733',
-                'São Paulo': '#337DFF',
-                'Sorocaba': '#33A8FF'
-            },
-            'MG': {
-                'Barbacena': '#008080',
-                'Belo Horizonte': '#AB4500',
-                'Divinópolis': '#9932CC',
-                'Governador Valadares': '#20B2AA',
-                'Ipatinga': '#800080',
-                'Juiz de Fora': '#8B008B',
-                'Montes Claros': '#7B2343',
-                'Patos de Minas': '#FFD700',
-                'Pouso Alegre': '#4169E1',
-                'Teófilo Otoni': '#2F4F4F',
-                'Uberaba': '#DAA520',
-                'Uberlândia': '#8FBC8F',
-                'Varginha': '#708090'
-            }
+            'SP': CORES_SP,
+            'MG': CORES_MG
         };
         
         const regionColor = regionColorMap[estado]?.[regiao] || "#808080";
