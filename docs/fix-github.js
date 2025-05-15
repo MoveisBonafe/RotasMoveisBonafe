@@ -91,18 +91,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Função de processamento de arquivo CEP melhorada
   function processCepFile(content) {
-    // Procurar container existente ou criar um novo
+    // Ensure container exists in a safe way
     let container = document.querySelector('#notification-container');
     
     if (!container) {
       container = document.createElement('div');
       container.id = 'notification-container';
-      container.style.position = 'fixed';
-      container.style.top = '20px';
-      container.style.right = '20px';
-      container.style.zIndex = '9999';
-      document.body.appendChild(container);
+      container.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
+      document.body && document.body.appendChild(container);
     }
+
+    // Function to show notifications
+    const showNotification = (message, type = 'warning') => {
+      if (!container) return; // Safety check
+      const notification = document.createElement('div');
+      notification.className = `alert alert-${type}`;
+      notification.style.cssText = 'margin: 10px; padding: 10px; border-radius: 4px; background: #fff3cd; border: 1px solid #ffeeba;';
+      notification.textContent = message;
+      container.appendChild(notification);
+      setTimeout(() => notification.remove(), 5000);
+    };
 
     // Função para mostrar notificação
     const showNotification = (message, type = 'warning') => {
