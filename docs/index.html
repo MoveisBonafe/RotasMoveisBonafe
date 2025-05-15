@@ -1096,17 +1096,32 @@
             overflow: hidden;
         }
         
-        /* Estado expandido para container de abas */
+        /* Estado expandido para container de abas - MODO FULLSCREEN */
         .bottom-tabs-container:not(.minimized) {
-            top: 0; /* Expandir para cima até o topo da página */
-            height: 100vh; /* Altura total da tela quando expandido */
-            border-top: 2px solid #1976D2; /* Borda mais visível quando expandido */
-            border-left: 2px solid #1976D2; /* Borda na lateral para separar da sidebar */
-            box-shadow: -5px -5px 15px rgba(0,0,0,0.2); /* Sombra ajustada */
-            z-index: 1010; /* Garantir que fique acima de outros elementos */
+            position: fixed !important; /* IMPORTANTE: Posição fixa em relação à janela do navegador */
+            top: 0 !important; /* Começa no topo da página */
+            left: 380px !important; /* Alinhado com a sidebar */
+            right: 0 !important;
+            bottom: 0 !important;
+            height: 100vh !important; /* Altura total da tela */
+            width: calc(100% - 380px) !important; /* Largura ajustada para alinhar com a sidebar */
+            border-top: 2px solid #1976D2;
+            border-left: 2px solid #1976D2;
+            box-shadow: -5px -5px 15px rgba(0,0,0,0.2);
+            z-index: 9999 !important; /* Valor muito alto para garantir que fique sobre tudo */
+            background-color: white !important; /* Fundo branco para cobrir o mapa */
+            overflow: auto !important; /* Permitir rolagem quando necessário */
         }
         
         /* Botão de fechar removido - usando apenas os botões das abas para controlar expandir/minimizar */
+        
+        /* Estilo para conteúdo das abas quando maximizadas */
+        .bottom-tabs-container:not(.minimized) .bottom-tab-content {
+            display: block;
+            height: calc(100vh - 60px) !important; /* Altura total menos a altura da barra de navegação */
+            padding: 20px;
+            overflow-y: auto;
+        }
         
         /* Ajuste para que o mapa ocupe todo o espaço disponível */
         .map-container {
@@ -2975,63 +2990,92 @@
         }
     }
     
-    // Função para expandir/colapsar as abas inferiores
+    // Função para expandir/colapsar as abas inferiores - IMPLEMENTAÇÃO FULLSCREEN
     function toggleTabsExpansion() {
         const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
-        const toggleIcon = document.getElementById('toggle-icon');
         const mapContainer = document.querySelector('.map-container');
         
         if (bottomTabsContainer) {
             if (bottomTabsContainer.classList.contains('minimized')) {
-                // Expandir - fazer as abas preencherem a tela inteira
+                // EXPANDIR - MODO FULLSCREEN
+                console.log("Expandindo abas para tela cheia");
+                
+                // 1. Alterar classe para controlar estilos CSS
                 bottomTabsContainer.classList.remove('minimized');
-                if (toggleIcon) toggleIcon.textContent = '▼ Minimizar';
                 
-                // Em modo expandido, as abas chegam até o topo da tela
+                // 2. Garantir que o estilo inline não atrapalhe
+                bottomTabsContainer.removeAttribute('style');
+                
+                // 3. Aplicar estilos diretamente (redundante com CSS, mas mais seguro)
+                bottomTabsContainer.style.position = 'fixed';
                 bottomTabsContainer.style.top = '0';
+                bottomTabsContainer.style.left = '380px';
+                bottomTabsContainer.style.right = '0';
+                bottomTabsContainer.style.bottom = '0';
+                bottomTabsContainer.style.width = 'calc(100% - 380px)';
                 bottomTabsContainer.style.height = '100vh';
+                bottomTabsContainer.style.zIndex = '9999';
                 
-                // Ocultar temporariamente o mapa para mostrar apenas as abas
+                // 4. Ocultar o mapa completamente
                 if (mapContainer) {
                     mapContainer.style.visibility = 'hidden';
                 }
                 
-                // Forçar redesenho do mapa
+                // 5. Mostrar o conteúdo das abas, garantindo que esteja visível
+                const activeContent = document.querySelector('.bottom-tab-content.active');
+                if (activeContent) {
+                    activeContent.style.display = 'block';
+                    activeContent.style.height = 'calc(100vh - 60px)';
+                    activeContent.style.overflow = 'auto';
+                }
+                
+                console.log("Abas expandidas para tela cheia");
+            } else {
+                // MINIMIZAR
+                console.log("Minimizando abas");
+                
+                // 1. Alterar classe para controlar estilos CSS
+                bottomTabsContainer.classList.add('minimized');
+                
+                // 2. Restaurar a posição original
+                bottomTabsContainer.removeAttribute('style');
+                bottomTabsContainer.style.position = 'absolute';
+                bottomTabsContainer.style.top = 'auto';
+                bottomTabsContainer.style.bottom = '0';
+                bottomTabsContainer.style.left = '380px';
+                bottomTabsContainer.style.height = '60px';
+                bottomTabsContainer.style.width = 'calc(100% - 380px)';
+                
+                // 3. Esconder todos os conteúdos
+                document.querySelectorAll('.bottom-tab-content').forEach(content => {
+                    content.style.display = 'none';
+                });
+                
+                // 4. Mostrar o mapa novamente
+                if (mapContainer) {
+                    mapContainer.style.visibility = 'visible';
+                }
+                
+                // 5. Remover classe ativa de todos os botões
+                document.querySelectorAll('.bottom-tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // 6. Força redesenho do mapa
                 if (typeof google !== 'undefined' && google.maps && map) {
                     setTimeout(() => {
                         google.maps.event.trigger(map, 'resize');
-                        console.log("Mapa redimensionado após expandir abas");
                     }, 100);
                 }
-            } else {
-                // Minimizar
-                bottomTabsContainer.classList.add('minimized');
-                if (toggleIcon) toggleIcon.textContent = '▲ Expandir';
                 
-                // Restaurar a posição original da barra de abas
-                bottomTabsContainer.style.top = 'auto';
-                bottomTabsContainer.style.height = '60px';
-                
-                // Restaurar a visibilidade do mapa
-                if (mapContainer) {
-                    mapContainer.style.visibility = 'visible';
-                    mapContainer.style.bottom = '60px'; // Altura das abas minimizadas
-                    
-                    // Forçar redesenho do mapa
-                    if (typeof google !== 'undefined' && google.maps && map) {
-                        setTimeout(() => {
-                            google.maps.event.trigger(map, 'resize');
-                            console.log("Mapa redimensionado após minimizar abas");
-                        }, 100);
-                    }
-                }
+                console.log("Abas minimizadas");
             }
         }
     }
     
     // Inicializar as abas inferiores
     function initBottomTabs() {
-        console.log("Inicializando abas inferiores...");
+        console.log("Inicializando abas inferiores com modo FULLSCREEN...");
         
         // Selecionar todos os botões de aba
         const tabButtons = document.querySelectorAll('.bottom-tab-btn');
@@ -3046,34 +3090,60 @@
                 // Verificar se a aba já está ativa
                 const isActive = this.classList.contains('active');
                 
-                // Remover classe ativa de todos os botões e conteúdos
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                document.querySelectorAll('.bottom-tab-content').forEach(content => {
-                    content.style.display = 'none';
-                });
+                console.log("Clique em aba:", tabId, "- Ativa:", isActive, "- Minimizada:", bottomTabsContainer.classList.contains('minimized'));
                 
-                // Se a aba clicada já estava ativa, apenas minimizamos
+                // Se a aba clicada já estava ativa e expandida, apenas minimizamos
                 if (isActive && !bottomTabsContainer.classList.contains('minimized')) {
-                    toggleTabsExpansion(); // Minimizar as abas
+                    console.log("Minimizando aba ativa");
+                    
+                    // Remover classe ativa deste botão
+                    this.classList.remove('active');
+                    
+                    // Esconder conteúdo
+                    if (tabContent) {
+                        tabContent.classList.remove('active');
+                        tabContent.style.display = 'none';
+                    }
+                    
+                    // Minimizar as abas
+                    toggleTabsExpansion();
                     return;
                 }
                 
-                // Se as abas estavam minimizadas, expandi-las
-                if (bottomTabsContainer.classList.contains('minimized')) {
-                    toggleTabsExpansion(); // Expandir as abas
-                }
+                // Remover classes ativas de todas as abas antes de ativar uma nova
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Ocultar todos os conteúdos
+                document.querySelectorAll('.bottom-tab-content').forEach(content => {
+                    content.classList.remove('active');
+                    content.style.display = 'none';
+                });
                 
                 // Ativar a aba clicada
                 this.classList.add('active');
+                
+                // Mostrar o conteúdo correspondente
                 if (tabContent) {
+                    tabContent.classList.add('active');
                     tabContent.style.display = 'block';
+                    
+                    // Garantir que o container seja visível para a altura máxima
+                    tabContent.style.height = 'calc(100vh - 60px)';
+                    tabContent.style.overflow = 'auto';
+                    tabContent.style.padding = '20px';
+                }
+                
+                // Se as abas estavam minimizadas, expandir
+                if (bottomTabsContainer.classList.contains('minimized')) {
+                    console.log("Expandindo abas para mostrar conteúdo");
+                    toggleTabsExpansion();
                 }
                 
                 console.log("Aba ativada:", tabId);
             });
         });
         
-        console.log("Abas inferiores inicializadas");
+        console.log("Abas inferiores inicializadas com sucesso");
     }
     
     // Configura todos os event listeners
