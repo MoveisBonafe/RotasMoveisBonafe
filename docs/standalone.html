@@ -22,11 +22,11 @@
     <style>
         /* Estilo para o rótulo no marcador de contagem */
         .counter-marker-label {
-            font-size: 12px !important;
+            font-size: 14px !important;
             font-weight: bold !important;
-            background-color: transparent !important;
-            width: 25px !important;
-            height: 25px !important;
+            background-color: rgba(0, 0, 0, 0.5) !important;
+            width: 26px !important;
+            height: 26px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
@@ -34,6 +34,9 @@
             border-radius: 50% !important;
             padding: 2px !important;
             text-align: center !important;
+            text-shadow: 1px 1px 2px black !important;
+            border: 1px solid white !important;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.5) !important;
         }
         
         /* Estilos globais */
@@ -978,6 +981,25 @@
             padding: 0 !important;
             overflow: hidden !important;
             z-index: 5; /* Garantir que fique acima do corpo da página, mas abaixo da sidebar e abas */
+        }
+        
+        /* Botão de controle para esconder/mostrar marcadores de contagem */
+        #counter-toggle {
+            position: absolute;
+            top: 10px;
+            left: 150px;
+            z-index: 100;
+            padding: 5px 8px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        #counter-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.9);
         }
         
         /* Garantir que o mapa ocupe 100% do container */
@@ -3451,11 +3473,11 @@
             },
             icon: {
                 path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z',
-                fillColor: '#FF0000', // Vermelho para todos os marcadores agulha de contagem
+                fillColor: regionColor, // Usar a cor da região para o marcador de contagem
                 fillOpacity: 0.9,
-                strokeWeight: 1,
+                strokeWeight: 1.5,
                 strokeColor: '#ffffff',
-                scale: 1.5,
+                scale: 1.8,
                 anchor: new google.maps.Point(0, 0),
                 labelOrigin: new google.maps.Point(0, -15) // Posição do texto no centro da agulha
             },
