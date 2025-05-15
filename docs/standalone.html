@@ -2000,6 +2000,32 @@
         console.log("Campos de data inicializados com datas atuais e eventos/restrições para origem configurados");
     });
 
+    // Função para extrair nome da cidade de um endereço
+    function extractCityName(addressOrName) {
+        if (!addressOrName) return 'Desconhecido';
+        
+        // Tentar extrair cidade de endereço completo primeiro
+        const cityFromAddress = extractCityFromAddress(addressOrName);
+        if (cityFromAddress) return cityFromAddress;
+        
+        // Lista de cidades conhecidas para reconhecimento direto
+        const knownCities = [
+            "Dois Córregos", "Jaú", "Botucatu", "Bauru", "Ribeirão Preto", 
+            "São Paulo", "Campinas", "São Carlos", "Piracicaba", "Araraquara",
+            "Americana", "Sorocaba", "Limeira", "Rio Claro", "Lençóis Paulista"
+        ];
+        
+        // Verificar se o nome já contém uma cidade conhecida
+        for (const city of knownCities) {
+            if (addressOrName.includes(city)) {
+                return city;
+            }
+        }
+        
+        // Se chegamos até aqui, retornar o nome como está
+        return addressOrName;
+    }
+    
     // Inicializa o mapa
     function initMap() {
         // Definir valores iniciais aos campos de data
@@ -5697,30 +5723,7 @@
          * @param {string} addressOrName - Endereço completo ou nome de localização
          * @returns {string} - Nome da cidade extraído ou texto original como fallback
          */
-        function extractCityName(addressOrName) {
-            if (!addressOrName) return 'Desconhecido';
-            
-            // Tentar extrair cidade de endereço completo primeiro
-            const cityFromAddress = extractCityFromAddress(addressOrName);
-            if (cityFromAddress) return cityFromAddress;
-            
-            // Lista de cidades conhecidas para reconhecimento direto
-            const knownCities = [
-                "Dois Córregos", "Jaú", "Botucatu", "Bauru", "Ribeirão Preto", 
-                "São Paulo", "Campinas", "São Carlos", "Piracicaba", "Araraquara",
-                "Americana", "Sorocaba", "Limeira", "Rio Claro", "Lençóis Paulista"
-            ];
-            
-            // Verificar se o nome já contém uma cidade conhecida
-            for (const city of knownCities) {
-                if (addressOrName.includes(city)) {
-                    return city;
-                }
-            }
-            
-            // Se chegamos até aqui, retornar o nome como está
-            return addressOrName;
-        }
+        // Usamos a função extractCityName definida globalmente
         
         const citiesOnRoute = pathLocations
             .filter(loc => loc) // Remover localizações nulas
