@@ -6671,15 +6671,16 @@
             // Desenha um círculo para representar a cidade
             const cityCircle = new google.maps.Circle({
                 strokeColor: valeDoParibaPolygons.color,
-                strokeOpacity: 0.5,
-                strokeWeight: 1,
+                strokeOpacity: 0.8,
+                strokeWeight: 1.5,
                 fillColor: valeDoParibaPolygons.color,
-                fillOpacity: 0.2,
+                fillOpacity: 0.15,
                 map: map,
                 center: position,
                 radius: valeDoParibaPolygons.approximateRadius, // Raio para cada cidade
                 clickable: true,
-                zIndex: 1 // Garante que fique abaixo dos marcadores
+                zIndex: 1, // Garante que fique abaixo dos marcadores
+                visible: true // Inicia visível
             });
             
             allCircles.push(cityCircle);
@@ -6712,18 +6713,20 @@
         controlDiv.style.borderRadius = '3px';
         controlDiv.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
         controlDiv.style.cursor = 'pointer';
-        controlDiv.style.marginBottom = '22px';
+        controlDiv.style.margin = '10px';
         controlDiv.style.textAlign = 'center';
-        controlDiv.title = 'Clique para mostrar/ocultar regiões';
+        controlDiv.title = 'Clique para mostrar/ocultar regiões do Vale do Paraíba';
         
         const controlUI = document.createElement('div');
-        controlUI.style.color = 'rgb(25,25,25)';
+        controlUI.style.color = '#000000';
         controlUI.style.fontFamily = 'Roboto,Arial,sans-serif';
-        controlUI.style.fontSize = '16px';
+        controlUI.style.fontSize = '14px';
+        controlUI.style.fontWeight = 'bold';
         controlUI.style.lineHeight = '38px';
-        controlUI.style.paddingLeft = '5px';
-        controlUI.style.paddingRight = '5px';
-        controlUI.innerHTML = 'Vale do Paraíba';
+        controlUI.style.paddingLeft = '10px';
+        controlUI.style.paddingRight = '10px';
+        controlUI.style.borderRadius = '2px';
+        controlUI.innerHTML = '🟣 Vale do Paraíba';
         controlDiv.appendChild(controlUI);
         
         let regionsVisible = true;
@@ -6731,12 +6734,13 @@
             regionsVisible = !regionsVisible;
             allCircles.forEach(circle => circle.setVisible(regionsVisible));
             controlUI.style.backgroundColor = regionsVisible ? '#ffc107' : '#fff';
+            controlUI.innerHTML = regionsVisible ? '🟣 Vale do Paraíba' : '⚪ Vale do Paraíba';
         });
         
         // Inicia com o controle destacado
         controlUI.style.backgroundColor = '#ffc107';
         
-        // Adiciona o controle ao mapa
+        // Adiciona o controle ao mapa - posição no topo direito
         map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
     }
     
