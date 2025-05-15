@@ -223,29 +223,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Informar ao usuário
     if (importedLocations.length > 0) {
-      alert(`Importado com sucesso! ${importedLocations.length} endereços adicionados.`);
+      // Usar uma notificação visual se possível, ou fallback para alert
+      const statusElement = document.getElementById('upload-status');
+      if (statusElement) {
+        statusElement.style.display = 'block';
+        statusElement.style.backgroundColor = '#4CAF50';
+        statusElement.style.color = 'white';
+        statusElement.textContent = `Importado com sucesso! ${importedLocations.length} endereços adicionados.`;
+        
+        // Esconder depois de 5 segundos
+        setTimeout(() => {
+          statusElement.style.display = 'none';
+        }, 5000);
+      } else {
+        // Fallback para alert
+        alert(`Importado com sucesso! ${importedLocations.length} endereços adicionados.`);
+      }
 
       // Atualizar mapa e calcular rota (se as funções existirem)
       if (window.calculateOptimizedRoute) {
         window.calculateOptimizedRoute();
+      } else if (window.reloadLocations) {
+        window.reloadLocations();
       }
     } else {
-      // Usar alert como fallback quando o elemento não existir
-      const fileUploadContainer = document.querySelector('.file-upload');
-      if (fileUploadContainer) {
-        const notifyWarning = document.createElement('div');
-        notifyWarning.className = 'alert alert-warning mt-2';
-        notifyWarning.innerHTML = `Nenhum endereço válido encontrado no arquivo.`;
-        fileUploadContainer.appendChild(notifyWarning);
-
-        // Remover a notificação após alguns segundos
+      // Mostrar erro de nenhum endereço encontrado
+      const statusElement = document.getElementById('upload-status');
+      if (statusElement) {
+        statusElement.style.display = 'block';
+        statusElement.style.backgroundColor = '#f44336';
+        statusElement.style.color = 'white';
+        statusElement.textContent = 'Nenhum endereço válido encontrado no arquivo.';
+        
+        // Esconder depois de 5 segundos
         setTimeout(() => {
-          if (notifyWarning && notifyWarning.parentNode) {
-            notifyWarning.parentNode.removeChild(notifyWarning);
-          }
+          statusElement.style.display = 'none';
         }, 5000);
       } else {
-        // Fallback para alert se o elemento não existir
+        // Fallback para alert
         alert('Nenhum endereço válido encontrado no arquivo.');
       }
     }
