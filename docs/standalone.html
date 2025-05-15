@@ -1336,24 +1336,8 @@
                         <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
                     </svg>
                 </button>
-                <button class="map-control-btn" id="show-sp-legend" title="Mostrar legenda de São Paulo">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FF8A33" viewBox="0 0 16 16">
-                        <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm0 14.5a6.5 6.5 0 1 1 0-13 6.5 6.5 0 0 1 0 13z"/>
-                        <path d="M9 5H7v2h2V5z"/>
-                        <path d="M7 8h2v3H7V8z"/>
-                    </svg>
-                </button>
-                <button class="map-control-btn" id="show-mg-legend" title="Mostrar legenda de Minas Gerais">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#DAA520" viewBox="0 0 16 16">
-                        <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm0 14.5a6.5 6.5 0 1 1 0-13 6.5 6.5 0 0 1 0 13z"/>
-                        <path d="M9 5H7v2h2V5z"/>
-                        <path d="M7 8h2v3H7V8z"/>
-                    </svg>
-                </button>
-                <button class="map-control-btn" id="hide-legends" title="Ocultar todas as legendas">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                    </svg>
+                <button class="map-control-btn" id="show-legend" title="Mostrar/ocultar legenda de regiões">
+                    <span style="font-weight: bold; font-family: Arial, sans-serif; font-size: 16px;">L</span>
                 </button>
             </div>
         </div>
@@ -2191,36 +2175,36 @@
         legendDiv.style.margin = '10px';
         legendDiv.style.position = 'relative';
         
-        // Lista das regiões específicas de São Paulo
+        // Lista das regiões específicas de São Paulo (ordenadas alfabeticamente)
         const regioesSaoPaulo = [
-            { nome: 'São José dos Campos', cor: '#FF5733' },
-            { nome: 'Campinas', cor: '#C70039' },
+            { nome: 'Araçatuba', cor: '#FF5733' },
             { nome: 'Araraquara', cor: '#900C3F' },
+            { nome: 'Bauru', cor: '#FF8D33' },
+            { nome: 'Campinas', cor: '#C70039' },
+            { nome: 'Marília', cor: '#900C3F' },
+            { nome: 'Presidente Prudente', cor: '#C70039' },
             { nome: 'Ribeirão Preto', cor: '#581845' },
             { nome: 'São José do Rio Preto', cor: '#FFC300' },
-            { nome: 'Araçatuba', cor: '#FF5733' },
-            { nome: 'Presidente Prudente', cor: '#C70039' },
-            { nome: 'Marília', cor: '#900C3F' },
-            { nome: 'Bauru', cor: '#FF8D33' },
-            { nome: 'Sorocaba', cor: '#33A8FF' },
-            { nome: 'São Paulo', cor: '#337DFF' }
+            { nome: 'São José dos Campos', cor: '#FF5733' },
+            { nome: 'São Paulo', cor: '#337DFF' },
+            { nome: 'Sorocaba', cor: '#33A8FF' }
         ];
         
-        // Lista de cores específicas para cada região de Minas Gerais
+        // Lista de cores específicas para cada região de Minas Gerais (ordenadas alfabeticamente)
         const regioesMG = [
+            { nome: 'Barbacena', cor: '#008080' },
             { nome: 'Belo Horizonte', cor: '#AB4500' },
-            { nome: 'Montes Claros', cor: '#7B2343' },
-            { nome: 'Teófilo Otoni', cor: '#2F4F4F' },
+            { nome: 'Divinópolis', cor: '#9932CC' },
             { nome: 'Governador Valadares', cor: '#20B2AA' },
             { nome: 'Ipatinga', cor: '#800080' },
             { nome: 'Juiz de Fora', cor: '#8B008B' },
-            { nome: 'Barbacena', cor: '#008080' },
-            { nome: 'Varginha', cor: '#708090' },
+            { nome: 'Montes Claros', cor: '#7B2343' },
+            { nome: 'Patos de Minas', cor: '#FFD700' },
             { nome: 'Pouso Alegre', cor: '#4169E1' },
+            { nome: 'Teófilo Otoni', cor: '#2F4F4F' },
             { nome: 'Uberaba', cor: '#DAA520' },
             { nome: 'Uberlândia', cor: '#8FBC8F' },
-            { nome: 'Patos de Minas', cor: '#FFD700' },
-            { nome: 'Divinópolis', cor: '#9932CC' }
+            { nome: 'Varginha', cor: '#708090' }
         ];
         
         // Botão de fechar
@@ -2333,8 +2317,8 @@
         
         legendDiv.appendChild(scrollContainer);
         
-        // Posicionar a legenda no mapa
-        map.controls[google.maps.ControlPosition.LEFT_TOP].push(legendDiv);
+        // Posicionar a legenda no centro-direita do mapa
+        map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(legendDiv);
     }
     
     // Inicializa o autocomplete
@@ -2652,10 +2636,7 @@
         document.getElementById('toggle-poi').addEventListener('click', togglePointsOfInterest);
         
         // Botão para mostrar a legenda unificada
-        document.getElementById('show-sp-legend').addEventListener('click', function() {
-            createRegionLegend();
-        });
-        document.getElementById('show-mg-legend').addEventListener('click', function() {
+        document.getElementById('show-legend').addEventListener('click', function() {
             createRegionLegend();
         });
         
