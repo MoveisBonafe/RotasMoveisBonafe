@@ -3366,15 +3366,20 @@
             
             // Checar casos especiais para Ribeirão Branco e Taquarivaí
             if (modifiedName.includes('ribeirao branco') || 
-                modifiedName.includes('ribeira') || 
                 modifiedName.includes('ribeirão branco')) {
                 console.log("Detectado Ribeirão Branco no nome:", name);
                 name = "Ribeirão Branco";
             } else if (modifiedName.includes('taquarivai') || 
-                      modifiedName.includes('oliveira ferreira') ||
-                      modifiedName.includes('oliveira')) {
+                      modifiedName.includes('taquarivaí')) {
                 console.log("Detectado Taquarivaí no nome:", name);
                 name = "Taquarivaí";
+            } else if (modifiedName.includes('taquarivai-eliana') || 
+                      modifiedName.includes('oliveira ferreira')) {
+                console.log("Detectado Taquarivaí-Eliana no nome:", name);
+                name = "Taquarivaí";
+            } else if (modifiedName === 'tiete' || modifiedName === 'tietê') {
+                console.log("Detectado Tietê no nome:", name);
+                name = "Tietê";
             }
             
             // Formatar CEP para garantir consistência no formato xxxxx-xxx

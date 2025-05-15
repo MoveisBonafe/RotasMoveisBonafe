@@ -80,6 +80,10 @@ function fixRegionColors() {
         "Ribeira": "Sorocaba",
         "Taquarivaí": "Sorocaba",
         "Taquarivai": "Sorocaba",
+        "Taquarivai-eliana De Oliveira Ferreira": "Sorocaba",
+        "Oliveira Ferreira": "Sorocaba",
+        "Tietê": "Sorocaba",
+        "Tiete": "Sorocaba",
         "Buri": "Sorocaba"
     };
     

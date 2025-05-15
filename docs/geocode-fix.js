@@ -312,8 +312,38 @@ document.addEventListener('DOMContentLoaded', function() {
       { name: "dois córregos", state: "SP", lat: -22.3673, lng: -48.3823 },
       { name: "botucatu", state: "SP", lat: -22.8837, lng: -48.4437 },
       { name: "araraquara", state: "SP", lat: -21.7845, lng: -48.1780 },
-      { name: "são carlos", state: "SP", lat: -22.0087, lng: -47.8909 }
+      { name: "são carlos", state: "SP", lat: -22.0087, lng: -47.8909 },
+      { name: "taquarivaí", state: "SP", lat: -23.9215, lng: -48.6948 },
+      { name: "ribeirão branco", state: "SP", lat: -24.2231, lng: -48.7635 },
+      { name: "tietê", state: "SP", lat: -23.1099, lng: -47.7162 },
+      { name: "oliveira", state: "MG", lat: -20.6982, lng: -44.8290 }
     ];
+    
+    // Processar casos especiais primeiro
+    const specialCases = {
+      "taquarivai-eliana": "taquarivaí",
+      "eliana de oliveira ferreira": "taquarivaí",
+      "oliveira ferreira": "taquarivaí",
+      "ribeirao branco": "ribeirão branco",
+      "ribeira": "ribeirão branco",
+      "tiete": "tietê"
+    };
+    
+    // Verificar se o nome contém algum caso especial
+    for (const [pattern, cityName] of Object.entries(specialCases)) {
+      if (name.toLowerCase().includes(pattern)) {
+        const city = cities.find(c => c.name === cityName);
+        if (city) {
+          console.log(`Caso especial detectado: "${pattern}" mapeado para "${cityName}"`);
+          return {
+            city: cityName.replace(/\b\w/g, l => l.toUpperCase()), // Capitalize
+            state: "SP",
+            lat: city.lat + (Math.random() - 0.5) * 0.003, // Pequena variação
+            lng: city.lng + (Math.random() - 0.5) * 0.003
+          };
+        }
+      }
+    }
     
     // Procurar correspondência exata
     for (const city of cities) {
@@ -331,10 +361,28 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
     
+    // Casos especiais para nomes compostos
+    if (name.includes('taquarivai-eliana') || name.includes('oliveira ferreira')) {
+      const city = cities.find(c => c.name === "taquarivaí");
+      if (city) {
+        return {
+          city: "Taquarivaí",
+          state: "SP",
+          lat: city.lat + (Math.random() - 0.5) * 0.003,
+          lng: city.lng + (Math.random() - 0.5) * 0.003
+        };
+      }
+    }
+    
     // Verificar palavras-chave
     for (const city of cities) {
       const cityWords = city.name.split(' ');
       for (const word of cityWords) {
+        // Ignorar a palavra "oliveira" isoladamente para evitar confusão com Taquarivaí
+        if (word === "oliveira" && (name.includes("taquarivai") || name.includes("taquarivaí"))) {
+          continue;
+        }
+        
         if (word.length > 3 && name.includes(word)) {
           // Adicionar variação
           const latVariation = (Math.random() - 0.5) * 0.005;
