@@ -2000,6 +2000,39 @@
         console.log("Campos de data inicializados com datas atuais e eventos/restrições para origem configurados");
     });
 
+    // Extrai a cidade de um endereço completo
+    function extractCityFromAddress(address) {
+        if (!address) return null;
+        
+        // Tenta encontrar o padrão "Cidade - UF" no endereço
+        const cityStateMatch = address.match(/([^,]+) - ([A-Z]{2})/);
+        if (cityStateMatch && cityStateMatch.length > 1) {
+            return cityStateMatch[1].trim();
+        }
+        
+        // Tentar outro padrão comum "Cidade, UF"
+        const cityStateCommaMatch = address.match(/([^,]+),\s*([A-Z]{2})/);
+        if (cityStateCommaMatch && cityStateCommaMatch.length > 1) {
+            return cityStateCommaMatch[1].trim();
+        }
+        
+        // Lista de cidades conhecidas para detecção direta
+        const knownCities = [
+            "Dois Córregos", "Jaú", "Botucatu", "Bauru", "Ribeirão Preto", 
+            "São Paulo", "Campinas", "São Carlos", "Piracicaba", "Araraquara",
+            "Americana", "Sorocaba", "Limeira", "Rio Claro", "Lençóis Paulista"
+        ];
+        
+        // Verificar se o endereço contém uma cidade conhecida
+        for (const city of knownCities) {
+            if (address.includes(city)) {
+                return city;
+            }
+        }
+        
+        return null;
+    }
+    
     // Função para extrair nome da cidade de um endereço
     function extractCityName(addressOrName) {
         if (!addressOrName) return 'Desconhecido';
@@ -2441,7 +2474,7 @@
         }
         
         // Quando um local é selecionado no autocomplete
-        try {
+        if (autocomplete) {
             autocomplete.addListener('place_changed', function() {
                 const place = autocomplete.getPlace();
             
@@ -2489,8 +2522,6 @@
             // Limpar o campo de busca
             input.value = '';
         });
-        } catch (error) {
-            console.error("Erro ao adicionar listener para place_changed:", error);
         }
     }
 
