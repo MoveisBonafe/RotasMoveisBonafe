@@ -6618,8 +6618,10 @@
             lat: -23.1791,
             lng: -45.8872
         },
-        // Cor de destaque para a região
-        color: "#8A2BE2", // Roxo intenso (BlueViolet)
+        // Cores de destaque para a região
+        color: "#4285F4", // Azul do Google Maps 
+        fillColor: "#A2C5FF", // Azul mais claro para preenchimento
+        borderColor: "#2C5BA9", // Azul mais escuro para bordas
         // Nome da região para display
         name: "Vale do Paraíba"
     };
@@ -6636,11 +6638,11 @@
         // Cria o polígono principal para representar toda a região do Vale do Paraíba
         const regionPolygon = new google.maps.Polygon({
             paths: valeDoParibaPolygons.regionPolygon,
-            strokeColor: valeDoParibaPolygons.color,
+            strokeColor: valeDoParibaPolygons.borderColor,
             strokeOpacity: 1.0, // Opacidade total para o contorno
-            strokeWeight: 5,    // Contorno mais grosso
-            fillColor: valeDoParibaPolygons.color,
-            fillOpacity: 0.1,   // Preenchimento mais sutil
+            strokeWeight: 3,    // Contorno médio
+            fillColor: valeDoParibaPolygons.fillColor,
+            fillOpacity: 0.2,   // Preenchimento mais natural
             map: map,
             clickable: true,
             zIndex: 1, // Garante que fique abaixo dos marcadores
@@ -6652,8 +6654,8 @@
             path: valeDoParibaPolygons.regionPolygon,
             geodesic: true,
             strokeColor: "#FFFFFF", // Contorno branco externo
-            strokeOpacity: 1.0,
-            strokeWeight: 8, // Contorno mais grosso que o principal
+            strokeOpacity: 0.8,
+            strokeWeight: 5, // Contorno ligeiramente mais grosso
             map: map,
             zIndex: 0, // Abaixo do polígono principal
             visible: true
@@ -6683,8 +6685,8 @@
             icon: {
                 path: google.maps.SymbolPath.CIRCLE,
                 fillColor: '#FFFFFF',
-                fillOpacity: 0.8,
-                strokeColor: valeDoParibaPolygons.color,
+                fillOpacity: 0.9,
+                strokeColor: valeDoParibaPolygons.borderColor,
                 strokeWeight: 2,
                 scale: 8
             },
@@ -6732,7 +6734,7 @@
         controlUI.style.paddingLeft = '10px';
         controlUI.style.paddingRight = '10px';
         controlUI.style.borderRadius = '2px';
-        controlUI.innerHTML = '🟣 Vale do Paraíba';
+        controlUI.innerHTML = '🔷 Vale do Paraíba';
         controlDiv.appendChild(controlUI);
         
         let regionsVisible = true;
@@ -6743,7 +6745,7 @@
             centerMarker.setVisible(regionsVisible);
             // Atualiza o estilo do botão
             controlUI.style.backgroundColor = regionsVisible ? '#ffc107' : '#fff';
-            controlUI.innerHTML = regionsVisible ? '🟣 Vale do Paraíba' : '⚪ Vale do Paraíba';
+            controlUI.innerHTML = regionsVisible ? '🔷 Vale do Paraíba' : '⚪ Vale do Paraíba';
         });
         
         // Inicia com o controle destacado
