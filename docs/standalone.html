@@ -6602,54 +6602,26 @@
     // Expor funções necessárias globalmente
     window.removeLocation = removeLocation;
     
-    // Dados das cidades do Vale do Paraíba para colorir regiões
+    // Dados da região do Vale do Paraíba para colorir
     const valeDoParibaPolygons = {
-        // Coordenadas aproximadas das principais cidades do Vale do Paraíba
-        // Pré-definidas para evitar excesso de geocodificações
-        cities: [
-            { name: "Caçapava", lat: -23.0996, lng: -45.7076 },
-            { name: "Igaratá", lat: -23.2037, lng: -46.1571 },
-            { name: "Jacareí", lat: -23.3028, lng: -45.9662 },
-            { name: "Jambeiro", lat: -23.2522, lng: -45.6941 },
-            { name: "Monteiro Lobato", lat: -22.9541, lng: -45.8408 },
-            { name: "Paraibuna", lat: -23.3856, lng: -45.6603 },
-            { name: "Santa Branca", lat: -23.3931, lng: -45.8875 },
-            { name: "Campos do Jordão", lat: -22.7296, lng: -45.5833 },
-            { name: "Lagoinha", lat: -23.0847, lng: -45.1942 },
-            { name: "Natividade da Serra", lat: -23.3705, lng: -45.4468 },
-            { name: "Pindamonhangaba", lat: -22.9242, lng: -45.4613 },
-            { name: "Redenção da Serra", lat: -23.2780, lng: -45.5422 },
-            { name: "Santo Antônio do Pinhal", lat: -22.8269, lng: -45.6633 },
-            { name: "São Bento do Sapucaí", lat: -22.6837, lng: -45.7337 },
-            { name: "São Luiz do Paraitinga", lat: -23.2210, lng: -45.3108 },
-            { name: "Taubaté", lat: -23.0104, lng: -45.5593 },
-            { name: "Tremembé", lat: -22.9571, lng: -45.5475 },
-            { name: "Caraguatatuba", lat: -23.6237, lng: -45.4121 },
-            { name: "Ilhabela", lat: -23.7785, lng: -45.3550 },
-            { name: "São Sebastião", lat: -23.8061, lng: -45.4013 },
-            { name: "Ubatuba", lat: -23.4339, lng: -45.0831 },
-            { name: "Aparecida", lat: -22.8497, lng: -45.2325 },
-            { name: "Canas", lat: -22.7003, lng: -45.0521 },
-            { name: "Cunha", lat: -23.0728, lng: -44.9573 },
-            { name: "Guaratinguetá", lat: -22.8075, lng: -45.1938 },
-            { name: "Lorena", lat: -22.7336, lng: -45.1250 },
-            { name: "Piquete", lat: -22.6069, lng: -45.1769 },
-            { name: "Potim", lat: -22.8342, lng: -45.2553 },
-            { name: "Roseira", lat: -22.8939, lng: -45.3072 },
-            { name: "Arapeí", lat: -22.6717, lng: -44.4441 },
-            { name: "Areias", lat: -22.5786, lng: -44.6992 },
-            { name: "Bananal", lat: -22.6819, lng: -44.3281 },
-            { name: "Cachoeira Paulista", lat: -22.6664, lng: -44.9951 },
-            { name: "Cruzeiro", lat: -22.5728, lng: -44.9531 },
-            { name: "Lavrinhas", lat: -22.5703, lng: -44.9031 },
-            { name: "Queluz", lat: -22.5392, lng: -44.7781 },
-            { name: "São José do Barreiro", lat: -22.6414, lng: -44.5778 },
-            { name: "Silveiras", lat: -22.6638, lng: -44.8542 }
+        // Polígono que define aproximadamente a região do Vale do Paraíba
+        // Coordenadas que delimitam toda a região geográfica de São José dos Campos e arredores
+        regionPolygon: [
+            // Coordenadas no formato [lat, lng] para criar um polígono que engloba o Vale do Paraíba
+            { lat: -22.4000, lng: -46.2000 }, // Noroeste
+            { lat: -22.4000, lng: -44.3000 }, // Nordeste
+            { lat: -23.9000, lng: -44.3000 }, // Sudeste
+            { lat: -23.9000, lng: -46.2000 }  // Sudoeste
         ],
-        // Raio aproximado para criar uma área circular como aproximação da região (em metros)
-        approximateRadius: 7000,
+        // Centro aproximado da região (São José dos Campos)
+        center: {
+            lat: -23.1791,
+            lng: -45.8872
+        },
         // Cor de destaque para a região
-        color: "#8A2BE2" // Roxo intenso (BlueViolet)
+        color: "#8A2BE2", // Roxo intenso (BlueViolet)
+        // Nome da região para display
+        name: "Vale do Paraíba"
     };
 
     // Função para desenhar a região do Vale do Paraíba no mapa
@@ -6659,50 +6631,65 @@
             return;
         }
         
-        console.log("Iniciando coloração das regiões do Vale do Paraíba...");
+        console.log("Desenhando a região do Vale do Paraíba...");
         
-        // Armazena todos os círculos para poder remover depois se necessário
-        const allCircles = [];
-        
-        // Para cada cidade na lista, usa as coordenadas pré-definidas
-        valeDoParibaPolygons.cities.forEach(city => {
-            const position = new google.maps.LatLng(city.lat, city.lng);
-            
-            // Desenha um círculo para representar a cidade
-            const cityCircle = new google.maps.Circle({
-                strokeColor: valeDoParibaPolygons.color,
-                strokeOpacity: 0.8,
-                strokeWeight: 1.5,
-                fillColor: valeDoParibaPolygons.color,
-                fillOpacity: 0.15,
-                map: map,
-                center: position,
-                radius: valeDoParibaPolygons.approximateRadius, // Raio para cada cidade
-                clickable: true,
-                zIndex: 1, // Garante que fique abaixo dos marcadores
-                visible: true // Inicia visível
-            });
-            
-            allCircles.push(cityCircle);
-            
-            // Adiciona tooltip ao clicar no círculo
-            const infoWindow = new google.maps.InfoWindow({
-                content: `<div style="color:#333;"><strong>${city.name}</strong><br>Região do Vale do Paraíba</div>`
-            });
-            
-            // Adiciona evento de clique para mostrar o nome da cidade
-            google.maps.event.addListener(cityCircle, 'click', function() {
-                infoWindow.setPosition(position);
-                infoWindow.open(map);
-            });
-            
-            console.log(`Cidade destacada: ${city.name}`);
+        // Cria o polígono para representar toda a região do Vale do Paraíba
+        const regionPolygon = new google.maps.Polygon({
+            paths: valeDoParibaPolygons.regionPolygon,
+            strokeColor: valeDoParibaPolygons.color,
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: valeDoParibaPolygons.color,
+            fillOpacity: 0.15,
+            map: map,
+            clickable: true,
+            zIndex: 1, // Garante que fique abaixo dos marcadores
+            visible: true // Inicia visível
         });
         
-        // Expõe uma função para limpar os círculos quando necessário
+        // Adiciona info window ao polígono
+        const infoWindow = new google.maps.InfoWindow({
+            content: `<div style="color:#333;"><strong>${valeDoParibaPolygons.name}</strong><br>Região que engloba São José dos Campos e cidades vizinhas</div>`
+        });
+        
+        // Adiciona evento de clique ao polígono
+        google.maps.event.addListener(regionPolygon, 'click', function(event) {
+            infoWindow.setPosition(event.latLng);
+            infoWindow.open(map);
+        });
+        
+        // Armazena o polígono para poder removê-lo quando necessário
+        const allPolygons = [regionPolygon];
+        
+        // Adiciona um marcador no centro da região (São José dos Campos)
+        const centerMarker = new google.maps.Marker({
+            position: valeDoParibaPolygons.center,
+            map: map,
+            title: 'São José dos Campos - Centro do Vale do Paraíba',
+            icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: '#FFFFFF',
+                fillOpacity: 0.8,
+                strokeColor: valeDoParibaPolygons.color,
+                strokeWeight: 2,
+                scale: 8
+            },
+            zIndex: 2, // Acima do polígono
+            visible: true
+        });
+        
+        // Adiciona evento de clique ao marcador central
+        google.maps.event.addListener(centerMarker, 'click', function() {
+            const centerInfoWindow = new google.maps.InfoWindow({
+                content: `<div style="color:#333;"><strong>São José dos Campos</strong><br>Centro da região do Vale do Paraíba</div>`
+            });
+            centerInfoWindow.open(map, centerMarker);
+        });
+        
+        // Expõe uma função para limpar o destaque quando necessário
         window.clearRegionHighlights = function() {
-            allCircles.forEach(circle => circle.setMap(null));
-            allCircles.length = 0;
+            allPolygons.forEach(polygon => polygon.setMap(null));
+            centerMarker.setMap(null);
         };
         
         // Adiciona um controle personalizado para mostrar/ocultar as regiões
@@ -6715,7 +6702,7 @@
         controlDiv.style.cursor = 'pointer';
         controlDiv.style.margin = '10px';
         controlDiv.style.textAlign = 'center';
-        controlDiv.title = 'Clique para mostrar/ocultar regiões do Vale do Paraíba';
+        controlDiv.title = 'Clique para mostrar/ocultar região do Vale do Paraíba';
         
         const controlUI = document.createElement('div');
         controlUI.style.color = '#000000';
@@ -6732,7 +6719,11 @@
         let regionsVisible = true;
         controlUI.addEventListener('click', () => {
             regionsVisible = !regionsVisible;
-            allCircles.forEach(circle => circle.setVisible(regionsVisible));
+            // Alterna a visibilidade do polígono
+            regionPolygon.setVisible(regionsVisible);
+            // Alterna a visibilidade do marcador central
+            centerMarker.setVisible(regionsVisible);
+            // Atualiza o estilo do botão
             controlUI.style.backgroundColor = regionsVisible ? '#ffc107' : '#fff';
             controlUI.innerHTML = regionsVisible ? '🟣 Vale do Paraíba' : '⚪ Vale do Paraíba';
         });
