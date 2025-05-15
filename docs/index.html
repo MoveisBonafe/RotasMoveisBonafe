@@ -1098,10 +1098,12 @@
         
         /* Estado expandido para container de abas */
         .bottom-tabs-container:not(.minimized) {
-            height: calc(100vh - 10px); /* Quase altura total da tela quando expandido */
+            top: 0; /* Expandir para cima até o topo da página */
+            height: 100vh; /* Altura total da tela quando expandido */
             border-top: 2px solid #1976D2; /* Borda mais visível quando expandido */
             border-left: 2px solid #1976D2; /* Borda na lateral para separar da sidebar */
             box-shadow: -5px -5px 15px rgba(0,0,0,0.2); /* Sombra ajustada */
+            z-index: 1010; /* Garantir que fique acima de outros elementos */
         }
         
         /* Botão de fechar removido - usando apenas os botões das abas para controlar expandir/minimizar */
