@@ -3423,8 +3423,11 @@
         
         // Tratamento específico para as cidades com classificação incorreta
         // Verificar de forma mais abrangente usando includes e várias variações
-        if (normalizedCityName.includes('ribeirao') && normalizedCityName.includes('branco')) {
-            console.log('Classificação manual: Ribeirão Branco pertence à região de Sorocaba');
+        
+        // Verificar diretamente se a cidade contém "ribeirao branco" ou "ribeirão branco"
+        if (normalizedCityName.includes('ribeirao branco') || 
+            (normalizedCityName.includes('ribeirao') && normalizedCityName.includes('branco'))) {
+            console.log('Classificação manual forçada: Ribeirão Branco pertence à região de Sorocaba');
             updateRegionCounter("SP", "Sorocaba");
             return {
                 regiao: "Sorocaba",
@@ -3433,9 +3436,11 @@
             };
         } 
         
-        if (normalizedCityName.includes('taquarivai') || normalizedCityName.includes('taquaritai') || 
-            normalizedCityName.includes('taquari') && normalizedCityName.includes('vai')) {
-            console.log('Classificação manual: Taquarivaí pertence à região de Sorocaba');
+        // Verificar se é Taquarivaí com várias grafias possíveis
+        if (normalizedCityName.includes('taquarivai') || 
+            normalizedCityName.includes('taquaritai') || 
+            (normalizedCityName.includes('taquari') && normalizedCityName.includes('vai'))) {
+            console.log('Classificação manual forçada: Taquarivaí pertence à região de Sorocaba');
             updateRegionCounter("SP", "Sorocaba");
             return {
                 regiao: "Sorocaba",
@@ -3444,8 +3449,9 @@
             };
         } 
         
+        // Verificar se é Buri
         if (normalizedCityName.includes('buri')) {
-            console.log('Classificação manual: Buri pertence à região de Sorocaba');
+            console.log('Classificação manual forçada: Buri pertence à região de Sorocaba');
             updateRegionCounter("SP", "Sorocaba");
             return {
                 regiao: "Sorocaba",
@@ -7022,7 +7028,9 @@
                     if (location.isOrigin) {
                         return `<li class="origin-point"><strong>0. ${locationName}</strong> ${locationAddress ? `(${locationAddress})` : ''} (Origem)</li>`;
                     } else {
-                        return `<li><strong>${index + 1}. ${locationName}</strong> ${locationAddress ? `(${locationAddress})` : ''}</li>`;
+                        // Ajustar numeração para começar em 1 para o primeiro destino
+                        const sequenceNumber = index; // Não adiciona 1 para manter sequência natural da lista (já começa em 1)
+                        return `<li><strong>${sequenceNumber}. ${locationName}</strong> ${locationAddress ? `(${locationAddress})` : ''}</li>`;
                     }
                 }).join('');
             } else {
