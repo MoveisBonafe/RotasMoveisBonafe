@@ -6633,19 +6633,34 @@
         
         console.log("Desenhando a região do Vale do Paraíba...");
         
-        // Cria o polígono para representar toda a região do Vale do Paraíba
+        // Cria o polígono principal para representar toda a região do Vale do Paraíba
         const regionPolygon = new google.maps.Polygon({
             paths: valeDoParibaPolygons.regionPolygon,
             strokeColor: valeDoParibaPolygons.color,
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
+            strokeOpacity: 1.0, // Opacidade total para o contorno
+            strokeWeight: 5,    // Contorno mais grosso
             fillColor: valeDoParibaPolygons.color,
-            fillOpacity: 0.15,
+            fillOpacity: 0.1,   // Preenchimento mais sutil
             map: map,
             clickable: true,
             zIndex: 1, // Garante que fique abaixo dos marcadores
             visible: true // Inicia visível
         });
+        
+        // Cria um segundo polígono (contorno externo) para dar um efeito de destaque duplo
+        const outerBorderPolygon = new google.maps.Polyline({
+            path: valeDoParibaPolygons.regionPolygon,
+            geodesic: true,
+            strokeColor: "#FFFFFF", // Contorno branco externo
+            strokeOpacity: 1.0,
+            strokeWeight: 8, // Contorno mais grosso que o principal
+            map: map,
+            zIndex: 0, // Abaixo do polígono principal
+            visible: true
+        });
+        
+        // Adiciona ao array de polígonos para controle
+        const allPolygons = [regionPolygon, outerBorderPolygon];
         
         // Adiciona info window ao polígono
         const infoWindow = new google.maps.InfoWindow({
@@ -6658,8 +6673,7 @@
             infoWindow.open(map);
         });
         
-        // Armazena o polígono para poder removê-lo quando necessário
-        const allPolygons = [regionPolygon];
+        // Já definimos o array allPolygons acima com os dois elementos
         
         // Adiciona um marcador no centro da região (São José dos Campos)
         const centerMarker = new google.maps.Marker({
@@ -6688,8 +6702,13 @@
         
         // Expõe uma função para limpar o destaque quando necessário
         window.clearRegionHighlights = function() {
-            allPolygons.forEach(polygon => polygon.setMap(null));
-            centerMarker.setMap(null);
+            if (allPolygons && allPolygons.length) {
+                allPolygons.forEach(polygon => polygon.setMap(null));
+            }
+            if (centerMarker) {
+                centerMarker.setMap(null);
+            }
+            console.log("Destaques de região removidos");
         };
         
         // Adiciona um controle personalizado para mostrar/ocultar as regiões
@@ -6719,9 +6738,8 @@
         let regionsVisible = true;
         controlUI.addEventListener('click', () => {
             regionsVisible = !regionsVisible;
-            // Alterna a visibilidade do polígono
-            regionPolygon.setVisible(regionsVisible);
-            // Alterna a visibilidade do marcador central
+            // Alterna a visibilidade de todos os elementos
+            allPolygons.forEach(poly => poly.setVisible(regionsVisible));
             centerMarker.setVisible(regionsVisible);
             // Atualiza o estilo do botão
             controlUI.style.backgroundColor = regionsVisible ? '#ffc107' : '#fff';
