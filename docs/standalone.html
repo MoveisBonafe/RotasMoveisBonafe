@@ -2160,60 +2160,36 @@
         createRegionLegend();
     }
 
-    // Verifica se uma legenda específica já está visível
-    function isLegendVisible(estado) {
-        const legends = document.querySelectorAll('.region-legend');
-        for (const legend of legends) {
-            if (legend.getAttribute('data-state') === estado) {
-                return legend;
-            }
-        }
-        return null;
+    // Verifica se a legenda já está visível
+    function isLegendVisible() {
+        return document.querySelector('.region-legend') !== null;
     }
 
     // Cria e adiciona a legenda das regiões no mapa
-    // estado: 'SP' para São Paulo, 'MG' para Minas Gerais
-    function createRegionLegend(estado) {
-        // Verificar se já existe uma legenda para este estado
-        const existingLegend = isLegendVisible(estado);
-        if (existingLegend) {
+    function createRegionLegend(estado = null) {
+        // Verificar se já existe uma legenda
+        if (isLegendVisible()) {
             // Se já existe, simplesmente remova-a (funcionamento como toggle)
-            if (existingLegend.parentNode) {
+            const existingLegend = document.querySelector('.region-legend');
+            if (existingLegend && existingLegend.parentNode) {
                 existingLegend.parentNode.removeChild(existingLegend);
             }
             return;
         }
         
-        // Remover todas as legendas existentes para evitar sobreposição
-        const allLegends = document.querySelectorAll('.region-legend');
-        allLegends.forEach(legend => {
-            if (legend && legend.parentNode) {
-                legend.parentNode.removeChild(legend);
-            }
-        });
-        
         // Criar elemento de legenda
         const legendDiv = document.createElement('div');
         legendDiv.className = 'region-legend';
-        legendDiv.setAttribute('data-state', estado);
         
         // Aplicar estilo básico para a legenda
         legendDiv.style.backgroundColor = 'white';
         legendDiv.style.padding = '10px';
         legendDiv.style.borderRadius = '4px';
         legendDiv.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
-        legendDiv.style.maxWidth = '200px';
+        legendDiv.style.width = '200px';
         legendDiv.style.fontSize = '12px';
         legendDiv.style.margin = '10px';
-        
-        // Título principal
-        const titleElement = document.createElement('div');
-        titleElement.textContent = estado === 'SP' ? 'Regiões de São Paulo' : 'Regiões de Minas Gerais';
-        titleElement.style.fontWeight = 'bold';
-        titleElement.style.marginBottom = '8px';
-        titleElement.style.borderBottom = '1px solid #ccc';
-        titleElement.style.paddingBottom = '5px';
-        legendDiv.appendChild(titleElement);
+        legendDiv.style.position = 'relative';
         
         // Lista das regiões específicas de São Paulo
         const regioesSaoPaulo = [
@@ -2247,41 +2223,118 @@
             { nome: 'Divinópolis', cor: '#9932CC' }
         ];
         
-        // Selecionar as regiões do estado correspondente
-        const regioes = estado === 'SP' ? regioesSaoPaulo : regioesMG;
+        // Botão de fechar
+        const closeButton = document.createElement('button');
+        closeButton.innerHTML = '&times;';
+        closeButton.style.position = 'absolute';
+        closeButton.style.top = '5px';
+        closeButton.style.right = '5px';
+        closeButton.style.background = 'none';
+        closeButton.style.border = 'none';
+        closeButton.style.fontSize = '16px';
+        closeButton.style.cursor = 'pointer';
+        closeButton.style.padding = '0';
+        closeButton.style.margin = '0';
+        closeButton.onclick = function() {
+            if (legendDiv.parentNode) {
+                legendDiv.parentNode.removeChild(legendDiv);
+            }
+        };
+        legendDiv.appendChild(closeButton);
         
-        // Criar lista de itens
-        const list = document.createElement('div');
+        // Título principal
+        const titleElement = document.createElement('div');
+        titleElement.textContent = 'Regiões de SP e MG';
+        titleElement.style.fontWeight = 'bold';
+        titleElement.style.marginBottom = '8px';
+        titleElement.style.borderBottom = '1px solid #ccc';
+        titleElement.style.paddingBottom = '5px';
+        titleElement.style.paddingRight = '15px'; // Espaço para o botão de fechar
+        legendDiv.appendChild(titleElement);
         
-        // Adicionar cada região à lista
-        regioes.forEach(regiao => {
+        // Container com rolagem para as regiões
+        const scrollContainer = document.createElement('div');
+        scrollContainer.style.maxHeight = '300px';
+        scrollContainer.style.overflowY = 'auto';
+        scrollContainer.style.paddingRight = '5px';
+        
+        // Adicionar São Paulo
+        const spTitleElement = document.createElement('div');
+        spTitleElement.textContent = 'São Paulo';
+        spTitleElement.style.fontWeight = 'bold';
+        spTitleElement.style.marginTop = '8px';
+        spTitleElement.style.marginBottom = '4px';
+        spTitleElement.style.color = '#d35400';
+        scrollContainer.appendChild(spTitleElement);
+        
+        // Lista de regiões de SP
+        regioesSaoPaulo.forEach(regiao => {
             const item = document.createElement('div');
             item.style.display = 'flex';
             item.style.alignItems = 'center';
             item.style.marginBottom = '4px';
+            item.style.paddingLeft = '5px';
             
             const colorBox = document.createElement('div');
             colorBox.style.width = '12px';
             colorBox.style.height = '12px';
             colorBox.style.backgroundColor = regiao.cor;
             colorBox.style.marginRight = '5px';
+            colorBox.style.flexShrink = '0';
             
             const label = document.createElement('span');
             label.textContent = regiao.nome;
+            label.style.whiteSpace = 'normal';
             
             item.appendChild(colorBox);
             item.appendChild(label);
-            list.appendChild(item);
+            scrollContainer.appendChild(item);
         });
         
-        legendDiv.appendChild(list);
+        // Separador
+        const separator = document.createElement('hr');
+        separator.style.margin = '10px 0';
+        separator.style.border = '0';
+        separator.style.borderTop = '1px solid #eee';
+        scrollContainer.appendChild(separator);
         
-        // Posicionar a legenda adequadamente no mapa sem sobrepor controles
-        const position = estado === 'SP' ? 
-            google.maps.ControlPosition.LEFT_TOP : 
-            google.maps.ControlPosition.LEFT_BOTTOM;
+        // Adicionar Minas Gerais
+        const mgTitleElement = document.createElement('div');
+        mgTitleElement.textContent = 'Minas Gerais';
+        mgTitleElement.style.fontWeight = 'bold';
+        mgTitleElement.style.marginTop = '8px';
+        mgTitleElement.style.marginBottom = '4px';
+        mgTitleElement.style.color = '#d35400';
+        scrollContainer.appendChild(mgTitleElement);
+        
+        // Lista de regiões de MG
+        regioesMG.forEach(regiao => {
+            const item = document.createElement('div');
+            item.style.display = 'flex';
+            item.style.alignItems = 'center';
+            item.style.marginBottom = '4px';
+            item.style.paddingLeft = '5px';
             
-        map.controls[position].push(legendDiv);
+            const colorBox = document.createElement('div');
+            colorBox.style.width = '12px';
+            colorBox.style.height = '12px';
+            colorBox.style.backgroundColor = regiao.cor;
+            colorBox.style.marginRight = '5px';
+            colorBox.style.flexShrink = '0';
+            
+            const label = document.createElement('span');
+            label.textContent = regiao.nome;
+            label.style.whiteSpace = 'normal';
+            
+            item.appendChild(colorBox);
+            item.appendChild(label);
+            scrollContainer.appendChild(item);
+        });
+        
+        legendDiv.appendChild(scrollContainer);
+        
+        // Posicionar a legenda no mapa
+        map.controls[google.maps.ControlPosition.LEFT_TOP].push(legendDiv);
     }
     
     // Inicializa o autocomplete
@@ -2598,21 +2651,12 @@
         document.getElementById('zoom-to-fit').addEventListener('click', zoomToFitAllMarkers);
         document.getElementById('toggle-poi').addEventListener('click', togglePointsOfInterest);
         
-        // Botões para as legendas de regiões
+        // Botão para mostrar a legenda unificada
         document.getElementById('show-sp-legend').addEventListener('click', function() {
-            createRegionLegend('SP');
+            createRegionLegend();
         });
         document.getElementById('show-mg-legend').addEventListener('click', function() {
-            createRegionLegend('MG');
-        });
-        document.getElementById('hide-legends').addEventListener('click', function() {
-            // Remover todas as legendas existentes
-            const legends = document.querySelectorAll('.region-legend');
-            legends.forEach(legend => {
-                if (legend && legend.parentNode) {
-                    legend.parentNode.removeChild(legend);
-                }
-            });
+            createRegionLegend();
         });
         
         // Botões da aba de relatório
