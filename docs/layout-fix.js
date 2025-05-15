@@ -1,17 +1,59 @@
 /**
  * Script para correção automática do layout da sidebar e mapa
  * Este script é executado automaticamente ao carregar a página
+ * v1.0.0 - 2023-05-15
  */
 (function() {
-    // Executar assim que o DOM estiver pronto
-    document.addEventListener('DOMContentLoaded', fixLayout);
+    /**
+     * Verificação inicial - executado imediatamente
+     */
+    function init() {
+        console.log('[LayoutFix] Iniciando correção de layout automática');
+        
+        // Executar assim que o DOM estiver pronto
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', onDOMReady);
+        } else {
+            // DOM já está pronto
+            onDOMReady();
+        }
+    }
     
-    // Executar novamente quando a janela for redimensionada
-    window.addEventListener('resize', fixLayout);
+    /**
+     * Quando o DOM estiver pronto
+     */
+    function onDOMReady() {
+        // Aplicar correção de layout imediatamente
+        fixLayout();
+        
+        // Executar novamente quando a janela for redimensionada
+        window.addEventListener('resize', fixLayout);
+        
+        // Configurar loop de verificação
+        scheduleChecks();
+        
+        console.log('[LayoutFix] Inicialização completa');
+    }
     
-    // Função principal para corrigir o layout
+    /**
+     * Programar verificações periódicas
+     */
+    function scheduleChecks() {
+        // Verificar a cada 1 segundo para garantir que as correções persistam
+        window.layoutFixInterval = setInterval(fixLayout, 1000);
+        
+        // Verificar também após 100ms, 500ms, 2s e 5s para cobrir diferentes cenários de carregamento
+        setTimeout(fixLayout, 100);
+        setTimeout(fixLayout, 500);
+        setTimeout(fixLayout, 2000);
+        setTimeout(fixLayout, 5000);
+    }
+    
+    /**
+     * Função principal para corrigir o layout
+     */
     function fixLayout() {
-        console.log('Aplicando correção automática de layout...');
+        console.log('[LayoutFix] Aplicando correções...');
         
         // Corrigir container principal
         const appContainer = document.querySelector('.app-container');
@@ -90,10 +132,13 @@
             }
         }
         
-        console.log('Correção de layout aplicada com sucesso!');
+        // Procurar e corrigir problemas específicos de sobreposição
+        fixOverlappingElements();
     }
     
-    // Função auxiliar para aplicar múltiplos estilos
+    /**
+     * Função auxiliar para aplicar múltiplos estilos
+     */
     function applyStyles(element, styles) {
         if (!element) return;
         Object.keys(styles).forEach(property => {
@@ -101,6 +146,24 @@
         });
     }
     
-    // Executar a cada 1 segundo para garantir que seja aplicado após qualquer mudança dinâmica
-    setInterval(fixLayout, 1000);
+    /**
+     * Corrigir problemas específicos de sobreposição
+     */
+    function fixOverlappingElements() {
+        // Corrigir problemas com a barra lateral (se houver)
+        const sidebarToggleButton = document.querySelector('.sidebar-toggle');
+        if (sidebarToggleButton) {
+            sidebarToggleButton.style.display = 'none';
+        }
+        
+        // Corrigir qualquer container que possa ter sido afetado pelo layout
+        const routeSummary = document.querySelector('.route-summary');
+        if (routeSummary) {
+            routeSummary.style.maxHeight = 'calc(100vh - 300px)';
+            routeSummary.style.overflowY = 'auto';
+        }
+    }
+    
+    // Iniciar o processo de correção
+    init();
 })();
