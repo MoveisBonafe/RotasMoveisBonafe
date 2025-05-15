@@ -91,12 +91,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Função de processamento de arquivo CEP melhorada
   function processCepFile(content) {
-    // Ensure notification container exists
+    // Find the sidebar first
+    const sidebar = document.querySelector('.sidebar');
+    if (!sidebar) {
+      console.error('Sidebar element not found');
+      alert('Erro ao processar arquivo: elemento sidebar não encontrado');
+      return;
+    }
+
+    // Get or create notification container
     let notificationContainer = document.querySelector('.file-upload');
     if (!notificationContainer) {
       notificationContainer = document.createElement('div');
-      notificationContainer.className = 'file-upload';
-      document.querySelector('.sidebar') && document.querySelector('.sidebar').appendChild(notificationContainer);
+      notificationContainer.className = 'file-upload notification-container';
+      sidebar.appendChild(notificationContainer);
     }
 
     // Dividir em linhas
