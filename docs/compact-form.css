@@ -1,0 +1,140 @@
+/* Estilos compactos para os formulários da sidebar */
+
+/* Container principal mais compacto */
+.filter-container, 
+.origin-container,
+.location-form {
+    padding: 10px !important;
+    margin-bottom: 12px !important;
+    border-left: 3px solid #ffc107;
+}
+
+/* Cabeçalhos menores */
+.sidebar h3 {
+    font-size: 14px !important;
+    margin-bottom: 8px !important;
+    padding-bottom: 4px !important;
+}
+
+/* Inputs com menos padding */
+.sidebar input[type="text"],
+.sidebar input[type="date"],
+.sidebar select {
+    padding: 8px !important;
+    margin-bottom: 8px !important;
+    font-size: 13px !important;
+}
+
+/* Filtros de data em linha */
+.date-filters {
+    display: flex !important;
+    gap: 6px !important;
+}
+
+.date-input {
+    flex: 1 !important;
+}
+
+.date-input label {
+    font-size: 12px !important;
+    margin-bottom: 4px !important;
+}
+
+/* Labels mais compactos */
+.sidebar label {
+    margin-bottom: 4px !important;
+    font-size: 12px !important;
+}
+
+/* Upload de arquivo mais compacto */
+.file-upload-container {
+    padding: 10px !important;
+    margin-bottom: 12px !important;
+}
+
+.file-upload-container .upload-icon {
+    font-size: 22px !important;
+    margin-bottom: 5px !important;
+}
+
+.file-format-example {
+    font-size: 10px !important;
+    padding: 3px 6px !important;
+    margin: 5px auto !important;
+}
+
+.upload-animation {
+    margin-top: 8px !important;
+}
+
+.upload-text {
+    font-size: 12px !important;
+}
+
+/* Estilo para botões mais compactos */
+.sidebar button {
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+}
+
+/* Layout em linha para alguns elementos quando possível */
+.inline-form-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.inline-form-group label {
+    width: 80px !important;
+    margin-bottom: 0 !important;
+}
+
+/* Evitar que o conteúdo fique muito grande */
+.location-list {
+    max-height: 400px !important;
+    overflow-y: auto !important;
+}
+
+/* Estilos para os cards de localização (layout compacto) */
+.location-card {
+    padding: 8px !important;
+    margin-bottom: 6px !important;
+    border-radius: 4px !important;
+    font-size: 13px !important;
+}
+
+.location-card .location-name {
+    font-weight: 500 !important;
+    margin-bottom: 2px !important;
+    font-size: 13px !important;
+}
+
+.location-card .location-address {
+    font-size: 12px !important;
+    color: #666 !important;
+    margin-bottom: 4px !important;
+}
+
+/* Compactar espaço do botão otimizar rota */
+.optimize-btn-container {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+}
+
+/* Compactar estilo dos botões de método de cálculo */
+.route-method-options {
+    font-size: 13px !important;
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+}
+
+.route-method-options label {
+    margin-right: 8px !important;
+    font-weight: normal !important;
+}
+
+/* Tornar os botões dos resultados mais compactos */
+.bottom-tab-content .btn {
+    padding: 6px 10px !important;
+    font-size: 13px !important;
+}
