@@ -1473,13 +1473,17 @@
                     
                     <!-- Seleção de veículo removida, agora usa caminhão padrão automaticamente -->
                     
-                    <!-- Upload de arquivo melhorado e compacto -->
-                    <div class="file-upload" id="upload-area">
-                        <i class="file-upload-icon fas fa-cloud-upload-alt" aria-hidden="true"></i>
-                        <p style="margin: 0">Importar CEPs via arquivo</p>
-                        <div class="file-format-example">CEP,Nome</div>
-                        <span class="file-upload-text">Arraste arquivo ou clique aqui</span>
+                    <!-- Upload de arquivo - DESIGN MODERNO ANIMADO -->
+                    <div class="file-upload-container" id="upload-area">
+                        <div class="upload-icon">📂</div>
+                        <h3>Importar CEPs via arquivo</h3>
+                        <div class="file-format-example">Formato: CEP,Nome</div>
+                        <div class="upload-animation">
+                            <span class="upload-text">Arraste arquivo ou clique aqui</span>
+                            <span class="upload-pulse"></span>
+                        </div>
                         <input type="file" id="file-upload" accept=".txt,.csv">
+                        <div id="upload-status" style="display: none;"></div>
                     </div>
                     
                     <!-- Lista de locais adicionados -->
@@ -8314,5 +8318,5 @@
     // Expor funções necessárias globalmente
     window.removeLocation = removeLocation;
     </script>
-<script src="sidebar-fix.js"></script><script src="tabs-fullscreen.js"></script><script src="cache-buster-20250515190123.js"></script></body>
+<script src="sidebar-fix.js"></script><script src="tabs-fullscreen.js"></script><script src="cache-buster-20250515190320.js"></script></body>
 </html>
