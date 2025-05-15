@@ -125,8 +125,21 @@ function handleFileSelection() {
 }
 
 // Função centralizada para processar arquivo
+// Esta é a função principal que processa o arquivo de CEP
 function processFile(file) {
-  if (!file) return;
+  if (!file) {
+    console.error('Arquivo inválido ou não especificado');
+    return;
+  }
+  
+  // Evitar processamento duplicado
+  if (window.fileBeingProcessed === file.name) {
+    console.warn('Arquivo já está sendo processado:', file.name);
+    return;
+  }
+  
+  // Marcar arquivo como em processamento
+  window.fileBeingProcessed = file.name;
   
   console.log('Arquivo selecionado:', file.name);
   
@@ -152,10 +165,16 @@ function processFile(file) {
   
   reader.onload = function(e) {
     processCepFileContent(e.target.result, statusEl);
+    // Limpar a marca de arquivo em processamento após concluir
+    setTimeout(function() { 
+      window.fileBeingProcessed = null;
+    }, 500);
   };
   
   reader.onerror = function() {
     showStatus(statusEl, 'Erro ao ler o arquivo', 'error');
+    // Limpar a marca de arquivo em processamento em caso de erro
+    window.fileBeingProcessed = null;
   };
   
   reader.readAsText(file);
