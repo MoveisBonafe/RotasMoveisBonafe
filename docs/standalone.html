@@ -2096,10 +2096,61 @@
         // Criar elemento de legenda
         const legendDiv = document.createElement('div');
         legendDiv.className = 'region-legend';
-        legendDiv.innerHTML = '<h5>Regiões de São Paulo</h5>';
         
-        // Adicionar cada região com sua cor
+        // Adicionar cabeçalho para São Paulo
+        const spHeader = document.createElement('h5');
+        spHeader.textContent = 'Regiões de São Paulo';
+        spHeader.style.borderBottom = '1px solid #ccc';
+        spHeader.style.paddingBottom = '5px';
+        spHeader.style.marginBottom = '8px';
+        legendDiv.appendChild(spHeader);
+        
+        // Adicionar cada região de São Paulo com sua cor
         for (const [regiao, dados] of Object.entries(regioesSP)) {
+            const regionItem = document.createElement('div');
+            regionItem.className = 'region-item';
+            
+            const colorBox = document.createElement('div');
+            colorBox.className = 'color-box';
+            colorBox.style.backgroundColor = dados.cor;
+            
+            const regionName = document.createElement('div');
+            regionName.className = 'region-name';
+            regionName.textContent = regiao;
+            
+            regionItem.appendChild(colorBox);
+            regionItem.appendChild(regionName);
+            legendDiv.appendChild(regionItem);
+        }
+        
+        // Adicionar cabeçalho para Minas Gerais
+        const mgHeader = document.createElement('h5');
+        mgHeader.textContent = 'Regiões de Minas Gerais';
+        mgHeader.style.borderBottom = '1px solid #ccc';
+        mgHeader.style.paddingBottom = '5px';
+        mgHeader.style.marginTop = '15px';
+        mgHeader.style.marginBottom = '8px';
+        legendDiv.appendChild(mgHeader);
+        
+        // Lista de regiões de Minas Gerais
+        const regioesMG = {
+            'Belo Horizonte': { cor: '#AB4500' },
+            'Montes Claros': { cor: '#7B2343' },
+            'Teófilo Otoni': { cor: '#2F4F4F' },
+            'Governador Valadares': { cor: '#20B2AA' },
+            'Ipatinga': { cor: '#800080' },
+            'Juiz de Fora': { cor: '#8B008B' },
+            'Barbacena': { cor: '#008080' },
+            'Varginha': { cor: '#708090' },
+            'Pouso Alegre': { cor: '#4169E1' },
+            'Uberaba': { cor: '#DAA520' },
+            'Uberlândia': { cor: '#8FBC8F' },
+            'Patos de Minas': { cor: '#FFD700' },
+            'Divinópolis': { cor: '#9932CC' }
+        };
+        
+        // Adicionar cada região de Minas Gerais com sua cor
+        for (const [regiao, dados] of Object.entries(regioesMG)) {
             const regionItem = document.createElement('div');
             regionItem.className = 'region-item';
             
