@@ -2331,11 +2331,10 @@
         
         legendDiv.appendChild(scrollContainer);
         
-        // Posicionar a legenda manualmente no centro-esquerda do mapa
+        // Posicionar a legenda no canto superior direito do mapa (área indicada pelo quadrado vermelho)
         legendDiv.style.position = 'absolute';
-        legendDiv.style.left = '10px';
-        legendDiv.style.top = '50%';
-        legendDiv.style.transform = 'translateY(-50%)';
+        legendDiv.style.right = '10px';
+        legendDiv.style.top = '10px';
         legendDiv.style.maxHeight = '80%';
         
         // Adicionar a legenda ao DOM
