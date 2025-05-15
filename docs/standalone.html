@@ -452,6 +452,35 @@
         .sidebar-hidden {
             transform: translateX(-100%);
         }
+        
+        /* Estilos para o container de status de upload de arquivo */
+        .file-upload-container {
+            position: relative;
+        }
+        
+        .file-upload-status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.9em;
+            display: none; /* Inicialmente oculto */
+        }
+        
+        .file-upload-status.error {
+            background-color: #ffe2e2;
+            color: #d32f2f;
+            border: 1px solid #ffcdd2;
+            display: block; /* Apenas mostrar quando tiver erro */
+        }
+        
+        .file-upload-status.success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+            display: block; /* Apenas mostrar quando tiver sucesso */
+        }
+        
         /* Responsividade */
         @media (max-width: 768px) {
             .sidebar {
@@ -462,6 +491,8 @@
                 z-index: 1000;
                 width: 100%;
                 max-width: 320px;
+                overflow-y: auto; /* Garantir rolagem quando necessário */
+                height: 100vh; /* Altura cheia da viewport */
             }
             .sidebar-close {
                 display: block;
