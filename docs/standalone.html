@@ -1532,6 +1532,39 @@
     let regionCounterMarkers = {}; // Armazenar marcadores de contagem por região
     let regionCounts = {}; // Armazenar contagem de locais por região
     let locationId = 2; // Começa em 2 porque 1 é reservado para a origem
+    
+    // Definição global das cores padrão das regiões - FONTE OFICIAL DE CORES
+    // São Paulo
+    const CORES_SP = {
+        'Araçatuba': '#FF5733',        // Laranja
+        'Araraquara': '#900C3F',       // Vinho
+        'Bauru': '#FF8D33',            // Laranja claro
+        'Campinas': '#C70039',         // Vermelho
+        'Marília': '#900C3F',          // Vinho
+        'Presidente Prudente': '#C70039', // Vermelho
+        'Ribeirão Preto': '#581845',   // Roxo escuro
+        'São José do Rio Preto': '#FFC300', // Amarelo
+        'São José dos Campos': '#FF5733', // Laranja
+        'São Paulo': '#337DFF',        // Azul
+        'Sorocaba': '#33A8FF'          // Azul claro
+    };
+    
+    // Minas Gerais
+    const CORES_MG = {
+        'Barbacena': '#008080',           // Turquesa
+        'Belo Horizonte': '#AB4500',      // Laranja queimado
+        'Divinópolis': '#9932CC',         // Roxo
+        'Governador Valadares': '#20B2AA', // Verde água
+        'Ipatinga': '#800080',            // Roxo escuro
+        'Juiz de Fora': '#8B008B',        // Magenta
+        'Montes Claros': '#7B2343',       // Bordô
+        'Patos de Minas': '#FFD700',      // Amarelo ouro
+        'Pouso Alegre': '#4169E1',        // Azul royal
+        'Teófilo Otoni': '#2F4F4F',       // Cinza escuro
+        'Uberaba': '#DAA520',             // Dourado
+        'Uberlândia': '#8FBC8F',          // Verde claro
+        'Varginha': '#708090'             // Cinza ardósia
+    };
     let locations = [mockData.origin];
     let activeInfoWindow = null;
     let routePath = null;
@@ -2282,41 +2315,11 @@
         legendDiv.style.position = 'relative';
         legendDiv.style.zIndex = '1000';
         
-        // Definição das cores padrão das regiões de São Paulo - FONTE OFICIAL DE CORES
-    const CORES_SP = {
-        'Araçatuba': '#FF5733',        // Laranja
-        'Araraquara': '#900C3F',       // Vinho
-        'Bauru': '#FF8D33',            // Laranja claro
-        'Campinas': '#C70039',         // Vermelho
-        'Marília': '#900C3F',          // Vinho
-        'Presidente Prudente': '#C70039', // Vermelho
-        'Ribeirão Preto': '#581845',   // Roxo escuro
-        'São José do Rio Preto': '#FFC300', // Amarelo
-        'São José dos Campos': '#FF5733', // Laranja
-        'São Paulo': '#337DFF',        // Azul
-        'Sorocaba': '#33A8FF'          // Azul claro
-    };
-
+    // Agora usamos a constante CORES_SP definida no escopo global
     // Lista das regiões específicas de São Paulo (ordenadas alfabeticamente)
     const regioesSaoPaulo = Object.entries(CORES_SP).map(([nome, cor]) => ({ nome, cor }));
         
-        // Definição das cores padrão das regiões de Minas Gerais - FONTE OFICIAL DE CORES
-        const CORES_MG = {
-            'Barbacena': '#008080',           // Turquesa
-            'Belo Horizonte': '#AB4500',      // Laranja queimado
-            'Divinópolis': '#9932CC',         // Roxo
-            'Governador Valadares': '#20B2AA', // Verde água
-            'Ipatinga': '#800080',            // Roxo escuro
-            'Juiz de Fora': '#8B008B',        // Magenta
-            'Montes Claros': '#7B2343',       // Bordô
-            'Patos de Minas': '#FFD700',      // Amarelo ouro
-            'Pouso Alegre': '#4169E1',        // Azul royal
-            'Teófilo Otoni': '#2F4F4F',       // Cinza escuro
-            'Uberaba': '#DAA520',             // Dourado
-            'Uberlândia': '#8FBC8F',          // Verde claro
-            'Varginha': '#708090'             // Cinza ardósia
-        };
-        
+        // Agora usamos a constante CORES_MG definida no escopo global
         // Lista de cores específicas para cada região de Minas Gerais (ordenadas alfabeticamente)
         const regioesMG = Object.entries(CORES_MG).map(([nome, cor]) => ({ nome, cor }));
         
