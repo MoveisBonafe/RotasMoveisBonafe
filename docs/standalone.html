@@ -1280,6 +1280,18 @@
                         <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
                     </svg>
                 </button>
+                <button class="map-control-btn" id="show-sp-legend" title="Mostrar legenda de São Paulo">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FF8A33" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                    </svg>
+                </button>
+                <button class="map-control-btn" id="show-mg-legend" title="Mostrar legenda de Minas Gerais">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#DAA520" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                    </svg>
+                </button>
             </div>
         </div>
         </div>
@@ -2086,7 +2098,8 @@
     }
 
     // Cria e adiciona a legenda das regiões no mapa
-    function createRegionLegend() {
+    // estado: 'SP' para São Paulo, 'MG' para Minas Gerais, null/undefined para ambos
+    function createRegionLegend(estado) {
         // Remover legenda existente se houver
         const existingLegend = document.querySelector('.region-legend');
         if (existingLegend && existingLegend.parentNode) {
@@ -2096,41 +2109,6 @@
         // Criar elemento de legenda
         const legendDiv = document.createElement('div');
         legendDiv.className = 'region-legend';
-        
-        // Adicionar cabeçalho para São Paulo
-        const spHeader = document.createElement('h5');
-        spHeader.textContent = 'Regiões de São Paulo';
-        spHeader.style.borderBottom = '1px solid #ccc';
-        spHeader.style.paddingBottom = '5px';
-        spHeader.style.marginBottom = '8px';
-        legendDiv.appendChild(spHeader);
-        
-        // Adicionar cada região de São Paulo com sua cor
-        for (const [regiao, dados] of Object.entries(regioesSP)) {
-            const regionItem = document.createElement('div');
-            regionItem.className = 'region-item';
-            
-            const colorBox = document.createElement('div');
-            colorBox.className = 'color-box';
-            colorBox.style.backgroundColor = dados.cor;
-            
-            const regionName = document.createElement('div');
-            regionName.className = 'region-name';
-            regionName.textContent = regiao;
-            
-            regionItem.appendChild(colorBox);
-            regionItem.appendChild(regionName);
-            legendDiv.appendChild(regionItem);
-        }
-        
-        // Adicionar cabeçalho para Minas Gerais
-        const mgHeader = document.createElement('h5');
-        mgHeader.textContent = 'Regiões de Minas Gerais';
-        mgHeader.style.borderBottom = '1px solid #ccc';
-        mgHeader.style.paddingBottom = '5px';
-        mgHeader.style.marginTop = '15px';
-        mgHeader.style.marginBottom = '8px';
-        legendDiv.appendChild(mgHeader);
         
         // Lista de regiões de Minas Gerais
         const regioesMG = {
@@ -2149,22 +2127,69 @@
             'Divinópolis': { cor: '#9932CC' }
         };
         
-        // Adicionar cada região de Minas Gerais com sua cor
-        for (const [regiao, dados] of Object.entries(regioesMG)) {
-            const regionItem = document.createElement('div');
-            regionItem.className = 'region-item';
+        // Mostra legenda de São Paulo se estado for SP ou não especificado
+        if (!estado || estado === 'SP') {
+            // Adicionar cabeçalho para São Paulo
+            const spHeader = document.createElement('h5');
+            spHeader.textContent = 'Regiões de São Paulo';
+            spHeader.style.borderBottom = '1px solid #ccc';
+            spHeader.style.paddingBottom = '5px';
+            spHeader.style.marginBottom = '8px';
+            legendDiv.appendChild(spHeader);
             
-            const colorBox = document.createElement('div');
-            colorBox.className = 'color-box';
-            colorBox.style.backgroundColor = dados.cor;
+            // Adicionar cada região de São Paulo com sua cor
+            for (const [regiao, dados] of Object.entries(regioesSP)) {
+                const regionItem = document.createElement('div');
+                regionItem.className = 'region-item';
+                
+                const colorBox = document.createElement('div');
+                colorBox.className = 'color-box';
+                colorBox.style.backgroundColor = dados.cor;
+                
+                const regionName = document.createElement('div');
+                regionName.className = 'region-name';
+                regionName.textContent = regiao;
+                
+                regionItem.appendChild(colorBox);
+                regionItem.appendChild(regionName);
+                legendDiv.appendChild(regionItem);
+            }
+        }
+        
+        // Mostra legenda de Minas Gerais se estado for MG ou não especificado
+        if (!estado || estado === 'MG') {
+            // Se estiver mostrando ambos os estados, adicione um espaçamento
+            if (!estado || estado === 'SP') {
+                const spacer = document.createElement('div');
+                spacer.style.height = '15px';
+                legendDiv.appendChild(spacer);
+            }
             
-            const regionName = document.createElement('div');
-            regionName.className = 'region-name';
-            regionName.textContent = regiao;
+            // Adicionar cabeçalho para Minas Gerais
+            const mgHeader = document.createElement('h5');
+            mgHeader.textContent = 'Regiões de Minas Gerais';
+            mgHeader.style.borderBottom = '1px solid #ccc';
+            mgHeader.style.paddingBottom = '5px';
+            mgHeader.style.marginBottom = '8px';
+            legendDiv.appendChild(mgHeader);
             
-            regionItem.appendChild(colorBox);
-            regionItem.appendChild(regionName);
-            legendDiv.appendChild(regionItem);
+            // Adicionar cada região de Minas Gerais com sua cor
+            for (const [regiao, dados] of Object.entries(regioesMG)) {
+                const regionItem = document.createElement('div');
+                regionItem.className = 'region-item';
+                
+                const colorBox = document.createElement('div');
+                colorBox.className = 'color-box';
+                colorBox.style.backgroundColor = dados.cor;
+                
+                const regionName = document.createElement('div');
+                regionName.className = 'region-name';
+                regionName.textContent = regiao;
+                
+                regionItem.appendChild(colorBox);
+                regionItem.appendChild(regionName);
+                legendDiv.appendChild(regionItem);
+            }
         }
         
         // Adicionar botão de fechar
@@ -2499,6 +2524,14 @@
         // Botões de controle do mapa
         document.getElementById('zoom-to-fit').addEventListener('click', zoomToFitAllMarkers);
         document.getElementById('toggle-poi').addEventListener('click', togglePointsOfInterest);
+        
+        // Botões para as legendas de regiões
+        document.getElementById('show-sp-legend').addEventListener('click', function() {
+            createRegionLegend('SP');
+        });
+        document.getElementById('show-mg-legend').addEventListener('click', function() {
+            createRegionLegend('MG');
+        });
         
         // Botões da aba de relatório
         document.getElementById('save-route').addEventListener('click', saveRoute);
