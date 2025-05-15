@@ -2114,6 +2114,9 @@
             zoom: 8,
             mapTypeControl: true,
             fullscreenControl: true,
+            fullscreenControlOptions: {
+                position: google.maps.ControlPosition.RIGHT_TOP
+            },
             streetViewControl: true,
             zoomControl: true,
             gestureHandling: 'greedy' // Permite zoom com scroll sem precionar Ctrl
@@ -2344,7 +2347,7 @@
         legendDiv.style.margin = '10px';
         legendDiv.style.position = 'absolute';
         legendDiv.style.zIndex = '1000';
-        legendDiv.style.right = '10px'; // Lado direito, onde está o botão de tela cheia
+        legendDiv.style.right = '50px'; // Lado direito, próximo ao botão de tela cheia
         legendDiv.style.top = '50%'; // Centralizado verticalmente
         legendDiv.style.transform = 'translateY(-50%)'; // Centralização precisa
         legendDiv.style.maxHeight = '80%';
