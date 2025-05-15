@@ -870,9 +870,16 @@
         /* Botão de zoom específico */
         #zoom-to-fit {
             position: absolute;
-            bottom: 70px;
-            left: 10px;
+            left: 0px;
+            top: 0px;
+            width: 66px;
+            height: 26px;
+            user-select: none;
+            border: 0px;
+            padding: 0px;
+            margin: 0px;
             z-index: 1000;
+            background-color: white;
         }
         .map-control-btn {
             background: white;
@@ -2331,7 +2338,7 @@
         
         legendDiv.appendChild(scrollContainer);
         
-        // Aplicar o layout exato solicitado
+        // Posicionar a legenda acima dos controles da câmera
         legendDiv.style.backgroundColor = 'white';
         legendDiv.style.padding = '10px';
         legendDiv.style.borderRadius = '4px';
@@ -2341,9 +2348,8 @@
         legendDiv.style.margin = '10px';
         legendDiv.style.position = 'absolute';
         legendDiv.style.zIndex = '1000';
-        legendDiv.style.left = '0px';
-        legendDiv.style.top = '50%';
-        legendDiv.style.transform = 'translate(-50%, -50%)';
+        legendDiv.style.left = '10px';
+        legendDiv.style.top = '70px'; // Acima dos controles da câmera
         legendDiv.style.maxHeight = '80%';
         
         // Adicionar a legenda ao DOM
