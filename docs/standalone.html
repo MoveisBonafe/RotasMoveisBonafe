@@ -74,13 +74,33 @@
             transition: transform 0.3s ease;
             display: flex;
             flex-direction: column;
-            position: fixed; /* Fixar a sidebar no lado esquerdo */
-            top: 0;
-            left: 0;
-            bottom: 0;
+            position: relative; /* Alterado de fixed para relative para melhor compatibilidade */
             max-height: 100vh; /* Garantir que não ultrapasse a altura da janela */
             scrollbar-width: thin; /* Para Firefox */
             scrollbar-color: #adb5bd #f8f9fa; /* Para Firefox */
+        }
+        
+        /* Garantir que o conteúdo da sidebar tenha rolagem adequada */
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 5px; /* Espaço para a barra de rolagem */
+            scrollbar-width: thin;
+            scrollbar-color: #ffc107 #f8f9fa;
+        }
+        
+        .sidebar-content::-webkit-scrollbar {
+            width: 6px; 
+        }
+        
+        .sidebar-content::-webkit-scrollbar-track {
+            background: #f8f9fa;
+        }
+        
+        .sidebar-content::-webkit-scrollbar-thumb {
+            background-color: #ffc107;
+            border-radius: 6px;
+            border: 2px solid #f8f9fa;
         }
         
         /* Estilizar scrollbar para navegadores baseados em WebKit (Chrome, Safari) */
@@ -344,8 +364,14 @@
             font-size: 16px;
         }
         /* Estilos para a área de upload de arquivo */
-        .file-upload {
+        .file-upload-container {
+            position: relative;
             margin-top: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .file-upload {
+            margin-top: 10px;
             border: 2px dashed #ffc107;
             padding: 15px 10px;
             text-align: center;
@@ -355,23 +381,27 @@
             position: relative;
             cursor: pointer;
         }
+        
         .file-upload:hover, .file-upload.dragover {
             border-color: #ffab00;
             background-color: #fff8e1;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(255, 171, 0, 0.15);
         }
+        
         .file-upload p {
             margin-bottom: 10px;
             color: #444;
             font-weight: 500;
         }
+        
         .file-upload-icon {
             display: block;
             margin: 0 auto 5px;
             font-size: 24px;
             color: #ffc107;
         }
+        
         .file-format-example {
             background-color: #fff8e1;
             padding: 4px 8px;
@@ -380,9 +410,10 @@
             display: inline-block;
             margin: 4px auto;
             color: #2c3e50;
-            border: 1px solid #bde0ff;
+            border: 1px solid #ffe082;
             font-size: 12px;
         }
+        
         .file-upload input[type="file"] {
             opacity: 0;
             position: absolute;
@@ -392,11 +423,43 @@
             height: 100%;
             cursor: pointer;
         }
+        
         .file-upload-text {
             display: block;
             margin-top: 5px;
             color: #5a5a5a;
             font-size: 13px;
+        }
+        
+        /* Status de upload */
+        .file-upload-status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.3s ease;
+            position: relative;
+        }
+        
+        .file-upload-status.error {
+            background-color: #ffe2e2;
+            color: #d32f2f;
+            border: 1px solid #ffcdd2;
+            display: block;
+        }
+        
+        .file-upload-status.success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         /* Estilos para notificação de sucesso no upload */
         .upload-success {
