@@ -2412,17 +2412,38 @@
     
     // Inicializa o autocomplete
     function initAutocomplete() {
+        console.log("Inicializando autocomplete para busca de endereços...");
         const input = document.getElementById('location-search');
+        
+        if (!input) {
+            console.error("Elemento de busca 'location-search' não encontrado!");
+            return;
+        }
+        
+        // Verificar se a API do Google já está carregada
+        if (typeof google === 'undefined' || !google.maps || !google.maps.places) {
+            console.error("API do Google Maps ou Places não carregada corretamente");
+            // Tentar novamente em alguns segundos
+            setTimeout(initAutocomplete, 2000);
+            return;
+        }
+        
         const options = {
             types: ['geocode'],
             componentRestrictions: { country: 'br' }
         };
         
-        autocomplete = new google.maps.places.Autocomplete(input, options);
+        try {
+            autocomplete = new google.maps.places.Autocomplete(input, options);
+            console.log("Autocomplete inicializado com sucesso");
+        } catch (error) {
+            console.error("Erro ao inicializar autocomplete:", error);
+        }
         
         // Quando um local é selecionado no autocomplete
-        autocomplete.addListener('place_changed', function() {
-            const place = autocomplete.getPlace();
+        try {
+            autocomplete.addListener('place_changed', function() {
+                const place = autocomplete.getPlace();
             
             if (!place.geometry) {
                 // Substituir alert por notificação inline mais suave
@@ -2468,6 +2489,9 @@
             // Limpar o campo de busca
             input.value = '';
         });
+        } catch (error) {
+            console.error("Erro ao adicionar listener para place_changed:", error);
+        }
     }
 
     // Inicializa a navegação por abas (novas abas inferiores)
