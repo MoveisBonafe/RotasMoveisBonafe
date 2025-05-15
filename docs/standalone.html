@@ -1985,6 +1985,10 @@
         // Definir valores iniciais aos campos de data
         initDatePickers();
         
+        // Inicializar os centros das regiões e preparar os marcadores contadores
+        regionCenters = calculateRegionCenters();
+        createRegionCounterMarkers();
+        
         // Invocar a filtragem de eventos inicial para exibir eventos para a origem
         filterEventsByDate();
     }
