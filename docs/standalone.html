@@ -1342,42 +1342,19 @@
 <body>
     <div class="app-container">
         <div class="main-content-area">
-            <!-- Aba superior para filtros e origem -->
-            <div class="top-tabs-container">
-                <div class="top-tabs-nav">
-                    <button class="top-tab-btn active" data-tab="top-filters">Filtros e Origem</button>
+            <!-- Barra superior moderna e animada -->
+            <div class="top-bar">
+                <!-- Grupo de filtro de data -->
+                <div class="filter-group">
+                    <label>Filtrar eventos por data:</label>
+                    <input type="date" id="start-date-top">
+                    <span>até</span>
+                    <input type="date" id="end-date-top">
                 </div>
                 
-                <!-- Conteúdo da aba Filtros e Origem -->
-                <div class="top-tab-content active" id="top-filters-content">
-                    <div class="row">
-                        <!-- Coluna para filtro de data -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="date-range-label">Filtrar eventos por data:</label>
-                                <div class="date-fields" style="display: flex; align-items: center; gap: 10px;">
-                                    <div class="input-animation-container" style="flex: 1;">
-                                        <input type="date" id="start-date-top" class="form-control form-control-sm">
-                                        <div class="input-animation-effect"></div>
-                                    </div>
-                                    <span>até</span>
-                                    <div class="input-animation-container" style="flex: 1;">
-                                        <input type="date" id="end-date-top" class="form-control form-control-sm">
-                                        <div class="input-animation-effect"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Coluna para origem -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="date-range-label">Origem:</label>
-                                <div class="fixed-origin" style="padding: 6px 0;">
-                                    <span id="origin-location-top"><strong>Dois Córregos, SP</strong></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Origem fixa com design moderno -->
+                <div class="origin-display">
+                    <span id="origin-location-top">Dois Córregos, SP</span>
                 </div>
             </div>
             
