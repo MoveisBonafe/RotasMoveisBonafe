@@ -1442,8 +1442,8 @@
         <div class="map-container">
             <div id="map">
                 <!-- Botão para mostrar/esconder marcadores de contagem (movido para canto inferior direito) -->
-                <button id="counter-toggle" class="btn btn-sm btn-info map-control-button active" style="position: absolute; bottom: 70px; right: 10px; z-index: 100; padding: 5px; background-color: rgba(0, 0, 0, 0.7); border: none; border-radius: 4px;" title="Esconder contadores regionais">
-                    <span>🔢</span>
+                <button id="counter-toggle" class="btn btn-sm btn-info map-control-button active" style="position: absolute; bottom: 70px; right: 10px; z-index: 1000; padding: 5px 8px; background-color: rgba(0, 0, 0, 0.7); color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.3);" title="Esconder contadores regionais">
+                    🔢
                 </button>
             </div>
             <div id="loading-spinner">Calculando rota...</div>
@@ -1456,7 +1456,7 @@
                         <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
                     </svg>
                 </button>
-                <button class="map-control-btn" id="show-legend" title="Mostrar/ocultar legenda de regiões">
+                <button class="map-control-btn" id="show-legend" onclick="createRegionLegend()" title="Mostrar/ocultar legenda de regiões">
                     <span style="font-weight: bold; font-family: Arial, sans-serif; font-size: 16px;">L</span>
                 </button>
             </div>
@@ -2413,7 +2413,7 @@
     // Cria e adiciona a legenda das regiões no mapa
     function createRegionLegend(estado = null) {
         // Pegar o botão de toggle da legenda para atualizar seu estado visual
-        const legendToggleBtn = document.getElementById('legend-toggle');
+        const legendToggleBtn = document.getElementById('show-legend');
         
         // Verificar se já existe uma legenda
         if (isLegendVisible()) {
@@ -3764,16 +3764,43 @@
                     location.name.toLowerCase().includes("ribeirao branco-")) {
                     cidadeDaLocalizacao = "Ribeirão Branco";
                     console.log("Cidade detectada no nome do local:", cidadeDaLocalizacao);
+                    
+                    // Forçar região de Sorocaba para Ribeirão Branco
+                    infoRegiao = {
+                        nome: "Sorocaba",
+                        cor: "#33A8FF", // Azul claro para Sorocaba
+                        estado: "SP"
+                    };
+                    console.log("Região forçada para Sorocaba para Ribeirão Branco");
+                    return; // Sair da função após definir a região
                 } 
                 else if (location.name.toLowerCase().startsWith("taquarivai") || 
                          location.name.toLowerCase().includes("taquarivai-")) {
                     cidadeDaLocalizacao = "Taquarivaí";
                     console.log("Cidade detectada no nome do local:", cidadeDaLocalizacao);
+                    
+                    // Forçar região de Sorocaba para Taquarivaí
+                    infoRegiao = {
+                        nome: "Sorocaba",
+                        cor: "#33A8FF", // Azul claro para Sorocaba
+                        estado: "SP"
+                    };
+                    console.log("Região forçada para Sorocaba para Taquarivaí");
+                    return; // Sair da função após definir a região
                 }
                 else if (location.name.toLowerCase().startsWith("buri") ||
                          location.name.toLowerCase().includes("buri-")) {
                     cidadeDaLocalizacao = "Buri";
                     console.log("Cidade detectada no nome do local:", cidadeDaLocalizacao);
+                    
+                    // Forçar região de Sorocaba para Buri
+                    infoRegiao = {
+                        nome: "Sorocaba",
+                        cor: "#33A8FF", // Azul claro para Sorocaba
+                        estado: "SP"
+                    };
+                    console.log("Região forçada para Sorocaba para Buri");
+                    return; // Sair da função após definir a região
                 }
                 else {
                     // Método padrão para outros locais
