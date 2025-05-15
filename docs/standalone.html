@@ -6684,8 +6684,8 @@
                 console.error("Erro ao gerar rota em espiral:", error);
             }
             
+            // 4. Rota alternativa - Prioridade por cidade (se tiver 4+ destinos)
             try {
-                // 4. Rota alternativa - Prioridade por cidade (se tiver 4+ destinos)
                 if (destinations.length >= 3) {
                     console.log("Gerando rota alternativa 3: Agrupamento por cidade...");
                     const cityPriorityRoute = solveCityPriorityTSP(origin, destinations, includeOriginReturn);
@@ -6700,33 +6700,6 @@
                         cityOption.text = `Rota Alternativa ${routeIndex} (Agrupamento por Cidade)`;
                         alternativeSidebar.appendChild(cityOption);
                 
-                        // Para cada rota alternativa extra, criar ou atualizar card correspondente
-                        if (routeIndex >= 3) {
-                            // Atualizamos o card para essa rota
-                            updateRouteCard(routeIndex, "Agrupamento por cidade");
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error("Erro ao gerar rota por cidade:", error);
-            }
-            
-            // 5. Nova rota alternativa - Distante à origem
-            try {
-                if (destinations.length >= 2) {
-                    console.log("Gerando rota alternativa: Distante à origem...");
-                    const farthestFirstRoute = solveFarthestFirstTSP(origin, destinations, includeOriginReturn);
-                    alternativeRoutes.push(farthestFirstRoute);
-                    const routeIndex = alternativeRoutes.length - 1;
-                    
-                    // Adicionar opção ao select da sidebar
-                    const alternativeSidebar = document.getElementById('alternative-routes-sidebar');
-                    if (alternativeSidebar) {
-                        const farthestOption = document.createElement('option');
-                        farthestOption.value = routeIndex.toString();
-                        farthestOption.text = `Rota Alternativa ${routeIndex} (Distante à origem)`;
-                        alternativeSidebar.appendChild(farthestOption);
-                        
                         // Para cada rota alternativa extra, criar ou atualizar card correspondente
                         if (routeIndex >= 3) {
                             // Verificar se já existe card para essa rota
@@ -6786,6 +6759,83 @@
                 }
             } catch (error) {
                 console.error("Erro ao gerar rota por cidade:", error);
+            }
+            
+            // 5. Nova rota alternativa - Distante à origem
+            try {
+                if (destinations.length >= 2) {
+                    console.log("Gerando rota alternativa: Distante à origem...");
+                    const farthestFirstRoute = solveFarthestFirstTSP(origin, destinations, includeOriginReturn);
+                    alternativeRoutes.push(farthestFirstRoute);
+                    const routeIndex = alternativeRoutes.length - 1;
+                    
+                    // Adicionar opção ao select da sidebar
+                    const alternativeSidebar = document.getElementById('alternative-routes-sidebar');
+                    if (alternativeSidebar) {
+                        const farthestOption = document.createElement('option');
+                        farthestOption.value = routeIndex.toString();
+                        farthestOption.text = `Rota Alternativa ${routeIndex} (Distante à origem)`;
+                        alternativeSidebar.appendChild(farthestOption);
+                        
+                        // Para cada rota alternativa extra, criar ou atualizar card correspondente
+                        if (routeIndex >= 3) {
+                            // Verificar se já existe card para essa rota
+                            let cardRouteFarthest = document.getElementById(`route-card-${routeIndex}`);
+                            
+                            // Se não existir, criar novo card
+                            if (!cardRouteFarthest) {
+                                // Clonar o template do card 2
+                                const templateCard = document.getElementById('route-card-2');
+                                if (templateCard && templateCard.parentNode) {
+                                    cardRouteFarthest = templateCard.cloneNode(true);
+                                    cardRouteFarthest.id = `route-card-${routeIndex}`;
+                                    cardRouteFarthest.setAttribute('data-route', routeIndex.toString());
+                                    
+                                    // Atualizar o ID do elemento de detalhes
+                                    const detailsElement = cardRouteFarthest.querySelector('[id^="route-"]');
+                                    if (detailsElement) {
+                                        detailsElement.id = `route-${routeIndex}-details`;
+                                    }
+                                    
+                                    // Adicionar ao container
+                                    templateCard.parentNode.appendChild(cardRouteFarthest);
+                                    
+                                    // Adicionar evento de clique
+                                    cardRouteFarthest.addEventListener('click', function() {
+                                        const routeIdx = parseInt(this.getAttribute('data-route'));
+                                        
+                                        // Atualizar seleção visual
+                                        document.querySelectorAll('.route-option-card').forEach(c => {
+                                            c.classList.remove('selected');
+                                        });
+                                        this.classList.add('selected');
+                                        
+                                        // Atualizar o select escondido
+                                        const selectElement = document.getElementById('alternative-routes-sidebar');
+                                        if (selectElement) {
+                                            selectElement.value = routeIdx.toString();
+                                            
+                                            // Disparar evento de mudança
+                                            const event = new Event('change');
+                                            selectElement.dispatchEvent(event);
+                                        }
+                                    });
+                                }
+                            }
+                            
+                            // Atualizar título e exibir card
+                            if (cardRouteFarthest) {
+                                cardRouteFarthest.style.display = 'block';
+                                const titleElement = cardRouteFarthest.querySelector('strong');
+                                if (titleElement) {
+                                    titleElement.textContent = "Distante à origem";
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Erro ao gerar rota Distante à origem:", error);
             }
         }
         
