@@ -1341,11 +1341,7 @@
             
             <!-- Controles do mapa -->
             <div class="map-controls">
-                <button class="map-control-btn" id="zoom-to-fit" title="Ajustar zoom para ver todos os pontos">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M.172 15.828a.5.5 0 0 0 .707 0l4.096-4.096V14.5a.5.5 0 1 0 1 0v-3.975a.5.5 0 0 0-.5-.5H1.5a.5.5 0 0 0 0 1h2.768L.172 15.121a.5.5 0 0 0 0 .707zM15.828.172a.5.5 0 0 0-.707 0l-4.096 4.096V1.5a.5.5 0 1 0-1 0v3.975a.5.5 0 0 0 .5.5H14.5a.5.5 0 0 0 0-1h-2.768L15.828.879a.5.5 0 0 0 0-.707z"/>
-                    </svg>
-                </button>
+<!-- Botão de ajustar zoom removido conforme solicitado -->
                 <button class="map-control-btn" id="toggle-poi" title="Mostrar/ocultar pontos de interesse">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
@@ -2338,7 +2334,7 @@
         
         legendDiv.appendChild(scrollContainer);
         
-        // Posicionar a legenda conforme solicitado
+        // Posicionar a legenda do mesmo lado do botão de tela cheia (canto superior direito)
         legendDiv.style.backgroundColor = 'white';
         legendDiv.style.padding = '10px';
         legendDiv.style.borderRadius = '4px';
@@ -2348,8 +2344,9 @@
         legendDiv.style.margin = '10px';
         legendDiv.style.position = 'absolute';
         legendDiv.style.zIndex = '1000';
-        legendDiv.style.left = '10px';
-        legendDiv.style.top = '120px'; // Acima dos controles da câmera
+        legendDiv.style.right = '10px'; // Lado direito, onde está o botão de tela cheia
+        legendDiv.style.top = '50%'; // Centralizado verticalmente
+        legendDiv.style.transform = 'translateY(-50%)'; // Centralização precisa
         legendDiv.style.maxHeight = '80%';
         
         // Adicionar a legenda ao DOM
@@ -2667,7 +2664,7 @@
         document.getElementById('end-date').addEventListener('change', filterEventsByDate);
         
         // Botões de controle do mapa
-        document.getElementById('zoom-to-fit').addEventListener('click', zoomToFitAllMarkers);
+        // Event listener para botão de zoom removido
         document.getElementById('toggle-poi').addEventListener('click', togglePointsOfInterest);
         
         // Botão para mostrar a legenda unificada
