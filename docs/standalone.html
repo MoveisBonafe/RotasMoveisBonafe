@@ -2803,15 +2803,25 @@
     function initEventListeners() {
         // Toggle para mostrar/esconder a sidebar removido
         
-        // Botão para alternar a visibilidade dos contadores de região
-        document.getElementById('counter-toggle').addEventListener('click', function() {
-            toggleCountMarkers();
-        });
-        
-        // Botão para alternar a legenda de regiões
-        document.getElementById('legend-toggle').addEventListener('click', function() {
-            createRegionLegend();
-        });
+        // Adicionamos os event listeners para os botões somente depois que o mapa estiver carregado
+        // Defer a adição dos listeners para garantir que os elementos existam
+        setTimeout(function() {
+            // Botão para alternar a visibilidade dos contadores de região
+            const counterToggleBtn = document.getElementById('counter-toggle');
+            if (counterToggleBtn) {
+                counterToggleBtn.addEventListener('click', function() {
+                    toggleCountMarkers();
+                });
+            }
+            
+            // Botão para alternar a legenda de regiões
+            const legendToggleBtn = document.getElementById('legend-toggle');
+            if (legendToggleBtn) {
+                legendToggleBtn.addEventListener('click', function() {
+                    createRegionLegend();
+                });
+            }
+        }, 1000); // Esperamos 1 segundo para garantir que a página esteja carregada
         
         // Botão para fechar a sidebar em telas pequenas
         document.querySelector('.sidebar-close').addEventListener('click', function() {
