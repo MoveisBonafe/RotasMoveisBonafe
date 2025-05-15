@@ -654,35 +654,68 @@
         /* Estilos para legenda de regiões */
         .region-legend {
             position: absolute;
-            bottom: 80px;
-            right: 10px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px;
+            top: 50%;
+            left: 80px;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px;
             border-radius: 8px;
-            border: 1px solid #ccc;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
             max-width: 220px;
+            max-height: 80vh;
+            overflow-y: auto;
             z-index: 100;
             font-size: 12px;
+            transition: all 0.3s ease;
         }
         
         .region-legend h5 {
-            margin: 0 0 8px 0;
+            margin: 0 0 10px 0;
             font-size: 14px;
             font-weight: 600;
             border-bottom: 1px solid #eee;
             padding-bottom: 5px;
+            color: #333;
+        }
+        
+        .region-legend .close-button {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: transparent;
+            border: none;
+            font-size: 18px;
+            line-height: 1;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            color: #777;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        
+        .region-legend .close-button:hover {
+            opacity: 1;
+            color: #444;
         }
         
         .region-item {
             display: flex;
             align-items: center;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            padding: 3px 2px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .region-item:hover {
+            background-color: rgba(0,0,0,0.05);
         }
         
         .color-box {
-            width: 15px;
-            height: 15px;
+            width: 14px;
+            height: 14px;
             border-radius: 3px;
             margin-right: 8px;
             border: 1px solid rgba(0,0,0,0.1);
@@ -690,9 +723,33 @@
         
         .region-name {
             font-size: 11px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        }
+        
+        /* Estilos para botões de legenda */
+        .legend-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            cursor: pointer;
+            margin-bottom: 5px;
+            transition: all 0.2s ease;
+        }
+        
+        .legend-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+        }
+        
+        .legend-btn svg {
+            width: 16px;
+            height: 16px;
+        }
         }
         
         /* Estilo para lista de eventos */
