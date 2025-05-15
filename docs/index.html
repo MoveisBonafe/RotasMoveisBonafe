@@ -3029,6 +3029,53 @@
         }
     }
     
+    // Inicializar as abas inferiores
+    function initBottomTabs() {
+        console.log("Inicializando abas inferiores...");
+        
+        // Selecionar todos os botões de aba
+        const tabButtons = document.querySelectorAll('.bottom-tab-btn');
+        
+        // Adicionar listeners de clique para cada botão
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                const tabContent = document.getElementById(tabId + '-content');
+                const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+                
+                // Verificar se a aba já está ativa
+                const isActive = this.classList.contains('active');
+                
+                // Remover classe ativa de todos os botões e conteúdos
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.bottom-tab-content').forEach(content => {
+                    content.style.display = 'none';
+                });
+                
+                // Se a aba clicada já estava ativa, apenas minimizamos
+                if (isActive && !bottomTabsContainer.classList.contains('minimized')) {
+                    toggleTabsExpansion(); // Minimizar as abas
+                    return;
+                }
+                
+                // Se as abas estavam minimizadas, expandi-las
+                if (bottomTabsContainer.classList.contains('minimized')) {
+                    toggleTabsExpansion(); // Expandir as abas
+                }
+                
+                // Ativar a aba clicada
+                this.classList.add('active');
+                if (tabContent) {
+                    tabContent.style.display = 'block';
+                }
+                
+                console.log("Aba ativada:", tabId);
+            });
+        });
+        
+        console.log("Abas inferiores inicializadas");
+    }
+    
     // Configura todos os event listeners
     function initEventListeners() {
         // Toggle para mostrar/esconder a sidebar removido
