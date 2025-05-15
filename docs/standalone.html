@@ -3566,7 +3566,14 @@
             'MG': CORES_MG
         };
         
-        const regionColor = regionColorMap[estado]?.[regiao] || "#808080";
+        // Tratamento especial para a região de Sorocaba
+        let regionColor;
+        if (estado === 'SP' && regiao === 'Sorocaba') {
+            regionColor = '#33A8FF'; // Azul claro para Sorocaba, garantindo consistência
+            console.log("Aplicando cor azul claro (#33A8FF) para contador de Sorocaba");
+        } else {
+            regionColor = regionColorMap[estado]?.[regiao] || "#808080";
+        }
         
         // Se já existe um marcador, removê-lo e criar um novo
         if (regionCounterMarkers[regionKey]) {
@@ -3740,7 +3747,36 @@
             markerColor = '#FF0000'; // Origem sempre vermelho
         } else {
             // Determinar região e cor com base no nome da cidade
-            const cidadeDaLocalizacao = extractCityFromAddress(location.address) || location.name;
+            // Para locais importados via arquivo, o nome pode conter a cidade no início (ex: "Ribeirao Branco-nome do local")
+            let cidadeDaLocalizacao;
+            
+            // Verificar se o nome do local começa com uma cidade conhecida (formato de importação de arquivo)
+            if (location.name) {
+                // Verificar especificamente para Ribeirão Branco e Taquarivaí
+                if (location.name.toLowerCase().startsWith("ribeirao branco") || 
+                    location.name.toLowerCase().includes("ribeirao branco-")) {
+                    cidadeDaLocalizacao = "Ribeirão Branco";
+                    console.log("Cidade detectada no nome do local:", cidadeDaLocalizacao);
+                } 
+                else if (location.name.toLowerCase().startsWith("taquarivai") || 
+                         location.name.toLowerCase().includes("taquarivai-")) {
+                    cidadeDaLocalizacao = "Taquarivaí";
+                    console.log("Cidade detectada no nome do local:", cidadeDaLocalizacao);
+                }
+                else if (location.name.toLowerCase().startsWith("buri") ||
+                         location.name.toLowerCase().includes("buri-")) {
+                    cidadeDaLocalizacao = "Buri";
+                    console.log("Cidade detectada no nome do local:", cidadeDaLocalizacao);
+                }
+                else {
+                    // Método padrão para outros locais
+                    cidadeDaLocalizacao = extractCityFromAddress(location.address) || location.name;
+                }
+            } else {
+                cidadeDaLocalizacao = extractCityFromAddress(location.address) || "";
+            }
+            
+            console.log(`Obtendo região para cidade: "${cidadeDaLocalizacao}"`);
             infoRegiao = getRegionColorForCity(cidadeDaLocalizacao);
             
             if (infoRegiao) {
