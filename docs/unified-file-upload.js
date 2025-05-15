@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             var reader = new FileReader();
             
-            reader.onload = function(e) {
+            reader.onload = function(e) { try {
                 try {
                     var content = e.target.result;
                     
@@ -162,13 +162,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         }, 300);
                     }
                 }, 4000);
-            };
+            } catch (error) { console.error("❌ Erro crítico ao processar arquivo:", error); statusElement.style.backgroundColor = "#f44336"; statusElement.style.color = "white"; statusElement.textContent = "Erro crítico: " + error.message; };
             
-            reader.onerror = function() {
+            reader.onerror = function(e) { console.error("❌ Erro na leitura do arquivo:", e);
                 statusElement.style.backgroundColor = '#f44336';
                 statusElement.style.color = 'white';
                 statusElement.textContent = 'Erro ao ler o arquivo';
-            };
+            } catch (error) { console.error("❌ Erro crítico ao processar arquivo:", error); statusElement.style.backgroundColor = "#f44336"; statusElement.style.color = "white"; statusElement.textContent = "Erro crítico: " + error.message; };
             
             reader.readAsText(file);
         }
@@ -177,6 +177,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // Nossa implementação segura de processamento de arquivo
     function processarArquivoSeguro(conteudo) {
         try {
+            // Verificar se parseCEPFile existe - isso é a função nativa do site
+            if (typeof window.parseCEPFile === 'function') {
+                try {
+                    // Usar a função nativa para processar o arquivo
+                    window.parseCEPFile(conteudo);
+                    console.log('✅ Arquivo processado usando parseCEPFile nativo');
+                    
+                    return {
+                        success: true,
+                        count: contarLocaisAdicionados()
+                    } catch (error) { console.error("❌ Erro crítico ao processar arquivo:", error); statusElement.style.backgroundColor = "#f44336"; statusElement.style.color = "white"; statusElement.textContent = "Erro crítico: " + error.message; };
+                } catch (e) {
+                    console.error('❌ Erro ao usar parseCEPFile nativo:', e);
+                    // Vamos continuar com nossa implementação própria
+                }
+            }
+            
+            // Implementação própria (fallback)
             // Separar o conteúdo em linhas
             const linhas = conteudo.split('\n');
             let locaisAdicionados = 0;
@@ -247,13 +265,21 @@ document.addEventListener('DOMContentLoaded', function() {
             return {
                 success: true,
                 count: locaisAdicionados
-            };
+            } catch (error) { console.error("❌ Erro crítico ao processar arquivo:", error); statusElement.style.backgroundColor = "#f44336"; statusElement.style.color = "white"; statusElement.textContent = "Erro crítico: " + error.message; };
         } catch (error) {
             console.error("❌ Erro ao processar arquivo:", error);
             return {
                 success: false,
                 error: error.message
-            };
+            } catch (error) { console.error("❌ Erro crítico ao processar arquivo:", error); statusElement.style.backgroundColor = "#f44336"; statusElement.style.color = "white"; statusElement.textContent = "Erro crítico: " + error.message; };
         }
+    }
+    
+    // Função auxiliar para contar quantos locais foram adicionados
+    function contarLocaisAdicionados() {
+        const locationsList = document.getElementById('locations-list');
+        if (!locationsList) return 0;
+        
+        return locationsList.querySelectorAll('.location-card').length;
     }
 });
