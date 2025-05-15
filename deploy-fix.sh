@@ -3,7 +3,7 @@
 # Script para fazer commit e push das alterações no layout
 # Execute este script para enviar as alterações para o GitHub
 
-echo "Iniciando processo de deploy para correção de layout..."
+echo "Iniciando processo de deploy para correção de layout e bugs..."
 
 # Criando um arquivo para timestamp para forçar o GitHub a reprocessar
 TIMESTAMP=$(date +%Y%m%d%H%M%S)
@@ -17,7 +17,7 @@ sed -i "s|<script src=\"layout-fix.js\"></script>|<script src=\"layout-fix.js?v=
 git add docs/index.html docs/layout-fix.js docs/cache-buster-$TIMESTAMP.js docs/cache-fragment.html
 
 # Faz o commit com uma mensagem descritiva
-git commit -m "Fix sidebar layout with automatic layout correction script (cache-busting: $TIMESTAMP)"
+git commit -m "Fix sidebar layout and file upload bug (cache-busting: $TIMESTAMP)"
 
 # Envia as alterações para o GitHub
 git push
@@ -25,3 +25,4 @@ git push
 echo "✅ Alterações enviadas para o GitHub!"
 echo "⏳ Aguarde alguns minutos para que o GitHub Pages seja atualizado."
 echo "🔄 A correção de layout será aplicada automaticamente quando a página carregar."
+echo "🐛 O bug de upload de arquivo também foi corrigido."
