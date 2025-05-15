@@ -6699,6 +6699,33 @@
                         cityOption.value = routeIndex.toString();
                         cityOption.text = `Rota Alternativa ${routeIndex} (Agrupamento por Cidade)`;
                         alternativeSidebar.appendChild(cityOption);
+                
+                        // Para cada rota alternativa extra, criar ou atualizar card correspondente
+                        if (routeIndex >= 3) {
+                            // Atualizamos o card para essa rota
+                            updateRouteCard(routeIndex, "Agrupamento por cidade");
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Erro ao gerar rota por cidade:", error);
+            }
+            
+            // 5. Nova rota alternativa - Distante à origem
+            try {
+                if (destinations.length >= 2) {
+                    console.log("Gerando rota alternativa: Distante à origem...");
+                    const farthestFirstRoute = solveFarthestFirstTSP(origin, destinations, includeOriginReturn);
+                    alternativeRoutes.push(farthestFirstRoute);
+                    const routeIndex = alternativeRoutes.length - 1;
+                    
+                    // Adicionar opção ao select da sidebar
+                    const alternativeSidebar = document.getElementById('alternative-routes-sidebar');
+                    if (alternativeSidebar) {
+                        const farthestOption = document.createElement('option');
+                        farthestOption.value = routeIndex.toString();
+                        farthestOption.text = `Rota Alternativa ${routeIndex} (Distante à origem)`;
+                        alternativeSidebar.appendChild(farthestOption);
                         
                         // Para cada rota alternativa extra, criar ou atualizar card correspondente
                         if (routeIndex >= 3) {
@@ -6843,6 +6870,115 @@
     }
     
     // Algoritmo TSP em padrão espiral (norte, leste, sul, oeste)
+    // Função para cálculo da rota "Distante à origem" (começa no ponto mais distante da origem)
+    function solveFarthestFirstTSP(origin, destinations, includeOriginReturn = false) {
+        console.log("Calculando rota 'Distante à origem'...");
+        
+        try {
+            // Clonar destinos para não modificar o original
+            const destsCopy = [...destinations];
+            
+            // Array para armazenar o caminho
+            const path = [origin.id];
+            
+            // Ponto atual começa na origem
+            let currentLocation = origin;
+            let totalDistance = 0;
+            
+            // Se não houver destinos, retornar só a origem
+            if (destsCopy.length === 0) {
+                return {
+                    path: path,
+                    distance: 0,
+                    estimatedTime: 0
+                };
+            }
+            
+            // Primeiro ponto: encontrar o mais distante da origem
+            let farthestIndex = -1;
+            let farthestDistance = -1;
+            
+            destsCopy.forEach((dest, index) => {
+                const dist = calculateDistance(
+                    origin.latitude, origin.longitude,
+                    dest.latitude, dest.longitude
+                );
+                
+                if (dist > farthestDistance) {
+                    farthestDistance = dist;
+                    farthestIndex = index;
+                }
+            });
+            
+            // Adicionar o ponto mais distante ao caminho
+            if (farthestIndex >= 0) {
+                const farthestPoint = destsCopy[farthestIndex];
+                path.push(farthestPoint.id);
+                totalDistance += farthestDistance;
+                currentLocation = farthestPoint;
+                
+                // Remover o ponto mais distante da lista de destinos
+                destsCopy.splice(farthestIndex, 1);
+                
+                // Agora, para cada ponto restante, encontrar o mais próximo do ponto atual
+                while (destsCopy.length > 0) {
+                    let nearestIndex = -1;
+                    let nearestDistance = Infinity;
+                    
+                    destsCopy.forEach((dest, index) => {
+                        const dist = calculateDistance(
+                            currentLocation.latitude, currentLocation.longitude,
+                            dest.latitude, dest.longitude
+                        );
+                        
+                        if (dist < nearestDistance) {
+                            nearestDistance = dist;
+                            nearestIndex = index;
+                        }
+                    });
+                    
+                    // Adicionar o ponto mais próximo ao caminho
+                    if (nearestIndex >= 0) {
+                        const nearestPoint = destsCopy[nearestIndex];
+                        path.push(nearestPoint.id);
+                        totalDistance += nearestDistance;
+                        currentLocation = nearestPoint;
+                        
+                        // Remover o ponto mais próximo da lista de destinos
+                        destsCopy.splice(nearestIndex, 1);
+                    }
+                }
+            }
+            
+            // Adicionar retorno à origem se solicitado
+            if (includeOriginReturn) {
+                path.push(origin.id);
+                totalDistance += calculateDistance(
+                    currentLocation.latitude, currentLocation.longitude,
+                    origin.latitude, origin.longitude
+                );
+            }
+            
+            // Estimar tempo (80 km/h em média - usando função centralizada)
+            const estimatedTime = calculateTravelTime(totalDistance);
+            
+            return {
+                path: path,
+                distance: totalDistance,
+                estimatedTime: estimatedTime,
+                name: "Distante à origem"
+            };
+        } catch (error) {
+            console.error("Erro ao resolver TSP com 'Distante à origem':", error);
+            return {
+                path: [origin.id],
+                distance: 0,
+                estimatedTime: 0,
+                name: "Distante à origem (erro)"
+            };
+        }
+    }
+
     function solveSpiralTSP(origin, destinations, includeOriginReturn) {
         try {
             // Agrupar destinos por quadrante em relação à origem
