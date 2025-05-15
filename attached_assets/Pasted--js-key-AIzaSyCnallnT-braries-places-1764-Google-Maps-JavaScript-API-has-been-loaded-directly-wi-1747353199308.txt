@@ -1,0 +1,56 @@
+
+﻿
+js?key=AIzaSyCnallnT…braries=places:1764 Google Maps JavaScript API has been loaded directly without loading=async. This can result in suboptimal performance. For best-practice loading patterns please see https://goo.gle/js-api-loading
+js?key=AIzaSyCnallnT…braries=places:1789 
+ GET https://maps.googleapis.com/maps/api/mapsjs/gen_204?csp_test=true net::ERR_BLOCKED_BY_CLIENT
+unified-file-upload.js:8 Inicializando uploader minimalista
+fix-duplicated-upload.js:10 Verificando elementos de upload...
+header-origin-sync.js:17 ✅ Campo de origem oculto criado e sincronizado com o cabeçalho
+cep-uploader.js:18 Inicializando uploader de CEP...
+RotasMoveisBonafe/:2174 DOM carregado - inicializando aplicação
+RotasMoveisBonafe/:5618 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:5619 Mostrando eventos para rota com IDs: 
+[1]
+RotasMoveisBonafe/:5620 Datas de filtro (string): undefined undefined
+RotasMoveisBonafe/:5644 Eventos disponíveis: 
+(15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+RotasMoveisBonafe/:5658 Localização encontrada para ID 1: 
+{id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:5674 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:5705 [ROTA] Cidades encontradas no percurso (1): Dois Córregos
+RotasMoveisBonafe/:5707 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: 
+['Dois Córregos']
+RotasMoveisBonafe/:5710 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:5711 Filtrando eventos para cidades: Dois Córregos
+RotasMoveisBonafe/:5712 Filtro de data: sem data inicial a sem data final
+RotasMoveisBonafe/:5716 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: undefined undefined
+RotasMoveisBonafe/:5738 [FILTRO] Usando data de início padrão: 2025-01-01
+RotasMoveisBonafe/:5743 [FILTRO] Usando data de fim padrão: 2025-12-31
+RotasMoveisBonafe/:5747 [DATA] Filtro FINAL: 2025-01-01 até 2025-12-31
+RotasMoveisBonafe/:5786 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:5792 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:5786 [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+RotasMoveisBonafe/:5843 [VERIFICAÇÃO DE DATA] 
+{evento: 'Aniversário da Cidade', eventStart: '03/02/2025', eventEnd: '03/02/2025', filterStart: '31/12/2024', filterEnd: '30/12/2025', …}
+RotasMoveisBonafe/:5857 [ACEITO] Evento 'Aniversário da Cidade' (03/02/2025) está dentro do período de filtro: 31/12/2024 a 30/12/2025
+RotasMoveisBonafe/:5880 [FINAL] Evento 'Aniversário da Cidade' em 'Dois Córregos' - INCLUÍDO NA LISTA FINAL
+RotasMoveisBonafe/:5760 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:5760 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:5760 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:5760 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:5760 [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:5760 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:5760 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:5760 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:5760 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:5760 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:5760 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:5760 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:5760 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+js?key=AIzaSyCnallnT…braries=places:1679 As of February 21st, 2024, google.maps.Marker is deprecated. Please use google.maps.marker.AdvancedMarkerElement instead. At this time, google.maps.Marker is not scheduled to be discontinued, but google.maps.marker.AdvancedMarkerElement is recommended over google.maps.Marker. While google.maps.Marker will continue to receive bug fixes for any major regressions, existing bugs in google.maps.Marker will not be addressed. At least 12 months notice will be given before support is discontinued. Please see https://developers.google.com/maps/deprecations for additional details and https://developers.google.com/maps/documentation/javascript/advanced-markers/migration for the migration guide.
+RotasMoveisBonafe/:5980 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:5981 Mostrando restrições de caminhões para rota com IDs: 
+[1]
+RotasMoveisBonafe/:5984 Timestamp: 2025-05-15T23:51:25.687Z
+RotasMoveisBonafe/:5990 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+﻿

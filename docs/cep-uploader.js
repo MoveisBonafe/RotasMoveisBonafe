@@ -17,6 +17,9 @@ function initCepUploader() {
   
   console.log('Inicializando uploader de CEP...');
   
+  // Remover todos os manipuladores de eventos existentes para uploads de arquivo
+  removeExistingHandlers();
+  
   // Tentar inicializar após um pequeno atraso para garantir
   // que todos os elementos DOM já foram criados
   setTimeout(setupUploader, 500);
@@ -24,6 +27,29 @@ function initCepUploader() {
   
   // Marcar como inicializado
   uploaderInitialized = true;
+}
+
+// Função para remover manipuladores existentes
+function removeExistingHandlers() {
+  // Encontrar e limpar qualquer input de arquivo existente
+  const fileInputs = document.querySelectorAll('input[type="file"]');
+  
+  fileInputs.forEach(input => {
+    // Criar uma cópia limpa do elemento
+    if (input && input.parentNode) {
+      const clone = input.cloneNode(true);
+      input.parentNode.replaceChild(clone, input);
+      console.log('Input de arquivo resetado:', clone.id);
+    }
+  });
+  
+  // Também prevenir execuções de outros scripts de upload conhecidos
+  window.uploadFixApplied = true; // Prevenir duplicated-upload.js
+  
+  // Se outras variáveis globais de controle existirem, desativá-las
+  if (typeof window.unifiedUploaderInitialized !== 'undefined') {
+    window.unifiedUploaderInitialized = true;
+  }
 }
 
 // Configurar o uploader
@@ -39,13 +65,17 @@ function setupUploader() {
   
   console.log('Configurando uploader de CEP');
   
-  // Prevenir problemas com manipuladores de eventos duplicados
-  // criando um novo elemento input limpo
-  const newInput = fileInput.cloneNode(true);
-  fileInput.parentNode.replaceChild(newInput, fileInput);
+  // Desconectar completamente o elemento antigo e criar um novo
+  const newInput = fileInput.cloneNode(false); // clone sem eventos
   
-  // Adicionar manipulador de evento principal
-  newInput.addEventListener('change', handleFileSelection);
+  // Substituir o elemento original pelo novo
+  if (fileInput.parentNode) {
+    fileInput.parentNode.replaceChild(newInput, fileInput);
+    console.log('Input de arquivo substituído por um novo elemento limpo');
+  }
+  
+  // Adicionar manipulador de evento principal - usando o novo padrão
+  newInput.onchange = handleFileSelection;
   
   // Adicionar suporte para arrastar e soltar
   uploadArea.addEventListener('dragover', function(e) {
@@ -66,8 +96,9 @@ function setupUploader() {
     uploadArea.classList.remove('dragover');
     
     if (e.dataTransfer.files.length) {
-      newInput.files = e.dataTransfer.files;
-      handleFileSelection.call(newInput);
+      // Usar diretamente o arquivo sem tentar definir a propriedade files
+      const file = e.dataTransfer.files[0];
+      processFile(file);
     }
   });
   
@@ -87,6 +118,16 @@ function handleFileSelection() {
   if (!this.files || !this.files.length) return;
   
   const file = this.files[0];
+  processFile(file);
+  
+  // Limpar o input após o processamento
+  this.value = '';
+}
+
+// Função centralizada para processar arquivo
+function processFile(file) {
+  if (!file) return;
+  
   console.log('Arquivo selecionado:', file.name);
   
   // Criar ou encontrar elemento de status
