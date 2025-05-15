@@ -210,12 +210,27 @@ function processCepFileContent(content, statusEl) {
 function findCoordinatesForCep(cep) {
   // Banco de dados de CEPs conhecido
   const knownCeps = {
+    // Interior SP
     "17300": { city: "Dois Córregos", lat: -22.3673, lng: -48.3823 },
     "17350": { city: "Jaú", lat: -22.2936, lng: -48.5592 },
     "17380": { city: "Brotas", lat: -22.2792, lng: -48.1250 },
+    "17900": { city: "Dracena", lat: -21.4843, lng: -51.5352 },
+    "18000": { city: "Sorocaba", lat: -23.5015, lng: -47.4526 },
+    "19000": { city: "Presidente Prudente", lat: -22.1208, lng: -51.3882 },
+    // Região de Ribeirão Preto
     "14000": { city: "Ribeirão Preto", lat: -21.1775, lng: -47.8103 },
+    "14400": { city: "Franca", lat: -20.5390, lng: -47.4013 },
+    // Região de Campinas
     "13000": { city: "Campinas", lat: -22.9071, lng: -47.0628 },
-    "01000": { city: "São Paulo", lat: -23.5505, lng: -46.6333 }
+    "13300": { city: "Itu", lat: -23.2636, lng: -47.2992 },
+    "13500": { city: "Rio Claro", lat: -22.4065, lng: -47.5613 },
+    "13600": { city: "Araras", lat: -22.3572, lng: -47.3839 },
+    // São José do Rio Preto
+    "15000": { city: "São José do Rio Preto", lat: -20.8113, lng: -49.3758 },
+    // Capital
+    "01000": { city: "São Paulo", lat: -23.5505, lng: -46.6333 },
+    "04000": { city: "São Paulo", lat: -23.6216, lng: -46.6388 },
+    "05000": { city: "São Paulo", lat: -23.5329, lng: -46.7108 }
   };
   
   // Verificar prefixo do CEP (primeiros 5 dígitos)
