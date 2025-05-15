@@ -1267,8 +1267,47 @@
 <body>
     <div class="app-container">
         <div class="main-content-area">
+            <!-- Aba superior para filtros e origem -->
+            <div class="top-tabs-container">
+                <div class="top-tabs-nav">
+                    <button class="top-tab-btn active" data-tab="top-filters">Filtros e Origem</button>
+                </div>
+                
+                <!-- Conteúdo da aba Filtros e Origem -->
+                <div class="top-tab-content active" id="top-filters-content">
+                    <div class="row">
+                        <!-- Coluna para filtro de data -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="date-range-label">Filtrar eventos por data:</label>
+                                <div class="date-fields" style="display: flex; align-items: center; gap: 10px;">
+                                    <div class="input-animation-container" style="flex: 1;">
+                                        <input type="date" id="start-date-top" class="form-control form-control-sm">
+                                        <div class="input-animation-effect"></div>
+                                    </div>
+                                    <span>até</span>
+                                    <div class="input-animation-container" style="flex: 1;">
+                                        <input type="date" id="end-date-top" class="form-control form-control-sm">
+                                        <div class="input-animation-effect"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Coluna para origem -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="date-range-label">Origem:</label>
+                                <div class="fixed-origin" style="padding: 6px 0;">
+                                    <span id="origin-location-top"><strong>Dois Córregos, SP</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Sidebar para controles e informações -->
-        <div class="sidebar" id="sidebar">
+            <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h2 class="m-0 app-title">
                     <span class="app-title-text">Otimizador de Rotas</span>
