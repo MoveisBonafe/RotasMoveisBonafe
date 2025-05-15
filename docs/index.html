@@ -3256,21 +3256,8 @@
         const file = event.target.files[0];
         if (!file) return;
         
-        // Limpar qualquer status anterior de upload
-        const fileUploadArea = document.getElementById('upload-area');
-        if (fileUploadArea) {
-            // Verificar se já existe um elemento de status e removê-lo
-            const existingStatus = document.querySelector('.file-upload-status');
-            if (existingStatus && existingStatus.parentNode) {
-                existingStatus.parentNode.removeChild(existingStatus);
-            }
-            
-            // Criar um novo elemento de status
-            const statusElement = document.createElement('div');
-            statusElement.className = 'file-upload-status';
-            statusElement.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processando arquivo...';
-            fileUploadArea.parentNode.appendChild(statusElement);
-        }
+        // Mostrar notificação em vez de status
+        showNotification("Processando arquivo...", "info");
         
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -3278,33 +3265,13 @@
             try {
                 parseCEPFile(content);
                 
-                // Atualizar status para sucesso
-                if (statusElement) {
-                    statusElement.className = 'file-upload-status success';
-                    statusElement.innerHTML = '<i class="fas fa-check-circle"></i> Arquivo processado com sucesso!';
-                    
-                    // Remover o status após alguns segundos
-                    setTimeout(() => {
-                        if (statusElement && statusElement.parentNode) {
-                            statusElement.parentNode.removeChild(statusElement);
-                        }
-                    }, 3000);
-                }
+                // Mostrar notificação de sucesso
+                showNotification("Arquivo processado com sucesso!", "success");
             } catch (error) {
                 console.error("Erro ao processar arquivo:", error);
                 
-                // Atualizar status para erro
-                if (statusElement) {
-                    statusElement.className = 'file-upload-status error';
-                    statusElement.innerHTML = '<i class="fas fa-exclamation-circle"></i> Erro ao processar arquivo!';
-                    
-                    // Remover o status após alguns segundos
-                    setTimeout(() => {
-                        if (statusElement && statusElement.parentNode) {
-                            statusElement.parentNode.removeChild(statusElement);
-                        }
-                    }, 3000);
-                }
+                // Mostrar notificação de erro
+                showNotification("Erro ao processar arquivo: " + error.message, "error");
             }
         };
         reader.readAsText(file);
