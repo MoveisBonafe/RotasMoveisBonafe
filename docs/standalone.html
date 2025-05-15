@@ -866,6 +866,14 @@
             flex-direction: column;
             gap: 5px;
         }
+        
+        /* Botão de zoom específico */
+        #zoom-to-fit {
+            position: absolute;
+            bottom: 70px;
+            left: 10px;
+            z-index: 1000;
+        }
         .map-control-btn {
             background: white;
             border: none;
@@ -2323,9 +2331,9 @@
         
         legendDiv.appendChild(scrollContainer);
         
-        // Posicionar a legenda manualmente no centro-direita do mapa
+        // Posicionar a legenda manualmente no centro-esquerda do mapa
         legendDiv.style.position = 'absolute';
-        legendDiv.style.right = '10px';
+        legendDiv.style.left = '10px';
         legendDiv.style.top = '50%';
         legendDiv.style.transform = 'translateY(-50%)';
         legendDiv.style.maxHeight = '80%';
