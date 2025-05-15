@@ -482,6 +482,81 @@
                 opacity: 1;
             }
         }
+        
+        /* Estilos para aba superior moderna e animada */
+        .top-bar {
+            background-color: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 12px 15px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            animation: slide-down 0.4s ease;
+            z-index: 10;
+        }
+        
+        @keyframes slide-down {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .top-bar .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .top-bar .filter-group label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+        
+        .top-bar .filter-group input[type="date"] {
+            border: 2px solid #ffc107;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 14px;
+            background-color: white;
+            color: #333;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .top-bar .filter-group input[type="date"]:focus {
+            border-color: #e6ac00;
+            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+            outline: none;
+        }
+        
+        .top-bar .origin-display {
+            background-color: #f8f8f8;
+            border: 2px solid #ffc107;
+            border-radius: 6px;
+            padding: 8px 15px;
+            font-weight: 600;
+            color: #333;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .top-bar .origin-display::before {
+            content: '📍';
+            font-size: 16px;
+        }
         /* Botão para fechar o sidebar em telas pequenas */
         .sidebar-close {
             display: none;
@@ -1321,21 +1396,7 @@
             <div id="locations-content">
                     <!-- O conteúdo de locais fica no sidebar -->
                 
-                    <!-- Filtro de eventos por data (movido para cima da origem) -->
-                    <div class="form-group mb-4">
-                        <label class="date-range-label">Filtrar eventos por data:</label>
-                        <div class="date-range-container">
-                            <input type="date" id="start-date">
-                            <input type="date" id="end-date">
-                        </div>
-                    </div>
-                    
-                    <!-- Origem fixa -->
-                    <div class="form-group mb-4">
-                        <label class="date-range-label">Origem:</label>
-                        <input type="text" id="origin" class="form-control" value="Dois Córregos, SP" readonly 
-                               style="background-color: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
-                    </div>
+                    <!-- Campos de data e origem foram movidos para a barra superior -->
                     
                     <!-- Campo de busca para adicionar novo local -->
                     <div class="form-group mb-4">
