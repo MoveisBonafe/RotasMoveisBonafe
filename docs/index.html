@@ -39,7 +39,7 @@
             box-shadow: 0 0 3px rgba(0, 0, 0, 0.5) !important;
         }
         
-        /* Estilos globais */
+        /* Estilos globais - Versão corrigida */
         html, body {
             height: 100%;
             margin: 0;
@@ -47,58 +47,63 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden; /* Impedir rolagem na página inteira */
         }
-        .app-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-            width: 100%;
-            position: relative; /* Importante para posicionamento absoluto das abas */
-        }
         
-        .main-content-area {
-            display: flex;
-            flex-direction: row;
+        /* Container principal com posicionamento absoluto */
+        .app-container {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 60px; /* Espaço para a barra inferior de botões */
-            overflow: hidden;
-        }
-        
-        .map-container {
-            position: absolute;
-            top: 0;
             right: 0;
             bottom: 0;
-            left: 380px; /* Alinhado com o fim da sidebar */
             overflow: hidden;
         }
         
-        #map {
-            position: absolute; 
+        /* Área principal de conteúdo */
+        .main-content-area {
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            right: 0;
+            bottom: 60px; /* Reserva espaço para a barra inferior */
+            overflow: hidden;
         }
         
+        /* Sidebar com altura corrigida */
         .sidebar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
             width: 380px;
-            background-color: #f8f9fa;
             padding: 20px;
+            background-color: #f8f9fa;
             overflow-y: auto;
             z-index: 10;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
+            scrollbar-width: thin; /* Para Firefox */
+            scrollbar-color: #adb5bd #f8f9fa; /* Para Firefox */
+            box-sizing: border-box; /* Incluir padding na largura total */
+        }
+        
+        /* Container do mapa ajustado para não sobrepor a sidebar */
+        .map-container {
+            position: absolute;
+            top: 0;
+            left: 380px; /* Começa exatamente onde termina a sidebar */
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+        }
+        
+        /* Mapa ocupa 100% do container */
+        #map {
             position: absolute;
             top: 0;
             left: 0;
-            bottom: 0;
-            scrollbar-width: thin; /* Para Firefox */
-            scrollbar-color: #adb5bd #f8f9fa; /* Para Firefox */
+            width: 100%;
+            height: 100%;
         }
         
         /* Garantir que o conteúdo da sidebar tenha rolagem adequada */
@@ -565,7 +570,7 @@
             display: block; /* Apenas mostrar quando tiver sucesso */
         }
         
-        /* Responsividade */
+        /* Responsividade para telas menores */
         @media (max-width: 768px) {
             .sidebar {
                 position: absolute;
@@ -573,17 +578,25 @@
                 top: 0;
                 bottom: 0;
                 z-index: 1000;
-                width: 100%;
+                width: 320px; /* Largura reduzida para telas menores */
                 max-width: 320px;
-                overflow-y: auto; /* Garantir rolagem quando necessário */
+                overflow-y: auto;
+                box-sizing: border-box;
             }
             
             .map-container {
-                left: 320px; /* Menor largura da sidebar em telas pequenas */
+                position: absolute;
+                left: 320px; /* Alinhado com a sidebar menor */
+                right: 0;
+                top: 0;
+                bottom: 0;
             }
             
             .bottom-tabs-container {
+                position: absolute;
                 left: 320px;
+                right: 0;
+                bottom: 0;
                 width: calc(100% - 320px);
             }
         }
@@ -1052,6 +1065,7 @@
         .bottom-tabs-container {
             width: calc(100% - 380px); /* Ajustado para não sobrepor a sidebar */
             margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
             animation: fadeIn 0.5s ease;
@@ -1059,9 +1073,9 @@
             border-top: 1px solid #ddd;
             overflow: auto; /* Alterado para auto para permitir rolagem */
             height: 60px; /* Altura padrão quando minimizada */
-            position: absolute; /* Alinhado com layout principal */
+            position: absolute; /* Posicionamento absoluto para controle preciso */
             bottom: 0;
-            left: 380px; /* Inicia à direita da sidebar */
+            left: 380px; /* Alinhado exatamente com a borda direita da sidebar */
             right: 0;
             z-index: 1000; /* Aumentado para ficar sobre todos os elementos */
             transition: height 0.3s ease-in-out;
@@ -2421,14 +2435,26 @@
         function resizeMap() {
             const mapContainer = document.querySelector('.map-container');
             const mapElement = document.getElementById('map');
+            const sidebar = document.querySelector('.sidebar');
             
             if (mapContainer && mapElement) {
                 console.log('Redimensionando mapa');
                 
-                // Não precisamos mais definir estilos aqui pois os estilos CSS
-                // já estão corretos e posicionados adequadamente
+                // Garantir que o CSS seja respeitado
+                if (sidebar) {
+                    const sidebarWidth = sidebar.offsetWidth;
+                    mapContainer.style.left = sidebarWidth + 'px';
+                    mapContainer.style.width = 'calc(100% - ' + sidebarWidth + 'px)';
+                    
+                    // Ajustar a barra inferior também
+                    const bottomTabs = document.querySelector('.bottom-tabs-container');
+                    if (bottomTabs) {
+                        bottomTabs.style.left = sidebarWidth + 'px';
+                        bottomTabs.style.width = 'calc(100% - ' + sidebarWidth + 'px)';
+                    }
+                }
                 
-                // Apenas forçar o redimensionamento do mapa
+                // Forçar o redimensionamento do mapa
                 if (typeof google !== 'undefined' && google.maps && map) {
                     google.maps.event.trigger(map, 'resize');
                 }
