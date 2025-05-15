@@ -3257,18 +3257,19 @@
         const normalizedCityName = cityName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         
         // Cores fixas para cada região de São Paulo (conforme legendas)
+        // Usar as mesmas cores da legenda para consistência
         const coresPorRegiao = {
-            'Araçatuba': '#FF5733',
-            'Araraquara': '#900C3F',
-            'Bauru': '#FF8D33',
-            'Campinas': '#C70039',
-            'Marília': '#900C3F',
-            'Presidente Prudente': '#C70039',
-            'Ribeirão Preto': '#581845',
-            'São José do Rio Preto': '#FFC300',
-            'São José dos Campos': '#FF5733',
-            'São Paulo': '#337DFF',
-            'Sorocaba': '#33A8FF'
+            'Araçatuba': '#FF5733',     // Laranja
+            'Araraquara': '#900C3F',    // Vinho
+            'Bauru': '#FF8D33',         // Laranja claro
+            'Campinas': '#C70039',      // Vermelho
+            'Marília': '#900C3F',       // Vinho
+            'Presidente Prudente': '#C70039', // Vermelho
+            'Ribeirão Preto': '#581845',     // Roxo escuro
+            'São José do Rio Preto': '#FFC300', // Amarelo
+            'São José dos Campos': '#FF5733',  // Laranja
+            'São Paulo': '#337DFF',     // Azul
+            'Sorocaba': '#33A8FF'       // Azul claro
         };
         
         // Cores fixas para regiões de Minas Gerais
@@ -3447,12 +3448,13 @@
                 fontWeight: 'bold'
             },
             icon: {
-                path: google.maps.SymbolPath.CIRCLE,
+                path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
                 fillColor: regionColor,
                 fillOpacity: 0.9,
                 strokeWeight: 1,
                 strokeColor: '#ffffff',
-                scale: 14
+                scale: 6,
+                rotation: 270  // Apontando para baixo como uma agulha
             },
             zIndex: 1000 // Para ficar acima dos outros marcadores
         });
@@ -3515,7 +3517,13 @@
         clearRegionCounters();
         
         // Percorrer todas as localizações atuais e contar por região
+        // EXCLUINDO o ponto de origem (location.isOrigin)
         locations.forEach(location => {
+            // Ignorar o ponto de origem no contador
+            if (location.isOrigin === true) {
+                return;
+            }
+            
             if (location.name && location.address) {
                 // Extrair nome da cidade do endereço
                 const cityName = extractCityName(location.address);
