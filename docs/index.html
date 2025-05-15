@@ -3034,14 +3034,18 @@
         
         // Sidebar sempre visível (botão de fechar removido)
         
-        // Upload de arquivo com suporte para drag and drop
+        // Upload de arquivo é gerenciado pelo unified-file-upload.js
+        // Código antigo desativado para evitar conflitos
+        /* CÓDIGO DESATIVADO 
         const fileUploadInput = document.getElementById('file-upload');
         const uploadArea = document.getElementById('upload-area');
         
         // Evento para quando o arquivo é selecionado pelo input
         fileUploadInput.addEventListener('change', handleFileUpload);
+        */
         
-        // Eventos de drag and drop
+        // Eventos de drag and drop - DESATIVADO - Gerenciado pelo unified-file-upload.js
+        /* CÓDIGO DESATIVADO
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             uploadArea.addEventListener(eventName, preventDefaults, false);
         });
@@ -3075,6 +3079,7 @@
                 handleFileUpload({target: fileUploadInput});
             }
         }, false);
+        */
         
         // Botão para otimizar rota
         const optimizeButton = document.getElementById('optimize-route');
