@@ -196,18 +196,24 @@ document.addEventListener('DOMContentLoaded', function() {
         window.calculateOptimizedRoute();
       }
     } else {
-      // Substituir alert por notificação inline mais suave
-      const notifyWarning = document.createElement('div');
-      notifyWarning.className = 'alert alert-warning mt-2';
-      notifyWarning.innerHTML = `Nenhum endereço válido encontrado no arquivo.`;
-      document.querySelector('.file-upload').appendChild(notifyWarning);
-      
-      // Remover a notificação após alguns segundos
-      setTimeout(() => {
-        if (notifyWarning && notifyWarning.parentNode) {
-          notifyWarning.parentNode.removeChild(notifyWarning);
-        }
-      }, 5000);
+      // Usar alert como fallback quando o elemento não existir
+      const fileUploadContainer = document.querySelector('.file-upload');
+      if (fileUploadContainer) {
+        const notifyWarning = document.createElement('div');
+        notifyWarning.className = 'alert alert-warning mt-2';
+        notifyWarning.innerHTML = `Nenhum endereço válido encontrado no arquivo.`;
+        fileUploadContainer.appendChild(notifyWarning);
+        
+        // Remover a notificação após alguns segundos
+        setTimeout(() => {
+          if (notifyWarning && notifyWarning.parentNode) {
+            notifyWarning.parentNode.removeChild(notifyWarning);
+          }
+        }, 5000);
+      } else {
+        // Fallback para alert se o elemento não existir
+        alert('Nenhum endereço válido encontrado no arquivo.');
+      }
     }
     
     // Limpar input
