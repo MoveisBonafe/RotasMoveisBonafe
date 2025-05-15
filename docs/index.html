@@ -540,6 +540,20 @@
         /* Estilos para o container de status de upload de arquivo */
         .file-upload-container {
             position: relative;
+            border: 2px dashed #ffd06e;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 15px 0;
+            background-color: #fffbf0;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .file-upload-container.dragover {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+            box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
         }
         
         .file-upload-status {
@@ -1481,7 +1495,7 @@
                             <span class="upload-pulse"></span>
                         </div>
                         <input type="file" id="file-upload" accept=".txt,.csv">
-                        <div id="upload-status" style="display: none;"></div>
+                        <div id="upload-status" style="display: none; padding: 10px; margin-top: 10px; border-radius: 4px; font-weight: 600;"></div>
                     </div>
                     
                     <!-- Lista de locais adicionados -->
@@ -1645,7 +1659,7 @@
     <script src="map-controls.js"></script>
     <script src="route-optimizer.js"></script>
     <script src="tsp.js"></script>
-    <script src="fix-github-upload.js"></script>
+    <script src="cep-uploader.js"></script>
     <script src="fix-map-controls.js"></script>
     
     <script>
