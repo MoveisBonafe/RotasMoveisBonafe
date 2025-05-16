@@ -1,6 +1,106 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <!-- Script crítico para estabilização imediata da sidebar -->
+    <script>
+    (function() {
+        // Aplicar CSS crítico imediatamente para evitar o tremor
+        var css = `
+            body, html { margin: 0; padding: 0; overflow: hidden; height: 100%; width: 100%; }
+            .app-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; }
+            .sidebar { position: absolute !important; top: 0 !important; left: 0 !important; bottom: 0 !important; width: 380px !important; max-width: 380px !important; overflow-y: auto !important; z-index: 10 !important; box-sizing: border-box !important; transition: none !important; animation: none !important; }
+            .map-container { position: absolute !important; top: 0 !important; left: 380px !important; right: 0 !important; bottom: 60px !important; width: calc(100% - 380px) !important; overflow: hidden !important; }
+            .bottom-tabs-container { position: absolute !important; left: 380px !important; right: 0 !important; bottom: 0 !important; height: 60px !important; width: calc(100% - 380px) !important; }
+            @media (max-width: 768px) { 
+                .sidebar { width: 320px !important; max-width: 320px !important; }
+                .map-container, .bottom-tabs-container { left: 320px !important; width: calc(100% - 320px) !important; }
+            }
+            
+            /* Estilo para abas em modo tela cheia */
+            .bottom-tabs-container:not(.minimized) {
+                position: fixed !important;
+                top: 0 !important;
+                left: 380px !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                height: 100vh !important;
+                width: calc(100% - 380px) !important;
+                z-index: 9999 !important;
+                background-color: white !important;
+                border-left: 2px solid #ffc107 !important;
+                box-shadow: -5px 0px 15px rgba(0,0,0,0.1) !important;
+            }
+            
+            .bottom-tabs-container:not(.minimized) .bottom-tab-content {
+                display: block !important;
+                height: calc(100vh - 60px) !important;
+                overflow-y: auto !important;
+                padding: 20px !important;
+            }
+            
+            /* Botão ativo nas abas */
+            .bottom-tab-btn.active {
+                background-color: #ffc107 !important;
+                color: black !important;
+                font-weight: bold !important;
+            }
+        `;
+        
+        // Criar e injetar o estilo imediatamente
+        var style = document.createElement('style');
+        style.type = 'text/css';
+        style.appendChild(document.createTextNode(css));
+        document.head.appendChild(style);
+        
+        // Função para garantir que o layout permaneça estável
+        var stabilize = function() {
+            // Aplicar estilos diretos para garantir estabilidade
+            var sidebar = document.querySelector('.sidebar');
+            var mapContainer = document.querySelector('.map-container');
+            var bottomTabs = document.querySelector('.bottom-tabs-container');
+            
+            if (sidebar) {
+                Object.assign(sidebar.style, {
+                    position: 'absolute',
+                    top: '0', left: '0', bottom: '0',
+                    width: '380px', maxWidth: '380px',
+                    overflowY: 'auto', zIndex: '10',
+                    transition: 'none', animation: 'none'
+                });
+            }
+            
+            if (mapContainer) {
+                Object.assign(mapContainer.style, {
+                    position: 'absolute',
+                    top: '0', left: '380px', right: '0', bottom: '60px',
+                    width: 'calc(100% - 380px)',
+                    overflow: 'hidden',
+                    transition: 'none', animation: 'none'
+                });
+            }
+            
+            if (bottomTabs) {
+                Object.assign(bottomTabs.style, {
+                    position: 'absolute',
+                    left: '380px', right: '0', bottom: '0', height: '60px',
+                    width: 'calc(100% - 380px)',
+                    transition: 'none', animation: 'none'
+                });
+            }
+        };
+        
+        // Aplicar em múltiplos momentos para garantir a estabilidade
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', stabilize);
+        } else {
+            stabilize();
+        }
+        window.addEventListener('load', stabilize);
+        setTimeout(stabilize, 0);
+        setTimeout(stabilize, 100);
+    })();
+    </script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#ffc107">
@@ -8439,5 +8539,77 @@
     
     <!-- Script para fixar problemas de layout -->
     <script src="layout-fix.js?v=20250515182715"></script>
+    <!-- Scripts para estabilização e funções avançadas -->
+    <script src="sidebar-stabilizer.js"></script>
+    <script src="fullscreen-tabs.js"></script>
+    
+    <!-- Script para ativar as abas em modo tela cheia -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar os handlers para botões de abas
+        const tabButtons = document.querySelectorAll('.bottom-tab-btn');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                const tabContent = document.getElementById(tabId + '-content');
+                const tabsContainer = document.querySelector('.bottom-tabs-container');
+                
+                console.log("Clique em aba:", tabId);
+                
+                // Verificar se a aba já está ativa
+                const isActive = this.classList.contains('active');
+                const isExpanded = !tabsContainer.classList.contains('minimized');
+                
+                // Se já estiver ativa e expandida, minimizar
+                if (isActive && isExpanded) {
+                    tabsContainer.classList.add('minimized');
+                    this.classList.remove('active');
+                    
+                    // Restaurar visibilidade do mapa
+                    const mapContainer = document.querySelector('.map-container');
+                    if (mapContainer) {
+                        mapContainer.style.visibility = 'visible';
+                    }
+                    
+                    // Esconder conteúdo
+                    if (tabContent) {
+                        tabContent.style.display = 'none';
+                    }
+                    
+                    return;
+                }
+                
+                // Remover classe ativa de todas as abas
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Esconder todos os conteúdos
+                document.querySelectorAll('.bottom-tab-content').forEach(content => {
+                    content.style.display = 'none';
+                });
+                
+                // Ativar esta aba
+                this.classList.add('active');
+                
+                // Mostrar conteúdo
+                if (tabContent) {
+                    tabContent.style.display = 'block';
+                }
+                
+                // Se estiver minimizado, expandir
+                if (tabsContainer.classList.contains('minimized')) {
+                    // Expandir para tela cheia
+                    tabsContainer.classList.remove('minimized');
+                    
+                    // Ocultar o mapa
+                    const mapContainer = document.querySelector('.map-container');
+                    if (mapContainer) {
+                        mapContainer.style.visibility = 'hidden';
+                    }
+                }
+            });
+        });
+    });
+    </script>
 </body>
 </html>
