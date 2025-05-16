@@ -10624,32 +10624,72 @@
             }
             
             // Garantir que temos path e pathIds válidos
-            if (!routeData.path || !Array.isArray(routeData.path) || !routeData.pathIds) {
-                console.error("Dados de rota inválidos:", routeData);
+            if (!routeData.path || !Array.isArray(routeData.path)) {
+                console.error("Dados de rota inválidos (path):", routeData);
                 return;
             }
             
-            // Extrair os pontos da rota em ordem
+            // Extrair os pontos da rota em ordem - IMPORTANTE USAR PATH PRIMEIRO
             const routePoints = [];
             
-            // Processar cada ponto da rota
-            for (let i = 0; i < routeData.pathIds.length; i++) {
-                const locationId = routeData.pathIds[i];
-                const location = locations.find(loc => String(loc.id) === String(locationId));
+            // Verificar se path contém objetos de localização completos
+            if (routeData.path[0] && typeof routeData.path[0] === 'object' && 
+               (routeData.path[0].latitude !== undefined || routeData.path[0].lat !== undefined)) {
                 
-                if (!location) {
-                    console.warn(`Local não encontrado para ID: ${locationId}`);
-                    continue;
+                console.log("Usando objetos de localização do path para desenhar a rota");
+                
+                // Processar cada ponto da rota diretamente do path (mais preciso para reordenação)
+                for (let i = 0; i < routeData.path.length; i++) {
+                    const location = routeData.path[i];
+                    
+                    if (!location) {
+                        console.warn(`Local inválido no índice ${i}`);
+                        continue;
+                    }
+                    
+                    // Extrair coordenadas com fallbacks
+                    const lat = parseFloat(location.latitude || location.lat);
+                    const lng = parseFloat(location.longitude || location.lng);
+                    
+                    if (isNaN(lat) || isNaN(lng)) {
+                        console.warn(`Coordenadas inválidas para local: ${location.name || 'Sem nome'}`);
+                        continue;
+                    }
+                    
+                    // Adicionar o ponto à rota
+                    routePoints.push({
+                        location: new google.maps.LatLng(lat, lng),
+                        stopover: true
+                    });
+                    
+                    console.log(`Adicionado ponto à rota: ${location.name || 'ID:'+location.id} (${lat}, ${lng})`);
                 }
+            }
+            // Fallback para pathIds se não tivermos objetos completos
+            else if (routeData.pathIds && Array.isArray(routeData.pathIds)) {
+                console.log("Usando pathIds como fallback para desenhar a rota");
                 
-                // Adicionar o ponto à rota
-                routePoints.push({
-                    location: new google.maps.LatLng(
-                        parseFloat(location.latitude || location.lat),
-                        parseFloat(location.longitude || location.lng)
-                    ),
-                    stopover: true
-                });
+                // Processar cada ponto da rota por ID
+                for (let i = 0; i < routeData.pathIds.length; i++) {
+                    const locationId = routeData.pathIds[i];
+                    const location = locations.find(loc => String(loc.id) === String(locationId));
+                    
+                    if (!location) {
+                        console.warn(`Local não encontrado para ID: ${locationId}`);
+                        continue;
+                    }
+                    
+                    // Adicionar o ponto à rota
+                    routePoints.push({
+                        location: new google.maps.LatLng(
+                            parseFloat(location.latitude || location.lat),
+                            parseFloat(location.longitude || location.lng)
+                        ),
+                        stopover: true
+                    });
+                    
+                    console.log(`Adicionado ponto à rota por ID: ${location.name} (ID: ${locationId})`);
+                }
             }
             
             // Verificar se temos pontos suficientes
