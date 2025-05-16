@@ -10063,7 +10063,17 @@
         const viewCurrentRouteBtn = document.getElementById('view-current-route');
         if (viewCurrentRouteBtn) {
             viewCurrentRouteBtn.addEventListener('click', function() {
-                showCurrentRoute();
+                // Mostrar notificação de carregamento
+                showNotification("Consultando Google Maps para cálculos precisos...", "info");
+                
+                // Mostrar indicador de carregamento
+                showLoadingSpinner();
+                
+                // Definir que a rota deve ser calculada usando APENAS o Google Maps API
+                window.forceGoogleMapsCalculation = true;
+                
+                // Chamar a função de visualização com parâmetro para forçar uso da API
+                showCurrentRoute(true); // true = força uso da API do Google Maps
             });
         }
         
