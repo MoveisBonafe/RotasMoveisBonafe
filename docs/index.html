@@ -3468,18 +3468,24 @@
         }
     }
     
-    // Inicializar as abas inferiores
+    // Inicializar as abas inferiores - VERSÃO GITHUB PAGES CORRIGIDA
     function initBottomTabs() {
-        console.log("Inicializando abas inferiores com modo FULLSCREEN...");
+        console.log("Inicializando abas inferiores com modo FULLSCREEN (versão corrigida GitHub Pages)");
+        
+        // Primeiro, vamos garantir que apenas uma aba esteja visível por vez
+        document.querySelectorAll('.bottom-tab-content').forEach(content => {
+            content.style.display = 'none';  // Inicialmente, todas estão ocultas
+            content.classList.remove('active');
+        });
         
         // Selecionar todos os botões de aba
         const tabButtons = document.querySelectorAll('.bottom-tab-btn');
         
-        // Adicionar listeners de clique para cada botão
+        // Adicionar listeners de clique para cada botão - versão simplificada e mais robusta
         tabButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const tabId = this.getAttribute('data-tab');
-                const tabContent = document.getElementById(tabId + '-content');
+                const targetTabContent = document.getElementById(tabId + '-content');
                 const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
                 
                 // Verificar se a aba já está ativa
@@ -3495,9 +3501,9 @@
                     this.classList.remove('active');
                     
                     // Esconder conteúdo
-                    if (tabContent) {
-                        tabContent.classList.remove('active');
-                        tabContent.style.display = 'none';
+                    if (targetTabContent) {
+                        targetTabContent.classList.remove('active');
+                        targetTabContent.style.display = 'none';
                     }
                     
                     // Minimizar as abas
@@ -3505,39 +3511,30 @@
                     return;
                 }
                 
-                // Remover classes ativas de todas as abas antes de ativar uma nova
+                // Remover classes ativas de todos os botões
                 tabButtons.forEach(btn => btn.classList.remove('active'));
                 
-                // Ocultar todos os conteúdos - com certeza
+                // Ocultar todos os conteúdos de aba - IMPLEMENTAÇÃO SIMPLIFICADA GITHUB PAGES
                 document.querySelectorAll('.bottom-tab-content').forEach(content => {
-                    content.classList.remove('active');
                     content.style.display = 'none';
+                    content.classList.remove('active');
                 });
                 
-                // Ativar a aba clicada
+                // Ativar apenas o botão clicado
                 this.classList.add('active');
                 
-                // Mostrar APENAS o conteúdo correspondente
-                if (tabContent) {
-                    // Certifica-se que todos os outros estão ocultos
-                    document.querySelectorAll('.bottom-tab-content').forEach(content => {
-                        if (content.id !== tabContent.id) {
-                            content.style.display = 'none';
-                            content.classList.remove('active');
-                            content.style.zIndex = '0';
-                        }
-                    });
+                // SOLUÇÃO DIRETA: mostrar apenas o conteúdo específico da aba selecionada
+                if (targetTabContent) {
+                    // Mostrar especificamente esta aba
+                    targetTabContent.style.display = 'block';
+                    targetTabContent.classList.add('active');
                     
-                    // Agora mostra o conteúdo da aba selecionada
-                    tabContent.classList.add('active');
-                    tabContent.style.display = 'block';
-                    tabContent.style.zIndex = '5';
-                    
-                    // Garantir que o container seja visível para a altura máxima
-                    tabContent.style.height = 'auto';
-                    tabContent.style.minHeight = 'calc(100vh - 140px)';
-                    tabContent.style.overflow = 'auto';
-                    tabContent.style.padding = '20px';
+                    // Estilizar adequadamente
+                    targetTabContent.style.height = 'auto';
+                    targetTabContent.style.minHeight = 'calc(100vh - 140px)';
+                    targetTabContent.style.overflow = 'auto';
+                    targetTabContent.style.padding = '20px';
+                    targetTabContent.style.background = 'white';
                 }
                 
                 // Se as abas estavam minimizadas, expandir
