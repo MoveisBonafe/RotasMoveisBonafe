@@ -8988,18 +8988,36 @@
             // Pontos adicionados na ordem original (excluindo a origem)
             const waypoints = locations.filter(loc => !loc.isOrigin);
             
-            // Verificar coordenadas válidas
-            const allPoints = [origin, ...waypoints];
-            if (allPoints.some(loc => !loc.lat || !loc.lng)) {
-                throw new Error("Alguns pontos possuem coordenadas inválidas");
+            // Verificar e filtrar pontos com coordenadas inválidas
+            const allPoints = [origin];
+            
+            // Filtrar apenas pontos com coordenadas válidas para a rota
+            const validWaypoints = waypoints.filter(loc => {
+                const hasValidCoords = loc && loc.lat && loc.lng && 
+                                     !isNaN(loc.lat) && !isNaN(loc.lng);
+                if (!hasValidCoords) {
+                    console.warn("Ponto ignorado por ter coordenadas inválidas:", loc);
+                }
+                return hasValidCoords;
+            });
+            
+            // Adicionar apenas os waypoints válidos
+            allPoints.push(...validWaypoints);
+            
+            // Verificar se temos pontos suficientes para uma rota
+            if (allPoints.length < 2) {
+                throw new Error("Não há pontos suficientes com coordenadas válidas para criar uma rota");
             }
             
-            // Montar pontos na ordem: origem → pontos adicionados → origem
+            console.log("Pontos válidos para rota:", allPoints.length);
+            
+            // Montar pontos na ordem: origem → pontos adicionados válidos → origem
             const routePoints = [
                 { location: new google.maps.LatLng(origin.lat, origin.lng) }
             ];
             
-            waypoints.forEach(wp => {
+            // Usar apenas os waypoints com coordenadas válidas
+            validWaypoints.forEach(wp => {
                 routePoints.push({
                     location: new google.maps.LatLng(wp.lat, wp.lng)
                 });
@@ -9137,41 +9155,60 @@
         };
         
         directionsService.route(request, (result, status) => {
+            // Tratar diferentes códigos de status do Google DirectionsService
             if (status === google.maps.DirectionsStatus.OK) {
-                // Se for o primeiro segmento ou não tivermos um resultado composto ainda
-                if (segmentIndex === 0 || !window.compositeRouteResult) {
-                    window.compositeRouteResult = result;
-                    window.currentRouteRenderer.setDirections(result);
-                } else {
-                    // Para segmentos adicionais, concatenar as rotas
-                    const route = result.routes[0];
-                    const legs = route.legs;
-                    
-                    // Adicionar legs ao resultado existente
-                    window.compositeRouteResult.routes[0].legs = 
-                        window.compositeRouteResult.routes[0].legs.concat(legs);
-                    
-                    // Recalcular distância e duração totais
-                    window.compositeRouteResult.routes[0].distance = {
-                        text: totalDistanceKm.toFixed(1) + ' km',
-                        value: totalDistanceKm * 1000 // Em metros
-                    };
-                    
-                    window.compositeRouteResult.routes[0].duration = {
-                        text: formatTravelTime(calculateTravelTime(totalDistanceKm)),
-                        value: calculateTravelTime(totalDistanceKm) * 60 // Em segundos
-                    };
-                    
-                    // Atualizar o renderer
-                    window.currentRouteRenderer.setDirections(window.compositeRouteResult);
+                try {
+                    // Se for o primeiro segmento ou não tivermos um resultado composto ainda
+                    if (segmentIndex === 0 || !window.compositeRouteResult) {
+                        window.compositeRouteResult = result;
+                        window.currentRouteRenderer.setDirections(result);
+                    } else {
+                        // Para segmentos adicionais, concatenar as rotas
+                        const route = result.routes[0];
+                        const legs = route.legs;
+                        
+                        // Adicionar legs ao resultado existente
+                        window.compositeRouteResult.routes[0].legs = 
+                            window.compositeRouteResult.routes[0].legs.concat(legs);
+                        
+                        // Recalcular distância e duração totais
+                        window.compositeRouteResult.routes[0].distance = {
+                            text: totalDistanceKm.toFixed(1) + ' km',
+                            value: totalDistanceKm * 1000 // Em metros
+                        };
+                        
+                        window.compositeRouteResult.routes[0].duration = {
+                            text: formatTravelTime(calculateTravelTime(totalDistanceKm)),
+                            value: calculateTravelTime(totalDistanceKm) * 60 // Em segundos
+                        };
+                        
+                        // Atualizar o renderer
+                        window.currentRouteRenderer.setDirections(window.compositeRouteResult);
+                    }
+                } catch (e) {
+                    console.error("Erro ao processar resultado da rota:", e);
+                    // Não interromper, continuar com próximo segmento
                 }
                 
                 // Seguir para o próximo segmento
                 processRouteSegments(segmentIndex + 1, allSegments, totalDistanceKm);
-            } else {
+            } 
+            else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
+                console.warn(`Segmento ${segmentIndex}: Não foi possível encontrar rota entre os pontos.`);
+                // Se não encontrou rota para este segmento, tenta o próximo
+                processRouteSegments(segmentIndex + 1, allSegments, totalDistanceKm);
+            }
+            else if (status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT) {
+                // Aguardar um pouco e tentar novamente (pode haver limite de requisições)
+                console.warn("Limite de consultas excedido, aguardando...");
+                setTimeout(() => {
+                    drawRouteSegment(origin, destination, waypoints, segmentIndex, allSegments, totalDistanceKm);
+                }, 1000);
+            }
+            else {
                 console.error("Erro ao desenhar segmento de rota:", status);
-                
-                // Em caso de erro, ainda tentamos processar os segmentos restantes
+                // Registrar erro mas seguir para o próximo segmento
+                showNotification("Aviso: Alguns trechos da rota podem não estar visíveis", "warning");
                 processRouteSegments(segmentIndex + 1, allSegments, totalDistanceKm);
             }
         });
