@@ -1857,32 +1857,15 @@
                     }
                     </style>
                     
-                    <!-- Botões para visualizar e otimizar rota (Modernizados) - Com alinhamento aprimorado para GitHub Pages -->
-                    <div class="route-buttons-container" style="position: sticky; bottom: 0; padding: 15px 0; margin-top: 5px; background: linear-gradient(to bottom, rgba(248,249,250,0) 0%, rgba(248,249,250,1) 20%); z-index: 10;">
-                        <!-- Layout simplificado de botões na mesma linha exatamente alinhados -->
-                        <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 15px;">
-                            <!-- Botão para visualizar rota -->
-                            <button id="view-current-route" class="btn" style="flex: 0 0 48%; height: 42px; padding: 0 10px; font-weight: 600; 
-                            background: linear-gradient(135deg, #ffc107 0%, #ffab00 100%); border: none; color: #000; 
-                            border-radius: 12px; font-size: 14px; line-height: 42px;
-                            position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(255,171,0,0.3); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                            display: inline-flex; align-items: center; justify-content: center; text-transform: none;">
-                                <i class="bi bi-eye-fill" style="margin-right: 5px;"></i>Visualizar
-                                <span class="view-btn-shine" style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: all 0.6s ease; pointer-events: none;"></span>
-                            </button>
-                            
-                            <!-- Botão para otimizar rota -->
-                            <button id="optimize-route" class="btn" style="flex: 0 0 48%; height: 42px; padding: 0 10px; font-weight: 600; 
-                            background: linear-gradient(135deg, #ffc107 0%, #ffab00 100%); border: none; color: #000; 
-                            border-radius: 12px; font-size: 14px; line-height: 42px;
-                            position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(255,171,0,0.3); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                            display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; text-transform: none;">
-                                <span style="display: flex; align-items: center; justify-content: center; white-space: nowrap;">
-                                    <i class="bi bi-lightning-charge-fill" style="margin-right: 5px;"></i>Otimizar Rota
-                                </span>
-                                <span class="optimize-btn-shine" style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: all 0.6s ease; pointer-events: none;"></span>
-                            </button>
-                        </div>
+                    <!-- Botões com classes Bootstrap puras -->
+                    <div class="d-grid gap-2 mb-3">
+                        <button id="view-current-route" class="btn btn-warning">
+                            <i class="bi bi-eye-fill"></i> Visualizar
+                        </button>
+                        
+                        <button id="optimize-route" class="btn btn-warning">
+                            <i class="bi bi-lightning-charge-fill"></i> Otimizar Rota
+                        </button>
                     </div>
                     
                     <style>
