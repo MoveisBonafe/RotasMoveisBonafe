@@ -1,10 +1,7 @@
 /**
- * Estilos modernos, animados e compactos APENAS PARA CAMPOS ESPECÍFICOS:
- * - Filtrar eventos por data
- * - Origem
- * - Adicionar local
- * - Importar CEPs
- * - Botão otimizar
+ * Estilos modernos, minimalistas e animados para a interface
+ * Focado nos campos principais: filtro de datas, origem, adicionar local,
+ * importar CEPs e botão de otimizar rota
  */
 
 /* Variáveis globais para cores e transições */
@@ -12,7 +9,6 @@
   --primary-color: #ffc107;
   --primary-dark: #ffa000;
   --primary-light: #fff8e1;
-  --primary-ultra-light: #fffcf2;
   --secondary-color: #333333;
   --accent-color: #f44336;
   --text-color: #424242;
@@ -21,132 +17,168 @@
   --border-radius: 8px;
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s ease;
+  --transition-slow: 0.5s ease;
 }
 
-/* ==== FILTRO DE EVENTOS POR DATA ==== */
-/* Container compacto para os campos de data */
-.sidebar label:contains("Filtrar eventos por data") {
-  font-size: 0.8rem;
+/* Container da sidebar */
+.sidebar {
+  background-color: var(--bg-light);
+  padding: 1.5rem 1.2rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Título da aplicação - animações e estilo moderno */
+.app-title {
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.app-title-text {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--secondary-color);
+  margin-bottom: 0.1rem;
+  display: block;
+  letter-spacing: -0.5px;
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.app-title-highlight {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--primary-color);
+  display: block;
+  position: relative;
+  letter-spacing: -0.5px;
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.app-title-highlight::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background-color: var(--primary-color);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s ease;
+}
+
+.sidebar:hover .app-title-highlight::after {
+  transform: scaleX(1);
+}
+
+/* Estilo moderno para o grupo de campos */
+.form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+  opacity: 0.95;
+  transform: translateY(0);
+  transition: opacity var(--transition-normal), transform var(--transition-normal);
+}
+
+.form-group:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+/* Labels modernos */
+.form-group label {
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--secondary-color);
-  margin-bottom: 0.4rem;
-  padding-left: 2px;
+  margin-bottom: 0.5rem;
   display: block;
+  transition: color var(--transition-fast);
   letter-spacing: 0.02em;
 }
 
-.sidebar label:contains("Filtrar eventos por data") + div {
-  display: flex;
-  gap: 6px;
+.form-group:hover label {
+  color: var(--primary-dark);
 }
 
-/* Campos de data com visual compacto e moderno */
-input[type="date"] {
-  height: 38px;
-  border: 1px solid #e0e0e0;
+/* Campos de input com animações */
+.form-control, input[type="date"], input[type="text"] {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 2px solid transparent;
   border-radius: var(--border-radius);
-  padding: 0 0.5rem;
-  background-color: var(--bg-light);
+  background-color: var(--bg-off);
   color: var(--text-color);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   transition: all var(--transition-normal);
-  cursor: pointer;
-  flex: 1;
-}
-
-input[type="date"]:hover {
-  border-color: #ccc;
-  background-color: var(--primary-ultra-light);
-}
-
-input[type="date"]:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.2);
+  box-shadow: var(--shadow-sm);
   outline: none;
 }
 
-/* Ícone de calendário personalizado */
+.form-control:focus, input[type="date"]:focus, input[type="text"]:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25);
+  background-color: var(--bg-light);
+}
+
+/* Data picker container */
+.form-group:nth-child(1) div {
+  display: flex;
+  gap: 10px;
+}
+
+/* Campos de data */
+input[type="date"] {
+  flex: 1;
+  position: relative;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
 input[type="date"]::-webkit-calendar-picker-indicator {
   background-color: var(--primary-light);
-  padding: 4px;
-  border-radius: 4px;
+  padding: 5px;
+  border-radius: 3px;
   cursor: pointer;
-  transition: background-color 0.2s;
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator:hover {
-  background-color: var(--primary-color);
-}
-
-/* ==== CAMPO ORIGEM ==== */
-.sidebar label:contains("Origem") {
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding-left: 2px;
-  margin-bottom: 0.4rem;
-}
-
+/* Campo origem */
 #origin {
-  height: 38px;
   background-color: var(--primary-light);
-  border: 1px solid #e0e0e0;
-  border-left: 3px solid var(--primary-color);
-  border-radius: var(--border-radius);
-  padding: 0 0.75rem;
-  font-size: 0.85rem;
   font-weight: 500;
-  color: var(--secondary-color);
+  border-left: 3px solid var(--primary-color);
   cursor: not-allowed;
 }
 
-/* ==== ADICIONAR LOCAL ==== */
-.sidebar label:contains("Adicionar local") {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--secondary-color);
-  padding-left: 2px;
-  margin-bottom: 0.4rem;
-}
-
-/* Container para input + botão */
-.sidebar label:contains("Adicionar local") + div {
+/* Campo de entrada de endereço + botão */
+.form-group:nth-child(3) div {
   display: flex;
   align-items: center;
 }
 
 #location-input {
-  height: 38px;
   flex: 1;
-  border: 1px solid #e0e0e0;
-  border-right: none;
-  border-top-left-radius: var(--border-radius);
-  border-bottom-left-radius: var(--border-radius);
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  padding: 0 0.75rem;
-  font-size: 0.85rem;
-  transition: all var(--transition-normal);
-}
-
-#location-input:focus {
-  border-color: var(--primary-color);
-  box-shadow: -2px 0 0 2px rgba(255, 193, 7, 0.2);
-  outline: none;
 }
 
 #add-location {
-  height: 38px;
-  width: 38px;
+  height: 42px;
+  width: 42px;
   border: none;
   background-color: var(--primary-color);
   color: var(--secondary-color);
   border-top-right-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.3s;
+  font-size: 1rem;
+  transition: all var(--transition-normal);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -154,194 +186,221 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 
 #add-location:hover {
   background-color: var(--primary-dark);
-  transform: translateX(1px);
+  transform: translateX(2px);
 }
 
-/* ==== ÁREA DE UPLOAD ==== */
+/* Área de upload */
 .upload-area {
-  height: 80px; /* Mais compacto */
-  border: 1px dashed #ccc;
+  border: 2px dashed #ddd;
   border-radius: var(--border-radius);
-  padding: 12px;
-  margin: 15px 0;
+  padding: 1.5rem;
   text-align: center;
-  background-color: var(--bg-off);
+  margin: 1.5rem 0;
   cursor: pointer;
   transition: all var(--transition-normal);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  background-color: var(--bg-off);
   position: relative;
   overflow: hidden;
-}
-
-.upload-area::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
-  transform: translateX(-100%);
-  transition: transform 1.5s ease;
-}
-
-.upload-area:hover::before {
-  transform: translateX(100%);
 }
 
 .upload-area:hover {
   border-color: var(--primary-color);
-  background-color: var(--primary-ultra-light);
+  background-color: var(--primary-light);
+  transform: scale(1.01);
 }
 
 .upload-area i {
   color: var(--primary-color);
-  font-size: 1.5rem;
-  margin-bottom: 5px;
-  transition: transform 0.3s;
+  font-size: 2rem;
+  margin-bottom: 0.8rem;
+  transition: transform var(--transition-normal);
 }
 
 .upload-area:hover i {
-  transform: translateY(-2px) scale(1.1);
+  transform: translateY(-5px);
 }
 
 .upload-area div {
-  font-size: 0.85rem;
   font-weight: 500;
-  color: var(--secondary-color);
+  color: var(--text-color);
+  font-size: 0.95rem;
 }
 
-/* ==== BOTÃO OTIMIZAR ROTA ==== */
+/* Lista de locais */
+.sidebar h5 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--secondary-color);
+  margin-bottom: 0.7rem;
+  letter-spacing: 0.02em;
+}
+
+#locations-list {
+  border: 1px solid #eee;
+  border-radius: var(--border-radius);
+  padding: 0.8rem;
+  height: 200px !important;
+  overflow-y: auto;
+  background-color: var(--bg-off);
+  transition: all var(--transition-normal);
+}
+
+#locations-list:hover {
+  border-color: #ddd;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Botão otimizar rota */
 #optimize-route {
-  height: 44px;
+  margin-top: 1.5rem;
   width: 100%;
-  margin-top: 15px;
-  padding: 0 1rem;
+  padding: 0.8rem 1.2rem;
   background-color: var(--primary-color);
   color: var(--secondary-color);
   border: none;
   border-radius: var(--border-radius);
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
-  letter-spacing: 0.01em;
   cursor: pointer;
-  text-transform: uppercase;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-normal);
   position: relative;
   overflow: hidden;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
   box-shadow: var(--shadow-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-/* Criar efeito de onda pulsante */
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.05); opacity: 0.8; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-#optimize-route::after {
+#optimize-route::before {
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
+  left: -100%;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
-  opacity: 0;
-  transition: opacity 0.3s;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: 0.5s;
+  pointer-events: none;
 }
 
 #optimize-route:hover {
   background-color: var(--primary-dark);
-  transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
-#optimize-route:hover::after {
-  opacity: 1;
-  animation: pulse 1.5s infinite;
+#optimize-route:hover::before {
+  left: 100%;
 }
 
 #optimize-route:active {
   transform: translateY(0);
-  box-shadow: var(--shadow-sm);
 }
 
-/* Animações de entrada - APENAS para os elementos específicos */
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(-15px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes slideInLeft {
-  from { opacity: 0; transform: translateX(15px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
+/* Animações para todos os elementos quando a página carrega */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Aplicar animações específicas - mantendo compacto */
-.sidebar label:contains("Filtrar eventos por data"),
-.sidebar label:contains("Filtrar eventos por data") + div {
-  animation: slideInRight 0.6s forwards;
+.form-group, #locations-list, #optimize-route, .upload-area, .app-title {
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
 }
 
-.sidebar label:contains("Origem"),
-#origin {
-  animation: slideInLeft 0.6s 0.1s forwards;
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.2s; }
+.form-group:nth-child(3) { animation-delay: 0.3s; }
+.upload-area { animation-delay: 0.4s; }
+#locations-list { animation-delay: 0.5s; }
+#optimize-route { animation-delay: 0.6s; }
+
+/* Scrollbar personalizada para diversos elementos */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-.sidebar label:contains("Adicionar local"),
-.sidebar label:contains("Adicionar local") + div {
-  animation: slideInRight 0.6s 0.2s forwards;
+::-webkit-scrollbar-track {
+  background: var(--bg-off);
+  border-radius: 10px;
 }
 
-.upload-area {
-  animation: fadeInUp 0.6s 0.3s forwards;
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
 }
 
-#optimize-route {
-  animation: fadeInUp 0.6s 0.4s forwards;
+::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
 }
 
-/* Garantir que o estado inicial seja invisível */
-.sidebar label:contains("Filtrar eventos por data"),
-.sidebar label:contains("Filtrar eventos por data") + div,
-.sidebar label:contains("Origem"),
-#origin,
-.sidebar label:contains("Adicionar local"),
-.sidebar label:contains("Adicionar local") + div,
-.upload-area,
-#optimize-route {
-  opacity: 0; /* Inicialmente invisível */
+/* Estilo para itens na lista de locais */
+.location-item {
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.5rem;
+  border-radius: var(--border-radius);
+  background-color: var(--bg-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all var(--transition-normal);
+  border-left: 3px solid transparent;
 }
 
-/* Ajuste responsivo compacto */
+.location-item:hover {
+  background-color: var(--primary-light);
+  transform: translateX(2px);
+  border-left-color: var(--primary-color);
+}
+
+.location-item .location-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.location-item .remove-btn {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.location-item .remove-btn:hover {
+  color: var(--accent-color);
+  background-color: rgba(244, 67, 54, 0.1);
+}
+
+/* Responsividade */
 @media (max-width: 768px) {
-  input[type="date"],
-  #origin,
-  #location-input,
-  #add-location {
-    height: 36px;
+  .form-group label {
     font-size: 0.8rem;
   }
   
-  .upload-area {
-    height: 70px;
-    padding: 10px;
+  .form-control, input[type="date"], input[type="text"] {
+    padding: 0.6rem 0.9rem;
   }
   
   #optimize-route {
-    height: 40px;
-    font-size: 0.85rem;
+    padding: 0.7rem 1rem;
+    font-size: 0.95rem;
   }
 }
