@@ -2,7 +2,66 @@
  * Script para implementar abas em modo tela cheia
  * Este script substitui o comportamento padrão das abas inferiores
  * para permitir a exibição em tela cheia quando clicadas
+ * 
+ * VERSÃO 2.0 CORRIGIDA PARA GITHUB PAGES - SOLUÇÃO RADICAL
  */
+
+document.addEventListener('DOMContentLoaded', function() {
+  console.log("Inicializando script de abas fullscreen.js - VERSÃO CORRIGIDA");
+  
+  // Primeiro esconder TODOS os conteúdos
+  const allTabContents = document.querySelectorAll('.bottom-tab-content');
+  allTabContents.forEach(content => {
+    content.style.display = 'none';
+  });
+  
+  // Substituir handlers de clique para cada botão de aba
+  const tabButtons = document.querySelectorAll('.bottom-tab-btn');
+  
+  tabButtons.forEach(button => {
+    // Remover qualquer event listener anterior
+    const newButton = button.cloneNode(true);
+    button.parentNode.replaceChild(newButton, button);
+    
+    // Adicionar novo handler limpo
+    newButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const tabId = this.getAttribute('data-tab');
+      const tabContent = document.getElementById(tabId + '-content');
+      const tabsContainer = document.querySelector('.bottom-tabs-container');
+      
+      console.log(`Clique na aba: ${tabId}`);
+      
+      // Remover classe ativa de todos os botões
+      tabButtons.forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Esconder TODOS os conteúdos - abordagem direta
+      allTabContents.forEach(content => {
+        content.style.display = 'none';
+      });
+      
+      // Ativar este botão
+      this.classList.add('active');
+      
+      // Mostrar APENAS o conteúdo desta aba
+      if (tabContent) {
+        console.log(`Mostrando conteúdo da aba: ${tabId}`);
+        tabContent.style.display = 'block';
+        
+        // Expandir o container se necessário
+        if (tabsContainer.classList.contains('minimized')) {
+          tabsContainer.classList.remove('minimized');
+        }
+      }
+    });
+  });
+  
+  console.log("Sistema de abas completamente reinicializado");
+});
 (function() {
     // Aguardar o DOM estar pronto
     var ready = function(callback) {
