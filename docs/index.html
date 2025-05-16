@@ -1857,24 +1857,16 @@
                     }
                     </style>
                     
-                    <!-- Botões com formato idêntico -->
-                    <div style="margin-top: 20px; margin-bottom: 15px; display: flex; justify-content: space-between;">
-                        <!-- Botão Visualizar - mesmo formato que Otimizar Rota -->
-                        <button id="view-current-route" class="btn" style="background-color: #ffab00; color: #000; border-radius: 25px; padding: 10px 20px; border: none; font-weight: 500; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; width: 120px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16" style="margin-right: 8px;">
-                                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
-                                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
-                            </svg>
-                            Visualizar
-                        </button>
-                        
-                        <!-- Botão Otimizar Rota com texto correto -->
-                        <button id="optimize-route" class="btn" style="background-color: #ffab00; color: #000; border-radius: 25px; padding: 10px 20px; border: none; font-weight: 500; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; width: 180px; text-transform: none;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightning-charge-fill" viewBox="0 0 16 16" style="margin-right: 8px;">
-                                <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09z"/>
-                            </svg>
-                            Otimizar Rota
-                        </button>
+                    <!-- Botões estilizados exatamente como na imagem compartilhada -->
+                    <div style="margin-top: 10px; margin-bottom: 10px; padding: 0;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <button id="view-current-route" class="btn" style="background-color: #ffab00; color: #000; border-radius: 30px; padding: 12px 15px; border: none; font-weight: 600; font-size: 15px; text-align: center; flex: 1;">
+                                <i class="bi bi-eye"></i> Visualizar
+                            </button>
+                            <button id="optimize-route" class="btn" style="background-color: #ffab00; color: #000; border-radius: 25px; padding: 12px 15px; border: none; font-weight: 600; font-size: 15px; text-align: center; flex: 1.5;">
+                                <i class="bi bi-lightning"></i> Otimizar Rota
+                            </button>
+                        </div>
                     </div>
                     
                     <style>
