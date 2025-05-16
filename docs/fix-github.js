@@ -11,12 +11,32 @@ function processCepFile(content) {
 
   // Verificações de segurança antes de manipular o DOM
   try {
-    if (locationItem && locationItem.nodeType === 1) {
-      routeSummary.appendChild(locationItem);
-    } else {
-      console.warn('Item de localização inválido');
+    // Prevenir múltiplas seleções de arquivo
+    const fileInput = document.getElementById('file-upload');
+    if (fileInput) {
+        fileInput.onclick = function(e) {
+            // Se já estiver processando, impedir nova seleção
+            if (this.getAttribute('data-processing') === 'true') {
+                e.preventDefault();
+                return false;
+            }
+
+            // Marcar como processando
+            this.setAttribute('data-processing', 'true');
+
+            // Liberar após um tempo
+            setTimeout(() => {
+                this.removeAttribute('data-processing');
+            }, 2000);
+        };
     }
-  } catch (err) {
+
+    if (locationItem && locationItem.nodeType === 1) {
+        routeSummary.appendChild(locationItem);
+    } else {
+        console.warn('Item de localização inválido');
+    }
+} catch (err) {
     console.error('Erro ao adicionar item:', err);
-  }
+}
 }
