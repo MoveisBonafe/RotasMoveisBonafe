@@ -5155,66 +5155,18 @@
                 console.log("Confirme os valores no Google Maps:", mapsUrl);
                 
                 // ******************************************************
-                // VERIFICAÇÃO ESPECIAL DE CORRESPONDÊNCIA COM GOOGLE MAPS
+                // USANDO SEMPRE OS VALORES CALCULADOS PELA API
                 // ******************************************************
                 
-                // Vamos verificar rotas específicas que sabemos que devem ter valores determinados
-                const routeSignature = allLocations.map(loc => loc.name).join('|').toLowerCase();
+                // Não modificamos os valores calculados pelo Google Maps
+                // Isso garante que sempre usamos os valores exatos da API para qualquer rota
                 
-                // Verificar se é a rota de Dois Córregos → Capão Bonito com 6 pontos totais
-                if (allLocations.length === 6 && 
-                    routeSignature.includes('dois córregos') && 
-                    routeSignature.includes('capão bonito')) {
-                    
-                    // Sobrescrever com os valores exatos do Google Maps da captura de tela
-                    console.log("⚠️ Detectada rota específica Dois Córregos → Capão Bonito (6 pontos)");
-                    console.log("⚠️ Usando valores exatos do Google Maps: 477 km, 8h 6min");
-                    
-                    distanceKm = 477;
-                    hours = 8;
-                    minutes = 6;
-                }
+                // Log da rota que está sendo calculada
+                console.log("Rota com " + allLocations.length + " locais: " + 
+                           allLocations.map(loc => loc.name).join(" → "));
                 
-                // Verificar se é a rota de Dois Córregos → Taquarivaí com 8 pontos totais
-                else if (allLocations.length === 8 && 
-                         routeSignature.includes('dois córregos') && 
-                         routeSignature.includes('taquarivaí')) {
-                    
-                    console.log("⚠️ Detectada rota específica Dois Córregos → Taquarivaí (8 pontos)");
-                    console.log("⚠️ Usando valores exatos do Google Maps: 543 km, 9h 10min");
-                    
-                    distanceKm = 543;
-                    hours = 9;
-                    minutes = 10;
-                }
-                
-                // Verificar se é a rota de Dois Córregos → Itapeva com 9 pontos totais
-                else if (allLocations.length === 9 && 
-                         routeSignature.includes('dois córregos') && 
-                         routeSignature.includes('itapeva')) {
-                    
-                    console.log("⚠️ Detectada rota específica Dois Córregos → Itapeva (9 pontos)");
-                    console.log("⚠️ Usando valores exatos do Google Maps: 567 km, 9h 31min");
-                    
-                    distanceKm = 567;
-                    hours = 9;
-                    minutes = 31;
-                }
-                
-                // Verificar se é a rota de Dois Córregos → Itararé com 9 pontos totais
-                else if (allLocations.length === 9 && 
-                         routeSignature.includes('dois córregos') && 
-                         routeSignature.includes('itararé')) {
-                    
-                    console.log("⚠️ Detectada rota específica Dois Córregos → Itararé (9 pontos)");
-                    console.log("⚠️ Usando valores exatos do Google Maps: 623 km, 10h 18min");
-                    
-                    distanceKm = 623;
-                    hours = 10;
-                    minutes = 18;
-                }
-                
-                // Se não for uma rota específica conhecida, mantém os valores calculados
+                // Log do cálculo final da API
+                console.log("Usando valores calculados pela API do Google Maps:");
                 console.log("Valores finais da rota:", distanceKm, "km,", hours + "h", minutes + "min");
                 
                 // Criar a rota final com os valores (potencialmente ajustados para corresponder ao Google Maps)
