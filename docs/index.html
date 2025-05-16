@@ -1329,19 +1329,24 @@
             overflow-y: auto;
         }
         
-        /* Ajuste para que o mapa ocupe todo o espaço disponível até a área das abas */
+        /* Ajuste para que o mapa ocupe todo o espaço disponível para o GitHub Pages */
         .map-container {
             position: fixed !important; /* Posicionamento fixo para cobrir toda a área */
             top: 0 !important;
             right: 0 !important;
-            bottom: 60px !important; /* Parar exatamente onde começam as abas inferiores */
+            bottom: 0 !important; /* Estender até o final da página */
             left: 380px !important; /* Começa onde termina a sidebar */
             width: calc(100% - 380px) !important; /* Largura ajustada para alinhar com a sidebar */
-            height: calc(100vh - 60px) !important; /* Altura total menos a altura das abas */
+            height: 100vh !important; /* Altura total para preencher todo o espaço */
             margin: 0 !important;
             padding: 0 !important;
             overflow: hidden !important;
             z-index: 5; /* Garantir que fique acima do corpo da página, mas abaixo da sidebar e abas */
+        }
+        
+        /* Corrigir posicionamento Z para garantir que as abas fiquem sobre o mapa */
+        .bottom-tabs-container {
+            z-index: 1001 !important; /* Garantir que fique acima do mapa */
         }
         
         /* Botão de controle para esconder/mostrar marcadores de contagem */
@@ -5313,7 +5318,7 @@
         // Restaurar o botão de otimizar
         const optimizeBtn = document.getElementById('optimize-route');
         if (optimizeBtn) {
-            optimizeBtn.innerHTML = 'Otimizar Rota';
+            optimizeBtn.innerHTML = '<i class="bi bi-lightning-charge-fill me-2"></i>OTIMIZAR';
             optimizeBtn.disabled = false;
         }
         
