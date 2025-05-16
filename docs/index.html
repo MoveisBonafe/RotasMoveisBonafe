@@ -5007,68 +5007,155 @@
                 });
             });
             
-            // Solução definitiva para obter exatamente os mesmos valores do Google Maps
-            console.log("Implementando obtenção de valores exatos do Google Maps...");
+            // SOLUÇÃO GLOBAL: Usar Google Maps Directions API para todas as rotas
+            console.log("Consultando Google Maps Directions API para cálculo exato da rota...");
             
             // Declarar gmapsRoute no escopo correto
             let gmapsRoute;
             
+            // Implementação para calcular a rota usando a API do Google Maps
             try {
-                // Identificar os locais da rota
-                const routePoints = [origin, ...destinations].map(loc => loc.name || loc.address || "");
-                console.log("Pontos da rota:", routePoints.join(" → "));
+                // Criar um array único com origem e todos os destinos
+                const allLocations = [origin, ...destinations];
                 
-                // ===== CAPTURA DE VALORES EXATOS DO GOOGLE MAPS =====
-                // Esta parte garante que os valores sejam idênticos ao Google Maps
+                // Log para verificar os pontos da rota
+                console.log("Calculando rota com pontos:", allLocations.map(l => l.name).join(" → "));
                 
-                // Detectar padrões de rotas comuns e usar os valores exatos do Google Maps para elas
-                // Esta é a única forma garantida de termos valores exatos iguais ao Google Maps na web
+                // Preparar a consulta ao Google Maps Directions API
+                const directionsService = new google.maps.DirectionsService();
                 
-                // Verificar se é uma das rotas conhecidas
-                const routeSignature = routePoints.join("|").toLowerCase();
-                let exactValues = null;
-                
-                // Em vez de tentar detectar rotas específicas por listas de cidades,
-                // vamos usar o número de cidades na rota para identificá-las.
-                // Esta abordagem é mais robusta e independe de alterações de nome/detalhes
-                
-                // Quantidade de destinos (excluindo origem)
-                const numDestinations = destinations.length;
-                
-                // Rota com 8 destinos (total 9 pontos incluindo origem): Dois Córregos → ... → Itararé
-                if (numDestinations === 8 && 
-                    routeSignature.includes("dois córregos") && 
-                    routeSignature.includes("itararé")) {
-                    // Valores exatos do Google Maps para a rota com 9 pontos terminando em Itararé
-                    exactValues = { distance: 623, hours: 10, minutes: 18 };
-                    console.log("Detectada rota com 9 pontos (Itararé), usando valores exatos:", exactValues);
+                // Criar um array de waypoints para todos os destinos, exceto o último
+                const waypoints = [];
+                for (let i = 1; i < allLocations.length - 1; i++) {
+                    const loc = allLocations[i];
+                    
+                    // Priorizar nome/endereço para localização
+                    let waypointLocation;
+                    if (loc.address && loc.address.trim()) {
+                        waypointLocation = loc.address;
+                    } else if (loc.name) {
+                        waypointLocation = `${loc.name}, Brasil`;
+                    } else {
+                        waypointLocation = new google.maps.LatLng(
+                            parseFloat(loc.latitude || loc.lat),
+                            parseFloat(loc.longitude || loc.lng)
+                        );
+                    }
+                    
+                    waypoints.push({
+                        location: waypointLocation,
+                        stopover: true
+                    });
                 }
-                // Rota com 8 destinos (total 9 pontos incluindo origem): Dois Córregos → ... → Itapeva
-                else if (numDestinations === 8 && 
-                        routeSignature.includes("dois córregos") && 
-                        routeSignature.includes("itapeva")) {
-                    // Valores exatos do Google Maps para a rota com 9 pontos terminando em Itapeva
-                    exactValues = { distance: 567, hours: 9, minutes: 31 };
-                    console.log("Detectada rota com 9 pontos (Itapeva), usando valores exatos:", exactValues);
+                
+                // Determinar origem e destino final
+                const originLoc = allLocations[0];
+                const destinationLoc = allLocations[allLocations.length - 1];
+                
+                // Priorizar nome/endereço para origem e destino
+                let originLocation, destinationLocation;
+                
+                if (originLoc.address && originLoc.address.trim()) {
+                    originLocation = originLoc.address;
+                } else if (originLoc.name) {
+                    originLocation = `${originLoc.name}, Brasil`;
+                } else {
+                    originLocation = new google.maps.LatLng(
+                        parseFloat(originLoc.latitude || originLoc.lat),
+                        parseFloat(originLoc.longitude || originLoc.lng)
+                    );
                 }
-                // Nova rota com 7 destinos (total 8 pontos incluindo origem): Dois Córregos → ... → Taquarivaí
-                else if (numDestinations === 7 && 
-                        routeSignature.includes("dois córregos") && 
-                        routeSignature.includes("taquarivaí")) {
-                    // Valores exatos do Google Maps baseado na última captura de tela fornecida
-                    exactValues = { distance: 543, hours: 9, minutes: 10 };
-                    console.log("Detectada rota com 8 pontos (Taquarivaí), usando valores exatos:", exactValues);
+                
+                if (destinationLoc.address && destinationLoc.address.trim()) {
+                    destinationLocation = destinationLoc.address;
+                } else if (destinationLoc.name) {
+                    destinationLocation = `${destinationLoc.name}, Brasil`;
+                } else {
+                    destinationLocation = new google.maps.LatLng(
+                        parseFloat(destinationLoc.latitude || destinationLoc.lat),
+                        parseFloat(destinationLoc.longitude || destinationLoc.lng)
+                    );
                 }
-                // Podemos adicionar mais casos conforme necessário
                 
-                // Para debug - mostrar o número de destinos e o último destino
-                console.log(`Número de destinos: ${numDestinations}, Último destino: ${destinations[destinations.length-1].name}`);
+                // Configurar a requisição (mesmo formato do Google Maps web)
+                const directionsRequest = {
+                    origin: originLocation,
+                    destination: destinationLocation,
+                    waypoints: waypoints,
+                    optimizeWaypoints: false, // Não otimizar para preservar a ordem
+                    travelMode: google.maps.TravelMode.DRIVING,
+                    unitSystem: google.maps.UnitSystem.METRIC,
+                    avoidHighways: false,
+                    avoidTolls: false
+                };
                 
+                console.log("Enviando requisição ao Google Maps Directions API...");
                 
-                // Se não for uma rota conhecida, usar a Distance Matrix API
-                if (!exactValues) {
+                // Enviar a requisição ao Google
+                const directionsResult = await new Promise((resolve, reject) => {
+                    directionsService.route(directionsRequest, (result, status) => {
+                        if (status === google.maps.DirectionsStatus.OK) {
+                            resolve(result);
+                        } else {
+                            console.error("Erro ao calcular rota com Google Maps:", status);
+                            reject(new Error("Falha ao calcular rota: " + status));
+                        }
+                    });
+                });
+                
+                console.log("Resposta do Google Maps Directions API:", directionsResult);
+                
+                // Extrair informações de distância e tempo da resposta
+                let totalDistance = 0;
+                let totalDuration = 0;
+                
+                // Somar distância e duração de todos os segmentos da rota
+                directionsResult.routes[0].legs.forEach(leg => {
+                    totalDistance += leg.distance.value / 1000; // Converter de metros para km
+                    totalDuration += leg.duration.value; // Duração em segundos
+                });
+                
+                // Arredondar distância para número inteiro (como Google Maps mostra)
+                const distanceKm = Math.round(totalDistance);
+                
+                // Converter duração para formato de horas e minutos
+                const hours = Math.floor(totalDuration / 3600);
+                const minutes = Math.round((totalDuration % 3600) / 60);
+                
+                // Log dos valores calculados
+                console.log(`Valores EXATOS do Google Maps: ${distanceKm} km, ${hours}h ${minutes}min`);
+                
+                // Criar URL do Google Maps com esta rota para validação
+                const mapsUrl = `https://www.google.com/maps/dir/${encodeURIComponent(originLoc.name)}/${
+                    allLocations.slice(1).map(loc => encodeURIComponent(loc.name)).join('/')}`;
+                console.log("Confirme os valores no Google Maps:", mapsUrl);
+                
+                // Criar a rota final com os valores exatos do Google Maps
+                gmapsRoute = {
+                    path: allLocations,
+                    pathIds: allLocations.map(loc => loc.id),
+                    distance: distanceKm,
+                    time: {
+                        hours: hours,
+                        minutes: minutes,
+                        totalMinutes: hours * 60 + minutes
+                    },
+                    directionsResult: directionsResult,
+                    googleMapsUrl: mapsUrl
+                };
+                
+                console.log("Rota final com valores exatos do Google Maps:", gmapsRoute);
+                
+            } catch (error) {
+                // Tratamento de erro para a API do Google Maps
+                console.error("Erro ao consultar Google Maps Directions API:", error);
+                
+                // Tentar usar outro método do Google Maps como backup
+                try {
+                    console.log("Tentando método alternativo com Google Maps...");
+                    
                     // Criar strings de endereços para cada ponto
-                    const addressesForQuery = [origin, ...destinations].map(loc => {
+                    const addresses = [origin, ...destinations].map(loc => {
                         if (loc.address && loc.address.trim()) {
                             return loc.address;
                         } else if (loc.name) {
@@ -5078,97 +5165,94 @@
                         }
                     });
                     
-                    console.log("Consultando Google Maps API para rota não reconhecida...");
+                    // Usar um serviço de Distance Matrix (mais confiável em alguns casos)
+                    const distanceMatrixService = new google.maps.DistanceMatrixService();
                     
-                    // Criar URL para comparação direta com o Google Maps
-                    const originParam = encodeURIComponent(addressesForQuery[0]);
-                    const waypointsParams = addressesForQuery.slice(1).map(address => encodeURIComponent(address));
-                    const googleMapsUrl = `https://www.google.com/maps/dir/${originParam}/${waypointsParams.join('/')}`;
+                    // Calcular matriz de distâncias para pontos adjacentes na rota
+                    const matrixRequests = [];
+                    for (let i = 0; i < addresses.length - 1; i++) {
+                        matrixRequests.push(
+                            new Promise((resolve, reject) => {
+                                distanceMatrixService.getDistanceMatrix({
+                                    origins: [addresses[i]],
+                                    destinations: [addresses[i+1]],
+                                    travelMode: google.maps.TravelMode.DRIVING,
+                                    unitSystem: google.maps.UnitSystem.METRIC
+                                }, (response, status) => {
+                                    if (status === 'OK' && 
+                                        response.rows[0].elements[0].status === 'OK') {
+                                        resolve({
+                                            distance: response.rows[0].elements[0].distance.value / 1000,
+                                            duration: response.rows[0].elements[0].duration.value,
+                                            text: `${addresses[i]} → ${addresses[i+1]}: ${response.rows[0].elements[0].distance.text}, ${response.rows[0].elements[0].duration.text}`
+                                        });
+                                    } else {
+                                        reject(new Error(`Erro para ${addresses[i]} → ${addresses[i+1]}: ${status}`));
+                                    }
+                                });
+                            })
+                        );
+                    }
                     
-                    console.log("Link para verificar no Google Maps:", googleMapsUrl);
-                    console.log("IMPORTANTE: Para rotas não reconhecidas, utilize o link acima para verificar os valores exatos no Google Maps");
+                    // Aguardar todos os cálculos de segmento
+                    const segmentResults = await Promise.all(matrixRequests);
                     
-                    // Tenta fazer a consulta à API
-                    try {
-                        const distanceMatrixService = new google.maps.DistanceMatrixService();
-                        
-                        // Criar a matriz de distâncias
-                        const matrixResult = await new Promise((resolve, reject) => {
-                            distanceMatrixService.getDistanceMatrix({
-                                origins: addressesForQuery,
-                                destinations: addressesForQuery,
-                                travelMode: google.maps.TravelMode.DRIVING,
-                                unitSystem: google.maps.UnitSystem.METRIC,
-                                avoidHighways: false,
-                                avoidTolls: false
-                            }, (response, status) => {
-                                if (status === 'OK') {
-                                    resolve(response);
-                                } else {
-                                    console.error("Erro na consulta ao Distance Matrix API:", status);
-                                    reject(new Error(`Falha na Distance Matrix API: ${status}`));
-                                }
-                            });
-                        });
-                        
-                        // Calcular distância e tempo total da rota
-                        let totalDistance = 0;
-                        let totalDuration = 0;
-                        
-                        // Para cada segmento da rota
-                        for (let i = 0; i < addressesForQuery.length - 1; i++) {
-                            const rowIndex = i;
-                            const colIndex = i + 1;
-                            
-                            if (matrixResult.rows[rowIndex] && 
-                                matrixResult.rows[rowIndex].elements[colIndex] && 
-                                matrixResult.rows[rowIndex].elements[colIndex].status === 'OK') {
-                                
-                                const segment = matrixResult.rows[rowIndex].elements[colIndex];
-                                totalDistance += segment.distance.value / 1000; // km
-                                totalDuration += segment.duration.value; // segundos
-                            }
+                    // Somar distâncias e durações
+                    let totalDistance = 0;
+                    let totalDuration = 0;
+                    
+                    segmentResults.forEach(segment => {
+                        totalDistance += segment.distance;
+                        totalDuration += segment.duration;
+                        console.log(segment.text);
+                    });
+                    
+                    // Formatar resultados
+                    const distanceKm = Math.round(totalDistance);
+                    const hours = Math.floor(totalDuration / 3600);
+                    const minutes = Math.round((totalDuration % 3600) / 60);
+                    
+                    // Log dos valores calculados
+                    console.log(`Valores calculados (método alternativo): ${distanceKm} km, ${hours}h ${minutes}min`);
+                    
+                    // Criar a rota final com os valores obtidos
+                    gmapsRoute = {
+                        path: [origin, ...destinations],
+                        pathIds: [origin.id, ...destinations.map(d => d.id)],
+                        distance: distanceKm,
+                        time: {
+                            hours: hours,
+                            minutes: minutes,
+                            totalMinutes: hours * 60 + minutes
                         }
-                        
-                        const distanceRounded = Math.round(totalDistance);
-                        const hoursTotal = Math.floor(totalDuration / 3600);
-                        const minutesTotal = Math.round((totalDuration % 3600) / 60);
-                        
-                        exactValues = { 
-                            distance: distanceRounded, 
-                            hours: hoursTotal, 
-                            minutes: minutesTotal
-                        };
-                        
-                        console.log("Valores calculados pela API:", exactValues);
-                    } catch (error) {
-                        console.error("Erro ao consultar a API, usando valores padrão:", error);
-                        // Se falhar, usar valores calculados localmente
-                    }
+                    };
+                } catch (fallbackError) {
+                    // Se ambos os métodos falharem, criar uma mensagem de erro para o usuário
+                    console.error("Erro em ambos os métodos do Google Maps:", fallbackError);
+                    
+                    // Criar um link direto para o Google Maps com a mesma rota
+                    const mapUrl = `https://www.google.com/maps/dir/${
+                        encodeURIComponent(origin.name)}/${
+                        destinations.map(d => encodeURIComponent(d.name)).join('/')}`;
+                    
+                    alert(`Não foi possível calcular a distância exata desta rota. 
+                    Por favor, verifique a rota diretamente no Google Maps: ${mapUrl}`);
+                    
+                    // Criar rota com valores vazios para evitar erros
+                    gmapsRoute = {
+                        path: [origin, ...destinations],
+                        pathIds: [origin.id, ...destinations.map(d => d.id)],
+                        distance: 0,
+                        time: {
+                            hours: 0,
+                            minutes: 0,
+                            totalMinutes: 0
+                        },
+                        error: true,
+                        googleMapsUrl: mapUrl
+                    };
                 }
-                
-                // Se não conseguimos valores específicos, usar valores padrão
-                if (!exactValues) {
-                    exactValues = { distance: 0, hours: 0, minutes: 0 };
-                }
-                
-                // Criar a rota com os dados exatos do Google Maps
-                gmapsRoute = {
-                    path: [origin, ...destinations], // manter a ordem dos pontos
-                    pathIds: [origin.id, ...destinations.map(d => d.id)],
-                    distance: exactValues.distance,
-                    time: {
-                        hours: exactValues.hours,
-                        minutes: exactValues.minutes,
-                        totalMinutes: exactValues.hours * 60 + exactValues.minutes
-                    }
-                };
-                
-                console.log("Rota final com valores do Google Maps:", gmapsRoute);
-            } catch (error) {
-                console.error("Erro ao consultar Google Maps API:", error);
-                
-                // No caso de erro, vamos usar valores específicos para a rota atual
+            }
                 console.log("Aplicando valores específicos para esta rota com base nos dados do Google Maps...");
                 
                 // Verificar se temos uma rota específica de Dois Córregos para Itararé passando por diversas cidades

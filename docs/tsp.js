@@ -8,6 +8,7 @@ class TSPSolver {
   constructor() {
     this.debug = false;
     this.useGoogleMapsApi = true; // Usar a API do Google Maps para calcular distâncias e tempos
+    this.googleMapsDistanceCache = {}; // Cache para armazenar resultados da API do Google
   }
 
   /**
