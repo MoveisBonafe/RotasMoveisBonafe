@@ -1995,10 +1995,10 @@
                 <button class="bottom-tab-btn" data-tab="bottom-report">Relatório da Rota</button>
             </div>
             
-            <!-- Container com os conteúdos das abas, cada um inicialmente escondido -->
-            <div class="tab-contents-container" style="width: 100%; position: relative; min-height: 400px;">
+            <!-- Container com os conteúdos das abas, cada um inicialmente escondido - CORRIGIDO -->
+            <div class="tab-contents-container-fix" style="width: 100%; position: relative; min-height: 400px;">
                 <!-- Conteúdo da aba Eventos -->
-                <div class="bottom-tab-content" id="bottom-events-content" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee;">
+                <div class="bottom-tab-content" id="bottom-events-content" style="display: none; background-color: white; border-top: 1px solid #eee; width: 100%;">
                     <div class="tab-content-inner" style="padding: 20px;">
                         <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                             Eventos nas cidades da rota:
@@ -2013,7 +2013,7 @@
                 </div>
                 
                 <!-- Conteúdo da aba Restrições -->
-                <div class="bottom-tab-content" id="bottom-restrictions-content" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee;">
+                <div class="bottom-tab-content" id="bottom-restrictions-content" style="display: none; background-color: white; border-top: 1px solid #eee; width: 100%;">
                     <div class="tab-content-inner" style="padding: 20px;">
                         <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                             Restrições para caminhões do percurso:
@@ -2029,7 +2029,7 @@
                 </div>
                 
                 <!-- Conteúdo da aba Relatório -->
-                <div class="bottom-tab-content" id="bottom-report-content" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee;">
+                <div class="bottom-tab-content" id="bottom-report-content" style="display: none; background-color: white; border-top: 1px solid #eee; width: 100%;">
                     <div class="tab-content-inner" style="padding: 20px;">
                         <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                             Relatório da rota otimizada:
@@ -3523,18 +3523,28 @@
                 // Ativar apenas o botão clicado
                 this.classList.add('active');
                 
-                // SOLUÇÃO DIRETA: mostrar apenas o conteúdo específico da aba selecionada
+                // SOLUÇÃO DIRETA E ROBUSTA: mostrar apenas o conteúdo específico da aba selecionada
                 if (targetTabContent) {
-                    // Mostrar especificamente esta aba
-                    targetTabContent.style.display = 'block';
-                    targetTabContent.classList.add('active');
+                    // Primeiro certifique-se de que TODAS as outras abas estejam escondidas
+                    document.querySelectorAll('.bottom-tab-content').forEach(content => {
+                        content.style.display = 'none'; 
+                        content.classList.remove('active');
+                        content.style.zIndex = '1';
+                        content.style.position = 'relative';
+                    });
                     
-                    // Estilizar adequadamente
-                    targetTabContent.style.height = 'auto';
-                    targetTabContent.style.minHeight = 'calc(100vh - 140px)';
-                    targetTabContent.style.overflow = 'auto';
-                    targetTabContent.style.padding = '20px';
-                    targetTabContent.style.background = 'white';
+                    // Aplicar uma pequena pausa antes de mostrar o conteúdo correto
+                    setTimeout(() => {
+                        // Agora mostrar APENAS a aba selecionada com estilo adequado
+                        targetTabContent.style.display = 'block';
+                        targetTabContent.classList.add('active');
+                        targetTabContent.style.position = 'relative';
+                        targetTabContent.style.zIndex = '10';
+                        targetTabContent.style.height = 'auto';
+                        targetTabContent.style.minHeight = 'calc(100vh - 140px)';
+                        targetTabContent.style.overflow = 'auto';
+                        targetTabContent.style.background = 'white';
+                    }, 50);
                 }
                 
                 // Se as abas estavam minimizadas, expandir
