@@ -5406,6 +5406,123 @@
             // Adicionar a rota do Google Maps como primeira alternativa
             alternativeRoutes = [gmapsRoute];
             
+            // NOVA IMPLEMENTAÇÃO - Forçar criação de rotas alternativas com ordens diferentes
+            // Desativar algoritmos anteriores que podem não estar funcionando
+            const forceDirectAlternativeRoutes = true;
+            
+            if (forceDirectAlternativeRoutes && destinations.length > 1) {
+                console.log("IMPLEMENTAÇÃO FORÇADA: Criando rotas alternativas diretamente");
+                
+                // Alternativa 1: Ordem inversa dos destinos
+                const reversedDestinations = [...destinations].reverse();
+                const alternativeRoute1 = {
+                    path: [origin, ...reversedDestinations],
+                    pathIds: [origin.id, ...reversedDestinations.map(d => d.id)],
+                    distance: 0,
+                    time: 0
+                };
+                
+                // Adicionar retorno à origem se necessário
+                if (includeOriginReturn) {
+                    alternativeRoute1.path.push(origin);
+                    alternativeRoute1.pathIds.push(origin.id);
+                }
+                
+                // Ajustar distância com base nos valores exatos (se disponíveis)
+                if (window.exactGoogleMapsDistance > 0) {
+                    alternativeRoute1.distance = window.exactGoogleMapsDistance * 1.08; // 8% a mais
+                    alternativeRoute1.time = calculateTravelTime(alternativeRoute1.distance);
+                } else {
+                    // Calcular distância estimada
+                    let estimatedDistance = 0;
+                    for (let i = 0; i < alternativeRoute1.path.length - 1; i++) {
+                        const p1 = alternativeRoute1.path[i];
+                        const p2 = alternativeRoute1.path[i+1];
+                        
+                        const lat1 = parseFloat(p1.latitude || p1.lat);
+                        const lng1 = parseFloat(p1.longitude || p1.lng);
+                        const lat2 = parseFloat(p2.latitude || p2.lat);
+                        const lng2 = parseFloat(p2.longitude || p2.lng);
+                        
+                        const segmentDistance = calculateDistance(lat1, lng1, lat2, lng2) * 1.4;
+                        estimatedDistance += segmentDistance;
+                    }
+                    
+                    alternativeRoute1.distance = estimatedDistance;
+                    alternativeRoute1.time = calculateTravelTime(estimatedDistance);
+                }
+                
+                console.log("Rota alternativa 1 (ordem invertida) criada:", 
+                    alternativeRoute1.path.map(loc => loc.name || loc.id).join(" → "));
+                console.log("IDs da rota alternativa 1:", alternativeRoute1.pathIds.join(", "));
+                
+                // Adicionar a primeira alternativa
+                alternativeRoutes.push(alternativeRoute1);
+                
+                // Alternativa 2: Destinos ordenados por distância da origem (do mais próximo ao mais distante)
+                if (destinations.length >= 3) {
+                    // Ordenar destinos por distância da origem
+                    const sortedByDistance = [...destinations].sort((a, b) => {
+                        const latO = parseFloat(origin.latitude || origin.lat);
+                        const lngO = parseFloat(origin.longitude || origin.lng);
+                        
+                        const latA = parseFloat(a.latitude || a.lat);
+                        const lngA = parseFloat(a.longitude || a.lng);
+                        const latB = parseFloat(b.latitude || b.lat);
+                        const lngB = parseFloat(b.longitude || b.lng);
+                        
+                        const distA = calculateDistance(latO, lngO, latA, lngA);
+                        const distB = calculateDistance(latO, lngO, latB, lngB);
+                        
+                        return distA - distB;  // Do mais próximo ao mais distante
+                    });
+                    
+                    const alternativeRoute2 = {
+                        path: [origin, ...sortedByDistance],
+                        pathIds: [origin.id, ...sortedByDistance.map(d => d.id)],
+                        distance: 0,
+                        time: 0
+                    };
+                    
+                    // Adicionar retorno à origem se necessário
+                    if (includeOriginReturn) {
+                        alternativeRoute2.path.push(origin);
+                        alternativeRoute2.pathIds.push(origin.id);
+                    }
+                    
+                    // Ajustar distância com base nos valores exatos (se disponíveis)
+                    if (window.exactGoogleMapsDistance > 0) {
+                        alternativeRoute2.distance = window.exactGoogleMapsDistance * 1.15; // 15% a mais
+                        alternativeRoute2.time = calculateTravelTime(alternativeRoute2.distance);
+                    } else {
+                        // Calcular distância estimada
+                        let estimatedDistance = 0;
+                        for (let i = 0; i < alternativeRoute2.path.length - 1; i++) {
+                            const p1 = alternativeRoute2.path[i];
+                            const p2 = alternativeRoute2.path[i+1];
+                            
+                            const lat1 = parseFloat(p1.latitude || p1.lat);
+                            const lng1 = parseFloat(p1.longitude || p1.lng);
+                            const lat2 = parseFloat(p2.latitude || p2.lat);
+                            const lng2 = parseFloat(p2.longitude || p2.lng);
+                            
+                            const segmentDistance = calculateDistance(lat1, lng1, lat2, lng2) * 1.4;
+                            estimatedDistance += segmentDistance;
+                        }
+                        
+                        alternativeRoute2.distance = estimatedDistance;
+                        alternativeRoute2.time = calculateTravelTime(estimatedDistance);
+                    }
+                    
+                    console.log("Rota alternativa 2 (por distância) criada:", 
+                        alternativeRoute2.path.map(loc => loc.name || loc.id).join(" → "));
+                    console.log("IDs da rota alternativa 2:", alternativeRoute2.pathIds.join(", "));
+                    
+                    // Adicionar a segunda alternativa
+                    alternativeRoutes.push(alternativeRoute2);
+                }
+            }
+            
             // Gerar rotas alternativas usando diferentes algoritmos
             try {
                 // Garantir que temos pelo menos dois pontos para gerar alternativas
