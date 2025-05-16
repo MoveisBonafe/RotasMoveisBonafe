@@ -112,28 +112,38 @@
         // Remover classe de minimizado
         bottomTabsContainer.classList.remove('minimized');
         
-        // Aplicar estilos de tela cheia
+        // Obter a largura da sidebar de forma dinâmica
+        var sidebar = document.querySelector('.sidebar');
+        var sidebarWidth = sidebar ? sidebar.offsetWidth : 380;
+        
+        console.log("[FixTabs] Largura da sidebar:", sidebarWidth);
+        
+        // Aplicar estilos de tela cheia - mantendo a sidebar visível
         Object.assign(bottomTabsContainer.style, {
             position: 'fixed',
             top: '0',
-            left: '380px',
+            left: sidebarWidth + 'px',
             right: '0',
             bottom: '0',
             height: '100vh',
-            width: 'calc(100% - 380px)',
-            zIndex: '9999',
+            width: 'calc(100% - ' + sidebarWidth + 'px)',
+            zIndex: '999', // Menor que a sidebar para garantir que ela fique visível
             backgroundColor: 'white',
             borderLeft: '2px solid #ffc107',
             boxShadow: '-5px 0px 15px rgba(0,0,0,0.1)'
         });
         
-        // Ajustar para telas menores
-        if (window.innerWidth <= 768) {
-            bottomTabsContainer.style.left = '320px';
-            bottomTabsContainer.style.width = 'calc(100% - 320px)';
+        // IMPORTANTE: Garantir que a sidebar permaneça visível
+        if (sidebar) {
+            console.log("[FixTabs] Garantindo que a sidebar fique visível");
+            
+            // Aplicar z-index alto para a sidebar
+            sidebar.style.zIndex = '1000';
+            sidebar.style.visibility = 'visible';
+            sidebar.style.display = 'block';
         }
         
-        // Ocultar o mapa para evitar sobreposição
+        // Ocultar apenas o mapa para evitar sobreposição
         var mapContainer = document.querySelector('.map-container');
         if (mapContainer) {
             mapContainer.style.visibility = 'hidden';
