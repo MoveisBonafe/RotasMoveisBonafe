@@ -90,21 +90,19 @@ function stabilizeSidebar() {
                 };
 
                 // Aplicar estilos ao botão Visualizar
-                Object.assign(viewButton.style, buttonStyles, {
-                    backgroundColor: '#ffab00',
-                    color: '#000000',
-                    border: 'none'
-                });
-
-                // Aplicar estilos ao botão Otimizar
-                Object.assign(optimizeButton.style, buttonStyles, {
+                const commonStyles = {
                     backgroundColor: '#ffab00',
                     color: '#000000',
                     border: 'none',
+                    height: '48px',
+                    lineHeight: '48px',
                     textTransform: 'none',
                     fontVariant: 'normal',
                     fontFeatureSettings: 'normal'
-                });
+                };
+
+                Object.assign(viewButton.style, buttonStyles, commonStyles);
+                Object.assign(optimizeButton.style, buttonStyles, commonStyles);
                 // Forçar texto no formato correto
                 if (optimizeButton.innerHTML.includes('OTIMIZAR')) {
                     optimizeButton.innerHTML = optimizeButton.innerHTML.replace(/OTIMIZAR ROTA/i, 'Otimizar Rota');
