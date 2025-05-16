@@ -4899,11 +4899,11 @@
         calculateOptimizedRoute(vehicleType, false, currentMarkers);
     }
 
-    // Calcular rota otimizada pelo algoritmo TSP
-    function calculateOptimizedRoute(vehicleType, includeOriginReturn = false, savedMarkers = null) {
+    // Calcular rota otimizada pelo algoritmo TSP usando Google Maps API
+    async function calculateOptimizedRoute(vehicleType, includeOriginReturn = false, savedMarkers = null) {
         try {
             console.log("==========================================");
-            console.log("  INICIANDO CÁLCULO DE ROTA OTIMIZADA");
+            console.log("  INICIANDO CÁLCULO DE ROTA OTIMIZADA COM GOOGLE MAPS API");
             console.log("==========================================");
             
             // Limpar rotas alternativas existentes
