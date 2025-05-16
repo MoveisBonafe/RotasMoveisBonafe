@@ -66,7 +66,11 @@ function checkAndFixDuplicateListeners() {
 // Função principal de inicialização
 function initCepUploader() {
   // Evitar inicialização duplicada
-  if (uploaderInitialized) return;
+  if (uploaderInitialized) {
+    // Se já inicializado, apenas verificar se os listeners estão corretos
+    setTimeout(checkAndFixDuplicateListeners, 500);
+    return;
+  }
   
   console.log('Inicializando uploader de CEP...');
   
@@ -77,6 +81,9 @@ function initCepUploader() {
   // que todos os elementos DOM já foram criados
   setTimeout(setupUploader, 500);
   setTimeout(setupUploader, 1500); // Segunda tentativa caso a primeira falhe
+  
+  // Configurar verificação periódica para manutenção dos listeners
+  setInterval(checkAndFixDuplicateListeners, 30000);
   
   // Marcar como inicializado
   uploaderInitialized = true;
@@ -98,6 +105,7 @@ function removeExistingHandlers() {
   
   // Também prevenir execuções de outros scripts de upload conhecidos
   window.uploadFixApplied = true; // Prevenir duplicated-upload.js
+  window.fixGithubUploadApplied = true; // Prevenir fix-github-upload.js
   
   // Se outras variáveis globais de controle existirem, desativá-las
   if (typeof window.unifiedUploaderInitialized !== 'undefined') {
@@ -142,6 +150,11 @@ function setupUploader() {
   
   // Adicionar manipulador de evento principal - usando o novo padrão
   newInput.onchange = handleFileSelection;
+  
+  // Interromper imediatamente propagação de eventos em caso de clique
+  newInput.addEventListener('click', function(e) {
+    e.stopPropagation(); // Impedir que outros handlers sejam chamados
+  });
   
   // Adicionar suporte para arrastar e soltar
   uploadArea.addEventListener('dragover', function(e) {
