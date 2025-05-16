@@ -65,20 +65,44 @@ function stabilizeSidebar() {
       fileUpload.style.marginBottom = '20px';
     }
 
-    // Estilizar botão de otimizar
-    const optimizeBtn = document.getElementById('optimize-route');
-    if (optimizeBtn) {
-      optimizeBtn.style.width = '100%';
-      optimizeBtn.style.padding = '12px';
-      optimizeBtn.style.backgroundColor = '#ffc107';
-      optimizeBtn.style.border = 'none';
-      optimizeBtn.style.borderRadius = '8px';
-      optimizeBtn.style.color = '#000';
-      optimizeBtn.style.fontWeight = '600';
-      optimizeBtn.style.transition = 'all 0.3s ease';
-      optimizeBtn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-      optimizeBtn.style.cursor = 'pointer';
-    }
+    const toggleIcon = document.getElementById('toggle-icon');
+            if (toggleIcon) {
+                toggleIcon.textContent = '▲ Expandir';
+            }
+
+            // Ajustar dimensões dos botões principais
+            const viewButton = document.getElementById('view-current-route');
+            const optimizeButton = document.getElementById('optimize-route');
+
+            if (viewButton && optimizeButton) {
+                // Configurar dimensões iguais para ambos os botões
+                const buttonStyles = {
+                    height: '48px',
+                    padding: '12px 24px',
+                    fontSize: '15px',
+                    fontWeight: '600',
+                    borderRadius: '24px',
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px'
+                };
+
+                // Aplicar estilos ao botão Visualizar
+                Object.assign(viewButton.style, buttonStyles, {
+                    backgroundColor: '#ffab00',
+                    color: '#000000',
+                    border: 'none'
+                });
+
+                // Aplicar estilos ao botão Otimizar
+                Object.assign(optimizeButton.style, buttonStyles, {
+                    backgroundColor: '#ffab00',
+                    color: '#000000',
+                    border: 'none'
+                });
+            }
 
     // Adicionar hover effects
     addHoverEffects();
