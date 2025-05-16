@@ -1,0 +1,534 @@
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1764 Google Maps JavaScript API has been loaded directly without loading=async. This can result in suboptimal performance. For best-practice loading patterns please see https://goo.gle/js-api-loading
+rga @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1764
+google.maps.Load @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:14
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+fix-github.js:495 Uncaught SyntaxError: Unexpected end of input (at fix-github.js:495:4)
+layout-fix.js?v=20250515182715:11 [LayoutFix] Iniciando correção de layout automática
+sidebar-stabilizer.js:94 [Sidebar Stabilizer] Estilos críticos aplicados
+RotasMoveisBonafe/:2579 DOM carregado - inicializando aplicação
+RotasMoveisBonafe/:6670 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:6671 Mostrando eventos para rota com IDs: [1]
+RotasMoveisBonafe/:6672 Datas de filtro (string): undefined undefined
+RotasMoveisBonafe/:6696 Eventos disponíveis: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+RotasMoveisBonafe/:6710 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:6726 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:6757 [ROTA] Cidades encontradas no percurso (1): Dois Córregos
+RotasMoveisBonafe/:6759 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: ['Dois Córregos']
+RotasMoveisBonafe/:6762 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:6763 Filtrando eventos para cidades: Dois Córregos
+RotasMoveisBonafe/:6764 Filtro de data: sem data inicial a sem data final
+RotasMoveisBonafe/:6768 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: undefined undefined
+RotasMoveisBonafe/:6790 [FILTRO] Usando data de início padrão: 2025-01-01
+RotasMoveisBonafe/:6795 [FILTRO] Usando data de fim padrão: 2025-12-31
+RotasMoveisBonafe/:6799 [DATA] Filtro FINAL: 2025-01-01 até 2025-12-31
+RotasMoveisBonafe/:6838 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:6844 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:6838 [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+RotasMoveisBonafe/:6895 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '03/02/2025', eventEnd: '03/02/2025', filterStart: '31/12/2024', filterEnd: '30/12/2025', …}
+RotasMoveisBonafe/:6909 [ACEITO] Evento 'Aniversário da Cidade' (03/02/2025) está dentro do período de filtro: 31/12/2024 a 30/12/2025
+RotasMoveisBonafe/:6932 [FINAL] Evento 'Aniversário da Cidade' em 'Dois Córregos' - INCLUÍDO NA LISTA FINAL
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1679 As of February 21st, 2024, google.maps.Marker is deprecated. Please use google.maps.marker.AdvancedMarkerElement instead. At this time, google.maps.Marker is not scheduled to be discontinued, but google.maps.marker.AdvancedMarkerElement is recommended over google.maps.Marker. While google.maps.Marker will continue to receive bug fixes for any major regressions, existing bugs in google.maps.Marker will not be addressed. At least 12 months notice will be given before support is discontinued. Please see https://developers.google.com/maps/deprecations for additional details and https://developers.google.com/maps/documentation/javascript/advanced-markers/migration for the migration guide.
+_.kl @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1679
+addEventMarker @ RotasMoveisBonafe/:7000
+(anônimo) @ RotasMoveisBonafe/:6981
+showEventsForCitiesOnRoute @ RotasMoveisBonafe/:6950
+showInitialTabsContent @ RotasMoveisBonafe/:3365
+(anônimo) @ RotasMoveisBonafe/:2588
+RotasMoveisBonafe/:7032 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:7033 Mostrando restrições de caminhões para rota com IDs: [1]
+RotasMoveisBonafe/:7036 Timestamp: 2025-05-16T16:42:34.543Z
+RotasMoveisBonafe/:7042 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:7042
+showInitialTabsContent @ RotasMoveisBonafe/:3368
+(anônimo) @ RotasMoveisBonafe/:2588
+RotasMoveisBonafe/:7079 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:7106 Cidades detectadas na rota: [{…}]
+RotasMoveisBonafe/:7199 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+RotasMoveisBonafe/:2595 Google Maps API disponível
+RotasMoveisBonafe/:2757 Inicializando campos de data...
+RotasMoveisBonafe/:2814 Data inicial definida: 2025-05-16
+RotasMoveisBonafe/:2819 Data final definida: 2025-05-23
+RotasMoveisBonafe/:2822 Datas inicializadas: de 2025-05-16 até 2025-05-23
+RotasMoveisBonafe/:2848 Redimensionando mapa
+RotasMoveisBonafe/:2908 Inicializando DirectionsRenderer...
+RotasMoveisBonafe/:2920 DirectionsRenderer inicializado com sucesso
+RotasMoveisBonafe/:8965 Tooltip personalizado criado com sucesso
+RotasMoveisBonafe/:8741 ==========================================
+RotasMoveisBonafe/:8742 FILTRO DE EVENTOS POR DATA SOLICITADO
+RotasMoveisBonafe/:8743 ==========================================
+RotasMoveisBonafe/:8829 Datas finais para filtragem: 2025-05-16 até 2025-05-23
+RotasMoveisBonafe/:8843 Sem rota, mostrando apenas para origem
+RotasMoveisBonafe/:8870 Usando apenas a origem para eventos: [1]
+RotasMoveisBonafe/:8874 Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas: 2025-05-16 2025-05-23
+RotasMoveisBonafe/:6670 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:6671 Mostrando eventos para rota com IDs: [1]
+RotasMoveisBonafe/:6672 Datas de filtro (string): 2025-05-16 2025-05-23
+RotasMoveisBonafe/:6696 Eventos disponíveis: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+RotasMoveisBonafe/:6710 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:6726 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:6757 [ROTA] Cidades encontradas no percurso (1): Dois Córregos
+RotasMoveisBonafe/:6759 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: ['Dois Córregos']
+RotasMoveisBonafe/:6762 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:6763 Filtrando eventos para cidades: Dois Córregos
+RotasMoveisBonafe/:6764 Filtro de data: 2025-05-16 a 2025-05-23
+RotasMoveisBonafe/:6768 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-16 2025-05-23
+RotasMoveisBonafe/:6799 [DATA] Filtro FINAL: 2025-05-16 até 2025-05-23
+RotasMoveisBonafe/:6838 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:6844 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:6838 [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+RotasMoveisBonafe/:6895 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '03/02/2025', eventEnd: '03/02/2025', filterStart: '15/05/2025', filterEnd: '22/05/2025', …}
+RotasMoveisBonafe/:6912 [REJEITADO] Evento 'Aniversário da Cidade' (03/02/2025) está fora do período de filtro: 15/05/2025 a 22/05/2025
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7032 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:7033 Mostrando restrições de caminhões para rota com IDs: [1]
+RotasMoveisBonafe/:7036 Timestamp: 2025-05-16T16:42:34.586Z
+RotasMoveisBonafe/:7042 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:7042
+filterEventsByDate @ RotasMoveisBonafe/:8879
+initMap @ RotasMoveisBonafe/:2748
+(anônimo) @ RotasMoveisBonafe/:2600
+RotasMoveisBonafe/:7079 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:7106 Cidades detectadas na rota: [{…}]
+RotasMoveisBonafe/:7199 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+RotasMoveisBonafe/:3160 Inicializando autocomplete para busca de endereços...
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:82 As of March 1st, 2025, google.maps.places.Autocomplete is not available to new customers. Please use google.maps.places.PlaceAutocompleteElement instead. At this time, google.maps.places.Autocomplete is not scheduled to be discontinued, but google.maps.places.PlaceAutocompleteElement is recommended over google.maps.places.Autocomplete. While google.maps.places.Autocomplete will continue to receive bug fixes for any major regressions, existing bugs in google.maps.places.Autocomplete will not be addressed. At least 12 months notice will be given before support is discontinued. Please see https://developers.google.com/maps/legacy for additional details and https://developers.google.com/maps/documentation/javascript/places-migration-overview for the migration guide.
+nB @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:82
+initAutocomplete @ RotasMoveisBonafe/:3182
+(anônimo) @ RotasMoveisBonafe/:2601
+RotasMoveisBonafe/:3183 Autocomplete inicializado com sucesso
+RotasMoveisBonafe/:3250 Inicializando sistema de navegação para tabs inferiores
+RotasMoveisBonafe/:3468 Inicializando abas inferiores com modo FULLSCREEN...
+RotasMoveisBonafe/:3536 Abas inferiores inicializadas com sucesso
+RotasMoveisBonafe/:2607 Detectado GitHub Pages - aplicando ajustes especiais de layout
+RotasMoveisBonafe/:4467 Criando novo marcador para Dois Córregos (ID: 1)
+RotasMoveisBonafe/:5845 Verificando se Dois Córregos e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5866 Mesma cidade encontrada nos endereços: dois córregos
+RotasMoveisBonafe/:4554 Configurando marcador para Dois Córregos - Mesma cidade da origem: true
+RotasMoveisBonafe/:2648 Datas definidas automaticamente: de 2025-05-16 até 2025-05-23
+RotasMoveisBonafe/:8741 ==========================================
+RotasMoveisBonafe/:8742 FILTRO DE EVENTOS POR DATA SOLICITADO
+RotasMoveisBonafe/:8743 ==========================================
+RotasMoveisBonafe/:8829 Datas finais para filtragem: 2025-05-16 até 2025-05-23
+RotasMoveisBonafe/:8835 Usando rota otimizada atual: [1]
+RotasMoveisBonafe/:8874 Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas: 2025-05-16 2025-05-23
+RotasMoveisBonafe/:6670 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:6671 Mostrando eventos para rota com IDs: [1]
+RotasMoveisBonafe/:6672 Datas de filtro (string): 2025-05-16 2025-05-23
+RotasMoveisBonafe/:6696 Eventos disponíveis: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+RotasMoveisBonafe/:6710 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:6726 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:6757 [ROTA] Cidades encontradas no percurso (1): Dois Córregos
+RotasMoveisBonafe/:6759 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: ['Dois Córregos']
+RotasMoveisBonafe/:6762 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:6763 Filtrando eventos para cidades: Dois Córregos
+RotasMoveisBonafe/:6764 Filtro de data: 2025-05-16 a 2025-05-23
+RotasMoveisBonafe/:6768 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-16 2025-05-23
+RotasMoveisBonafe/:6799 [DATA] Filtro FINAL: 2025-05-16 até 2025-05-23
+RotasMoveisBonafe/:6838 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:6844 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:6838 [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+RotasMoveisBonafe/:6895 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '03/02/2025', eventEnd: '03/02/2025', filterStart: '15/05/2025', filterEnd: '22/05/2025', …}
+RotasMoveisBonafe/:6912 [REJEITADO] Evento 'Aniversário da Cidade' (03/02/2025) está fora do período de filtro: 15/05/2025 a 22/05/2025
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7032 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:7033 Mostrando restrições de caminhões para rota com IDs: [1]
+RotasMoveisBonafe/:7036 Timestamp: 2025-05-16T16:42:34.615Z
+RotasMoveisBonafe/:7042 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:7042
+filterEventsByDate @ RotasMoveisBonafe/:8879
+(anônimo) @ RotasMoveisBonafe/:2654
+RotasMoveisBonafe/:7079 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:7106 Cidades detectadas na rota: [{…}]
+RotasMoveisBonafe/:7199 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+RotasMoveisBonafe/:2657 Campos de data inicializados com datas atuais e eventos/restrições para origem configurados
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:35 [LayoutFix] Inicialização completa
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+fullscreen-tabs.js:18 [FullscreenTabs] Inicializando sistema de abas em tela cheia
+fullscreen-tabs.js:41 [FullscreenTabs] Inicialização concluída com sucesso
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+ Map enhancements applied successfully
+ ==========================================
+RotasMoveisBonafe/:8742 FILTRO DE EVENTOS POR DATA SOLICITADO
+RotasMoveisBonafe/:8743 ==========================================
+RotasMoveisBonafe/:8829 Datas finais para filtragem: 2025-05-16 até 2025-05-23
+RotasMoveisBonafe/:8835 Usando rota otimizada atual: [1]
+RotasMoveisBonafe/:8874 Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas: 2025-05-16 2025-05-23
+RotasMoveisBonafe/:6670 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:6671 Mostrando eventos para rota com IDs: [1]
+RotasMoveisBonafe/:6672 Datas de filtro (string): 2025-05-16 2025-05-23
+RotasMoveisBonafe/:6696 Eventos disponíveis: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+RotasMoveisBonafe/:6710 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:6726 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:6757 [ROTA] Cidades encontradas no percurso (1): Dois Córregos
+RotasMoveisBonafe/:6759 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: ['Dois Córregos']
+RotasMoveisBonafe/:6762 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:6763 Filtrando eventos para cidades: Dois Córregos
+RotasMoveisBonafe/:6764 Filtro de data: 2025-05-16 a 2025-05-23
+RotasMoveisBonafe/:6768 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-16 2025-05-23
+RotasMoveisBonafe/:6799 [DATA] Filtro FINAL: 2025-05-16 até 2025-05-23
+RotasMoveisBonafe/:6838 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:6844 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:6838 [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+RotasMoveisBonafe/:6895 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '03/02/2025', eventEnd: '03/02/2025', filterStart: '15/05/2025', filterEnd: '22/05/2025', …}
+RotasMoveisBonafe/:6912 [REJEITADO] Evento 'Aniversário da Cidade' (03/02/2025) está fora do período de filtro: 15/05/2025 a 22/05/2025
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7032 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:7033 Mostrando restrições de caminhões para rota com IDs: [1]
+RotasMoveisBonafe/:7036 Timestamp: 2025-05-16T16:42:35.133Z
+RotasMoveisBonafe/:7042 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:7042
+filterEventsByDate @ RotasMoveisBonafe/:8879
+setTimeout
+initDatePickers @ RotasMoveisBonafe/:2836
+initMap @ RotasMoveisBonafe/:2745
+(anônimo) @ RotasMoveisBonafe/:2600
+RotasMoveisBonafe/:7079 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:7106 Cidades detectadas na rota: [{…}]
+RotasMoveisBonafe/:7199 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+RotasMoveisBonafe/:2624 Ajustes de layout para GitHub Pages aplicados
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+map-controls.js:271 Map enhancements applied successfully
+geocode-fix.js:108 Enhanced file upload with accurate geocoding
+geocode-fix.js:415 Geocoding fixes applied successfully
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+RotasMoveisBonafe/:3554 Botões de contador encontrados: 0
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+[Violation] 'setTimeout' handler took 69ms
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:2516 Notificação [info]: Processando arquivo...
+RotasMoveisBonafe/:2516 Notificação [success]: Arquivo processado com sucesso!
+geocode-fix.js:101 [Violation] 'load' handler took 1170ms
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:4467 Criando novo marcador para Itarare-marcelo Moveis E Eletro Itarare Ltda (ID: 2)
+RotasMoveisBonafe/:5845 Verificando se Itarare-marcelo Moveis E Eletro Itarare Ltda e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5893 Não estão na mesma cidade
+RotasMoveisBonafe/:4540 Obtendo região para cidade: "Itarare-marcelo Moveis E Eletro Itarare Ltda"
+RotasMoveisBonafe/:4215 Cidade Itarare-marcelo Moveis E Eletro Itarare Ltda pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4554 Configurando marcador para Itarare-marcelo Moveis E Eletro Itarare Ltda - Mesma cidade da origem: false
+RotasMoveisBonafe/:4215 Cidade Itarare-marcelo Moveis E Eletro Itarare Ltda pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4215 Cidade Itarare-marcelo Moveis E Eletro Itarare Ltda pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:4467 Criando novo marcador para Sao Miguel Arcanjo-joao Olimpio Da Costa Me (ID: 3)
+RotasMoveisBonafe/:5845 Verificando se Sao Miguel Arcanjo-joao Olimpio Da Costa Me e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5893 Não estão na mesma cidade
+RotasMoveisBonafe/:4540 Obtendo região para cidade: "Sao Miguel Arcanjo-joao Olimpio Da Costa Me"
+RotasMoveisBonafe/:4215 Cidade Sao Miguel Arcanjo-joao Olimpio Da Costa Me pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4554 Configurando marcador para Sao Miguel Arcanjo-joao Olimpio Da Costa Me - Mesma cidade da origem: false
+RotasMoveisBonafe/:4215 Cidade Sao Miguel Arcanjo-joao Olimpio Da Costa Me pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4215 Cidade Itarare-marcelo Moveis E Eletro Itarare Ltda pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4215 Cidade Sao Miguel Arcanjo-joao Olimpio Da Costa Me pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4467 Criando novo marcador para Tiete-capricholar Moveis E Utensilios Ltda Me (ID: 4)
+RotasMoveisBonafe/:5845 Verificando se Tiete-capricholar Moveis E Utensilios Ltda Me e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5893 Não estão na mesma cidade
+RotasMoveisBonafe/:4540 Obtendo região para cidade: "Tiete-capricholar Moveis E Utensilios Ltda Me"
+RotasMoveisBonafe/:4215 Cidade Tiete-capricholar Moveis E Utensilios Ltda Me pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4554 Configurando marcador para Tiete-capricholar Moveis E Utensilios Ltda Me - Mesma cidade da origem: false
+RotasMoveisBonafe/:4215 Cidade Tiete-capricholar Moveis E Utensilios Ltda Me pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4215 Cidade Itarare-marcelo Moveis E Eletro Itarare Ltda pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4215 Cidade Sao Miguel Arcanjo-joao Olimpio Da Costa Me pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4215 Cidade Tiete-capricholar Moveis E Utensilios Ltda Me pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4467 Criando novo marcador para Porto Feliz-marlene Rodrigues Vieira Me (ID: 5)
+RotasMoveisBonafe/:5845 Verificando se Porto Feliz-marlene Rodrigues Vieira Me e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5893 Não estão na mesma cidade
+RotasMoveisBonafe/:4540 Obtendo região para cidade: "Porto Feliz"
+RotasMoveisBonafe/:4215 Cidade Porto Feliz pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4554 Configurando marcador para Porto Feliz-marlene Rodrigues Vieira Me - Mesma cidade da origem: false
+RotasMoveisBonafe/:4215 Cidade Porto Feliz pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4215 Cidade Itarare-marcelo Moveis E Eletro Itarare Ltda pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4215 Cidade Sao Miguel Arcanjo-joao Olimpio Da Costa Me pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4215 Cidade Tiete-capricholar Moveis E Utensilios Ltda Me pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4215 Cidade Porto Feliz pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4307 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:9465 Convertendo coordenadas para Itarare-marcelo Moveis E Eletro Itarare Ltda: latitude/longitude -> lat/lng
+RotasMoveisBonafe/:9465 Convertendo coordenadas para Sao Miguel Arcanjo-joao Olimpio Da Costa Me: latitude/longitude -> lat/lng
+RotasMoveisBonafe/:9465 Convertendo coordenadas para Tiete-capricholar Moveis E Utensilios Ltda Me: latitude/longitude -> lat/lng
+RotasMoveisBonafe/:9465 Convertendo coordenadas para Porto Feliz-marlene Rodrigues Vieira Me: latitude/longitude -> lat/lng
+RotasMoveisBonafe/:9489 Pontos válidos para rota: 5
+RotasMoveisBonafe/:9508 Coordenadas da origem (Dois Córregos): -22.3673 -48.3822
+RotasMoveisBonafe/:9523 Coordenadas de Itarare-marcelo Moveis E Eletro Itarare Ltda: -24.1116612 -49.3219651
+RotasMoveisBonafe/:9523 Coordenadas de Sao Miguel Arcanjo-joao Olimpio Da Costa Me: -23.9226248 -47.9614096
+RotasMoveisBonafe/:9523 Coordenadas de Tiete-capricholar Moveis E Utensilios Ltda Me: -23.0457688 -47.7046036
+RotasMoveisBonafe/:9523 Coordenadas de Porto Feliz-marlene Rodrigues Vieira Me: -23.2248099 -47.4882762
+RotasMoveisBonafe/:9607 Distância de 0 para 1: 216.43 km
+RotasMoveisBonafe/:9607 Distância de 1 para 2: 139.78 km
+RotasMoveisBonafe/:9607 Distância de 2 para 3: 100.96 km
+RotasMoveisBonafe/:9607 Distância de 3 para 4: 29.76 km
+RotasMoveisBonafe/:9728 Mostrando eventos e restrições para cidades: (5) [1, 2, 3, 4, 5]
+RotasMoveisBonafe/:6670 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:6671 Mostrando eventos para rota com IDs: (5) [1, 2, 3, 4, 5]
+RotasMoveisBonafe/:6672 Datas de filtro (string): 2025-05-16 2025-05-23
+RotasMoveisBonafe/:6696 Eventos disponíveis: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+RotasMoveisBonafe/:6710 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:6710 Localização encontrada para ID 2: {id: 2, name: 'Itarare-marcelo Moveis E Eletro Itarare Ltda', address: 'Itarare-marcelo Moveis E Eletro Itarare Ltda, 18460009, Brasil', zipCode: '18460009', latitude: -24.1116612, …}
+RotasMoveisBonafe/:6710 Localização encontrada para ID 3: {id: 3, name: 'Sao Miguel Arcanjo-joao Olimpio Da Costa Me', address: 'Sao Miguel Arcanjo-joao Olimpio Da Costa Me, 18230000, Brasil', zipCode: '18230000', latitude: -23.9226248, …}
+RotasMoveisBonafe/:6710 Localização encontrada para ID 4: {id: 4, name: 'Tiete-capricholar Moveis E Utensilios Ltda Me', address: 'Tiete-capricholar Moveis E Utensilios Ltda Me, 18530000, Brasil', zipCode: '18530000', latitude: -23.0457688, …}
+RotasMoveisBonafe/:6710 Localização encontrada para ID 5: {id: 5, name: 'Porto Feliz-marlene Rodrigues Vieira Me', address: 'Porto Feliz-marlene Rodrigues Vieira Me, 18540000, Brasil', zipCode: '18540000', latitude: -23.2248099, …}
+RotasMoveisBonafe/:6726 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:6752 [ROTA] Adicionado local como possível cidade: Itarare-marcelo Moveis E Eletro Itarare Ltda
+RotasMoveisBonafe/:6752 [ROTA] Adicionado local como possível cidade: Sao Miguel Arcanjo-joao Olimpio Da Costa Me
+RotasMoveisBonafe/:6752 [ROTA] Adicionado local como possível cidade: Tiete-capricholar Moveis E Utensilios Ltda Me
+RotasMoveisBonafe/:6752 [ROTA] Adicionado local como possível cidade: Porto Feliz-marlene Rodrigues Vieira Me
+RotasMoveisBonafe/:6757 [ROTA] Cidades encontradas no percurso (5): Dois Córregos, Itarare-marcelo Moveis E Eletro Itarare Ltda, Sao Miguel Arcanjo-joao Olimpio Da Costa Me, Tiete-capricholar Moveis E Utensilios Ltda Me, Porto Feliz-marlene Rodrigues Vieira Me
+RotasMoveisBonafe/:6759 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: (5) ['Dois Córregos', 'Itarare-marcelo Moveis E Eletro Itarare Ltda', 'Sao Miguel Arcanjo-joao Olimpio Da Costa Me', 'Tiete-capricholar Moveis E Utensilios Ltda Me', 'Porto Feliz-marlene Rodrigues Vieira Me']
+RotasMoveisBonafe/:6762 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:6763 Filtrando eventos para cidades: Dois Córregos, Itarare-marcelo Moveis E Eletro Itarare Ltda, Sao Miguel Arcanjo-joao Olimpio Da Costa Me, Tiete-capricholar Moveis E Utensilios Ltda Me, Porto Feliz-marlene Rodrigues Vieira Me
+RotasMoveisBonafe/:6764 Filtro de data: 2025-05-16 a 2025-05-23
+RotasMoveisBonafe/:6768 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-16 2025-05-23
+RotasMoveisBonafe/:6799 [DATA] Filtro FINAL: 2025-05-16 até 2025-05-23
+RotasMoveisBonafe/:6838 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:6844 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:6838 [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+RotasMoveisBonafe/:6895 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '03/02/2025', eventEnd: '03/02/2025', filterStart: '15/05/2025', filterEnd: '22/05/2025', …}
+RotasMoveisBonafe/:6912 [REJEITADO] Evento 'Aniversário da Cidade' (03/02/2025) está fora do período de filtro: 15/05/2025 a 22/05/2025
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6812 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7032 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:7033 Mostrando restrições de caminhões para rota com IDs: (5) [1, 2, 3, 4, 5]
+RotasMoveisBonafe/:7036 Timestamp: 2025-05-16T16:42:55.768Z
+RotasMoveisBonafe/:7042 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:7042
+showCurrentRoute @ RotasMoveisBonafe/:9738
+(anônimo) @ RotasMoveisBonafe/:10017
+RotasMoveisBonafe/:7079 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:7106 Cidades detectadas na rota: (5) [{…}, {…}, {…}, {…}, {…}]
+RotasMoveisBonafe/:7199 GitHub Pages: Exibindo 5 restrições para cidades na rota atual
+RotasMoveisBonafe/:9832 Distância total calculada: 681.7 km, Tempo estimado: 511.2685542013761 minutos
+RotasMoveisBonafe/:8520 Atualizando resumo da rota com: {path: Array(5), distance: 681.6914056018347, time: 511.2685542013761, isOptimized: false}
+RotasMoveisBonafe/:8574 Distância calculada: 681.7 km
+RotasMoveisBonafe/:8575 Tempo estimado: 8h 31min
+RotasMoveisBonafe/:2516 Notificação [success]: Rota visualizada na ordem original de adição dos pontos
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+fullscreen-tabs.js:55 [FullscreenTabs] Clique na aba: bottom-events
+fullscreen-tabs.js:99 [FullscreenTabs] Expandindo abas para tela cheia
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
