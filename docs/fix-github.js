@@ -1,19 +1,17 @@
+
+// Variável global para controlar o processamento
+let isProcessingFile = false;
+
 function processCepFile(content) {
-  if (!content) {
-    console.error('Conteúdo vazio');
+  if (!content || isProcessingFile) {
+    console.log('Arquivo já está sendo processado ou conteúdo vazio');
     return;
   }
 
-  // Verificar se já está processando
-  if (window.isProcessingFile) {
-    console.log('Já existe um arquivo sendo processado');
-    return;
-  }
-
-  window.isProcessingFile = true;
+  isProcessingFile = true;
+  console.log('Iniciando processamento do arquivo');
 
   try {
-    // Processar o conteúdo do arquivo
     const lines = content.split(/\r?\n/);
     let addedLocations = 0;
 
@@ -24,7 +22,6 @@ function processCepFile(content) {
       const name = nameParts.join(',').trim();
 
       if (cep && name) {
-        // Adicionar localização usando a função global
         if (typeof window.createLocationItem === 'function') {
           window.createLocationItem(name, `CEP: ${cep}`, Date.now());
           addedLocations++;
@@ -32,24 +29,45 @@ function processCepFile(content) {
       }
     }
 
-    // Mostrar feedback
     if (addedLocations > 0) {
-      alert(`${addedLocations} locais adicionados com sucesso!`);
+      console.log(`${addedLocations} locais adicionados com sucesso`);
     } else {
-      alert('Nenhum local válido encontrado no arquivo.');
+      console.log('Nenhum local válido encontrado no arquivo');
     }
 
+  } catch (err) {
+    console.error('Erro ao processar arquivo:', err);
+  } finally {
     // Limpar input de arquivo
     const fileInput = document.getElementById('file-upload');
     if (fileInput) {
       fileInput.value = '';
     }
-
-  } catch (err) {
-    console.error('Erro ao processar arquivo:', err);
-    alert('Erro ao processar o arquivo. Verifique o formato.');
-  } finally {
-    // Sempre liberar o processamento
-    window.isProcessingFile = false;
+    
+    // Resetar flag de processamento
+    setTimeout(() => {
+      isProcessingFile = false;
+    }, 1000);
   }
 }
+
+// Adicionar listener único ao input de arquivo
+document.addEventListener('DOMContentLoaded', function() {
+  const fileInput = document.getElementById('file-upload');
+  if (fileInput) {
+    // Remover listeners anteriores
+    const newFileInput = fileInput.cloneNode(true);
+    fileInput.parentNode.replaceChild(newFileInput, fileInput);
+
+    // Adicionar novo listener
+    newFileInput.addEventListener('change', function(e) {
+      if (this.files && this.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          processCepFile(e.target.result);
+        };
+        reader.readAsText(this.files[0]);
+      }
+    });
+  }
+});
