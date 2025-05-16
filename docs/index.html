@@ -3399,6 +3399,24 @@
                 // 2. Garantir que o estilo inline não atrapalhe
                 bottomTabsContainer.removeAttribute('style');
                 
+                // 3. IMPORTANTE: Quando expandimos, garantir que o conteúdo da aba ativa seja mostrado
+                const activeButton = document.querySelector('.bottom-tab-btn.active');
+                if (activeButton) {
+                    const tabId = activeButton.getAttribute('data-tab');
+                    console.log("Aba ativa ao expandir:", tabId);
+                    
+                    // Esconder todos os painéis primeiro
+                    document.querySelectorAll('.bottom-tab-panel').forEach(panel => {
+                        panel.style.display = 'none';
+                    });
+                    
+                    // Mostrar apenas o painel da aba ativa
+                    const activePanel = document.getElementById(tabId + '-content');
+                    if (activePanel) {
+                        activePanel.style.display = 'block';
+                    }
+                }
+                
                 // 3. Aplicar estilos diretamente (redundante com CSS, mas mais seguro)
                 bottomTabsContainer.style.position = 'fixed';
                 bottomTabsContainer.style.top = '0';
