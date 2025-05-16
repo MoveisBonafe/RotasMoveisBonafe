@@ -10,6 +10,59 @@ let uploaderInitialized = false;
 document.addEventListener('DOMContentLoaded', initCepUploader);
 window.addEventListener('load', initCepUploader);
 
+// Função para verificar e corrigir duplicação nos listeners
+function checkAndFixDuplicateListeners() {
+  const fileInput = document.getElementById('file-upload');
+  if (!fileInput) return;
+  
+  console.log('Verificando e corrigindo listeners duplicados no uploader...');
+  
+  // Remover listeners anteriores
+  const oldFileInput = fileInput;
+  const newFileInput = oldFileInput.cloneNode(true);
+  if (oldFileInput.parentNode) {
+    oldFileInput.parentNode.replaceChild(newFileInput, oldFileInput);
+  }
+  
+  // Adicionar listener único
+  newFileInput.addEventListener('change', handleFileSelection);
+  
+  // Verificar área de arrastar/soltar
+  const dropArea = document.getElementById('drop-area');
+  if (dropArea) {
+    // Clone para remover listeners
+    const newDropArea = dropArea.cloneNode(true);
+    if (dropArea.parentNode) {
+      dropArea.parentNode.replaceChild(newDropArea, dropArea);
+    }
+    
+    // Readicionar listeners
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      newDropArea.addEventListener(eventName, function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }, false);
+    });
+    
+    newDropArea.addEventListener('dragenter', function() {
+      newDropArea.classList.add('active');
+    }, false);
+    
+    newDropArea.addEventListener('dragleave', function() {
+      newDropArea.classList.remove('active');
+    }, false);
+    
+    newDropArea.addEventListener('drop', function(e) {
+      newDropArea.classList.remove('active');
+      const files = e.dataTransfer.files;
+      if (files.length) {
+        newFileInput.files = files;
+        handleFileSelection();
+      }
+    }, false);
+  }
+}
+
 // Função principal de inicialização
 function initCepUploader() {
   // Evitar inicialização duplicada
@@ -49,6 +102,19 @@ function removeExistingHandlers() {
   // Se outras variáveis globais de controle existirem, desativá-las
   if (typeof window.unifiedUploaderInitialized !== 'undefined') {
     window.unifiedUploaderInitialized = true;
+  }
+  
+  // Lidar com outras variáveis e funções conflitantes
+  if (typeof window.handleFileUpload === 'function') {
+    console.log('Desativando função handleFileUpload anterior');
+    window.handleFileUpload_original = window.handleFileUpload;
+    window.handleFileUpload = function() {
+      console.log('Redirecionando para o novo sistema de upload');
+      const fileInput = document.getElementById('file-upload');
+      if (fileInput) {
+        fileInput.click();
+      }
+    };
   }
 }
 
@@ -273,10 +339,34 @@ function processCepFileContent(content, statusEl) {
       showStatus(statusEl, `Importado com sucesso! ${importedLocations.length} endereços adicionados.`, 'success');
       
       // Atualizar visualização
-      if (typeof window.calculateOptimizedRoute === 'function') {
-        window.calculateOptimizedRoute();
-      } else if (typeof window.reloadLocations === 'function') {
-        window.reloadLocations();
+      try {
+        console.log(`Processamento concluído com sucesso: ${importedLocations.length} locais adicionados`);
+        
+        // Tentar várias funções de atualização, dependendo do que estiver disponível
+        if (typeof window.calculateOptimizedRoute === 'function') {
+          console.log('Recalculando rota via calculateOptimizedRoute()');
+          window.calculateOptimizedRoute();
+        } 
+        else if (typeof window.reloadLocations === 'function') {
+          console.log('Recarregando locais via reloadLocations()');
+          window.reloadLocations();
+        }
+        else if (typeof window.updateMap === 'function') {
+          console.log('Atualizando mapa via updateMap()');
+          window.updateMap();
+        }
+        else {
+          console.log('Tentando métodos alternativos de atualização...');
+          
+          // Tentar método alternativo: simular um clique no botão de otimizar rota
+          const optimizeBtn = document.getElementById('optimize-route');
+          if (optimizeBtn) {
+            console.log('Simulando clique no botão de otimizar rota');
+            optimizeBtn.click();
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao atualizar a visualização:', error);
       }
     } else {
       showStatus(statusEl, 'Nenhum endereço válido encontrado no arquivo', 'error');
