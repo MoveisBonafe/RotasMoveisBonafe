@@ -18,7 +18,7 @@ interface Icon {
  */
 export function getMarkerIcon(type: IconType): Icon {
   const baseSize = 36;
-
+  
   switch (type) {
     case 'toll':
       return {
@@ -87,10 +87,10 @@ export function filterPointsOfInterestAlongRoute(
       lat: parseFloat(poi.lat),
       lng: parseFloat(poi.lng)
     };
-
+    
     // Find the minimum distance from the POI to any point on the route
     let minDistance = Infinity;
-
+    
     for (const routePoint of route) {
       // If Google Maps geometry library is available, use it to calculate distance
       if (window.google && window.google.maps && window.google.maps.geometry) {
@@ -99,9 +99,9 @@ export function filterPointsOfInterestAlongRoute(
           poiGoogleLatLng,
           routePoint
         ) / 1000; // Convert to kilometers
-
+        
         minDistance = Math.min(minDistance, distance);
-
+        
         if (minDistance <= maxDistanceKm) {
           return true;
         }
@@ -111,15 +111,15 @@ export function filterPointsOfInterestAlongRoute(
           poiLatLng.lat, poiLatLng.lng, 
           routePoint.lat(), routePoint.lng()
         );
-
+        
         minDistance = Math.min(minDistance, simpleDistance);
-
+        
         if (minDistance <= maxDistanceKm) {
           return true;
         }
       }
     }
-
+    
     return false;
   });
 }
@@ -147,16 +147,16 @@ export function formatDistance(meters: number): string {
   if (!meters && meters !== 0) {
     return "Calculando...";
   }
-
+  
   if (typeof meters === 'string') {
     meters = parseFloat(meters);
     if (isNaN(meters)) return "Calculando...";
   }
-
+  
   if (meters < 1000) {
     return `${Math.round(meters)} m`;
   }
-
+  
   const kilometers = meters / 1000;
   // Se for mais de 100km, arredonda para o inteiro mais próximo
   if (kilometers > 100) {
@@ -177,27 +177,27 @@ export function formatDuration(seconds: number): string {
   if (!seconds && seconds !== 0) {
     return "Calculando...";
   }
-
+  
   if (typeof seconds === 'string') {
     seconds = parseFloat(seconds);
     if (isNaN(seconds)) return "Calculando...";
   }
-
+  
   // Converter para valores inteiros para evitar problemas com arredondamentos
   seconds = Math.round(seconds);
-
+  
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
-
+  
   if (hours === 0) {
     return `${minutes} min`;
   }
-
+  
   // Se tiver minutos, mostra no formato "Xh Ymin"
   if (minutes > 0) {
     return `${hours}h ${minutes}min`;
   }
-
+  
   // Se não tiver minutos, mostra apenas as horas
   return `${hours}h`;
 }
@@ -215,18 +215,18 @@ export function formatCurrency(cents: number | null | undefined): string {
       maximumFractionDigits: 2
     }).format(0);
   }
-
+  
   // Se for uma string, converter para number
   if (typeof cents === 'string') {
     cents = parseFloat(cents);
     if (isNaN(cents)) return 'R$ 0,00';
   }
-
+  
   // Verificar se é um número válido
   if (!isFinite(cents)) {
     return 'R$ 0,00';
   }
-
+  
   // Garantir que estamos convertendo cents para reais corretamente
   try {
     // Usar o Intl.NumberFormat para formatação correta em BRL
@@ -259,7 +259,7 @@ export function formatRouteSequence(locations: Location[]): string {
   if (locations.length === 0) {
     return "";
   }
-
+  
   const names = locations.map(location => location.name);
   return names.join(" → ");
 }
@@ -271,19 +271,19 @@ function extractCityName(address: string): string | null {
   // Padrão para endereços brasileiros - a cidade geralmente vem antes do estado (UF)
   const cityPattern = /([A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú][a-zà-ú]+)*)\s*-\s*([A-Z]{2})/;
   const match = address.match(cityPattern);
-
+  
   if (match && match[1]) {
     return match[1].trim();
   }
-
+  
   // Tenta um padrão alternativo para endereços sem o formato padrão
   const altPattern = /(?:em|para|de|por)\s+([A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú][a-zà-ú]+)*)/;
   const altMatch = address.match(altPattern);
-
+  
   if (altMatch && altMatch[1]) {
     return altMatch[1].trim();
   }
-
+  
   return null;
 }
 
@@ -302,25 +302,25 @@ export function decodePolyline(encoded: string): { lat: number, lng: number }[] 
     let b;
     let shift = 0;
     let result = 0;
-
+    
     do {
       b = encoded.charCodeAt(index++) - 63;
       result |= (b & 0x1f) << shift;
       shift += 5;
     } while (b >= 0x20);
-
+    
     const dlat = ((result & 1) !== 0 ? ~(result >> 1) : (result >> 1));
     lat += dlat;
 
     shift = 0;
     result = 0;
-
+    
     do {
       b = encoded.charCodeAt(index++) - 63;
       result |= (b & 0x1f) << shift;
       shift += 5;
     } while (b >= 0x20);
-
+    
     const dlng = ((result & 1) !== 0 ? ~(result >> 1) : (result >> 1));
     lng += dlng;
 
@@ -350,56 +350,56 @@ export async function findTollsUsingGooglePlaces(map: any, route: any): Promise<
     // Array para armazenar os pedágios encontrados
     const tolls: PointOfInterest[] = [];
     let tollId = 20000; // ID base para pedágios Places
-
+    
     try {
       console.log("Iniciando busca de pedágios com Google Places API");
-
+      
       // Obter o polyline da rota
       const polyline = route.routes[0].overview_polyline.points;
       const path = decodePolyline(polyline);
-
+      
       // Criar um serviço Places
       const placesService = new window.google.maps.places.PlacesService(map);
-
+      
       // Determinar pontos de busca ao longo da rota (a cada 50km aproximadamente)
       const searchPoints: {lat: number, lng: number}[] = [];
       const SEARCH_INTERVAL_KM = 50; // Buscar a cada 50km
-
+      
       // Adicionar ponto inicial
       if (path.length > 0) {
         searchPoints.push(path[0]);
       }
-
+      
       // Adicionar pontos intermediários a cada SEARCH_INTERVAL_KM
       let distanceSum = 0;
       for (let i = 1; i < path.length; i++) {
         const prevPoint = path[i-1];
         const currentPoint = path[i];
-
+        
         const segmentDistance = calculateHaversineDistance(
           prevPoint.lat, prevPoint.lng, 
           currentPoint.lat, currentPoint.lng
         );
-
+        
         distanceSum += segmentDistance;
-
+        
         if (distanceSum >= SEARCH_INTERVAL_KM) {
           searchPoints.push(currentPoint);
           distanceSum = 0;
         }
       }
-
+      
       // Adicionar ponto final se não foi adicionado pela lógica anterior
       if (path.length > 1 && searchPoints[searchPoints.length - 1] !== path[path.length - 1]) {
         searchPoints.push(path[path.length - 1]);
       }
-
+      
       console.log(`Google Places: Buscando pedágios em ${searchPoints.length} pontos ao longo da rota`);
-
+      
       // Contador para controlar quando todos os pedidos foram concluídos
       let completedRequests = 0;
       let foundTolls = false;
-
+      
       // Processar cada ponto de busca
       searchPoints.forEach((point, index) => {
         // Criar request para buscar pontos de interesse do tipo 'toll_booth'
@@ -408,16 +408,16 @@ export async function findTollsUsingGooglePlaces(map: any, route: any): Promise<
           radius: 20000, // 20km de raio
           type: 'toll_booth' // Tipo específico para pedágios
         };
-
+        
         // Executar a busca com um pequeno atraso para não sobrecarregar a API
         setTimeout(() => {
           placesService.nearbySearch(request, (results: any, status: any) => {
             completedRequests++;
-
+            
             if (status === window.google.maps.places.PlacesServiceStatus.OK && results && results.length) {
               console.log(`Google Places: Encontrados ${results.length} pedágios próximos ao ponto ${index + 1}`);
               foundTolls = true;
-
+              
               // Processar cada resultado
               results.forEach((place: any) => {
                 // Verificar se este pedágio já foi adicionado (evitar duplicatas)
@@ -427,11 +427,11 @@ export async function findTollsUsingGooglePlaces(map: any, route: any): Promise<
                     place.geometry.location.lat(), place.geometry.location.lng()
                   ) < 1 // Se estiver a menos de 1km, considerar duplicata
                 );
-
+                
                 if (!isDuplicate) {
                   // Criar objeto de ponto de interesse
                   const tollName = place.name || `Pedágio ${index + 1}`;
-
+                  
                   const poi: PointOfInterest = {
                     id: tollId++,
                     name: tollName,
@@ -443,10 +443,10 @@ export async function findTollsUsingGooglePlaces(map: any, route: any): Promise<
                     ailogSource: false,
                     googlePlacesSource: true
                   };
-
+                  
                   console.log(`Google Places: Adicionado pedágio "${tollName}" em ${poi.lat},${poi.lng}`);
                   tolls.push(poi);
-
+                  
                   // Opcionalmente, buscar detalhes adicionais
                   placesService.getDetails({
                     placeId: place.place_id,
@@ -468,11 +468,11 @@ export async function findTollsUsingGooglePlaces(map: any, route: any): Promise<
                 }
               });
             }
-
+            
             // Se todos os pedidos foram concluídos, resolver a Promise
             if (completedRequests === searchPoints.length) {
               console.log(`Google Places: Busca completa, encontrados ${tolls.length} pedágios únicos`);
-
+              
               if (!foundTolls) {
                 console.log("Google Places: Nenhum pedágio encontrado pela API. Verificando rodovias conhecidas.");
                 // Se não encontrou pedágios, usa o fallback de rodovias conhecidas
@@ -500,15 +500,15 @@ export function findTollsFromKnownHighways(directionsResult: any): PointOfIntere
   if (!directionsResult || !directionsResult.routes || directionsResult.routes.length === 0) {
     return [];
   }
-
+  
   console.log("Buscando pedágios em rodovias conhecidas");
   const tollPoints: PointOfInterest[] = [];
   let tollId = 30000; // ID base para pedágios de rodovias conhecidas
-
+  
   try {
     const route = directionsResult.routes[0];
     const legs = route.legs || [];
-
+    
     // Identificar rodovias mencionadas
     const rodovias: string[] = [];
     legs.forEach(leg => {
@@ -531,7 +531,7 @@ export function findTollsFromKnownHighways(directionsResult: any): PointOfIntere
         });
       }
     });
-
+    
     // Mapa de pedágios conhecidos por rodovia - Dados mais completos
     const pedagiosPorRodovia: {[key: string]: {nome: string, lat: string, lng: string, custo?: number}[]} = {
       'SP-255': [
@@ -562,13 +562,13 @@ export function findTollsFromKnownHighways(directionsResult: any): PointOfIntere
         {nome: 'Pedágio SP-330 (Colômbia)', lat: '-20.1775', lng: '-48.7064', custo: 1100}
       ]
     };
-
+    
     // Para cada rodovia detectada, adicionar pedágios conhecidos
     rodovias.forEach(rodovia => {
       const pedagios = pedagiosPorRodovia[rodovia];
       if (pedagios) {
         console.log(`Encontrados ${pedagios.length} pedágios conhecidos na rodovia ${rodovia}`);
-
+        
         pedagios.forEach(pedagio => {
           // Criar objeto de ponto de interesse
           const poi: PointOfInterest = {
@@ -581,11 +581,11 @@ export function findTollsFromKnownHighways(directionsResult: any): PointOfIntere
             roadName: rodovia,
             knownHighwaySource: true
           };
-
+          
           // Verificar se este pedágio não está muito longe da rota
           // Isso evita adicionar pedágios de trechos da rodovia que não fazem parte da rota
           const withinRoute = isPointNearRoute(poi, directionsResult);
-
+          
           if (withinRoute) {
             console.log(`Adicionado pedágio conhecido: ${pedagio.nome}`);
             tollPoints.push(poi);
@@ -595,11 +595,11 @@ export function findTollsFromKnownHighways(directionsResult: any): PointOfIntere
         });
       }
     });
-
+    
   } catch (error) {
     console.error("Erro ao buscar pedágios em rodovias conhecidas:", error);
   }
-
+  
   return tollPoints;
 }
 
@@ -620,56 +620,56 @@ export async function findWeighingStationsWithGooglePlaces(map: any, route: any)
     // Array para armazenar as balanças encontradas
     const stations: PointOfInterest[] = [];
     let stationId = 40000; // ID base para balanças via Places
-
+    
     try {
       console.log("Iniciando busca de balanças com Google Places API");
-
+      
       // Obter o polyline da rota
       const polyline = route.routes[0].overview_polyline.points;
       const path = decodePolyline(polyline);
-
+      
       // Criar um serviço Places
       const placesService = new window.google.maps.places.PlacesService(map);
-
+      
       // Determinar pontos de busca ao longo da rota (a cada 75km aproximadamente)
       const searchPoints: {lat: number, lng: number}[] = [];
       const SEARCH_INTERVAL_KM = 75; // Balanças são mais espaçadas que pedágios
-
+      
       // Adicionar ponto inicial
       if (path.length > 0) {
         searchPoints.push(path[0]);
       }
-
+      
       // Adicionar pontos intermediários a cada SEARCH_INTERVAL_KM
       let distanceSum = 0;
       for (let i = 1; i < path.length; i++) {
         const prevPoint = path[i-1];
         const currentPoint = path[i];
-
+        
         const segmentDistance = calculateHaversineDistance(
           prevPoint.lat, prevPoint.lng, 
           currentPoint.lat, currentPoint.lng
         );
-
+        
         distanceSum += segmentDistance;
-
+        
         if (distanceSum >= SEARCH_INTERVAL_KM) {
           searchPoints.push(currentPoint);
           distanceSum = 0;
         }
       }
-
+      
       // Adicionar ponto final se não foi adicionado pela lógica anterior
       if (path.length > 1 && searchPoints[searchPoints.length - 1] !== path[path.length - 1]) {
         searchPoints.push(path[path.length - 1]);
       }
-
+      
       console.log(`Google Places: Buscando balanças em ${searchPoints.length} pontos ao longo da rota`);
-
+      
       // Contador para controlar quando todos os pedidos foram concluídos
       let completedRequests = 0;
       let foundStations = false;
-
+      
       // Keywords para encontrar balanças no Brasil
       const weighingStationKeywords = [
         'balança',
@@ -679,13 +679,13 @@ export async function findWeighingStationsWithGooglePlaces(map: any, route: any)
         'balança rodoviária',
         'fiscalização de peso'
       ];
-
+      
       // Processar cada ponto de busca
       searchPoints.forEach((point, index) => {
         // Para cada ponto, fazer múltiplas buscas com diferentes palavras-chave
         let keywordSearchesCompleted = 0;
         let stationsFoundAtThisPoint: PointOfInterest[] = [];
-
+        
         weighingStationKeywords.forEach(keyword => {
           // Criar request para buscar por palavra-chave
           const request = {
@@ -693,16 +693,16 @@ export async function findWeighingStationsWithGooglePlaces(map: any, route: any)
             radius: 30000, // 30km de raio
             keyword: keyword
           };
-
+          
           // Executar a busca com um pequeno atraso
           setTimeout(() => {
             placesService.nearbySearch(request, (results: any, status: any) => {
               keywordSearchesCompleted++;
-
+              
               if (status === window.google.maps.places.PlacesServiceStatus.OK && results && results.length) {
                 console.log(`Google Places: Encontradas ${results.length} possíveis balanças com a palavra "${keyword}" próximas ao ponto ${index + 1}`);
                 foundStations = true;
-
+                
                 // Processar cada resultado
                 results.forEach((place: any) => {
                   // Verificar se este local parece ser realmente uma balança
@@ -712,7 +712,7 @@ export async function findWeighingStationsWithGooglePlaces(map: any, route: any)
                       place.name?.toLowerCase().includes(hint) || 
                       place.vicinity?.toLowerCase().includes(hint)
                     );
-
+                  
                   if (isLikelyStation) {
                     // Verificar se já foi adicionado
                     const isDuplicate = stationsFoundAtThisPoint.some(station => 
@@ -721,11 +721,11 @@ export async function findWeighingStationsWithGooglePlaces(map: any, route: any)
                         place.geometry.location.lat(), place.geometry.location.lng()
                       ) < 1 // Se estiver a menos de 1km, considerar duplicata
                     );
-
+                    
                     if (!isDuplicate) {
                       // Extrair informações do local
                       const stationName = place.name || `Balança ${index + 1}`;
-
+                      
                       const poi: PointOfInterest = {
                         id: stationId++,
                         name: stationName,
@@ -736,14 +736,14 @@ export async function findWeighingStationsWithGooglePlaces(map: any, route: any)
                         roadName: place.vicinity || '',
                         googlePlacesSource: true
                       };
-
+                      
                       console.log(`Google Places: Adicionada balança "${stationName}" em ${poi.lat},${poi.lng}`);
                       stationsFoundAtThisPoint.push(poi);
                     }
                   }
                 });
               }
-
+              
               // Se terminamos todas as buscas por palavra-chave neste ponto
               if (keywordSearchesCompleted === weighingStationKeywords.length) {
                 // Adicionar as balanças encontradas à lista principal
@@ -755,19 +755,19 @@ export async function findWeighingStationsWithGooglePlaces(map: any, route: any)
                       parseFloat(existingStation.lat), parseFloat(existingStation.lng)
                     ) < 1 // Se estiver a menos de 1km, considerar duplicata
                   );
-
+                  
                   if (!isDuplicate) {
                     stations.push(station);
                   }
                 });
-
+                
                 // Incrementar o contador de pontos completos
                 completedRequests++;
-
+                
                 // Se todos os pontos foram processados, resolver a Promise
                 if (completedRequests === searchPoints.length) {
                   console.log(`Google Places: Busca completa, encontradas ${stations.length} balanças únicas`);
-
+                  
                   if (!foundStations) {
                     console.log("Google Places: Nenhuma balança encontrada pela API. Usando dados conhecidos.");
                     // Se não encontrou balanças, usar o fallback
@@ -778,7 +778,8 @@ export async function findWeighingStationsWithGooglePlaces(map: any, route: any)
                   }
                 }
               }
-            });          }, index * 200 + weighingStationKeywords.indexOf(keyword) * 50); // Atraso escalonado
+            });
+          }, index * 200 + weighingStationKeywords.indexOf(keyword) * 50); // Atraso escalonado
         });
       });
     } catch (error) {
@@ -796,20 +797,20 @@ export function findKnownWeighingStations(directionsResult: any): PointOfInteres
   if (!directionsResult || !directionsResult.routes || directionsResult.routes.length === 0) {
     return [];
   }
-
+  
   console.log("Buscando balanças em locais conhecidos");
   const stations: PointOfInterest[] = [];
   let stationId = 50000; // ID base para balanças conhecidas
-
+  
   try {
     // Extrair cidades e rodovias da rota
     const route = directionsResult.routes[0];
     const legs = route.legs || [];
-
+    
     // Conjuntos para armazenar cidades e rodovias únicas
     const citiesInRoute = new Set<string>();
     const highwaysInRoute = new Set<string>();
-
+    
     // Extrair cidades dos endereços
     legs.forEach((leg: any) => {
       if (leg.start_address) {
@@ -824,7 +825,7 @@ export function findKnownWeighingStations(directionsResult: any): PointOfInteres
           citiesInRoute.add(cityMatch[1].trim());
         }
       }
-
+      
       // Extrair rodovias das instruções
       if (leg.steps) {
         leg.steps.forEach((step: any) => {
@@ -842,15 +843,15 @@ export function findKnownWeighingStations(directionsResult: any): PointOfInteres
         });
       }
     });
-
+    
     console.log(`Cidades na rota: ${Array.from(citiesInRoute).join(', ')}`);
     console.log(`Rodovias na rota: ${Array.from(highwaysInRoute).join(', ')}`);
-
+    
     // Tentar buscar do endpoint primeiro (método preferido)
     try {
       const citiesArray = Array.from(citiesInRoute) as string[];
       const highwaysArray = Array.from(highwaysInRoute) as string[];
-
+      
       // Usar a nova função para obter as balanças
       const externalStations = fetchWeighingStationsAsync(citiesArray, highwaysArray);
       if (externalStations && externalStations.length > 0) {
@@ -862,34 +863,32 @@ export function findKnownWeighingStations(directionsResult: any): PointOfInteres
       console.error("Erro ao buscar balanças da API externa:", apiError);
       // Continuar com o método de fallback
     }
-
+    
     // Se o endpoint falhar, cair para o método de fallback com dados locais
     // Importar dados do arquivo weighingStationData aqui, dinamicamente
     // Isso é apenas um fallback, não deve ser o caminho principal
-
+    
     // Exemplo de como seria com dados locais codificados
     const balancasPorRodovia: {[key: string]: {nome: string, lat: string, lng: string, km?: number}[]} = {
       'SP-255': [
         {nome: 'Balança Luís Antônio (km 150)', lat: '-21.5510', lng: '-47.7770', km: 150}
       ]
     };
-
+    
     const balancasPorCidade: {[key: string]: {nome: string, lat: string, lng: string, rodovia?: string}[]} = {
       'Luís Antônio': [
         {nome: 'Balança Luís Antônio', lat: '-21.5510', lng: '-47.7770', rodovia: 'SP-255'}
       ]
     };
-
+    
     // Adicionar balanças por rodovia
     highwaysInRoute.forEach((rodovia: any) => {
       const balancas = balancasPorRodovia[rodovia];
       if (balancas) {
         console.log(`Analisando ${balancas.length} balanças na rodovia ${rodovia}`);
-
+        
         balancas.forEach(balanca => {
-          // Criar serviço Places se ainda não existe
-          const placesService = new window.google.maps.places.PlacesService(map);
-
+          // Criar objeto de ponto de interesse
           const poi: PointOfInterest = {
             id: stationId++,
             name: balanca.nome,
@@ -899,10 +898,10 @@ export function findKnownWeighingStations(directionsResult: any): PointOfInteres
             roadName: rodovia,
             knownHighwaySource: true
           };
-
+          
           // Verificar se está próxima da rota
           const withinRoute = isPointNearRoute(poi, directionsResult, 20); // 20km de tolerância
-
+          
           if (withinRoute) {
             console.log(`Adicionada balança conhecida: ${balanca.nome}`);
             stations.push(poi);
@@ -912,11 +911,11 @@ export function findKnownWeighingStations(directionsResult: any): PointOfInteres
         });
       }
     });
-
+    
   } catch (error) {
     console.error("Erro ao buscar balanças conhecidas:", error);
   }
-
+  
   return stations;
 }
 
@@ -931,16 +930,16 @@ export async function getEnhancedWeighingStations(directionsResult: any): Promis
   if (!directionsResult || !directionsResult.routes || directionsResult.routes.length === 0) {
     return [];
   }
-
+  
   try {
     // Extrair cidades e rodovias da rota
     const route = directionsResult.routes[0];
     const legs = route.legs || [];
-
+    
     // Conjuntos para armazenar cidades e rodovias únicas
     const citiesInRoute = new Set<string>();
     const highwaysInRoute = new Set<string>();
-
+    
     // Extrair cidades dos endereços
     legs.forEach((leg: any) => {
       if (leg.start_address) {
@@ -955,7 +954,7 @@ export async function getEnhancedWeighingStations(directionsResult: any): Promis
           citiesInRoute.add(cityMatch[1].trim());
         }
       }
-
+      
       // Extrair rodovias das instruções
       if (leg.steps) {
         leg.steps.forEach((step: any) => {
@@ -973,17 +972,17 @@ export async function getEnhancedWeighingStations(directionsResult: any): Promis
         });
       }
     });
-
+    
     // Converter para arrays de strings
     const cities = Array.from(citiesInRoute as Set<string>);
     const highways = Array.from(highwaysInRoute as Set<string>);
-
+    
     console.log("Cidades detectadas:", cities);
     console.log("Rodovias detectadas:", highways);
-
+    
     // Buscar balanças da API
     const apiStations = await fetchWeighingStationsFromAPI(cities, highways);
-
+    
     // Buscar balanças com Google Places API (fallback, se tiver acesso à API)
     let placesStations: PointOfInterest[] = [];
     if (window.google && window.google.maps) {
@@ -997,17 +996,17 @@ export async function getEnhancedWeighingStations(directionsResult: any): Promis
         }
       }
     }
-
+    
     // Buscar balanças de fontes locais (fallback)
     const localStations = await fetchLocalWeighingStations(cities, highways, directionsResult);
-
+    
     // Combinar e remover duplicatas
     const allStations = [...apiStations, ...placesStations, ...localStations];
     const uniqueStations = removeDuplicateStations(allStations);
-
+    
     console.log(`Total de balanças encontradas: ${uniqueStations.length}`);
     return uniqueStations;
-
+    
   } catch (error) {
     console.error("Erro ao buscar balanças aprimoradas:", error);
     return [];
@@ -1023,7 +1022,7 @@ export async function getEnhancedWeighingStations(directionsResult: any): Promis
 export async function fetchWeighingStationsFromAPI(cities: string[], highways: string[]): Promise<PointOfInterest[]> {
   try {
     console.log("Buscando balanças da API...");
-
+    
     // Construir URL com parâmetros
     const params = new URLSearchParams();
     if (cities.length > 0) {
@@ -1032,14 +1031,14 @@ export async function fetchWeighingStationsFromAPI(cities: string[], highways: s
     if (highways.length > 0) {
       params.set('highways', highways.join(','));
     }
-
+    
     // Fazer a requisição
     const response = await fetch(`/api/weighing-stations?${params.toString()}`);
-
+    
     if (!response.ok) {
       throw new Error(`Erro na requisição: ${response.status}`);
     }
-
+    
     const stations = await response.json();
     console.log(`API retornou ${stations.length} balanças`);
     return stations;
@@ -1064,14 +1063,14 @@ export function fetchWeighingStationsAsync(cities: string[], highways: string[])
 export async function fetchLocalWeighingStations(cities: string[], highways: string[], directionsResult: any): Promise<PointOfInterest[]> {
   try {
     console.log("Buscando balanças de fontes locais...");
-
+    
     // Aqui, podemos importar dinâmicamente as funções do arquivo weighingStationData
     // Porém, como não queremos modificar a estrutura, vamos usar os dados básicos
-
+    
     // Verificar quais balanças conhecidas estão próximas da rota
     const knownStations = findKnownWeighingStations(directionsResult);
     console.log(`Encontradas ${knownStations.length} balanças conhecidas próximas à rota`);
-
+    
     return knownStations;
   } catch (error) {
     console.error("Erro ao buscar balanças locais:", error);
@@ -1084,7 +1083,7 @@ export async function fetchLocalWeighingStations(cities: string[], highways: str
  */
 export function removeDuplicateStations(stations: PointOfInterest[]): PointOfInterest[] {
   const uniqueStations: PointOfInterest[] = [];
-
+  
   stations.forEach(station => {
     // Verificar se já existe uma estação similar na lista de únicas
     const isDuplicate = uniqueStations.some(existingStation => {
@@ -1101,13 +1100,13 @@ export function removeDuplicateStations(stations: PointOfInterest[]): PointOfInt
         return station.name === existingStation.name;
       }
     });
-
+    
     // Se não for duplicata, adicionar à lista de únicas
     if (!isDuplicate) {
       uniqueStations.push(station);
     }
   });
-
+  
   return uniqueStations;
 }
 
@@ -1122,23 +1121,23 @@ function isPointNearRoute(point: PointOfInterest, directionsResult: any, maxDist
   if (!directionsResult?.routes?.[0]?.overview_path) {
     return false;
   }
-
+  
   try {
     const path = directionsResult.routes[0].overview_path;
     const pointLatLng = { lat: parseFloat(point.lat), lng: parseFloat(point.lng) };
-
+    
     // Verificar distância para cada ponto da rota
     for (const pathPoint of path) {
       const distance = calculateHaversineDistance(
         pointLatLng.lat, pointLatLng.lng,
         pathPoint.lat(), pathPoint.lng()
       );
-
+      
       if (distance <= maxDistanceKm) {
         return true;
       }
     }
-
+    
     return false;
   } catch (error) {
     console.error("Erro ao verificar proximidade do ponto com a rota:", error);
@@ -1159,19 +1158,19 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
   const legs = route.legs || [];
   const tollPoints: PointOfInterest[] = [];
   let tollsAdded = false;
-
+  
   // ID base para os pedágios
   let tollId = 10000;
-
+  
   console.log("Extraindo informações de pedágio usando todos os métodos disponíveis");
-
+  
   // MÉTODO 1: Verificar se a resposta da API contém pedágios explícitos
   legs.forEach((leg: any, legIndex: number) => {
     // Verificar se há informações de pedágio neste trecho
     if (leg.toll_info && leg.toll_info.toll_points && leg.toll_info.toll_points.length > 0) {
       console.log(`Método 1: Encontrados ${leg.toll_info.toll_points.length} pedágios no trecho ${legIndex + 1}`);
       tollsAdded = true;
-
+      
       // Processar cada ponto de pedágio informado pela API
       leg.toll_info.toll_points.forEach((tollPoint: any, tollIndex: number) => {
         if (tollPoint.location) {
@@ -1179,15 +1178,15 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
           const tollName = tollPoint.name || `Pedágio ${legIndex + 1}.${tollIndex + 1}`;
           const lat = tollPoint.location.lat.toString();
           const lng = tollPoint.location.lng.toString();
-
+          
           console.log(`Pedágio da API: ${tollName} em ${lat},${lng}`);
-
+          
           // Obter custo do pedágio
           let cost = 0;
           if (tollPoint.cost && tollPoint.cost.value) {
             cost = Math.round(tollPoint.cost.value * 100); // converter para centavos
           }
-
+          
           // Criar objeto de ponto de interesse
           const poi: PointOfInterest = {
             id: tollId++,
@@ -1201,17 +1200,17 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
               ? leg.toll_info.toll_passes.map((pass: any) => pass.name).join(", ")
               : ''
           };
-
+          
           tollPoints.push(poi);
         }
       });
     }
   });
-
+  
   // MÉTODO 2: Se não encontramos pedágios pelo método 1, tentar extrair das steps
   if (!tollsAdded) {
     console.log("Método 1 não encontrou pedágios, tentando método 2 (steps)");
-
+    
     // Percorrer os trechos e passos para identificar menções a pedágios
     legs.forEach((leg: any, legIndex: number) => {
       if (leg.steps && leg.steps.length > 0) {
@@ -1221,20 +1220,20 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
              (step.html_instructions.includes("pedágio") || 
               step.html_instructions.includes("toll") ||
               step.html_instructions.includes("praça de pedágio"))) {
-
+            
             console.log(`Método 2: Passo ${stepIndex} contém menção a pedágio: ${step.html_instructions}`);
-
+            
             // Calcular uma posição aproximada no meio do passo
             if (step.start_location && step.end_location) {
               const lat = ((step.start_location.lat + step.end_location.lat) / 2).toString();
               const lng = ((step.start_location.lng + step.end_location.lng) / 2).toString();
-
+              
               // Criar um nome baseado nas instruções
               const instructions = step.html_instructions.replace(/<[^>]*>/g, '');
               const tollName = `Pedágio ${instructions.substring(0, 30)}...`;
-
+              
               console.log(`Pedágio do step: ${tollName} em ${lat},${lng}`);
-
+              
               // Criar objeto de ponto de interesse
               const poi: PointOfInterest = {
                 id: tollId++,
@@ -1246,7 +1245,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
                 roadName: `Trecho ${legIndex + 1}`,
                 restrictions: ''
               };
-
+              
               tollPoints.push(poi);
               tollsAdded = true;
             }
@@ -1255,11 +1254,11 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
       }
     });
   }
-
+  
   // MÉTODO 3: Se ainda não encontramos pedágios, usar pontos predefinidos com base na rodovia
   if (!tollsAdded) {
     console.log("Método 3: Procurando por rodovias conhecidas para identificar pedágios");
-
+    
     // Identificar rodovias mencionadas
     const rodovias: string[] = [];
     legs.forEach(leg => {
@@ -1282,11 +1281,11 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
         });
       }
     });
-
+    
     // Se temos rodovias, adicionar pedágios pré-conhecidos
     if (rodovias.length > 0) {
       console.log(`Método 3: Rodovias detectadas: ${rodovias.join(', ')}`);
-
+      
       // Mapa de pedágios conhecidos por rodovia - Dados mais completos
       const pedagiosPorRodovia: {[key: string]: {nome: string, lat: string, lng: string, custo?: number}[]} = {
         'SP-255': [
@@ -1344,7 +1343,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
           {nome: 'Pedágio SP-348 (Limeira)', lat: '-22.5839', lng: '-47.3794', custo: 1100}
         ]
       };
-
+      
       // Balanças por rodovia (pontos de pesagem)
       const balancasPorRodovia: {[key: string]: {nome: string, lat: string, lng: string, restricoes?: string}[]} = {
         'SP-255': [
@@ -1367,7 +1366,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
           {nome: 'Balança SP-225 (km 177)', lat: '-22.2734', lng: '-48.3917', restricoes: 'Veículos acima de 1 eixo'}
         ]
       };
-
+      
       // Adicionar pedágios importantes por cidade (independente da rodovia)
       const pedagogiosPorCidade: {[key: string]: {nome: string, lat: string, lng: string, custo?: number}[]} = {
         'Dois Córregos': [
@@ -1395,7 +1394,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
           {nome: 'Pedágio Bauru/Agudos', lat: '-22.4689', lng: '-49.1134', custo: 1050}
         ]
       };
-
+      
       // Balanças por cidade
       const balancasPorCidade: {[key: string]: {nome: string, lat: string, lng: string, restricoes?: string}[]} = {
         'Ribeirão Preto': [
@@ -1409,7 +1408,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
           {nome: 'Balança Jaú (Entrada Leste)', lat: '-22.2978', lng: '-48.5012', restricoes: 'Veículos acima de 1 eixo'}
         ]
       };
-
+      
       // Adicionar pedágios por cidades na rota
       let cidadesNaRota = legs.flatMap(leg => 
         leg.steps?.flatMap(step => {
@@ -1422,28 +1421,28 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
           return [];
         }) || []
       );
-
+      
       // Adicionar cidades de início e fim da rota
       if (legs.length > 0) {
         const firstLeg = legs[0];
         const lastLeg = legs[legs.length - 1];
-
+        
         if (firstLeg.start_address) {
           const startCity = extractCityName(firstLeg.start_address);
           if (startCity) cidadesNaRota.push(startCity);
         }
-
+        
         if (lastLeg.end_address) {
           const endCity = extractCityName(lastLeg.end_address);
           if (endCity) cidadesNaRota.push(endCity);
         }
       }
-
+      
       // Remover duplicatas de cidades
       cidadesNaRota = [...new Set(cidadesNaRota)];
-
+      
       console.log("Cidades na rota:", cidadesNaRota);
-
+      
       // Verificar se a rota passa por Luís Antônio para adicionar a balança
       if (cidadesNaRota.includes('Luís Antônio') || cidadesNaRota.includes('Luis Antonio') || 
           (cidadesNaRota.includes('Dois Córregos') && cidadesNaRota.includes('Ribeirão Preto'))) {
@@ -1458,11 +1457,11 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
           roadName: 'SP-255',
           restrictions: 'Veículos acima de 1 eixo'
         };
-
+        
         tollPoints.push(poi);
         console.log('Adicionando balança de Luís Antônio manualmente');
       }
-
+      
       // ID base para as balanças
       let balancaId = 20000;
 
@@ -1473,7 +1472,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
         if (pedagogios) {
           pedagogios.forEach(pedagio => {
             console.log(`Adicionando pedágio por cidade ${cidade}: ${pedagio.nome}`);
-
+            
             const poi: PointOfInterest = {
               id: tollId++,
               name: pedagio.nome,
@@ -1484,21 +1483,18 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
               roadName: `Próximo a ${cidade}`,
               restrictions: 'Pedágio por cidade'
             };
-
+            
             tollPoints.push(poi);
             tollsAdded = true;
           });
         }
-
+        
         // Adicionar balanças por cidade
         const balancas = balancasPorCidade[cidade];
         if (balancas) {
           balancas.forEach(balanca => {
             console.log(`Adicionando balança por cidade ${cidade}: ${balanca.nome}`);
-
-            // Criar serviço Places se ainda não existe
-            // const placesService = new window.google.maps.places.PlacesService(map);
-
+            
             const poi: PointOfInterest = {
               id: balancaId++,
               name: balanca.nome,
@@ -1509,20 +1505,20 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
               roadName: `Próximo a ${cidade}`,
               restrictions: balanca.restricoes || 'Veículos de carga'
             };
-
+            
             tollPoints.push(poi);
           });
         }
       });
-
+      
       // Adicionar pedágios para as rodovias detectadas
       rodovias.forEach(rodovia => {
         // Adicionar pedágios por rodovia
         const pedagios = pedagiosPorRodovia[rodovia];
         if (pedagios) {
-          pedagogios.forEach(pedagio => {
+          pedagios.forEach(pedagio => {
             console.log(`Método 3: Adicionando pedágio pré-conhecido: ${pedagio.nome}`);
-
+            
             const poi: PointOfInterest = {
               id: tollId++,
               name: pedagio.nome,
@@ -1533,21 +1529,18 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
               roadName: rodovia,
               restrictions: 'Pedágio pré-definido'
             };
-
+            
             tollPoints.push(poi);
             tollsAdded = true;
           });
         }
-
+        
         // Adicionar balanças por rodovia
         const balancas = balancasPorRodovia[rodovia];
         if (balancas) {
           balancas.forEach(balanca => {
             console.log(`Método 3: Adicionando balança pré-conhecida: ${balanca.nome}`);
-
-            // Criar serviço Places se ainda não existe
-            //const placesService = new window.google.maps.places.PlacesService(map);
-
+            
             const poi: PointOfInterest = {
               id: balancaId++,
               name: balanca.nome,
@@ -1558,43 +1551,43 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
               roadName: rodovia,
               restrictions: balanca.restricoes || 'Veículos de carga'
             };
-
+            
             tollPoints.push(poi);
           });
         }
       });
     }
   }
-
+  
   // MÉTODO 4: Se ainda não encontramos pedágios, procurar por sinais específicos nos polylines
   if (!tollsAdded && route.overview_polyline && route.overview_polyline.points) {
     console.log("Método 4: Analisando polyline da rota para encontrar pontos de pedágio");
-
+    
     // Exemplo de interpretação do polyline
     const points = decodePolyline(route.overview_polyline.points);
-
+    
     if (points.length > 0) {
       // Identificar pedágios em pontos específicos da rota (a cada 20-30km)
       const routeLength = route.legs.reduce((total: number, leg: any) => 
         total + (leg.distance ? leg.distance.value : 0), 0);
-
+      
       if (routeLength > 100000) { // Se a rota for maior que 100km
         // Calcular quantos pedágios esperamos encontrar (aproximadamente a cada 25km em rodovias pedagiadas)
         const expectedTolls = Math.floor(routeLength / 50000); // 1 pedágio a cada 50km em média
         console.log(`Método 4: Rota de ${routeLength/1000}km, esperando aproximadamente ${expectedTolls} pedágios`);
-
+        
         if (expectedTolls > 0 && points.length > 20) {
           // Distribuir pedágios aproximadamente uniformemente ao longo da rota
           const interval = Math.floor(points.length / (expectedTolls + 1));
-
+          
           for (let i = 1; i <= expectedTolls; i++) {
             const pointIndex = i * interval;
             if (pointIndex < points.length) {
               const point = points[pointIndex];
-
+              
               const tollName = `Possível Pedágio ${i}`;
               console.log(`Método 4: Possível pedágio em ${point.lat},${point.lng}`);
-
+              
               const poi: PointOfInterest = {
                 id: tollId++,
                 name: tollName,
@@ -1605,7 +1598,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
                 roadName: 'Desconhecida',
                 restrictions: 'Pedágio inferido'
               };
-
+              
               tollPoints.push(poi);
               tollsAdded = true;
             }
@@ -1614,7 +1607,7 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
       }
     }
   }
-
+  
   // Resultado final
   if (tollPoints.length > 0) {
     console.log(`Total de ${tollPoints.length} pedágios encontrados por todos os métodos`);
@@ -1624,63 +1617,6 @@ export function extractTollsFromRoute(directionsResult: any): PointOfInterest[] 
   } else {
     console.log("Nenhum pedágio encontrado por qualquer método");
   }
-
-  return tollPoints;
-}
-
-/**
- * Refina as coordenadas de um local utilizando a API Places do Google Maps
- * @param placesService Instância do PlacesService
- * @param poi Ponto de interesse com as coordenadas iniciais
- * @returns Promise com as coordenadas refinadas, ou null em caso de falha
- */
-async function refineLocationCoordinates(placesService: any, poi: PointOfInterest): Promise<{ lat: string, lng: string } | null> {
-  // Verificar se estamos no GitHub Pages
-  const isGitHubPages = window.location.hostname.includes('github.io');
   
-  if (isGitHubPages) {
-    // No GitHub Pages, retornar as coordenadas originais
-    console.log(`GitHub Pages: Usando coordenadas originais para ${poi.name}`);
-    return { lat: poi.lat, lng: poi.lng };
-  }
-
-  if (!placesService || !poi || !poi.lat || !poi.lng) {
-    return null;
-  }
-
-  return new Promise((resolve) => {
-    try {
-      // Criar request com base nas coordenadas existentes
-      const request = {
-        query: poi.name,
-        locationBias: {
-          radius: 500, // Ajustar raio conforme necessário (em metros)
-          center: new window.google.maps.LatLng(parseFloat(poi.lat), parseFloat(poi.lng))
-        }
-      };
-
-      // Executar a busca de texto
-      placesService.findPlaceFromQuery(request, (results: any, status: any) => {
-        if (status === window.google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
-          // Pegar o primeiro resultado
-          const place = results[0];
-
-          // Extrair as coordenadas refinadas
-          const refinedLat = place.geometry.location.lat().toString();
-          const refinedLng = place.geometry.location.lng().toString();
-
-          console.log(`Coordenadas refinadas para ${poi.name}: ${refinedLat}, ${refinedLng}`);
-
-          // Resolver com as coordenadas refinadas
-          resolve({ lat: refinedLat, lng: refinedLng });
-        } else {
-          console.warn(`Não foi possível refinar as coordenadas para ${poi.name}`);
-          resolve(null);
-        }
-      });
-    } catch (error) {
-      console.error("Erro ao refinar coordenadas:", error);
-      resolve(null);
-    }
-  });
+  return tollPoints;
 }
