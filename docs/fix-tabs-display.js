@@ -1,6 +1,7 @@
 /**
- * Script para correção do sistema de abas
+ * Script para correção do sistema de abas - v1.0.1 (16/05/2025)
  * Esta solução resolve o problema de conflito entre diferentes scripts de abas
+ * e garante que a sidebar permaneça visível durante a expansão das abas
  */
 (function() {
     // Rastreamento de estado
