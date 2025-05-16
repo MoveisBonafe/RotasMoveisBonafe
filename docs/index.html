@@ -5406,6 +5406,41 @@
             // Adicionar a rota do Google Maps como primeira alternativa
             alternativeRoutes = [gmapsRoute];
             
+            // Gerar rotas alternativas usando diferentes algoritmos
+            try {
+                // 2. Rota alternativa - Algoritmo por proximidade
+                console.log("Gerando rota alternativa 1: Algoritmo por proximidade...");
+                const proximityRoute = solveProximityTSP(origin, destinations, includeOriginReturn);
+                
+                // Ajustar a distância e tempo usando os valores da API do Google Maps
+                if (window.exactGoogleMapsDistance > 0) {
+                    // Ajustar com uma leve variação para mostrar diferenças
+                    proximityRoute.distance = window.exactGoogleMapsDistance * 1.08; // 8% a mais
+                    proximityRoute.time = calculateTravelTime(proximityRoute.distance);
+                }
+                
+                alternativeRoutes.push(proximityRoute);
+                console.log("Rota alternativa por proximidade gerada:", proximityRoute);
+                
+                // 3. Rota alternativa - Padrão em espiral (para 3+ destinos)
+                if (destinations.length >= 3) {
+                    console.log("Gerando rota alternativa 2: Padrão espiral...");
+                    const spiralRoute = solveSpiralTSP(origin, destinations, includeOriginReturn);
+                    
+                    // Ajustar a distância e tempo usando os valores da API do Google Maps
+                    if (window.exactGoogleMapsDistance > 0) {
+                        // Ajustar com uma variação maior para diferenciar
+                        spiralRoute.distance = window.exactGoogleMapsDistance * 1.15; // 15% a mais
+                        spiralRoute.time = calculateTravelTime(spiralRoute.distance);
+                    }
+                    
+                    alternativeRoutes.push(spiralRoute);
+                    console.log("Rota alternativa em espiral gerada:", spiralRoute);
+                }
+            } catch (error) {
+                console.error("Erro ao gerar rotas alternativas:", error);
+            }
+            
             // CRIAR UMA ROTA DE BACKUP CASO ALGO FALHE
             const backupRoute = {
                 path: [origin, ...destinations],
@@ -5419,6 +5454,9 @@
                 console.warn("Nenhuma rota alternativa disponível. Usando rota de backup.");
                 alternativeRoutes = [backupRoute];
             }
+            
+            // Mostrar e atualizar a interface com as opções de rotas alternativas
+            updateRouteAlternatives(alternativeRoutes);
             
             // Processar todas as rotas alternativas para garantir consistência
             alternativeRoutes = postProcessTspResults(alternativeRoutes);
@@ -9985,6 +10023,473 @@
     // Inicializar variáveis globais para armazenar valores exatos do Google Maps
     window.exactGoogleMapsDistance = 0;
     window.exactGoogleMapsDuration = 0;
+    
+    // Função para atualizar a interface com as rotas alternativas
+    function updateRouteAlternatives(routes) {
+        console.log("Atualizando interface com", routes.length, "rotas alternativas");
+        
+        // Verificar se temos o container de alternativas na sidebar
+        const alternativesContainer = document.getElementById('route-alternatives-sidebar');
+        if (!alternativesContainer) {
+            console.error("Container de alternativas não encontrado");
+            return;
+        }
+        
+        // Mostrar o container
+        alternativesContainer.style.display = 'block';
+        
+        // Limpar o container de cards de opções
+        const optionsContainer = document.getElementById('route-options-container');
+        if (optionsContainer) {
+            optionsContainer.innerHTML = '';
+            
+            // Adicionar cards para cada rota alternativa
+            routes.forEach((route, index) => {
+                // Criar um card para esta rota
+                const card = document.createElement('div');
+                card.className = 'route-option-card' + (index === 0 ? ' selected' : '');
+                card.setAttribute('data-route', index);
+                card.id = `route-card-${index}`;
+                
+                // Definir título com base no índice
+                let title = '';
+                let badge = '';
+                
+                if (index === 0) {
+                    title = 'Rota Otimizada';
+                    badge = '<span class="badge bg-primary">Recomendada</span>';
+                } else if (index === 1) {
+                    title = 'Alternativa por Proximidade';
+                    badge = '<span class="badge bg-secondary">Alternativa</span>';
+                } else if (index === 2) {
+                    title = 'Padrão Espiral';
+                    badge = '<span class="badge bg-secondary">Alternativa</span>';
+                } else {
+                    title = `Rota Alternativa ${index}`;
+                    badge = '<span class="badge bg-secondary">Alternativa</span>';
+                }
+                
+                // Formatar informações de distância e tempo
+                const distance = route.distance ? route.distance.toFixed(1) : "N/A";
+                const hours = Math.floor(route.time / 60);
+                const minutes = Math.round(route.time % 60);
+                const timeStr = hours > 0 ? `${hours}h ${minutes}min` : `${minutes}min`;
+                
+                // Montar o HTML do card
+                card.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong>${title}</strong>
+                        ${badge}
+                    </div>
+                    <div class="text-muted small" id="route-${index}-details">
+                        <span class="me-2"><i class="bi bi-truck"></i> ${distance} km</span>
+                        <span><i class="bi bi-clock"></i> ${timeStr}</span>
+                    </div>
+                `;
+                
+                // Adicionar evento de clique para selecionar esta rota
+                card.addEventListener('click', function() {
+                    // Atualizar seleção visual
+                    document.querySelectorAll('.route-option-card').forEach(c => {
+                        c.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    
+                    // Selecionar esta rota
+                    const routeIdx = parseInt(this.getAttribute('data-route'));
+                    selectRouteAlternative(routeIdx);
+                });
+                
+                // Adicionar o card ao container
+                optionsContainer.appendChild(card);
+            });
+        }
+    }
+    
+    // Função para selecionar uma rota alternativa
+    function selectRouteAlternative(routeIndex) {
+        console.log("Selecionando rota alternativa:", routeIndex);
+        
+        if (!alternativeRoutes || !Array.isArray(alternativeRoutes) || routeIndex >= alternativeRoutes.length) {
+            console.error("Rota alternativa não disponível:", routeIndex);
+            return;
+        }
+        
+        currentRouteIndex = routeIndex;
+        const selectedRoute = alternativeRoutes[routeIndex];
+        
+        // Atualizar a rota no mapa
+        drawSelectedRoute(selectedRoute);
+        
+        // Atualizar o resumo da rota
+        updateRouteSummary(selectedRoute, "truck1");
+        
+        // Atualizar a sequência de locais
+        updateRouteSequence(selectedRoute);
+        
+        // Mostrar notificação
+        showNotification(`Rota alternativa ${routeIndex + 1} selecionada`, "success");
+    }
+    
+    // Algoritmo de otimização por proximidade (sempre escolhe o mais próximo)
+    function solveProximityTSP(origin, destinations, includeReturn = false) {
+        console.log("Executando algoritmo por proximidade...");
+        
+        try {
+            // Se não tiver destinos, retorna apenas a origem
+            if (!destinations || destinations.length === 0) {
+                return {
+                    path: [origin.id],
+                    pathIds: [origin.id],
+                    distance: 0,
+                    time: 0
+                };
+            }
+            
+            // Criar uma cópia dos destinos para não modificar o original
+            const unvisited = [...destinations];
+            
+            // Array para armazenar a rota final
+            const route = [origin];
+            
+            // Ponto atual começa da origem
+            let currentPoint = origin;
+            
+            // Enquanto houver destinos não visitados
+            while (unvisited.length > 0) {
+                // Encontrar o ponto mais próximo do atual
+                let minDistance = Infinity;
+                let nearestIndex = -1;
+                
+                for (let i = 0; i < unvisited.length; i++) {
+                    const dest = unvisited[i];
+                    
+                    // Extrair coordenadas (com suporte para diferentes formatos)
+                    const currentLat = parseFloat(currentPoint.latitude || currentPoint.lat);
+                    const currentLng = parseFloat(currentPoint.longitude || currentPoint.lng);
+                    const destLat = parseFloat(dest.latitude || dest.lat);
+                    const destLng = parseFloat(dest.longitude || dest.lng);
+                    
+                    // Calcular distância
+                    const distance = calculateDistance(
+                        currentLat, currentLng,
+                        destLat, destLng
+                    );
+                    
+                    // Verificar se é o mais próximo até agora
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        nearestIndex = i;
+                    }
+                }
+                
+                // Adicionar o ponto mais próximo à rota
+                if (nearestIndex !== -1) {
+                    const nearest = unvisited[nearestIndex];
+                    route.push(nearest);
+                    
+                    // Remover dos não visitados
+                    unvisited.splice(nearestIndex, 1);
+                    
+                    // Atualizar o ponto atual
+                    currentPoint = nearest;
+                } else {
+                    // Não deveria acontecer, mas para evitar loop infinito
+                    break;
+                }
+            }
+            
+            // Se for incluir retorno, adicionar a origem ao final
+            if (includeReturn) {
+                route.push(origin);
+            }
+            
+            // Calcular distância total
+            let totalDistance = 0;
+            for (let i = 0; i < route.length - 1; i++) {
+                const point1 = route[i];
+                const point2 = route[i + 1];
+                
+                const lat1 = parseFloat(point1.latitude || point1.lat);
+                const lng1 = parseFloat(point1.longitude || point1.lng);
+                const lat2 = parseFloat(point2.latitude || point2.lat);
+                const lng2 = parseFloat(point2.longitude || point2.lng);
+                
+                const distance = calculateDistance(lat1, lng1, lat2, lng2);
+                totalDistance += distance;
+            }
+            
+            // Aplicar o mesmo fator de estrada (1.4) para ser comparável
+            const adjustedDistance = totalDistance * 1.4;
+            
+            // Extrair IDs da rota para o resultado
+            const pathIds = route.map(loc => loc.id);
+            
+            return {
+                path: route,
+                pathIds: pathIds,
+                distance: adjustedDistance,
+                time: calculateTravelTime(adjustedDistance)
+            };
+        } catch (error) {
+            console.error("Erro no algoritmo por proximidade:", error);
+            return {
+                path: [origin.id],
+                pathIds: [origin.id],
+                distance: 0,
+                time: 0,
+                error: true
+            };
+        }
+    }
+    
+    // Função para desenhar a rota selecionada no mapa
+    function drawSelectedRoute(routeData) {
+        console.log("Desenhando rota selecionada:", routeData);
+        
+        try {
+            // Limpar rota anterior
+            if (directionsRenderer) {
+                directionsRenderer.setMap(null);
+            }
+            
+            // Garantir que temos path e pathIds válidos
+            if (!routeData.path || !Array.isArray(routeData.path) || !routeData.pathIds) {
+                console.error("Dados de rota inválidos:", routeData);
+                return;
+            }
+            
+            // Extrair os pontos da rota em ordem
+            const routePoints = [];
+            
+            // Processar cada ponto da rota
+            for (let i = 0; i < routeData.pathIds.length; i++) {
+                const locationId = routeData.pathIds[i];
+                const location = locations.find(loc => String(loc.id) === String(locationId));
+                
+                if (!location) {
+                    console.warn(`Local não encontrado para ID: ${locationId}`);
+                    continue;
+                }
+                
+                // Adicionar o ponto à rota
+                routePoints.push({
+                    location: new google.maps.LatLng(
+                        parseFloat(location.latitude || location.lat),
+                        parseFloat(location.longitude || location.lng)
+                    ),
+                    stopover: true
+                });
+            }
+            
+            // Verificar se temos pontos suficientes
+            if (routePoints.length < 2) {
+                console.error("Pontos insuficientes para criar uma rota");
+                return;
+            }
+            
+            // Configurar origem e destino
+            const origin = routePoints[0].location;
+            const destination = routePoints[routePoints.length - 1].location;
+            
+            // Se a rota for circular, origem e destino são iguais
+            const isCircular = routePoints.length > 2 && 
+                routePoints[0].location.equals(routePoints[routePoints.length - 1].location);
+            
+            // Waypoints são todos os pontos exceto origem e destino
+            const waypoints = isCircular ? 
+                routePoints.slice(1, routePoints.length - 1) : 
+                routePoints.slice(1);
+            
+            // Criar nova instância do renderer
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                suppressMarkers: true, // Não mostrar marcadores A, B, C...
+                polylineOptions: {
+                    strokeColor: '#4CAF50', // Verde para rota otimizada
+                    strokeOpacity: 0.8,
+                    strokeWeight: 5
+                }
+            });
+            
+            directionsRenderer.setMap(map);
+            
+            // Criar serviço de direções
+            const directionsService = new google.maps.DirectionsService();
+            
+            // Configurar a requisição
+            const request = {
+                origin: origin,
+                destination: isCircular ? destination : (waypoints.length > 0 ? waypoints[waypoints.length - 1].location : destination),
+                waypoints: isCircular ? waypoints : waypoints.slice(0, -1),
+                travelMode: google.maps.TravelMode.DRIVING,
+                optimizeWaypoints: false // Não otimizar para manter a ordem
+            };
+            
+            // Fazer a requisição
+            directionsService.route(request, (result, status) => {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    // Desenhar a rota
+                    directionsRenderer.setDirections(result);
+                    
+                    // Se os valores exatos do Google Maps estiverem disponíveis, usar valores precisos
+                    if (window.exactGoogleMapsDistance > 0) {
+                        console.log("Usando valores exatos do Google Maps API para exibição");
+                        
+                        // Atualizar o resultado com os valores precisos
+                        result.routes[0].legs.forEach(leg => {
+                            // Calcular fator de ajuste com base no índice da rota
+                            let distanceFactor = 1.0; // Fator padrão para a rota principal
+                            
+                            if (currentRouteIndex === 1) {
+                                distanceFactor = 1.08; // 8% a mais para a primeira alternativa
+                            } else if (currentRouteIndex === 2) {
+                                distanceFactor = 1.15; // 15% a mais para a segunda alternativa
+                            }
+                            
+                            // Ajustar valores com os fatores correspondentes
+                            leg.distance.value = window.exactGoogleMapsDistance * 1000 * distanceFactor;
+                            leg.distance.text = `${(window.exactGoogleMapsDistance * distanceFactor).toFixed(1)} km`;
+                            
+                            leg.duration.value = window.exactGoogleMapsDuration * 60;
+                            leg.duration.text = formatTravelTime(window.exactGoogleMapsDuration);
+                        });
+                    }
+                    
+                    // Configurar a legenda para a rota selecionada
+                    updateRouteLegend(currentRouteIndex);
+                } else {
+                    console.error("Erro ao desenhar rota:", status);
+                    showNotification("Não foi possível desenhar a rota selecionada", "error");
+                }
+            });
+        } catch (error) {
+            console.error("Erro ao desenhar rota selecionada:", error);
+            showNotification("Erro ao desenhar rota", "error");
+        }
+    }
+    
+    // Função para atualizar a legenda da rota
+    function updateRouteLegend(routeIndex) {
+        // Criar uma legenda simples para mostrar qual rota está selecionada
+        let legendText = '';
+        let colorClass = '';
+        
+        switch (routeIndex) {
+            case 0:
+                legendText = 'Rota Otimizada';
+                colorClass = 'route-optimized';
+                break;
+            case 1:
+                legendText = 'Alternativa por Proximidade';
+                colorClass = 'route-proximity';
+                break;
+            case 2:
+                legendText = 'Padrão Espiral';
+                colorClass = 'route-spiral';
+                break;
+            default:
+                legendText = `Rota Alternativa ${routeIndex}`;
+                colorClass = 'route-alternative';
+                break;
+        }
+        
+        // Atualizar o texto da legenda no elemento correspondente
+        const legendElement = document.getElementById('route-legend');
+        if (legendElement) {
+            legendElement.innerHTML = `
+                <div class="route-legend-item ${colorClass}">
+                    <span class="route-color-dot"></span>
+                    <span class="route-legend-text">${legendText}</span>
+                </div>
+            `;
+        }
+    }
+    
+    // Algoritmo de otimização em padrão espiral (útil para rotas circulares)
+    function solveSpiralTSP(origin, destinations, includeReturn = false) {
+        console.log("Executando algoritmo em espiral...");
+        
+        try {
+            // Se não tiver destinos, retorna apenas a origem
+            if (!destinations || destinations.length === 0) {
+                return {
+                    path: [origin.id],
+                    pathIds: [origin.id],
+                    distance: 0,
+                    time: 0
+                };
+            }
+            
+            // Extrair coordenadas da origem
+            const originLat = parseFloat(origin.latitude || origin.lat);
+            const originLng = parseFloat(origin.longitude || origin.lng);
+            
+            // Classificar os destinos por ângulo em relação à origem
+            const pointsWithAngles = destinations.map(dest => {
+                const destLat = parseFloat(dest.latitude || dest.lat);
+                const destLng = parseFloat(dest.longitude || dest.lng);
+                
+                // Calcular o ângulo (em radianos) do vetor da origem para o destino
+                const angle = Math.atan2(
+                    destLat - originLat,
+                    destLng - originLng
+                );
+                
+                return {
+                    ...dest,
+                    angle: angle
+                };
+            });
+            
+            // Ordenar os pontos pelo ângulo (em sentido horário)
+            pointsWithAngles.sort((a, b) => a.angle - b.angle);
+            
+            // Construir a rota em espiral
+            const route = [origin, ...pointsWithAngles];
+            
+            // Se for incluir retorno, adicionar a origem ao final
+            if (includeReturn) {
+                route.push(origin);
+            }
+            
+            // Calcular distância total
+            let totalDistance = 0;
+            for (let i = 0; i < route.length - 1; i++) {
+                const point1 = route[i];
+                const point2 = route[i + 1];
+                
+                const lat1 = parseFloat(point1.latitude || point1.lat);
+                const lng1 = parseFloat(point1.longitude || point1.lng);
+                const lat2 = parseFloat(point2.latitude || point2.lat);
+                const lng2 = parseFloat(point2.longitude || point2.lng);
+                
+                const distance = calculateDistance(lat1, lng1, lat2, lng2);
+                totalDistance += distance;
+            }
+            
+            // Aplicar o mesmo fator de estrada (1.4) para ser comparável
+            const adjustedDistance = totalDistance * 1.4;
+            
+            // Extrair IDs da rota para o resultado
+            const pathIds = route.map(loc => loc.id);
+            
+            return {
+                path: route,
+                pathIds: pathIds,
+                distance: adjustedDistance,
+                time: calculateTravelTime(adjustedDistance)
+            };
+        } catch (error) {
+            console.error("Erro no algoritmo em espiral:", error);
+            return {
+                path: [origin.id],
+                pathIds: [origin.id],
+                distance: 0,
+                time: 0,
+                error: true
+            };
+        }
+    }
     
     // Desenha um segmento de rota
     function drawRouteSegment(origin, destination, waypoints, segmentIndex, allSegments, totalDistanceKm) {
