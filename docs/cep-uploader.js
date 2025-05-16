@@ -308,9 +308,43 @@ function processCepFileContent(content, statusEl) {
         isOrigin: false
       };
       
-      // Integração direta com o aplicativo principal - VERSÃO CORRIGIDA
+      // Integração direta com o aplicativo principal - VERSÃO SUPER CORRIGIDA
       try {
-        // Preparar o objeto de localização no formato esperado pelo aplicativo principal
+        // Verificar se a origem já existe no sistema
+        let originExists = false;
+        if (window.locations && Array.isArray(window.locations)) {
+          originExists = window.locations.some(loc => loc && loc.isOrigin === true);
+        } else {
+          // Criar array de localizações se não existir
+          window.locations = [];
+          console.log('Array global de localizações criado');
+        }
+        
+        // Adicionar a origem primeiro, se não existir
+        if (!originExists) {
+          console.log('IMPORTANTE: Adicionando origem (Dois Córregos) primeiro');
+          
+          // Criar objeto da origem (Dois Córregos)
+          const origin = {
+            id: 1,
+            name: 'Dois Córregos',
+            address: 'Dois Córregos, SP, Brasil',
+            zipCode: '17300-000',
+            latitude: -22.3673,
+            longitude: -48.3822,
+            isOrigin: true
+          };
+          
+          // Adicionar ao início do array
+          window.locations.unshift(origin);
+          
+          // Se existir função para adicionar marcador, chamar
+          if (typeof window.addMarkerForLocation === 'function') {
+            window.addMarkerForLocation(origin, 0);
+          }
+        }
+        
+        // Preparar o objeto de destino no formato correto
         const newLocation = {
           id: id,
           name: name,
@@ -321,14 +355,16 @@ function processCepFileContent(content, statusEl) {
           isOrigin: false
         };
         
+        console.log(`Adicionando destino: ${name} (${cep}) [${coordinates.lat}, ${coordinates.lng}]`);
+        
         // Método 1: Integração com a função global createLocationItem
         if (typeof window.createLocationItem === 'function') {
-          console.log('Adicionando local via createLocationItem:', name);
+          console.log('Adicionando via createLocationItem');
           window.createLocationItem(name, newLocation.address, id);
         }
-        // Método 2: Integração direta via window.locations e window.markers
-        else if (window.locations && Array.isArray(window.locations)) {
-          console.log('Adicionando local diretamente ao array locations:', name);
+        // Método 2: Integração direta via window.locations
+        else {
+          console.log('Adicionando diretamente ao array locations');
           
           // Adicionar à lista global
           window.locations.push(newLocation);
@@ -347,16 +383,10 @@ function processCepFileContent(content, statusEl) {
           if (typeof window.updateLocationsList === 'function') {
             window.updateLocationsList();
           }
-          
-          // Ajustar o zoom do mapa para mostrar todos os marcadores
-          if (typeof window.zoomToFitAllMarkers === 'function') {
-            window.zoomToFitAllMarkers();
-          }
         }
-        else {
-          console.error('Impossível adicionar local - array locations não encontrado');
-          throw new Error('Array locations não encontrado');
-        }
+        
+        // Diagnóstico
+        console.log(`Locais no sistema após adicionar ${name}: ${window.locations.length}`);
       } catch (e) {
         console.error('Erro ao adicionar local:', e);
       }
@@ -368,15 +398,64 @@ function processCepFileContent(content, statusEl) {
     if (importedLocations.length > 0) {
       showStatus(statusEl, `Importado com sucesso! ${importedLocations.length} endereços adicionados.`, 'success');
       
-      // Atualizar visualização - VERSÃO CORRIGIDA
+      // Atualizar visualização - VERSÃO ULTRA CORRIGIDA
       try {
         console.log(`Processamento concluído com sucesso: ${importedLocations.length} locais adicionados`);
+        
+        // Verificar se a origem existe, se não, adicioná-la
+        let originExists = false;
+        if (window.locations && Array.isArray(window.locations)) {
+          originExists = window.locations.some(loc => loc && loc.isOrigin === true);
+        }
+        
+        if (!originExists) {
+          console.log('PROBLEMA CRÍTICO: Origem não encontrada no sistema. Adicionando Dois Córregos como origem...');
+          
+          // Criar objeto da origem (Dois Córregos)
+          const origin = {
+            id: 1,
+            name: 'Dois Córregos',
+            address: 'Dois Córregos, SP, Brasil',
+            zipCode: '17300-000',
+            latitude: -22.3673,
+            longitude: -48.3822,
+            isOrigin: true
+          };
+          
+          // Adicionar ao início do array para garantir
+          if (window.locations && Array.isArray(window.locations)) {
+            window.locations.unshift(origin);
+          } else {
+            window.locations = [origin];
+          }
+          
+          // Se existir função para adicionar marcador, chamar
+          if (typeof window.addMarkerForLocation === 'function') {
+            window.addMarkerForLocation(origin, 0);
+          }
+          
+          console.log('Origem Dois Córregos adicionada com sucesso');
+        } else {
+          console.log('Origem já existente - OK');
+        }
         
         // Aguardar um momento para garantir que todos os locais estejam registrados
         setTimeout(function() {
           // Verificar novamente o número de locais
           const numLocations = window.locations ? window.locations.length : 0;
           console.log(`Locais disponíveis no sistema: ${numLocations}`);
+          
+          // Mostrar diagnóstico detalhado de todas as localizações
+          console.log('DIAGNÓSTICO DE LOCALIZAÇÕES:');
+          if (window.locations && Array.isArray(window.locations)) {
+            window.locations.forEach((loc, index) => {
+              if (loc) {
+                console.log(`[${index}] ${loc.name} (isOrigin: ${loc.isOrigin}) - Lat: ${loc.latitude}, Lng: ${loc.longitude}`);
+              } else {
+                console.log(`[${index}] LOCALIZAÇÃO INVÁLIDA`);
+              }
+            });
+          }
           
           // Só tentar otimizar rota se existirem locais
           if (numLocations > 1) {
@@ -403,12 +482,12 @@ function processCepFileContent(content, statusEl) {
               }
             }
           } else {
-            console.warn('Nenhum local para rota foi adicionado ao sistema');
+            console.warn('Número insuficiente de locais para gerar rota');
             
             // Mostrar uma mensagem de erro amigável
-            alert('Não foi possível adicionar os locais ao sistema. Verifique o formato do arquivo e tente novamente.');
+            alert('Não foi possível adicionar suficientes locais ao sistema. Verifique o formato do arquivo e tente novamente.');
           }
-        }, 1000); // esperar 1 segundo para garantir que tudo foi carregado
+        }, 1500); // esperar 1.5 segundos para garantir que tudo foi carregado
       } catch (error) {
         console.error('Erro ao atualizar a visualização:', error);
         alert('Ocorreu um erro ao processar o arquivo. Verifique o console para mais detalhes.');

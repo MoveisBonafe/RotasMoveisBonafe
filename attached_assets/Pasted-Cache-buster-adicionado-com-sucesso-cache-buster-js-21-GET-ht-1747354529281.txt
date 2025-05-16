@@ -1,0 +1,47 @@
+Cache buster adicionado com sucesso!
+cache-buster.js:21 
+            
+            
+           GET https://moveisbonafe.github.io/RotasMoveisBonafe/cache-buster-20250516T00144.css net::ERR_ABORTED 404 (Not Found)
+addTimestampToResources @ cache-buster.js:21
+setTimeout
+(anônimo) @ cache-buster.js:28
+cache-buster.js:15 
+            
+            
+           GET https://moveisbonafe.github.io/RotasMoveisBonafe/cache-buster-20250516T00144.js net::ERR_ABORTED 404 (Not Found)
+addTimestampToResources @ cache-buster.js:15
+setTimeout
+(anônimo) @ cache-buster.js:28
+cep-uploader.js:140 Configurando uploader de CEP
+cep-uploader.js:148 Input de arquivo substituído por um novo elemento limpo
+cep-uploader.js:192 Uploader de CEP configurado com sucesso
+cep-uploader.js:223 Arquivo selecionado: cep.txt
+cep-uploader.js:356 Processamento concluído com sucesso: 16 locais adicionados
+cep-uploader.js:360 Recalculando rota via calculateOptimizedRoute()
+RotasMoveisBonafe/:4399 ==========================================
+RotasMoveisBonafe/:4400   INICIANDO CÁLCULO DE ROTA OTIMIZADA
+RotasMoveisBonafe/:4401 ==========================================
+RotasMoveisBonafe/:4425 Nenhum destino encontrado [{…}]
+calculateOptimizedRoute @ RotasMoveisBonafe/:4425
+processCepFileContent @ cep-uploader.js:361
+reader.onload @ cep-uploader.js:246
+FileReader
+processFile @ cep-uploader.js:259
+handleFileSelection @ cep-uploader.js:200
+RotasMoveisBonafe/:2116 Notificação [warning]: Adicione pelo menos um destino para calcular a rota
+cep-uploader.js:223 Arquivo selecionado: cep.txt
+cep-uploader.js:356 Processamento concluído com sucesso: 16 locais adicionados
+cep-uploader.js:360 Recalculando rota via calculateOptimizedRoute()
+RotasMoveisBonafe/:4399 ==========================================
+RotasMoveisBonafe/:4400   INICIANDO CÁLCULO DE ROTA OTIMIZADA
+RotasMoveisBonafe/:4401 ==========================================
+RotasMoveisBonafe/:4425 Nenhum destino encontrado [{…}]
+calculateOptimizedRoute @ RotasMoveisBonafe/:4425
+processCepFileContent @ cep-uploader.js:361
+reader.onload @ cep-uploader.js:246
+FileReader
+processFile @ cep-uploader.js:259
+handleFileSelection @ cep-uploader.js:200
+RotasMoveisBonafe/:2116 Notificação [warning]: Adicione pelo menos um destino para calcular a rota
+cep-uploader.js:18 Verificando e corrigindo listeners duplicados no uploader...
