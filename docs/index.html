@@ -189,14 +189,15 @@
             box-sizing: border-box; /* Incluir padding na largura total */
         }
         
-        /* Container do mapa ajustado para não sobrepor a sidebar */
+        /* Container do mapa ajustado para preencher todo o espaço no GitHub Pages */
         .map-container {
             position: absolute;
             top: 0;
             left: 380px; /* Começa exatamente onde termina a sidebar */
             right: 0;
-            bottom: 0;
+            bottom: 60px; /* Parar onde começam as abas inferiores */
             overflow: hidden;
+            z-index: 5; /* Garantir o posicionamento correto */
         }
         
         /* Mapa ocupa 100% do container */
@@ -4886,6 +4887,11 @@
         // Mostrar loading no botão também
         const optimizeBtn = document.getElementById('optimize-route');
         if (optimizeBtn) {
+            // Guardar o conteúdo original do botão
+            const originalContent = '<i class="bi bi-lightning-charge-fill me-2"></i>OTIMIZAR';
+            optimizeBtn.setAttribute('data-original-content', originalContent);
+            
+            // Mostrar indicador de carregamento
             optimizeBtn.innerHTML = '<span class="spinner-border" role="status" aria-hidden="true"></span> Calculando...';
             optimizeBtn.disabled = true;
         }
@@ -5318,7 +5324,9 @@
         // Restaurar o botão de otimizar
         const optimizeBtn = document.getElementById('optimize-route');
         if (optimizeBtn) {
-            optimizeBtn.innerHTML = '<i class="bi bi-lightning-charge-fill me-2"></i>OTIMIZAR';
+            // Restaurar o conteúdo original salvo no atributo de dados
+            const originalContent = optimizeBtn.getAttribute('data-original-content') || '<i class="bi bi-lightning-charge-fill me-2"></i>OTIMIZAR';
+            optimizeBtn.innerHTML = originalContent;
             optimizeBtn.disabled = false;
         }
         
