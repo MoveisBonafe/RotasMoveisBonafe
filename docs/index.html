@@ -1877,7 +1877,7 @@
                             border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-size: 15px; line-height: 42px;
                             position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(255,171,0,0.3); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                             display: inline-flex; align-items: center; justify-content: center;">
-                                <i class="bi bi-lightning-charge-fill me-2"></i>OTIMIZAR
+                                <i class="bi bi-lightning-charge-fill me-2"></i>Otimizar Rota
                                 <span class="optimize-btn-shine" style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: all 0.6s ease; pointer-events: none;"></span>
                             </button>
                         </div>
@@ -5323,7 +5323,7 @@
         const optimizeBtn = document.getElementById('optimize-route');
         if (optimizeBtn) {
             // Restaurar o conteúdo original salvo no atributo de dados
-            const originalContent = optimizeBtn.getAttribute('data-original-content') || '<i class="bi bi-lightning-charge-fill me-2"></i>OTIMIZAR';
+            const originalContent = optimizeBtn.getAttribute('data-original-content') || '<i class="bi bi-lightning-charge-fill me-2"></i>Otimizar Rota';
             optimizeBtn.innerHTML = originalContent;
             optimizeBtn.disabled = false;
         }
@@ -9167,7 +9167,7 @@
             });
             
             // NÃO adicionar a origem como último ponto, para evitar considerar o retorno
-            // Isso garante consistência com o botão "OTIMIZAR" que também não inclui retorno
+            // Isso garante consistência com o botão "Otimizar Rota" que também não inclui retorno
             // (O código abaixo está comentado para evitar o retorno à origem)
             /*
             routePoints.push({ 
@@ -9494,7 +9494,7 @@
                             <strong>Visualização da rota atual</strong> na ordem em que os pontos foram adicionados.
                         </p>
                         <p style="margin: 5px 0 0 0; font-size: 13px; color: #0d47a1;">
-                            Clique em "OTIMIZAR" para ver o percurso mais eficiente.
+                            Clique em "Otimizar Rota" para ver o percurso mais eficiente.
                         </p>
                     </div>
                 `;
