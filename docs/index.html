@@ -1334,10 +1334,10 @@
             position: fixed !important; /* Posicionamento fixo para cobrir toda a área */
             top: 0 !important;
             right: 0 !important;
-            bottom: 60px !important; /* Altura das abas minimizadas */
+            bottom: 0 !important; /* Estender até o final da página */
             left: 380px !important; /* Começa onde termina a sidebar */
             width: calc(100% - 380px) !important; /* Largura ajustada para alinhar com a sidebar */
-            height: calc(100vh - 60px) !important; /* Altura total menos as abas minimizadas */
+            height: 100vh !important; /* Altura total da viewport */
             margin: 0 !important;
             padding: 0 !important;
             overflow: hidden !important;
@@ -9204,9 +9204,30 @@
                         }
                     }
                 } else {
-                    // Usar um valor padrão se não pudermos calcular
-                    console.warn("Não foi possível calcular distância - usando valor padrão");
-                    totalDistanceKm = 50; // Valor base para distância entre cidades
+                    // Calcular uma distância estimada com base nas coordenadas disponíveis
+                    console.warn("Tentando calcular distância estimada entre locais disponíveis");
+                    
+                    // Usar coordenadas disponíveis para estimar a distância
+                    let estimatedDistance = 0;
+                    for (let i = 0; i < locations.length - 1; i++) {
+                        const loc1 = locations[i];
+                        const loc2 = locations[i+1];
+                        
+                        const lat1 = parseFloat(loc1.lat !== undefined ? loc1.lat : loc1.latitude);
+                        const lng1 = parseFloat(loc1.lng !== undefined ? loc1.lng : loc1.longitude);
+                        const lat2 = parseFloat(loc2.lat !== undefined ? loc2.lat : loc2.latitude);
+                        const lng2 = parseFloat(loc2.lng !== undefined ? loc2.lng : loc2.longitude);
+                        
+                        if (!isNaN(lat1) && !isNaN(lng1) && !isNaN(lat2) && !isNaN(lng2)) {
+                            // Calcular distância entre pontos consecutivos
+                            const segmentDist = calculateHaversineDistance(lat1, lng1, lat2, lng2) * 1.4;
+                            estimatedDistance += segmentDist;
+                            console.log(`Distância estimada entre ${loc1.name} e ${loc2.name}: ${segmentDist.toFixed(2)} km`);
+                        }
+                    }
+                    
+                    // Usar a distância estimada ou um valor mínimo realista se não for possível calcular
+                    totalDistanceKm = estimatedDistance > 0 ? estimatedDistance : 10;
                 }
             }
             
