@@ -1,0 +1,148 @@
+Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:6674 Cidades detectadas na rota: [{…}]
+RotasMoveisBonafe/:6770 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+RotasMoveisBonafe/:2631 Ajustes de layout para GitHub Pages aplicados
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+geocode-fix.js:108 Enhanced file upload with accurate geocoding
+geocode-fix.js:415 Geocoding fixes applied successfully
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+RotasMoveisBonafe/:3561 Botões de contador encontrados: 4
+4RotasMoveisBonafe/:3569 Evento de clique adicionado ao botão de contador
+8layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:4474 Criando novo marcador para Jaú (ID: 2)
+RotasMoveisBonafe/:5413 Verificando se Jaú e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5461 Não estão na mesma cidade
+RotasMoveisBonafe/:4547 Obtendo região para cidade: "Jaú"
+RotasMoveisBonafe/:4222 Cidade Jaú pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4561 Configurando marcador para Jaú - Mesma cidade da origem: false
+RotasMoveisBonafe/:4222 Cidade Jaú pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4222 Cidade Jaú pertence à região Bauru (cor: #FF8D33)
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:9005 Convertendo coordenadas para Jaú: latitude/longitude -> lat/lng
+RotasMoveisBonafe/:9029 Pontos válidos para rota: 2
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1650 Invalid latitude and longitude.
+_.ij @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1650
+BNa @ directions.js:3
+HNa @ directions.js:8
+(anônimo) @ directions.js:9
+(anônimo) @ directions.js:4
+c @ common.js:117
+(anônimo) @ VM101665 DirectionsService.Route:1
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1650 MapsRequestError: DIRECTIONS_ROUTE: INVALID_REQUEST: There was an issue performing a Directions request.
+    at directions.js:8:452
+    at Hoa.Gg (directions.js:4:464)
+    at Object.c [as _lzrlrw] (common.js:117:81)
+    at VM101665 DirectionsService.Route:1:28
+_.ij @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1650
+(anônimo) @ directions.js:8
+(anônimo) @ directions.js:4
+c @ common.js:117
+(anônimo) @ VM101665 DirectionsService.Route:1
+RotasMoveisBonafe/:9230 Erro ao desenhar segmento de rota: INVALID_REQUEST
+(anônimo) @ RotasMoveisBonafe/:9230
+g @ directions.js:146
+(anônimo) @ directions.js:9
+(anônimo) @ directions.js:4
+c @ common.js:117
+(anônimo) @ VM101665 DirectionsService.Route:1
+RotasMoveisBonafe/:2523 Notificação [warning]: Aviso: Alguns trechos da rota podem não estar visíveis
+RotasMoveisBonafe/:7366 Distância inválida para cálculo de tempo: NaN
+calculateTravelTime @ RotasMoveisBonafe/:7366
+processRouteSegments @ RotasMoveisBonafe/:9112
+(anônimo) @ RotasMoveisBonafe/:9233
+g @ directions.js:146
+(anônimo) @ directions.js:9
+(anônimo) @ directions.js:4
+c @ common.js:117
+(anônimo) @ VM101665 DirectionsService.Route:1
+RotasMoveisBonafe/:8060 Atualizando resumo da rota com: {path: Array(2), distance: NaN, time: 0, isOptimized: false}
+RotasMoveisBonafe/:8064 Dados incompletos ou inválidos do TSP: {path: Array(2), distance: NaN, time: 0, isOptimized: false}distance: 10isOptimized: falsepath: (2) [1, 2]time: 0[[Prototype]]: Object
+updateRouteSummary @ RotasMoveisBonafe/:8064
+processRouteSegments @ RotasMoveisBonafe/:9117
+(anônimo) @ RotasMoveisBonafe/:9233
+g @ directions.js:146
+(anônimo) @ directions.js:9
+(anônimo) @ directions.js:4
+c @ common.js:117
+(anônimo) @ VM101665 DirectionsService.Route:1
+RotasMoveisBonafe/:8068 Corrigindo valor de distância
+RotasMoveisBonafe/:8867 Coordenadas inválidas no cálculo de distância: undefined undefined undefined undefined
+calculateDistance @ RotasMoveisBonafe/:8867
+updateRouteSummary @ RotasMoveisBonafe/:8076
+processRouteSegments @ RotasMoveisBonafe/:9117
+(anônimo) @ RotasMoveisBonafe/:9233
+g @ directions.js:146
+(anônimo) @ directions.js:9
+(anônimo) @ directions.js:4
+c @ common.js:117
+(anônimo) @ VM101665 DirectionsService.Route:1
+RotasMoveisBonafe/:8082 Distância recalculada: 10 km
+RotasMoveisBonafe/:8114 Distância calculada: 10.0 km
+RotasMoveisBonafe/:8115 Tempo estimado: 8min
+RotasMoveisBonafe/:2523 Notificação [success]: Rota visualizada na ordem original de adição dos pontos
+11layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:9029 Pontos válidos para rota: 2
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1650 Invalid latitude and longitude.
+_.ij @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1650
+BNa @ directions.js:3
+HNa @ directions.js:8
+(anônimo) @ directions.js:9
+(anônimo) @ directions.js:4
+c @ common.js:117
+(anônimo) @ DirectionsService.Route?5m4&1m3&1m2&1dNaN&2dNaN&5m4&1m3&1m2&1d-22.3023754&2d-48.5723053&5m4&1m3&1m2&1dNaN&2dNaN&6e0&8b0&12spt-BR&23e1&r_url=https%3A%2F%2Fmoveisbonafe.github.io%2FRotasMoveisBonafe%2F&callback=_xdc_._lzrlrw&key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&token=12554:1
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1650 MapsRequestError: DIRECTIONS_ROUTE: INVALID_REQUEST: There was an issue performing a Directions request.
+    at directions.js:8:452
+    at Hoa.Gg (directions.js:4:464)
+    at Object.c [as _lzrlrw] (common.js:117:81)
+    at DirectionsService.Route?5m4&1m3&1m2&1dNaN&2dNaN&5m4&1m3&1m2&1d-22.3023754&2d-48.5723053&5m4&1m3&1m2&1dNaN&2dNaN&6e0&8b0&12spt-BR&23e1&r_url=https%3A%2F%2Fmoveisbonafe.github.io%2FRotasMoveisBonafe%2F&callback=_xdc_._lzrlrw&key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&token=12554:1:28
+_.ij @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1650
+(anônimo) @ directions.js:8
+(anônimo) @ directions.js:4
+c @ common.js:117
+(anônimo) @ DirectionsService.Route?5m4&1m3&1m2&1dNaN&2dNaN&5m4&1m3&1m2&1d-22.3023754&2d-48.5723053&5m4&1m3&1m2&1dNaN&2dNaN&6e0&8b0&12spt-BR&23e1&r_url=https%3A%2F%2Fmoveisbonafe.github.io%2FRotasMoveisBonafe%2F&callback=_xdc_._lzrlrw&key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&token=12554:1
+RotasMoveisBonafe/:9230 Erro ao desenhar segmento de rota: INVALID_REQUEST
+(anônimo) @ RotasMoveisBonafe/:9230
+g @ directions.js:146
+(anônimo) @ directions.js:9
+(anônimo) @ directions.js:4
+c @ common.js:117
+(anônimo) @ DirectionsService.Route?5m4&1m3&1m2&1dNaN&2dNaN&5m4&1m3&1m2&1d-22.3023754&2d-48.5723053&5m4&1m3&1m2&1dNaN&2dNaN&6e0&8b0&12spt-BR&23e1&r_url=https%3A%2F%2Fmoveisbonafe.github.io%2FRotasMoveisBonafe%2F&callback=_xdc_._lzrlrw&key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&token=12554:1
+RotasMoveisBonafe/:2523 Notificação [warning]: Aviso: Alguns trechos da rota podem não estar visíveis
+RotasMoveisBonafe/:7366 Distância inválida para cálculo de tempo: NaN
+calculateTravelTime @ RotasMoveisBonafe/:7366
+processRouteSegments @ RotasMoveisBonafe/:9112
+(anônimo) @ RotasMoveisBonafe/:9233
+g @ directions.js:146
+(anônimo) @ directions.js:9
+(anônimo) @ directions.js:4
+c @ common.js:117
+(anônimo) @ DirectionsService.Route?5m4&1m3&1m2&1dNaN&2dNaN&5m4&1m3&1m2&1d-22.3023754&2d-48.5723053&5m4&1m3&1m2&1dNaN&2dNaN&6e0&8b0&12spt-BR&23e1&r_url=https%3A%2F%2Fmoveisbonafe.github.io%2FRotasMoveisBonafe%2F&callback=_xdc_._lzrlrw&key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&token=12554:1
+RotasMoveisBonafe/:8060 Atualizando resumo da rota com: {path: Array(2), distance: NaN, time: 0, isOptimized: false}
+RotasMoveisBonafe/:8064 Dados incompletos ou inválidos do TSP: {path: Array(2), distance: NaN, time: 0, isOptimized: false}distance: 10isOptimized: falsepath: (2) [1, 2]time: 0[[Prototype]]: Object
+updateRouteSummary @ RotasMoveisBonafe/:8064
+processRouteSegments @ RotasMoveisBonafe/:9117
+(anônimo) @ RotasMoveisBonafe/:9233
+g @ directions.js:146
+(anônimo) @ directions.js:9
+(anônimo) @ directions.js:4
+c @ common.js:117
+(anônimo) @ DirectionsService.Route?5m4&1m3&1m2&1dNaN&2dNaN&5m4&1m3&1m2&1d-22.3023754&2d-48.5723053&5m4&1m3&1m2&1dNaN&2dNaN&6e0&8b0&12spt-BR&23e1&r_url=https%3A%2F%2Fmoveisbonafe.github.io%2FRotasMoveisBonafe%2F&callback=_xdc_._lzrlrw&key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&token=12554:1
+RotasMoveisBonafe/:8068 Corrigindo valor de distância
+RotasMoveisBonafe/:8867 Coordenadas inválidas no cálculo de distância: undefined undefined undefined undefined
+calculateDistance @ RotasMoveisBonafe/:8867
+updateRouteSummary @ RotasMoveisBonafe/:8076
+processRouteSegments @ RotasMoveisBonafe/:9117
+(anônimo) @ RotasMoveisBonafe/:9233
+g @ directions.js:146
+(anônimo) @ directions.js:9
+(anônimo) @ directions.js:4
+c @ common.js:117
+(anônimo) @ DirectionsService.Route?5m4&1m3&1m2&1dNaN&2dNaN&5m4&1m3&1m2&1d-22.3023754&2d-48.5723053&5m4&1m3&1m2&1dNaN&2dNaN&6e0&8b0&12spt-BR&23e1&r_url=https%3A%2F%2Fmoveisbonafe.github.io%2FRotasMoveisBonafe%2F&callback=_xdc_._lzrlrw&key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&token=12554:1
+RotasMoveisBonafe/:8082 Distância recalculada: 10 km
+RotasMoveisBonafe/:8114 Distância calculada: 10.0 km
+RotasMoveisBonafe/:8115 Tempo estimado: 8min
+RotasMoveisBonafe/:2523 Notificação [success]: Rota visualizada na ordem original de adição dos pontos
+60layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
