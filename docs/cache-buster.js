@@ -7,7 +7,7 @@
   // Adicionar marca de tempo atual aos arquivos CSS e JS carregados
   function addTimestampToResources() {
     // Usar timestamp fixo para garantir consistência da versão
-    const timestamp = "20250516003245";
+    const timestamp = "20250516010540";
     console.log('Adicionando timestamp fixo para cache busting:', timestamp);
     
     try {
