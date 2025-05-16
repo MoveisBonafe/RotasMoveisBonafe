@@ -1,0 +1,352 @@
+Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:6060 Cidades detectadas na rota: [{…}]
+RotasMoveisBonafe/:6156 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+RotasMoveisBonafe/:2225 Ajustes de layout para GitHub Pages aplicados
+geocode-fix.js:108 Enhanced file upload with accurate geocoding
+geocode-fix.js:415 Geocoding fixes applied successfully
+cep-uploader.js:18 Verificando e corrigindo listeners duplicados no uploader...
+RotasMoveisBonafe/:3034 Botões de contador encontrados: 4
+4RotasMoveisBonafe/:3042 Evento de clique adicionado ao botão de contador
+cache-buster.js:10 Adicionando timestamp para cache busting: 20250516T00194
+cache-buster.js:23 Cache buster adicionado com sucesso!
+cep-uploader.js:140 Configurando uploader de CEP
+cep-uploader.js:148 Input de arquivo substituído por um novo elemento limpo
+cep-uploader.js:192 Uploader de CEP configurado com sucesso
+cache-buster.js:15 
+            
+            
+           GET https://moveisbonafe.github.io/RotasMoveisBonafe/cache-buster-20250516T00194.js net::ERR_ABORTED 404 (Not Found)
+addTimestampToResources @ cache-buster.js:15
+setTimeout
+(anônimo) @ cache-buster.js:28
+cache-buster.js:21 
+            
+            
+           GET https://moveisbonafe.github.io/RotasMoveisBonafe/cache-buster-20250516T00194.css net::ERR_ABORTED 404 (Not Found)
+addTimestampToResources @ cache-buster.js:21
+setTimeout
+(anônimo) @ cache-buster.js:28
+fix-origin.js:15 Verificando e corrigindo origem...
+fix-origin.js:65 Origem já configurada corretamente
+fix-origin.js:69 Total de 1 localizações configuradas
+fix-origin.js:73 DIAGNÓSTICO DE LOCALIZAÇÕES:
+fix-origin.js:76 [0] Dois Córregos (isOrigin: true) - Lat: -22.3673, Lng: -48.3822
+cep-uploader.js:223 Arquivo selecionado: cep.txt
+cep-uploader.js:358 Adicionando destino: ITAPORANGA-E C LUZ MOVEIS - ME (18480000) [-22.368239586827233, -48.383620810423196]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para ITAPORANGA-E C LUZ MOVEIS - ME (ID: 1747354786521)
+RotasMoveisBonafe/:4923 Verificando se ITAPORANGA-E C LUZ MOVEIS - ME e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para ITAPORANGA-E C LUZ MOVEIS - ME - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar ITAPORANGA-E C LUZ MOVEIS - ME: 2
+cep-uploader.js:358 Adicionando destino: BARRA DO CHAPEU-JAZIEL MARIANO ALMEIDA (18325000) [-22.366472077267787, -48.380579489096796]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para BARRA DO CHAPEU-JAZIEL MARIANO ALMEIDA (ID: 1747354786526)
+RotasMoveisBonafe/:4923 Verificando se BARRA DO CHAPEU-JAZIEL MARIANO ALMEIDA e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para BARRA DO CHAPEU-JAZIEL MARIANO ALMEIDA - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar BARRA DO CHAPEU-JAZIEL MARIANO ALMEIDA: 3
+cep-uploader.js:358 Adicionando destino: RIBEIRAO BRANCO-KELLY CRISTINA FERNANDES SANTOS  - ME (18430000) [-22.367285352785338, -48.380159580094826]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para RIBEIRAO BRANCO-KELLY CRISTINA FERNANDES SANTOS  - ME (ID: 1747354786528)
+RotasMoveisBonafe/:4923 Verificando se RIBEIRAO BRANCO-KELLY CRISTINA FERNANDES SANTOS  - ME e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4010 Cidade detectada no nome do local: Ribeirão Branco
+RotasMoveisBonafe/:4018 Região forçada para Sorocaba para Ribeirão Branco
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Ribeirão Branco"
+RotasMoveisBonafe/:3681 Classificação manual forçada: Ribeirão Branco pertence à região de Sorocaba
+RotasMoveisBonafe/:3824 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4071 Configurando marcador para RIBEIRAO BRANCO-KELLY CRISTINA FERNANDES SANTOS  - ME - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar RIBEIRAO BRANCO-KELLY CRISTINA FERNANDES SANTOS  - ME: 4
+cep-uploader.js:358 Adicionando destino: RIBEIRAO BRANCO-J.B. FRAZON & ALVES LTDA (18430035) [-22.368691414799915, -48.38215606353255]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para RIBEIRAO BRANCO-J.B. FRAZON & ALVES LTDA (ID: 1747354786531)
+RotasMoveisBonafe/:4923 Verificando se RIBEIRAO BRANCO-J.B. FRAZON & ALVES LTDA e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4010 Cidade detectada no nome do local: Ribeirão Branco
+RotasMoveisBonafe/:4018 Região forçada para Sorocaba para Ribeirão Branco
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Ribeirão Branco"
+RotasMoveisBonafe/:3681 Classificação manual forçada: Ribeirão Branco pertence à região de Sorocaba
+RotasMoveisBonafe/:3824 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4071 Configurando marcador para RIBEIRAO BRANCO-J.B. FRAZON & ALVES LTDA - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar RIBEIRAO BRANCO-J.B. FRAZON & ALVES LTDA: 5
+cep-uploader.js:358 Adicionando destino: GUAPIARA-KELLY CRISTINA FERNANDES SANTOS GUAPIARA ME (18310000) [-22.368371652791605, -48.38187812883914]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para GUAPIARA-KELLY CRISTINA FERNANDES SANTOS GUAPIARA ME (ID: 1747354786533)
+RotasMoveisBonafe/:4923 Verificando se GUAPIARA-KELLY CRISTINA FERNANDES SANTOS GUAPIARA ME e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para GUAPIARA-KELLY CRISTINA FERNANDES SANTOS GUAPIARA ME - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar GUAPIARA-KELLY CRISTINA FERNANDES SANTOS GUAPIARA ME: 6
+cep-uploader.js:358 Adicionando destino: GUAPIARA-MACIEL E SIQUERIA LTDA (18310000) [-22.36684986673849, -48.383155278171]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para GUAPIARA-MACIEL E SIQUERIA LTDA (ID: 1747354786536)
+RotasMoveisBonafe/:4923 Verificando se GUAPIARA-MACIEL E SIQUERIA LTDA e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para GUAPIARA-MACIEL E SIQUERIA LTDA - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar GUAPIARA-MACIEL E SIQUERIA LTDA: 7
+cep-uploader.js:358 Adicionando destino: CAPAO BONITO-RAFAEL  A.TEIXEIRA FERREIRA CAPÃO BONITO ME (18300330) [-22.36922395873775, -48.381947626962386]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para CAPAO BONITO-RAFAEL  A.TEIXEIRA FERREIRA CAPÃO BONITO ME (ID: 1747354786539)
+RotasMoveisBonafe/:4923 Verificando se CAPAO BONITO-RAFAEL  A.TEIXEIRA FERREIRA CAPÃO BONITO ME e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para CAPAO BONITO-RAFAEL  A.TEIXEIRA FERREIRA CAPÃO BONITO ME - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar CAPAO BONITO-RAFAEL  A.TEIXEIRA FERREIRA CAPÃO BONITO ME: 8
+cep-uploader.js:358 Adicionando destino: CAPAO BONITO-MARCELO FRANCISCO FERREIRA MOVEIS ME (18300360) [-22.36909969747391, -48.38357733554858]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para CAPAO BONITO-MARCELO FRANCISCO FERREIRA MOVEIS ME (ID: 1747354786543)
+RotasMoveisBonafe/:4923 Verificando se CAPAO BONITO-MARCELO FRANCISCO FERREIRA MOVEIS ME e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para CAPAO BONITO-MARCELO FRANCISCO FERREIRA MOVEIS ME - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar CAPAO BONITO-MARCELO FRANCISCO FERREIRA MOVEIS ME: 9
+cep-uploader.js:358 Adicionando destino: BURI-MARIA LAURA PEREIRA CHAIN LTDA (18290000) [-22.365096796007176, -48.384246461903835]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para BURI-MARIA LAURA PEREIRA CHAIN LTDA (ID: 1747354786546)
+RotasMoveisBonafe/:4923 Verificando se BURI-MARIA LAURA PEREIRA CHAIN LTDA e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4038 Cidade detectada no nome do local: Buri
+RotasMoveisBonafe/:4046 Região forçada para Sorocaba para Buri
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Buri"
+RotasMoveisBonafe/:3705 Classificação manual forçada: Buri pertence à região de Sorocaba
+RotasMoveisBonafe/:3824 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4071 Configurando marcador para BURI-MARIA LAURA PEREIRA CHAIN LTDA - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar BURI-MARIA LAURA PEREIRA CHAIN LTDA: 10
+cep-uploader.js:358 Adicionando destino: TAQUARIVAI-ELIANA DE OLIVEIRA FERREIRA (18425000) [-22.36666535459735, -48.38126555838903]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para TAQUARIVAI-ELIANA DE OLIVEIRA FERREIRA (ID: 1747354786549)
+RotasMoveisBonafe/:4923 Verificando se TAQUARIVAI-ELIANA DE OLIVEIRA FERREIRA e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4024 Cidade detectada no nome do local: Taquarivaí
+RotasMoveisBonafe/:4032 Região forçada para Sorocaba para Taquarivaí
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Taquarivaí"
+RotasMoveisBonafe/:3694 Classificação manual forçada: Taquarivaí pertence à região de Sorocaba
+RotasMoveisBonafe/:3824 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4071 Configurando marcador para TAQUARIVAI-ELIANA DE OLIVEIRA FERREIRA - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar TAQUARIVAI-ELIANA DE OLIVEIRA FERREIRA: 11
+cep-uploader.js:358 Adicionando destino: ITAPEVA-LUIS ANTONIO VEROLESE - ME (18400430) [-22.36608702422005, -48.38226294287257]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para ITAPEVA-LUIS ANTONIO VEROLESE - ME (ID: 1747354786551)
+RotasMoveisBonafe/:4923 Verificando se ITAPEVA-LUIS ANTONIO VEROLESE - ME e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para ITAPEVA-LUIS ANTONIO VEROLESE - ME - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar ITAPEVA-LUIS ANTONIO VEROLESE - ME: 12
+cep-uploader.js:358 Adicionando destino: ITARARE-MARCELO MOVEIS E ELETRO ITARARE LTDA (18460009) [-22.36840638769193, -48.38403268861612]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para ITARARE-MARCELO MOVEIS E ELETRO ITARARE LTDA (ID: 1747354786554)
+RotasMoveisBonafe/:4923 Verificando se ITARARE-MARCELO MOVEIS E ELETRO ITARARE LTDA e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para ITARARE-MARCELO MOVEIS E ELETRO ITARARE LTDA - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar ITARARE-MARCELO MOVEIS E ELETRO ITARARE LTDA: 13
+cep-uploader.js:358 Adicionando destino: SAO MIGUEL ARCANJO-JOAO OLIMPIO DA COSTA ME (18230000) [-22.367415870176792, -48.38407103074258]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para SAO MIGUEL ARCANJO-JOAO OLIMPIO DA COSTA ME (ID: 1747354786557)
+RotasMoveisBonafe/:4923 Verificando se SAO MIGUEL ARCANJO-JOAO OLIMPIO DA COSTA ME e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para SAO MIGUEL ARCANJO-JOAO OLIMPIO DA COSTA ME - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar SAO MIGUEL ARCANJO-JOAO OLIMPIO DA COSTA ME: 14
+cep-uploader.js:358 Adicionando destino: TIETE-CAPRICHOLAR MOVEIS E UTENSILIOS LTDA ME (18530000) [-22.36585132008568, -48.380242270026194]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para TIETE-CAPRICHOLAR MOVEIS E UTENSILIOS LTDA ME (ID: 1747354786560)
+RotasMoveisBonafe/:4923 Verificando se TIETE-CAPRICHOLAR MOVEIS E UTENSILIOS LTDA ME e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para TIETE-CAPRICHOLAR MOVEIS E UTENSILIOS LTDA ME - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar TIETE-CAPRICHOLAR MOVEIS E UTENSILIOS LTDA ME: 15
+cep-uploader.js:358 Adicionando destino: TIETE-CAPRICHOLAR MOVEIS E UTENSILIOS LTDA ME (18530000) [-22.365646241135487, -48.38065356777131]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para TIETE-CAPRICHOLAR MOVEIS E UTENSILIOS LTDA ME (ID: 1747354786563)
+RotasMoveisBonafe/:4923 Verificando se TIETE-CAPRICHOLAR MOVEIS E UTENSILIOS LTDA ME e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para TIETE-CAPRICHOLAR MOVEIS E UTENSILIOS LTDA ME - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar TIETE-CAPRICHOLAR MOVEIS E UTENSILIOS LTDA ME: 16
+cep-uploader.js:358 Adicionando destino: PORTO FELIZ-MARLENE RODRIGUES VIEIRA ME (18540000) [-22.369727705518606, -48.38175756775274]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para PORTO FELIZ-MARLENE RODRIGUES VIEIRA ME (ID: 1747354786566)
+RotasMoveisBonafe/:4923 Verificando se PORTO FELIZ-MARLENE RODRIGUES VIEIRA ME e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para PORTO FELIZ-MARLENE RODRIGUES VIEIRA ME - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar PORTO FELIZ-MARLENE RODRIGUES VIEIRA ME: 17
+cep-uploader.js:403 Processamento concluído com sucesso: 16 locais adicionados
+cep-uploader.js:439 Origem já existente - OK
+cep-uploader.js:446 Locais disponíveis no sistema: 17
+cep-uploader.js:449 DIAGNÓSTICO DE LOCALIZAÇÕES:
+cep-uploader.js:453 [0] Dois Córregos (isOrigin: true) - Lat: -22.3673, Lng: -48.3822
+cep-uploader.js:453 [1] ITAPORANGA-E C LUZ MOVEIS - ME (isOrigin: false) - Lat: -22.368239586827233, Lng: -48.383620810423196
+cep-uploader.js:453 [2] BARRA DO CHAPEU-JAZIEL MARIANO ALMEIDA (isOrigin: false) - Lat: -22.366472077267787, Lng: -48.380579489096796
+cep-uploader.js:453 [3] RIBEIRAO BRANCO-KELLY CRISTINA FERNANDES SANTOS  - ME (isOrigin: false) - Lat: -22.367285352785338, Lng: -48.380159580094826
+cep-uploader.js:453 [4] RIBEIRAO BRANCO-J.B. FRAZON & ALVES LTDA (isOrigin: false) - Lat: -22.368691414799915, Lng: -48.38215606353255
+cep-uploader.js:453 [5] GUAPIARA-KELLY CRISTINA FERNANDES SANTOS GUAPIARA ME (isOrigin: false) - Lat: -22.368371652791605, Lng: -48.38187812883914
+cep-uploader.js:453 [6] GUAPIARA-MACIEL E SIQUERIA LTDA (isOrigin: false) - Lat: -22.36684986673849, Lng: -48.383155278171
+cep-uploader.js:453 [7] CAPAO BONITO-RAFAEL  A.TEIXEIRA FERREIRA CAPÃO BONITO ME (isOrigin: false) - Lat: -22.36922395873775, Lng: -48.381947626962386
+cep-uploader.js:453 [8] CAPAO BONITO-MARCELO FRANCISCO FERREIRA MOVEIS ME (isOrigin: false) - Lat: -22.36909969747391, Lng: -48.38357733554858
+cep-uploader.js:453 [9] BURI-MARIA LAURA PEREIRA CHAIN LTDA (isOrigin: false) - Lat: -22.365096796007176, Lng: -48.384246461903835
+cep-uploader.js:453 [10] TAQUARIVAI-ELIANA DE OLIVEIRA FERREIRA (isOrigin: false) - Lat: -22.36666535459735, Lng: -48.38126555838903
+cep-uploader.js:453 [11] ITAPEVA-LUIS ANTONIO VEROLESE - ME (isOrigin: false) - Lat: -22.36608702422005, Lng: -48.38226294287257
+cep-uploader.js:453 [12] ITARARE-MARCELO MOVEIS E ELETRO ITARARE LTDA (isOrigin: false) - Lat: -22.36840638769193, Lng: -48.38403268861612
+cep-uploader.js:453 [13] SAO MIGUEL ARCANJO-JOAO OLIMPIO DA COSTA ME (isOrigin: false) - Lat: -22.367415870176792, Lng: -48.38407103074258
+cep-uploader.js:453 [14] TIETE-CAPRICHOLAR MOVEIS E UTENSILIOS LTDA ME (isOrigin: false) - Lat: -22.36585132008568, Lng: -48.380242270026194
+cep-uploader.js:453 [15] TIETE-CAPRICHOLAR MOVEIS E UTENSILIOS LTDA ME (isOrigin: false) - Lat: -22.365646241135487, Lng: -48.38065356777131
+cep-uploader.js:453 [16] PORTO FELIZ-MARLENE RODRIGUES VIEIRA ME (isOrigin: false) - Lat: -22.369727705518606, Lng: -48.38175756775274
+cep-uploader.js:463 Recalculando rota via calculateOptimizedRoute()
+RotasMoveisBonafe/:4400 ==========================================
+RotasMoveisBonafe/:4401   INICIANDO CÁLCULO DE ROTA OTIMIZADA
+RotasMoveisBonafe/:4402 ==========================================
+RotasMoveisBonafe/:4426 Nenhum destino encontrado [{…}]
+calculateOptimizedRoute @ RotasMoveisBonafe/:4426
+(anônimo) @ cep-uploader.js:464
+setTimeout
+processCepFileContent @ cep-uploader.js:443
+reader.onload @ cep-uploader.js:246
+FileReader
+processFile @ cep-uploader.js:259
+handleFileSelection @ cep-uploader.js:200
+RotasMoveisBonafe/:2117 Notificação [warning]: Adicione pelo menos um destino para calcular a rota
+cep-uploader.js:223 Arquivo selecionado: cep.txt
+cep-uploader.js:358 Adicionando destino: ITAPORANGA-E C LUZ MOVEIS - ME (18480000) [-22.36692802467055, -48.38382351604498]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para ITAPORANGA-E C LUZ MOVEIS - ME (ID: 1747354791930)
+RotasMoveisBonafe/:4923 Verificando se ITAPORANGA-E C LUZ MOVEIS - ME e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para ITAPORANGA-E C LUZ MOVEIS - ME - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar ITAPORANGA-E C LUZ MOVEIS - ME: 18
+cep-uploader.js:358 Adicionando destino: BARRA DO CHAPEU-JAZIEL MARIANO ALMEIDA (18325000) [-22.36497016629284, -48.37992067124388]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para BARRA DO CHAPEU-JAZIEL MARIANO ALMEIDA (ID: 1747354791934)
+RotasMoveisBonafe/:4923 Verificando se BARRA DO CHAPEU-JAZIEL MARIANO ALMEIDA e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para BARRA DO CHAPEU-JAZIEL MARIANO ALMEIDA - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar BARRA DO CHAPEU-JAZIEL MARIANO ALMEIDA: 19
+cep-uploader.js:358 Adicionando destino: RIBEIRAO BRANCO-KELLY CRISTINA FERNANDES SANTOS  - ME (18430000) [-22.36850454770331, -48.38128573813858]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para RIBEIRAO BRANCO-KELLY CRISTINA FERNANDES SANTOS  - ME (ID: 1747354791937)
+RotasMoveisBonafe/:4923 Verificando se RIBEIRAO BRANCO-KELLY CRISTINA FERNANDES SANTOS  - ME e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4010 Cidade detectada no nome do local: Ribeirão Branco
+RotasMoveisBonafe/:4018 Região forçada para Sorocaba para Ribeirão Branco
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Ribeirão Branco"
+RotasMoveisBonafe/:3681 Classificação manual forçada: Ribeirão Branco pertence à região de Sorocaba
+RotasMoveisBonafe/:3824 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4071 Configurando marcador para RIBEIRAO BRANCO-KELLY CRISTINA FERNANDES SANTOS  - ME - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar RIBEIRAO BRANCO-KELLY CRISTINA FERNANDES SANTOS  - ME: 20
+cep-uploader.js:358 Adicionando destino: RIBEIRAO BRANCO-J.B. FRAZON & ALVES LTDA (18430035) [-22.367026438224933, -48.38223803337504]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para RIBEIRAO BRANCO-J.B. FRAZON & ALVES LTDA (ID: 1747354791940)
+RotasMoveisBonafe/:4923 Verificando se RIBEIRAO BRANCO-J.B. FRAZON & ALVES LTDA e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4010 Cidade detectada no nome do local: Ribeirão Branco
+RotasMoveisBonafe/:4018 Região forçada para Sorocaba para Ribeirão Branco
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Ribeirão Branco"
+RotasMoveisBonafe/:3681 Classificação manual forçada: Ribeirão Branco pertence à região de Sorocaba
+RotasMoveisBonafe/:3824 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4071 Configurando marcador para RIBEIRAO BRANCO-J.B. FRAZON & ALVES LTDA - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar RIBEIRAO BRANCO-J.B. FRAZON & ALVES LTDA: 21
+cep-uploader.js:358 Adicionando destino: GUAPIARA-KELLY CRISTINA FERNANDES SANTOS GUAPIARA ME (18310000) [-22.36608823894273, -48.38124888845979]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para GUAPIARA-KELLY CRISTINA FERNANDES SANTOS GUAPIARA ME (ID: 1747354791943)
+RotasMoveisBonafe/:4923 Verificando se GUAPIARA-KELLY CRISTINA FERNANDES SANTOS GUAPIARA ME e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para GUAPIARA-KELLY CRISTINA FERNANDES SANTOS GUAPIARA ME - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar GUAPIARA-KELLY CRISTINA FERNANDES SANTOS GUAPIARA ME: 22
+cep-uploader.js:358 Adicionando destino: GUAPIARA-MACIEL E SIQUERIA LTDA (18310000) [-22.365596833120037, -48.3840241136605]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para GUAPIARA-MACIEL E SIQUERIA LTDA (ID: 1747354791947)
+RotasMoveisBonafe/:4923 Verificando se GUAPIARA-MACIEL E SIQUERIA LTDA e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para GUAPIARA-MACIEL E SIQUERIA LTDA - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar GUAPIARA-MACIEL E SIQUERIA LTDA: 23
+cep-uploader.js:358 Adicionando destino: CAPAO BONITO-RAFAEL  A.TEIXEIRA FERREIRA CAPÃO BONITO ME (18300330) [-22.369062613753567, -48.3826907785343]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para CAPAO BONITO-RAFAEL  A.TEIXEIRA FERREIRA CAPÃO BONITO ME (ID: 1747354791950)
+RotasMoveisBonafe/:4923 Verificando se CAPAO BONITO-RAFAEL  A.TEIXEIRA FERREIRA CAPÃO BONITO ME e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para CAPAO BONITO-RAFAEL  A.TEIXEIRA FERREIRA CAPÃO BONITO ME - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar CAPAO BONITO-RAFAEL  A.TEIXEIRA FERREIRA CAPÃO BONITO ME: 24
+cep-uploader.js:358 Adicionando destino: CAPAO BONITO-MARCELO FRANCISCO FERREIRA MOVEIS ME (18300360) [-22.36939243276416, -48.382828786538376]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para CAPAO BONITO-MARCELO FRANCISCO FERREIRA MOVEIS ME (ID: 1747354791954)
+RotasMoveisBonafe/:4923 Verificando se CAPAO BONITO-MARCELO FRANCISCO FERREIRA MOVEIS ME e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Dois Córregos"
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4071 Configurando marcador para CAPAO BONITO-MARCELO FRANCISCO FERREIRA MOVEIS ME - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar CAPAO BONITO-MARCELO FRANCISCO FERREIRA MOVEIS ME: 25
+cep-uploader.js:358 Adicionando destino: BURI-MARIA LAURA PEREIRA CHAIN LTDA (18290000) [-22.367183111451695, -48.384504537433116]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para BURI-MARIA LAURA PEREIRA CHAIN LTDA (ID: 1747354791957)
+RotasMoveisBonafe/:4923 Verificando se BURI-MARIA LAURA PEREIRA CHAIN LTDA e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4038 Cidade detectada no nome do local: Buri
+RotasMoveisBonafe/:4046 Região forçada para Sorocaba para Buri
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Buri"
+RotasMoveisBonafe/:3705 Classificação manual forçada: Buri pertence à região de Sorocaba
+RotasMoveisBonafe/:3824 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4071 Configurando marcador para BURI-MARIA LAURA PEREIRA CHAIN LTDA - Mesma cidade da origem: false
+RotasMoveisBonafe/:3732 Cidade Dois Córregos pertence à região Bauru (cor: #FF8D33)
+cep-uploader.js:389 Locais no sistema após adicionar BURI-MARIA LAURA PEREIRA CHAIN LTDA: 26
+cep-uploader.js:358 Adicionando destino: TAQUARIVAI-ELIANA DE OLIVEIRA FERREIRA (18425000) [-22.367449406226072, -48.382008373561526]
+cep-uploader.js:367 Adicionando diretamente ao array locations
+RotasMoveisBonafe/:3984 Criando novo marcador para TAQUARIVAI-ELIANA DE OLIVEIRA FERREIRA (ID: 1747354791961)
+RotasMoveisBonafe/:4923 Verificando se TAQUARIVAI-ELIANA DE OLIVEIRA FERREIRA e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:4971 Não estão na mesma cidade
+RotasMoveisBonafe/:4024 Cidade detectada no nome do local: Taquarivaí
+RotasMoveisBonafe/:4032 Região forçada para Sorocaba para Taquarivaí
+RotasMoveisBonafe/:4057 Obtendo região para cidade: "Taquarivaí"
+RotasMoveisBonafe/:3694 Classificação manual forçada: Taquarivaí pertence à região de Sorocaba
+RotasMoveisBonafe/:3824 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4071 Conf
