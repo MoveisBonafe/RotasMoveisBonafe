@@ -9972,9 +9972,16 @@
         }
     }
     
+    // Inicializar variáveis globais para armazenar valores exatos do Google Maps
+    window.exactGoogleMapsDistance = 0;
+    window.exactGoogleMapsDuration = 0;
+    
     // Desenha um segmento de rota
     function drawRouteSegment(origin, destination, waypoints, segmentIndex, allSegments, totalDistanceKm) {
         const directionsService = new google.maps.DirectionsService();
+        
+        // Verificar se devemos usar os valores exatos do Google Maps API
+        const useGoogleMapsExclusively = window.forceGoogleMapsCalculation === true;
         
         const request = {
             origin: origin,
@@ -9988,6 +9995,40 @@
             // Tratar diferentes códigos de status do Google DirectionsService
             if (status === google.maps.DirectionsStatus.OK) {
                 try {
+                    // Se estamos usando os valores exatos do Google Maps, capturar distância e duração
+                    if (useGoogleMapsExclusively) {
+                        // Capturar valores exatos retornados pela API para este segmento
+                        try {
+                            // Obter distância e duração de cada segmento na rota
+                            const route = result.routes[0];
+                            
+                            // Acumular valores de todos os trechos de rota
+                            let segmentDistance = 0;
+                            let segmentDuration = 0;
+                            
+                            route.legs.forEach(leg => {
+                                if (leg.distance && leg.distance.value) {
+                                    // Acumular distância em metros e converter para km
+                                    segmentDistance += leg.distance.value / 1000;
+                                }
+                                
+                                if (leg.duration && leg.duration.value) {
+                                    // Acumular duração em segundos e converter para minutos
+                                    segmentDuration += leg.duration.value / 60;
+                                }
+                            });
+                            
+                            // Acumular nas variáveis globais
+                            window.exactGoogleMapsDistance += segmentDistance;
+                            window.exactGoogleMapsDuration += segmentDuration;
+                            
+                            console.log(`📍 Segmento ${segmentIndex+1}/${allSegments.length}: Distância Google Maps: ${segmentDistance.toFixed(1)} km, Duração: ${segmentDuration.toFixed(0)} min`);
+                            console.log(`📍 Acumulado até agora: ${window.exactGoogleMapsDistance.toFixed(1)} km, ${window.exactGoogleMapsDuration.toFixed(0)} min`);
+                        } catch (error) {
+                            console.error("Erro ao extrair valores exatos do Google Maps:", error);
+                        }
+                    }
+                    
                     // Se for o primeiro segmento ou não tivermos um resultado composto ainda
                     if (segmentIndex === 0 || !window.compositeRouteResult) {
                         window.compositeRouteResult = result;
@@ -10001,16 +10042,30 @@
                         window.compositeRouteResult.routes[0].legs = 
                             window.compositeRouteResult.routes[0].legs.concat(legs);
                         
-                        // Recalcular distância e duração totais
-                        window.compositeRouteResult.routes[0].distance = {
-                            text: totalDistanceKm.toFixed(1) + ' km',
-                            value: totalDistanceKm * 1000 // Em metros
-                        };
-                        
-                        window.compositeRouteResult.routes[0].duration = {
-                            text: formatTravelTime(calculateTravelTime(totalDistanceKm)),
-                            value: calculateTravelTime(totalDistanceKm) * 60 // Em segundos
-                        };
+                        // Usar os valores exatos do Google Maps se disponíveis
+                        if (useGoogleMapsExclusively && window.exactGoogleMapsDistance > 0) {
+                            // Atualizar com os valores exatos do Google Maps
+                            window.compositeRouteResult.routes[0].distance = {
+                                text: window.exactGoogleMapsDistance.toFixed(1) + ' km',
+                                value: window.exactGoogleMapsDistance * 1000 // Em metros
+                            };
+                            
+                            window.compositeRouteResult.routes[0].duration = {
+                                text: formatTravelTime(window.exactGoogleMapsDuration),
+                                value: window.exactGoogleMapsDuration * 60 // Em segundos
+                            };
+                        } else {
+                            // Usar o cálculo tradicional
+                            window.compositeRouteResult.routes[0].distance = {
+                                text: totalDistanceKm.toFixed(1) + ' km',
+                                value: totalDistanceKm * 1000 // Em metros
+                            };
+                            
+                            window.compositeRouteResult.routes[0].duration = {
+                                text: formatTravelTime(calculateTravelTime(totalDistanceKm)),
+                                value: calculateTravelTime(totalDistanceKm) * 60 // Em segundos
+                            };
+                        }
                         
                         // Atualizar o renderer
                         window.currentRouteRenderer.setDirections(window.compositeRouteResult);
