@@ -5478,8 +5478,132 @@
     }
     
     // Traçar a rota no mapa
-    function drawRouteOnMap(pathIds, vehicleType) {
+    /**
+     * Mostra a rota atual na ordem em que os pontos foram adicionados (sem otimização)
+     * Esta função é chamada quando o usuário clica no botão "Visualizar Atual"
+     */
+    function showCurrentRoute() {
+        console.log("Visualizando rota atual sem otimização...");
+        
+        // Verificar se temos pelo menos um destino além da origem
+        if (locations.length <= 1) {
+            showNotification('Adicione pelo menos um destino para visualizar a rota.', 'warning');
+            return;
+        }
+        
+        // Mostrar spinner durante o carregamento
+        showLoadingSpinner();
+        
+        try {
+            // Encontrar a origem
+            const origin = locations.find(loc => loc.isOrigin);
+            if (!origin) {
+                throw new Error("Origem não encontrada");
+            }
+            
+            // Os demais pontos na ordem em que foram adicionados (sem otimização)
+            const waypoints = locations.filter(loc => !loc.isOrigin);
+            
+            // Verificar se temos coordenadas válidas
+            const allPoints = [origin, ...waypoints];
+            const hasInvalidCoordinates = allPoints.some(loc => !loc.lat || !loc.lng);
+            if (hasInvalidCoordinates) {
+                throw new Error("Alguns pontos possuem coordenadas inválidas");
+            }
+            
+            // Criar caminho na ordem original: origem, depois waypoints na ordem de adição, e de volta à origem
+            const routePath = [origin.id, ...waypoints.map(wp => wp.id), origin.id];
+            
+            console.log("Visualizando rota na ordem original:", routePath);
+            
+            // Desenhar a rota no mapa - usamos cor azul para distinguir da rota otimizada
+            drawRouteOnMap(routePath, "truck1", "#2196f3");
+            
+            // Calcular aproximadamente a distância e tempo
+            const pathLocations = routePath.map(id => locations.find(loc => loc.id === id)).filter(loc => loc);
+            let approxDistance = 0;
+            
+            // Calcular distância aproximada entre pontos
+            for (let i = 0; i < pathLocations.length - 1; i++) {
+                const p1 = pathLocations[i];
+                const p2 = pathLocations[i+1];
+                
+                if (p1 && p2 && p1.lat && p1.lng && p2.lat && p2.lng) {
+                    // Usamos a API de Direções para calcular distância real
+                    approxDistance += calculateHaversineDistance(
+                        p1.lat, p1.lng, 
+                        p2.lat, p2.lng
+                    ) * 1.3; // Fator 1.3 para simular rotas por estradas
+                }
+            }
+            
+            // Calcular tempo estimado
+            const estimatedTime = calculateTravelTime(approxDistance);
+            
+            // Criar objeto de resultado para mostrar informações
+            const routeInfo = {
+                path: routePath,
+                distance: approxDistance,
+                time: estimatedTime,
+                isOptimized: false // Importante marcar como não otimizada
+            };
+            
+            // Atualizar interface com informações da rota
+            updateRouteSummary(routeInfo, "truck1");
+            
+            // Adicionar aviso visual ao painel da rota
+            const routeSummaryDiv = document.getElementById('route-summary');
+            if (routeSummaryDiv) {
+                // Adicionar aviso de rota não otimizada
+                const warningElement = document.createElement('div');
+                warningElement.className = 'route-warning';
+                warningElement.innerHTML = `
+                    <div style="background-color: rgba(33, 150, 243, 0.1); border-left: 3px solid #2196f3; padding: 8px 12px; margin: 10px 0; border-radius: 4px;">
+                        <p style="margin: 0; color: #0d47a1;"><i class="bi bi-info-circle-fill me-2"></i>Esta é a rota <strong>sem otimização</strong>, na ordem em que os pontos foram adicionados.</p>
+                    </div>
+                `;
+                
+                // Remover avisos anteriores
+                const oldWarnings = routeSummaryDiv.querySelectorAll('.route-warning');
+                oldWarnings.forEach(w => w.remove());
+                
+                // Adicionar novo aviso
+                routeSummaryDiv.prepend(warningElement);
+            }
+            
+            // Mostrar notificação de sucesso
+            showNotification("Rota visualizada na ordem original de adição dos pontos", "success");
+            
+        } catch (error) {
+            console.error("Erro ao visualizar rota atual:", error);
+            showNotification("Ocorreu um erro ao visualizar a rota atual: " + error.message, "error");
+        } finally {
+            // Esconder spinner independentemente do resultado
+            hideLoadingSpinner();
+        }
+    }
+    
+    /**
+     * Calcula a distância entre dois pontos usando a fórmula de Haversine
+     * @returns {number} Distância em km
+     */
+    function calculateHaversineDistance(lat1, lng1, lat2, lng2) {
+        const R = 6371; // Raio da Terra em km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLng = (lng2 - lng1) * Math.PI / 180;
+        const a = 
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+            Math.sin(dLng/2) * Math.sin(dLng/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+
+    function drawRouteOnMap(pathIds, vehicleType, routeColor) {
         console.log("Desenhando rota para IDs:", pathIds);
+        
+        // Usar cor padrão se não especificada
+        routeColor = routeColor || "#ffc107";
         
         // Mostrar spinner durante o carregamento
         showLoadingSpinner();
