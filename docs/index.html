@@ -7462,7 +7462,37 @@
             // Certificar que temos valores válidos de distância
             if (!result.distance || isNaN(result.distance) || result.distance <= 0) {
                 console.warn("Resultado TSP com distância inválida ou zero:", result);
-                result.distance = Math.max(result.totalDistance || 0, 50); // valor mínimo seguro
+                // Calcular distância com base nas coordenadas dos pontos
+                let estimatedDistance = 0;
+                if (result.path && result.path.length >= 2) {
+                    for (let i = 0; i < result.path.length - 1; i++) {
+                        const p1 = result.path[i];
+                        const p2 = result.path[i+1];
+                        
+                        if (p1 && p2) {
+                            const lat1 = parseFloat(p1.lat !== undefined ? p1.lat : p1.latitude);
+                            const lng1 = parseFloat(p1.lng !== undefined ? p1.lng : p1.longitude);
+                            const lat2 = parseFloat(p2.lat !== undefined ? p2.lat : p2.latitude);
+                            const lng2 = parseFloat(p2.lng !== undefined ? p2.lng : p2.longitude);
+                            
+                            if (!isNaN(lat1) && !isNaN(lng1) && !isNaN(lat2) && !isNaN(lng2)) {
+                                // Usar Haversine para calcular distância em linha reta
+                                const segmentDist = calculateHaversineDistance(lat1, lng1, lat2, lng2) * 1.4;
+                                estimatedDistance += segmentDist;
+                                console.log(`Distância estimada do TSP entre ${p1.name || 'Ponto ' + i} e ${p2.name || 'Ponto ' + (i+1)}: ${segmentDist.toFixed(2)} km`);
+                            }
+                        }
+                    }
+                }
+                
+                // Usar valor estimado ou calcular um valor mais realista baseado no número de pontos
+                if (estimatedDistance > 0) {
+                    result.distance = estimatedDistance;
+                } else {
+                    // Usar distância baseada no número de pontos (mais realista que um valor fixo)
+                    const pointCount = result.path ? result.path.length : 2;
+                    result.distance = pointCount * 10; // 10km por ponto em média
+                }
             }
             
             // Padronizar como lidamos com a distância total
