@@ -491,7 +491,7 @@
             margin-bottom: 10px;
             font-size: 16px;
         }
-        /* Estilos para a área de upload de arquivo */
+        /* Estilos modernizados para a área de upload de arquivo */
         .file-upload-container {
             position: relative;
             margin-top: 15px;
@@ -501,33 +501,74 @@
         .file-upload {
             margin-top: 10px;
             border: 2px dashed #ffc107;
-            padding: 15px 10px;
+            padding: 12px 10px;
             text-align: center;
-            border-radius: 8px;
-            background-color: #fffbeb;
-            transition: all 0.3s ease;
+            border-radius: 12px;
+            background-color: rgba(255, 193, 7, 0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            overflow: hidden;
+        }
+        
+        .file-upload::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,193,7,0.2) 0%, rgba(255,255,255,0) 70%);
+            transform: scale(0);
+            opacity: 0;
+            transform-origin: center;
+            transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .file-upload:hover::before, .file-upload.dragover::before {
+            transform: scale(1);
+            opacity: 1;
         }
         
         .file-upload:hover, .file-upload.dragover {
             border-color: #ffab00;
-            background-color: #fff8e1;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(255, 171, 0, 0.15);
+            background-color: rgba(255, 193, 7, 0.12);
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 6px 15px rgba(255, 171, 0, 0.15);
         }
         
         .file-upload p {
-            margin-bottom: 10px;
-            color: #444;
-            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
         }
         
         .file-upload-icon {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin: 0 auto 5px;
-            font-size: 24px;
+            font-size: 22px;
             color: #ffc107;
+            height: 40px;
+            width: 40px;
+            background-color: rgba(255, 193, 7, 0.15);
+            border-radius: 50%;
+            position: relative;
+            z-index: 2;
+            transform-origin: center;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
         }
         
         .file-format-example {
