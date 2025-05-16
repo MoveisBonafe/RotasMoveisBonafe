@@ -394,13 +394,29 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .form-group label {
     font-size: 0.8rem;
   }
-  
+
   .form-control, input[type="date"], input[type="text"] {
     padding: 0.6rem 0.9rem;
   }
-  
+
   #optimize-route {
     padding: 0.7rem 1rem;
     font-size: 0.95rem;
   }
+}
+
+.location-list {
+    max-height: 200px; /* Altura máxima reduzida conforme solicitado */
+    overflow-y: auto;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    border: none;
+    border-radius: 12px;
+    padding: 5px;
+    background-color: rgba(255,255,255,0.6);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    position: relative;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
