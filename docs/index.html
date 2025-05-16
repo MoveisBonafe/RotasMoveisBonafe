@@ -3525,7 +3525,14 @@
                 
                 // SOLUÇÃO DIRETA: mostrar apenas o conteúdo específico da aba selecionada
                 if (targetTabContent) {
-                    // Mostrar especificamente esta aba
+                    // Garantir que o conteúdo das outras abas esteja realmente oculto
+                    const allTabContents = document.querySelectorAll('.bottom-tab-content');
+                    allTabContents.forEach(content => {
+                        content.style.display = 'none';
+                        content.classList.remove('active');
+                    });
+                    
+                    // Agora mostrar apenas esta aba específica
                     targetTabContent.style.display = 'block';
                     targetTabContent.classList.add('active');
                     
