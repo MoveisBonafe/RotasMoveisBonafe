@@ -7591,11 +7591,11 @@
             }
             
             try {
-                // 3. Rota alternativa - Caminho em espiral (se tiver 3+ destinos)
+                // 3. Rota alternativa - Distante à Origem (se tiver 3+ destinos)
                 if (destinations.length >= 3) {
-                    console.log("Gerando rota alternativa 2: Padrão espiral...");
-                    const spiralRoute = solveSpiralTSP(origin, destinations, includeOriginReturn);
-                    alternativeRoutes.push(spiralRoute);
+                    console.log("Gerando rota alternativa 2: Distante à Origem...");
+                    const distantOriginRoute = solveSpiralTSP(origin, destinations, includeOriginReturn);
+                    alternativeRoutes.push(distantOriginRoute);
                     
                     // Adicionar opção ao select da sidebar
                     const alternativeSidebar = document.getElementById('alternative-routes-sidebar');
@@ -7614,13 +7614,13 @@
                             // Atualizar título
                             const titleElement = cardRoute2.querySelector('strong');
                             if (titleElement) {
-                                titleElement.textContent = "Padrão espiral";
+                                titleElement.textContent = "Distante à Origem";
                             }
                         }
                     }
                 }
             } catch (error) {
-                console.error("Erro ao gerar rota em espiral:", error);
+                console.error("Erro ao gerar rota Distante à Origem:", error);
             }
             
             // 4. Rota alternativa - Prioridade por cidade (se tiver 4+ destinos)
@@ -7858,7 +7858,7 @@
         }
     }
     
-    // Algoritmo TSP em padrão espiral (norte, leste, sul, oeste)
+    // Algoritmo TSP para Distante à Origem (organiza pontos distantes da origem)
     // Função para cálculo da rota "Distante à origem" (começa no ponto mais distante da origem)
     function solveFarthestFirstTSP(origin, destinations, includeOriginReturn = false) {
         console.log("Calculando rota 'Distante à origem'...");
