@@ -10629,9 +10629,54 @@
         console.log("Desenhando rota selecionada:", routeData);
         
         try {
+            // CORREÇÃO CRÍTICA: Limpar TODOS os elementos do mapa
             // Limpar rota anterior
             if (directionsRenderer) {
                 directionsRenderer.setMap(null);
+                directionsRenderer = null;
+            }
+            
+            // Limpar TODOS os marcadores existentes
+            if (markers && Array.isArray(markers)) {
+                for (let i = 0; i < markers.length; i++) {
+                    if (markers[i]) {
+                        markers[i].setMap(null);
+                    }
+                }
+            }
+            
+            // Recriar todos os marcadores na nova ordem (apenas para rotas alternativas)
+            if (currentRouteIndex > 0) {
+                console.log("Recriando marcadores para rota alternativa:", currentRouteIndex);
+                
+                // Limpar array de marcadores
+                markers = [];
+                
+                // Recriar marcadores na ordem da rota selecionada
+                const locationOrder = [];
+                
+                // Usar path da rota selecionada para determinar a ordem
+                if (routeData.path && Array.isArray(routeData.path)) {
+                    for (let i = 0; i < routeData.path.length; i++) {
+                        const loc = routeData.path[i];
+                        if (typeof loc === 'object' && loc !== null) {
+                            locationOrder.push(loc);
+                        }
+                    }
+                }
+                // Fallback para usar locais originais
+                else {
+                    locationOrder.push(...locations);
+                }
+                
+                // Criar marcadores na nova ordem
+                for (let i = 0; i < locationOrder.length; i++) {
+                    const location = locationOrder[i];
+                    // Criar marcador com número sequencial baseado na nova ordem
+                    createMarker(location, i);
+                }
+                
+                console.log("Marcadores recriados na nova ordem para rota alternativa");
             }
             
             // Garantir que temos path e pathIds válidos
