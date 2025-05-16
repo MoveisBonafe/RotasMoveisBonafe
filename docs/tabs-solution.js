@@ -1,11 +1,20 @@
 /**
- * Solução simplificada para o sistema de abas
- * Baseado na versão standalone que funciona corretamente
- * v1.0.0 (16/05/2025)
+ * Solução completa para o sistema de abas - v1.0.2 (16/05/2025)
+ * Esta solução substitui COMPLETAMENTE o comportamento anterior das abas
+ * É baseada na versão standalone que funciona corretamente
  */
 (function() {
-    // Aguardar o DOM estar pronto
-    document.addEventListener('DOMContentLoaded', initBottomTabs);
+    // Esta solução será executada após qualquer outro script de abas
+    // para garantir que nosso comportamento substitua qualquer outro
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pequeno atraso para garantir que todo o resto seja carregado
+            setTimeout(initBottomTabs, 500);
+        });
+    } else {
+        // Caso o DOM já esteja carregado
+        setTimeout(initBottomTabs, 500);
+    }
     
     function initBottomTabs() {
         console.log("[TabsSolution] Inicializando sistema de abas simplificado");
@@ -39,6 +48,21 @@
     }
     
     function setupTabButtons() {
+        // Desativar TODOS os scripts existentes para as abas
+        // Escondendo qualquer script que manipule as abas
+        const scripts = document.querySelectorAll('script');
+        scripts.forEach(script => {
+            if (script.textContent && (
+                script.textContent.includes('bottom-tab-btn') || 
+                script.textContent.includes('toggleTabsExpansion') ||
+                script.textContent.includes('initBottomTabs')
+            )) {
+                // Marcar scripts que manipulam abas para não executar
+                script.setAttribute('data-disabled', 'true');
+                console.log("[TabsSolution] Desativando script anterior de abas");
+            }
+        });
+
         // Encontrar todos os botões de abas
         const tabButtons = document.querySelectorAll('.bottom-tab-btn');
         if (!tabButtons || tabButtons.length === 0) {
@@ -46,18 +70,22 @@
             return;
         }
         
-        // Remover todos os listeners existentes e adicionar novos
+        // Remover completamente TODOS os handlers existentes e adicionar novos
         tabButtons.forEach(button => {
             // Clonar para remover todos os eventos
             const newButton = button.cloneNode(true);
-            button.parentNode.replaceChild(newButton, button);
+            if (button.parentNode) {
+                button.parentNode.replaceChild(newButton, button);
+            }
             
-            // Adicionar novo listener
+            // Adicionar novo listener - garantindo que funcione independente de qualquer outro script
             newButton.addEventListener('click', function(e) {
+                // Capturar evento no início da propagação
                 e.preventDefault();
                 e.stopPropagation();
+                console.log("[TabsSolution] Clique em botão de aba capturado");
                 handleTabClick(this);
-            });
+            }, true); // true = capturar na fase de captura (antes de qualquer outro handler)
         });
     }
     

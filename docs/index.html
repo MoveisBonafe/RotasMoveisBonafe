@@ -1997,37 +1997,39 @@
             
             <!-- NOVA SOLUÇÃO PARA CONTEÚDO DAS ABAS - COMPLETAMENTE SEPARADA -->
             <div id="bottom-tabs-system">
-                <!-- VOLTANDO PARA VERSÃO SIMPLIFICADA QUE FUNCIONA -->
+                <!-- VERSÃO BASEADA NO ARQUIVO STANDALONE FUNCIONAL -->
                 
-                <!-- EVENTOS - VERSÃO SIMPLES -->
-                <div id="bottom-events-content" class="fixed-tab-content" style="display: none; padding: 20px;">
-                    <div class="debug-tab-id" style="display: none;">EVENTOS</div>
-                    <div class="events-panel" style="background-color: white;">
-                        <h5 style="margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
+                <!-- EVENTOS -->
+                <div id="bottom-events-content" class="bottom-tab-content" style="display: none;">
+                    <div style="padding: 20px; background-color: white; border-top: 1px solid #eee;">
+                        <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                             Eventos nas cidades da rota:
                         </h5>
-                        <div id="events-list" style="min-height: 300px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
-                            <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
+                        <div style="width: 100%; min-height: 300px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
+                            <div id="events-list">
+                                <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- RESTRIÇÕES - VERSÃO SIMPLES -->
-                <div id="bottom-restrictions-content" class="fixed-tab-content" style="display: none; padding: 20px;">
-                    <div class="debug-tab-id" style="display: none;">RESTRIÇÕES</div>
-                    <div class="restrictions-panel" style="background-color: white;">
-                        <h5 style="margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
+                <!-- RESTRIÇÕES -->
+                <div id="bottom-restrictions-content" class="bottom-tab-content" style="display: none;">
+                    <div style="padding: 20px; background-color: white; border-top: 1px solid #eee;">
+                        <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                             Restrições para caminhões do percurso:
                         </h5>
                         <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
-                        <div id="restrictions-list" style="min-height: 300px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
-                            <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
+                        <div style="width: 100%; min-height: 300px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
+                            <div id="restrictions-list">
+                                <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- RELATÓRIO - VERSÃO SIMPLES -->
-                <div id="bottom-report-content" class="fixed-tab-content" style="display: none; padding: 20px;">
+                <!-- RELATÓRIO -->
+                <div id="bottom-report-content" class="bottom-tab-content" style="display: none;">
                     <div class="tab-content-inner" style="padding: 20px;">
                         <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                             Relatório da rota otimizada:
