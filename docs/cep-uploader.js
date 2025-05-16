@@ -211,14 +211,8 @@ function processFile(file) {
     return;
   }
   
-  // Evitar processamento duplicado
-  if (window.fileBeingProcessed === file.name) {
-    console.warn('Arquivo já está sendo processado:', file.name);
-    return;
-  }
-  
-  // Marcar arquivo como em processamento
-  window.fileBeingProcessed = file.name;
+  // Nenhuma verificação de processamento duplicado aqui
+  // Vamos permitir processar o mesmo arquivo várias vezes
   
   console.log('Arquivo selecionado:', file.name);
   
@@ -244,16 +238,12 @@ function processFile(file) {
   
   reader.onload = function(e) {
     processCepFileContent(e.target.result, statusEl);
-    // Limpar a marca de arquivo em processamento após concluir
-    setTimeout(function() { 
-      window.fileBeingProcessed = null;
-    }, 500);
+    // Não há mais marcas para limpar
   };
   
   reader.onerror = function() {
     showStatus(statusEl, 'Erro ao ler o arquivo', 'error');
-    // Limpar a marca de arquivo em processamento em caso de erro
-    window.fileBeingProcessed = null;
+    // Não há mais marcas para limpar
   };
   
   reader.readAsText(file);
