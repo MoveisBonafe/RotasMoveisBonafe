@@ -6766,8 +6766,7 @@
                 // Criar HTML da restrição
                 restrictionItem.innerHTML = `
                     <div class="restriction-city" style="${cidadeStyle}">
-                        ${posicaoNaRotaTexto}
-                        ${city.cityName}
+                        <span style="color: #1976D2; font-weight: 600;">${city.cityName}</span>
                         <span class="restriction-type ${restrictionType}">${restrictionType === 'partial' ? 'Parcial' : (restrictionType === 'total' ? 'Total' : 'Rodízio')}</span>
                     </div>
                     <div class="restriction-time">${dayTypeText} | ${startTime} - ${endTime}</div>
