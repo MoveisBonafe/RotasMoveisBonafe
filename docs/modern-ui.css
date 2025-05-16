@@ -406,7 +406,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .location-list {
-    max-height: 200px; /* Altura máxima reduzida conforme solicitado */
+    max-height: 150px; /* Altura máxima ajustada para 150px */
     overflow-y: auto;
     margin-top: 12px;
     margin-bottom: 12px;
