@@ -2065,83 +2065,9 @@
     <script src="tsp.js"></script>
     <script src="fix-github.js"></script>
     <script src="fix-map-controls.js"></script>
-    <script src="abas-solucao.js"></script>
-    <script src="estilo-locais.js"></script>
-    <script src="botoes-adicionais.js"></script>
+    <script src="tabs-fix.js"></script>
     
-    <!-- Estilos para melhorar o alinhamento dos ícones de exclusão na lista de locais -->
-    <style>
-        /* Melhorar alinhamento dos ícones de exclusão na lista de locais */
-        .location-list-item {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-            padding: 8px 10px !important;
-            margin-bottom: 5px !important;
-            border-radius: 6px !important;
-            background-color: #f8f9fa !important;
-            transition: all 0.2s ease !important;
-        }
-        
-        .location-list-item:hover {
-            background-color: #f0f0f0 !important;
-        }
-        
-        .location-list-item .location-name {
-            flex-grow: 1 !important;
-            font-size: 14px !important;
-            font-weight: 500 !important;
-            color: #333 !important;
-        }
-        
-        .location-list-item .remove-location-btn {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            width: 28px !important;
-            height: 28px !important;
-            border-radius: 50% !important;
-            background-color: rgba(255, 69, 58, 0.1) !important;
-            color: #ff453a !important;
-            border: none !important;
-            cursor: pointer !important;
-            transition: all 0.2s ease !important;
-            margin-left: 8px !important;
-        }
-        
-        .location-list-item .remove-location-btn:hover {
-            background-color: rgba(255, 69, 58, 0.2) !important;
-        }
-    </style>
-    
-    <!-- Script para desativar o fullscreen-tabs.js e evitar erros no console -->
-    <script>
-        // Sobrescrever a função de inicialização do fullscreen-tabs.js para evitar erros
-        window.addEventListener('load', function() {
-            if (typeof FullscreenTabs !== 'undefined' && FullscreenTabs.init) {
-                FullscreenTabs.init = function() {
-                    console.log('[FullscreenTabs] Desativado - usando abas-solucao.js no lugar');
-                    return false;
-                };
-            }
-            
-            // Melhorar a visualização dos itens na lista de locais
-            setTimeout(function() {
-                var locationItems = document.querySelectorAll('#locations-list .list-group-item');
-                locationItems.forEach(function(item) {
-                    item.classList.add('location-list-item');
-                    
-                    // Encontrar o botão de remoção e melhorar sua aparência
-                    var removeBtn = item.querySelector('.btn-danger');
-                    if (removeBtn) {
-                        removeBtn.classList.add('remove-location-btn');
-                    }
-                });
-            }, 1000);
-        });
-    </script>
-    
-    <!-- Script corrigido para um novo arquivo que substitui completamente a funcionalidade das abas -->
+    <!-- Script removido, substituído pelo arquivo tabs-fix.js independente -->
     
     <script>
     // Dados de amostra para a aplicação standalone
