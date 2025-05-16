@@ -1,8 +1,7 @@
-// Estabilizar e estilizar a sidebar imediatamente
+// Estabilizar a sidebar imediatamente
 function stabilizeSidebar() {
   const sidebar = document.querySelector('.sidebar');
   if (sidebar) {
-    // Estilos base da sidebar
     sidebar.style.position = 'absolute';
     sidebar.style.top = '0';
     sidebar.style.left = '0';
@@ -11,108 +10,8 @@ function stabilizeSidebar() {
     sidebar.style.backgroundColor = '#f8f9fa';
     sidebar.style.overflowY = 'auto';
     sidebar.style.zIndex = '10';
-    sidebar.style.transition = 'all 0.3s ease';
-    sidebar.style.boxShadow = '2px 0 15px rgba(0,0,0,0.08)';
-    sidebar.style.padding = '20px';
-
-    // Estilizar campos de data
-    const dateInputs = sidebar.querySelectorAll('input[type="date"]');
-    dateInputs.forEach(input => {
-      input.style.width = '100%';
-      input.style.padding = '12px';
-      input.style.border = '1px solid #ffe082';
-      input.style.borderRadius = '8px';
-      input.style.marginBottom = '10px';
-      input.style.transition = 'all 0.3s ease';
-      input.style.backgroundColor = '#fff';
-      input.style.boxShadow = '0 2px 4px rgba(0,0,0,0.03)';
-    });
-
-    // Estilizar campo de origem
-    const originInput = document.getElementById('origin');
-    if (originInput) {
-      originInput.style.backgroundColor = '#fff8e1';
-      originInput.style.border = '1px solid #ffe082';
-      originInput.style.borderRadius = '8px';
-      originInput.style.padding = '12px';
-      originInput.style.boxShadow = '0 2px 4px rgba(0,0,0,0.03)';
-      originInput.style.transition = 'all 0.3s ease';
-    }
-
-    // Estilizar campo de busca de local
-    const locationSearch = document.getElementById('location-search');
-    if (locationSearch) {
-      locationSearch.style.width = '100%';
-      locationSearch.style.padding = '12px';
-      locationSearch.style.border = '1px solid #ffe082';
-      locationSearch.style.borderRadius = '8px';
-      locationSearch.style.transition = 'all 0.3s ease';
-      locationSearch.style.backgroundColor = '#fff';
-      locationSearch.style.boxShadow = '0 2px 4px rgba(0,0,0,0.03)';
-    }
-
-    // Estilizar área de upload de arquivo
-    const fileUpload = document.querySelector('.file-upload');
-    if (fileUpload) {
-      fileUpload.style.border = '2px dashed #ffc107';
-      fileUpload.style.borderRadius = '8px';
-      fileUpload.style.padding = '20px';
-      fileUpload.style.textAlign = 'center';
-      fileUpload.style.backgroundColor = '#fffbeb';
-      fileUpload.style.transition = 'all 0.3s ease';
-      fileUpload.style.cursor = 'pointer';
-      fileUpload.style.marginTop = '20px';
-      fileUpload.style.marginBottom = '20px';
-    }
-
-    // Estilizar botão de otimizar
-    const optimizeBtn = document.getElementById('optimize-route');
-    if (optimizeBtn) {
-      optimizeBtn.style.width = '100%';
-      optimizeBtn.style.padding = '12px';
-      optimizeBtn.style.backgroundColor = '#ffc107';
-      optimizeBtn.style.border = 'none';
-      optimizeBtn.style.borderRadius = '8px';
-      optimizeBtn.style.color = '#000';
-      optimizeBtn.style.fontWeight = '600';
-      optimizeBtn.style.transition = 'all 0.3s ease';
-      optimizeBtn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-      optimizeBtn.style.cursor = 'pointer';
-    }
-
-    // Adicionar hover effects
-    addHoverEffects();
-  }
-}
-
-// Adicionar efeitos de hover
-function addHoverEffects() {
-  const inputs = document.querySelectorAll('input[type="date"], input[type="text"], .file-upload');
-  inputs.forEach(input => {
-    input.addEventListener('mouseover', function() {
-      this.style.transform = 'translateY(-2px)';
-      this.style.boxShadow = '0 4px 8px rgba(255, 193, 7, 0.15)';
-    });
-
-    input.addEventListener('mouseout', function() {
-      this.style.transform = 'translateY(0)';
-      this.style.boxShadow = '0 2px 4px rgba(0,0,0,0.03)';
-    });
-  });
-
-  const optimizeBtn = document.getElementById('optimize-route');
-  if (optimizeBtn) {
-    optimizeBtn.addEventListener('mouseover', function() {
-      this.style.transform = 'translateY(-2px)';
-      this.style.boxShadow = '0 4px 12px rgba(255, 193, 7, 0.3)';
-      this.style.backgroundColor = '#ffb300';
-    });
-
-    optimizeBtn.addEventListener('mouseout', function() {
-      this.style.transform = 'translateY(0)';
-      this.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-      this.style.backgroundColor = '#ffc107';
-    });
+    sidebar.style.transition = 'none';
+    sidebar.style.boxShadow = '2px 0 5px rgba(0,0,0,0.1)';
   }
 }
 
