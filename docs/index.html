@@ -1514,33 +1514,18 @@
             padding: 20px;
             background-color: white;
             animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
             overflow-y: auto; /* Permite rolagem vertical para todos os conteúdos */
             width: 100%; /* Usa toda a largura disponível */
-            position: relative;
-            height: auto;
-            min-height: 400px;
-            z-index: 1;
-            top: 0;
-            left: 0;
-            opacity: 0;
         }
         
         /* Mostra apenas o conteúdo ativo */
         .bottom-tab-content.active {
-            display: block;
+            display: flex;
+            flex-direction: column;
             opacity: 1;
-            animation: fadeTabIn 0.4s ease-in-out forwards;
-        }
-        
-        @keyframes fadeTabIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            transform: translateY(0);
         }
         
         /* Ajustes para quando as abas estão minimizadas */
@@ -1995,62 +1980,52 @@
                 <button class="bottom-tab-btn" data-tab="bottom-report">Relatório da Rota</button>
             </div>
             
-            <!-- ESTRUTURA COMPLETAMENTE REESCRITA PARA SOLUCIONAR PROBLEMA DE SOBREPOSIÇÃO NO GITHUB PAGES -->
-            <!-- Cada aba está em seu próprio div isolado, sem nenhuma estrutura aninhada entre elas -->
-            
-            <!-- Container simples para o primeiro conteúdo - EVENTOS -->
-            <div class="bottom-tab-content" id="bottom-events-content" style="display: none; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee; padding: 20px;">
-                <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
-                    Eventos nas cidades da rota:
-                </h5>
-                <div class="events-container" style="width: 100%; min-height: 300px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
-                    <div class="events-list" id="events-list">
+            <!-- Conteúdo da aba Eventos -->
+            <div class="bottom-tab-content" id="bottom-events-content">
+                <h5>Eventos nas cidades da rota:</h5>
+                <!-- Container que se adapta à janela -->
+                <div class="events-container" style="width: 100%; height: 100%; min-height: 300px; overflow-y: auto; flex-grow: 1;">
+                    <div class="events-list" id="events-list" style="height: 100%;">
                         <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
                     </div>
                 </div>
             </div>
             
-            <!-- Container simples para o segundo conteúdo - RESTRIÇÕES -->
-            <div class="bottom-tab-content" id="bottom-restrictions-content" style="display: none; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee; padding: 20px;">
-                <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
-                    Restrições para caminhões do percurso:
-                </h5>
+            <!-- Conteúdo da aba Restrições -->
+            <div class="bottom-tab-content" id="bottom-restrictions-content">
+                <h5>Restrições para caminhões do percurso:</h5>
                 <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
-                <div class="restrictions-container" style="width: 100%; min-height: 300px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
-                    <div class="restrictions-list" id="restrictions-list">
+                <!-- Container que se adapta à janela -->
+                <div class="restrictions-container" style="width: 100%; height: 100%; min-height: 300px; overflow-y: auto; flex-grow: 1;">
+                    <div class="restrictions-list" id="restrictions-list" style="height: 100%;">
                         <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
                     </div>
                 </div>
             </div>
             
-            <!-- Container simples para o terceiro conteúdo - RELATÓRIO -->
-            <div class="bottom-tab-content" id="bottom-report-content" style="display: none; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee; padding: 20px;">
-                <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
-                    Relatório da rota otimizada:
-                </h5>
-                <div id="route-summary" class="mb-4" style="width: 100%; min-height: 300px; background-color: #fff8e1; border-radius: 8px; border: 1px solid #ffe082; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
+            <!-- Conteúdo da aba Relatório -->
+            <div class="bottom-tab-content" id="bottom-report-content">
+                <div id="route-summary" class="mb-4" style="width: 100%; height: 100%; min-height: 300px; overflow-y: auto; flex: 1; background-color: #fff8e1; border-radius: 8px; border: 1px solid #ffe082; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
                     <p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>
                 </div>
-                    
-                        <!-- Controles do Relatório - agora dentro da aba de relatório -->
-                        <div class="form-group mt-4">
-                            <label class="date-range-label">Nome da rota:</label>
-                            <div class="input-animation-container position-relative">
-                                <input type="text" id="report-route-name" placeholder="Ex: Entrega Região Sul" 
-                                       style="border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; 
-                                       width: 100%; max-width: 400px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
-                                       transition: all 0.3s ease;">
-                                <div class="input-animation-effect"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-3">
-                            <button id="save-route" class="btn" style="background-color: #ffc107; color: #000000; font-weight: 600; border-color: #ffab00;" disabled>Salvar Rota</button>
-                            <button id="print-route" class="btn ms-2" style="background-color: #ffc107; color: #000000; font-weight: 600; border-color: #ffab00;" disabled>Imprimir</button>
-                        </div>
+                
+                <!-- Seção de Rotas Alternativas removida - movida para a sidebar -->
+                
+                <div class="form-group">
+                    <label class="date-range-label">Nome da rota:</label>
+                    <div class="input-animation-container position-relative">
+                        <input type="text" id="report-route-name" placeholder="Ex: Entrega Região Sul" 
+                               style="border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; 
+                               width: 100%; max-width: 400px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+                               transition: all 0.3s ease;">
+                        <div class="input-animation-effect"></div>
                     </div>
                 </div>
-            </div>
+                
+                <div class="mt-3">
+                    <button id="save-route" class="btn" style="background-color: #ffc107; color: #000000; font-weight: 600; border-color: #ffab00;" disabled>Salvar Rota</button>
+                    <button id="print-route" class="btn ms-2" style="background-color: #ffc107; color: #000000; font-weight: 600; border-color: #ffab00;" disabled>Imprimir</button>
+                </div>
             </div>
         </div>
     </div>
@@ -2065,83 +2040,6 @@
     <script src="tsp.js"></script>
     <script src="fix-github.js"></script>
     <script src="fix-map-controls.js"></script>
-    <script src="abas-solucao.js"></script>
-    <script src="estilo-locais.js"></script>
-    <script src="botoes-adicionais.js"></script>
-    
-    <!-- Estilos para melhorar o alinhamento dos ícones de exclusão na lista de locais -->
-    <style>
-        /* Melhorar alinhamento dos ícones de exclusão na lista de locais */
-        .location-list-item {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-            padding: 8px 10px !important;
-            margin-bottom: 5px !important;
-            border-radius: 6px !important;
-            background-color: #f8f9fa !important;
-            transition: all 0.2s ease !important;
-        }
-        
-        .location-list-item:hover {
-            background-color: #f0f0f0 !important;
-        }
-        
-        .location-list-item .location-name {
-            flex-grow: 1 !important;
-            font-size: 14px !important;
-            font-weight: 500 !important;
-            color: #333 !important;
-        }
-        
-        .location-list-item .remove-location-btn {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            width: 28px !important;
-            height: 28px !important;
-            border-radius: 50% !important;
-            background-color: rgba(255, 69, 58, 0.1) !important;
-            color: #ff453a !important;
-            border: none !important;
-            cursor: pointer !important;
-            transition: all 0.2s ease !important;
-            margin-left: 8px !important;
-        }
-        
-        .location-list-item .remove-location-btn:hover {
-            background-color: rgba(255, 69, 58, 0.2) !important;
-        }
-    </style>
-    
-    <!-- Script para desativar o fullscreen-tabs.js e evitar erros no console -->
-    <script>
-        // Sobrescrever a função de inicialização do fullscreen-tabs.js para evitar erros
-        window.addEventListener('load', function() {
-            if (typeof FullscreenTabs !== 'undefined' && FullscreenTabs.init) {
-                FullscreenTabs.init = function() {
-                    console.log('[FullscreenTabs] Desativado - usando abas-solucao.js no lugar');
-                    return false;
-                };
-            }
-            
-            // Melhorar a visualização dos itens na lista de locais
-            setTimeout(function() {
-                var locationItems = document.querySelectorAll('#locations-list .list-group-item');
-                locationItems.forEach(function(item) {
-                    item.classList.add('location-list-item');
-                    
-                    // Encontrar o botão de remoção e melhorar sua aparência
-                    var removeBtn = item.querySelector('.btn-danger');
-                    if (removeBtn) {
-                        removeBtn.classList.add('remove-location-btn');
-                    }
-                });
-            }, 1000);
-        });
-    </script>
-    
-    <!-- Script corrigido para um novo arquivo que substitui completamente a funcionalidade das abas -->
     
     <script>
     // Dados de amostra para a aplicação standalone
@@ -3539,11 +3437,77 @@
         }
     }
     
-    // Função de inicialização das abas removida
-    // Substituída pelo arquivo externo tabs-fix.js
+    // Inicializar as abas inferiores
     function initBottomTabs() {
-        console.log("Função original desativada - usando tabs-fix.js");
-        // Não faz nada - para evitar conflitos
+        console.log("Inicializando abas inferiores com modo FULLSCREEN...");
+        
+        // Selecionar todos os botões de aba
+        const tabButtons = document.querySelectorAll('.bottom-tab-btn');
+        
+        // Adicionar listeners de clique para cada botão
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                const tabContent = document.getElementById(tabId + '-content');
+                const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+                
+                // Verificar se a aba já está ativa
+                const isActive = this.classList.contains('active');
+                
+                console.log("Clique em aba:", tabId, "- Ativa:", isActive, "- Minimizada:", bottomTabsContainer.classList.contains('minimized'));
+                
+                // Se a aba clicada já estava ativa e expandida, apenas minimizamos
+                if (isActive && !bottomTabsContainer.classList.contains('minimized')) {
+                    console.log("Minimizando aba ativa");
+                    
+                    // Remover classe ativa deste botão
+                    this.classList.remove('active');
+                    
+                    // Esconder conteúdo
+                    if (tabContent) {
+                        tabContent.classList.remove('active');
+                        tabContent.style.display = 'none';
+                    }
+                    
+                    // Minimizar as abas
+                    toggleTabsExpansion();
+                    return;
+                }
+                
+                // Remover classes ativas de todas as abas antes de ativar uma nova
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Ocultar todos os conteúdos
+                document.querySelectorAll('.bottom-tab-content').forEach(content => {
+                    content.classList.remove('active');
+                    content.style.display = 'none';
+                });
+                
+                // Ativar a aba clicada
+                this.classList.add('active');
+                
+                // Mostrar o conteúdo correspondente
+                if (tabContent) {
+                    tabContent.classList.add('active');
+                    tabContent.style.display = 'block';
+                    
+                    // Garantir que o container seja visível para a altura máxima
+                    tabContent.style.height = 'calc(100vh - 60px)';
+                    tabContent.style.overflow = 'auto';
+                    tabContent.style.padding = '20px';
+                }
+                
+                // Se as abas estavam minimizadas, expandir
+                if (bottomTabsContainer.classList.contains('minimized')) {
+                    console.log("Expandindo abas para mostrar conteúdo");
+                    toggleTabsExpansion();
+                }
+                
+                console.log("Aba ativada:", tabId);
+            });
+        });
+        
+        console.log("Abas inferiores inicializadas com sucesso");
     }
     
     // Configura todos os event listeners
@@ -4666,12 +4630,15 @@
             const locationItem = document.createElement('div');
             locationItem.className = 'location-item';
             locationItem.innerHTML = `
-                <div style="flex: 1; min-width: 0; overflow: hidden; margin-right: 8px;">
-                    <div style="overflow: hidden; text-overflow: ellipsis;"><span class="badge bg-primary">${index + 1}</span> ${location.name}</div>
+                <div>
+                    <div><span class="badge bg-primary">${index + 1}</span> ${location.name}</div>
                     <div class="location-address">${location.address}</div>
                 </div>
-                <button class="btn btn-danger" onclick="removeLocation('${location.id}')" style="min-width: 48px; align-self: center; margin-left: auto;">
-                    <i class="bi bi-trash"></i>
+                <button class="btn btn-sm btn-danger" onclick="removeLocation('${location.id}')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                    </svg>
                 </button>
             `;
             container.appendChild(locationItem);
