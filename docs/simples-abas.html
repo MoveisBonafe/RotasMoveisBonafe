@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Abas Corrigido</title>
+    <style>
+        /* Estilos básicos */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        /* Sistema de abas */
+        .sistema-abas {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        /* Navegação de abas */
+        .navegacao-abas {
+            display: flex;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .botao-aba {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: none;
+            border: none;
+            color: #333;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .botao-aba.ativo {
+            background-color: white;
+            color: #ff6f00;
+            border-bottom: 3px solid #ff6f00;
+        }
+        
+        /* Conteúdo das abas */
+        .conteudo-aba {
+            display: none;
+            padding: 20px;
+            background-color: white;
+        }
+        
+        .conteudo-aba.ativo {
+            display: block;
+        }
+        
+        /* Bordas e espaçamentos */
+        .card {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        h5 {
+            margin-top: 0;
+            color: #333;
+            border-left: 3px solid #ff9800;
+            padding-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Demonstração de Sistema de Abas Corrigido</h2>
+    <p>Este é um exemplo simplificado que mostra como implementar abas corretamente no GitHub Pages:</p>
+    
+    <div class="sistema-abas">
+        <!-- Navegação das abas -->
+        <div class="navegacao-abas">
+            <button class="botao-aba ativo" onclick="abrirAba('aba1')">Eventos na Rota</button>
+            <button class="botao-aba" onclick="abrirAba('aba2')">Restrições de Tráfego</button>
+            <button class="botao-aba" onclick="abrirAba('aba3')">Relatório da Rota</button>
+        </div>
+        
+        <!-- Conteúdo da aba 1 -->
+        <div id="aba1" class="conteudo-aba ativo">
+            <h5>Eventos nas cidades da rota:</h5>
+            <div class="card">
+                <p>Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
+            </div>
+        </div>
+        
+        <!-- Conteúdo da aba 2 -->
+        <div id="aba2" class="conteudo-aba">
+            <h5>Restrições para caminhões do percurso:</h5>
+            <p class="small">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
+            <div class="card">
+                <p>Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
+            </div>
+        </div>
+        
+        <!-- Conteúdo da aba 3 -->
+        <div id="aba3" class="conteudo-aba">
+            <h5>Relatório da rota otimizada:</h5>
+            <div class="card" style="background-color: #fff8e1;">
+                <p>Otimize uma rota para ver o relatório detalhado.</p>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <label>Nome da rota:</label>
+                <input type="text" placeholder="Ex: Entrega Região Sul" style="width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            
+            <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                <button style="padding: 8px 16px; background: linear-gradient(to right, #ff9800, #ff5722); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    Salvar Relatório
+                </button>
+                <button style="padding: 8px 16px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
+                    Compartilhar
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript para controlar as abas -->
+    <script>
+        function abrirAba(idAba) {
+            // Esconder todos os conteúdos de aba
+            var conteudos = document.getElementsByClassName('conteudo-aba');
+            for (var i = 0; i < conteudos.length; i++) {
+                conteudos[i].classList.remove('ativo');
+            }
+            
+            // Remover classe ativo de todos os botões
+            var botoes = document.getElementsByClassName('botao-aba');
+            for (var i = 0; i < botoes.length; i++) {
+                botoes[i].classList.remove('ativo');
+            }
+            
+            // Mostrar o conteúdo da aba selecionada
+            document.getElementById(idAba).classList.add('ativo');
+            
+            // Adicionar classe ativo ao botão clicado
+            event.currentTarget.classList.add('ativo');
+        }
+    </script>
+</body>
+</html>
