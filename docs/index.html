@@ -1995,48 +1995,42 @@
                 <button class="bottom-tab-btn" data-tab="bottom-report">Relatório da Rota</button>
             </div>
             
-            <!-- Container com os conteúdos das abas, cada um inicialmente escondido -->
-            <div class="tab-contents-container" style="width: 100%; position: relative; min-height: 400px;">
-                <!-- Conteúdo da aba Eventos -->
-                <div class="bottom-tab-content" id="bottom-events-content" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee;">
-                    <div class="tab-content-inner" style="padding: 20px;">
-                        <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
-                            Eventos nas cidades da rota:
-                        </h5>
-                        <!-- Container que se adapta à janela -->
-                        <div class="events-container" style="width: 100%; height: 100%; min-height: 300px; overflow-y: auto; flex-grow: 1; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
-                            <div class="events-list" id="events-list" style="height: 100%;">
-                                <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
-                            </div>
-                        </div>
+            <!-- ESTRUTURA COMPLETAMENTE REESCRITA PARA SOLUCIONAR PROBLEMA DE SOBREPOSIÇÃO NO GITHUB PAGES -->
+            <!-- Cada aba está em seu próprio div isolado, sem nenhuma estrutura aninhada entre elas -->
+            
+            <!-- Container simples para o primeiro conteúdo - EVENTOS -->
+            <div class="bottom-tab-content" id="bottom-events-content" style="display: none; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee; padding: 20px;">
+                <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
+                    Eventos nas cidades da rota:
+                </h5>
+                <div class="events-container" style="width: 100%; min-height: 300px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
+                    <div class="events-list" id="events-list">
+                        <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
                     </div>
                 </div>
-                
-                <!-- Conteúdo da aba Restrições -->
-                <div class="bottom-tab-content" id="bottom-restrictions-content" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee;">
-                    <div class="tab-content-inner" style="padding: 20px;">
-                        <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
-                            Restrições para caminhões do percurso:
-                        </h5>
-                        <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
-                        <!-- Container que se adapta à janela -->
-                        <div class="restrictions-container" style="width: 100%; height: 100%; min-height: 300px; overflow-y: auto; flex-grow: 1; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
-                            <div class="restrictions-list" id="restrictions-list" style="height: 100%;">
-                                <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
-                            </div>
-                        </div>
+            </div>
+            
+            <!-- Container simples para o segundo conteúdo - RESTRIÇÕES -->
+            <div class="bottom-tab-content" id="bottom-restrictions-content" style="display: none; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee; padding: 20px;">
+                <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
+                    Restrições para caminhões do percurso:
+                </h5>
+                <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
+                <div class="restrictions-container" style="width: 100%; min-height: 300px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
+                    <div class="restrictions-list" id="restrictions-list">
+                        <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
                     </div>
                 </div>
-                
-                <!-- Conteúdo da aba Relatório -->
-                <div class="bottom-tab-content" id="bottom-report-content" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee;">
-                    <div class="tab-content-inner" style="padding: 20px;">
-                        <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
-                            Relatório da rota otimizada:
-                        </h5>
-                        <div id="route-summary" class="mb-4" style="width: 100%; height: auto; min-height: 300px; overflow-y: auto; background-color: #fff8e1; border-radius: 8px; border: 1px solid #ffe082; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
-                            <p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>
-                        </div>
+            </div>
+            
+            <!-- Container simples para o terceiro conteúdo - RELATÓRIO -->
+            <div class="bottom-tab-content" id="bottom-report-content" style="display: none; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee; padding: 20px;">
+                <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
+                    Relatório da rota otimizada:
+                </h5>
+                <div id="route-summary" class="mb-4" style="width: 100%; min-height: 300px; background-color: #fff8e1; border-radius: 8px; border: 1px solid #ffe082; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
+                    <p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>
+                </div>
                     
                         <!-- Controles do Relatório - agora dentro da aba de relatório -->
                         <div class="form-group mt-4">
