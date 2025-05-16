@@ -4873,6 +4873,9 @@
         // Mostrar spinner de carregamento centralizado no mapa
         showLoadingSpinner();
         
+        // Mostrar notificação de carregamento
+        showNotification("Consultando Google Maps para cálculos precisos...", "info");
+        
         // Mostrar loading no botão também
         const optimizeBtn = document.getElementById('optimize-route');
         if (optimizeBtn) {
@@ -4886,6 +4889,13 @@
             optimizeBtn.disabled = true;
         }
         
+        // Ativar cálculo preciso usando Google Maps API
+        window.forceGoogleMapsCalculation = true;
+        
+        // Resetar os valores acumulados
+        window.exactGoogleMapsDistance = 0;
+        window.exactGoogleMapsDuration = 0;
+        
         // IMPORTANTE: Assegurar que os marcadores originais sejam preservados antes de limpar
         const currentMarkers = [...markers]; // Criar uma cópia dos marcadores atuais
         
@@ -4896,7 +4906,7 @@
         const vehicleType = "truck1"; // Caminhão 1 eixo como padrão
         
         // Calcular a rota otimizada (versão simplificada do TSP)
-        calculateOptimizedRoute(vehicleType, false, currentMarkers);
+        calculateOptimizedRoute(vehicleType, true, currentMarkers);
     }
 
     // Calcular rota otimizada pelo algoritmo TSP usando Google Maps API
