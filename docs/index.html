@@ -1985,21 +1985,17 @@
         </div>
         </div>
         
-        <!-- NOVO: Tabs fixas na parte inferior do layout (inicialmente minimizadas) -->
+        <!-- ESTRUTURA COMPLETAMENTE REFEITA PARA O GITHUB PAGES - SOLUÇÃO MINIMALISTA -->
         <div class="bottom-tabs-container minimized">
-            <!-- Sem botão adicional - os próprios botões das abas controlam expandir/minimizar -->
-            <!-- Navegação das abas inferiores -->
+            <!-- Navegação das abas - mantida simples -->
             <div class="bottom-tabs-nav">
-                <button class="bottom-tab-btn" data-tab="bottom-events">Eventos na Rota</button>
-                <button class="bottom-tab-btn" data-tab="bottom-restrictions">Restrições de Tráfego</button>
-                <button class="bottom-tab-btn" data-tab="bottom-report">Relatório da Rota</button>
+                <button class="bottom-tab-btn" onclick="showTab('bottom-events')">Eventos na Rota</button>
+                <button class="bottom-tab-btn" onclick="showTab('bottom-restrictions')">Restrições de Tráfego</button>
+                <button class="bottom-tab-btn" onclick="showTab('bottom-report')">Relatório da Rota</button>
             </div>
             
-            <!-- ESTRUTURA COMPLETAMENTE REESCRITA PARA SOLUCIONAR PROBLEMA DE SOBREPOSIÇÃO NO GITHUB PAGES -->
-            <!-- Cada aba está em seu próprio div isolado, sem nenhuma estrutura aninhada entre elas -->
-            
-            <!-- Container simples para o primeiro conteúdo - EVENTOS -->
-            <div class="bottom-tab-content" id="bottom-events-content" style="display: none; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee; padding: 20px;">
+            <!-- CONTEÚDO DA PRIMEIRA ABA - EVENTOS -->
+            <div id="bottom-events-content" class="bottom-tab-content" style="display:none; width:100%; background-color:white; padding:20px;">
                 <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                     Eventos nas cidades da rota:
                 </h5>
@@ -2010,8 +2006,8 @@
                 </div>
             </div>
             
-            <!-- Container simples para o segundo conteúdo - RESTRIÇÕES -->
-            <div class="bottom-tab-content" id="bottom-restrictions-content" style="display: none; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee; padding: 20px;">
+            <!-- CONTEÚDO DA SEGUNDA ABA - RESTRIÇÕES -->
+            <div id="bottom-restrictions-content" class="bottom-tab-content" style="display:none; width:100%; background-color:white; padding:20px;">
                 <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                     Restrições para caminhões do percurso:
                 </h5>
@@ -2023,34 +2019,31 @@
                 </div>
             </div>
             
-            <!-- Container simples para o terceiro conteúdo - RELATÓRIO -->
-            <div class="bottom-tab-content" id="bottom-report-content" style="display: none; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee; padding: 20px;">
+            <!-- CONTEÚDO DA TERCEIRA ABA - RELATÓRIO -->
+            <div id="bottom-report-content" class="bottom-tab-content" style="display:none; width:100%; background-color:white; padding:20px;">
                 <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                     Relatório da rota otimizada:
                 </h5>
                 <div id="route-summary" class="mb-4" style="width: 100%; min-height: 300px; background-color: #fff8e1; border-radius: 8px; border: 1px solid #ffe082; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
                     <p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>
                 </div>
-                    
-                        <!-- Controles do Relatório - agora dentro da aba de relatório -->
-                        <div class="form-group mt-4">
-                            <label class="date-range-label">Nome da rota:</label>
-                            <div class="input-animation-container position-relative">
-                                <input type="text" id="report-route-name" placeholder="Ex: Entrega Região Sul" 
-                                       style="border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; 
-                                       width: 100%; max-width: 400px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
-                                       transition: all 0.3s ease;">
-                                <div class="input-animation-effect"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-3">
-                            <button id="save-route" class="btn" style="background-color: #ffc107; color: #000000; font-weight: 600; border-color: #ffab00;" disabled>Salvar Rota</button>
-                            <button id="print-route" class="btn ms-2" style="background-color: #ffc107; color: #000000; font-weight: 600; border-color: #ffab00;" disabled>Imprimir</button>
-                        </div>
+                
+                <!-- Controles do Relatório -->
+                <div class="form-group mt-4">
+                    <label class="date-range-label">Nome da rota:</label>
+                    <div class="input-animation-container position-relative">
+                        <input type="text" id="report-route-name" placeholder="Ex: Entrega Região Sul" 
+                               style="border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; 
+                               width: 100%; max-width: 400px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+                               transition: all 0.3s ease;">
+                        <div class="input-animation-effect"></div>
                     </div>
                 </div>
-            </div>
+                
+                <div class="mt-3">
+                    <button id="save-route" class="btn" style="background-color: #ffc107; color: #000000; font-weight: 600; border-color: #ffab00;" disabled>Salvar Rota</button>
+                    <button id="print-route" class="btn ms-2" style="background-color: #ffc107; color: #000000; font-weight: 600; border-color: #ffab00;" disabled>Imprimir</button>
+                </div>
             </div>
         </div>
     </div>
@@ -2065,9 +2058,76 @@
     <script src="tsp.js"></script>
     <script src="fix-github.js"></script>
     <script src="fix-map-controls.js"></script>
-    <script src="tabs-fix.js"></script>
     
-    <!-- Script removido, substituído pelo arquivo tabs-fix.js independente -->
+    <!-- Script para controle simples das abas -->
+    <script>
+        // Função simples para mostrar apenas a aba selecionada
+        function showTab(tabId) {
+            // Container de abas
+            var tabsContainer = document.querySelector('.bottom-tabs-container');
+            
+            // Todos os botões de aba
+            var tabButtons = document.querySelectorAll('.bottom-tab-btn');
+            
+            // Todos os conteúdos de aba
+            var tabContents = document.querySelectorAll('.bottom-tab-content');
+            
+            // Verifica se o botão dessa aba já está ativo
+            var activeButton = document.querySelector('.bottom-tab-btn.active');
+            var isActive = activeButton && activeButton.getAttribute('onclick').includes(tabId);
+            
+            // Se a aba já está ativa e expandida, apenas minimize
+            if (isActive && !tabsContainer.classList.contains('minimized')) {
+                // Minimizar a container
+                tabsContainer.classList.add('minimized');
+                // Remover classe ativa de todos os botões
+                tabButtons.forEach(function(btn) {
+                    btn.classList.remove('active');
+                });
+                console.log('Aba minimizada');
+                return;
+            }
+            
+            // Desativar todos os botões
+            tabButtons.forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+            
+            // Esconder todos os conteúdos
+            tabContents.forEach(function(content) {
+                content.style.display = 'none';
+            });
+            
+            // Ativar o botão específico desta aba
+            tabButtons.forEach(function(btn) {
+                if (btn.getAttribute('onclick').includes(tabId)) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Mostrar apenas o conteúdo específico
+            var targetContent = document.getElementById(tabId + '-content');
+            if (targetContent) {
+                targetContent.style.display = 'block';
+            }
+            
+            // Expandir o container se estiver minimizado
+            if (tabsContainer.classList.contains('minimized')) {
+                tabsContainer.classList.remove('minimized');
+            }
+            
+            console.log('Aba ativada:', tabId);
+        }
+        
+        // Inicializar - esconder todos os conteúdos quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            var tabContents = document.querySelectorAll('.bottom-tab-content');
+            tabContents.forEach(function(content) {
+                content.style.display = 'none';
+            });
+            console.log('Abas inicializadas - todos os conteúdos escondidos');
+        });
+    </script>
     
     <script>
     // Dados de amostra para a aplicação standalone
