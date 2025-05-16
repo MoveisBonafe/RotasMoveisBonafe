@@ -148,13 +148,29 @@ function setupUploader() {
     console.log('Input de arquivo substituído por um novo elemento limpo');
   }
   
-  // Adicionar manipulador de evento principal - usando o novo padrão
-  newInput.onchange = handleFileSelection;
+  // Adicionar manipulador de evento principal com debounce
+  let isProcessing = false;
   
-  // Interromper imediatamente propagação de eventos em caso de clique
-  newInput.addEventListener('click', function(e) {
-    e.stopPropagation(); // Impedir que outros handlers sejam chamados
+  newInput.addEventListener('change', function(e) {
+    if (isProcessing) return; // Evita processamento duplicado
+    
+    isProcessing = true;
+    handleFileSelection.call(this, e);
+    
+    // Reset após um breve delay
+    setTimeout(() => {
+      isProcessing = false;
+    }, 1000);
   });
+  
+  // Prevenir propagação do clique
+  newInput.addEventListener('click', function(e) {
+    if (isProcessing) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+  }, true);
   
   // Adicionar suporte para arrastar e soltar
   uploadArea.addEventListener('dragover', function(e) {
@@ -208,6 +224,12 @@ function handleFileSelection() {
 function processFile(file) {
   if (!file) {
     console.error('Arquivo inválido ou não especificado');
+    return;
+  }
+  
+  // Verificar se já está processando
+  if (document.querySelector('#upload-status.processing')) {
+    console.log('Já existe um arquivo sendo processado');
     return;
   }
   
