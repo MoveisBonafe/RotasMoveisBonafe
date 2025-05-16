@@ -9476,7 +9476,7 @@
     <!-- Script para ativar as abas em modo tela cheia -->
     <script>
     // Implementação da visualização da rota atual sem otimização
-    function showCurrentRoute() {
+    function showCurrentRoute(forceGoogleMaps = false) {
         // Verificar se há locais suficientes
         if (locations.length < 2) {
             showNotification('Adicione pelo menos um destino para visualizar a rota.', 'warning');
@@ -9486,6 +9486,14 @@
         // Exibir spinner durante o processamento
         const loadingSpinner = document.getElementById('loading-spinner');
         if (loadingSpinner) loadingSpinner.style.display = 'block';
+        
+        // Se a variável global ou parâmetro indicarem para forçar uso do Google Maps
+        const useGoogleMapsDirectly = forceGoogleMaps || window.forceGoogleMapsCalculation === true;
+        
+        if (useGoogleMapsDirectly) {
+            console.log("📍 Usando Google Maps API diretamente para cálculos precisos de distância e tempo");
+            showNotification("Usando Google Maps para cálculos precisos de distância", "info", null, 3000);
+        }
         
         try {
             // Encontrar a origem
@@ -9606,16 +9614,18 @@
                     
                     // Verificar se temos coordenadas válidas
                     if (!isNaN(originLat) && !isNaN(originLng) && !isNaN(destLat) && !isNaN(destLng)) {
-                        // Calcular distância real para qualquer rota usando a mesma fórmula matemática
-                        // Isso garante consistência entre todos os cálculos no sistema
-                        const dist = calculateHaversineDistance(originLat, originLng, destLat, destLng);
-                        
-                        // Usar o mesmo fator de 1.4 para todas as rotas para simular estradas
-                        // O fator considera curvas, subidas, descidas e outros fatores reais
-                        totalDistanceKm = dist * 1.4; // Apenas ida com fator de estrada
-                        
-                        console.log(`Distância calculada de ${origin.name} para ${destination.name}: ${dist.toFixed(2)} km (linha reta)`);
-                        console.log(`Distância ajustada com fator de estrada (1.4): ${totalDistanceKm.toFixed(2)} km`);
+                        if (useGoogleMapsDirectly) {
+                            console.log("📍 Calculando distância exata usando Google Maps API para um único destino");
+                            // Não fazer pré-cálculo, vamos usar exclusivamente a API para resultados precisos
+                            // Os valores reais serão calculados pelo DirectionsService abaixo
+                            totalDistanceKm = 0; // Será substituído pelos valores reais da API
+                        } else {
+                            // Usar o cálculo tradicional como fallback
+                            const dist = calculateHaversineDistance(originLat, originLng, destLat, destLng);
+                            totalDistanceKm = dist * 1.4; // Apenas ida com fator de estrada
+                            console.log(`Fallback: Distância calculada de ${origin.name} para ${destination.name}: ${dist.toFixed(2)} km (linha reta)`);
+                            console.log(`Fallback: Distância ajustada com fator de estrada (1.4): ${totalDistanceKm.toFixed(2)} km`);
+                        }
                     } else {
                         // Usar valor padrão confiável se não pudermos calcular
                         totalDistanceKm = 20; // 20km apenas ida como estimativa
@@ -9628,63 +9638,73 @@
             } 
             // Caso com múltiplos pontos - calcular distância total
             else {
-                // Usar pontos filtrados para cálculo de distância
-                const pointsForDistance = routePoints.map(rp => {
-                    try {
-                        // Extrair lat/lng do Google LatLng object
-                        return {
-                            lat: rp.location.lat(),
-                            lng: rp.location.lng()
-                        };
-                    } catch (e) {
-                        console.warn("Erro ao extrair coordenadas para cálculo de distância:", e);
-                        return null;
-                    }
-                }).filter(p => p !== null); // Remover pontos nulos
-                
-                // Garantir que temos pontos suficientes para calcular distância
-                if (pointsForDistance.length > 1) {
-                    for (let i = 0; i < pointsForDistance.length - 1; i++) {
-                        const p1 = pointsForDistance[i];
-                        const p2 = pointsForDistance[i + 1];
-                        
+                // SOLUÇÃO GLOBAL: Quando forçar o uso do Google Maps, não calcular previamente
+                if (useGoogleMapsDirectly) {
+                    console.log("📍 Usando Google Maps API para cálculos de distância e tempo em rotas complexas");
+                    // Não fazer pré-cálculo, vamos usar exclusivamente a API para resultados precisos
+                    // Zerar a distância total, que será substituída pelos valores reais da API
+                    totalDistanceKm = 0;
+                } 
+                // Usar o método tradicional de cálculo como fallback quando necessário
+                else {
+                    // Usar pontos filtrados para cálculo de distância
+                    const pointsForDistance = routePoints.map(rp => {
                         try {
-                            // Calcular distância apenas se ambos os pontos tiverem coordenadas válidas
-                            if (p1 && p2 && !isNaN(p1.lat) && !isNaN(p1.lng) && !isNaN(p2.lat) && !isNaN(p2.lng)) {
-                                // Usar Haversine para calcular distância aproximada
-                                const dist = calculateHaversineDistance(p1.lat, p1.lng, p2.lat, p2.lng);
-                                console.log(`Distância de ${i} para ${i+1}: ${dist.toFixed(2)} km`);
-                                totalDistanceKm += dist * 1.4; // Fator 1.4 para simular rotas por estradas
-                            }
+                            // Extrair lat/lng do Google LatLng object
+                            return {
+                                lat: rp.location.lat(),
+                                lng: rp.location.lng()
+                            };
                         } catch (e) {
-                            console.warn("Erro no cálculo de distância:", e);
+                            console.warn("Erro ao extrair coordenadas para cálculo de distância:", e);
+                            return null;
                         }
-                    }
-                } else {
-                    // Calcular uma distância estimada com base nas coordenadas disponíveis
-                    console.warn("Tentando calcular distância estimada entre locais disponíveis");
+                    }).filter(p => p !== null); // Remover pontos nulos
                     
-                    // Usar coordenadas disponíveis para estimar a distância
-                    let estimatedDistance = 0;
-                    for (let i = 0; i < locations.length - 1; i++) {
-                        const loc1 = locations[i];
-                        const loc2 = locations[i+1];
-                        
-                        const lat1 = parseFloat(loc1.lat !== undefined ? loc1.lat : loc1.latitude);
-                        const lng1 = parseFloat(loc1.lng !== undefined ? loc1.lng : loc1.longitude);
-                        const lat2 = parseFloat(loc2.lat !== undefined ? loc2.lat : loc2.latitude);
-                        const lng2 = parseFloat(loc2.lng !== undefined ? loc2.lng : loc2.longitude);
-                        
-                        if (!isNaN(lat1) && !isNaN(lng1) && !isNaN(lat2) && !isNaN(lng2)) {
-                            // Calcular distância entre pontos consecutivos
-                            const segmentDist = calculateHaversineDistance(lat1, lng1, lat2, lng2) * 1.4;
-                            estimatedDistance += segmentDist;
-                            console.log(`Distância estimada entre ${loc1.name} e ${loc2.name}: ${segmentDist.toFixed(2)} km`);
+                    // Garantir que temos pontos suficientes para calcular distância
+                    if (pointsForDistance.length > 1) {
+                        for (let i = 0; i < pointsForDistance.length - 1; i++) {
+                            const p1 = pointsForDistance[i];
+                            const p2 = pointsForDistance[i + 1];
+                            
+                            try {
+                                // Calcular distância apenas se ambos os pontos tiverem coordenadas válidas
+                                if (p1 && p2 && !isNaN(p1.lat) && !isNaN(p1.lng) && !isNaN(p2.lat) && !isNaN(p2.lng)) {
+                                    // Usar Haversine para calcular distância aproximada
+                                    const dist = calculateHaversineDistance(p1.lat, p1.lng, p2.lat, p2.lng);
+                                    console.log(`Distância de ${i} para ${i+1}: ${dist.toFixed(2)} km`);
+                                    totalDistanceKm += dist * 1.4; // Fator 1.4 para simular rotas por estradas
+                                }
+                            } catch (e) {
+                                console.warn("Erro no cálculo de distância:", e);
+                            }
                         }
+                    } else {
+                        // Calcular uma distância estimada com base nas coordenadas disponíveis
+                        console.warn("Tentando calcular distância estimada entre locais disponíveis");
+                        
+                        // Usar coordenadas disponíveis para estimar a distância
+                        let estimatedDistance = 0;
+                        for (let i = 0; i < locations.length - 1; i++) {
+                            const loc1 = locations[i];
+                            const loc2 = locations[i+1];
+                            
+                            const lat1 = parseFloat(loc1.lat !== undefined ? loc1.lat : loc1.latitude);
+                            const lng1 = parseFloat(loc1.lng !== undefined ? loc1.lng : loc1.longitude);
+                            const lat2 = parseFloat(loc2.lat !== undefined ? loc2.lat : loc2.latitude);
+                            const lng2 = parseFloat(loc2.lng !== undefined ? loc2.lng : loc2.longitude);
+                            
+                            if (!isNaN(lat1) && !isNaN(lng1) && !isNaN(lat2) && !isNaN(lng2)) {
+                                // Calcular distância entre pontos consecutivos
+                                const segmentDist = calculateHaversineDistance(lat1, lng1, lat2, lng2) * 1.4;
+                                estimatedDistance += segmentDist;
+                                console.log(`Distância estimada entre ${loc1.name} e ${loc2.name}: ${segmentDist.toFixed(2)} km`);
+                            }
+                        }
+                        
+                        // Usar a distância estimada ou um valor mínimo realista se não for possível calcular
+                        totalDistanceKm = estimatedDistance > 0 ? estimatedDistance : 10;
                     }
-                    
-                    // Usar a distância estimada ou um valor mínimo realista se não for possível calcular
-                    totalDistanceKm = estimatedDistance > 0 ? estimatedDistance : 10;
                 }
             }
             
@@ -9798,15 +9818,29 @@
     }
     
     // Função para processar segmentos de rota sequencialmente
-    function processRouteSegments(index, chunks, totalDistanceKm) {
+    function processRouteSegments(index, chunks, totalDistanceKm, forceGoogleMapsCalc = false) {
+        // Verificar se é o cálculo global com Google Maps
+        const useGoogleMapsExclusively = forceGoogleMapsCalc || window.forceGoogleMapsCalculation === true;
+        
+        // Variáveis para acumular distâncias e tempos exatos do Google Maps
+        let googleMapsDistance = 0;
+        let googleMapsDuration = 0;
+        
         if (index >= chunks.length) {
             // Finalizar processamento
             const loadingSpinner = document.getElementById('loading-spinner');
             if (loadingSpinner) loadingSpinner.style.display = 'none';
             
-            // Ajustar a distância se parecer incorreta 
-            // (especialmente para casos onde a API do Google não retornou resultado)
-            if (isNaN(totalDistanceKm) || totalDistanceKm <= 0) {
+            // Se estamos usando exclusivamente o Google Maps e temos valores, usá-los
+            if (useGoogleMapsExclusively && window.exactGoogleMapsDistance > 0) {
+                console.log("✅ Usando valores exatos do Google Maps API:", window.exactGoogleMapsDistance.toFixed(1), "km");
+                totalDistanceKm = window.exactGoogleMapsDistance;
+                
+                // Mostrar notificação confirmando o uso dos dados exatos
+                showNotification("Cálculos precisos do Google Maps aplicados", "success", null, 2000);
+            }
+            // Caso contrário, tentar ajustar a distância se parecer incorreta 
+            else if (isNaN(totalDistanceKm) || totalDistanceKm <= 0) {
                 console.log("Calculando distância alternativa para rotas sem resposta da API");
                 
                 // Calcular distância entre pontos com base nas coordenadas conhecidas
