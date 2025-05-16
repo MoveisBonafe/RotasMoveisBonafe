@@ -1726,46 +1726,169 @@
                     }
                     </style>
                     
-                    <!-- Campo de busca para adicionar novo local -->
-                    <div class="form-group mb-4">
-                        <label class="date-range-label">Adicionar local:</label>
-                        <div class="input-animation-container position-relative">
-                            <div class="position-relative">
+                    <!-- Campo de busca para adicionar novo local (Modernizado) -->
+                    <div class="form-group mb-3">
+                        <label class="date-range-label">
+                            <i class="bi bi-pin-map-fill me-2" style="color: #ffc107;"></i>
+                            Adicionar local:
+                        </label>
+                        <div class="input-animation-container position-relative" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); overflow: hidden;">
+                            <div class="position-relative" style="border-radius: 12px; overflow: hidden;">
                                 <input type="text" id="location-search" placeholder="Digite um endereço"
-                                       style="border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; width: 100%; 
-                                       box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.3s ease; padding-right: 35px;">
-                                <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); 
-                                       color: #444; opacity: 0.7;">
+                                    style="border: none; border-left: 3px solid #ffc107; border-radius: 0 12px 12px 0; 
+                                    padding: 12px 15px; width: 100%; background-color: rgba(255,255,255,0.8);
+                                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding-right: 40px;">
+                                <span style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); 
+                                    color: #ffc107; opacity: 0.9; transition: all 0.3s ease; pointer-events: none;">
                                     <i class="bi bi-search"></i>
                                 </span>
                             </div>
-                            <div class="input-animation-effect"></div>
+                            <div class="input-animation-effect" style="position: absolute; bottom: 0; left: 3px; height: 2px; 
+                                width: 0; background: linear-gradient(90deg, #ffc107, #ff9800); 
+                                transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);"></div>
                         </div>
                     </div>
                     
+                    <style>
+                    #location-search:focus {
+                        outline: none;
+                        background-color: rgba(255,255,255,0.95) !important;
+                        box-shadow: 0 6px 16px rgba(0,0,0,0.05) inset;
+                    }
+                    
+                    #location-search:focus + span {
+                        color: #ff9800;
+                        transform: translateY(-50%) scale(1.1);
+                    }
+                    
+                    #location-search:focus ~ .input-animation-effect {
+                        width: calc(100% - 3px);
+                    }
+                    </style>
+                    
                     <!-- Seleção de veículo removida, agora usa caminhão padrão automaticamente -->
                     
-                    <!-- Upload de arquivo melhorado e compacto -->
-                    <div class="file-upload" id="upload-area">
-                        <i class="file-upload-icon fas fa-cloud-upload-alt" aria-hidden="true"></i>
-                        <p style="margin: 0">Importar CEPs via arquivo</p>
-                        <div class="file-format-example">CEP,Nome</div>
-                        <span class="file-upload-text">Arraste arquivo ou clique aqui</span>
-                        <input type="file" id="file-upload" accept=".txt,.csv">
+                    <!-- Upload de arquivo modernizado e compacto -->
+                    <div class="file-upload" id="upload-area" style="border-radius: 12px; background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7)); backdrop-filter: blur(10px); border: 2px dashed #ffc107; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; position: relative; padding: 15px 12px; margin-top: 15px; z-index: 1;">
+                        <div class="upload-icon-container" style="display: flex; justify-content: center; align-items: center; margin-bottom: 10px;">
+                            <div style="background: linear-gradient(135deg, #ffc107, #ff9800); width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 3px 8px rgba(255,171,0,0.3); animation: float 3s infinite ease-in-out;">
+                                <i class="bi bi-cloud-arrow-up-fill" style="font-size: 20px; color: white;"></i>
+                            </div>
+                        </div>
+                        <p style="margin: 0; font-weight: 600; font-size: 15px; color: #333; position: relative; z-index: 2;">Importar CEPs via arquivo</p>
+                        <div class="file-format-example" style="background: rgba(255,255,255,0.8); border: 1px solid #ffecb3; border-radius: 20px; padding: 3px 10px; margin: 8px auto; display: inline-block; font-family: 'Courier New', monospace; font-size: 12px; color: #ff8f00; box-shadow: 0 2px 5px rgba(255,171,0,0.1);">CEP,Nome</div>
+                        <span class="file-upload-text" style="display: block; margin-top: 5px; color: #666; font-size: 13px;">Arraste arquivo ou clique aqui</span>
+                        <input type="file" id="file-upload" accept=".txt,.csv" style="opacity: 0; position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; z-index: 3;">
+                        
+                        <!-- Animated background gradient effect -->
+                        <div class="file-upload-bg-animation" style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,193,7,0.1) 0%, rgba(255,255,255,0) 70%); z-index: 0; opacity: 0.8; transform: scale(0); transform-origin: center; transition: transform 0.6s ease-out; pointer-events: none;"></div>
                     </div>
                     
-                    <!-- Lista de locais adicionados -->
-                    <h5 class="mt-4">Locais adicionados:</h5>
-                    <div class="location-list" id="locations-list">
+                    <style>
+                    @keyframes float {
+                        0% { transform: translateY(0px); }
+                        50% { transform: translateY(-5px); }
+                        100% { transform: translateY(0px); }
+                    }
+                    
+                    #upload-area:hover .file-upload-bg-animation {
+                        transform: scale(1);
+                    }
+                    
+                    #upload-area:hover {
+                        border-color: #ff9800;
+                        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+                        transform: translateY(-2px) scale(1.01);
+                    }
+                    </style>
+                    
+                    <!-- Lista de locais adicionados (Modernizada) -->
+                    <div class="locations-header mt-4" style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <i class="bi bi-geo-alt-fill me-2" style="color: #ffc107; font-size: 18px;"></i>
+                        <h5 style="margin: 0; font-weight: 600; font-size: 16px; background: linear-gradient(90deg, #333, #555); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Locais adicionados:</h5>
+                        <span class="locations-counter" id="locations-counter" style="margin-left: auto; background: rgba(255,193,7,0.15); color: #ff8f00; font-size: 13px; font-weight: 600; padding: 3px 10px; border-radius: 20px; display: inline-flex; align-items: center;">
+                            <i class="bi bi-pin-map me-1"></i><span id="locations-count">0</span>
+                        </span>
+                    </div>
+                    <div class="location-list" id="locations-list" style="transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); max-height: 250px; overflow-y: auto; border-radius: 12px; background: rgba(255,255,255,0.7); backdrop-filter: blur(8px); box-shadow: 0 4px 15px rgba(0,0,0,0.04); padding: 5px; margin-bottom: 15px;">
                         <!-- Locais serão adicionados aqui dinamicamente -->
+                        <div class="empty-locations-message" style="padding: 20px; text-align: center; color: #999; font-style: italic;">
+                            Adicione locais para calcular a rota
+                        </div>
                     </div>
                     
-                    <!-- Botão para otimizar rota -->
-                    <div class="optimize-btn-container">
-                        <button id="optimize-route" class="btn" style="background-color: #ffc107; color: #000000; font-weight: 600; border-color: #ffab00;">
-                            Otimizar Rota
+                    <style>
+                    /* Animação para novos locais */
+                    @keyframes addLocation {
+                        from { 
+                            opacity: 0;
+                            transform: translateX(-20px);
+                        }
+                        to { 
+                            opacity: 1;
+                            transform: translateX(0);
+                        }
+                    }
+                    
+                    /* Estilizando a barra de rolagem */
+                    #locations-list::-webkit-scrollbar {
+                        width: 6px;
+                    }
+                    
+                    #locations-list::-webkit-scrollbar-track {
+                        background: rgba(255,255,255,0.5);
+                        border-radius: 10px;
+                    }
+                    
+                    #locations-list::-webkit-scrollbar-thumb {
+                        background: rgba(255,193,7,0.5);
+                        border-radius: 10px;
+                    }
+                    
+                    /* Esconde a mensagem quando houver itens */
+                    #locations-list:not(:empty) .empty-locations-message {
+                        display: none;
+                    }
+                    </style>
+                    
+                    <!-- Botão para otimizar rota (Modernizado) -->
+                    <div class="optimize-btn-container" style="position: sticky; bottom: 0; padding: 15px 0; margin-top: 5px; background: linear-gradient(to bottom, rgba(248,249,250,0) 0%, rgba(248,249,250,1) 20%); z-index: 10;">
+                        <button id="optimize-route" class="btn" style="width: 100%; padding: 14px 0; font-weight: 700; 
+                        background: linear-gradient(135deg, #ffc107 0%, #ffab00 100%); border: none; color: #000; 
+                        border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-size: 15px;
+                        position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(255,171,0,0.3); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                            <i class="bi bi-lightning-charge-fill me-2"></i>Otimizar Rota
+                            <span class="optimize-btn-shine" style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: all 0.6s ease; pointer-events: none;"></span>
                         </button>
                     </div>
+                    
+                    <style>
+                    #optimize-route:hover {
+                        transform: translateY(-3px) scale(1.02);
+                        box-shadow: 0 8px 20px rgba(255,171,0,0.4);
+                        background: linear-gradient(135deg, #ffab00 0%, #ff9800 100%);
+                    }
+                    
+                    #optimize-route:active {
+                        transform: translateY(1px);
+                        box-shadow: 0 2px 8px rgba(255,171,0,0.4);
+                    }
+                    
+                    #optimize-route:hover .optimize-btn-shine {
+                        left: 100%;
+                    }
+                    
+                    /* Adicionar efeito de pulsação quando não há locais suficientes */
+                    @keyframes pulseButton {
+                        0% { transform: scale(1); }
+                        50% { transform: scale(1.03); box-shadow: 0 8px 25px rgba(255,171,0,0.5); }
+                        100% { transform: scale(1); }
+                    }
+                    
+                    .optimize-ready {
+                        animation: pulseButton 1.5s infinite ease-in-out;
+                    }
+                    </style>
                     
                     <!-- Seleção de Rota Alternativa na sidebar (redesenhada) -->
                     <div id="route-alternatives-sidebar" class="alternative-routes-section" style="display: none;">
