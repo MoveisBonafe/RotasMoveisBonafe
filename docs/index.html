@@ -4748,6 +4748,18 @@
             allRoutePolylines = [];
         }
         
+        // Limpar renderer da rota não otimizada (botão Visualizar Atual)
+        if (window.currentRouteRenderer) {
+            console.log("Limpando renderer da rota atual não otimizada");
+            try {
+                window.currentRouteRenderer.setMap(null);
+                window.currentRouteRenderer = null;
+                window.compositeRouteResult = null;
+            } catch (e) {
+                console.error("Erro ao limpar renderer da rota atual:", e);
+            }
+        }
+        
         // Outras limpezas específicas de polylines
         if (routePath) {
             try {
@@ -9197,6 +9209,20 @@
                     waypointChunks.push(routePoints.slice(i, i + chunkSize));
                 }
                 
+                // Mostrar eventos e restrições para as cidades na rota
+                const cityIds = locations.map(loc => loc.id);
+                console.log("Mostrando eventos e restrições para cidades:", cityIds);
+                
+                // Obter datas do filtro (se existirem)
+                const startDateInput = document.getElementById('start-date');
+                const endDateInput = document.getElementById('end-date');
+                const startDate = startDateInput && startDateInput.value ? startDateInput.value : null;
+                const endDate = endDateInput && endDateInput.value ? endDateInput.value : null;
+                
+                // Mostrar eventos e restrições
+                showEventsForCitiesOnRoute(cityIds, startDate, endDate);
+                showTruckRestrictionsForCitiesOnRoute(cityIds, null);
+                
                 // Processar os segmentos de waypoints sequencialmente
                 processRouteSegments(0, waypointChunks, totalDistanceKm);
             }
@@ -9215,11 +9241,62 @@
             const loadingSpinner = document.getElementById('loading-spinner');
             if (loadingSpinner) loadingSpinner.style.display = 'none';
             
+            // Ajustar a distância se parecer incorreta 
+            // (especialmente para casos onde a API do Google não retornou resultado)
+            if (isNaN(totalDistanceKm) || totalDistanceKm <= 0) {
+                console.log("Calculando distância alternativa para rotas sem resposta da API");
+                
+                // Calcular distância entre pontos com base nas coordenadas conhecidas
+                totalDistanceKm = 0;
+                const allPoints = locations.filter(loc => {
+                    const hasLat = loc.lat !== undefined || loc.latitude !== undefined;
+                    const hasLng = loc.lng !== undefined || loc.longitude !== undefined;
+                    return hasLat && hasLng;
+                });
+                
+                // Calcular distância apenas se tivermos pontos válidos
+                if (allPoints.length > 1) {
+                    for (let i = 0; i < allPoints.length - 1; i++) {
+                        const p1 = allPoints[i];
+                        const p2 = allPoints[i + 1];
+                        
+                        // Extrair coordenadas (com fallbacks)
+                        const lat1 = parseFloat(p1.lat !== undefined ? p1.lat : p1.latitude);
+                        const lng1 = parseFloat(p1.lng !== undefined ? p1.lng : p1.longitude);
+                        const lat2 = parseFloat(p2.lat !== undefined ? p2.lat : p2.latitude);
+                        const lng2 = parseFloat(p2.lng !== undefined ? p2.lng : p2.longitude);
+                        
+                        // Calcular distância em linha reta e aplicar fator de rota
+                        try {
+                            const directDistance = calculateHaversineDistance(lat1, lng1, lat2, lng2);
+                            // Fator 1.4 para simular distâncias reais de estrada (serpentinas, contornos, etc)
+                            totalDistanceKm += directDistance * 1.4;
+                            console.log(`Distância de ${p1.name} para ${p2.name}: ${directDistance.toFixed(1)} km (linha reta) x 1.4 = ${(directDistance * 1.4).toFixed(1)} km (estrada estimada)`);
+                        } catch (e) {
+                            console.error("Erro ao calcular distância entre pontos:", e);
+                        }
+                    }
+                } else {
+                    console.warn("Pontos insuficientes para calcular distância");
+                    totalDistanceKm = 50; // Valor padrão para evitar zero
+                }
+            }
+            
+            // Garantir valor mínimo para evitar problemas
+            if (isNaN(totalDistanceKm) || totalDistanceKm <= 0) {
+                totalDistanceKm = 30; // Valor padrão para evitar zero ou NaN
+            }
+            
+            // Calcular tempo com base na distância
+            const timeMinutes = calculateTravelTime(totalDistanceKm);
+            
+            console.log(`Distância total calculada: ${totalDistanceKm.toFixed(1)} km, Tempo estimado: ${timeMinutes} minutos`);
+            
             // Criar objeto de resultado para mostrar informações
             const routeInfo = {
                 path: locations.map(loc => loc.id),
                 distance: totalDistanceKm,
-                time: calculateTravelTime(totalDistanceKm),
+                time: timeMinutes,
                 isOptimized: false // Marcar como não otimizada
             };
             
