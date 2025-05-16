@@ -308,37 +308,54 @@ function processCepFileContent(content, statusEl) {
         isOrigin: false
       };
       
-      // Integração direta com as funções do aplicativo principal
+      // Integração direta com o aplicativo principal - VERSÃO CORRIGIDA
       try {
-        // Método 1: Usar a função global createLocationItem (mais confiável)
+        // Preparar o objeto de localização no formato esperado pelo aplicativo principal
+        const newLocation = {
+          id: id,
+          name: name,
+          address: `CEP: ${cep} (${cityName})`,
+          zipCode: cep,
+          latitude: coordinates.lat,
+          longitude: coordinates.lng,
+          isOrigin: false
+        };
+        
+        // Método 1: Integração com a função global createLocationItem
         if (typeof window.createLocationItem === 'function') {
-          // A função createLocationItem geralmente adiciona automaticamente
-          // o local ao array global locations no aplicativo principal
           console.log('Adicionando local via createLocationItem:', name);
-          window.createLocationItem(name, location.address, id);
+          window.createLocationItem(name, newLocation.address, id);
         }
-        // Método 2: Adicionar diretamente ao array locations
+        // Método 2: Integração direta via window.locations e window.markers
         else if (window.locations && Array.isArray(window.locations)) {
           console.log('Adicionando local diretamente ao array locations:', name);
-          window.locations.push(location);
           
-          // Tentar adicionar visualmente de outra forma se createLocationItem não existir
-          const locationsList = document.getElementById('locations-list');
-          if (locationsList) {
-            const locationItem = document.createElement('div');
-            locationItem.className = 'location-item d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded';
-            locationItem.setAttribute('data-id', id);
-            locationItem.innerHTML = `
-              <div>
-                <span class="location-name">${name}</span>
-                <small class="d-block text-muted">${location.address}</small>
-              </div>
-              <button class="btn btn-sm btn-outline-danger remove-location" onclick="removeLocation(${id})">
-                <i class="bi bi-trash"></i>
-              </button>
-            `;
-            locationsList.appendChild(locationItem);
+          // Adicionar à lista global
+          window.locations.push(newLocation);
+          
+          // Se existir função para adicionar marcador, usar
+          if (typeof window.addMarkerForLocation === 'function') {
+            window.addMarkerForLocation(newLocation, window.locations.length - 1);
           }
+          
+          // Se existir função para atualizar contadores de região, chamar
+          if (typeof window.refreshRegionCounters === 'function') {
+            window.refreshRegionCounters();
+          }
+          
+          // Se existir função para atualizar lista de locais, chamar
+          if (typeof window.updateLocationsList === 'function') {
+            window.updateLocationsList();
+          }
+          
+          // Ajustar o zoom do mapa para mostrar todos os marcadores
+          if (typeof window.zoomToFitAllMarkers === 'function') {
+            window.zoomToFitAllMarkers();
+          }
+        }
+        else {
+          console.error('Impossível adicionar local - array locations não encontrado');
+          throw new Error('Array locations não encontrado');
         }
       } catch (e) {
         console.error('Erro ao adicionar local:', e);
@@ -351,35 +368,50 @@ function processCepFileContent(content, statusEl) {
     if (importedLocations.length > 0) {
       showStatus(statusEl, `Importado com sucesso! ${importedLocations.length} endereços adicionados.`, 'success');
       
-      // Atualizar visualização
+      // Atualizar visualização - VERSÃO CORRIGIDA
       try {
         console.log(`Processamento concluído com sucesso: ${importedLocations.length} locais adicionados`);
         
-        // Tentar várias funções de atualização, dependendo do que estiver disponível
-        if (typeof window.calculateOptimizedRoute === 'function') {
-          console.log('Recalculando rota via calculateOptimizedRoute()');
-          window.calculateOptimizedRoute();
-        } 
-        else if (typeof window.reloadLocations === 'function') {
-          console.log('Recarregando locais via reloadLocations()');
-          window.reloadLocations();
-        }
-        else if (typeof window.updateMap === 'function') {
-          console.log('Atualizando mapa via updateMap()');
-          window.updateMap();
-        }
-        else {
-          console.log('Tentando métodos alternativos de atualização...');
+        // Aguardar um momento para garantir que todos os locais estejam registrados
+        setTimeout(function() {
+          // Verificar novamente o número de locais
+          const numLocations = window.locations ? window.locations.length : 0;
+          console.log(`Locais disponíveis no sistema: ${numLocations}`);
           
-          // Tentar método alternativo: simular um clique no botão de otimizar rota
-          const optimizeBtn = document.getElementById('optimize-route');
-          if (optimizeBtn) {
-            console.log('Simulando clique no botão de otimizar rota');
-            optimizeBtn.click();
+          // Só tentar otimizar rota se existirem locais
+          if (numLocations > 1) {
+            if (typeof window.calculateOptimizedRoute === 'function') {
+              console.log('Recalculando rota via calculateOptimizedRoute()');
+              window.calculateOptimizedRoute();
+            } 
+            else if (typeof window.reloadLocations === 'function') {
+              console.log('Recarregando locais via reloadLocations()');
+              window.reloadLocations();
+            }
+            else if (typeof window.updateMap === 'function') {
+              console.log('Atualizando mapa via updateMap()');
+              window.updateMap();
+            }
+            else {
+              console.log('Tentando métodos alternativos de atualização...');
+              
+              // Tentar método alternativo: simular um clique no botão de otimizar rota
+              const optimizeBtn = document.getElementById('optimize-route');
+              if (optimizeBtn) {
+                console.log('Simulando clique no botão de otimizar rota');
+                optimizeBtn.click();
+              }
+            }
+          } else {
+            console.warn('Nenhum local para rota foi adicionado ao sistema');
+            
+            // Mostrar uma mensagem de erro amigável
+            alert('Não foi possível adicionar os locais ao sistema. Verifique o formato do arquivo e tente novamente.');
           }
-        }
+        }, 1000); // esperar 1 segundo para garantir que tudo foi carregado
       } catch (error) {
         console.error('Erro ao atualizar a visualização:', error);
+        alert('Ocorreu um erro ao processar o arquivo. Verifique o console para mais detalhes.');
       }
     } else {
       showStatus(statusEl, 'Nenhum endereço válido encontrado no arquivo', 'error');
