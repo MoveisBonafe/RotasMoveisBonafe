@@ -1985,23 +1985,21 @@
         </div>
         </div>
         
-        <!-- ESTRUTURA COMPLETAMENTE REFEITA PARA O GITHUB PAGES - SOLUÇÃO MINIMALISTA -->
+        <!-- NOVO: Tabs fixas na parte inferior do layout (inicialmente minimizadas) -->
         <div class="bottom-tabs-container minimized">
-            <!-- Navegação das abas com ícones restaurados -->
+            <!-- Sem botão adicional - os próprios botões das abas controlam expandir/minimizar -->
+            <!-- Navegação das abas inferiores -->
             <div class="bottom-tabs-nav">
-                <button class="bottom-tab-btn" onclick="showTab('bottom-events')">
-                    <i class="fa fa-calendar me-1"></i> Eventos na Rota
-                </button>
-                <button class="bottom-tab-btn" onclick="showTab('bottom-restrictions')">
-                    <i class="fa fa-ban me-1"></i> Restrições de Tráfego
-                </button>
-                <button class="bottom-tab-btn" onclick="showTab('bottom-report')">
-                    <i class="fa fa-file-text-o me-1"></i> Relatório da Rota
-                </button>
+                <button class="bottom-tab-btn" data-tab="bottom-events">Eventos na Rota</button>
+                <button class="bottom-tab-btn" data-tab="bottom-restrictions">Restrições de Tráfego</button>
+                <button class="bottom-tab-btn" data-tab="bottom-report">Relatório da Rota</button>
             </div>
             
-            <!-- CONTEÚDO DA PRIMEIRA ABA - EVENTOS -->
-            <div id="bottom-events-content" class="bottom-tab-content" style="display:none; width:100%; background-color:white; padding:20px;">
+            <!-- ESTRUTURA COMPLETAMENTE REESCRITA PARA SOLUCIONAR PROBLEMA DE SOBREPOSIÇÃO NO GITHUB PAGES -->
+            <!-- Cada aba está em seu próprio div isolado, sem nenhuma estrutura aninhada entre elas -->
+            
+            <!-- Container simples para o primeiro conteúdo - EVENTOS -->
+            <div class="bottom-tab-content" id="bottom-events-content" style="display: none; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee; padding: 20px;">
                 <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                     Eventos nas cidades da rota:
                 </h5>
@@ -2012,8 +2010,8 @@
                 </div>
             </div>
             
-            <!-- CONTEÚDO DA SEGUNDA ABA - RESTRIÇÕES -->
-            <div id="bottom-restrictions-content" class="bottom-tab-content" style="display:none; width:100%; background-color:white; padding:20px;">
+            <!-- Container simples para o segundo conteúdo - RESTRIÇÕES -->
+            <div class="bottom-tab-content" id="bottom-restrictions-content" style="display: none; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee; padding: 20px;">
                 <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                     Restrições para caminhões do percurso:
                 </h5>
@@ -2025,31 +2023,34 @@
                 </div>
             </div>
             
-            <!-- CONTEÚDO DA TERCEIRA ABA - RELATÓRIO -->
-            <div id="bottom-report-content" class="bottom-tab-content" style="display:none; width:100%; background-color:white; padding:20px;">
+            <!-- Container simples para o terceiro conteúdo - RELATÓRIO -->
+            <div class="bottom-tab-content" id="bottom-report-content" style="display: none; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee; padding: 20px;">
                 <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                     Relatório da rota otimizada:
                 </h5>
                 <div id="route-summary" class="mb-4" style="width: 100%; min-height: 300px; background-color: #fff8e1; border-radius: 8px; border: 1px solid #ffe082; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
                     <p class="text-muted">Otimize uma rota para ver o relatório detalhado.</p>
                 </div>
-                
-                <!-- Controles do Relatório -->
-                <div class="form-group mt-4">
-                    <label class="date-range-label">Nome da rota:</label>
-                    <div class="input-animation-container position-relative">
-                        <input type="text" id="report-route-name" placeholder="Ex: Entrega Região Sul" 
-                               style="border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; 
-                               width: 100%; max-width: 400px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
-                               transition: all 0.3s ease;">
-                        <div class="input-animation-effect"></div>
+                    
+                        <!-- Controles do Relatório - agora dentro da aba de relatório -->
+                        <div class="form-group mt-4">
+                            <label class="date-range-label">Nome da rota:</label>
+                            <div class="input-animation-container position-relative">
+                                <input type="text" id="report-route-name" placeholder="Ex: Entrega Região Sul" 
+                                       style="border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; 
+                                       width: 100%; max-width: 400px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+                                       transition: all 0.3s ease;">
+                                <div class="input-animation-effect"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <button id="save-route" class="btn" style="background-color: #ffc107; color: #000000; font-weight: 600; border-color: #ffab00;" disabled>Salvar Rota</button>
+                            <button id="print-route" class="btn ms-2" style="background-color: #ffc107; color: #000000; font-weight: 600; border-color: #ffab00;" disabled>Imprimir</button>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="mt-3">
-                    <button id="save-route" class="btn" style="background-color: #ffc107; color: #000000; font-weight: 600; border-color: #ffab00;" disabled>Salvar Rota</button>
-                    <button id="print-route" class="btn ms-2" style="background-color: #ffc107; color: #000000; font-weight: 600; border-color: #ffab00;" disabled>Imprimir</button>
-                </div>
+            </div>
             </div>
         </div>
     </div>
@@ -2064,75 +2065,83 @@
     <script src="tsp.js"></script>
     <script src="fix-github.js"></script>
     <script src="fix-map-controls.js"></script>
+    <script src="abas-solucao.js"></script>
+    <script src="estilo-locais.js"></script>
+    <script src="botoes-adicionais.js"></script>
     
-    <!-- Script para controle simples das abas - VERSÃO DIRETA GITHUB PAGES -->
-    <script>
-        // SOLUÇÃO DE EMERGÊNCIA PARA O GITHUB PAGES
-        // Função direta para mostrar apenas a aba selecionada e garantir que ela seja maximizada
-        function showTab(tabId) {
-            console.log('SHOWWWW TAB ATIVADA!!!', tabId);
-            
-            // 1. Parar a propagação de eventos para evitar conflitos
-            event.preventDefault();
-            event.stopPropagation();
-            
-            // 2. Seleção direta dos elementos necessários
-            var tabsContainer = document.querySelector('.bottom-tabs-container');
-            var allTabButtons = document.querySelectorAll('.bottom-tab-btn');
-            var allTabContents = document.querySelectorAll('.bottom-tab-content');
-            var clickedButton = event.currentTarget;
-            var tabContent = document.getElementById(tabId + '-content');
-            
-            // 3. FORÇAR que todas as abas fiquem escondidas imediatamente
-            allTabContents.forEach(function(content) {
-                content.style.display = 'none';
-            });
-            
-            // 4. Remover classe active de TODOS os botões
-            allTabButtons.forEach(function(btn) {
-                btn.classList.remove('active');
-            });
-            
-            // 5. FORÇAR que o container de abas seja EXPANDIDO
-            tabsContainer.className = 'bottom-tabs-container'; // Remove todas as classes e deixa só a base
-            
-            // 6. Adicionar active apenas no botão clicado
-            clickedButton.classList.add('active');
-            
-            // 7. Mostrar APENAS o conteúdo relacionado a esta aba
-            if (tabContent) {
-                tabContent.style.display = 'block';
-            }
-            
-            console.log('Aba ativada com sucesso:', tabId);
-            return false; // Previne comportamento padrão
+    <!-- Estilos para melhorar o alinhamento dos ícones de exclusão na lista de locais -->
+    <style>
+        /* Melhorar alinhamento dos ícones de exclusão na lista de locais */
+        .location-list-item {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 8px 10px !important;
+            margin-bottom: 5px !important;
+            border-radius: 6px !important;
+            background-color: #f8f9fa !important;
+            transition: all 0.2s ease !important;
         }
         
-        // Inicializar - esconder todos os conteúdos e desativar outros handlers de evento
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('INICIALIZANDO SISTEMA DE ABAS SIMPLIFICADO');
+        .location-list-item:hover {
+            background-color: #f0f0f0 !important;
+        }
+        
+        .location-list-item .location-name {
+            flex-grow: 1 !important;
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            color: #333 !important;
+        }
+        
+        .location-list-item .remove-location-btn {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 28px !important;
+            height: 28px !important;
+            border-radius: 50% !important;
+            background-color: rgba(255, 69, 58, 0.1) !important;
+            color: #ff453a !important;
+            border: none !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+            margin-left: 8px !important;
+        }
+        
+        .location-list-item .remove-location-btn:hover {
+            background-color: rgba(255, 69, 58, 0.2) !important;
+        }
+    </style>
+    
+    <!-- Script para desativar o fullscreen-tabs.js e evitar erros no console -->
+    <script>
+        // Sobrescrever a função de inicialização do fullscreen-tabs.js para evitar erros
+        window.addEventListener('load', function() {
+            if (typeof FullscreenTabs !== 'undefined' && FullscreenTabs.init) {
+                FullscreenTabs.init = function() {
+                    console.log('[FullscreenTabs] Desativado - usando abas-solucao.js no lugar');
+                    return false;
+                };
+            }
             
-            // Esconder todos os conteúdos
-            var tabContents = document.querySelectorAll('.bottom-tab-content');
-            tabContents.forEach(function(content) {
-                content.style.display = 'none';
-            });
-            
-            // Desativar outros event listeners que possam interferir
-            var buttons = document.querySelectorAll('.bottom-tab-btn');
-            buttons.forEach(function(btn) {
-                var newBtn = btn.cloneNode(true);
-                btn.parentNode.replaceChild(newBtn, btn);
-                
-                // Restaurar o onclick que foi perdido durante a clonagem
-                var tabId = newBtn.textContent.trim().includes('Eventos') ? 'bottom-events' : 
-                           newBtn.textContent.trim().includes('Restrições') ? 'bottom-restrictions' : 'bottom-report';
-                newBtn.setAttribute('onclick', "showTab('" + tabId + "')");
-            });
-            
-            console.log('Sistema de abas reinicializado completamente');
+            // Melhorar a visualização dos itens na lista de locais
+            setTimeout(function() {
+                var locationItems = document.querySelectorAll('#locations-list .list-group-item');
+                locationItems.forEach(function(item) {
+                    item.classList.add('location-list-item');
+                    
+                    // Encontrar o botão de remoção e melhorar sua aparência
+                    var removeBtn = item.querySelector('.btn-danger');
+                    if (removeBtn) {
+                        removeBtn.classList.add('remove-location-btn');
+                    }
+                });
+            }, 1000);
         });
     </script>
+    
+    <!-- Script corrigido para um novo arquivo que substitui completamente a funcionalidade das abas -->
     
     <script>
     // Dados de amostra para a aplicação standalone
