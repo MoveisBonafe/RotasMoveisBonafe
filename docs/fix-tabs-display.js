@@ -138,10 +138,28 @@
         if (sidebar) {
             console.log("[FixTabs] Garantindo que a sidebar fique visível");
             
-            // Aplicar z-index alto para a sidebar
-            sidebar.style.zIndex = '1000';
-            sidebar.style.visibility = 'visible';
-            sidebar.style.display = 'block';
+            // Usar método mais forte para garantir que a sidebar fique visível
+            Object.assign(sidebar.style, {
+                position: 'fixed',
+                top: '0',
+                left: '0',
+                bottom: '0',
+                height: '100vh',
+                width: sidebarWidth + 'px',
+                zIndex: '9999',  // Valor mais alto para garantir que fique por cima
+                visibility: 'visible',
+                display: 'block',
+                opacity: '1',
+                pointerEvents: 'auto',
+                transform: 'none'
+            });
+            
+            // Garantir que todos os elementos filhos da sidebar também estejam visíveis
+            var sidebarChildren = sidebar.querySelectorAll('*');
+            sidebarChildren.forEach(function(child) {
+                child.style.visibility = 'visible';
+                child.style.opacity = '1';
+            });
         }
         
         // Ocultar apenas o mapa para evitar sobreposição
