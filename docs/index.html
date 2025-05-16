@@ -5408,9 +5408,69 @@
             
             // Gerar rotas alternativas usando diferentes algoritmos
             try {
+                // Garantir que temos pelo menos dois pontos para gerar alternativas
+                if (destinations.length < 1) {
+                    console.warn("Número insuficiente de destinos para rotas alternativas");
+                }
+                
                 // 2. Rota alternativa - Algoritmo por proximidade
                 console.log("Gerando rota alternativa 1: Algoritmo por proximidade...");
-                const proximityRoute = solveProximityTSP(origin, destinations, includeOriginReturn);
+                
+                // Forçar a geração de uma rota alternativa verdadeiramente diferente
+                const proximityRoute = {
+                    path: [origin],
+                    pathIds: [origin.id],
+                    distance: 0,
+                    time: 0
+                };
+                
+                // Algoritmo de proximidade diretamente implementado aqui para garantir reordenação
+                if (destinations.length > 0) {
+                    let remaining = [...destinations];
+                    let current = origin;
+                    
+                    while (remaining.length > 0) {
+                        let closestIdx = -1;
+                        let minDist = Infinity;
+                        
+                        // Encontrar o ponto mais próximo
+                        for (let i = 0; i < remaining.length; i++) {
+                            const dest = remaining[i];
+                            const srcLat = parseFloat(current.latitude || current.lat);
+                            const srcLng = parseFloat(current.longitude || current.lng);
+                            const destLat = parseFloat(dest.latitude || dest.lat);
+                            const destLng = parseFloat(dest.longitude || dest.lng);
+                            
+                            const dist = calculateDistance(srcLat, srcLng, destLat, destLng);
+                            
+                            if (dist < minDist) {
+                                minDist = dist;
+                                closestIdx = i;
+                            }
+                        }
+                        
+                        if (closestIdx >= 0) {
+                            const closest = remaining[closestIdx];
+                            proximityRoute.path.push(closest);
+                            current = closest;
+                            remaining.splice(closestIdx, 1);
+                        } else {
+                            break; // Não deveria acontecer
+                        }
+                    }
+                    
+                    // Fechar o circuito se necessário
+                    if (includeOriginReturn) {
+                        proximityRoute.path.push(origin);
+                    }
+                    
+                    // Extrair IDs para pathIds
+                    proximityRoute.pathIds = proximityRoute.path.map(loc => loc.id);
+                    
+                    // Registrar o caminho reordenado
+                    console.log("Rota por proximidade gerada com ordem:", 
+                        proximityRoute.path.map(loc => loc.name || `ID:${loc.id}`).join(" → "));
+                }
                 
                 // Garantir que a rota alternativa REALMENTE reordene os pontos
                 if (proximityRoute && proximityRoute.path) {
@@ -5480,9 +5540,52 @@
                 console.log("Rota alternativa por proximidade gerada:", proximityRoute);
                 
                 // 3. Rota alternativa - Padrão em espiral (para 3+ destinos)
-                if (destinations.length >= 3) {
+                if (destinations.length >= 2) {
                     console.log("Gerando rota alternativa 2: Padrão espiral...");
-                    const spiralRoute = solveSpiralTSP(origin, destinations, includeOriginReturn);
+                    
+                    // Implementar diretamente o algoritmo em espiral para garantir reordenação
+                    const spiralRoute = {
+                        path: [origin],
+                        pathIds: [origin.id],
+                        distance: 0,
+                        time: 0
+                    };
+                    
+                    // Classificar os destinos por ângulo em relação à origem
+                    const originLat = parseFloat(origin.latitude || origin.lat);
+                    const originLng = parseFloat(origin.longitude || origin.lng);
+                    
+                    // Criar cópia dos destinos para classificar por ângulo
+                    const sortedByAngle = destinations.map(dest => {
+                        const destLat = parseFloat(dest.latitude || dest.lat);
+                        const destLng = parseFloat(dest.longitude || dest.lng);
+                        
+                        // Calcular ângulo em relação à origem
+                        const angle = Math.atan2(destLat - originLat, destLng - originLng);
+                        
+                        return {
+                            ...dest,
+                            angle: angle
+                        };
+                    });
+                    
+                    // Ordenar por ângulo
+                    sortedByAngle.sort((a, b) => a.angle - b.angle);
+                    
+                    // Adicionar pontos ordenados por ângulo ao caminho
+                    spiralRoute.path.push(...sortedByAngle);
+                    
+                    // Fechar o circuito se necessário
+                    if (includeOriginReturn) {
+                        spiralRoute.path.push(origin);
+                    }
+                    
+                    // Extrair IDs para pathIds
+                    spiralRoute.pathIds = spiralRoute.path.map(loc => loc.id);
+                    
+                    // Verificar diferença na ordem
+                    console.log("Rota espiral gerada com ordem:", 
+                        spiralRoute.path.map(loc => loc.name || `ID:${loc.id}`).join(" → "));
                     
                     // Garantir que a rota em espiral realmente reordene os pontos
                     if (spiralRoute && spiralRoute.path) {
