@@ -101,8 +101,14 @@ function stabilizeSidebar() {
                     backgroundColor: '#ffab00',
                     color: '#000000',
                     border: 'none',
-                    textTransform: 'none' // Impede texto em maiúsculo
+                    textTransform: 'none', // Impede texto em maiúsculo
+                    fontVariant: 'normal', // Garante fonte normal
+                    fontFeatureSettings: 'normal' // Reseta configurações de fonte
                 });
+                // Forçar texto correto
+                if (optimizeButton.innerHTML.includes('OTIMIZAR')) {
+                    optimizeButton.innerHTML = optimizeButton.innerHTML.replace('OTIMIZAR ROTA', 'Otimizar Rota');
+                }
             }
 
     // Adicionar hover effects
