@@ -1,3 +1,24 @@
+// Estabilizar a sidebar imediatamente
+function stabilizeSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar) {
+    sidebar.style.position = 'absolute';
+    sidebar.style.top = '0';
+    sidebar.style.left = '0';
+    sidebar.style.bottom = '60px';
+    sidebar.style.width = '380px';
+    sidebar.style.backgroundColor = '#f8f9fa';
+    sidebar.style.overflowY = 'auto';
+    sidebar.style.zIndex = '10';
+    sidebar.style.transition = 'none';
+    sidebar.style.boxShadow = '2px 0 5px rgba(0,0,0,0.1)';
+  }
+}
+
+// Executar estabilização imediatamente e após carregamento
+stabilizeSidebar();
+document.addEventListener('DOMContentLoaded', function() {
+  stabilizeSidebar();
 // Script para corrigir problemas com a versão GitHub Pages
 window.locationOrder = []; // Array para armazenar a ordem das localizações
 document.addEventListener('DOMContentLoaded', function() {
@@ -6,38 +27,38 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.querySelector('.sidebar');
     const mapContainer = document.querySelector('.map-container');
     const mapIframe = document.querySelector('.map-iframe');
-    
+
     if (sidebar && mapContainer) {
       // Ajustes de tamanho para sidebar
       sidebar.style.width = '400px';
       sidebar.style.height = 'calc(100vh - 200px)';
       sidebar.style.minHeight = '600px';
       sidebar.style.overflowY = 'auto';
-      
+
       // Ajustes para o container do mapa
       mapContainer.style.flex = '1';
       mapContainer.style.height = 'calc(100vh - 200px)';
       mapContainer.style.minHeight = '600px';
-      
+
       console.log("Layout ajustado - sidebar e mapa aumentados");
     }
-    
+
     if (mapIframe) {
       // Certificar que o iframe ocupa toda a área disponível
       mapIframe.style.width = '100%';
       mapIframe.style.height = '100%';
       mapIframe.style.minHeight = '550px';
-      
+
       // Verificar se o iframe já tem o parâmetro de mapa correto
       const src = mapIframe.src;
       if (!src.includes('&maptype=roadmap')) {
         mapIframe.src = src + '&maptype=roadmap';
       }
-      
+
       console.log("Iframe do mapa ajustado para exibir Pegman");
     }
   };
-  
+
   // Melhorar função de geocodificação para CEPs
   window.cepCoordinates = {
     // Interior SP
@@ -64,31 +85,31 @@ document.addEventListener('DOMContentLoaded', function() {
     "13600": { city: "Araras", lat: -22.3572, lng: -47.3839 },
     "15000": { city: "São José do Rio Preto", lat: -20.8113, lng: -49.3758 }
   };
-  
+
   // Patch para a função de importação de CEP
   const patchCepImport = function() {
     // Verificar se a função de upload de arquivo existe
     const fileUpload = document.getElementById('file-upload');
-    
+
     if (fileUpload) {
       // Substituir o handler de upload
       fileUpload.onchange = function(event) {
         const file = event.target.files[0];
         if (!file) return;
-        
+
         const reader = new FileReader();
         reader.onload = function(e) {
           // Processar o conteúdo do arquivo
           processCepFile(e.target.result);
         };
-        
+
         reader.readAsText(file);
       };
-      
+
       console.log("Handler de importação de CEP aprimorado");
     }
   };
-  
+
   // Função de processamento de arquivo CEP melhorada
   function processCepFile(content) {
     // Dividir em linhas
@@ -97,11 +118,11 @@ document.addEventListener('DOMContentLoaded', function() {
       alert('Arquivo vazio ou inválido.');
       return;
     }
-    
+
     // Array para armazenar os locais importados
     const importedLocations = [];
     const locationCounter = window.locationCounter || 0;
-    
+
     // Cidades padrão para coordenadas (usadas quando um CEP não é encontrado)
     const defaultCities = [
       { name: "Ribeirão Preto", lat: -21.1775, lng: -47.8103 },
@@ -115,28 +136,28 @@ document.addEventListener('DOMContentLoaded', function() {
       { name: "Piracicaba", lat: -22.7338, lng: -47.6476 },
       { name: "São Paulo", lat: -23.5505, lng: -46.6333 }
     ];
-    
+
     // Processar cada linha
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       if (!line.trim()) continue; // Pular linhas vazias
-      
+
       const parts = line.split(',');
       if (parts.length >= 2) {
         const cep = parts[0].trim();
         const name = parts[1].trim();
-        
+
         // Incrementar contador
         window.locationCounter = (window.locationCounter || 0) + 1;
         const counter = window.locationCounter;
-        
+
         // Tentar encontrar o CEP no mapeamento
         let coordinates = null;
         let cityName = "";
-        
+
         // Verificar CEP exato ou prefixo (primeiros 5 dígitos)
         const cepPrefix = cep.replace(/[^0-9]/g, '').substring(0, 5);
-        
+
         if (window.cepCoordinates[cep]) {
           coordinates = window.cepCoordinates[cep];
           cityName = coordinates.city;
@@ -147,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
           // Se não encontrou no mapeamento, usar uma cidade aleatória
           const cityIndex = (counter - 1) % defaultCities.length;
           const selectedCity = defaultCities[cityIndex];
-          
+
           coordinates = {
             city: selectedCity.name,
             lat: selectedCity.lat,
@@ -155,21 +176,21 @@ document.addEventListener('DOMContentLoaded', function() {
           };
           cityName = selectedCity.name;
         }
-        
+
         // Adicionar pequena variação para evitar sobreposição
         const variationFactor = 0.003; // ~300 metros
         const latVariation = (Math.random() - 0.5) * variationFactor;
         const lngVariation = (Math.random() - 0.5) * variationFactor;
-        
+
         const lat = coordinates.lat + latVariation;
         const lng = coordinates.lng + lngVariation;
         const latlng = `${lat},${lng}`;
-        
+
         // Criar elemento visual (usando a função do código original)
         if (window.createLocationItem) {
           window.createLocationItem(name, `CEP: ${cep} (${cityName})`, counter);
         }
-        
+
         // Criar objeto de localização e adicionar (se as variáveis globais existirem)
         if (window.locations) {
           const location = {
@@ -179,18 +200,18 @@ document.addEventListener('DOMContentLoaded', function() {
             latlng: latlng,
             isOrigin: false
           };
-          
+
           // Adicionar ao array de locais
           window.locations.push(location);
           importedLocations.push(location);
         }
       }
     }
-    
+
     // Informar ao usuário
     if (importedLocations.length > 0) {
       alert(`Importado com sucesso! ${importedLocations.length} endereços adicionados.`);
-      
+
       // Atualizar mapa e calcular rota (se as funções existirem)
       if (window.calculateOptimizedRoute) {
         window.calculateOptimizedRoute();
@@ -201,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
       notifyWarning.className = 'alert alert-warning mt-2';
       notifyWarning.innerHTML = `Nenhum endereço válido encontrado no arquivo.`;
       document.querySelector('.file-upload').appendChild(notifyWarning);
-      
+
       // Remover a notificação após alguns segundos
       setTimeout(() => {
         if (notifyWarning && notifyWarning.parentNode) {
@@ -209,19 +230,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }, 5000);
     }
-    
+
     // Limpar input
     const fileUpload = document.getElementById('file-upload');
     if (fileUpload) {
       fileUpload.value = '';
     }
   }
-  
+
   // Melhorar função de busca de endereço
   const enhanceAddressSearch = function() {
     const addLocationBtn = document.getElementById('add-location-btn');
     const locationInput = document.getElementById('location-search-input');
-    
+
     if (addLocationBtn && locationInput) {
       // Reconfigurar o botão para adicionar endereço
       addLocationBtn.onclick = function() {
@@ -230,10 +251,10 @@ document.addEventListener('DOMContentLoaded', function() {
           alert('Por favor, digite um endereço válido.');
           return;
         }
-        
+
         // Incrementar contador
         window.locationCounter = (window.locationCounter || 0) + 1;
-        
+
         // Lista de cidades com coordenadas precisas
         const predefinedCities = [
           { name: "Ribeirão Preto", lat: -21.1775, lng: -47.8103 },
@@ -247,10 +268,10 @@ document.addEventListener('DOMContentLoaded', function() {
           { name: "Piracicaba", lat: -22.7338, lng: -47.6476 },
           { name: "São Paulo", lat: -23.5505, lng: -46.6333 }
         ];
-        
+
         // Escolher uma cidade próxima com base no endereço ou contador
         let selectedCity;
-        
+
         // Verificar se o endereço contém o nome de alguma cidade predefinida
         let matchedCity = null;
         for (let i = 0; i < predefinedCities.length; i++) {
@@ -259,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function() {
             break;
           }
         }
-        
+
         if (matchedCity) {
           selectedCity = matchedCity;
         } else {
@@ -267,28 +288,28 @@ document.addEventListener('DOMContentLoaded', function() {
           const cityIndex = (window.locationCounter - 1) % predefinedCities.length;
           selectedCity = predefinedCities[cityIndex];
         }
-        
+
         // Pequena variação apenas se não houver correspondência exata
         let lat = selectedCity.lat;
         let lng = selectedCity.lng;
-        
+
         if (!matchedCity) {
           // Adicionar uma pequena variação para cada ponto
           const variationFactor = 0.005; // aproximadamente 500m
           const latVariation = (Math.random() - 0.5) * variationFactor;
           const lngVariation = (Math.random() - 0.5) * variationFactor;
-          
+
           lat = selectedCity.lat + latVariation;
           lng = selectedCity.lng + lngVariation;
         }
-        
+
         const latlng = `${lat},${lng}`;
-        
+
         // Criar elemento visual
         if (window.createLocationItem) {
           window.createLocationItem(address, `${selectedCity.name}, SP, Brasil`, window.locationCounter);
         }
-        
+
         // Criar objeto de localização
         if (window.locations) {
           const location = {
@@ -298,46 +319,46 @@ document.addEventListener('DOMContentLoaded', function() {
             latlng: latlng,
             isOrigin: false
           };
-          
+
           // Adicionar ao array de locais
           window.locations.push(location);
         }
-        
+
         // Limpar o campo de entrada
         locationInput.value = '';
       };
-      
+
       // Adicionar manipulador de evento para a tecla Enter
       locationInput.onkeypress = function(e) {
         if (e.key === 'Enter') {
           addLocationBtn.click();
         }
       };
-      
+
       console.log("Função de busca de endereço aprimorada");
     }
   };
-  
+
   // Configurar todas as melhorias
   const applyAllFixes = function() {
     fixLayout();
     patchCepImport();
     enhanceAddressSearch();
-    
+
     // Adicionar contador global para manejo de IDs
     if (!window.locationCounter) {
       window.locationCounter = 0;
     }
-    
+
     console.log("Todas as correções aplicadas com sucesso");
   };
-  
+
   // Executar imediatamente
   applyAllFixes();
-  
+
   // Também executar após o carregamento completo da página
   window.addEventListener('load', applyAllFixes);
-  
+
   // Executar novamente após um tempo para garantir que todos elementos foram carregados
   setTimeout(applyAllFixes, 1000);
   setTimeout(applyAllFixes, 2000);
