@@ -3462,89 +3462,68 @@
         }
     }
     
-    // Inicializar as abas inferiores - VERSÃO GITHUB PAGES CORRIGIDA
+    // Inicializar as abas inferiores - SOLUÇÃO GITHUB PAGES EXTREMAMENTE SIMPLIFICADA
     function initBottomTabs() {
-        console.log("Inicializando abas inferiores com modo FULLSCREEN (versão corrigida GitHub Pages)");
+        console.log("Inicializando sistema de abas - VERSÃO SIMPLIFICADA PARA GITHUB PAGES");
         
-        // Primeiro, vamos garantir que apenas uma aba esteja visível por vez
-        document.querySelectorAll('.bottom-tab-content').forEach(content => {
-            content.style.display = 'none';  // Inicialmente, todas estão ocultas
-            content.classList.remove('active');
+        // Solução super básica para o GitHub Pages - esconder todos os conteúdos primeiro
+        document.querySelectorAll('.bottom-tab-content').forEach(tabContent => {
+            tabContent.style.display = 'none';
         });
         
-        // Selecionar todos os botões de aba
-        const tabButtons = document.querySelectorAll('.bottom-tab-btn');
-        
-        // Adicionar listeners de clique para cada botão - versão simplificada e mais robusta
-        tabButtons.forEach(button => {
+        // Adicionar click handler direto nos botões - sem complicações
+        document.querySelectorAll('.bottom-tab-btn').forEach(button => {
             button.addEventListener('click', function() {
+                // ID da aba que deve ser mostrada
                 const tabId = this.getAttribute('data-tab');
-                const targetTabContent = document.getElementById(tabId + '-content');
-                const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
                 
-                // Verificar se a aba já está ativa
-                const isActive = this.classList.contains('active');
+                // Elemento do conteúdo da aba
+                const targetContent = document.getElementById(tabId + '-content');
                 
-                console.log("Clique em aba:", tabId, "- Ativa:", isActive, "- Minimizada:", bottomTabsContainer.classList.contains('minimized'));
+                // Elemento container das abas
+                const tabsContainer = document.querySelector('.bottom-tabs-container');
                 
-                // Se a aba clicada já estava ativa e expandida, apenas minimizamos
-                if (isActive && !bottomTabsContainer.classList.contains('minimized')) {
-                    console.log("Minimizando aba ativa");
-                    
-                    // Remover classe ativa deste botão
+                // Remover ativa de todos os botões
+                document.querySelectorAll('.bottom-tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Verificar se está clicando na mesma aba que já está aberta
+                const isAlreadyActive = this.classList.contains('active');
+                const isExpanded = !tabsContainer.classList.contains('minimized');
+                
+                // Se já está na mesma aba e expandido, apenas minimiza
+                if (isAlreadyActive && isExpanded) {
+                    console.log("Minimizando a aba atual");
                     this.classList.remove('active');
-                    
-                    // Esconder conteúdo
-                    if (targetTabContent) {
-                        targetTabContent.classList.remove('active');
-                        targetTabContent.style.display = 'none';
-                    }
-                    
-                    // Minimizar as abas
                     toggleTabsExpansion();
                     return;
                 }
                 
-                // Remover classes ativas de todos os botões
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                
-                // Ocultar todos os conteúdos de aba - IMPLEMENTAÇÃO SIMPLIFICADA GITHUB PAGES
+                // Esconder TODOS os conteúdos - simples e direto
                 document.querySelectorAll('.bottom-tab-content').forEach(content => {
                     content.style.display = 'none';
-                    content.classList.remove('active');
                 });
                 
-                // Ativar apenas o botão clicado
+                // Marcar este botão como ativo
                 this.classList.add('active');
                 
-                // SOLUÇÃO DIRETA: mostrar apenas o conteúdo específico da aba selecionada
-                if (targetTabContent) {
-                    // Garantir que o conteúdo das outras abas esteja realmente oculto
-                    const allTabContents = document.querySelectorAll('.bottom-tab-content');
-                    allTabContents.forEach(content => {
-                        content.style.display = 'none';
-                        content.classList.remove('active');
-                    });
-                    
-                    // Agora mostrar apenas esta aba específica
-                    targetTabContent.style.display = 'block';
-                    targetTabContent.classList.add('active');
-                    
-                    // Estilizar adequadamente
-                    targetTabContent.style.height = 'auto';
-                    targetTabContent.style.minHeight = 'calc(100vh - 140px)';
-                    targetTabContent.style.overflow = 'auto';
-                    targetTabContent.style.padding = '20px';
-                    targetTabContent.style.background = 'white';
-                }
-                
-                // Se as abas estavam minimizadas, expandir
-                if (bottomTabsContainer.classList.contains('minimized')) {
-                    console.log("Expandindo abas para mostrar conteúdo");
+                // Expandir o container de abas se estiver minimizado
+                if (tabsContainer.classList.contains('minimized')) {
                     toggleTabsExpansion();
                 }
                 
-                console.log("Aba ativada:", tabId);
+                // Mostrar APENAS o conteúdo desta aba específica
+                if (targetContent) {
+                    console.log("Mostrando conteúdo:", tabId);
+                    targetContent.style.display = 'block';
+                }
+                
+                // Código simplificado para o GitHub Pages
+            });
+        });
+        
+        console.log("Sistema de abas inicializado com sucesso");
             });
         });
         
