@@ -2065,57 +2065,9 @@
     <script src="tsp.js"></script>
     <script src="fix-github.js"></script>
     <script src="fix-map-controls.js"></script>
+    <script src="tabs-fix.js"></script>
     
-    <!-- Script de correção das abas para GitHub Pages -->
-    <script>
-    // Script simples que garante que cada aba mostre apenas seu próprio conteúdo
-    document.addEventListener('DOMContentLoaded', function() {
-        // Esconde todos os conteúdos das abas primeiro
-        var tabContents = document.querySelectorAll('.bottom-tab-content');
-        tabContents.forEach(function(content) { 
-            content.style.display = 'none'; 
-        });
-        
-        // Adiciona evento de clique em cada botão de aba
-        document.querySelectorAll('.bottom-tab-btn').forEach(function(button) {
-            button.addEventListener('click', function(e) {
-                // Previne comportamentos default que possam interferir
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // ID da aba
-                var tabId = this.getAttribute('data-tab');
-                var tabContent = document.getElementById(tabId + '-content');
-                var tabsContainer = document.querySelector('.bottom-tabs-container');
-                
-                // Remove classe ativa de todos os botões
-                document.querySelectorAll('.bottom-tab-btn').forEach(function(btn) {
-                    btn.classList.remove('active');
-                });
-                
-                // Esconde todos os conteúdos
-                tabContents.forEach(function(content) {
-                    content.style.display = 'none';
-                });
-                
-                // Ativa este botão
-                this.classList.add('active');
-                
-                // Mostra apenas o conteúdo desta aba específica
-                if (tabContent) {
-                    tabContent.style.display = 'block';
-                }
-                
-                // Se o container estiver minimizado, expandir
-                if (tabsContainer.classList.contains('minimized')) {
-                    tabsContainer.classList.remove('minimized');
-                }
-                
-                console.log('Aba ativada:', tabId);
-            });
-        });
-    });
-    </script>
+    <!-- Script removido, substituído pelo arquivo tabs-fix.js independente -->
     
     <script>
     // Dados de amostra para a aplicação standalone
@@ -3513,71 +3465,11 @@
         }
     }
     
-    // Inicializar as abas inferiores - VERSÃO CORRIGIDA E SIMPLIFICADA PARA GITHUB PAGES
+    // Função de inicialização das abas removida
+    // Substituída pelo arquivo externo tabs-fix.js
     function initBottomTabs() {
-        console.log("Inicializando abas inferiores (versão GitHub Pages corrigida)");
-        
-        // Primeiro, garante que todas as abas estão escondidas
-        document.querySelectorAll('.bottom-tab-content').forEach(tab => {
-            tab.style.display = 'none';
-        });
-        
-        // Configurar os botões de aba
-        document.querySelectorAll('.bottom-tab-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                // ID da aba a ser mostrada
-                const tabId = this.getAttribute('data-tab');
-                
-                // Elemento do conteúdo da aba
-                const tabContent = document.getElementById(tabId + '-content');
-                
-                // Container geral das abas
-                const tabContainer = document.querySelector('.bottom-tabs-container');
-                
-                // Verifica se a aba já está ativa
-                const isAlreadyActive = this.classList.contains('active');
-                
-                // Se já está ativa e expandida, apenas minimize
-                if (isAlreadyActive && !tabContainer.classList.contains('minimized')) {
-                    // Remover ativa do botão
-                    this.classList.remove('active');
-                    
-                    // Esconder conteúdo
-                    if (tabContent) {
-                        tabContent.style.display = 'none';
-                    }
-                    
-                    // Minimizar painel
-                    toggleTabsExpansion();
-                    return;
-                }
-                
-                // Remover ativo de todos os botões
-                document.querySelectorAll('.bottom-tab-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                
-                // Esconder todos os conteúdos
-                document.querySelectorAll('.bottom-tab-content').forEach(content => {
-                    content.style.display = 'none';
-                });
-                
-                // Ativar este botão
-                this.classList.add('active');
-                
-                // Mostrar o conteúdo específico desta aba
-                if (tabContent) {
-                    tabContent.style.display = 'block';
-                    
-                    // Verificar se precisa expandir o painel
-                    if (tabContainer.classList.contains('minimized')) {
-                        toggleTabsExpansion();
-                    }
-                }
-            });
-        });
-        
-        console.log("Abas inferiores inicializadas com sucesso");
+        console.log("Função original desativada - usando tabs-fix.js");
+        // Não faz nada - para evitar conflitos
     }
     
     // Configura todos os event listeners
