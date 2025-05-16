@@ -10616,7 +10616,10 @@
             console.log(`Atualizando rota ${routeIndex} com valores exatos: ${selectedRoute.distance.toFixed(1)} km, ${selectedRoute.time.toFixed(0)} min`);
         }
         
-        // SOLUÇÃO RADICAL: Limpar todos os marcadores existentes
+        // SOLUÇÃO ULTRA-RADICAL: Forçar a redefinição completa da rota e dos marcadores
+        
+        // 1. Limpar TUDO do mapa
+        // Limpar todos os marcadores existentes
         if (markers && Array.isArray(markers)) {
             console.log("Limpando TODOS os marcadores existentes...");
             markers.forEach(marker => {
@@ -10628,7 +10631,13 @@
             markers = [];
         }
         
-        // Obter a ordem correta dos pontos para esta rota
+        // Limpar qualquer rota exibida
+        if (directionsRenderer) {
+            directionsRenderer.setMap(null);
+            directionsRenderer = null;
+        }
+        
+        // 2. Obter a ordem correta dos pontos para esta rota
         let orderedLocations = [];
         
         // Usar 'path' se contiver objetos de localização completos
@@ -10652,9 +10661,10 @@
             });
         }
         
-        console.log("Ordem dos locais para esta rota:", orderedLocations.map(loc => loc.name || loc.id).join(" → "));
+        console.log(`ROTA ALTERNATIVA ${routeIndex+1}: Ordem dos locais:`, 
+            orderedLocations.map(loc => loc.name || loc.id).join(" → "));
         
-        // Criar novos marcadores na ordem correta
+        // 3. Criar novos marcadores na ordem correta
         orderedLocations.forEach((location, index) => {
             console.log(`Criando marcador ${index + 1} para ${location.name || location.id}`);
             
@@ -10713,16 +10723,82 @@
             });
         });
         
-        // Atualizar a rota no mapa
-        drawSelectedRoute(selectedRoute);
+        // 4. Criar uma nova instância do DirectionsRenderer
+        directionsRenderer = new google.maps.DirectionsRenderer({
+            map: map,
+            suppressMarkers: true, // Não mostrar marcadores padrão (A, B, C...)
+            polylineOptions: {
+                strokeColor: routeIndex === 0 ? "#4CAF50" : "#2196F3", // Verde para rota principal, azul para alternativas
+                strokeWeight: 5,
+                strokeOpacity: 0.7
+            }
+        });
         
-        // Atualizar o resumo da rota
+        // 5. Desenhar a rota no mapa com a ordem exata dos pontos
+        // Preparar os pontos para a requisição de rota do Google
+        const routePoints = [];
+        
+        // Adicionar cada ponto na ordem correta
+        orderedLocations.forEach(location => {
+            const lat = parseFloat(location.latitude || location.lat);
+            const lng = parseFloat(location.longitude || location.lng);
+            
+            if (!isNaN(lat) && !isNaN(lng)) {
+                routePoints.push({
+                    location: new google.maps.LatLng(lat, lng),
+                    stopover: true
+                });
+            }
+        });
+        
+        // Garantir que temos pontos suficientes
+        if (routePoints.length < 2) {
+            console.error("Pontos insuficientes para desenhar a rota");
+            return;
+        }
+        
+        // Configurar a requisição com origem, destino e waypoints
+        const request = {
+            origin: routePoints[0].location,
+            destination: routePoints[routePoints.length - 1].location,
+            waypoints: routePoints.slice(1, routePoints.length - 1),
+            travelMode: google.maps.TravelMode.DRIVING,
+            optimizeWaypoints: false // IMPORTANTE: não otimizar para manter a ordem escolhida
+        };
+        
+        // Chamar o serviço de direções
+        directionsService.route(request, (result, status) => {
+            if (status === google.maps.DirectionsStatus.OK) {
+                console.log("Rota alternativa desenhada com sucesso");
+                directionsRenderer.setDirections(result);
+                
+                // Calcular distância e tempo reais (opcional, já temos valores estimados)
+                let totalDistance = 0;
+                let totalDuration = 0;
+                
+                const legs = result.routes[0].legs;
+                for (let i = 0; i < legs.length; i++) {
+                    totalDistance += legs[i].distance.value;
+                    totalDuration += legs[i].duration.value;
+                }
+                
+                // Converter para quilômetros e minutos
+                const distanceKm = totalDistance / 1000;
+                const durationMin = totalDuration / 60;
+                
+                console.log(`Rota alternativa ${routeIndex+1}: ${distanceKm.toFixed(1)} km, ${durationMin.toFixed(0)} minutos`);
+            } else {
+                console.error("Erro ao desenhar rota alternativa:", status);
+            }
+        });
+        
+        // Atualizar o resumo da rota com os valores da rota selecionada
         updateRouteSummary(selectedRoute, "truck1");
         
-        // Atualizar a sequência de locais
+        // Atualizar a sequência de locais na interface
         updateRouteSequence(selectedRoute);
         
-        // Mostrar notificação
+        // Mostrar notificação de sucesso
         showNotification(`Rota alternativa ${routeIndex + 1} selecionada`, "success");
     }
     
@@ -10843,7 +10919,7 @@
         console.log("Desenhando rota selecionada:", routeData);
         
         try {
-            // CORREÇÃO CRÍTICA: Limpar TODOS os elementos do mapa
+            // CORREÇÃO RADICAL: Limpar completamente TODOS os elementos do mapa
             // Limpar rota anterior
             if (directionsRenderer) {
                 directionsRenderer.setMap(null);
@@ -10852,46 +10928,116 @@
             
             // Limpar TODOS os marcadores existentes
             if (markers && Array.isArray(markers)) {
-                for (let i = 0; i < markers.length; i++) {
-                    if (markers[i]) {
-                        markers[i].setMap(null);
+                console.log("Limpando TODOS os marcadores existentes...");
+                markers.forEach(marker => {
+                    if (marker) {
+                        marker.setMap(null);
                     }
-                }
-            }
-            
-            // Recriar todos os marcadores na nova ordem (apenas para rotas alternativas)
-            if (currentRouteIndex > 0) {
-                console.log("Recriando marcadores para rota alternativa:", currentRouteIndex);
-                
+                });
                 // Limpar array de marcadores
                 markers = [];
-                
-                // Recriar marcadores na ordem da rota selecionada
-                const locationOrder = [];
-                
-                // Usar path da rota selecionada para determinar a ordem
-                if (routeData.path && Array.isArray(routeData.path)) {
-                    for (let i = 0; i < routeData.path.length; i++) {
-                        const loc = routeData.path[i];
-                        if (typeof loc === 'object' && loc !== null) {
-                            locationOrder.push(loc);
-                        }
-                    }
-                }
-                // Fallback para usar locais originais
-                else {
-                    locationOrder.push(...locations);
-                }
-                
-                // Criar marcadores na nova ordem
-                for (let i = 0; i < locationOrder.length; i++) {
-                    const location = locationOrder[i];
-                    // Criar marcador com número sequencial baseado na nova ordem
-                    createMarker(location, i);
-                }
-                
-                console.log("Marcadores recriados na nova ordem para rota alternativa");
             }
+            
+            // Inicializar um novo DirectionsRenderer
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                map: map,
+                suppressMarkers: true,
+                polylineOptions: {
+                    strokeColor: currentRouteIndex === 0 ? "#4CAF50" : "#2196F3",
+                    strokeWeight: 5,
+                    strokeOpacity: 0.7
+                }
+            });
+            
+            // Preparar os dados para a nova rota
+            // Determinar a ordem correta dos pontos
+            let orderedLocations = [];
+            
+            // MÉTODO 1: Usar path se contiver objetos de localização completos
+            if (routeData.path && routeData.path.length > 0 && 
+                typeof routeData.path[0] === 'object' && 
+                (routeData.path[0].latitude !== undefined || routeData.path[0].lat !== undefined)) {
+                
+                console.log("Usando objetos de localização do path para ordem dos marcadores");
+                orderedLocations = [...routeData.path];
+            }
+            // MÉTODO 2: Reconstruir usando pathIds e locations (fallback)
+            else if (routeData.pathIds && routeData.pathIds.length > 0) {
+                console.log("Reconstruindo ordem dos marcadores a partir de pathIds");
+                
+                // Para cada ID na ordem da rota, encontrar o objeto de localização correspondente
+                routeData.pathIds.forEach(id => {
+                    const location = locations.find(loc => String(loc.id) === String(id));
+                    if (location) {
+                        orderedLocations.push(location);
+                    }
+                });
+            } else {
+                console.error("Dados de rota inválidos, não foi possível determinar a ordem dos pontos");
+                return;
+            }
+            
+            console.log("Ordem final dos locais para esta rota:", 
+                orderedLocations.map(loc => loc.name || loc.id).join(" → "));
+            
+            // Criar novos marcadores na ordem correta
+            orderedLocations.forEach((location, index) => {
+                console.log(`Criando marcador ${index + 1} para ${location.name || location.id}`);
+                
+                // Extrair coordenadas
+                const lat = parseFloat(location.latitude || location.lat);
+                const lng = parseFloat(location.longitude || location.lng);
+                
+                if (isNaN(lat) || isNaN(lng)) {
+                    console.error(`Coordenadas inválidas para ${location.name || location.id}: ${lat}, ${lng}`);
+                    return;
+                }
+                
+                // Criar marcador com ícone numerado
+                const marker = new google.maps.Marker({
+                    position: { lat, lng },
+                    map: map,
+                    title: location.name || `Local ${index + 1}`,
+                    label: {
+                        text: String(index + 1),
+                        color: "#FFFFFF"
+                    },
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: index === 0 ? "#4CAF50" : "#2196F3",
+                        fillOpacity: 1,
+                        strokeWeight: 2,
+                        strokeColor: "#FFFFFF",
+                        scale: 13
+                    },
+                    zIndex: 1000 - index // Garantir que marcadores com números menores fiquem acima
+                });
+                
+                // Adicionar ao array global
+                markers.push(marker);
+                
+                // Adicionar tooltip/infowindow
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `
+                        <div style="max-width: 200px;">
+                            <strong>${location.name || `Local ${index + 1}`}</strong>
+                            <p style="margin: 5px 0;">${location.address || ''}</p>
+                            ${location.notes ? `<p style="margin: 0;"><i>${location.notes}</i></p>` : ''}
+                        </div>
+                    `
+                });
+                
+                marker.addListener('click', () => {
+                    // Fechar outros infowindows abertos
+                    if (currentInfoWindow) {
+                        currentInfoWindow.close();
+                    }
+                    
+                    // Abrir este infowindow
+                    infoWindow.open(map, marker);
+                    currentInfoWindow = infoWindow;
+                });
+            });
             
             // Garantir que temos path e pathIds válidos
             if (!routeData.path || !Array.isArray(routeData.path)) {
