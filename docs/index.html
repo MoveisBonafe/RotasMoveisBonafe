@@ -1987,11 +1987,17 @@
         
         <!-- ESTRUTURA COMPLETAMENTE REFEITA PARA O GITHUB PAGES - SOLUÇÃO MINIMALISTA -->
         <div class="bottom-tabs-container minimized">
-            <!-- Navegação das abas - mantida simples -->
+            <!-- Navegação das abas com ícones restaurados -->
             <div class="bottom-tabs-nav">
-                <button class="bottom-tab-btn" onclick="showTab('bottom-events')">Eventos na Rota</button>
-                <button class="bottom-tab-btn" onclick="showTab('bottom-restrictions')">Restrições de Tráfego</button>
-                <button class="bottom-tab-btn" onclick="showTab('bottom-report')">Relatório da Rota</button>
+                <button class="bottom-tab-btn" onclick="showTab('bottom-events')">
+                    <i class="fa fa-calendar me-1"></i> Eventos na Rota
+                </button>
+                <button class="bottom-tab-btn" onclick="showTab('bottom-restrictions')">
+                    <i class="fa fa-ban me-1"></i> Restrições de Tráfego
+                </button>
+                <button class="bottom-tab-btn" onclick="showTab('bottom-report')">
+                    <i class="fa fa-file-text-o me-1"></i> Relatório da Rota
+                </button>
             </div>
             
             <!-- CONTEÚDO DA PRIMEIRA ABA - EVENTOS -->
@@ -2059,73 +2065,72 @@
     <script src="fix-github.js"></script>
     <script src="fix-map-controls.js"></script>
     
-    <!-- Script para controle simples das abas -->
+    <!-- Script para controle simples das abas - VERSÃO DIRETA GITHUB PAGES -->
     <script>
-        // Função simples para mostrar apenas a aba selecionada
+        // SOLUÇÃO DE EMERGÊNCIA PARA O GITHUB PAGES
+        // Função direta para mostrar apenas a aba selecionada e garantir que ela seja maximizada
         function showTab(tabId) {
-            // Container de abas
+            console.log('SHOWWWW TAB ATIVADA!!!', tabId);
+            
+            // 1. Parar a propagação de eventos para evitar conflitos
+            event.preventDefault();
+            event.stopPropagation();
+            
+            // 2. Seleção direta dos elementos necessários
             var tabsContainer = document.querySelector('.bottom-tabs-container');
+            var allTabButtons = document.querySelectorAll('.bottom-tab-btn');
+            var allTabContents = document.querySelectorAll('.bottom-tab-content');
+            var clickedButton = event.currentTarget;
+            var tabContent = document.getElementById(tabId + '-content');
             
-            // Todos os botões de aba
-            var tabButtons = document.querySelectorAll('.bottom-tab-btn');
+            // 3. FORÇAR que todas as abas fiquem escondidas imediatamente
+            allTabContents.forEach(function(content) {
+                content.style.display = 'none';
+            });
             
-            // Todos os conteúdos de aba
-            var tabContents = document.querySelectorAll('.bottom-tab-content');
-            
-            // Verifica se o botão dessa aba já está ativo
-            var activeButton = document.querySelector('.bottom-tab-btn.active');
-            var isActive = activeButton && activeButton.getAttribute('onclick').includes(tabId);
-            
-            // Se a aba já está ativa e expandida, apenas minimize
-            if (isActive && !tabsContainer.classList.contains('minimized')) {
-                // Minimizar a container
-                tabsContainer.classList.add('minimized');
-                // Remover classe ativa de todos os botões
-                tabButtons.forEach(function(btn) {
-                    btn.classList.remove('active');
-                });
-                console.log('Aba minimizada');
-                return;
-            }
-            
-            // Desativar todos os botões
-            tabButtons.forEach(function(btn) {
+            // 4. Remover classe active de TODOS os botões
+            allTabButtons.forEach(function(btn) {
                 btn.classList.remove('active');
             });
             
-            // Esconder todos os conteúdos
-            tabContents.forEach(function(content) {
-                content.style.display = 'none';
-            });
+            // 5. FORÇAR que o container de abas seja EXPANDIDO
+            tabsContainer.className = 'bottom-tabs-container'; // Remove todas as classes e deixa só a base
             
-            // Ativar o botão específico desta aba
-            tabButtons.forEach(function(btn) {
-                if (btn.getAttribute('onclick').includes(tabId)) {
-                    btn.classList.add('active');
-                }
-            });
+            // 6. Adicionar active apenas no botão clicado
+            clickedButton.classList.add('active');
             
-            // Mostrar apenas o conteúdo específico
-            var targetContent = document.getElementById(tabId + '-content');
-            if (targetContent) {
-                targetContent.style.display = 'block';
+            // 7. Mostrar APENAS o conteúdo relacionado a esta aba
+            if (tabContent) {
+                tabContent.style.display = 'block';
             }
             
-            // Expandir o container se estiver minimizado
-            if (tabsContainer.classList.contains('minimized')) {
-                tabsContainer.classList.remove('minimized');
-            }
-            
-            console.log('Aba ativada:', tabId);
+            console.log('Aba ativada com sucesso:', tabId);
+            return false; // Previne comportamento padrão
         }
         
-        // Inicializar - esconder todos os conteúdos quando a página carregar
+        // Inicializar - esconder todos os conteúdos e desativar outros handlers de evento
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('INICIALIZANDO SISTEMA DE ABAS SIMPLIFICADO');
+            
+            // Esconder todos os conteúdos
             var tabContents = document.querySelectorAll('.bottom-tab-content');
             tabContents.forEach(function(content) {
                 content.style.display = 'none';
             });
-            console.log('Abas inicializadas - todos os conteúdos escondidos');
+            
+            // Desativar outros event listeners que possam interferir
+            var buttons = document.querySelectorAll('.bottom-tab-btn');
+            buttons.forEach(function(btn) {
+                var newBtn = btn.cloneNode(true);
+                btn.parentNode.replaceChild(newBtn, btn);
+                
+                // Restaurar o onclick que foi perdido durante a clonagem
+                var tabId = newBtn.textContent.trim().includes('Eventos') ? 'bottom-events' : 
+                           newBtn.textContent.trim().includes('Restrições') ? 'bottom-restrictions' : 'bottom-report';
+                newBtn.setAttribute('onclick', "showTab('" + tabId + "')");
+            });
+            
+            console.log('Sistema de abas reinicializado completamente');
         });
     </script>
     
