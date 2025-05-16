@@ -8966,7 +8966,251 @@
     
     <!-- Script para ativar as abas em modo tela cheia -->
     <script>
+    // Implementação da visualização da rota atual sem otimização
+    function showCurrentRoute() {
+        // Verificar se há locais suficientes
+        if (locations.length < 2) {
+            showNotification('Adicione pelo menos um destino para visualizar a rota.', 'warning');
+            return;
+        }
+        
+        // Exibir spinner durante o processamento
+        const loadingSpinner = document.getElementById('loading-spinner');
+        if (loadingSpinner) loadingSpinner.style.display = 'block';
+        
+        try {
+            // Encontrar a origem
+            const origin = locations.find(loc => loc.isOrigin);
+            if (!origin) {
+                throw new Error("Origem não encontrada");
+            }
+            
+            // Pontos adicionados na ordem original (excluindo a origem)
+            const waypoints = locations.filter(loc => !loc.isOrigin);
+            
+            // Verificar coordenadas válidas
+            const allPoints = [origin, ...waypoints];
+            if (allPoints.some(loc => !loc.lat || !loc.lng)) {
+                throw new Error("Alguns pontos possuem coordenadas inválidas");
+            }
+            
+            // Montar pontos na ordem: origem → pontos adicionados → origem
+            const routePoints = [
+                { location: new google.maps.LatLng(origin.lat, origin.lng) }
+            ];
+            
+            waypoints.forEach(wp => {
+                routePoints.push({
+                    location: new google.maps.LatLng(wp.lat, wp.lng)
+                });
+            });
+            
+            // Adicionar novamente a origem como último ponto (fechar o ciclo)
+            routePoints.push({ 
+                location: new google.maps.LatLng(origin.lat, origin.lng) 
+            });
+            
+            // Calcular distância total aproximada (linha reta × fator de estrada)
+            let totalDistanceKm = 0;
+            for (let i = 0; i < allPoints.length - 1; i++) {
+                const p1 = allPoints[i];
+                const p2 = allPoints[i + 1];
+                
+                // Usar Haversine para calcular distância aproximada
+                const dist = calculateHaversineDistance(p1.lat, p1.lng, p2.lat, p2.lng);
+                totalDistanceKm += dist * 1.3; // Fator 1.3 para simular rotas por estradas
+            }
+            
+            // Criar rota usando o Google Directions Service
+            const directionsService = new google.maps.DirectionsService();
+            
+            // Criar renderer específico para a rota não otimizada (em azul)
+            if (window.currentRouteRenderer) {
+                window.currentRouteRenderer.setMap(null);
+            }
+            
+            window.currentRouteRenderer = new google.maps.DirectionsRenderer({
+                suppressMarkers: true,
+                preserveViewport: true,
+                polylineOptions: {
+                    strokeColor: '#2196F3', // Azul para a rota não otimizada
+                    strokeOpacity: 0.8,
+                    strokeWeight: 5
+                }
+            });
+            
+            window.currentRouteRenderer.setMap(map);
+            
+            // Criar segmentos de rota para contornar limitação do Google (máx 25 waypoints)
+            const waypointChunks = [];
+            const chunkSize = 23; // 25 pontos por request, reduzimos para 23 para garantir
+            
+            for (let i = 0; i < routePoints.length; i += chunkSize) {
+                waypointChunks.push(routePoints.slice(i, i + chunkSize));
+            }
+            
+            // Processar os segmentos de waypoints sequencialmente
+            processRouteSegments(0, waypointChunks, totalDistanceKm);
+            
+        } catch (error) {
+            console.error("Erro ao visualizar rota atual:", error);
+            showNotification("Erro ao visualizar rota: " + error.message, "error");
+            if (loadingSpinner) loadingSpinner.style.display = 'none';
+        }
+    }
+    
+    // Função para processar segmentos de rota sequencialmente
+    function processRouteSegments(index, chunks, totalDistanceKm) {
+        if (index >= chunks.length) {
+            // Finalizar processamento
+            const loadingSpinner = document.getElementById('loading-spinner');
+            if (loadingSpinner) loadingSpinner.style.display = 'none';
+            
+            // Criar objeto de resultado para mostrar informações
+            const routeInfo = {
+                path: locations.map(loc => loc.id),
+                distance: totalDistanceKm,
+                time: calculateTravelTime(totalDistanceKm),
+                isOptimized: false // Marcar como não otimizada
+            };
+            
+            // Atualizar resumo da rota
+            updateRouteSummary(routeInfo, "truck1");
+            
+            // Adicionar indicador visual de rota não otimizada
+            const routeSummaryDiv = document.getElementById('route-summary');
+            if (routeSummaryDiv) {
+                const warningElement = document.createElement('div');
+                warningElement.classList.add('current-route-warning');
+                warningElement.innerHTML = `
+                    <div style="background-color: rgba(33, 150, 243, 0.1); border-left: 3px solid #2196F3; 
+                         padding: 10px 15px; margin-bottom: 15px; border-radius: 4px;">
+                        <p style="margin: 0; color: #0d47a1;">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            <strong>Visualização da rota atual</strong> na ordem em que os pontos foram adicionados.
+                        </p>
+                        <p style="margin: 5px 0 0 0; font-size: 13px; color: #0d47a1;">
+                            Clique em "Otimizar Rota" para ver o percurso mais eficiente.
+                        </p>
+                    </div>
+                `;
+                
+                // Remover avisos anteriores
+                const oldWarnings = routeSummaryDiv.querySelectorAll('.current-route-warning');
+                oldWarnings.forEach(warning => warning.remove());
+                
+                // Inserir no início do resumo
+                if (routeSummaryDiv.firstChild) {
+                    routeSummaryDiv.insertBefore(warningElement, routeSummaryDiv.firstChild);
+                } else {
+                    routeSummaryDiv.appendChild(warningElement);
+                }
+            }
+            
+            showNotification("Rota visualizada na ordem original de adição dos pontos", "success");
+            return;
+        }
+        
+        const segment = chunks[index];
+        
+        // Se for o primeiro segmento
+        if (index === 0) {
+            drawRouteSegment(segment[0].location, segment[segment.length-1].location, 
+                segment.slice(1, segment.length-1).map(wp => ({ location: wp.location })), index, chunks, totalDistanceKm);
+        } else {
+            // Para segmentos subsequentes
+            drawRouteSegment(segment[0].location, segment[segment.length-1].location,
+                segment.slice(1, segment.length-1).map(wp => ({ location: wp.location })), index, chunks, totalDistanceKm);
+        }
+    }
+    
+    // Desenha um segmento de rota
+    function drawRouteSegment(origin, destination, waypoints, segmentIndex, allSegments, totalDistanceKm) {
+        const directionsService = new google.maps.DirectionsService();
+        
+        const request = {
+            origin: origin,
+            destination: destination,
+            waypoints: waypoints,
+            travelMode: google.maps.TravelMode.DRIVING,
+            optimizeWaypoints: false // Muito importante: não otimizar a ordem
+        };
+        
+        directionsService.route(request, (result, status) => {
+            if (status === google.maps.DirectionsStatus.OK) {
+                // Se for o primeiro segmento ou não tivermos um resultado composto ainda
+                if (segmentIndex === 0 || !window.compositeRouteResult) {
+                    window.compositeRouteResult = result;
+                    window.currentRouteRenderer.setDirections(result);
+                } else {
+                    // Para segmentos adicionais, concatenar as rotas
+                    const route = result.routes[0];
+                    const legs = route.legs;
+                    
+                    // Adicionar legs ao resultado existente
+                    window.compositeRouteResult.routes[0].legs = 
+                        window.compositeRouteResult.routes[0].legs.concat(legs);
+                    
+                    // Recalcular distância e duração totais
+                    window.compositeRouteResult.routes[0].distance = {
+                        text: totalDistanceKm.toFixed(1) + ' km',
+                        value: totalDistanceKm * 1000 // Em metros
+                    };
+                    
+                    window.compositeRouteResult.routes[0].duration = {
+                        text: formatTravelTime(calculateTravelTime(totalDistanceKm)),
+                        value: calculateTravelTime(totalDistanceKm) * 60 // Em segundos
+                    };
+                    
+                    // Atualizar o renderer
+                    window.currentRouteRenderer.setDirections(window.compositeRouteResult);
+                }
+                
+                // Seguir para o próximo segmento
+                processRouteSegments(segmentIndex + 1, allSegments, totalDistanceKm);
+            } else {
+                console.error("Erro ao desenhar segmento de rota:", status);
+                
+                // Em caso de erro, ainda tentamos processar os segmentos restantes
+                processRouteSegments(segmentIndex + 1, allSegments, totalDistanceKm);
+            }
+        });
+    }
+    
+    // Calcula distância entre dois pontos (fórmula de Haversine)
+    function calculateHaversineDistance(lat1, lng1, lat2, lng2) {
+        const R = 6371; // Raio da Terra em km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLng = (lng2 - lng1) * Math.PI / 180;
+        const a = 
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+            Math.sin(dLng/2) * Math.sin(dLng/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+    
+    // Formata o tempo de viagem para exibição
+    function formatTravelTime(minutes) {
+        const hours = Math.floor(minutes / 60);
+        const mins = Math.round(minutes % 60);
+        
+        if (hours > 0) {
+            return `${hours}h ${mins}min`;
+        } else {
+            return `${mins}min`;
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
+        // Registrar evento para o botão de visualização da rota atual
+        const viewCurrentRouteBtn = document.getElementById('view-current-route');
+        if (viewCurrentRouteBtn) {
+            viewCurrentRouteBtn.addEventListener('click', function() {
+                showCurrentRoute();
+            });
+        }
+        
         // Inicializar os handlers para botões de abas
         const tabButtons = document.querySelectorAll('.bottom-tab-btn');
         
