@@ -11,6 +11,7 @@ class TSPSolver {
 
   /**
    * Calcula a distância entre dois pontos usando a fórmula de Haversine
+   * com um fator de correção para estradas
    * @param {number} lat1 - Latitude do ponto 1
    * @param {number} lon1 - Longitude do ponto 1
    * @param {number} lat2 - Latitude do ponto 2
@@ -26,8 +27,15 @@ class TSPSolver {
       Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
       Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c; // Distância em km
-    return distance;
+    
+    // Distância em linha reta
+    const directDistance = R * c; 
+    
+    // Fator de correção para estradas (normalmente entre 1.3 e 1.4)
+    // Ajustado para 1.2 para corresponder melhor aos resultados do Google Maps
+    const roadFactor = 1.2;
+    
+    return directDistance * roadFactor;
   }
 
   /**
@@ -129,10 +137,18 @@ class TSPSolver {
     // Ordenar localizações conforme caminho encontrado
     const orderedLocations = result.path.map(idx => locations[idx]);
     
-    // Estimar o tempo com base em uma velocidade média de 60 km/h
-    const estimatedTimeHours = result.totalDistance / 60;
-    const hours = Math.floor(estimatedTimeHours);
-    const minutes = Math.round((estimatedTimeHours - hours) * 60);
+    // Estimar o tempo com velocidade média mais realista (80 km/h para longas distâncias)
+    // Para longas distâncias, o Google Maps considera velocidades médias mais altas em rodovias,
+    // mas também considera paradas, tráfego e outros fatores que reduzem a velocidade
+    const averageSpeed = 80; // km/h
+    const estimatedTimeHours = result.totalDistance / averageSpeed;
+    
+    // Fator de ajuste para levar em conta paradas, tráfego, semáforos, etc.
+    const adjustmentFactor = 1.25; // 25% a mais de tempo que o cálculo básico
+    const adjustedTimeHours = estimatedTimeHours * adjustmentFactor;
+    
+    const hours = Math.floor(adjustedTimeHours);
+    const minutes = Math.round((adjustedTimeHours - hours) * 60);
     
     return {
       orderedLocations,
@@ -142,7 +158,7 @@ class TSPSolver {
       estimatedTime: {
         hours,
         minutes,
-        totalMinutes: Math.round(estimatedTimeHours * 60)
+        totalMinutes: Math.round(adjustedTimeHours * 60)
       }
     };
   }
