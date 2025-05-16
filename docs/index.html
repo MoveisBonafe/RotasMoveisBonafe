@@ -4884,9 +4884,10 @@
         // Mostrar loading no botão também
         const optimizeBtn = document.getElementById('optimize-route');
         if (optimizeBtn) {
-            // Guardar o conteúdo original do botão
-            const originalContent = '<i class="bi bi-lightning-charge-fill me-2"></i>OTIMIZAR';
-            optimizeBtn.setAttribute('data-original-content', originalContent);
+            // Guardar o conteúdo original do botão se ainda não tiver sido salvo
+            if (!optimizeBtn.hasAttribute('data-original-content')) {
+                optimizeBtn.setAttribute('data-original-content', optimizeBtn.innerHTML);
+            }
             
             // Mostrar indicador de carregamento
             optimizeBtn.innerHTML = '<span class="spinner-border" role="status" aria-hidden="true"></span> Calculando...';
@@ -9166,7 +9167,7 @@
             });
             
             // NÃO adicionar a origem como último ponto, para evitar considerar o retorno
-            // Isso garante consistência com o botão "Otimizar Rota" que também não inclui retorno
+            // Isso garante consistência com o botão "OTIMIZAR" que também não inclui retorno
             // (O código abaixo está comentado para evitar o retorno à origem)
             /*
             routePoints.push({ 
@@ -9493,7 +9494,7 @@
                             <strong>Visualização da rota atual</strong> na ordem em que os pontos foram adicionados.
                         </p>
                         <p style="margin: 5px 0 0 0; font-size: 13px; color: #0d47a1;">
-                            Clique em "Otimizar Rota" para ver o percurso mais eficiente.
+                            Clique em "OTIMIZAR" para ver o percurso mais eficiente.
                         </p>
                     </div>
                 `;
