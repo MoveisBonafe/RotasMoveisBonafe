@@ -3518,18 +3518,21 @@
                 // Ativar apenas o botão clicado
                 this.classList.add('active');
                 
-                // MOSTRAR APENAS O PAINEL CORRESPONDENTE
+                // MOSTRAR APENAS O PAINEL CORRESPONDENTE - FUNCIONA TANTO EXPANDIDO QUANTO MINIMIZADO
                 if (clickedTabPanel) {
-                    // Mostrar este painel específico - com uma pequena pausa para garantir a limpeza
-                    setTimeout(() => {
-                        clickedTabPanel.style.display = 'block';
-                        
-                        // Estilizar para expansão correta
-                        if (clickedTabPanel.querySelector('div')) {
-                            clickedTabPanel.style.minHeight = 'calc(100vh - 140px)';
-                            clickedTabPanel.style.overflow = 'auto';
-                        }
-                    }, 10);
+                    // Força a visualização do painel clicado
+                    clickedTabPanel.style.display = 'block';
+                    
+                    // Estilizar para expansão correta
+                    if (clickedTabPanel.querySelector('div')) {
+                        clickedTabPanel.style.minHeight = 'calc(100vh - 140px)';
+                        clickedTabPanel.style.overflow = 'auto';
+                    }
+                    
+                    // Armazena a aba atual em uma variável global para controle de estado
+                    window.currentActiveTab = tabId;
+                    
+                    console.log("Mudando para tab:", tabId, "- Expandida:", !bottomTabsContainer.classList.contains('minimized'));
                 }
                 
                 // Se as abas estavam minimizadas, expandir
