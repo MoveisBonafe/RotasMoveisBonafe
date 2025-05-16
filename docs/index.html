@@ -1997,37 +1997,37 @@
             
             <!-- NOVA SOLUÇÃO PARA CONTEÚDO DAS ABAS - COMPLETAMENTE SEPARADA -->
             <div id="bottom-tabs-system">
-                <!-- EVENTOS -->
-                <div id="bottom-events-content" class="bottom-tab-panel" style="display: none;">
-                    <div style="padding: 20px; background-color: white; border-top: 1px solid #eee;">
-                        <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
+                <!-- VOLTANDO PARA VERSÃO SIMPLIFICADA QUE FUNCIONA -->
+                
+                <!-- EVENTOS - VERSÃO SIMPLES -->
+                <div id="bottom-events-content" class="fixed-tab-content" style="display: none; padding: 20px;">
+                    <div class="debug-tab-id" style="display: none;">EVENTOS</div>
+                    <div class="events-panel" style="background-color: white;">
+                        <h5 style="margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                             Eventos nas cidades da rota:
                         </h5>
-                        <div style="width: 100%; min-height: 300px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
-                            <div id="events-list">
-                                <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
-                            </div>
+                        <div id="events-list" style="min-height: 300px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
+                            <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
                         </div>
                     </div>
                 </div>
                 
-                <!-- RESTRIÇÕES -->
-                <div id="bottom-restrictions-content" class="bottom-tab-panel" style="display: none;">
-                    <div style="padding: 20px; background-color: white; border-top: 1px solid #eee;">
-                        <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
+                <!-- RESTRIÇÕES - VERSÃO SIMPLES -->
+                <div id="bottom-restrictions-content" class="fixed-tab-content" style="display: none; padding: 20px;">
+                    <div class="debug-tab-id" style="display: none;">RESTRIÇÕES</div>
+                    <div class="restrictions-panel" style="background-color: white;">
+                        <h5 style="margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                             Restrições para caminhões do percurso:
                         </h5>
                         <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
-                        <div style="width: 100%; min-height: 300px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
-                            <div id="restrictions-list">
-                                <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
-                            </div>
+                        <div id="restrictions-list" style="min-height: 300px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
+                            <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
                         </div>
                     </div>
                 </div>
                 
-                <!-- RELATÓRIO -->
-                <div id="bottom-report-content" class="bottom-tab-panel" style="display: none;">
+                <!-- RELATÓRIO - VERSÃO SIMPLES -->
+                <div id="bottom-report-content" class="fixed-tab-content" style="display: none; padding: 20px;">
                     <div class="tab-content-inner" style="padding: 20px;">
                         <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                             Relatório da rota otimizada:
@@ -3391,7 +3391,7 @@
         if (bottomTabsContainer) {
             if (bottomTabsContainer.classList.contains('minimized')) {
                 // EXPANDIR - MODO FULLSCREEN
-                console.log("Expandindo abas para tela cheia");
+                console.log("[DEBUG] EXPANDINDO ABAS - modo tela cheia");
                 
                 // 1. Alterar classe para controlar estilos CSS
                 bottomTabsContainer.classList.remove('minimized');
@@ -3399,22 +3399,34 @@
                 // 2. Garantir que o estilo inline não atrapalhe
                 bottomTabsContainer.removeAttribute('style');
                 
-                // 3. IMPORTANTE: Quando expandimos, garantir que o conteúdo da aba ativa seja mostrado
+                // 3. IMPORTANTE: Quando expandimos, verificar qual aba está ativa
                 const activeButton = document.querySelector('.bottom-tab-btn.active');
                 if (activeButton) {
                     const tabId = activeButton.getAttribute('data-tab');
-                    console.log("Aba ativa ao expandir:", tabId);
+                    console.log("[DEBUG] Ao expandir, aba ativa é:", tabId);
                     
-                    // Esconder todos os painéis primeiro
-                    document.querySelectorAll('.bottom-tab-panel').forEach(panel => {
+                    // Esconder TODOS os painéis
+                    document.querySelectorAll('.fixed-tab-content').forEach(panel => {
                         panel.style.display = 'none';
+                        console.log("[DEBUG] Ao expandir, escondendo painel:", panel.id);
                     });
                     
-                    // Mostrar apenas o painel da aba ativa
-                    const activePanel = document.getElementById(tabId + '-content');
-                    if (activePanel) {
-                        activePanel.style.display = 'block';
+                    // Mostrar apenas o painel ativo
+                    const targetPanel = document.getElementById(tabId + '-content');
+                    if (targetPanel) {
+                        console.log("[DEBUG] Ao expandir, mostrando painel:", targetPanel.id);
+                        targetPanel.style.display = 'block';
+                        
+                        // Registrar conteúdo do painel para diagnóstico
+                        const debugElem = targetPanel.querySelector('.debug-tab-id');
+                        if (debugElem) {
+                            console.log("[DEBUG] Conteúdo da aba expandida: " + debugElem.textContent);
+                        }
+                    } else {
+                        console.error("[DEBUG] Erro ao expandir: painel não encontrado para", tabId);
                     }
+                } else {
+                    console.log("[DEBUG] Nenhuma aba ativa ao expandir!");
                 }
                 
                 // 3. Aplicar estilos diretamente (redundante com CSS, mas mais seguro)
@@ -3484,73 +3496,84 @@
         }
     }
     
-    // SOLUÇÃO FINAL PARA GITHUB PAGES - SISTEMA DE ABAS SIMPLIFICADO
+    // SOLUÇÃO EXTREMAMENTE SIMPLIFICADA COM LOGS DETALHADOS
     function initBottomTabs() {
-        console.log("Inicializando sistema de abas simplificado para GitHub Pages");
+        console.log("[DEBUG] Inicializando sistema básico de abas para GitHub Pages");
         
-        // Primeiro esconde todas as abas
-        document.querySelectorAll('.bottom-tab-panel').forEach(panel => {
+        // Primeiro esconde TODOS os painéis de conteúdo (nova classe fixed-tab-content)
+        document.querySelectorAll('.fixed-tab-content').forEach(panel => {
+            console.log("[DEBUG] Escondendo painel:", panel.id);
             panel.style.display = 'none';
         });
         
         // Selecionar todos os botões de aba
         const tabButtons = document.querySelectorAll('.bottom-tab-btn');
         
-        // Adicionar event listeners simples e diretos para cada botão
+        // Adicionar event listeners básicos
         tabButtons.forEach(button => {
             button.addEventListener('click', function() {
                 // Identificar qual aba foi clicada
                 const tabId = this.getAttribute('data-tab');
-                const clickedTabPanel = document.getElementById(tabId + '-content');
+                console.log("[DEBUG] Botão clicado:", tabId);
+                
+                const contentId = tabId + '-content';
+                console.log("[DEBUG] Buscando conteúdo:", contentId);
+                
+                // Referência ao container principal
                 const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+                const isMinimized = bottomTabsContainer.classList.contains('minimized');
+                console.log("[DEBUG] Estado atual das abas: " + (isMinimized ? "MINIMIZADO" : "EXPANDIDO"));
                 
-                // Verificar se a aba já está ativa
+                // Verificar se a aba clicada já está ativa
                 const isActive = this.classList.contains('active');
+                console.log("[DEBUG] Aba já está ativa?", isActive);
                 
-                // Se a aba clicada já estava ativa e expandida, minimizar tudo
-                if (isActive && !bottomTabsContainer.classList.contains('minimized')) {
-                    console.log("Minimizando painéis");
+                // Se a aba já estiver ativa e expandida, apenas minimizamos tudo
+                if (isActive && !isMinimized) {
+                    console.log("[DEBUG] Aba já ativa e expandida - iremos minimizar tudo");
                     
-                    // Desativar botão
+                    // Desativar visual do botão
                     this.classList.remove('active');
                     
-                    // Esconder painel
-                    clickedTabPanel.style.display = 'none';
+                    // Minimizar container de abas
+                    bottomTabsContainer.classList.add('minimized');
                     
-                    // Minimizar
-                    toggleTabsExpansion();
+                    // Ajustar o tamanho do mapa
+                    resizeMap();
                     return;
                 }
                 
-                // ESCONDER TODOS OS PAINÉIS - garantindo que nada aparece
-                const allPanels = document.querySelectorAll('.bottom-tab-panel');
-                allPanels.forEach(panel => {
-                    panel.style.display = 'none';
-                });
+                // PARTE 1: Atualização visual dos botões
+                console.log("[DEBUG] Desativando todos os botões");
+                tabButtons.forEach(btn => btn.classList.remove('active'));
                 
-                // DESATIVAR TODOS OS BOTÕES
-                tabButtons.forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                
-                // Ativar apenas o botão clicado
+                // Ativar apenas o botão atual
+                console.log("[DEBUG] Ativando botão:", tabId);
                 this.classList.add('active');
                 
-                // MOSTRAR APENAS O PAINEL CORRESPONDENTE - FUNCIONA TANTO EXPANDIDO QUANTO MINIMIZADO
-                if (clickedTabPanel) {
-                    // Força a visualização do painel clicado
-                    clickedTabPanel.style.display = 'block';
+                // PARTE 2: Esconder todos os painéis
+                console.log("[DEBUG] Escondendo todos os painéis");
+                document.querySelectorAll('.fixed-tab-content').forEach(panel => {
+                    panel.style.display = 'none';
+                    console.log("[DEBUG] Escondido:", panel.id);
+                });
+                
+                // PARTE 3: Mostrar apenas o painel correspondente
+                const targetPanel = document.getElementById(contentId);
+                if (targetPanel) {
+                    console.log("[DEBUG] Mostrando painel:", contentId);
+                    targetPanel.style.display = 'block';
                     
-                    // Estilizar para expansão correta
-                    if (clickedTabPanel.querySelector('div')) {
-                        clickedTabPanel.style.minHeight = 'calc(100vh - 140px)';
-                        clickedTabPanel.style.overflow = 'auto';
+                    // Armazenar ID da aba ativa em variável global
+                    window.activeTabId = tabId;
+                    
+                    // LOG do conteúdo do painel para diagnóstico
+                    const debugElem = targetPanel.querySelector('.debug-tab-id');
+                    if (debugElem) {
+                        console.log("[DEBUG] Conteúdo da aba: " + debugElem.textContent);
                     }
-                    
-                    // Armazena a aba atual em uma variável global para controle de estado
-                    window.currentActiveTab = tabId;
-                    
-                    console.log("Mudando para tab:", tabId, "- Expandida:", !bottomTabsContainer.classList.contains('minimized'));
+                } else {
+                    console.error("[DEBUG] ERRO! Painel não encontrado:", contentId);
                 }
                 
                 // Se as abas estavam minimizadas, expandir
