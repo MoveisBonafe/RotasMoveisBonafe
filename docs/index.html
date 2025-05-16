@@ -1995,39 +1995,41 @@
                 <button class="bottom-tab-btn" data-tab="bottom-report">Relatório da Rota</button>
             </div>
             
-            <!-- NOVA SOLUÇÃO PARA CONTEÚDO DAS ABAS - COMPLETAMENTE SEPARADA -->
-            <div id="bottom-tabs-system">
-                <!-- EVENTOS -->
-                <div id="bottom-events-content" class="bottom-tab-panel" style="display: none;">
-                    <div style="padding: 20px; background-color: white; border-top: 1px solid #eee;">
+            <!-- Container com os conteúdos das abas, cada um inicialmente escondido -->
+            <div class="tab-contents-container" style="width: 100%; position: relative; min-height: 400px;">
+                <!-- Conteúdo da aba Eventos -->
+                <div class="bottom-tab-content" id="bottom-events-content" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee;">
+                    <div class="tab-content-inner" style="padding: 20px;">
                         <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                             Eventos nas cidades da rota:
                         </h5>
-                        <div style="width: 100%; min-height: 300px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
-                            <div id="events-list">
+                        <!-- Container que se adapta à janela -->
+                        <div class="events-container" style="width: 100%; height: 100%; min-height: 300px; overflow-y: auto; flex-grow: 1; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
+                            <div class="events-list" id="events-list" style="height: 100%;">
                                 <p class="text-muted">Nenhum evento encontrado. Adicione locais e otimize a rota para ver eventos nas cidades do percurso.</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- RESTRIÇÕES -->
-                <div id="bottom-restrictions-content" class="bottom-tab-panel" style="display: none;">
-                    <div style="padding: 20px; background-color: white; border-top: 1px solid #eee;">
+                <!-- Conteúdo da aba Restrições -->
+                <div class="bottom-tab-content" id="bottom-restrictions-content" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee;">
+                    <div class="tab-content-inner" style="padding: 20px;">
                         <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                             Restrições para caminhões do percurso:
                         </h5>
                         <p class="small text-muted mb-3">Filtrando para: caminhão de 1 eixo, 2 eixos, truck, comercial e toco</p>
-                        <div style="width: 100%; min-height: 300px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
-                            <div id="restrictions-list">
+                        <!-- Container que se adapta à janela -->
+                        <div class="restrictions-container" style="width: 100%; height: 100%; min-height: 300px; overflow-y: auto; flex-grow: 1; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 15px;">
+                            <div class="restrictions-list" id="restrictions-list" style="height: 100%;">
                                 <p class="text-muted">Nenhuma restrição encontrada. Adicione locais e otimize a rota para ver restrições nas cidades do percurso.</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- RELATÓRIO -->
-                <div id="bottom-report-content" class="bottom-tab-panel" style="display: none;">
+                <!-- Conteúdo da aba Relatório -->
+                <div class="bottom-tab-content" id="bottom-report-content" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: auto; background-color: white; border-top: 1px solid #eee;">
                     <div class="tab-content-inner" style="padding: 20px;">
                         <h5 style="color: #333; margin-bottom: 15px; font-weight: 600; border-left: 3px solid #ffc107; padding-left: 10px;">
                             Relatório da rota otimizada:
@@ -3466,70 +3468,73 @@
         }
     }
     
-    // SOLUÇÃO FINAL PARA GITHUB PAGES - SISTEMA DE ABAS SIMPLIFICADO
+    // Inicializar as abas inferiores - VERSÃO GITHUB PAGES CORRIGIDA
     function initBottomTabs() {
-        console.log("Inicializando sistema de abas simplificado para GitHub Pages");
+        console.log("Inicializando abas inferiores com modo FULLSCREEN (versão corrigida GitHub Pages)");
         
-        // Primeiro esconde todas as abas
-        document.querySelectorAll('.bottom-tab-panel').forEach(panel => {
-            panel.style.display = 'none';
+        // Primeiro, vamos garantir que apenas uma aba esteja visível por vez
+        document.querySelectorAll('.bottom-tab-content').forEach(content => {
+            content.style.display = 'none';  // Inicialmente, todas estão ocultas
+            content.classList.remove('active');
         });
         
         // Selecionar todos os botões de aba
         const tabButtons = document.querySelectorAll('.bottom-tab-btn');
         
-        // Adicionar event listeners simples e diretos para cada botão
+        // Adicionar listeners de clique para cada botão - versão simplificada e mais robusta
         tabButtons.forEach(button => {
             button.addEventListener('click', function() {
-                // Identificar qual aba foi clicada
                 const tabId = this.getAttribute('data-tab');
-                const clickedTabPanel = document.getElementById(tabId + '-content');
+                const targetTabContent = document.getElementById(tabId + '-content');
                 const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
                 
                 // Verificar se a aba já está ativa
                 const isActive = this.classList.contains('active');
                 
-                // Se a aba clicada já estava ativa e expandida, minimizar tudo
+                console.log("Clique em aba:", tabId, "- Ativa:", isActive, "- Minimizada:", bottomTabsContainer.classList.contains('minimized'));
+                
+                // Se a aba clicada já estava ativa e expandida, apenas minimizamos
                 if (isActive && !bottomTabsContainer.classList.contains('minimized')) {
-                    console.log("Minimizando painéis");
+                    console.log("Minimizando aba ativa");
                     
-                    // Desativar botão
+                    // Remover classe ativa deste botão
                     this.classList.remove('active');
                     
-                    // Esconder painel
-                    clickedTabPanel.style.display = 'none';
+                    // Esconder conteúdo
+                    if (targetTabContent) {
+                        targetTabContent.classList.remove('active');
+                        targetTabContent.style.display = 'none';
+                    }
                     
-                    // Minimizar
+                    // Minimizar as abas
                     toggleTabsExpansion();
                     return;
                 }
                 
-                // ESCONDER TODOS OS PAINÉIS - garantindo que nada aparece
-                const allPanels = document.querySelectorAll('.bottom-tab-panel');
-                allPanels.forEach(panel => {
-                    panel.style.display = 'none';
-                });
+                // Remover classes ativas de todos os botões
+                tabButtons.forEach(btn => btn.classList.remove('active'));
                 
-                // DESATIVAR TODOS OS BOTÕES
-                tabButtons.forEach(btn => {
-                    btn.classList.remove('active');
+                // Ocultar todos os conteúdos de aba - IMPLEMENTAÇÃO SIMPLIFICADA GITHUB PAGES
+                document.querySelectorAll('.bottom-tab-content').forEach(content => {
+                    content.style.display = 'none';
+                    content.classList.remove('active');
                 });
                 
                 // Ativar apenas o botão clicado
                 this.classList.add('active');
                 
-                // MOSTRAR APENAS O PAINEL CORRESPONDENTE
-                if (clickedTabPanel) {
-                    // Mostrar este painel específico - com uma pequena pausa para garantir a limpeza
-                    setTimeout(() => {
-                        clickedTabPanel.style.display = 'block';
-                        
-                        // Estilizar para expansão correta
-                        if (clickedTabPanel.querySelector('div')) {
-                            clickedTabPanel.style.minHeight = 'calc(100vh - 140px)';
-                            clickedTabPanel.style.overflow = 'auto';
-                        }
-                    }, 10);
+                // SOLUÇÃO DIRETA: mostrar apenas o conteúdo específico da aba selecionada
+                if (targetTabContent) {
+                    // Mostrar especificamente esta aba
+                    targetTabContent.style.display = 'block';
+                    targetTabContent.classList.add('active');
+                    
+                    // Estilizar adequadamente
+                    targetTabContent.style.height = 'auto';
+                    targetTabContent.style.minHeight = 'calc(100vh - 140px)';
+                    targetTabContent.style.overflow = 'auto';
+                    targetTabContent.style.padding = '20px';
+                    targetTabContent.style.background = 'white';
                 }
                 
                 // Se as abas estavam minimizadas, expandir
