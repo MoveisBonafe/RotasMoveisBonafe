@@ -1857,16 +1857,12 @@
                     }
                     </style>
                     
-                    <!-- Botões lado a lado com mesmas proporções -->
-                    <div style="display: flex; flex-direction: row; justify-content: space-between; margin-top: 10px; margin-bottom: 10px; gap: 10px;">
-                        <button id="view-current-route" class="btn" style="background-color: #ffab00; color: #000; border-radius: 25px; padding: 12px 15px; border: none; font-weight: 600; font-size: 15px; height: 46px; flex: 1; white-space: nowrap; text-align: center;">
-                            <i class="bi bi-eye"></i> Visualizar
-                        </button>
-                        
-                        <button id="optimize-route" class="btn" style="background-color: #ffab00; color: #000; border-radius: 25px; padding: 12px 15px; border: none; font-weight: 600; font-size: 15px; height: 46px; flex: 1; white-space: nowrap; text-align: center; text-transform: none !important;">
-                            <i class="bi bi-lightning"></i> Otimizar Rota
-                        </button>
-                    </div>
+                    <!-- Botões completamente independentes com altura ajustada -->
+                    <button id="view-current-route" class="btn" style="background-color: #ffab00; color: #000; border-radius: 25px; padding: 12px 15px; border: none; font-weight: 600; font-size: 15px; height: 46px; display: inline-block; width: 45%; margin-right: 4%; margin-top: 5px; margin-bottom: 15px; text-align: center;">
+                        <i class="bi bi-eye"></i> Visualizar
+                    </button><button id="optimize-route" class="btn" style="background-color: #ffab00; color: #000; border-radius: 25px; padding: 12px 15px; border: none; font-weight: 600; font-size: 15px; height: 46px; display: inline-block; width: 45%; margin-top: 5px; margin-bottom: 15px; text-align: center; text-transform: none !important;">
+                        <i class="bi bi-lightning"></i> Otimizar Rota
+                    </button>
                     
                     <style>
                     /* Reset para garantir que o texto do botão otimizar não fique em maiúsculas */
