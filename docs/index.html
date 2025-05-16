@@ -1329,15 +1329,15 @@
             overflow-y: auto;
         }
         
-        /* Ajuste para que o mapa ocupe todo o espaço disponível */
+        /* Ajuste para que o mapa ocupe todo o espaço disponível até a área das abas */
         .map-container {
             position: fixed !important; /* Posicionamento fixo para cobrir toda a área */
             top: 0 !important;
             right: 0 !important;
-            bottom: 0 !important; /* Estender até o final da página */
+            bottom: 60px !important; /* Parar exatamente onde começam as abas inferiores */
             left: 380px !important; /* Começa onde termina a sidebar */
             width: calc(100% - 380px) !important; /* Largura ajustada para alinhar com a sidebar */
-            height: 100vh !important; /* Altura total da viewport */
+            height: calc(100vh - 60px) !important; /* Altura total menos a altura das abas */
             margin: 0 !important;
             padding: 0 !important;
             overflow: hidden !important;
@@ -1853,25 +1853,30 @@
                     
                     <!-- Botões para visualizar e otimizar rota (Modernizados) -->
                     <div class="route-buttons-container" style="position: sticky; bottom: 0; padding: 15px 0; margin-top: 5px; background: linear-gradient(to bottom, rgba(248,249,250,0) 0%, rgba(248,249,250,1) 20%); z-index: 10;">
-                        <!-- Layout de botões lado a lado sem espaço entre eles -->
-                        <div class="d-flex" style="margin-bottom: 15px; justify-content: space-between;">
-                            <!-- Botão para visualizar rota sem otimização -->
-                            <button id="view-current-route" class="btn" style="flex: 1; margin-right: 8px; height: 42px; padding: 0 15px; font-weight: 600; 
-                            background: linear-gradient(135deg, #ffc107 0%, #ffab00 100%); border: none; color: #000; 
-                            border-radius: 12px; letter-spacing: 0.2px; font-size: 15px; line-height: 42px;
-                            position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(255,171,0,0.3); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-                                <i class="bi bi-eye-fill me-2"></i>Visualizar
-                                <span class="view-btn-shine" style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: all 0.6s ease; pointer-events: none;"></span>
-                            </button>
-                            
-                            <!-- Botão para otimizar rota -->
-                            <button id="optimize-route" class="btn" style="flex: 1; margin-left: 8px; height: 42px; padding: 0 15px; font-weight: 700; 
-                            background: linear-gradient(135deg, #ffc107 0%, #ffab00 100%); border: none; color: #000; 
-                            border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-size: 15px; line-height: 42px;
-                            position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(255,171,0,0.3); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-                                <i class="bi bi-lightning-charge-fill me-2"></i>OTIMIZAR
-                                <span class="optimize-btn-shine" style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: all 0.6s ease; pointer-events: none;"></span>
-                            </button>
+                        <!-- Layout de botões lado a lado exatamente alinhados -->
+                        <div class="d-flex align-items-center" style="margin-bottom: 15px;">
+                            <!-- Container comum para os botões com altura igual -->
+                            <div style="display: flex; width: 100%; justify-content: space-between; align-items: center;">
+                                <!-- Botão para visualizar rota -->
+                                <button id="view-current-route" class="btn" style="flex: 1; margin-right: 8px; height: 42px; padding: 0 15px; font-weight: 600; 
+                                background: linear-gradient(135deg, #ffc107 0%, #ffab00 100%); border: none; color: #000; 
+                                border-radius: 12px; letter-spacing: 0.2px; font-size: 15px; line-height: 42px;
+                                position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(255,171,0,0.3); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                                display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-eye-fill me-2"></i>Visualizar
+                                    <span class="view-btn-shine" style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: all 0.6s ease; pointer-events: none;"></span>
+                                </button>
+                                
+                                <!-- Botão para otimizar rota -->
+                                <button id="optimize-route" class="btn" style="flex: 1; margin-left: 8px; height: 42px; padding: 0 15px; font-weight: 700; 
+                                background: linear-gradient(135deg, #ffc107 0%, #ffab00 100%); border: none; color: #000; 
+                                border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-size: 15px; line-height: 42px;
+                                position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(255,171,0,0.3); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                                display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-lightning-charge-fill me-2"></i>OTIMIZAR
+                                    <span class="optimize-btn-shine" style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: all 0.6s ease; pointer-events: none;"></span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     
@@ -9383,14 +9388,39 @@
                         }
                     }
                 } else {
-                    console.warn("Pontos insuficientes para calcular distância");
-                    totalDistanceKm = 50; // Valor padrão para evitar zero
+                    console.warn("Pontos insuficientes para calcular distância, tentando estimativa alternativa");
+                    
+                    // Calcular uma distância com base nas coordenadas das cidades, mais realista
+                    let estimatedDistance = 0;
+                    if (locations.length >= 2) {
+                        for (let i = 0; i < locations.length - 1; i++) {
+                            const loc1 = locations[i];
+                            const loc2 = locations[i+1];
+                            
+                            const lat1 = parseFloat(loc1.lat !== undefined ? loc1.lat : loc1.latitude);
+                            const lng1 = parseFloat(loc1.lng !== undefined ? loc1.lng : loc1.longitude);
+                            const lat2 = parseFloat(loc2.lat !== undefined ? loc2.lat : loc2.latitude);
+                            const lng2 = parseFloat(loc2.lng !== undefined ? loc2.lng : loc2.longitude);
+                            
+                            if (!isNaN(lat1) && !isNaN(lng1) && !isNaN(lat2) && !isNaN(lng2)) {
+                                const segmentDist = calculateHaversineDistance(lat1, lng1, lat2, lng2) * 1.4;
+                                estimatedDistance += segmentDist;
+                                console.log(`Distância estimada entre ${loc1.name} e ${loc2.name}: ${segmentDist.toFixed(2)} km`);
+                            }
+                        }
+                    }
+                    
+                    // Usar a distância calculada ou 10 km por cidade como mínimo se não for possível calcular
+                    totalDistanceKm = estimatedDistance > 0 ? estimatedDistance : locations.length * 10;
                 }
             }
             
             // Garantir valor mínimo para evitar problemas
             if (isNaN(totalDistanceKm) || totalDistanceKm <= 0) {
-                totalDistanceKm = 30; // Valor padrão para evitar zero ou NaN
+                // Usar distância baseada no número de locais para ser mais realista
+                const minDistancePerLocation = 8; // Km mínimos entre locais (média realista)
+                totalDistanceKm = Math.max(locations.length * minDistancePerLocation, 15);
+                console.log(`Ajustando distância mínima com base no número de locais: ${totalDistanceKm.toFixed(1)} km`);
             }
             
             // Calcular tempo com base na distância
