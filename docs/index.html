@@ -5067,15 +5067,53 @@
                     console.log("Usando distância aproximada:", recalculatedDistance);
                 }
                 
-                // Verificar caso especial para rota Dois Córregos -> Jaú (usar valor correto de ~29km)
-                if (locations.length === 2 && 
-                    locations[0].name && locations[0].name.includes("Dois Córregos") &&
-                    locations[1].name && locations[1].name.includes("Jaú")) {
-                    tspResult.distance = 29.2;
-                    console.log("Corrigindo rota específica Dois Córregos -> Jaú para distância real: 29.2 km");
+                // Usar a mesma estratégia de cálculo para todas as rotas, não apenas casos específicos
+                // Garantir que todas as distâncias sejam calculadas de forma precisa e consistente
+                
+                // Calcular distância direta entre pontos com fator 1.4 para simular estradas
+                let directDistance = 0;
+                
+                // Usar origem como ponto inicial
+                let lastPoint = {
+                    lat: origin.latitude || origin.lat,
+                    lng: origin.longitude || origin.lng
+                };
+                
+                // Para cada destino, calcular distância direta entre pontos
+                destinations.forEach(dest => {
+                    const destPoint = {
+                        lat: dest.latitude || dest.lat,
+                        lng: dest.longitude || dest.lng
+                    };
+                    
+                    if (!isNaN(lastPoint.lat) && !isNaN(lastPoint.lng) && 
+                        !isNaN(destPoint.lat) && !isNaN(destPoint.lng)) {
+                        // Calcular distância em linha reta
+                        const segmentDist = calculateDistance(
+                            lastPoint.lat, lastPoint.lng,
+                            destPoint.lat, destPoint.lng
+                        );
+                        directDistance += segmentDist;
+                        console.log(`Distância direta de ${lastPoint.lat.toFixed(4)},${lastPoint.lng.toFixed(4)} para ${destPoint.lat.toFixed(4)},${destPoint.lng.toFixed(4)}: ${segmentDist.toFixed(1)} km`);
+                    }
+                    
+                    // Atualizar último ponto
+                    lastPoint = destPoint;
+                });
+                
+                // Aplicar o mesmo fator de rota (1.4) usado em "Visualizar Atual"
+                const adjustedDistance = directDistance * 1.4;
+                console.log(`Distância total direta: ${directDistance.toFixed(1)} km, com fator de rota (1.4): ${adjustedDistance.toFixed(1)} km`);
+                
+                // Usar o valor recalculado se for maior que zero, caso contrário usar a estimativa
+                if (adjustedDistance > 0) {
+                    tspResult.distance = adjustedDistance;
+                } else if (recalculatedDistance > 0) {
+                    // Usar a distância recalculada também com o mesmo fator
+                    tspResult.distance = recalculatedDistance * 1.4;
                 } else {
-                    // Definir nova distância com valor mínimo garantido e fator 1.4 (mesmo do "Visualizar Atual")
-                    tspResult.distance = Math.max(recalculatedDistance, destinations.length * 20, 30);
+                    // Último caso: usar estimativa com base no número de destinos
+                    tspResult.distance = destinations.length * 20;
                 }
                 console.log("Distância final corrigida:", tspResult.distance.toFixed(1), "km");
                 
@@ -9118,18 +9156,16 @@
                     
                     // Verificar se temos coordenadas válidas
                     if (!isNaN(originLat) && !isNaN(originLng) && !isNaN(destLat) && !isNaN(destLng)) {
-                        // Verificar caso especial de Dois Córregos para Jaú (valor real conhecido)
-                        if (origin.name && origin.name.includes("Dois Córregos") && 
-                            destination.name && destination.name.includes("Jaú")) {
-                            // Usar o valor real da distância para esta rota específica
-                            totalDistanceKm = 29.2;
-                            console.log(`Usando distância real conhecida de Dois Córregos para Jaú: 29.2 km`);
-                        } else {
-                            // Calcular apenas a distância de ida (origem -> destino)
-                            const dist = calculateHaversineDistance(originLat, originLng, destLat, destLng);
-                            totalDistanceKm = dist * 1.4; // Apenas ida com fator de estrada de 1.4
-                            console.log(`Distância única calculada: ${dist.toFixed(2)} km (apenas ida)`);
-                        }
+                        // Calcular distância real para qualquer rota usando a mesma fórmula matemática
+                        // Isso garante consistência entre todos os cálculos no sistema
+                        const dist = calculateHaversineDistance(originLat, originLng, destLat, destLng);
+                        
+                        // Usar o mesmo fator de 1.4 para todas as rotas para simular estradas
+                        // O fator considera curvas, subidas, descidas e outros fatores reais
+                        totalDistanceKm = dist * 1.4; // Apenas ida com fator de estrada
+                        
+                        console.log(`Distância calculada de ${origin.name} para ${destination.name}: ${dist.toFixed(2)} km (linha reta)`);
+                        console.log(`Distância ajustada com fator de estrada (1.4): ${totalDistanceKm.toFixed(2)} km`);
                     } else {
                         // Usar valor padrão confiável se não pudermos calcular
                         totalDistanceKm = 20; // 20km apenas ida como estimativa
