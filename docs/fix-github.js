@@ -100,7 +100,8 @@ function stabilizeSidebar() {
                 Object.assign(optimizeButton.style, buttonStyles, {
                     backgroundColor: '#ffab00',
                     color: '#000000',
-                    border: 'none'
+                    border: 'none',
+                    textTransform: 'none' // Impede texto em maiúsculo
                 });
             }
 
