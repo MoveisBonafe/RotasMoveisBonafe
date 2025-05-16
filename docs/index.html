@@ -8991,14 +8991,31 @@
             // Verificar e filtrar pontos com coordenadas inválidas
             const allPoints = [origin];
             
-            // Filtrar apenas pontos com coordenadas válidas para a rota
+            // Filtrar e normalizar pontos para garantir coordenadas válidas
             const validWaypoints = waypoints.filter(loc => {
-                const hasValidCoords = loc && loc.lat && loc.lng && 
-                                     !isNaN(loc.lat) && !isNaN(loc.lng);
-                if (!hasValidCoords) {
-                    console.warn("Ponto ignorado por ter coordenadas inválidas:", loc);
+                // Verificar se há pelo menos latitude/longitude OU lat/lng
+                const hasLatitudeLongitude = loc && loc.latitude && loc.longitude && 
+                                           !isNaN(loc.latitude) && !isNaN(loc.longitude);
+                
+                const hasLatLng = loc && loc.lat && loc.lng && 
+                                !isNaN(loc.lat) && !isNaN(loc.lng);
+                
+                // Se tiver apenas latitude/longitude, converter para lat/lng
+                if (hasLatitudeLongitude && !hasLatLng) {
+                    console.log(`Convertendo coordenadas para ${loc.name}: latitude/longitude -> lat/lng`);
+                    loc.lat = parseFloat(loc.latitude);
+                    loc.lng = parseFloat(loc.longitude);
+                    return true;
                 }
-                return hasValidCoords;
+                
+                // Se tiver lat/lng, usar diretamente
+                if (hasLatLng) {
+                    return true;
+                }
+                
+                // Se não tiver coordenadas válidas, ignorar o ponto
+                console.warn("Ponto ignorado por ter coordenadas inválidas:", loc);
+                return false;
             });
             
             // Adicionar apenas os waypoints válidos
@@ -9018,8 +9035,12 @@
             
             // Usar apenas os waypoints com coordenadas válidas
             validWaypoints.forEach(wp => {
+                // Verificar e usar as coordenadas disponíveis (lat/lng ou latitude/longitude)
+                const latitude = wp.lat !== undefined ? wp.lat : wp.latitude;
+                const longitude = wp.lng !== undefined ? wp.lng : wp.longitude;
+                
                 routePoints.push({
-                    location: new google.maps.LatLng(wp.lat, wp.lng)
+                    location: new google.maps.LatLng(latitude, longitude)
                 });
             });
             

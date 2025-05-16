@@ -1,0 +1,57 @@
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:4474 Criando novo marcador para Jaú (ID: 2)
+RotasMoveisBonafe/:5413 Verificando se Jaú e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5461 Não estão na mesma cidade
+RotasMoveisBonafe/:4547 Obtendo região para cidade: "Jaú"
+RotasMoveisBonafe/:4222 Cidade Jaú pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4561 Configurando marcador para Jaú - Mesma cidade da origem: false
+RotasMoveisBonafe/:4222 Cidade Jaú pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4222 Cidade Jaú pertence à região Bauru (cor: #FF8D33)
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:8999 Ponto ignorado por ter coordenadas inválidas: {id: 2, name: 'Jaú', address: 'Jaú, Sp, Brasil', zipCode: '', latitude: -22.3023754, …}
+(anônimo) @ RotasMoveisBonafe/:8999
+showCurrentRoute @ RotasMoveisBonafe/:8995
+(anônimo) @ RotasMoveisBonafe/:9247
+RotasMoveisBonafe/:9074 Erro ao visualizar rota atual: Error: Não há pontos suficientes com coordenadas válidas para criar uma rota
+    at showCurrentRoute (RotasMoveisBonafe/:9009:23)
+    at HTMLButtonElement.<anonymous> (RotasMoveisBonafe/:9247:17)
+showCurrentRoute @ RotasMoveisBonafe/:9074
+(anônimo) @ RotasMoveisBonafe/:9247
+RotasMoveisBonafe/:2523 Notificação [error]: Erro ao visualizar rota: Não há pontos suficientes com coordenadas válidas para criar uma rota
+16layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+RotasMoveisBonafe/:2855 Redimensionando mapa
+2layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+RotasMoveisBonafe/:2855 Redimensionando mapa
+5layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:4474 Criando novo marcador para Bauru (ID: 3)
+RotasMoveisBonafe/:5413 Verificando se Bauru e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5461 Não estão na mesma cidade
+RotasMoveisBonafe/:4547 Obtendo região para cidade: "Bauru"
+RotasMoveisBonafe/:4222 Cidade Bauru pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4561 Configurando marcador para Bauru - Mesma cidade da origem: false
+RotasMoveisBonafe/:4222 Cidade Bauru pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4222 Cidade Jaú pertence à região Bauru (cor: #FF8D33)
+RotasMoveisBonafe/:4222 Cidade Bauru pertence à região Bauru (cor: #FF8D33)
+2layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:8999 Ponto ignorado por ter coordenadas inválidas: {id: 2, name: 'Jaú', address: 'Jaú, Sp, Brasil', zipCode: '', latitude: -22.3023754, …}
+(anônimo) @ RotasMoveisBonafe/:8999
+showCurrentRoute @ RotasMoveisBonafe/:8995
+(anônimo) @ RotasMoveisBonafe/:9247
+RotasMoveisBonafe/:8999 Ponto ignorado por ter coordenadas inválidas: {id: 3, name: 'Bauru', address: 'Bauru, Sp, Brasil', zipCode: '', latitude: -22.3155297, …}
+(anônimo) @ RotasMoveisBonafe/:8999
+showCurrentRoute @ RotasMoveisBonafe/:8995
+(anônimo) @ RotasMoveisBonafe/:9247
+RotasMoveisBonafe/:9074 Erro ao visualizar rota atual: Error: Não há pontos suficientes com coordenadas válidas para criar uma rota
+    at showCurrentRoute (RotasMoveisBonafe/:9009:23)
+    at HTMLButtonElement.<anonymous> (RotasMoveisBonafe/:9247:17)
+showCurrentRoute @ RotasMoveisBonafe/:9074
+(anônimo) @ RotasMoveisBonafe/:9247
+RotasMoveisBonafe/:2523 Notificação [error]: Erro ao visualizar rota: Não há pontos suficientes com coordenadas válidas para criar uma rota
