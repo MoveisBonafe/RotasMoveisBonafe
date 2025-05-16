@@ -7594,7 +7594,7 @@
                 // 3. Rota alternativa - Distante à Origem (se tiver 3+ destinos)
                 if (destinations.length >= 3) {
                     console.log("Gerando rota alternativa 2: Distante à Origem...");
-                    const distantOriginRoute = solveSpiralTSP(origin, destinations, includeOriginReturn);
+                    const distantOriginRoute = solveDistantToOriginTSP(origin, destinations, includeOriginReturn);
                     alternativeRoutes.push(distantOriginRoute);
                     
                     // Adicionar opção ao select da sidebar
@@ -7968,7 +7968,8 @@
         }
     }
 
-    function solveSpiralTSP(origin, destinations, includeOriginReturn) {
+    function solveDistantToOriginTSP(origin, destinations, includeOriginReturn) {
+        // Esta função organiza pontos em um padrão que prioriza pontos mais distantes da origem
         try {
             // Agrupar destinos por quadrante em relação à origem
             const northEast = [];
@@ -8010,7 +8011,7 @@
             southWest.sort(sortByDistanceToOrigin);
             northWest.sort(sortByDistanceToOrigin);
             
-            // Construir caminho em espiral: NE -> SE -> SW -> NW
+            // Construir caminho por quadrantes, priorizando pontos distantes da origem: NE -> SE -> SW -> NW
             const sortedDestinations = [...northEast, ...southEast, ...southWest, ...northWest];
             
             // Construir o caminho
@@ -8018,7 +8019,7 @@
             let totalDistance = 0;
             let currentLocation = origin;
             
-            // Adicionar destinos em ordem espiral
+            // Adicionar destinos em ordem por quadrantes
             for (const dest of sortedDestinations) {
                 path.push(dest.id);
                 const dist = calculateDistance(
