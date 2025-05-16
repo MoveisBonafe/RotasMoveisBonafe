@@ -5252,48 +5252,8 @@
                         googleMapsUrl: mapUrl
                     };
                 }
-            }
-                console.log("Aplicando valores específicos para esta rota com base nos dados do Google Maps...");
-                
-                // Verificar se temos uma rota específica de Dois Córregos para Itararé passando por diversas cidades
-                const routeCities = [origin.name, ...destinations.map(d => d.name)].join(",").toLowerCase();
-                
-                if (routeCities.includes("dois córregos") && routeCities.includes("itararé")) {
-                    // Esta é a rota específica, usar valores exatos do Google Maps
-                    console.log("Rota específica Dois Córregos → Itararé detectada!");
-                    
-                    // Valores exatos obtidos diretamente do Google Maps para esta rota
-                    gmapsRoute = {
-                        path: [origin, ...destinations],
-                        pathIds: [origin.id, ...destinations.map(d => d.id)],
-                        distance: 623, // valor exato do Google Maps
-                        time: {
-                            hours: 10,
-                            minutes: 18,
-                            totalMinutes: 10 * 60 + 18
-                        }
-                    };
-                    
-                    console.log("Usando valores exatos para essa rota:", gmapsRoute);
-                } else {
-                    // Fallback para o método do TSP em caso de falha para outras rotas
-                    console.log("Usando método TSP como fallback...");
-                    const gmapsResult = await tspSolver.solve(locationsForTSP, 0); // 0 é o índice da origem
-                    
-                    // Criar uma rota com os dados do TSP
-                    gmapsRoute = {
-                        path: gmapsResult.orderedLocations,
-                        pathIds: gmapsResult.orderedLocations.map(loc => loc.id),
-                        distance: gmapsResult.totalDistance,
-                        time: {
-                            hours: gmapsResult.estimatedTime.hours,
-                            minutes: gmapsResult.estimatedTime.minutes,
-                            totalMinutes: gmapsResult.estimatedTime.totalMinutes
-                        }
-                    };
-                }
-                
-                console.log("Usando rota de fallback com método TSP:", gmapsRoute);
+            // Esta parte foi substituída pela implementação global que sempre usa o Google Maps API
+            // Não há mais código específico para rotas aqui
             }
             
             // Adicionar a rota do Google Maps como primeira alternativa
