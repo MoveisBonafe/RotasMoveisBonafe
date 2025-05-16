@@ -5529,6 +5529,17 @@
                     }
                 }
                 
+                // Debugar a rota gerada
+                console.log("Verificando rota de proximidade gerada:");
+                console.log("Path objects:", proximityRoute.path);
+                console.log("Path IDs:", proximityRoute.pathIds);
+                
+                // Mostrar a diferença na ordem dos pontos entre a rota original e a alternativa
+                const originalOrder = destinations.map(d => d.id).join(", ");
+                const newOrder = proximityRoute.path.slice(1, -1).map(p => p.id).join(", ");
+                console.log(`Ordem original dos destinos: ${originalOrder}`);
+                console.log(`Nova ordem na rota por proximidade: ${newOrder}`);
+                
                 // Ajustar a distância e tempo usando os valores da API do Google Maps
                 if (window.exactGoogleMapsDistance > 0) {
                     // Ajustar com uma leve variação para mostrar diferenças
@@ -10698,6 +10709,12 @@
                 return;
             }
             
+            // Mensagem de diagnóstico para depuração
+            console.log("Rota a ser desenhada com", routePoints.length, "pontos na seguinte ordem:");
+            routePoints.forEach((point, idx) => {
+                console.log(`Ponto ${idx}: (${point.location.lat()}, ${point.location.lng()})`);
+            });
+            
             // Configurar origem e destino
             const origin = routePoints[0].location;
             const destination = routePoints[routePoints.length - 1].location;
@@ -10710,6 +10727,13 @@
             const waypoints = isCircular ? 
                 routePoints.slice(1, routePoints.length - 1) : 
                 routePoints.slice(1);
+                
+            console.log("Origem:", origin.lat(), origin.lng());
+            console.log("Destino:", destination.lat(), destination.lng());
+            console.log("Waypoints:", waypoints.length, "ponto(s) intermediário(s)");
+            waypoints.forEach((wp, idx) => {
+                console.log(`Waypoint ${idx}: (${wp.location.lat()}, ${wp.location.lng()})`);
+            });
             
             // Criar nova instância do renderer
             directionsRenderer = new google.maps.DirectionsRenderer({
@@ -10726,14 +10750,53 @@
             // Criar serviço de direções
             const directionsService = new google.maps.DirectionsService();
             
-            // Configurar a requisição
-            const request = {
-                origin: origin,
-                destination: isCircular ? destination : (waypoints.length > 0 ? waypoints[waypoints.length - 1].location : destination),
-                waypoints: isCircular ? waypoints : waypoints.slice(0, -1),
-                travelMode: google.maps.TravelMode.DRIVING,
-                optimizeWaypoints: false // Não otimizar para manter a ordem
-            };
+            // CORREÇÃO CRÍTICA: Diferentes configurações para rotas alternativas
+            // Detectar se estamos desenhando rota alternativa
+            const isAlternativeRoute = currentRouteIndex > 0;
+            console.log(`Esta é uma rota ${isAlternativeRoute ? 'ALTERNATIVA' : 'principal'} (índice: ${currentRouteIndex})`);
+            
+            let request;
+            
+            if (isAlternativeRoute) {
+                // Para rotas alternativas, garantir que os pontos são usados exatamente como configurados
+                request = {
+                    origin: origin,
+                    destination: destination, 
+                    waypoints: waypoints,
+                    travelMode: google.maps.TravelMode.DRIVING,
+                    optimizeWaypoints: false
+                };
+                
+                // Cores diferentes para tipos diferentes de rotas alternativas
+                if (currentRouteIndex === 1) {
+                    directionsRenderer.setOptions({
+                        polylineOptions: {
+                            strokeColor: '#FF9800', // Laranja para rota por proximidade
+                            strokeOpacity: 0.8,
+                            strokeWeight: 5
+                        }
+                    });
+                } else if (currentRouteIndex === 2) {
+                    directionsRenderer.setOptions({
+                        polylineOptions: {
+                            strokeColor: '#2196F3', // Azul para rota espiral
+                            strokeOpacity: 0.8,
+                            strokeWeight: 5
+                        }
+                    });
+                }
+                
+                console.log("Configuração específica aplicada para rota alternativa");
+            } else {
+                // Configuração padrão para rota principal
+                request = {
+                    origin: origin,
+                    destination: isCircular ? destination : (waypoints.length > 0 ? waypoints[waypoints.length - 1].location : destination),
+                    waypoints: isCircular ? waypoints : waypoints.slice(0, -1),
+                    travelMode: google.maps.TravelMode.DRIVING,
+                    optimizeWaypoints: false // Não otimizar para manter a ordem
+                };
+            }
             
             // Fazer a requisição
             directionsService.route(request, (result, status) => {
