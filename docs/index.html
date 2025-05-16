@@ -9107,17 +9107,17 @@
                     
                     // Verificar se temos coordenadas válidas
                     if (!isNaN(originLat) && !isNaN(originLng) && !isNaN(destLat) && !isNaN(destLng)) {
-                        // Calcular a distância de ida e volta (origem -> destino -> origem)
+                        // Calcular apenas a distância de ida (origem -> destino)
                         const dist = calculateHaversineDistance(originLat, originLng, destLat, destLng);
-                        totalDistanceKm = dist * 2 * 1.4; // Ida e volta com fator de estrada de 1.4
-                        console.log(`Distância única calculada: ${dist.toFixed(2)} km (x2 para ida e volta)`);
+                        totalDistanceKm = dist * 1.4; // Apenas ida com fator de estrada de 1.4
+                        console.log(`Distância única calculada: ${dist.toFixed(2)} km (apenas ida)`);
                     } else {
                         // Usar valor padrão confiável se não pudermos calcular
-                        totalDistanceKm = 40; // 20km ida + 20km volta como estimativa
+                        totalDistanceKm = 20; // 20km apenas ida como estimativa
                         console.warn("Coordenadas inválidas para cálculo de distância única - usando padrão");
                     }
                 } else {
-                    totalDistanceKm = 40; // Valor base para cidade vizinha (ida e volta)
+                    totalDistanceKm = 20; // Valor base para cidade vizinha (apenas ida)
                     console.warn("Estrutura de dados inesperada com apenas 2 localizações");
                 }
             } 
