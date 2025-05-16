@@ -1,0 +1,35 @@
+RotasMoveisBonafe/:1436 
+            
+            
+           GET https://moveisbonafe.github.io/RotasMoveisBonafe/unified-file-upload.js net::ERR_ABORTED 404 (Not Found)
+RotasMoveisBonafe/:1436 
+            
+            
+           GET https://moveisbonafe.github.io/RotasMoveisBonafe/fix-duplicated-upload.js net::ERR_ABORTED 404 (Not Found)
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1764 Google Maps JavaScript API has been loaded directly without loading=async. This can result in suboptimal performance. For best-practice loading patterns please see https://goo.gle/js-api-loading
+rga @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1764
+google.maps.Load @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:14
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1789 
+            
+            
+           GET https://maps.googleapis.com/maps/api/mapsjs/gen_204?csp_test=true net::ERR_BLOCKED_BY_CLIENT
+_.H.send @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1789
+oga @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1773
+rga @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1765
+google.maps.Load @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:14
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+header-origin-sync.js:17 ✅ Campo de origem oculto criado e sincronizado com o cabeçalho
+cep-uploader.js:18 Inicializando uploader de CEP...
+RotasMoveisBonafe/:2174 DOM carregado - inicializando aplicação
+RotasMoveisBonafe/:5618 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:5619 Mostrando eventos para rota com IDs: [1]
+RotasMoveisBonafe/:5620 Datas de filtro (string): undefined undefined
+RotasMoveisBonafe/:5644 Eventos disponíveis: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+RotasMoveisBonafe/:5658 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:5674 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:5705 [ROTA] Cidades encontradas no percurso (1): Dois Córregos
+RotasMoveisBonafe/:5707 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: ['Dois Córregos']
+RotasMoveisBonafe/:5710 NO

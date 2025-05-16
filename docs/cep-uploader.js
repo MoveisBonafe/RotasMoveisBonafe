@@ -229,14 +229,40 @@ function processCepFileContent(content, statusEl) {
         isOrigin: false
       };
       
-      // Adicionar à lista global se existir
-      if (window.locations) {
-        window.locations.push(location);
-      }
-      
-      // Adicionar elemento visual
-      if (typeof window.createLocationItem === 'function') {
-        window.createLocationItem(name, location.address, id);
+      // Integração direta com as funções do aplicativo principal
+      try {
+        // Método 1: Usar a função global createLocationItem (mais confiável)
+        if (typeof window.createLocationItem === 'function') {
+          // A função createLocationItem geralmente adiciona automaticamente
+          // o local ao array global locations no aplicativo principal
+          console.log('Adicionando local via createLocationItem:', name);
+          window.createLocationItem(name, location.address, id);
+        }
+        // Método 2: Adicionar diretamente ao array locations
+        else if (window.locations && Array.isArray(window.locations)) {
+          console.log('Adicionando local diretamente ao array locations:', name);
+          window.locations.push(location);
+          
+          // Tentar adicionar visualmente de outra forma se createLocationItem não existir
+          const locationsList = document.getElementById('locations-list');
+          if (locationsList) {
+            const locationItem = document.createElement('div');
+            locationItem.className = 'location-item d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded';
+            locationItem.setAttribute('data-id', id);
+            locationItem.innerHTML = `
+              <div>
+                <span class="location-name">${name}</span>
+                <small class="d-block text-muted">${location.address}</small>
+              </div>
+              <button class="btn btn-sm btn-outline-danger remove-location" onclick="removeLocation(${id})">
+                <i class="bi bi-trash"></i>
+              </button>
+            `;
+            locationsList.appendChild(locationItem);
+          }
+        }
+      } catch (e) {
+        console.error('Erro ao adicionar local:', e);
       }
       
       importedLocations.push(location);
