@@ -332,12 +332,22 @@
         .location-list {
             max-height: 250px; /* Reduzido para deixar espaço para rotas alternativas */
             overflow-y: auto;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #e9ecef;
-            border-radius: 4px;
-            padding: 8px;
-            background-color: #fff;
+            margin-top: 12px;
+            margin-bottom: 12px;
+            border: none;
+            border-radius: 12px;
+            padding: 5px;
+            background-color: rgba(255,255,255,0.6);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            position: relative;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .location-list:hover {
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+            background-color: rgba(255,255,255,0.8);
         }
         /* Spinner de carregamento */
         #loading-spinner {
@@ -372,15 +382,42 @@
         }
         
         .location-item {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
+            padding: 12px;
+            margin: 6px;
+            border-radius: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background-color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+            border-left: 3px solid #ffc107;
+            animation: fadeInUp 0.4s ease-out forwards;
+        }
+        
+        .location-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+            border-left: 3px solid #ff9800;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         .location-address {
             font-size: 0.8em;
             color: #666;
+            max-width: 70%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .optimize-btn-container {
             position: sticky;
@@ -391,19 +428,45 @@
         }
         #optimize-route {
             width: 100%;
-            padding: 10px 0;
-            font-weight: 600;
-            background-color: #ffc107;
-            border-color: #ffab00;
+            padding: 12px 0;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffc107 0%, #ffab00 100%);
+            border: none;
             color: #000;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(255, 171, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 15px;
+        }
+        
+        #optimize-route::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.6s;
+        }
+        
+        #optimize-route:hover::before {
+            left: 100%;
         }
         
         #optimize-route:hover {
-            background-color: #ffab00;
-            border-color: #ff9800;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(255, 171, 0, 0.3);
+            background: linear-gradient(135deg, #ffab00 0%, #ff9800 100%);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(255, 171, 0, 0.4);
+        }
+        
+        #optimize-route:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 8px rgba(255, 171, 0, 0.4);
         }
         
         .optimize-btn-container {
@@ -1612,21 +1675,56 @@
             <div id="locations-content">
                     <!-- O conteúdo de locais fica no sidebar -->
                 
-                    <!-- Filtro de eventos por data (movido para cima da origem) -->
-                    <div class="form-group mb-4">
-                        <label class="date-range-label">Filtrar eventos por data:</label>
-                        <div class="date-range-container">
-                            <input type="date" id="start-date">
-                            <input type="date" id="end-date">
+                    <!-- Filtro de eventos por data (modernizado) -->
+                    <div class="form-group mb-3">
+                        <label class="date-range-label">
+                            <i class="bi bi-calendar-event me-2" style="color: #ffc107;"></i>
+                            Filtrar eventos por data:
+                        </label>
+                        <div class="date-range-container" style="display: flex; gap: 8px; background: rgba(255,255,255,0.7); border-radius: 12px; padding: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.04);">
+                            <div style="position: relative; flex: 1; overflow: hidden;">
+                                <input type="date" id="start-date" style="width: 100%; border: none; border-bottom: 2px solid #ffc107; background: transparent; padding: 6px 8px; border-radius: 6px 6px 0 0; transition: all 0.3s ease;">
+                                <span style="position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, #ffc107, #ff9800); transition: width 0.3s ease;"></span>
+                            </div>
+                            <div style="position: relative; flex: 1; overflow: hidden;">
+                                <input type="date" id="end-date" style="width: 100%; border: none; border-bottom: 2px solid #ffc107; background: transparent; padding: 6px 8px; border-radius: 6px 6px 0 0; transition: all 0.3s ease;">
+                                <span style="position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, #ffc107, #ff9800); transition: width 0.3s ease;"></span>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- Origem fixa -->
-                    <div class="form-group mb-4">
-                        <label class="date-range-label">Origem:</label>
-                        <input type="text" id="origin" class="form-control" value="Dois Córregos, SP" readonly 
-                               style="background-color: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
+                    <!-- Origem fixa (modernizada) -->
+                    <div class="form-group mb-3">
+                        <label class="date-range-label">
+                            <i class="bi bi-geo-alt-fill me-2" style="color: #ff5722;"></i>
+                            Origem:
+                        </label>
+                        <div class="origin-container" style="position: relative; overflow: hidden; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+                            <input type="text" id="origin" class="form-control" value="Dois Córregos, SP" readonly 
+                                style="background: linear-gradient(135deg, rgba(255,193,7,0.08) 0%, rgba(255,171,0,0.12) 100%); 
+                                border: none; border-left: 3px solid #ff5722; border-radius: 0 12px 12px 0; 
+                                padding: 12px 15px; font-weight: 500;">
+                            <div class="origin-pulse" style="position: absolute; top: 0; left: 0; height: 100%; width: 3px; 
+                                background: linear-gradient(to bottom, #ff5722, #ff9800); animation: pulseHeight 2s infinite ease-in-out;"></div>
+                        </div>
                     </div>
+                    
+                    <style>
+                    @keyframes pulseHeight {
+                        0% { opacity: 0.6; }
+                        50% { opacity: 1; }
+                        100% { opacity: 0.6; }
+                    }
+                    
+                    .date-range-container input:focus {
+                        outline: none;
+                        background: rgba(255,255,255,0.9) !important;
+                    }
+                    
+                    .date-range-container input:focus + span {
+                        width: 100%;
+                    }
+                    </style>
                     
                     <!-- Campo de busca para adicionar novo local -->
                     <div class="form-group mb-4">
