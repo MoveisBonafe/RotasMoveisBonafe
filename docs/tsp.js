@@ -8,7 +8,6 @@ class TSPSolver {
   constructor() {
     this.debug = false;
     this.useGoogleMapsApi = true; // Usar a API do Google Maps para calcular distâncias e tempos
-    this.googleMapsDistanceCache = {}; // Cache para armazenar resultados da API do Google
   }
 
   /**
@@ -37,18 +36,13 @@ class TSPSolver {
       const origin = new google.maps.LatLng(parseFloat(loc1.lat), parseFloat(loc1.lng));
       const destination = new google.maps.LatLng(parseFloat(loc2.lat), parseFloat(loc2.lng));
 
-      // Configurar as mesmas opções que o Google Maps usa para cálculo de rotas
       service.getDistanceMatrix({
         origins: [origin],
         destinations: [destination],
         travelMode: google.maps.TravelMode.DRIVING,
         unitSystem: google.maps.UnitSystem.METRIC,
         avoidHighways: false,
-        avoidTolls: false,
-        drivingOptions: {
-          departureTime: new Date(), // Usar horário atual para considerar o tráfego em tempo real
-          trafficModel: google.maps.TrafficModel.BEST_GUESS // Usar modelo de tráfego do Google Maps
-        }
+        avoidTolls: false
       }, (response, status) => {
         if (status === 'OK' && response.rows[0].elements[0].status === 'OK') {
           const distance = response.rows[0].elements[0].distance.value / 1000; // converter de metros para km
@@ -71,7 +65,7 @@ class TSPSolver {
           );
           resolve({
             distance: distance,
-            duration: distance / 60 * 3600 // Baseado em 60 km/h para rotas mais detalhadas
+            duration: distance / 80 * 3600 // Estimativa baseada em 80 km/h
           });
         }
       });
