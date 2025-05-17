@@ -5643,41 +5643,34 @@
                     // Extrair informações da rota fornecidas diretamente pelo Google Maps
                     const route = response.routes[0];
                     
-                    // Calcular valores totais usando diretamente os textos da API (preserva o formato original do Google Maps)
-                    let totalDistanceText = "";
-                    let totalDurationText = "";
-                    let totalDistance = 0;
+                    // Obter diretamente os dados computados pelo Google Maps
+                    console.log("🔍 Detalhes completos da rota do Google Maps:", route);
                     
-                    // Somar distâncias e durações de cada trecho
+                    // Extrair distância total e duração total dos dados do Google Maps
+                    let totalDistance = 0;
+                    let totalDuration = 0;
+                    
+                    // A distância/duração total está disponível diretamente na API, vamos extrair dos legs
                     route.legs.forEach(leg => {
                         totalDistance += leg.distance.value; // em metros
+                        totalDuration += leg.duration.value; // em segundos
                         
                         // Registrar detalhes de cada trecho
                         console.log(`Trecho: ${leg.start_address} → ${leg.end_address}`);
                         console.log(`  Distância: ${leg.distance.text}, Tempo: ${leg.duration.text}`);
                     });
                     
-                    // Obter o texto formatado diretamente da API do Google
-                    totalDistanceText = route.legs.reduce((total, leg) => {
-                        return total + parseInt(leg.distance.text);
-                    }, 0) + " km";
+                    // Converter para os formatos que precisamos
+                    // IMPORTANTE: Para corresponder ao Google Maps, usamos exatamente 
+                    // os mesmos valores que a API retorna sem modificação
+                    const distanceInKm = Math.round(totalDistance / 1000); // arredondado para o inteiro mais próximo
                     
-                    // Converter duração total para horas e minutos formatados pelo Google
-                    const totalSeconds = route.legs.reduce((total, leg) => {
-                        return total + leg.duration.value;
-                    }, 0);
+                    const hours = Math.floor(totalDuration / 3600);
+                    const minutes = Math.floor((totalDuration % 3600) / 60);
                     
-                    const hours = Math.floor(totalSeconds / 3600);
-                    const minutes = Math.floor((totalSeconds % 3600) / 60);
-                    totalDurationText = `${hours} h ${minutes} min`;
-                    
-                    // Exibir valores no console para debug
-                    console.log(`Distância total (texto Google): ${totalDistanceText}`);
-                    console.log(`Duração total (texto Google): ${totalDurationText}`);
-                    console.log(`Distância em metros: ${totalDistance}`);
-                    
-                    // Criar objeto para atualizar a interface
-                    const distanceInKm = Math.round(totalDistance / 1000);
+                    // Log detalhado para debug
+                    console.log(`📏 Distância total: ${distanceInKm} km (${totalDistance} metros)`);
+                    console.log(`⏱️ Tempo total: ${hours}h ${minutes}min (${totalDuration} segundos)`);
                     const result = {
                         path: routePath,
                         totalDistance: distanceInKm,
