@@ -4899,11 +4899,11 @@
         calculateOptimizedRoute(vehicleType, false, currentMarkers);
     }
 
-    // Calcular rota otimizada pelo algoritmo TSP usando Google Maps API
-    async function calculateOptimizedRoute(vehicleType, includeOriginReturn = false, savedMarkers = null) {
+    // Calcular rota otimizada pelo algoritmo TSP
+    function calculateOptimizedRoute(vehicleType, includeOriginReturn = false, savedMarkers = null) {
         try {
             console.log("==========================================");
-            console.log("  INICIANDO CÁLCULO DE ROTA OTIMIZADA COM GOOGLE MAPS API");
+            console.log("  INICIANDO CÁLCULO DE ROTA OTIMIZADA");
             console.log("==========================================");
             
             // Limpar rotas alternativas existentes
@@ -4975,56 +4975,8 @@
                 console.log("Usando distância segura:", straightLineDistance);
             }
             
-            // Inicializar o Solver TSP com Google Maps API
-            const tspSolver = new TSPSolver();
-            tspSolver.debug = true; // Habilitar logs de debug
-            
-            console.log("Iniciando cálculo de rota com Google Maps API...");
-            showNotification("Calculando distâncias reais usando Google Maps...", "info");
-            
-            // Preparar lista com todas as localizações incluindo a origem
-            const locationsForTSP = [];
-            
-            // Adicionar a origem como primeiro ponto
-            locationsForTSP.push({
-                id: origin.id,
-                name: origin.name,
-                lat: parseFloat(origin.latitude || origin.lat),
-                lng: parseFloat(origin.longitude || origin.lng),
-                address: origin.address,
-                isOrigin: true
-            });
-            
-            // Adicionar destinos
-            destinations.forEach(dest => {
-                locationsForTSP.push({
-                    id: dest.id,
-                    name: dest.name,
-                    lat: parseFloat(dest.latitude || dest.lat),
-                    lng: parseFloat(dest.longitude || dest.lng),
-                    address: dest.address,
-                    isOrigin: false
-                });
-            });
-            
-            // Calcular a rota usando o Google Maps API
-            const gmapsResult = await tspSolver.solve(locationsForTSP, 0); // 0 é o índice da origem
-            console.log("Resultado do TSP com Google Maps:", gmapsResult);
-            
-            // Criar uma rota com os dados do Google Maps
-            const gmapsRoute = {
-                path: gmapsResult.orderedLocations,
-                pathIds: gmapsResult.orderedLocations.map(loc => loc.id),
-                distance: gmapsResult.totalDistance,
-                time: {
-                    hours: gmapsResult.estimatedTime.hours,
-                    minutes: gmapsResult.estimatedTime.minutes,
-                    totalMinutes: gmapsResult.estimatedTime.totalMinutes
-                }
-            };
-            
-            // Adicionar a rota do Google Maps como primeira alternativa
-            alternativeRoutes = [gmapsRoute];
+            // Gerar rotas alternativas usando diferentes algoritmos
+            generateAlternativeRoutes(origin, destinations, includeOriginReturn);
             
             // CRIAR UMA ROTA DE BACKUP CASO ALGO FALHE
             const backupRoute = {
