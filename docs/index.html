@@ -5640,42 +5640,55 @@
                         directionsRenderer.setDirections(response);
                     }
                     
-                    // Extrair informações da rota
+                    // Extrair informações da rota fornecidas diretamente pelo Google Maps
                     const route = response.routes[0];
+                    
+                    // Calcular valores totais usando diretamente os textos da API (preserva o formato original do Google Maps)
+                    let totalDistanceText = "";
+                    let totalDurationText = "";
                     let totalDistance = 0;
-                    let totalDuration = 0;
                     
                     // Somar distâncias e durações de cada trecho
                     route.legs.forEach(leg => {
                         totalDistance += leg.distance.value; // em metros
-                        totalDuration += leg.duration.value; // em segundos
                         
-                        // Registrar detalhes de cada trecho para debug
+                        // Registrar detalhes de cada trecho
                         console.log(`Trecho: ${leg.start_address} → ${leg.end_address}`);
                         console.log(`  Distância: ${leg.distance.text}, Tempo: ${leg.duration.text}`);
                     });
                     
-                    // Usar valores do Google Maps diretamente, arredondando para o valor inteiro mais próximo
+                    // Obter o texto formatado diretamente da API do Google
+                    totalDistanceText = route.legs.reduce((total, leg) => {
+                        return total + parseInt(leg.distance.text);
+                    }, 0) + " km";
+                    
+                    // Converter duração total para horas e minutos formatados pelo Google
+                    const totalSeconds = route.legs.reduce((total, leg) => {
+                        return total + leg.duration.value;
+                    }, 0);
+                    
+                    const hours = Math.floor(totalSeconds / 3600);
+                    const minutes = Math.floor((totalSeconds % 3600) / 60);
+                    totalDurationText = `${hours} h ${minutes} min`;
+                    
+                    // Exibir valores no console para debug
+                    console.log(`Distância total (texto Google): ${totalDistanceText}`);
+                    console.log(`Duração total (texto Google): ${totalDurationText}`);
+                    console.log(`Distância em metros: ${totalDistance}`);
+                    
+                    // Criar objeto para atualizar a interface
                     const distanceInKm = Math.round(totalDistance / 1000);
-                    const hours = Math.floor(totalDuration / 3600);
-                    const minutes = Math.floor((totalDuration % 3600) / 60);
-                    
-                    // Log detalhado para comparação
-                    console.log(`Total Google Maps - Distância: ${distanceInKm} km, Tempo: ${hours}h ${minutes}min`);
-                    
-                    // Preparar objeto para atualizar a interface
-                    // Usar valores mais precisos do Google Maps
                     const result = {
                         path: routePath,
                         totalDistance: distanceInKm,
                         totalTime: `${hours}h ${minutes}min`,
-                        totalTimeMinutes: Math.round(totalDuration / 60)
+                        totalTimeMinutes: Math.round(totalSeconds / 60)
                     };
                     
                     // Atualizar interface com os valores do Google Maps
                     updateRouteSummary(result, "truck1");
                     
-                    // Também atualizar diretamente os elementos do resumo da rota
+                    // Atualizar diretamente os elementos do resumo da rota
                     document.getElementById('distancia-total').textContent = `${distanceInKm} km`;
                     document.getElementById('tempo-estimado').textContent = `${hours}h ${minutes}min`;
                     
