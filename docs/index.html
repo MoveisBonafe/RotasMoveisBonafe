@@ -5546,7 +5546,7 @@
      * Esta função é chamada quando o usuário clica no botão "Visualizar Atual"
      */
     function showCurrentRoute() {
-        console.log("Visualizando rota atual sem otimização...");
+        console.log("Visualizando rota atual usando Google Maps API...");
         
         // Verificar se temos pelo menos um destino além da origem
         if (locations.length <= 1) {
@@ -5574,34 +5574,149 @@
                 throw new Error("Alguns pontos possuem coordenadas inválidas");
             }
             
-            // Criar caminho na ordem original: origem, depois waypoints na ordem de adição, e de volta à origem
-            const routePath = [origin.id, ...waypoints.map(wp => wp.id), origin.id];
+            // Criar caminho na ordem original: origem, depois waypoints na ordem de adição
+            const routePath = [origin.id, ...waypoints.map(wp => wp.id)];
             
-            console.log("Visualizando rota na ordem original:", routePath);
+            console.log("Visualizando rota na ordem original usando Google Maps API:", routePath);
             
-            // Desenhar a rota no mapa - usamos cor azul para distinguir da rota otimizada
-            drawRouteOnMap(routePath, "truck1", "#2196f3");
+            // Usar o DirectionsService do Google Maps para calcular a rota real
+            const directionsService = new google.maps.DirectionsService();
             
-            // Calcular aproximadamente a distância e tempo
-            const pathLocations = routePath.map(id => locations.find(loc => loc.id === id)).filter(loc => loc);
-            let approxDistance = 0;
+            // Preparar request com a origem, destino e waypoints
+            // A primeira localização é a origem
+            // A última localização é o destino final
+            // Todas as outras são waypoints
+            const originPosition = new google.maps.LatLng(origin.lat || origin.latitude, origin.lng || origin.longitude);
             
-            // Calcular distância aproximada entre pontos
-            for (let i = 0; i < pathLocations.length - 1; i++) {
-                const p1 = pathLocations[i];
-                const p2 = pathLocations[i+1];
+            // O último ponto é o destino
+            const lastPoint = waypoints[waypoints.length - 1];
+            const destinationPosition = new google.maps.LatLng(
+                lastPoint.lat || lastPoint.latitude, 
+                lastPoint.lng || lastPoint.longitude
+            );
+            
+            // Todos os pontos intermediários são waypoints (exceto o primeiro e o último)
+            const waypointsForAPI = waypoints.slice(0, -1).map(point => ({
+                location: new google.maps.LatLng(point.lat || point.latitude, point.lng || point.longitude),
+                stopover: true
+            }));
+            
+            // Configurar o pedido de rota com todas as opções
+            const request = {
+                origin: originPosition,
+                destination: destinationPosition,
+                waypoints: waypointsForAPI,
+                travelMode: google.maps.TravelMode.DRIVING,
+                drivingOptions: {
+                    departureTime: new Date(),  // Para calcular com base no tráfego atual
+                    trafficModel: google.maps.TrafficModel.BEST_GUESS
+                },
+                optimizeWaypoints: false, // Não otimizar, usar a ordem atual
+                avoidFerries: true,
+                avoidHighways: false,
+                avoidTolls: false
+            };
+            
+            // Limpar mapa e rotas existentes
+            clearRoutes();
+            
+            // Mostrar o carregamento
+            showLoadingSpinner();
+            
+            // Fazer requisição para API do Google Maps
+            directionsService.route(request, function(response, status) {
+                // Esconder o spinner de carregamento
+                hideLoadingSpinner();
                 
-                if (p1 && p2 && p1.lat && p1.lng && p2.lat && p2.lng) {
-                    // Usamos a API de Direções para calcular distância real
-                    approxDistance += calculateHaversineDistance(
-                        p1.lat, p1.lng, 
-                        p2.lat, p2.lng
-                    ) * 1.3; // Fator 1.3 para simular rotas por estradas
+                if (status === google.maps.DirectionsStatus.OK) {
+                    console.log("Rota calculada com sucesso via Google Maps API");
+                    
+                    // Renderizar a rota no mapa com cores diferentes da rota otimizada
+                    directionsRenderer.setOptions({
+                        polylineOptions: {
+                            strokeColor: '#2196f3',  // Azul para diferenciar da rota otimizada
+                            strokeWeight: 5,
+                            strokeOpacity: 0.8
+                        }
+                    });
+                    
+                    directionsRenderer.setDirections(response);
+                    
+                    // Extrair informações da rota calculada
+                    const route = response.routes[0];
+                    let totalDistance = 0;
+                    let totalDuration = 0;
+                    
+                    // Calcular distância e duração total
+                    for (let i = 0; i < route.legs.length; i++) {
+                        totalDistance += route.legs[i].distance.value; // em metros
+                        totalDuration += route.legs[i].duration.value; // em segundos
+                    }
+                    
+                    // Converter para quilômetros e horas
+                    const distanceInKm = (totalDistance / 1000).toFixed(1);
+                    const hours = Math.floor(totalDuration / 3600);
+                    const minutes = Math.floor((totalDuration % 3600) / 60);
+                    
+                    // Preparar objeto de resultado similar ao TSP para usar nas funções existentes
+                    const result = {
+                        path: routePath,
+                        totalDistance: parseFloat(distanceInKm),
+                        totalTime: `${hours}h ${minutes}min`,
+                        totalTimeMinutes: Math.round(totalDuration / 60)
+                    };
+                    
+                    // Atualizar a interface com os dados da rota
+                    updateRouteSummary(result, "truck1");
+                    
+                    // Ajustar o mapa para mostrar a rota completa
+                    if (route.bounds) {
+                        map.fitBounds(route.bounds);
+                    }
+                    
+                    // Habilitar botões de salvar e imprimir
+                    document.getElementById('save-route').disabled = false;
+                    document.getElementById('print-route').disabled = false;
+                    
+                } else {
+                    console.error("Erro ao calcular rota com Google Maps API:", status);
+                    showNotification("Não foi possível calcular a rota precisa com a API do Google Maps. Erro: " + status, "error");
+                    
+                    // Fallback para o método antigo em caso de erro
+                    fallbackToSimpleRoute(routePath);
                 }
-            }
+            });
             
-            // Calcular tempo estimado
-            const estimatedTime = calculateTravelTime(approxDistance);
+        } catch (error) {
+            console.error("Erro ao visualizar rota:", error);
+            hideLoadingSpinner();
+            showNotification("Erro ao visualizar rota: " + error.message, "error");
+        }
+    }
+    
+    // Método de fallback caso a API do Google Maps falhe
+    function fallbackToSimpleRoute(routePath) {
+        console.log("Usando método de fallback para desenhar rota");
+        
+        // Desenhar a rota no mapa - usamos cor azul para distinguir da rota otimizada
+        drawRouteOnMap(routePath, "truck1", "#2196f3");
+        
+        // Calcular aproximadamente a distância e tempo
+        const pathLocations = routePath.map(id => locations.find(loc => loc.id === id)).filter(loc => loc);
+        let approxDistance = 0;
+        
+        // Calcular distância aproximada entre pontos
+        for (let i = 0; i < pathLocations.length - 1; i++) {
+            const p1 = pathLocations[i];
+            const p2 = pathLocations[i+1];
+            
+            if (p1 && p2 && p1.lat && p1.lng && p2.lat && p2.lng) {
+                approxDistance += calculateHaversineDistance(
+                    p1.lat, p1.lng, 
+                    p2.lat, p2.lng
+                ) * 1.3; // Fator 1.3 para simular rotas por estradas
+            }
+        }
             
             // Criar objeto de resultado para mostrar informações
             const routeInfo = {
