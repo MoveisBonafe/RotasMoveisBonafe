@@ -5572,13 +5572,6 @@
             
             // Verificar se temos coordenadas válidas
             const allPoints = [origin, ...waypoints];
-            const hasInvalidCoordinates = allPoints.some(loc => 
-                isNaN(parseFloat(loc.lat || loc.latitude)) || 
-                isNaN(parseFloat(loc.lng || loc.longitude)));
-                
-            if (hasInvalidCoordinates) {
-                throw new Error("Alguns pontos possuem coordenadas inválidas");
-            }
             
             // Criar caminho na ordem original
             const routePath = [origin.id, ...waypoints.map(wp => wp.id)];
@@ -5704,8 +5697,41 @@
                     console.error("Erro ao calcular rota com Google Maps API:", status);
                     showNotification("Não foi possível calcular a rota com o Google Maps. Usando método alternativo.", "warning");
                     
-                    // Usar método alternativo
-                    useAlternativeRouteMethod(routePath);
+                    // Usar método alternativo: desenhar a rota diretamente
+                    drawRouteOnMap(routePath, "truck1", "#2196f3");
+                    
+                    // Calcular aproximadamente distância e tempo usando Haversine
+                    const pathLocations = routePath.map(id => locations.find(loc => loc.id === id)).filter(loc => loc);
+                    let approxDistance = 0;
+                    
+                    // Calcular distância entre pontos
+                    for (let i = 0; i < pathLocations.length - 1; i++) {
+                        const p1 = pathLocations[i];
+                        const p2 = pathLocations[i+1];
+                        
+                        if (p1 && p2) {
+                            approxDistance += calculateHaversineDistance(
+                                p1.lat || p1.latitude, 
+                                p1.lng || p1.longitude, 
+                                p2.lat || p2.latitude, 
+                                p2.lng || p2.longitude
+                            ) * 1.3; // Fator 1.3 para simular estradas
+                        }
+                    }
+                    
+                    // Calcular tempo aproximado
+                    const estimatedTime = calculateTravelTime(approxDistance);
+                    
+                    // Criar objeto de resultado
+                    const fallbackResult = {
+                        path: routePath,
+                        totalDistance: approxDistance,
+                        totalTime: estimatedTime,
+                        totalTimeMinutes: Math.round(approxDistance / 60 * 60)
+                    };
+                    
+                    // Atualizar interface
+                    updateRouteSummary(fallbackResult, "truck1");
                 }
             });
             
@@ -5715,86 +5741,6 @@
             showNotification("Erro ao visualizar rota: " + error.message, "error");
         }
     }
-    
-    // Método alternativo para quando a API do Google falha
-    function useAlternativeRouteMethod(routePath) {
-        console.log("Usando método alternativo para visualizar rota");
-        
-        // Desenhar a rota no mapa
-        drawRouteOnMap(routePath, "truck1", "#2196f3");
-        
-        // Calcular distância aproximada
-        const pathLocations = routePath.map(id => 
-            locations.find(loc => loc.id === id)).filter(loc => loc);
-        
-        let totalDistance = 0;
-        
-        // Calcular trechos
-        for (let i = 0; i < pathLocations.length - 1; i++) {
-            const p1 = pathLocations[i];
-            const p2 = pathLocations[i+1];
-            
-            if (p1 && p2 && (p1.lat || p1.latitude) && (p1.lng || p1.longitude) && 
-               (p2.lat || p2.latitude) && (p2.lng || p2.longitude)) {
-                
-                // Usar Haversine com fator 1.3 para aproximar rotas em estradas
-                totalDistance += calculateHaversineDistance(
-                    p1.lat || p1.latitude, 
-                    p1.lng || p1.longitude, 
-                    p2.lat || p2.latitude, 
-                    p2.lng || p2.longitude
-                ) * 1.3;
-            }
-        }
-        
-        // Calcular tempo estimado
-        const estimatedTime = calculateTravelTime(totalDistance);
-        
-        // Preparar objeto com dados da rota
-        const result = {
-            path: routePath,
-            totalDistance: totalDistance,
-            totalTime: estimatedTime,
-            totalTimeMinutes: Math.round(totalDistance / 60 * 60)
-        };
-        
-        // Atualizar interface
-        updateRouteSummary(result, "truck1");
-        
-        // Adicionar aviso
-        const routeSummaryDiv = document.getElementById('route-summary');
-        if (routeSummaryDiv) {
-            // Remover avisos anteriores
-            routeSummaryDiv.querySelectorAll('.route-warning').forEach(el => el.remove());
-            
-            // Criar aviso
-            const warningElement = document.createElement('div');
-            warningElement.className = 'route-warning';
-            warningElement.innerHTML = `
-                <div style="background-color: rgba(255, 193, 7, 0.1); border-left: 3px solid #ffc107; padding: 8px 12px; margin: 10px 0; border-radius: 4px;">
-                    <p style="margin: 0; color: #856404;">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                        Esta é uma rota calculada usando método alternativo, não foi possível usar a API do Google Maps.
-                    </p>
-                </div>
-            `;
-            
-            // Adicionar ao painel
-            routeSummaryDiv.prepend(warningElement);
-        }
-        
-        // Habilitar botões
-        document.getElementById('save-route').disabled = false;
-        document.getElementById('print-route').disabled = false;
-    }
-            
-        } catch (error) {
-            console.error("Erro ao visualizar rota atual:", error);
-            showNotification("Ocorreu um erro ao visualizar a rota atual: " + error.message, "error");
-        } finally {
-            // Esconder spinner independentemente do resultado
-            hideLoadingSpinner();
-        }
     }
     
     /**
