@@ -5608,7 +5608,15 @@
                 destination: destinationPosition,
                 waypoints: waypointsForAPI,
                 travelMode: google.maps.TravelMode.DRIVING,
-                optimizeWaypoints: false // Usar ordem original
+                drivingOptions: {
+                    departureTime: new Date(), // Usar horário atual para cálculos com tráfego
+                    trafficModel: google.maps.TrafficModel.BEST_GUESS
+                },
+                optimizeWaypoints: false, // Manter a ordem original dos pontos
+                avoidFerries: false,
+                avoidHighways: false,
+                avoidTolls: false,
+                region: 'br' // Especificar região Brasil para rotas mais precisas
             };
             
             // Fazer a requisição à API
