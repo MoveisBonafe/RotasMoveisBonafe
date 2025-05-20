@@ -1,4 +1,4 @@
-modules = ["nodejs-20", "web", "postgresql-16", "python-3.11"]
+modules = ["web", "nodejs-20", "bash"]
 run = "npm run dev"
 hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 
@@ -8,8 +8,8 @@ packages = ["curl", "imagemagick", "zip"]
 
 [deployment]
 deploymentTarget = "static"
-build = ["sh", "-c", "NODE_ENV=production npm run build"]
 publicDir = "dist"
+run = ["sh", "-c", "npm run dev"]
 
 
 [[deployment.rewrites]]
