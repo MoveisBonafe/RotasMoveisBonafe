@@ -2066,6 +2066,7 @@
     <script src="tsp.js"></script>
     <script src="fix-github.js"></script>
     <script src="fix-map-controls.js"></script>
+    <script src="city-calendar-service.js"></script>
     
     <script>
     // Dados de amostra para a aplicação standalone
@@ -2107,17 +2108,17 @@
             // Eventos regulares e festivos (não aniversários)
             { id: 99, cityName: "Dois Córregos", name: "Festival de Verão", startDate: "2025-01-01", endDate: "2025-12-31", isHoliday: false, description: "Festival com atividades durante todo o ano", restrictionLevel: "low" },
             
-            /* SISTEMA DE VERIFICAÇÃO DE FONTE OFICIAL
-               O sistema usará a função checkCityAnniversary() para buscar datas oficiais,
-               garantindo que apenas informações verificadas sejam exibidas.
+            /* SISTEMA DE VERIFICAÇÃO VIA GOOGLE CALENDAR
+               O sistema usa a API do Google Calendar para buscar datas oficiais,
+               garantindo informações verificadas e atualizadas.
                
-               Cada cidade terá seus dados consultados sob demanda, evitando informações estáticas.
-               Quando uma cidade é adicionada ao trajeto, o sistema deve:
-               1. Verificar se já tem a informação em cache
-               2. Se não tiver, consultar fontes oficiais via API
-               3. Armazenar o resultado para uso futuro
+               Quando uma cidade é adicionada ao trajeto, o sistema:
+               1. Verifica se já tem a informação em cache local
+               2. Se não tiver, consulta o Google Calendar para aquela cidade
+               3. Armazena o resultado para uso futuro
                
-               Isto substitui o modelo anterior de datas codificadas.
+               Este modelo dinâmico substitui o anterior de datas codificadas,
+               permitindo que as informações estejam sempre atualizadas.
             */
             
             // Eventos regulares
