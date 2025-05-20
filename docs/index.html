@@ -4674,6 +4674,13 @@
             `;
             container.appendChild(locationItem);
         });
+        
+        // Atualizar o contador de locais adicionados
+        const locationCounter = document.getElementById('locations-counter');
+        if (locationCounter) {
+            locationCounter.textContent = orderedLocations.length.toString();
+            console.log(`Contador de locais atualizado: ${orderedLocations.length} destinos`);
+        }
     }
 
     // Remove um local da lista e do mapa
