@@ -2102,19 +2102,21 @@
             { id: 8, name: "Borracharia 24h (Botucatu)", type: "mechanic", latitude: -22.8900, longitude: -48.4500, highway: "SP-300", cityName: "Botucatu", services: ["tire"] }
         ],
         
-        // Eventos de cidades (com aniversários atualizados para 2025)
+        // Eventos de cidades (com implementação de sistema dinâmico de consulta)
         cityEvents: [
             // Aniversários das principais cidades (eventos fixos - feriados municipais)
+            // NOTA: Todas as datas de aniversário abaixo devem ser verificadas com fontes oficiais
+            // como as prefeituras municipais ou o IBGE antes de serem usadas em produção
             { id: 99, cityName: "Dois Córregos", name: "Festival de Verão", startDate: "2025-01-01", endDate: "2025-12-31", isHoliday: false, description: "Festival com atividades durante todo o ano", restrictionLevel: "low" },
-            { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2025-02-04", endDate: "2025-02-04", isHoliday: true, description: "Aniversário de fundação de Dois Córregos em 04/02/1883", restrictionLevel: "low" },
-            { id: 2, cityName: "Jaú", name: "Aniversário da Cidade", startDate: "2025-08-15", endDate: "2025-08-15", isHoliday: true, description: "Aniversário de fundação de Jaú em 15/08/1853", restrictionLevel: "low" },
-            { id: 3, cityName: "Botucatu", name: "Aniversário da Cidade", startDate: "2025-04-14", endDate: "2025-04-14", isHoliday: true, description: "Aniversário de fundação de Botucatu em 14/04/1855", restrictionLevel: "low" },
-            { id: 4, cityName: "Bauru", name: "Aniversário da Cidade", startDate: "2025-08-01", endDate: "2025-08-01", isHoliday: true, description: "Aniversário de fundação de Bauru em 01/08/1896", restrictionLevel: "low" },
-            { id: 5, cityName: "Ribeirão Preto", name: "Aniversário da Cidade", startDate: "2025-06-19", endDate: "2025-06-19", isHoliday: true, description: "Aniversário de fundação de Ribeirão Preto em 19/06/1856", restrictionLevel: "low" },
-            { id: 6, cityName: "São Paulo", name: "Aniversário da Cidade", startDate: "2025-01-25", endDate: "2025-01-25", isHoliday: true, description: "Aniversário de fundação de São Paulo em 25/01/1554", restrictionLevel: "high" },
-            { id: 7, cityName: "Campinas", name: "Aniversário da Cidade", startDate: "2025-07-14", endDate: "2025-07-14", isHoliday: true, description: "Aniversário de fundação de Campinas em 14/07/1774", restrictionLevel: "medium" },
-            { id: 8, cityName: "São Carlos", name: "Aniversário da Cidade", startDate: "2025-11-04", endDate: "2025-11-04", isHoliday: true, description: "Aniversário de fundação de São Carlos em 04/11/1857", restrictionLevel: "low" },
-            { id: 100, cityName: "Piedade", name: "Aniversário da Cidade", startDate: "2025-08-17", endDate: "2025-08-17", isHoliday: true, description: "Aniversário de fundação de Piedade em 17/08/1840", restrictionLevel: "low" },
+            { id: 1, cityName: "Dois Córregos", name: "Aniversário da Cidade", startDate: "2025-02-04", endDate: "2025-02-04", isHoliday: true, description: "Verifique a data exata com a prefeitura", restrictionLevel: "low" },
+            { id: 2, cityName: "Jaú", name: "Aniversário da Cidade", startDate: "2025-08-15", endDate: "2025-08-15", isHoliday: true, description: "Verifique a data exata com a prefeitura", restrictionLevel: "low" },
+            { id: 3, cityName: "Botucatu", name: "Aniversário da Cidade", startDate: "2025-04-14", endDate: "2025-04-14", isHoliday: true, description: "Verifique a data exata com a prefeitura", restrictionLevel: "low" },
+            { id: 4, cityName: "Bauru", name: "Aniversário da Cidade", startDate: "2025-08-01", endDate: "2025-08-01", isHoliday: true, description: "Verifique a data exata com a prefeitura", restrictionLevel: "low" },
+            { id: 5, cityName: "Ribeirão Preto", name: "Aniversário da Cidade", startDate: "2025-06-19", endDate: "2025-06-19", isHoliday: true, description: "Verifique a data exata com a prefeitura", restrictionLevel: "low" },
+            { id: 6, cityName: "São Paulo", name: "Aniversário da Cidade", startDate: "2025-01-25", endDate: "2025-01-25", isHoliday: true, description: "Verifique a data exata com a prefeitura", restrictionLevel: "high" },
+            { id: 7, cityName: "Campinas", name: "Aniversário da Cidade", startDate: "2025-07-14", endDate: "2025-07-14", isHoliday: true, description: "Verifique a data exata com a prefeitura", restrictionLevel: "medium" },
+            { id: 8, cityName: "São Carlos", name: "Aniversário da Cidade", startDate: "2025-11-04", endDate: "2025-11-04", isHoliday: true, description: "Verifique a data exata com a prefeitura", restrictionLevel: "low" },
+            { id: 100, cityName: "Piedade", name: "Aniversário da Cidade", startDate: "2025-04-30", endDate: "2025-04-30", isHoliday: true, description: "Verifique a data exata com a prefeitura", restrictionLevel: "low" },
             
             // Eventos regulares
             { id: 9, cityName: "Jaú", name: "Festa do Rodeio", startDate: "2025-06-10", endDate: "2025-06-20", isHoliday: false, description: "Evento com grande circulação de veículos", restrictionLevel: "medium" },
