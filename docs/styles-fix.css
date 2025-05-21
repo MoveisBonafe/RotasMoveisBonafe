@@ -1,0 +1,111 @@
+/**
+ * Correção de estilos para as abas inferiores no GitHub Pages
+ * Garante que apenas o conteúdo da aba selecionada seja mostrado
+ * Adiciona animações suaves para melhorar a experiência do usuário
+ */
+
+/* Ocultar todas as abas por padrão */
+.bottom-tab-content {
+  display: none !important;
+}
+
+/* Mostrar apenas a aba que possui a classe 'active-content' */
+.bottom-tab-content.active-content {
+  display: block !important;
+}
+
+/* Remover qualquer estilo que possa fazer as abas aparecerem lado a lado */
+.bottom-tabs-container:not(.minimized) {
+  display: flex !important;
+  flex-direction: column !important;
+  
+  /* Animação de expansão e contração */
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.bottom-tabs-container.minimized {
+  /* Também aplicar transição quando minimizar */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.bottom-tabs-nav {
+  flex-shrink: 0;
+  z-index: 10;
+  /* Adicionando efeito de elevação */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  /* Adicionando transição suave */
+  transition: all 0.25s ease-out;
+}
+
+/* Garantir que o conteúdo active ocupe todo o espaço disponível */
+.bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content {
+  flex: 1;
+  overflow-y: auto;
+  width: 100% !important;
+  height: calc(100vh - 60px) !important;
+  
+  /* Animações de entrada */
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-out !important;
+}
+
+/* Estilizar botões das abas para animações mais atraentes */
+.bottom-tab-btn {
+  transition: all 0.25s ease-out !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.bottom-tab-btn:hover {
+  transform: translateY(-2px);
+}
+
+.bottom-tab-btn:active {
+  transform: translateY(1px);
+}
+
+.bottom-tab-btn.active {
+  position: relative;
+}
+
+/* Adicionar uma linha indicadora animada abaixo do botão ativo */
+.bottom-tab-btn.active:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #ffc107;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.3s ease-out;
+  animation: slideIn 0.3s forwards;
+}
+
+@keyframes slideIn {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Animação de ripple quando clica nos botões */
+.bottom-tab-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background-color: rgba(255, 193, 7, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease-out, height 0.6s ease-out, opacity 0.6s ease-out;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bottom-tab-btn:active::before {
+  width: 200px;
+  height: 200px;
+  opacity: 1;
+  transition: width 0.6s ease-out, height 0.6s ease-out, opacity 0s;
+}
