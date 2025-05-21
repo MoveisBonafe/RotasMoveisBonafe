@@ -1,0 +1,482 @@
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1764 Google Maps JavaScript API has been loaded directly without loading=async. This can result in suboptimal performance. For best-practice loading patterns please see https://goo.gle/js-api-loading
+rga @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1764
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:14
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1789 
+            
+            
+           GET https://maps.googleapis.com/maps/api/mapsjs/gen_204?csp_test=true net::ERR_BLOCKED_BY_CLIENT
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1789
+oga @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1773
+rga @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1765
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:14
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+fix-github.js:495 Uncaught SyntaxError: Unexpected end of input (at fix-github.js:495:4)
+layout-fix.js?v=20250515182715:11 [LayoutFix] Iniciando correção de layout automática
+sidebar-stabilizer.js:94 [Sidebar Stabilizer] Estilos críticos aplicados
+RotasMoveisBonafe/:2586 DOM carregado - inicializando aplicação
+RotasMoveisBonafe/:6437 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:6438 Mostrando eventos para rota com IDs: [1]
+RotasMoveisBonafe/:6439 Datas de filtro (string): undefined undefined
+RotasMoveisBonafe/:6463 Eventos disponíveis: (7) [{…}, {…}, {…}, {…}, {…}, {…}, {…}]
+RotasMoveisBonafe/:6477 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:6493 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:6524 [ROTA] Cidades encontradas no percurso (1): Dois Córregos
+RotasMoveisBonafe/:6526 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: ['Dois Córregos']
+RotasMoveisBonafe/:6529 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:6530 Filtrando eventos para cidades: Dois Córregos
+RotasMoveisBonafe/:6531 Filtro de data: sem data inicial a sem data final
+RotasMoveisBonafe/:6535 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: undefined undefined
+RotasMoveisBonafe/:6557 [FILTRO] Usando data de início padrão: 2025-01-01
+RotasMoveisBonafe/:6562 [FILTRO] Usando data de fim padrão: 2025-12-31
+RotasMoveisBonafe/:6566 [DATA] Filtro FINAL: 2025-01-01 até 2025-12-31
+RotasMoveisBonafe/:6605 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:6611 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6799 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:6800 Mostrando restrições de caminhões para rota com IDs: [1]
+RotasMoveisBonafe/:6803 Timestamp: 2025-05-21T00:05:00.337Z
+RotasMoveisBonafe/:6809 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:6809
+showInitialTabsContent @ RotasMoveisBonafe/:3375
+(anônimo) @ RotasMoveisBonafe/:2595
+RotasMoveisBonafe/:6846 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:6873 Cidades detectadas na rota: [{…}]
+RotasMoveisBonafe/:6966 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+RotasMoveisBonafe/:2602 Google Maps API disponível
+RotasMoveisBonafe/:2764 Inicializando campos de data...
+RotasMoveisBonafe/:2821 Data inicial definida: 2025-05-21
+RotasMoveisBonafe/:2826 Data final definida: 2025-05-28
+RotasMoveisBonafe/:2829 Datas inicializadas: de 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:2855 Redimensionando mapa
+RotasMoveisBonafe/:2915 Inicializando DirectionsRenderer...
+RotasMoveisBonafe/:2927 DirectionsRenderer inicializado com sucesso
+RotasMoveisBonafe/:8732 Tooltip personalizado criado com sucesso
+RotasMoveisBonafe/:8508 ==========================================
+RotasMoveisBonafe/:8509 FILTRO DE EVENTOS POR DATA SOLICITADO
+RotasMoveisBonafe/:8510 ==========================================
+RotasMoveisBonafe/:8596 Datas finais para filtragem: 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:8610 Sem rota, mostrando apenas para origem
+RotasMoveisBonafe/:8637 Usando apenas a origem para eventos: [1]
+RotasMoveisBonafe/:8641 Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas: 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6437 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:6438 Mostrando eventos para rota com IDs: [1]
+RotasMoveisBonafe/:6439 Datas de filtro (string): 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6463 Eventos disponíveis: (7) [{…}, {…}, {…}, {…}, {…}, {…}, {…}]
+RotasMoveisBonafe/:6477 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:6493 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:6524 [ROTA] Cidades encontradas no percurso (1): Dois Córregos
+RotasMoveisBonafe/:6526 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: ['Dois Córregos']
+RotasMoveisBonafe/:6529 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:6530 Filtrando eventos para cidades: Dois Córregos
+RotasMoveisBonafe/:6531 Filtro de data: 2025-05-21 a 2025-05-28
+RotasMoveisBonafe/:6535 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6566 [DATA] Filtro FINAL: 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:6605 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:6611 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6799 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:6800 Mostrando restrições de caminhões para rota com IDs: [1]
+RotasMoveisBonafe/:6803 Timestamp: 2025-05-21T00:05:00.345Z
+RotasMoveisBonafe/:6809 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:6809
+filterEventsByDate @ RotasMoveisBonafe/:8646
+initMap @ RotasMoveisBonafe/:2755
+(anônimo) @ RotasMoveisBonafe/:2607
+RotasMoveisBonafe/:6846 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:6873 Cidades detectadas na rota: [{…}]
+RotasMoveisBonafe/:6966 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+RotasMoveisBonafe/:3167 Inicializando autocomplete para busca de endereços...
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:82 As of March 1st, 2025, google.maps.places.Autocomplete is not available to new customers. Please use google.maps.places.PlaceAutocompleteElement instead. At this time, google.maps.places.Autocomplete is not scheduled to be discontinued, but google.maps.places.PlaceAutocompleteElement is recommended over google.maps.places.Autocomplete. While google.maps.places.Autocomplete will continue to receive bug fixes for any major regressions, existing bugs in google.maps.places.Autocomplete will not be addressed. At least 12 months notice will be given before support is discontinued. Please see https://developers.google.com/maps/legacy for additional details and https://developers.google.com/maps/documentation/javascript/places-migration-overview for the migration guide.
+nB @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:82
+initAutocomplete @ RotasMoveisBonafe/:3189
+(anônimo) @ RotasMoveisBonafe/:2608
+RotasMoveisBonafe/:3190 Autocomplete inicializado com sucesso
+RotasMoveisBonafe/:3257 Inicializando sistema de navegação para tabs inferiores
+RotasMoveisBonafe/:3475 Inicializando abas inferiores com modo FULLSCREEN...
+RotasMoveisBonafe/:3543 Abas inferiores inicializadas com sucesso
+RotasMoveisBonafe/:2614 Detectado GitHub Pages - aplicando ajustes especiais de layout
+RotasMoveisBonafe/:4474 Criando novo marcador para Dois Córregos (ID: 1)
+RotasMoveisBonafe/:5490 Verificando se Dois Córregos e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5511 Mesma cidade encontrada nos endereços: dois córregos
+RotasMoveisBonafe/:4561 Configurando marcador para Dois Córregos - Mesma cidade da origem: true
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1679 As of February 21st, 2024, google.maps.Marker is deprecated. Please use google.maps.marker.AdvancedMarkerElement instead. At this time, google.maps.Marker is not scheduled to be discontinued, but google.maps.marker.AdvancedMarkerElement is recommended over google.maps.Marker. While google.maps.Marker will continue to receive bug fixes for any major regressions, existing bugs in google.maps.Marker will not be addressed. At least 12 months notice will be given before support is discontinued. Please see https://developers.google.com/maps/deprecations for additional details and https://developers.google.com/maps/documentation/javascript/advanced-markers/migration for the migration guide.
+_.kl @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1679
+addMarkerForLocation @ RotasMoveisBonafe/:4563
+(anônimo) @ RotasMoveisBonafe/:2640
+RotasMoveisBonafe/:2655 Datas definidas automaticamente: de 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:8508 ==========================================
+RotasMoveisBonafe/:8509 FILTRO DE EVENTOS POR DATA SOLICITADO
+RotasMoveisBonafe/:8510 ==========================================
+RotasMoveisBonafe/:8596 Datas finais para filtragem: 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:8602 Usando rota otimizada atual: [1]
+RotasMoveisBonafe/:8641 Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas: 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6437 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:6438 Mostrando eventos para rota com IDs: [1]
+RotasMoveisBonafe/:6439 Datas de filtro (string): 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6463 Eventos disponíveis: (7) [{…}, {…}, {…}, {…}, {…}, {…}, {…}]
+RotasMoveisBonafe/:6477 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:6493 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:6524 [ROTA] Cidades encontradas no percurso (1): Dois Córregos
+RotasMoveisBonafe/:6526 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: ['Dois Córregos']
+RotasMoveisBonafe/:6529 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:6530 Filtrando eventos para cidades: Dois Córregos
+RotasMoveisBonafe/:6531 Filtro de data: 2025-05-21 a 2025-05-28
+RotasMoveisBonafe/:6535 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6566 [DATA] Filtro FINAL: 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:6605 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:6611 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6799 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:6800 Mostrando restrições de caminhões para rota com IDs: [1]
+RotasMoveisBonafe/:6803 Timestamp: 2025-05-21T00:05:00.349Z
+RotasMoveisBonafe/:6809 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:6809
+filterEventsByDate @ RotasMoveisBonafe/:8646
+(anônimo) @ RotasMoveisBonafe/:2661
+RotasMoveisBonafe/:6846 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:6873 Cidades detectadas na rota: [{…}]
+RotasMoveisBonafe/:6966 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+RotasMoveisBonafe/:2664 Campos de data inicializados com datas atuais e eventos/restrições para origem configurados
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:35 [LayoutFix] Inicialização completa
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+fullscreen-tabs.js:18 [FullscreenTabs] Inicializando sistema de abas em tela cheia
+fullscreen-tabs.js:41 [FullscreenTabs] Inicialização concluída com sucesso
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+map-controls.js:271 Map enhancements applied successfully
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+map-controls.js:271 Map enhancements applied successfully
+RotasMoveisBonafe/:8508 ==========================================
+RotasMoveisBonafe/:8509 FILTRO DE EVENTOS POR DATA SOLICITADO
+RotasMoveisBonafe/:8510 ==========================================
+RotasMoveisBonafe/:8596 Datas finais para filtragem: 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:8602 Usando rota otimizada atual: [1]
+RotasMoveisBonafe/:8641 Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas: 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6437 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:6438 Mostrando eventos para rota com IDs: [1]
+RotasMoveisBonafe/:6439 Datas de filtro (string): 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6463 Eventos disponíveis: (7) [{…}, {…}, {…}, {…}, {…}, {…}, {…}]
+RotasMoveisBonafe/:6477 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:6493 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:6524 [ROTA] Cidades encontradas no percurso (1): Dois Córregos
+RotasMoveisBonafe/:6526 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: ['Dois Córregos']
+RotasMoveisBonafe/:6529 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:6530 Filtrando eventos para cidades: Dois Córregos
+RotasMoveisBonafe/:6531 Filtro de data: 2025-05-21 a 2025-05-28
+RotasMoveisBonafe/:6535 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6566 [DATA] Filtro FINAL: 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:6605 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:6611 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6799 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:6800 Mostrando restrições de caminhões para rota com IDs: [1]
+RotasMoveisBonafe/:6803 Timestamp: 2025-05-21T00:05:00.841Z
+RotasMoveisBonafe/:6809 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:6809
+filterEventsByDate @ RotasMoveisBonafe/:8646
+setTimeout
+initDatePickers @ RotasMoveisBonafe/:2843
+initMap @ RotasMoveisBonafe/:2752
+(anônimo) @ RotasMoveisBonafe/:2607
+RotasMoveisBonafe/:6846 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:6873 Cidades detectadas na rota: [{…}]
+RotasMoveisBonafe/:6966 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+RotasMoveisBonafe/:2631 Ajustes de layout para GitHub Pages aplicados
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+geocode-fix.js:108 Enhanced file upload with accurate geocoding
+geocode-fix.js:415 Geocoding fixes applied successfully
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+RotasMoveisBonafe/:3561 Botões de contador encontrados: 4
+4RotasMoveisBonafe/:3569 Evento de clique adicionado ao botão de contador
+5layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:4474 Criando novo marcador para Piedade (ID: 2)
+RotasMoveisBonafe/:5490 Verificando se Piedade e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5538 Não estão na mesma cidade
+RotasMoveisBonafe/:4547 Obtendo região para cidade: "Piedade"
+RotasMoveisBonafe/:4222 Cidade Piedade pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4314 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4561 Configurando marcador para Piedade - Mesma cidade da origem: false
+RotasMoveisBonafe/:4222 Cidade Piedade pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4314 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4222 Cidade Piedade pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4314 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4314 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4688 Contador de locais atualizado: 1 destinos
+4layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:9232 Convertendo coordenadas para Piedade: latitude/longitude -> lat/lng
+RotasMoveisBonafe/:9256 Pontos válidos para rota: 2
+RotasMoveisBonafe/:9275 Coordenadas da origem (Dois Córregos): -22.3673 -48.3822
+RotasMoveisBonafe/:9290 Coordenadas de Piedade: -23.716984 -47.4142293
+RotasMoveisBonafe/:9317 Apenas um destino além da origem - calculando distância única
+RotasMoveisBonafe/:9335 Distância calculada de Dois Córregos para Piedade: 179.81 km (linha reta)
+RotasMoveisBonafe/:9336 Distância ajustada com fator de estrada (1.4): 251.74 km
+RotasMoveisBonafe/:9495 Mostrando eventos e restrições para cidades: (2) [1, 2]
+RotasMoveisBonafe/:6437 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:6438 Mostrando eventos para rota com IDs: (2) [1, 2]
+RotasMoveisBonafe/:6439 Datas de filtro (string): 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6463 Eventos disponíveis: (7) [{…}, {…}, {…}, {…}, {…}, {…}, {…}]
+RotasMoveisBonafe/:6477 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:6477 Localização encontrada para ID 2: {id: 2, name: 'Piedade', address: 'Piedade, Sp, 18170-000, Brasil', zipCode: '18170-000', latitude: -23.716984, …}address: "Piedade, Sp, 18170-000, Brasil"id: 2isOrigin: falselat: -23.716984latitude: -23.716984lng: -47.4142293longitude: -47.4142293name: "Piedade"zipCode: "18170-000"[[Prototype]]: Object
+RotasMoveisBonafe/:6493 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:6519 [ROTA] Adicionado local como possível cidade: Piedade
+RotasMoveisBonafe/:6524 [ROTA] Cidades encontradas no percurso (2): Dois Córregos, Piedade
+RotasMoveisBonafe/:6526 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: (2) ['Dois Córregos', 'Piedade']
+RotasMoveisBonafe/:6529 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:6530 Filtrando eventos para cidades: Dois Córregos, Piedade
+RotasMoveisBonafe/:6531 Filtro de data: 2025-05-21 a 2025-05-28
+RotasMoveisBonafe/:6535 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6566 [DATA] Filtro FINAL: 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:6605 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:6611 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6799 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:6800 Mostrando restrições de caminhões para rota com IDs: (2) [1, 2]
+RotasMoveisBonafe/:6803 Timestamp: 2025-05-21T00:05:07.715Z
+RotasMoveisBonafe/:6809 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:6809
+showCurrentRoute @ RotasMoveisBonafe/:9505
+(anônimo) @ RotasMoveisBonafe/:9784
+RotasMoveisBonafe/:6846 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:6873 Cidades detectadas na rota: (2) [{…}, {…}]
+RotasMoveisBonafe/:6966 GitHub Pages: Exibindo 2 restrições para cidades na rota atual
+RotasMoveisBonafe/:9599 Distância total calculada: 251.7 km, Tempo estimado: 188.80393200615387 minutos
+RotasMoveisBonafe/:8287 Atualizando resumo da rota com: {path: Array(2), distance: 251.73857600820514, time: 188.80393200615387, isOptimized: false}
+RotasMoveisBonafe/:8341 Distância calculada: 251.7 km
+RotasMoveisBonafe/:8342 Tempo estimado: 3h 9min
+RotasMoveisBonafe/:2523 Notificação [success]: Rota visualizada na ordem original de adição dos pontos
+5layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+fullscreen-tabs.js:55 [FullscreenTabs] Clique na aba: bottom-events
+fullscreen-tabs.js:99 [FullscreenTabs] Expandindo abas para tela cheia
+4layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+fullscreen-tabs.js:55 [FullscreenTabs] Clique na aba: bottom-events
+fullscreen-tabs.js:63 [FullscreenTabs] Minimizando aba ativa: bottom-events
+fullscreen-tabs.js:137 [FullscreenTabs] Minimizando abas
+53layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:9256 Pontos válidos para rota: 2
+RotasMoveisBonafe/:9275 Coordenadas da origem (Dois Córregos): -22.3673 -48.3822
+RotasMoveisBonafe/:9290 Coordenadas de Piedade: -23.716984 -47.4142293
+RotasMoveisBonafe/:9317 Apenas um destino além da origem - calculando distância única
+RotasMoveisBonafe/:9335 Distância calculada de Dois Córregos para Piedade: 179.81 km (linha reta)
+RotasMoveisBonafe/:9336 Distância ajustada com fator de estrada (1.4): 251.74 km
+RotasMoveisBonafe/:9495 Mostrando eventos e restrições para cidades: (2) [1, 2]
+RotasMoveisBonafe/:6437 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:6438 Mostrando eventos para rota com IDs: (2) [1, 2]
+RotasMoveisBonafe/:6439 Datas de filtro (string): 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6463 Eventos disponíveis: (7) [{…}, {…}, {…}, {…}, {…}, {…}, {…}]
+RotasMoveisBonafe/:6477 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:6477 Localização encontrada para ID 2: {id: 2, name: 'Piedade', address: 'Piedade, Sp, 18170-000, Brasil', zipCode: '18170-000', latitude: -23.716984, …}
+RotasMoveisBonafe/:6493 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:6519 [ROTA] Adicionado local como possível cidade: Piedade
+RotasMoveisBonafe/:6524 [ROTA] Cidades encontradas no percurso (2): Dois Córregos, Piedade
+RotasMoveisBonafe/:6526 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: (2) ['Dois Córregos', 'Piedade']
+RotasMoveisBonafe/:6529 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:6530 Filtrando eventos para cidades: Dois Córregos, Piedade
+RotasMoveisBonafe/:6531 Filtro de data: 2025-05-21 a 2025-05-28
+RotasMoveisBonafe/:6535 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6566 [DATA] Filtro FINAL: 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:6605 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:6611 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6799 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:6800 Mostrando restrições de caminhões para rota com IDs: (2) [1, 2]
+RotasMoveisBonafe/:6803 Timestamp: 2025-05-21T00:06:09.688Z
+RotasMoveisBonafe/:6809 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:6809
+showCurrentRoute @ RotasMoveisBonafe/:9505
+(anônimo) @ RotasMoveisBonafe/:9784
+RotasMoveisBonafe/:6846 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:6873 Cidades detectadas na rota: (2) [{…}, {…}]
+RotasMoveisBonafe/:6966 GitHub Pages: Exibindo 2 restrições para cidades na rota atual
+RotasMoveisBonafe/:9599 Distância total calculada: 251.7 km, Tempo estimado: 188.80393200615387 minutos
+RotasMoveisBonafe/:8287 Atualizando resumo da rota com: {path: Array(2), distance: 251.73857600820514, time: 188.80393200615387, isOptimized: false}
+RotasMoveisBonafe/:8341 Distância calculada: 251.7 km
+RotasMoveisBonafe/:8342 Tempo estimado: 3h 9min
+RotasMoveisBonafe/:2523 Notificação [success]: Rota visualizada na ordem original de adição dos pontos
+8layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:4798 Limpando rota atual...
+RotasMoveisBonafe/:4818 DirectionsRenderer recriado com sucesso
+RotasMoveisBonafe/:4747 Limpando todas as polylines do mapa...
+RotasMoveisBonafe/:4764 Limpando renderer da rota atual não otimizada
+RotasMoveisBonafe/:4790 Mapa recentrado para forçar atualização
+RotasMoveisBonafe/:4919 ==========================================
+RotasMoveisBonafe/:4920   INICIANDO CÁLCULO DE ROTA OTIMIZADA
+RotasMoveisBonafe/:4921 ==========================================
+RotasMoveisBonafe/:4983 Distância de Dois Córregos para Piedade: 179.8 km
+RotasMoveisBonafe/:4985 Distância total aproximada em linha reta: 179.8 km
+RotasMoveisBonafe/:7685 Gerando rota principal otimizada...
+RotasMoveisBonafe/:8809 Iniciando TSP avançado com 1 destinos
+RotasMoveisBonafe/:5490 Verificando se Piedade e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5538 Não estão na mesma cidade
+RotasMoveisBonafe/:8917 Iniciando TSP básico com 1 destinos
+RotasMoveisBonafe/:5490 Verificando se Piedade e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5538 Não estão na mesma cidade
+RotasMoveisBonafe/:5490 Verificando se Piedade e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5538 Não estão na mesma cidade
+RotasMoveisBonafe/:8949 Destinos ordenados por proximidade: 1. Piedade (179.8 km)
+RotasMoveisBonafe/:8899 TSP básico, distância total: 0.0 km
+RotasMoveisBonafe/:8909 Caminho convertido para IDs: (2) [1, 2]
+RotasMoveisBonafe/:7914 Exibindo seletor de rotas alternativas na sidebar: false
+RotasMoveisBonafe/:7591 Pós-processando resultados TSP: [{…}]
+RotasMoveisBonafe/:7603 Resultado TSP com distância inválida ou zero: {path: Array(2), distance: 0, pathIds: Array(2)}
+(anônimo) @ RotasMoveisBonafe/:7603
+postProcessTspResults @ RotasMoveisBonafe/:7598
+generateAlternativeRoutes @ RotasMoveisBonafe/:7917
+calculateOptimizedRoute @ RotasMoveisBonafe/:4993
+optimizeRoute @ RotasMoveisBonafe/:4913
+RotasMoveisBonafe/:7621 Distância estimada do TSP entre Dois Córregos e Piedade: 251.74 km
+RotasMoveisBonafe/:7654 Rota processada: 251.7km / 188.8 minutos
+RotasMoveisBonafe/:7496 Atualizando detalhes das rotas alternativas: [{…}]
+RotasMoveisBonafe/:7591 Pós-processando resultados TSP: [{…}]
+RotasMoveisBonafe/:7654 Rota processada: 251.7km / 188.8 minutos
+RotasMoveisBonafe/:7591 Pós-processando resultados TSP: [{…}]
+RotasMoveisBonafe/:7654 Rota processada: 251.7km / 188.8 minutos
+RotasMoveisBonafe/:5011 Rotas alternativas após processamento: [{…}]
+RotasMoveisBonafe/:5141 Tratando a rota padrão DIRETAMENTE (sem usar o event handler)...
+RotasMoveisBonafe/:5145 Locais antes de processar rota: (2) ['Dois Córregos (ID: 1)', 'Piedade (ID: 2)']
+RotasMoveisBonafe/:5167 Caminho da rota após correção: (2) [1, 2]
+RotasMoveisBonafe/:5173 Processando ID: 1, tipo original: number, valor: 1
+RotasMoveisBonafe/:5182 Processando ponto 0 da rota: Dois Córregos (ID: 1)
+RotasMoveisBonafe/:5173 Processando ID: 2, tipo original: number, valor: 2
+RotasMoveisBonafe/:5182 Processando ponto 1 da rota: Piedade (ID: 2)
+RotasMoveisBonafe/:5213 Substituindo array de marcadores (2) pelos reordenados (2)
+RotasMoveisBonafe/:5802 Desenhando rota para IDs: (2) [1, 2]
+RotasMoveisBonafe/:5828 Localizações disponíveis: (2) [{…}, {…}]
+RotasMoveisBonafe/:5836 Procurando localização com ID: 1 Tipo: string
+RotasMoveisBonafe/:5842 Localização ID 1 encontrada: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:5836 Procurando localização com ID: 2 Tipo: string
+RotasMoveisBonafe/:5842 Localização ID 2 encontrada: {id: 2, name: 'Piedade', address: 'Piedade, Sp, 18170-000, Brasil', zipCode: '18170-000', latitude: -23.716984, …}address: "Piedade, Sp, 18170-000, Brasil"id: 2isOrigin: falselat: -23.716984latitude: -23.716984lng: -47.4142293longitude: -47.4142293name: "Piedade"zipCode: "18170-000"[[Prototype]]: Object
+RotasMoveisBonafe/:5490 Verificando se Piedade e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5538 Não estão na mesma cidade
+RotasMoveisBonafe/:5918 Criando waypoints para o serviço de direções com 2 pontos
+RotasMoveisBonafe/:5922 Ponto 0: Dois Córregos (-22.3673, -48.3822) - isOrigin: true
+RotasMoveisBonafe/:5922 Ponto 1: Piedade (-23.716984, -47.4142293) - isOrigin: false
+RotasMoveisBonafe/:6271 Mostrando pontos de interesse para rota com IDs: (2) [1, 2]
+RotasMoveisBonafe/:6292 showPointsOfInterestOnRoute recebeu IDs: (2) [1, 2]
+RotasMoveisBonafe/:6338 Cidade conhecida encontrada: Dois Córregos em "Dois Córregos, SP, Brasil"
+RotasMoveisBonafe/:6351 Cidade extraída do endereço: Piedade
+RotasMoveisBonafe/:6357 Cidades detectadas no percurso: (2) ['Dois Córregos', 'Piedade']
+RotasMoveisBonafe/:6437 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:6438 Mostrando eventos para rota com IDs: (2) [1, 2]
+RotasMoveisBonafe/:6439 Datas de filtro (string): undefined undefined
+RotasMoveisBonafe/:6463 Eventos disponíveis: (7) [{…}, {…}, {…}, {…}, {…}, {…}, {…}]
+RotasMoveisBonafe/:6477 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:6477 Localização encontrada para ID 2: {id: 2, name: 'Piedade', address: 'Piedade, Sp, 18170-000, Brasil', zipCode: '18170-000', latitude: -23.716984, …}
+RotasMoveisBonafe/:6493 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:6519 [ROTA] Adicionado local como possível cidade: Piedade
+RotasMoveisBonafe/:6524 [ROTA] Cidades encontradas no percurso (2): Dois Córregos, Piedade
+RotasMoveisBonafe/:6526 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: (2) ['Dois Córregos', 'Piedade']
+RotasMoveisBonafe/:6529 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:6530 Filtrando eventos para cidades: Dois Córregos, Piedade
+RotasMoveisBonafe/:6531 Filtro de data: sem data inicial a sem data final
+RotasMoveisBonafe/:6535 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: undefined undefined
+RotasMoveisBonafe/:6545 [FILTRO] Obtida data de início do campo do formulário: 2025-05-21
+RotasMoveisBonafe/:6550 [FILTRO] Obtida data de fim do campo do formulário: 2025-05-28
+RotasMoveisBonafe/:6566 [DATA] Filtro FINAL: 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:6605 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:6611 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6579 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6799 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:6800 Mostrando restrições de caminhões para rota com IDs: (2) [1, 2]
+RotasMoveisBonafe/:6803 Timestamp: 2025-05-21T00:06:17.736Z
+RotasMoveisBonafe/:6809 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:6809
+calculateOptimizedRoute @ RotasMoveisBonafe/:5250
+optimizeRoute @ RotasMoveisBonafe/:4913
+RotasMoveisBonafe/:6846 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:6873 Cidades detectadas na rota: (2) [{…}, {…}]
+RotasMoveisBonafe/:6966 GitHub Pages: Exibindo 2 restrições para cidades na rota atual
+RotasMoveisBonafe/:5305 Após processar rota: 2 marcadores principais, 2 marcadores reordenados
+RotasMoveisBonafe/:6799 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:6800 Mostrando restrições de caminhões para rota com IDs: (2) [1, 2]
+RotasMoveisBonafe/:6803 Timestamp: 2025-05-21T00:06:17.737Z
+RotasMoveisBonafe/:6809 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:6809
+calculateOptimizedRoute @ RotasMoveisBonafe/:5311
+optimizeRoute @ RotasMoveisBonafe/:4913
+RotasMoveisBonafe/:6846 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:6873 Cidades detectadas na rota: (2) [{…}, {…}]
+RotasMoveisBonafe/:6966 GitHub Pages: Exibindo 2 restrições para cidades na rota atual
+RotasMoveisBonafe/:8287 Atualizando resumo da rota com: {path: Array(2), distance: 251.73857600820514, pathIds: Array(2), totalDistance: 251.73857600820514, time: 188.80393200615387, …}distance: 251.73857600820514estimatedTime: 188.80393200615387path: (2) [1, 2]pathIds: (2) [1, 2]time: 188.80393200615387totalDistance: 251.73857600820514[[Prototype]]: Object
+RotasMoveisBonafe/:8341 Distância calculada: 251.7 km
+RotasMoveisBonafe/:8342 Tempo estimado: 3h 9min
+RotasMoveisBonafe/:5338 Rota otimizada com sucesso, mantendo a aba atual
+RotasMoveisBonafe/:4747 Limpando todas as polylines do mapa...
+RotasMoveisBonafe/:4790 Mapa recentrado para forçar atualização
+RotasMoveisBonafe/:5982 Direções aplicadas com sucesso
+RotasMoveisBonafe/:6007 Resultado da rota: {geocoded_waypoints: Array(2), routes: Array(1), status: 'OK', request: {…}}
+RotasMoveisBonafe/:6011 Iniciando animação da rota com 270 pontos
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:5993 Encontradas 0 polylines no mapa
+RotasMoveisBonafe/:6037 Pontos da rota preparados para animação: 270
+RotasMoveisBonafe/:6095 Iniciando animação da rota...
+RotasMoveisBonafe/:6101 Primeiro ponto da rota: _.Hj {lat: ƒ, lng: ƒ}
+RotasMoveisBonafe/:6102 Tipo do primeiro ponto: LatLng
+RotasMoveisBonafe/:4747 Limpando todas as polylines do mapa...
+RotasMoveisBonafe/:4790 Mapa recentrado para forçar atualização
+RotasMoveisBonafe/:6185 Animando rota com 270 pontos...
+RotasMoveisBonafe/:6265 Agendando início da animação da rota...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:6249 Animação da rota: 22% concluída (60/270 pontos)
+RotasMoveisBonafe/:6249 Animação da rota: 44% concluída (120/270 pontos)
+RotasMoveisBonafe/:6249 Animação da rota: 67% concluída (180/270 pontos)
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:6249 Animação da rota: 89% concluída (240/270 pontos)
+RotasMoveisBonafe/:6249 Animação da rota: 100% concluída (270/270 pontos)
+RotasMoveisBonafe/:6259 Animação da rota concluída com sucesso.
+RotasMoveisBonafe/:2523 Notificação [success]: Rota calculada e animada com sucesso!
+42layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
