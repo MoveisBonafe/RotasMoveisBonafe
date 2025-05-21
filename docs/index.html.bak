@@ -1696,8 +1696,6 @@
     </script>
     <!-- Estilos para correção das abas e animações -->
     <link rel="stylesheet" href="styles-fix.css">
-    <!-- Estilos para correção das abas e animações -->
-    <link rel="stylesheet" href="styles-fix.css">
 </head>
 <body>
     <div class="app-container">
@@ -10057,8 +10055,6 @@
     <script src="smooth-animation.js"></script>
     
     <!-- Script de correção definitiva para as abas -->
-    <script src="tabs-fix.js"></script>
-    <!-- Scripts para animações e correções das abas -->
     <script src="tabs-fix.js"></script>
     <!-- Scripts para animações e correções das abas -->
     <script src="tabs-fix.js"></script>

@@ -10,7 +10,7 @@
   display: none !important;
 }
 
-/* Mostrar apenas a aba que possui a classe 'active-content' */
+/* Mostrar apenas a aba que possui a classe "active-content" */
 .bottom-tab-content.active-content {
   display: block !important;
 }
@@ -120,7 +120,7 @@
 
 /* Adicionar uma linha indicadora animada abaixo do botão ativo */
 .bottom-tab-btn.active:after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -140,7 +140,7 @@
 
 /* Animação de ripple quando clica nos botões */
 .bottom-tab-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
