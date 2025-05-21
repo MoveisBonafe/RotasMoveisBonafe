@@ -3,196 +3,214 @@
  * Este script substitui o comportamento padrão das abas inferiores
  * para permitir a exibição em tela cheia quando clicadas
  */
-
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("Inicializando sistema de abas aprimorado");
-    setTimeout(initFullscreenTabs, 500);
-});
-
-/**
- * Inicializa o sistema de abas em tela cheia
- */
-function initFullscreenTabs() {
-    console.log("Substituindo o sistema de abas original...");
+(function() {
+    // Aguardar o DOM estar pronto
+    var ready = function(callback) {
+        if (document.readyState !== 'loading') {
+            callback();
+        } else {
+            document.addEventListener('DOMContentLoaded', callback);
+        }
+    };
     
-    // Substituir completamente o sistema de abas original
-    setupTabs();
-    
-    // Configurar o sistema de expansão/colapso
-    setupToggleButton();
-    
-    console.log("Sistema de abas em tela cheia inicializado");
-}
-
-/**
- * Configura o novo sistema de abas
- */
-function setupTabs() {
-    // Encontrar os containers de abas
-    const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
-    if (!bottomTabsContainer) {
-        console.warn("Container de abas inferiores não encontrado");
-        return;
-    }
-    
-    // Encontrar os botões de abas e conteúdos (usando os seletores corretos)
-    const tabButtons = bottomTabsContainer.querySelectorAll('.bottom-tab-button');
-    const tabContents = bottomTabsContainer.querySelectorAll('.bottom-tab-content');
-    
-    if (!tabButtons.length || !tabContents.length) {
-        console.warn(`Elementos de abas não encontrados: ${tabButtons.length} botões, ${tabContents.length} conteúdos`);
-        return;
-    }
-    
-    console.log(`Sistema encontrou ${tabButtons.length} botões e ${tabContents.length} conteúdos de abas`);
-    
-    // Esconder todos os conteúdos inicialmente
-    tabContents.forEach(content => {
-        content.style.display = 'none';
-    });
-    
-    // Mostrar o conteúdo da primeira aba por padrão
-    if (tabContents[0]) {
-        tabContents[0].style.display = 'block';
-        tabContents[0].classList.add('active');
-    }
-    
-    if (tabButtons[0]) {
-        tabButtons[0].classList.add('active');
-    }
-    
-    // Adicionar event listeners para os botões das abas
-    tabButtons.forEach(button => {
-        button.addEventListener('click', function(event) {
-            // Prevenir comportamento padrão (importante para GitHub Pages)
-            event.preventDefault();
-            
-            // Identificar qual aba foi clicada
-            const buttonId = this.id;
-            const targetId = buttonId.replace('-button', '-content');
-            
-            console.log(`Botão de aba clicado: ${buttonId}, conteúdo alvo: ${targetId}`);
-            
-            // Desativar todos os botões e conteúdos
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => {
-                content.style.display = 'none';
-                content.classList.remove('active');
-            });
-            
-            // Ativar o botão e conteúdo clicados
-            this.classList.add('active');
-            
-            // Encontrar e ativar o conteúdo correspondente
-            const targetContent = document.getElementById(targetId);
-            if (targetContent) {
-                targetContent.style.display = 'flex'; // Usando flex para compatibilidade com o layout existente
-                targetContent.classList.add('active');
-                
-                // Adicionar animação
-                targetContent.style.animation = 'none';
-                setTimeout(() => {
-                    targetContent.style.animation = 'fadeInUp 0.3s ease-out';
-                }, 10);
-                
-                console.log(`Ativado conteúdo: ${targetId}`);
-            } else {
-                console.warn(`Conteúdo de destino não encontrado: ${targetId}`);
-            }
-        });
-    });
-    
-    console.log("Listeners para abas configurados com sucesso");
-}
-
-/**
- * Obtém o ID da aba ativa atualmente
- */
-function getActiveTabId(tabButtons) {
-    // Procurar botão com classe "active"
-    const activeButton = Array.from(tabButtons).find(button => button.classList.contains('active'));
-    
-    if (activeButton) {
-        return activeButton.id.replace('-button', '');
-    }
-    
-    // Se não encontrar, usar o primeiro botão
-    return tabButtons[0].id.replace('-button', '');
-}
-
-/**
- * Ativa uma aba específica
- */
-function activateTab(tabId, tabButtons, tabContents) {
-    console.log(`Ativando aba: ${tabId}`);
-    
-    // Remover classe active de todos os botões
-    tabButtons.forEach(button => {
-        button.classList.remove('active');
-    });
-    
-    // Adicionar classe active ao botão selecionado
-    const selectedButton = document.getElementById(`${tabId}-button`);
-    if (selectedButton) {
-        selectedButton.classList.add('active');
-    }
-    
-    // Esconder todos os conteúdos
-    tabContents.forEach(content => {
-        content.style.display = 'none';
-        content.classList.remove('active');
-    });
-    
-    // Mostrar apenas o conteúdo da aba selecionada
-    const selectedContent = document.getElementById(`${tabId}-content`);
-    if (selectedContent) {
-        selectedContent.style.display = 'flex';
-        selectedContent.classList.add('active');
+    // Função principal de inicialização
+    var init = function() {
+        console.log("[FullscreenTabs] Inicializando sistema de abas em tela cheia");
         
-        // Aplicar animação de entrada
-        selectedContent.style.animation = 'none';
-        setTimeout(() => {
-            selectedContent.style.animation = 'fadeInUp 0.3s ease forwards';
-        }, 10);
-    }
-}
-
-/**
- * Configurar o botão de expandir/colapsar
- */
-function setupToggleButton() {
-    const toggleButton = document.getElementById('toggle-tabs-btn');
-    if (!toggleButton) {
-        console.warn("Botão de toggle não encontrado");
-        return;
-    }
+        // Encontrar os botões das abas inferiores
+        var tabButtons = document.querySelectorAll('.bottom-tab-btn');
+        if (!tabButtons || tabButtons.length === 0) {
+            // Se não encontrar os botões, tentar novamente após um tempo
+            console.warn("[FullscreenTabs] Botões de abas não encontrados, tentando novamente em 500ms");
+            setTimeout(init, 500);
+            return;
+        }
+        
+        // Configurar cada botão de aba
+        tabButtons.forEach(function(button) {
+            // Remover eventuais handlers antigos clonando o botão
+            var clone = button.cloneNode(true);
+            if (button.parentNode) {
+                button.parentNode.replaceChild(clone, button);
+            }
+            
+            // Adicionar o novo handler de clique
+            clone.addEventListener('click', handleTabClick);
+        });
+        
+        console.log("[FullscreenTabs] Inicialização concluída com sucesso");
+    };
     
-    toggleButton.addEventListener('click', function() {
-        const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+    // Handler para o clique em botões de aba
+    var handleTabClick = function(e) {
+        // Evitar comportamento padrão
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Obter ID da aba e container
+        var tabId = this.getAttribute('data-tab');
+        var bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+        var tabContent = document.getElementById(tabId + '-content');
+        
+        console.log("[FullscreenTabs] Clique na aba: " + tabId);
+        
+        // Verificar se a aba já está ativa
+        var isActive = this.classList.contains('active');
+        var isExpanded = !bottomTabsContainer.classList.contains('minimized');
+        
+        // Se a aba já estiver ativa e expandida, minimizar
+        if (isActive && isExpanded) {
+            console.log("[FullscreenTabs] Minimizando aba ativa: " + tabId);
+            minimizeTabs();
+            return;
+        }
+        
+        // Desativar todas as abas anteriores
+        var allTabButtons = document.querySelectorAll('.bottom-tab-btn');
+        allTabButtons.forEach(function(btn) {
+            btn.classList.remove('active');
+        });
+        
+        // Esconder todos os conteúdos
+        var allContents = document.querySelectorAll('.bottom-tab-content');
+        allContents.forEach(function(content) {
+            content.style.display = 'none';
+        });
+        
+        // Ativar esta aba
+        this.classList.add('active');
+        
+        // Se as abas estiverem minimizadas, expandir o container
+        if (!isExpanded) {
+            expandTabs();
+        }
+        
+        // Mostrar o conteúdo correspondente
+        if (tabContent) {
+            tabContent.style.display = 'block';
+            tabContent.style.height = 'calc(100vh - 60px)';
+            tabContent.style.overflowY = 'auto';
+            tabContent.style.padding = '20px';
+        }
+    };
+    
+    // Expande as abas para tela cheia
+    var expandTabs = function() {
+        console.log("[FullscreenTabs] Expandindo abas para tela cheia");
+        
+        var bottomTabsContainer = document.querySelector('.bottom-tabs-container');
         if (!bottomTabsContainer) return;
         
-        const isMinimized = bottomTabsContainer.classList.contains('minimized');
+        // Remover classe minimizada
+        bottomTabsContainer.classList.remove('minimized');
         
-        if (isMinimized) {
-            // Expandir
-            bottomTabsContainer.classList.remove('minimized');
-            toggleButton.querySelector('span').textContent = '▼ Minimizar';
+        // Aplicar estilos de tela cheia
+        Object.assign(bottomTabsContainer.style, {
+            position: 'fixed',
+            top: '0',
+            left: '380px',
+            right: '0',
+            bottom: '0',
+            width: 'calc(100% - 380px)',
+            height: '100vh',
+            zIndex: '9999',
+            backgroundColor: 'white',
+            borderLeft: '2px solid #ffc107',
+            boxShadow: '-5px 0px 15px rgba(0,0,0,0.1)'
+        });
+        
+        // Ajustar para telas menores
+        if (window.innerWidth <= 768) {
+            bottomTabsContainer.style.left = '320px';
+            bottomTabsContainer.style.width = 'calc(100% - 320px)';
+        }
+        
+        // Ocultar o mapa
+        var mapContainer = document.querySelector('.map-container');
+        if (mapContainer) {
+            mapContainer.style.visibility = 'hidden';
+        }
+    };
+    
+    // Minimiza as abas para o estado normal
+    var minimizeTabs = function() {
+        console.log("[FullscreenTabs] Minimizando abas");
+        
+        var bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+        if (!bottomTabsContainer) return;
+        
+        // Adicionar classe minimizada
+        bottomTabsContainer.classList.add('minimized');
+        
+        // Restaurar estilos originais
+        Object.assign(bottomTabsContainer.style, {
+            position: 'absolute',
+            top: 'auto',
+            left: '380px',
+            right: '0',
+            bottom: '0',
+            height: '60px',
+            width: 'calc(100% - 380px)',
+            zIndex: '100',
+            backgroundColor: '#f9f9f9',
+            borderLeft: 'none',
+            boxShadow: 'none'
+        });
+        
+        // Ajustar para telas menores
+        if (window.innerWidth <= 768) {
+            bottomTabsContainer.style.left = '320px';
+            bottomTabsContainer.style.width = 'calc(100% - 320px)';
+        }
+        
+        // Desativar todas as abas
+        var allTabButtons = document.querySelectorAll('.bottom-tab-btn');
+        allTabButtons.forEach(function(btn) {
+            btn.classList.remove('active');
+        });
+        
+        // Esconder todos os conteúdos
+        var allContents = document.querySelectorAll('.bottom-tab-content');
+        allContents.forEach(function(content) {
+            content.style.display = 'none';
+        });
+        
+        // Mostrar o mapa novamente
+        var mapContainer = document.querySelector('.map-container');
+        if (mapContainer) {
+            mapContainer.style.visibility = 'visible';
+        }
+        
+        // Forçar o redesenho do mapa
+        if (window.google && window.google.maps && window.map) {
+            setTimeout(function() {
+                google.maps.event.trigger(window.map, 'resize');
+            }, 100);
+        }
+    };
+    
+    // Inicializar quando o DOM estiver pronto
+    ready(function() {
+        // Dar um pequeno atraso para garantir que outros scripts já rodaram
+        setTimeout(init, 100);
+    });
+    
+    // Reinicializar quando a janela for redimensionada
+    window.addEventListener('resize', function() {
+        // Ajustar layout para novas dimensões
+        var bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+        if (!bottomTabsContainer) return;
+        
+        if (bottomTabsContainer.classList.contains('minimized')) {
+            // Ajustar layout minimizado
+            var sidebarWidth = window.innerWidth <= 768 ? '320px' : '380px';
+            bottomTabsContainer.style.left = sidebarWidth;
+            bottomTabsContainer.style.width = 'calc(100% - ' + sidebarWidth + ')';
         } else {
-            // Minimizar
-            bottomTabsContainer.classList.add('minimized');
-            toggleButton.querySelector('span').textContent = '▲ Expandir';
+            // Ajustar layout expandido
+            var sidebarWidth = window.innerWidth <= 768 ? '320px' : '380px';
+            bottomTabsContainer.style.left = sidebarWidth;
+            bottomTabsContainer.style.width = 'calc(100% - ' + sidebarWidth + ')';
         }
     });
-}
-
-/**
- * Exportar função para uso externo
- */
-window.FullscreenTabs = {
-    init: initFullscreenTabs,
-    activateTabById: function(tabId) {
-        const tabButtons = document.querySelectorAll('.bottom-tab-button');
-        const tabContents = document.querySelectorAll('.bottom-tab-content');
-        activateTab(tabId, tabButtons, tabContents);
-    }
-};
+})();
