@@ -1666,6 +1666,34 @@
     </style>
     <!-- Estilos para correção das abas e animações -->
     <link rel="stylesheet" href="styles-fix.css">
+    
+    <!-- Script crítico para o comportamento das abas -->
+    <script>
+        // Verificar se alguma aba está visível indevidamente na inicialização
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                console.log('[TabsInitCheck] Verificando visibilidade de abas...');
+                var tabContents = document.querySelectorAll('.bottom-tab-content');
+                var visibleCount = 0;
+                
+                tabContents.forEach(function(content) {
+                    if (window.getComputedStyle(content).display !== 'none') {
+                        visibleCount++;
+                        console.log('[TabsInitCheck] Conteúdo visível:', content.id);
+                    }
+                });
+                
+                if (visibleCount > 1) {
+                    console.warn('[TabsInitCheck] Detectados ' + visibleCount + ' conteúdos visíveis simultaneamente!');
+                    console.log('[TabsInitCheck] Aplicando correção de emergência...');
+                    
+                    tabContents.forEach(function(content) {
+                        content.style.display = 'none';
+                    });
+                }
+            }, 800);
+        });
+    </script>
 </head>
 <body>
     <div class="app-container">
@@ -10023,5 +10051,8 @@
     
     <!-- Script para animações suaves nas abas inferiores -->
     <script src="smooth-animation.js"></script>
+    
+    <!-- Script de correção definitiva para as abas -->
+    <script src="tabs-fix.js"></script>
 </body>
 </html>
