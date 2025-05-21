@@ -26,6 +26,7 @@ cp ../docs/fix-github.js ./
 cp ../docs/route-optimizer.js ./
 cp ../docs/map-controls.js ./
 cp ../docs/geocode-fix.js ./
+cp ../docs/city-events-data.js ./
 cp ../docs/city-birthdays.js ./
 
 # Copiar index.html otimizado
