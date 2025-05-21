@@ -52,6 +52,76 @@
     const estilo = document.createElement('style');
     estilo.id = 'estilos-amarelos-bonafe';
     estilo.textContent = `
+      /* Melhorar layout do mapa para ocupar corretamente toda a tela */
+      html, body {
+        height: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+      }
+      
+      .container {
+        display: flex !important;
+        height: 100vh !important;
+        width: 100% !important;
+        overflow: hidden !important;
+      }
+      
+      .sidebar {
+        width: 300px !important;
+        min-width: 300px !important;
+        height: 100vh !important;
+        overflow-y: auto !important;
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        z-index: 1000 !important;
+        padding: 15px !important;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1) !important;
+      }
+      
+      .map-container {
+        flex: 1 !important;
+        height: calc(100vh - 60px) !important;
+        margin-left: 300px !important;
+        position: relative !important;
+        overflow: hidden !important;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.1) !important;
+        border-radius: 10px !important;
+        margin: 10px 10px 70px 310px !important;
+      }
+      
+      #map {
+        height: 100% !important;
+        width: 100% !important;
+        border-radius: 10px !important;
+      }
+      
+      /* Ajuste para bottom tabs não cobrir o mapa e ficar melhor posicionado */
+      .bottom-tabs {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 300px !important;
+        right: 0 !important;
+        background: rgba(248, 249, 250, 0.95) !important;
+        z-index: 500 !important;
+        padding: 10px 15px !important;
+        border-top: 1px solid rgba(0,0,0,0.1) !important;
+        max-height: 50vh !important;
+        overflow-y: auto !important;
+      }
+      
+      /* Quando as abas estão minimizadas */
+      .bottom-tabs:not(.expanded) {
+        max-height: none !important;
+        height: auto !important;
+      }
+      
+      /* Adicionar padding ao conteúdo para não ficar escondido pelas abas */
+      .map-container {
+        padding-bottom: 60px !important;
+      }
+      
       /* Botões em amarelo */
       button, 
       .button, 
@@ -135,19 +205,30 @@
     // Esconder controles do Google Maps
     const mapDiv = document.getElementById('map');
     if (mapDiv) {
-      // Se temos acesso direto ao objeto map no escopo global
+      // Tentar obter qualquer instância de mapa disponível
       try {
-        if (window.map && typeof window.map.setOptions === 'function') {
-          window.map.setOptions({
-            fullscreenControl: false,
-            streetViewControl: false,
-            zoomControl: false,
-            mapTypeControl: false
-          });
-          console.log("[SolucaoCompleta] Configurações do mapa ajustadas via API");
+        // Verificar várias formas de acessar o mapa
+        const mapInstance = window.map || 
+                            window.googleMap || 
+                            (window.google && window.google.maps && window.google.maps.Map) || 
+                            null;
+                            
+        if (mapInstance) {
+          // Se encontrarmos qualquer referência ao mapa, tentar configurar
+          try {
+            mapInstance.setOptions({
+              fullscreenControl: false,
+              streetViewControl: false,
+              zoomControl: false,
+              mapTypeControl: false
+            });
+            console.log("[SolucaoCompleta] Configurações do mapa ajustadas via API");
+          } catch (configError) {
+            console.log("[SolucaoCompleta] Não foi possível configurar o mapa:", configError);
+          }
         }
       } catch (e) {
-        console.log("[SolucaoCompleta] Não foi possível configurar o mapa via API:", e);
+        console.log("[SolucaoCompleta] Não foi possível acessar o mapa:", e);
       }
       
       // Função para verificar e remover controles do mapa periodicamente
