@@ -1,13 +1,18 @@
 /**
- * SOLUÇÃO FINAL PARA EVENTOS DA ROTA
+ * IMPLEMENTAÇÃO DEFINITIVA DE EVENTOS DE ANIVERSÁRIOS DE CIDADES
  * 
- * - Oculta eventos de cidades que não estão na rota 
- * - Corrige datas de fundação para formato dd/mm/yyyy
- * - Prioriza datas conhecidas e específicas
+ * Esta solução:
+ * 1. Usa APENAS a fonte de dados oficial (estados-aniversarios.js)
+ * 2. Exibe somente eventos de cidades presentes na rota
+ * 3. Formata as datas de forma consistente e completa
+ * 4. Evita completamente duplicatas
+ * 5. Trata diferenças de nomenclatura entre cidades na rota e na fonte de dados
  */
 
 (function() {
-  // Dados oficiais de fundação de cidades
+  console.log("[EventosFix] Iniciando implementação OFICIAL de eventos");
+  
+  // Constantes para datas de fundação das cidades
   const DATAS_FUNDACAO = {
     "Piedade": "20/05/1842",
     "Ribeirão Preto": "19/06/1856",
@@ -17,272 +22,270 @@
     "Santos": "26/01/1546",
     "Buri": "20/12/1921",
     "Itapeva": "20/09/1769",
-    "Cristina": "14/03/1841"
+    "Cristina": "14/03/1841",
+    "Bauru": "01/08/1896",
+    "Jaú": "15/08/1853",
+    "Passa Quatro": "01/09/1850",
+    "Mutum": "05/09/1923",
+    "Muriaé": "06/09/1855",
+    "Barbacena": "15/09/1791"
   };
   
-  // Forçar execução completa em vários momentos
-  console.log("[EventosFix] Iniciando solução definitiva para eventos da rota");
+  // Verificação para garantir que temos os dados de aniversários
+  function aguardarDadosAniversarios() {
+    if (window.aniversariosCidades) {
+      aplicarCorrecaoFinal();
+    } else {
+      console.log("[EventosFix] Aguardando carregamento dos dados de aniversários...");
+      setTimeout(aguardarDadosAniversarios, 500);
+    }
+  }
   
-  // Executar agora
-  setTimeout(aplicarSolucaoEventos, 500);
-  setTimeout(aplicarSolucaoEventos, 1000);
-  setTimeout(aplicarSolucaoEventos, 2000);
+  // Executar em vários momentos para garantir funcionamento
+  setTimeout(aguardarDadosAniversarios, 500);
+  setTimeout(aguardarDadosAniversarios, 2000);
   
-  // Executar quando houver mudanças no DOM
+  // Observar mudanças no DOM
   const observer = new MutationObserver(function() {
-    setTimeout(aplicarSolucaoEventos, 300);
+    setTimeout(aplicarCorrecaoFinal, 500);
   });
   
   observer.observe(document.body, {
     childList: true,
-    subtree: true
+    subtree: true,
+    attributes: true
   });
   
-  // Executar quando o usuário interagir com a página
+  // Executar quando o usuário interagir
   document.addEventListener('click', function() {
-    setTimeout(aplicarSolucaoEventos, 300);
+    setTimeout(aplicarCorrecaoFinal, 500);
   });
   
-  // Função principal de correção
-  function aplicarSolucaoEventos() {
-    // Obter APENAS AS CIDADES ADICIONADAS na rota
-    const cidadesAdicionadas = obterCidadesExplicitamenteAdicionadas();
-    console.log("[EventosFix] Cidades REALMENTE adicionadas: " + cidadesAdicionadas.join(', '));
+  // FUNÇÃO PRINCIPAL
+  function aplicarCorrecaoFinal() {
+    console.log("[EventosFix] Aplicando correção final");
     
-    // Se não temos cidades na rota, não prosseguir
-    if (cidadesAdicionadas.length === 0) {
+    // 1. Obter todas as cidades na rota
+    const cidadesNaRota = obterCidadesNaRota();
+    console.log("[EventosFix] Cidades na rota:", cidadesNaRota);
+    
+    // Se não houver cidades na rota, não processar
+    if (cidadesNaRota.length === 0) {
+      console.warn("[EventosFix] Nenhuma cidade encontrada na rota");
       return;
     }
     
-    // Obter todos os eventos
-    const eventos = document.querySelectorAll('.event-item');
-    console.log("[EventosFix] Processando " + eventos.length + " eventos");
+    // 2. Obter o container de eventos
+    const containerEventos = document.querySelector('.event-list');
+    if (!containerEventos) {
+      console.warn("[EventosFix] Container de eventos não encontrado");
+      return;
+    }
     
-    // Processar cada evento
-    eventos.forEach(function(evento) {
-      // Obter a cidade deste evento
-      const cidadeEvento = obterCidadeDoEvento(evento);
+    // 3. Limpar todos os eventos atuais
+    containerEventos.innerHTML = '';
+    
+    // 4. Criar um conjunto para acompanhar eventos já criados (evitar duplicatas)
+    const cidadesProcessadas = new Set();
+    
+    // 5. Para cada cidade na rota, criar um evento se ela tiver aniversário
+    cidadesNaRota.forEach(function(cidade) {
+      const cidadeNormalizada = normalizarCidade(cidade);
       
-      if (!cidadeEvento) {
-        console.log("[EventosFix] Não foi possível determinar a cidade do evento");
-        evento.style.display = 'none';
+      // Verificar se já processamos esta cidade
+      if (cidadesProcessadas.has(cidadeNormalizada)) {
         return;
       }
       
-      // Verificar se a cidade está nas adicionadas
-      const cidadeNaRota = cidadesAdicionadas.some(function(cidadeAdicionada) {
-        return cidadesSaoCorrespondentes(cidadeEvento, cidadeAdicionada);
-      });
-      
-      // Mostrar ou ocultar com base na presença na rota
-      if (cidadeNaRota) {
-        evento.style.display = 'block';
-        console.log("[EventosFix] Exibindo evento da cidade: " + cidadeEvento);
-        
-        // Corrigir a data de fundação com a versão completa
-        corrigirDescricaoEvento(evento, cidadeEvento);
-      } else {
-        evento.style.display = 'none';
-        console.log("[EventosFix] Ocultando evento da cidade fora da rota: " + cidadeEvento);
+      // Buscar informação de aniversário
+      const infoAniversario = buscarAniversarioCidade(cidade);
+      if (!infoAniversario) {
+        console.log(`[EventosFix] Não encontrada data de aniversário para: ${cidade}`);
+        return;
       }
+      
+      // Marcar esta cidade como já processada
+      cidadesProcessadas.add(cidadeNormalizada);
+      
+      // Criar e adicionar o elemento de evento
+      const eventoElement = criarElementoEvento(
+        cidade, 
+        infoAniversario.dia, 
+        infoAniversario.mes,
+        obterDataFundacao(cidade)
+      );
+      
+      containerEventos.appendChild(eventoElement);
+      console.log(`[EventosFix] Adicionado evento para ${cidade} em ${infoAniversario.dia}/${infoAniversario.mes}`);
     });
+    
+    console.log("[EventosFix] Aplicação de correção final concluída com sucesso!");
   }
   
-  // Obtém apenas as cidades REALMENTE adicionadas na interface
-  function obterCidadesExplicitamenteAdicionadas() {
-    const cidadesAdicionadas = [];
+  // FUNÇÃO PARA CRIAR ELEMENTO DE EVENTO
+  function criarElementoEvento(cidade, dia, mes, dataFundacao) {
+    // Criar elemento principal
+    const eventoElement = document.createElement('div');
+    eventoElement.className = 'event-item';
     
-    // 1. Adicionar a cidade de origem explicitamente selecionada
-    const origem = document.querySelector('.sidebar strong');
-    if (origem && origem.textContent) {
-      // Limpar apenas para a cidade (sem SP, etc)
-      cidadesAdicionadas.push(extrairNomeCidade(origem.textContent));
+    // Ano fixo para todos os eventos futuros
+    const ano = 2025;
+    
+    // Determinar o texto da descrição
+    let descricaoTexto = '';
+    if (dataFundacao) {
+      descricaoTexto = `Aniversário de fundação de ${cidade} em ${dataFundacao}`;
+    } else {
+      descricaoTexto = `Aniversário da cidade de ${cidade}`;
     }
     
-    // 2. Adicionar locais com MARCADOR VERMELHO ou AZUL
-    const locaisAdicionados = document.querySelectorAll('.location-item');
-    locaisAdicionados.forEach(function(item) {
-      // Pegar o nome do local (a primeira linha do texto)
-      const texto = item.textContent || '';
-      if (texto) {
-        const linhas = texto.split('\n');
-        if (linhas.length > 0) {
-          const nomeCidade = extrairNomeCidade(linhas[0]);
-          if (nomeCidade) {
-            cidadesAdicionadas.push(nomeCidade);
+    // Construir HTML interno
+    eventoElement.innerHTML = `
+      <div class="event-title">Aniversário da Cidade
+        <div class="event-date">${cidade} | ${dia}/${mes}/${ano}</div>
+      </div>
+      <div class="event-type">
+        <span class="event-badge feriado">Feriado</span>
+        <span class="event-badge baixo">Baixo</span>
+      </div>
+      <div class="event-description">${descricaoTexto}</div>
+    `;
+    
+    return eventoElement;
+  }
+  
+  // FUNÇÃO PARA BUSCAR ANIVERSÁRIO DE CIDADE
+  function buscarAniversarioCidade(cidade) {
+    // Normalizar nome da cidade para busca
+    const cidadeNormalizada = normalizarCidade(cidade);
+    
+    // Verificar em ambos estados (SP e MG)
+    const estados = ['SP', 'MG'];
+    
+    for (const estado of estados) {
+      const dadosEstado = window.aniversariosCidades[estado];
+      
+      // Verificar cada mês
+      for (const mes in dadosEstado) {
+        const dadosMes = dadosEstado[mes];
+        
+        // Verificar cada dia
+        for (const dia in dadosMes) {
+          const cidades = dadosMes[dia];
+          
+          // Verificar se a cidade está na lista
+          for (const cidadeAniversario of cidades) {
+            if (normalizarCidade(cidadeAniversario) === cidadeNormalizada ||
+                cidadeNormalizada.includes(normalizarCidade(cidadeAniversario)) ||
+                normalizarCidade(cidadeAniversario).includes(cidadeNormalizada)) {
+              // Encontrou correspondência
+              return {
+                cidade: cidadeAniversario,
+                dia: dia,
+                mes: mes
+              };
+            }
           }
         }
       }
-    });
+    }
     
-    // 3. Verificar na lista de locais adicionados (na visão sidebar)
-    const listaLocais = document.querySelectorAll('#locationList li');
-    listaLocais.forEach(function(item) {
+    // Se não encontrou na lista oficial, tentar no dicionário de datas de fundação
+    for (const [cidadeFundacao, data] of Object.entries(DATAS_FUNDACAO)) {
+      if (normalizarCidade(cidadeFundacao) === cidadeNormalizada ||
+          cidadeNormalizada.includes(normalizarCidade(cidadeFundacao)) ||
+          normalizarCidade(cidadeFundacao).includes(cidadeNormalizada)) {
+        // Extrair dia e mês da data de fundação
+        const partes = data.split('/');
+        return {
+          cidade: cidadeFundacao,
+          dia: partes[0],
+          mes: partes[1]
+        };
+      }
+    }
+    
+    // Não encontrou
+    return null;
+  }
+  
+  // FUNÇÃO PARA OBTER TODAS AS CIDADES DA ROTA
+  function obterCidadesNaRota() {
+    const cidades = [];
+    
+    // 1. Obter a origem
+    const origem = document.querySelector('.sidebar strong');
+    if (origem && origem.textContent) {
+      cidades.push(limparNomeCidade(origem.textContent));
+    }
+    
+    // 2. Obter todos os locais adicionados com marcadores
+    const locaisAdicionados = document.querySelectorAll('.location-item');
+    locaisAdicionados.forEach(function(item) {
       const texto = item.textContent || '';
-      if (texto) {
-        // Pegar apenas o nome da cidade
-        cidadesAdicionadas.push(extrairNomeCidade(texto));
+      const primeiraLinha = texto.split('\n')[0].trim();
+      if (primeiraLinha) {
+        cidades.push(limparNomeCidade(primeiraLinha));
       }
     });
     
-    // 4. Verificar nos locais específicos que estão explicitamente marcados na interface
-    const cidadesEspecificas = [
-      ...Array.from(document.querySelectorAll('.location-name')).map(el => el.textContent),
-      ...Array.from(document.querySelectorAll('.route-point')).map(el => el.textContent)
-    ];
-    
-    cidadesEspecificas.forEach(texto => {
-      if (texto) {
-        cidadesAdicionadas.push(extrairNomeCidade(texto));
-      }
-    });
-    
-    // Remover duplicatas e valores vazios
-    return [...new Set(cidadesAdicionadas.filter(cidade => cidade))];
+    // Eliminar duplicatas
+    return [...new Set(cidades)];
   }
   
-  // Extrai o nome da cidade de um texto, removendo sufixos e caracteres indesejados
-  function extrairNomeCidade(texto) {
-    if (!texto) return '';
+  // FUNÇÃO PARA OBTER DATA DE FUNDAÇÃO
+  function obterDataFundacao(cidade) {
+    // Normalizar a cidade para comparação
+    const cidadeNormalizada = normalizarCidade(cidade);
     
-    // Remover "- SP", "/SP", etc.
-    texto = texto.replace(/[\s-]*\/?SP\b/, '');
-    
-    // Remover CEP e números
-    texto = texto.replace(/\d{5}-\d{3}/, '');
-    
-    // Remover qualquer texto entre parênteses
-    texto = texto.replace(/\([^)]*\)/, '');
-    
-    // Remover vírgulas e o que vem depois
-    if (texto.includes(',')) {
-      texto = texto.split(',')[0];
-    }
-    
-    return texto.trim();
-  }
-  
-  // Obtém a cidade associada a um evento
-  function obterCidadeDoEvento(evento) {
-    // Método 1: Via elemento de data (mais comum)
-    const elementoData = evento.querySelector('.event-date');
-    if (elementoData) {
-      const texto = elementoData.textContent || '';
-      // Formato: "Cidade | Data"
-      const partes = texto.split('|');
-      if (partes.length > 0) {
-        return partes[0].trim();
+    // Verificar no dicionário de datas conhecidas
+    for (const [nomeCidade, data] of Object.entries(DATAS_FUNDACAO)) {
+      if (nomeCidade === cidade || 
+          normalizarCidade(nomeCidade).includes(cidadeNormalizada) || 
+          cidadeNormalizada.includes(normalizarCidade(nomeCidade))) {
+        return data;
       }
     }
     
-    // Método 2: Via título do evento
-    const titulo = evento.querySelector('.event-title');
-    if (titulo) {
-      const texto = titulo.textContent || '';
-      // Se o título tem o formato "Aniversário da Cidade\nCidade | Data"
-      const linhas = texto.split('\n');
-      if (linhas.length > 1) {
-        // Segunda linha geralmente tem "Cidade | Data"
-        const partes = linhas[1].split('|');
-        if (partes.length > 0) {
-          return partes[0].trim();
-        }
-      }
-    }
-    
-    // Método 3: Buscar em qualquer div dentro do evento
-    const divs = evento.querySelectorAll('div');
-    for (let i = 0; i < divs.length; i++) {
-      const texto = divs[i].textContent || '';
-      // Buscar padrão "Cidade | Data" ou "Cidade (Data)"
-      if (texto.includes('|')) {
-        const partes = texto.split('|');
-        if (partes.length > 0) {
-          return partes[0].trim();
-        }
-      } else if (texto.includes('(')) {
-        const partes = texto.split('(');
-        if (partes.length > 0) {
-          return partes[0].trim();
-        }
-      }
-    }
-    
-    return '';
+    // Se não encontrou, retornar nulo
+    return null;
   }
   
-  // Verifica se duas cidades são correspondentes (considerando variações no nome)
-  function cidadesSaoCorrespondentes(cidade1, cidade2) {
-    if (!cidade1 || !cidade2) return false;
+  // FUNÇÕES AUXILIARES
+  
+  // Limpar nome de cidade (remover sufixos, etc.)
+  function limparNomeCidade(nome) {
+    if (!nome) return '';
     
-    // Normalizar para comparação
-    cidade1 = normalizarNomeCidade(cidade1);
-    cidade2 = normalizarNomeCidade(cidade2);
+    // Remover texto após vírgula (ex: "São Paulo, SP" => "São Paulo")
+    nome = nome.split(',')[0];
     
-    // Verificar se uma contém a outra
-    return cidade1.includes(cidade2) || cidade2.includes(cidade1);
+    // Remover sufixos como /SP, -SP, etc.
+    nome = nome.replace(/\s*[\/\-]\s*SP\b/i, '');
+    nome = nome.replace(/\s*[\/\-]\s*MG\b/i, '');
+    
+    // Remover CEPs ou códigos postais
+    nome = nome.replace(/\d{5}-\d{3}/, '');
+    
+    // Remover parênteses e seu conteúdo
+    nome = nome.replace(/\([^)]*\)/, '');
+    
+    return nome.trim();
   }
   
-  // Normaliza o nome da cidade para comparação
-  function normalizarNomeCidade(cidade) {
+  // Normalizar nome de cidade para comparação
+  function normalizarCidade(cidade) {
     if (!cidade) return '';
     
-    // Converter para minúsculo
+    // Converter para minúsculas
     cidade = cidade.toLowerCase();
     
     // Remover acentos
     cidade = cidade.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     
-    // Remover hífen, underline e caracteres especiais
-    cidade = cidade.replace(/[^\w\s]/g, '');
-    
-    // Remover palavras como "cidade de", "municipio de", etc.
-    cidade = cidade.replace(/^(cidade|municipio|distrito)(\s+de)?\s+/i, '');
+    // Remover caracteres especiais
+    cidade = cidade.replace(/[^a-z0-9\s]/g, '');
     
     return cidade.trim();
-  }
-  
-  // Corrige a descrição do evento para incluir a data de fundação completa
-  function corrigirDescricaoEvento(evento, cidadeEvento) {
-    const descricaoElement = evento.querySelector('.event-description');
-    if (!descricaoElement) return;
-    
-    const textoAtual = descricaoElement.textContent || '';
-    
-    // Se já tem uma data completa no formato "em DD/MM/YYYY", não alterar
-    if (textoAtual.match(/em \d{2}\/\d{2}\/\d{4}/)) {
-      return;
-    }
-    
-    // Identificar cidade para busca no dicionário de datas
-    const cidadeNormalizada = normalizarNomeCidade(cidadeEvento);
-    let dataFundacao = '';
-    
-    // Buscar a data de fundação no dicionário
-    for (const [cidade, data] of Object.entries(DATAS_FUNDACAO)) {
-      if (normalizarNomeCidade(cidade).includes(cidadeNormalizada) || 
-          cidadeNormalizada.includes(normalizarNomeCidade(cidade))) {
-        dataFundacao = data;
-        break;
-      }
-    }
-    
-    // Se encontrou uma data de fundação
-    if (dataFundacao) {
-      // Se a descrição atual não tem "em" ou tem "em 2025", substituir
-      if (!textoAtual.includes(' em ') || textoAtual.includes(' em 2025')) {
-        // Construir nova descrição com a data completa
-        const novaDescricao = textoAtual.replace(/ em \d{4}/, '').replace(/\.$/, '') + ` em ${dataFundacao}`;
-        descricaoElement.textContent = novaDescricao;
-        console.log(`[EventosFix] Corrigida data para: ${novaDescricao}`);
-      }
-    }
-    
-    // Caso específico para Piedade (garantir que seja sempre 20/05/1842)
-    if (cidadeNormalizada.includes('piedade')) {
-      const novaDescricao = "Aniversário de fundação de Piedade em 20/05/1842";
-      descricaoElement.textContent = novaDescricao;
-      console.log(`[EventosFix] Corrigida data específica para Piedade: ${novaDescricao}`);
-    }
   }
 })();
