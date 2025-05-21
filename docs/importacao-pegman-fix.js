@@ -18,7 +18,10 @@
   }
   
   function ajustarAreaImportacao() {
-    // Identificar áreas de importação por diferentes seletores
+    // Primeiro passo: remover containers redundantes
+    removerContainersRedundantes();
+    
+    // Segundo passo: estilizar áreas de importação
     const areasImportacao = document.querySelectorAll(
       'input[type="file"], ' +
       '#import-file, ' +
@@ -34,52 +37,59 @@
           area.setAttribute('data-compactado', 'true');
           console.log("[ImportacaoPegmanFix] Compactando input file");
           
-          // Estilizar o input diretamente
-          area.style.maxHeight = '25px';
-          area.style.fontSize = '11px';
-          area.style.width = '250px';
+          // Verificar se já está dentro de um container personalizado
+          const isJaEstilizado = area.parentNode && 
+            (area.parentNode.classList.contains('compact-import') || 
+             area.parentNode.classList.contains('import-container'));
           
-          // Criar container compacto
-          const container = document.createElement('div');
-          container.className = 'compact-import';
-          container.style.border = '1px dashed #FFA500';
-          container.style.borderRadius = '10px';
-          container.style.padding = '8px';
-          container.style.backgroundColor = '#FFF8E1';
-          container.style.maxWidth = '280px';
-          container.style.margin = '5px auto';
-          container.style.boxSizing = 'border-box';
-          container.style.textAlign = 'center';
-          container.style.maxHeight = '80px';
-          container.style.overflow = 'hidden';
-          
-          // Adicionar ícone
-          const icone = document.createElement('div');
-          icone.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#FFA500"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>';
-          icone.style.margin = '0 auto 5px auto';
-          
-          // Adicionar descrição compacta
-          const descricao = document.createElement('div');
-          descricao.textContent = 'Importar CEPs via arquivo';
-          descricao.style.fontSize = '12px';
-          descricao.style.fontWeight = 'bold';
-          descricao.style.margin = '2px 0';
-          
-          // Adicionar formato
-          const formato = document.createElement('div');
-          formato.textContent = 'CEP, Nome';
-          formato.style.fontSize = '11px';
-          formato.style.color = '#666';
-          formato.style.margin = '2px 0 5px 0';
-          
-          // Substituir pelo container
-          const parent = area.parentNode;
-          if (parent) {
-            parent.insertBefore(container, area);
-            container.appendChild(icone);
-            container.appendChild(descricao);
-            container.appendChild(formato);
-            container.appendChild(area);
+          if (!isJaEstilizado) {
+            // Estilizar o input diretamente
+            area.style.maxHeight = '25px';
+            area.style.fontSize = '11px';
+            area.style.width = '250px';
+            
+            // Criar container compacto
+            const container = document.createElement('div');
+            container.className = 'compact-import';
+            container.style.border = '1px dashed #FFA500';
+            container.style.borderRadius = '10px';
+            container.style.padding = '8px';
+            container.style.backgroundColor = '#FFF8E1';
+            container.style.maxWidth = '280px';
+            container.style.margin = '5px auto';
+            container.style.boxSizing = 'border-box';
+            container.style.textAlign = 'center';
+            container.style.maxHeight = '80px';
+            container.style.overflow = 'hidden';
+            
+            // Adicionar ícone
+            const icone = document.createElement('div');
+            icone.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#FFA500"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>';
+            icone.style.margin = '0 auto 5px auto';
+            
+            // Adicionar descrição compacta
+            const descricao = document.createElement('div');
+            descricao.textContent = 'Importar CEPs via arquivo';
+            descricao.style.fontSize = '12px';
+            descricao.style.fontWeight = 'bold';
+            descricao.style.margin = '2px 0';
+            
+            // Adicionar formato
+            const formato = document.createElement('div');
+            formato.textContent = 'CEP, Nome';
+            formato.style.fontSize = '11px';
+            formato.style.color = '#666';
+            formato.style.margin = '2px 0 5px 0';
+            
+            // Substituir pelo container
+            const parent = area.parentNode;
+            if (parent) {
+              parent.insertBefore(container, area);
+              container.appendChild(icone);
+              container.appendChild(descricao);
+              container.appendChild(formato);
+              container.appendChild(area);
+            }
           }
         }
       } else {
@@ -91,6 +101,47 @@
         area.style.overflow = 'hidden';
       }
     });
+  }
+  
+  // Função para remover containers redundantes
+  function removerContainersRedundantes() {
+    console.log("[ImportacaoPegmanFix] Verificando containers redundantes");
+    
+    // Encontrar containers aninhados de importação
+    document.querySelectorAll('.compact-import, .import-container').forEach(container => {
+      const childContainers = container.querySelectorAll('.compact-import, .import-container');
+      if (childContainers.length > 0) {
+        console.log("[ImportacaoPegmanFix] Container redundante encontrado, corrigindo");
+        
+        childContainers.forEach(childContainer => {
+          // Mover conteúdo do container filho para o pai
+          const inputFile = childContainer.querySelector('input[type="file"]');
+          if (inputFile) {
+            // Não precisamos de containers duplicados
+            if (container.contains(childContainer)) {
+              container.appendChild(inputFile);
+              childContainer.parentNode.removeChild(childContainer);
+              console.log("[ImportacaoPegmanFix] Container aninhado removido");
+            }
+          }
+        });
+      }
+    });
+    
+    // Limpar texto redundante
+    document.querySelectorAll('.compact-import, .import-container').forEach(container => {
+      const textNodes = Array.from(container.childNodes)
+        .filter(node => node.nodeType === Node.TEXT_NODE);
+      
+      textNodes.forEach(node => {
+        if (node.textContent.trim() === 'Importar CEPs via arquivo' || 
+            node.textContent.trim() === 'CEP, Nome' ||
+            node.textContent.trim() === 'Arraste arquivo ou clique aqui') {
+          container.removeChild(node);
+        }
+      });
+    });
+  }
   }
   
   function habilitarPegman() {
