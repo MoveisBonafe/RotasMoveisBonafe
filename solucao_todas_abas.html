@@ -1,0 +1,489 @@
+<!--
+SOLUÇÃO COMPLETA PARA PREENCHIMENTO DE TODAS AS ABAS
+Esta solução garante que as abas de Eventos, Restrições e Relatório preencham todo o espaço disponível
+
+INSTRUÇÕES:
+1. Copie todo este código
+2. Acesse seu repositório no GitHub
+3. Edite o arquivo docs/index.html
+4. Cole este código logo antes da tag </body>
+5. Salve as alterações
+-->
+
+<script>
+/**
+ * Solução unificada para preenchimento de todas as abas
+ * Eventos, Restrições e Relatório agora preenchem todo o espaço disponível
+ * v1.0.0 - 21/05/2025
+ */
+(function() {
+    // Executar quando o documento estiver carregado
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fixAllTabs);
+    } else {
+        setTimeout(fixAllTabs, 500);
+    }
+    
+    // Função principal para aplicar todas as correções
+    function fixAllTabs() {
+        console.log('[TabsFix] Iniciando correção para todas as abas');
+        
+        // 1. Injetar CSS para todas as abas
+        injectFullTabsCSS();
+        
+        // 2. Aplicar correções específicas para cada aba
+        fixEventosTab();
+        fixRestricoesTab();
+        fixRelatorioTab();
+        
+        // 3. Monitorar alterações e continuar verificando
+        setInterval(checkAllTabsStatus, 1000);
+        
+        // 4. Configurar observador para reagir a mudanças
+        setupTabsObserver();
+    }
+    
+    // Injetar CSS para todas as abas
+    function injectFullTabsCSS() {
+        // Evitar duplicação
+        if (document.getElementById('all-tabs-fix-css')) return;
+        
+        // Criar elemento de estilo
+        const style = document.createElement('style');
+        style.id = 'all-tabs-fix-css';
+        style.textContent = `
+            /* CSS COMUM PARA TODAS AS ABAS */
+            
+            /* Estrutura base quando expandido */
+            .bottom-tabs-container:not(.minimized) {
+                position: fixed !important;
+                top: 0 !important;
+                left: 380px !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                width: calc(100% - 380px) !important;
+                height: 100vh !important;
+                z-index: 9999 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                background: white !important;
+                box-shadow: -2px 0 10px rgba(0,0,0,0.1) !important;
+            }
+            
+            /* Barra de navegação */
+            .bottom-tabs-nav {
+                height: 60px !important;
+                flex-shrink: 0 !important;
+                width: 100% !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-around !important;
+                background: #f8f9fa !important;
+                border-bottom: 1px solid #dee2e6 !important;
+                padding: 0 20px !important;
+            }
+            
+            /* Estilo dos botões como Otimizar/Visualizar */
+            .bottom-tab-btn {
+                padding: 8px 16px !important;
+                background-color: #f8f9fa !important;
+                color: #333 !important;
+                border: 1px solid #ddd !important;
+                border-radius: 6px !important;
+                font-weight: 500 !important;
+                cursor: pointer !important;
+                transition: all 0.2s !important;
+                min-width: 120px !important;
+                text-align: center !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+                margin: 0 5px !important;
+            }
+            
+            .bottom-tab-btn:hover {
+                background-color: #f1f3f5 !important;
+                border-color: #ced4da !important;
+                box-shadow: 0 3px 6px rgba(0,0,0,0.1) !important;
+            }
+            
+            .bottom-tab-btn.active {
+                background-color: #ffc107 !important;
+                border-color: #ffc107 !important;
+                color: #212529 !important;
+                box-shadow: 0 3px 6px rgba(0,0,0,0.1) !important;
+            }
+            
+            /* Base para todas as abas */
+            .bottom-tab-content {
+                display: none !important;
+            }
+            
+            .bottom-tab-content.active-content {
+                display: flex !important;
+                flex-direction: column !important;
+                width: 100% !important;
+                height: calc(100vh - 60px) !important;
+                padding: 20px !important;
+                overflow-y: auto !important;
+                background: #fafafa !important;
+                flex: 1 !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Garantir que os elementos filhos preencham o espaço */
+            .bottom-tab-content.active-content > * {
+                width: 100% !important;
+                margin-bottom: 15px !important;
+            }
+            
+            /* Adicionar espaço extra no final para permitir rolagem */
+            .bottom-tab-content.active-content:after {
+                content: "";
+                display: block;
+                height: 100px;
+                width: 100%;
+            }
+            
+            /* EVENTOS TAB */
+            #eventos-tab-content.active-content {
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            
+            #eventos-tab-content .event-list, 
+            #eventos-tab-content .eventos-list {
+                flex-grow: 1 !important;
+                min-height: 60vh !important;
+                width: 100% !important;
+                background: white !important;
+                border-radius: 8px !important;
+                padding: 15px !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+            }
+            
+            /* Item de evento */
+            .event-item, .evento-item {
+                margin-bottom: 15px !important;
+                padding: 15px !important;
+                border-radius: 8px !important;
+                background-color: #f8f9fa !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+                transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+            }
+            
+            .event-item:hover, .evento-item:hover {
+                transform: translateY(-2px) !important;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+            }
+            
+            /* RESTRIÇÕES TAB */
+            #restricoes-tab-content.active-content,
+            #restrições-tab-content.active-content,
+            #bottom-restrictions-content.active-content {
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            
+            .restrictions-container,
+            .restricoes-container,
+            .restrições-container {
+                flex-grow: 1 !important;
+                min-height: 60vh !important;
+                width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            
+            .restrictions-list,
+            .restricoes-list,
+            .restrições-list {
+                flex-grow: 1 !important;
+                min-height: 60vh !important;
+                width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            
+            /* Item de restrição */
+            .restriction-item,
+            .restricao-item,
+            .restrição-item {
+                margin-bottom: 15px !important;
+                padding: 15px !important;
+                border-radius: 8px !important;
+                background-color: white !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+                transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+            }
+            
+            .restriction-item:hover,
+            .restricao-item:hover,
+            .restrição-item:hover {
+                transform: translateY(-2px) !important;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+            }
+            
+            /* RELATÓRIO TAB */
+            #relatorio-tab-content.active-content,
+            #relatório-tab-content.active-content,
+            #bottom-info-content.active-content {
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            
+            .report-container,
+            .relatorio-container,
+            .relatório-container,
+            .route-info {
+                flex-grow: 1 !important;
+                min-height: 60vh !important;
+                width: 100% !important;
+                background: white !important;
+                border-radius: 8px !important;
+                padding: 15px !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+            }
+            
+            /* Campos do formulário */
+            input, select, textarea, .form-control {
+                width: 100% !important;
+                margin-bottom: 10px !important;
+                padding: 8px 12px !important;
+                border: 1px solid #ced4da !important;
+                border-radius: 6px !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Botões de ação */
+            .btn-primary, .btn-warning, .btn-success, 
+            button[onclick*="otimizar"], button[onclick*="visualizar"],
+            .btn-salvar, .btn-imprimir {
+                background-color: #ffc107 !important;
+                color: #212529 !important;
+                border-color: #ffc107 !important;
+                font-weight: 500 !important;
+                border-radius: 6px !important;
+                padding: 8px 16px !important;
+                cursor: pointer !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+                transition: all 0.2s ease-in-out !important;
+            }
+            
+            .btn-primary:hover, .btn-warning:hover, .btn-success:hover,
+            button[onclick*="otimizar"]:hover, button[onclick*="visualizar"]:hover,
+            .btn-salvar:hover, .btn-imprimir:hover {
+                background-color: #ffca2c !important;
+                border-color: #ffca2c !important;
+                box-shadow: 0 3px 6px rgba(0,0,0,0.1) !important;
+            }
+            
+            /* Adaptação para telas menores */
+            @media (max-width: 768px) {
+                .bottom-tabs-container:not(.minimized) {
+                    left: 320px !important;
+                    width: calc(100% - 320px) !important;
+                }
+            }
+        `;
+        
+        document.head.appendChild(style);
+        console.log('[TabsFix] CSS para todas as abas injetado');
+    }
+    
+    // Corrigir aba de Eventos
+    function fixEventosTab() {
+        const eventosTab = document.getElementById('eventos-tab-content');
+        if (!eventosTab) return;
+        
+        // Aplicar estilos específicos
+        eventosTab.style.display = 'flex';
+        eventosTab.style.flexDirection = 'column';
+        eventosTab.style.width = '100%';
+        eventosTab.style.height = 'calc(100vh - 60px)';
+        eventosTab.style.padding = '20px';
+        eventosTab.style.overflowY = 'auto';
+        
+        // Verificar e ajustar a lista de eventos
+        const eventList = eventosTab.querySelector('.event-list, .eventos-list');
+        if (eventList) {
+            eventList.style.flexGrow = '1';
+            eventList.style.minHeight = '60vh';
+            eventList.style.width = '100%';
+        }
+        
+        // Adicionar espaçador se não existir
+        if (!eventosTab.querySelector('.eventos-spacer')) {
+            const spacer = document.createElement('div');
+            spacer.className = 'eventos-spacer';
+            spacer.style.width = '100%';
+            spacer.style.height = '100px';
+            eventosTab.appendChild(spacer);
+        }
+        
+        console.log('[TabsFix] Aba de Eventos corrigida');
+    }
+    
+    // Corrigir aba de Restrições
+    function fixRestricoesTab() {
+        // Procurar diferentes possíveis IDs da aba de restrições
+        const restricoesTab = document.getElementById('restricoes-tab-content') || 
+                               document.getElementById('restrições-tab-content') ||
+                               document.getElementById('bottom-restrictions-content');
+        
+        if (!restricoesTab) return;
+        
+        // Aplicar estilos específicos
+        restricoesTab.style.display = 'flex';
+        restricoesTab.style.flexDirection = 'column';
+        restricoesTab.style.width = '100%';
+        restricoesTab.style.height = 'calc(100vh - 60px)';
+        restricoesTab.style.padding = '20px';
+        restricoesTab.style.overflowY = 'auto';
+        
+        // Ajustar o container de restrições
+        const restrictionsContainer = restricoesTab.querySelector('.restrictions-container, .restricoes-container, .restrições-container');
+        if (restrictionsContainer) {
+            restrictionsContainer.style.flexGrow = '1';
+            restrictionsContainer.style.minHeight = '60vh';
+            restrictionsContainer.style.width = '100%';
+            restrictionsContainer.style.display = 'flex';
+            restrictionsContainer.style.flexDirection = 'column';
+        }
+        
+        // Ajustar a lista de restrições
+        const restrictionsList = restricoesTab.querySelector('.restrictions-list, .restricoes-list, .restrições-list');
+        if (restrictionsList) {
+            restrictionsList.style.flexGrow = '1';
+            restrictionsList.style.minHeight = '60vh';
+            restrictionsList.style.width = '100%';
+        }
+        
+        // Adicionar espaçador se não existir
+        if (!restricoesTab.querySelector('.restricoes-spacer')) {
+            const spacer = document.createElement('div');
+            spacer.className = 'restricoes-spacer';
+            spacer.style.width = '100%';
+            spacer.style.height = '100px';
+            restricoesTab.appendChild(spacer);
+        }
+        
+        console.log('[TabsFix] Aba de Restrições corrigida');
+    }
+    
+    // Corrigir aba de Relatório
+    function fixRelatorioTab() {
+        // Procurar diferentes possíveis IDs da aba de relatório
+        const relatorioTab = document.getElementById('relatorio-tab-content') || 
+                             document.getElementById('relatório-tab-content') || 
+                             document.getElementById('bottom-info-content');
+        
+        if (!relatorioTab) return;
+        
+        // Aplicar estilos específicos
+        relatorioTab.style.display = 'flex';
+        relatorioTab.style.flexDirection = 'column';
+        relatorioTab.style.width = '100%';
+        relatorioTab.style.height = 'calc(100vh - 60px)';
+        relatorioTab.style.padding = '20px';
+        relatorioTab.style.overflowY = 'auto';
+        
+        // Ajustar o container de relatório
+        const reportContainer = relatorioTab.querySelector('.report-container, .relatorio-container, .relatório-container, .route-info');
+        if (reportContainer) {
+            reportContainer.style.flexGrow = '1';
+            reportContainer.style.minHeight = '60vh';
+            reportContainer.style.width = '100%';
+        }
+        
+        // Ajustar campos de formulário
+        const formFields = relatorioTab.querySelectorAll('input, select, textarea, .form-control');
+        formFields.forEach(field => {
+            field.style.width = '100%';
+            field.style.marginBottom = '10px';
+        });
+        
+        // Ajustar botões
+        const buttons = relatorioTab.querySelectorAll('.btn, button');
+        buttons.forEach(button => {
+            button.style.marginTop = '10px';
+            button.style.marginRight = '10px';
+        });
+        
+        // Adicionar espaçador se não existir
+        if (!relatorioTab.querySelector('.relatorio-spacer')) {
+            const spacer = document.createElement('div');
+            spacer.className = 'relatorio-spacer';
+            spacer.style.width = '100%';
+            spacer.style.height = '100px';
+            relatorioTab.appendChild(spacer);
+        }
+        
+        console.log('[TabsFix] Aba de Relatório corrigida');
+    }
+    
+    // Verificar o status de todas as abas
+    function checkAllTabsStatus() {
+        // Verificar se o container está expandido
+        const tabsContainer = document.querySelector('.bottom-tabs-container');
+        if (!tabsContainer || tabsContainer.classList.contains('minimized')) return;
+        
+        // Verificar qual aba está ativa
+        const activeTab = document.querySelector('.bottom-tab-content.active-content');
+        if (!activeTab) return;
+        
+        // Identificar qual aba está ativa e aplicar a correção específica
+        if (activeTab.id === 'eventos-tab-content') {
+            fixEventosTab();
+        } else if (activeTab.id === 'restricoes-tab-content' || 
+                  activeTab.id === 'restrições-tab-content' || 
+                  activeTab.id === 'bottom-restrictions-content') {
+            fixRestricoesTab();
+        } else if (activeTab.id === 'relatorio-tab-content' || 
+                  activeTab.id === 'relatório-tab-content' || 
+                  activeTab.id === 'bottom-info-content') {
+            fixRelatorioTab();
+        }
+    }
+    
+    // Configurar observador para reagir a mudanças
+    function setupTabsObserver() {
+        if (window.allTabsObserver) return;
+        
+        const observer = new MutationObserver(mutations => {
+            let shouldUpdate = false;
+            
+            mutations.forEach(mutation => {
+                // Verificar se a mudança afeta visibilidade ou classe
+                if (mutation.type === 'attributes' && 
+                   (mutation.attributeName === 'style' || mutation.attributeName === 'class')) {
+                    shouldUpdate = true;
+                }
+                
+                // Verificar se elementos relevantes foram modificados
+                if (mutation.type === 'childList' &&
+                   (mutation.target.classList.contains('bottom-tabs-container') ||
+                    mutation.target.classList.contains('bottom-tab-content'))) {
+                    shouldUpdate = true;
+                }
+            });
+            
+            if (shouldUpdate) {
+                checkAllTabsStatus();
+            }
+        });
+        
+        // Observar o corpo do documento
+        observer.observe(document.body, {
+            attributes: true,
+            childList: true,
+            subtree: true,
+            attributeFilter: ['style', 'class']
+        });
+        
+        window.allTabsObserver = observer;
+        console.log('[TabsFix] Observador configurado para todas as abas');
+    }
+})();
+</script>

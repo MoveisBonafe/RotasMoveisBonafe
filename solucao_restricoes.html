@@ -1,0 +1,216 @@
+<!--
+SOLUÇÃO PARA PREENCHIMENTO COMPLETO DA ABA DE RESTRIÇÕES
+Adicione este código ao final do arquivo docs/index.html antes da tag </body>
+-->
+
+<script>
+/**
+ * Script para corrigir o preenchimento da área de restrições
+ * Faz com que a aba ocupe todo o espaço disponível quando expandida
+ */
+(function() {
+    // Executar quando o documento estiver pronto
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fixRestrictionsTab);
+    } else {
+        setTimeout(fixRestrictionsTab, 500);
+    }
+    
+    // Função principal
+    function fixRestrictionsTab() {
+        console.log('[FixRestrictions] Ajustando aba de restrições para preencher todo o espaço');
+        
+        // 1. Injetar CSS específico para a aba de restrições
+        injectRestrictionsCSS();
+        
+        // 2. Verificar e ajustar se a aba estiver visível
+        checkAndFixRestrictions();
+        
+        // 3. Continuar verificando periodicamente
+        setInterval(checkAndFixRestrictions, 1000);
+        
+        // 4. Observar mudanças na aba
+        setupObserver();
+    }
+    
+    // Injetar CSS dedicado à aba de restrições
+    function injectRestrictionsCSS() {
+        // Evitar duplicação
+        if (document.getElementById('restrictions-fix-css')) return;
+        
+        // Criar elemento de estilo
+        const style = document.createElement('style');
+        style.id = 'restrictions-fix-css';
+        style.textContent = `
+            /* CSS para aba de restrições */
+            #bottom-restrictions-content {
+                display: flex !important;
+                flex-direction: column !important;
+                width: 100% !important;
+                height: calc(100vh - 60px) !important;
+                padding: 20px !important;
+                overflow-y: auto !important;
+                background-color: #fafafa !important;
+                box-sizing: border-box !important;
+                flex: 1 !important;
+            }
+            
+            /* Container de restrições */
+            .restrictions-container {
+                display: flex !important;
+                flex-direction: column !important;
+                width: 100% !important;
+                flex-grow: 1 !important;
+                min-height: 70vh !important;
+                margin-bottom: 50px !important;
+            }
+            
+            /* Lista de restrições */
+            .restrictions-list {
+                width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                flex-grow: 1 !important;
+                min-height: 60vh !important;
+            }
+            
+            /* Itens de restrição */
+            .restriction-item {
+                width: 100% !important;
+                margin-bottom: 15px !important;
+                padding: 15px !important;
+                border-radius: 8px !important;
+                background-color: white !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+                transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+            }
+            
+            .restriction-item:hover {
+                transform: translateY(-2px) !important;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+            }
+            
+            /* Espaçamento no fim para permitir rolagem */
+            .bottom-tab-content:after {
+                content: "";
+                display: block;
+                height: 50px;
+                width: 100%;
+            }
+            
+            /* Estilo para tipos de restrição */
+            .restriction-type {
+                margin-left: 10px !important;
+                padding: 2px 8px !important;
+                border-radius: 4px !important;
+                font-size: 0.8em !important;
+                font-weight: bold !important;
+            }
+            
+            .restriction-type.total {
+                background-color: #f44336 !important;
+                color: white !important;
+            }
+            
+            .restriction-type.partial {
+                background-color: #ff9800 !important;
+                color: white !important;
+            }
+        `;
+        
+        document.head.appendChild(style);
+        console.log('[FixRestrictions] CSS injetado para aba de restrições');
+    }
+    
+    // Verificar e ajustar a aba de restrições
+    function checkAndFixRestrictions() {
+        // Verificar se a aba está visível e expandida
+        const tabsContainer = document.querySelector('.bottom-tabs-container');
+        if (!tabsContainer || tabsContainer.classList.contains('minimized')) return;
+        
+        // Verificar se a aba de restrições está ativa
+        const restrictionsContent = document.getElementById('bottom-restrictions-content');
+        if (!restrictionsContent || !restrictionsContent.classList.contains('active-content')) return;
+        
+        // Aplicar ajustes à aba de restrições
+        restrictionsContent.style.display = 'flex';
+        restrictionsContent.style.flexDirection = 'column';
+        restrictionsContent.style.width = '100%';
+        restrictionsContent.style.height = 'calc(100vh - 60px)';
+        restrictionsContent.style.padding = '20px';
+        restrictionsContent.style.overflowY = 'auto';
+        restrictionsContent.style.boxSizing = 'border-box';
+        restrictionsContent.style.flex = '1';
+        
+        // Ajustar o container de restrições
+        const restrictionsContainer = restrictionsContent.querySelector('.restrictions-container');
+        if (restrictionsContainer) {
+            restrictionsContainer.style.display = 'flex';
+            restrictionsContainer.style.flexDirection = 'column';
+            restrictionsContainer.style.width = '100%';
+            restrictionsContainer.style.flexGrow = '1';
+            restrictionsContainer.style.minHeight = '70vh';
+        }
+        
+        // Ajustar a lista de restrições
+        const restrictionsList = restrictionsContent.querySelector('.restrictions-list');
+        if (restrictionsList) {
+            restrictionsList.style.width = '100%';
+            restrictionsList.style.display = 'flex';
+            restrictionsList.style.flexDirection = 'column';
+            restrictionsList.style.flexGrow = '1';
+            restrictionsList.style.minHeight = '60vh';
+        }
+        
+        // Adicionar espaçador no final para permitir rolagem
+        if (!restrictionsContent.querySelector('.restrictions-spacer')) {
+            const spacer = document.createElement('div');
+            spacer.className = 'restrictions-spacer';
+            spacer.style.width = '100%';
+            spacer.style.height = '100px';
+            restrictionsContent.appendChild(spacer);
+        }
+        
+        console.log('[FixRestrictions] Aba de restrições ajustada para preencher todo o espaço');
+    }
+    
+    // Configurar observador para mudanças na aba
+    function setupObserver() {
+        if (window.restrictionsObserver) return;
+        
+        const observer = new MutationObserver((mutations) => {
+            let shouldUpdate = false;
+            
+            mutations.forEach((mutation) => {
+                // Verificar se houve mudanças na visibilidade ou classe
+                if (mutation.type === 'attributes' && 
+                    (mutation.attributeName === 'style' || mutation.attributeName === 'class')) {
+                    shouldUpdate = true;
+                }
+                
+                // Verificar se elementos relevantes foram adicionados/removidos
+                if (mutation.type === 'childList' && 
+                    (mutation.target.classList.contains('bottom-tab-content') ||
+                     mutation.target.classList.contains('restrictions-list'))) {
+                    shouldUpdate = true;
+                }
+            });
+            
+            if (shouldUpdate) {
+                checkAndFixRestrictions();
+            }
+        });
+        
+        // Observar o corpo do documento
+        observer.observe(document.body, {
+            attributes: true,
+            childList: true,
+            subtree: true,
+            attributeFilter: ['style', 'class']
+        });
+        
+        window.restrictionsObserver = observer;
+        console.log('[FixRestrictions] Observador configurado para ajustes dinâmicos');
+    }
+})();
+</script>
