@@ -85,12 +85,19 @@
             expandTabs();
         }
         
-        // Mostrar o conteúdo correspondente
+        // Mostrar APENAS o conteúdo correspondente à aba clicada
         if (tabContent) {
-            tabContent.style.display = 'block';
-            tabContent.style.height = 'calc(100vh - 60px)';
-            tabContent.style.overflowY = 'auto';
-            tabContent.style.padding = '20px';
+            // Garantir que SOMENTE esta aba seja exibida
+            allContents.forEach(function(content) {
+                if (content === tabContent) {
+                    content.style.display = 'block';
+                    content.style.height = 'calc(100vh - 60px)';
+                    content.style.overflowY = 'auto';
+                    content.style.padding = '20px';
+                } else {
+                    content.style.display = 'none';
+                }
+            });
         }
     };
     
