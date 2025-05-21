@@ -1,288 +1,1215 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solução para Abas - Móveis Bonafé</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            color: #333;
-        }
-        h1, h2 {
-            color: #ffc107;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        code {
-            background: #f5f5f5;
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-family: monospace;
-        }
-        .step {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f9f9f9;
-            border-left: 3px solid #ffc107;
-            border-radius: 3px;
-        }
-        .code-block {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 5px;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            font-family: monospace;
-            border: 1px solid #ddd;
-            margin: 15px 0;
-        }
-        .highlight {
-            background: #fffde7;
-            padding: 2px;
-        }
-        .warning {
-            background: #fff8e1;
-            padding: 10px;
-            border-left: 3px solid #ffb300;
-            margin: 15px 0;
-        }
-    </style>
+  <!-- Script crítico para estabilização imediata da sidebar -->
+  <script>
+    console.log("Inicializando aplicação de Rotas Móveis Bonafé");
+    // Estabilizar a sidebar imediatamente
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log("DOM carregado - inicializando aplicação");
+    });
+  </script>
+  
+  <!-- Meta tags essenciais -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rotas Móveis Bonafé - Otimizador de Entregas</title>
+  <meta name="description" content="Sistema de otimização de rotas para entregas Móveis Bonafé">
+  
+  <!-- Estilo CSS estabilizado e melhorado -->
+  <style>
+    /* Reset e base */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    /* Layout principal */
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      width: 300px;
+      background: #f8f9fa;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      overflow-y: auto;
+      height: 100vh;
+      position: fixed;
+      z-index: 100;
+    }
+    
+    /* Área do mapa */
+    .map-container {
+      flex: 1;
+      margin-left: 300px;
+      height: 100vh;
+    }
+    
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+    
+    /* Formulários e campos */
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    button {
+      background: linear-gradient(45deg, #2196F3, #03A9F4);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      border-radius: 50px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    button:hover {
+      background: linear-gradient(45deg, #03A9F4, #2196F3);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+    }
+    
+    /* Lista de localizações */
+    .location-list {
+      margin-top: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .location-item {
+      background: white;
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    /* Abas inferiores */
+    .bottom-tabs {
+      position: fixed;
+      bottom: 0;
+      left: 300px;
+      right: 0;
+      background: #f8f9fa;
+      display: flex;
+      flex-wrap: wrap;
+      padding: 10px;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+      z-index: 99;
+    }
+    
+    .bottom-tab-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .bottom-tab-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 20px;
+      border-radius: 50px;
+      border: none;
+      font-weight: bold;
+      font-size: 14px;
+      color: white;
+      background: linear-gradient(45deg, #2196F3, #03A9F4);
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      margin: 5px;
+      width: auto;
+    }
+    
+    .bottom-tab-button.active {
+      background: linear-gradient(45deg, #4CAF50, #8BC34A);
+    }
+    
+    .bottom-tab-content {
+      display: none;
+      width: 100%;
+      padding: 10px;
+      background: white;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .bottom-tab-content.active {
+      display: block;
+    }
+    
+    /* Botão de minimizar */
+    .minimize-button {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: #f8f9fa;
+      color: #333;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    /* Estilos para eventos */
+    .event-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .event-item {
+      background: white;
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .event-date {
+      font-weight: bold;
+      color: #2196F3;
+    }
+    
+    .event-title {
+      font-weight: bold;
+      margin: 5px 0;
+    }
+    
+    .event-description {
+      font-size: 0.9em;
+      color: #666;
+    }
+    
+    /* Estados para tabs expandidas/minimizadas */
+    .tabs-minimized .bottom-tab-content {
+      display: none;
+    }
+    
+    .tabs-minimized .bottom-tabs {
+      height: auto;
+    }
+    
+    /* Botão de otimizar */
+    .optimize-button {
+      background: linear-gradient(45deg, #4CAF50, #8BC34A);
+    }
+    
+    .optimize-button:hover {
+      background: linear-gradient(45deg, #8BC34A, #4CAF50);
+    }
+    
+    /* Informações de rota */
+    .route-info {
+      margin-top: 10px;
+      padding: 10px;
+      background: #f1f8e9;
+      border-radius: 4px;
+    }
+    
+    /* Contador de pontos */
+    .region-counter {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      background: white;
+      padding: 10px;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      z-index: 98;
+    }
+    
+    /* Estilo para mensagens */
+    .message {
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      background: #e3f2fd;
+    }
+    
+    .message.error {
+      background: #ffebee;
+      color: #c62828;
+    }
+    
+    .message.success {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    
+    /* Estilos responsivos */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+      }
+      
+      .map-container {
+        margin-left: 0;
+        height: 70vh;
+      }
+      
+      .bottom-tabs {
+        left: 0;
+      }
+    }
+    
+    /* ==================== CORREÇÕES CRÍTICAS ==================== */
+    /* Correção para garantir que o sidebar fique fixo */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 1000;
+      background: #f8f9fa;
+      transition: transform 0.3s ease;
+    }
+    
+    /* Correção para garantir que o mapa ocupe todo o espaço disponível */
+    .map-container {
+      flex: 1;
+      height: 100vh;
+      position: relative;
+      margin-left: 300px;
+      width: calc(100% - 300px);
+    }
+    
+    /* Correção para layout expandido das abas */
+    .bottom-tabs.expanded {
+      height: 50vh;
+      overflow-y: auto;
+    }
+    
+    .bottom-tabs.expanded .bottom-tab-content.active {
+      height: calc(50vh - 80px);
+      overflow-y: auto;
+    }
+    
+    /* Estilo melhorado para botões padronizados */
+    .botao-padronizado {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 20px;
+      border-radius: 50px;
+      border: none;
+      font-weight: bold;
+      font-size: 16px;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      text-align: center;
+      width: 100%;
+      margin: 8px 0;
+      text-decoration: none;
+      background: linear-gradient(45deg, #FF9500, #FF5722);
+    }
+    
+    .botao-padronizado:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+      background: linear-gradient(45deg, #FF5722, #FF9500);
+    }
+    
+    .botao-visualizar {
+      background: linear-gradient(45deg, #2196F3, #03A9F4);
+    }
+    
+    .botao-visualizar:hover {
+      background: linear-gradient(45deg, #03A9F4, #2196F3);
+    }
+    
+    .botao-otimizar {
+      background: linear-gradient(45deg, #4CAF50, #8BC34A);
+    }
+    
+    .botao-otimizar:hover {
+      background: linear-gradient(45deg, #8BC34A, #4CAF50);
+    }
+  </style>
 </head>
 <body>
-    <h1>Solução para o problema das abas no GitHub Pages</h1>
-    
-    <p>Este documento contém a solução para o problema das abas que estão sendo mostradas todas juntas quando expandidas.</p>
-    
-    <div class="warning">
-        <strong>Importante:</strong> Esta é uma solução direta e simples que substitui qualquer código complexo anterior.
-    </div>
-    
-    <h2>Instruções</h2>
-    
-    <div class="step">
-        <h3>Passo 1: Editar o arquivo index.html no GitHub</h3>
-        <p>Acesse seu repositório no GitHub e edite o arquivo <code>docs/index.html</code>.</p>
-    </div>
-    
-    <div class="step">
-        <h3>Passo 2: Adicionar o script abaixo</h3>
-        <p>Localize a tag <code>&lt;body&gt;</code> e adicione o script a seguir logo após essa tag:</p>
-        
-        <div class="code-block">
-&lt;script&gt;
-// Fix definitivo para o problema das abas mostrando todas juntas
-(function() {
-  // Aplicar assim que a página carregar
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initFix);
-  } else {
-    initFix();
-  }
-  
-  // Verificar periodicamente para garantir
-  setInterval(fixAllTabs, 1000);
-  
-  function initFix() {
-    console.log('[TABS-FIX] Inicializando correção das abas');
-    
-    // Aplicar várias vezes para garantir
-    fixAllTabs();
-    setTimeout(fixAllTabs, 500);
-    setTimeout(fixAllTabs, 1000);
-    
-    // Capturar cliques nos botões
-    setupTabButtons();
-    
-    console.log('[TABS-FIX] Inicialização concluída');
-  }
-  
-  function fixAllTabs() {
-    // Capturar elementos
-    var tabContents = document.querySelectorAll('.bottom-tab-content');
-    
-    // Verificar quantos estão visíveis
-    var visibleCount = 0;
-    tabContents.forEach(function(content) {
-      if (window.getComputedStyle(content).display !== 'none') {
-        visibleCount++;
-      }
-    });
-    
-    // Se mais de um estiver visível, corrigir
-    if (visibleCount > 1) {
-      console.warn('[TABS-FIX] ' + visibleCount + ' abas estão visíveis! Corrigindo...');
+  <div class="container">
+    <!-- Sidebar com formulário de entrada -->
+    <div class="sidebar">
+      <h2>Rotas Móveis Bonafé</h2>
       
-      // Esconder todos os conteúdos
-      tabContents.forEach(function(content) {
-        content.style.display = 'none';
+      <!-- Formulário de entrada de origem -->
+      <h3>Origem</h3>
+      <input type="text" id="origin-input" placeholder="Digite o endereço de origem">
+      <button id="add-origin-button" class="botao-padronizado botao-visualizar">Adicionar Origem</button>
+      
+      <!-- Formulário de entrada de destino -->
+      <h3>Destino</h3>
+      <input type="text" id="destination-input" placeholder="Digite o endereço de destino">
+      <button id="add-destination-button" class="botao-padronizado botao-visualizar">Adicionar Destino</button>
+      
+      <!-- Lista de localizações -->
+      <h3>Localizações</h3>
+      <div class="location-list" id="location-list">
+        <!-- As localizações serão adicionadas aqui dinamicamente -->
+      </div>
+      
+      <!-- Botões de ação -->
+      <button id="visualize-button" class="botao-padronizado botao-visualizar">Visualizar Rota</button>
+      <button id="optimize-button" class="botao-padronizado botao-otimizar">Otimizar Rota</button>
+      
+      <!-- Opções de importação/exportação -->
+      <h3>Importar/Exportar</h3>
+      <input type="file" id="import-file" accept=".json,.csv,.txt">
+      <button id="export-button" class="botao-padronizado">Exportar Rota</button>
+    </div>
+    
+    <!-- Container do mapa -->
+    <div class="map-container">
+      <div id="map"></div>
+    </div>
+    
+    <!-- Tabs inferiores -->
+    <div class="bottom-tabs" id="bottom-tabs">
+      <div class="bottom-tab-buttons">
+        <button class="bottom-tab-button active" onclick="openTab('bottom-info')">Informações</button>
+        <button class="bottom-tab-button" onclick="openTab('bottom-events')">Eventos</button>
+        <button class="bottom-tab-button" onclick="openTab('bottom-restrictions')">Restrições</button>
+        <button class="minimize-button" id="toggle-tabs-button">▼</button>
+      </div>
+      
+      <!-- Conteúdo da aba de informações -->
+      <div class="bottom-tab-content active" id="bottom-info">
+        <h3>Informações da Rota</h3>
+        <div id="route-info">
+          <p>Selecione uma origem e destinos para visualizar a rota.</p>
+        </div>
+      </div>
+      
+      <!-- Conteúdo da aba de eventos -->
+      <div class="bottom-tab-content" id="bottom-events">
+        <h3>Eventos nas Cidades</h3>
+        <div class="event-filters">
+          <input type="date" id="event-start-date" placeholder="Data inicial">
+          <input type="date" id="event-end-date" placeholder="Data final">
+          <button id="filter-events-button" class="botao-padronizado">Filtrar Eventos</button>
+        </div>
+        <div class="event-list" id="event-list">
+          <!-- Os eventos serão adicionados aqui dinamicamente -->
+        </div>
+      </div>
+      
+      <!-- Conteúdo da aba de restrições -->
+      <div class="bottom-tab-content" id="bottom-restrictions">
+        <h3>Restrições de Rota</h3>
+        <div class="restriction-options">
+          <label>
+            <input type="checkbox" id="avoid-tolls"> Evitar Pedágios
+          </label>
+          <label>
+            <input type="checkbox" id="avoid-highways"> Evitar Rodovias
+          </label>
+          <label>
+            <input type="checkbox" id="avoid-ferries"> Evitar Balsas
+          </label>
+          <button id="apply-restrictions-button" class="botao-padronizado">Aplicar Restrições</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scripts JavaScript -->
+  <!-- Google Maps API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places"></script>
+  
+  <!-- Script de inicialização do mapa -->
+  <script>
+    // Variáveis globais
+    var map;
+    var markers = [];
+    var directionsService;
+    var directionsRenderer;
+    var locations = [];
+    var autocompleteOrigin;
+    var autocompleteDestination;
+    
+    // Inicializar o mapa quando a página carregar
+    function initMap() {
+      // Opções do mapa
+      var options = {
+        zoom: 6,
+        center: {lat: -23.5505, lng: -46.6333}, // São Paulo como default
+        mapTypeControl: true,
+        streetViewControl: false,
+        fullscreenControl: true,
+      };
+      
+      // Criar mapa
+      map = new google.maps.Map(document.getElementById('map'), options);
+      
+      // Inicializar serviços de direções
+      directionsService = new google.maps.DirectionsService();
+      directionsRenderer = new google.maps.DirectionsRenderer({
+        map: map,
+        suppressMarkers: true, // Suprimir marcadores padrão
       });
       
-      // Mostrar apenas o conteúdo da aba ativa, se houver
-      var activeButton = document.querySelector('.bottom-tab-btn.active');
-      if (activeButton) {
-        var tabId = activeButton.getAttribute('data-tab');
-        var activeContent = document.getElementById(tabId + '-content');
-        if (activeContent) {
-          activeContent.style.display = 'block';
-        }
-      }
-    }
-  }
-  
-  function setupTabButtons() {
-    // Capturar todos os botões de aba
-    var tabButtons = document.querySelectorAll('.bottom-tab-btn');
-    var tabsContainer = document.querySelector('.bottom-tabs-container');
-    
-    tabButtons.forEach(function(button) {
-      // Remover qualquer evento existente (clone)
-      var clone = button.cloneNode(true);
-      button.parentNode.replaceChild(clone, button);
+      // Inicializar autocompletar
+      autocompleteOrigin = new google.maps.places.Autocomplete(
+        document.getElementById('origin-input'),
+        {types: ['geocode']}
+      );
       
-      // Adicionar novo evento de clique
-      clone.addEventListener('click', function(event) {
-        // Impedir eventos padrão
-        event.preventDefault();
-        event.stopPropagation();
-        
-        // Obter ID da aba
-        var tabId = this.getAttribute('data-tab');
-        var isActive = this.classList.contains('active');
-        var isExpanded = !tabsContainer.classList.contains('minimized');
-        
-        // Se a aba já estiver ativa e expandida, minimizar
-        if (isActive && isExpanded) {
-          minimizeTabs();
-          return;
-        }
-        
-        // Desativar todos os botões
-        tabButtons.forEach(function(btn) {
-          btn.classList.remove('active');
+      autocompleteDestination = new google.maps.places.Autocomplete(
+        document.getElementById('destination-input'),
+        {types: ['geocode']}
+      );
+      
+      // Configurar event listeners
+      document.getElementById('add-origin-button').addEventListener('click', addOrigin);
+      document.getElementById('add-destination-button').addEventListener('click', addDestination);
+      document.getElementById('visualize-button').addEventListener('click', visualizeRoute);
+      document.getElementById('optimize-button').addEventListener('click', optimizeRoute);
+      document.getElementById('toggle-tabs-button').addEventListener('click', toggleTabs);
+      document.getElementById('export-button').addEventListener('click', exportRoute);
+      document.getElementById('import-file').addEventListener('change', importRoute);
+      document.getElementById('filter-events-button').addEventListener('click', filterEvents);
+      document.getElementById('apply-restrictions-button').addEventListener('click', applyRestrictions);
+      
+      // Adicionar eventos às abas
+      var buttons = document.querySelectorAll('.bottom-tab-button');
+      buttons.forEach(button => {
+        button.addEventListener('click', function() {
+          var tabId = this.getAttribute('onclick').match(/'([^']+)'/)[1];
+          openTab(tabId);
         });
-        
-        // Ativar este botão
-        this.classList.add('active');
-        
-        // Esconder todos os conteúdos
-        var tabContents = document.querySelectorAll('.bottom-tab-content');
-        tabContents.forEach(function(content) {
-          content.style.display = 'none';
-        });
-        
-        // Mostrar apenas o conteúdo selecionado
-        var content = document.getElementById(tabId + '-content');
-        if (content) {
-          content.style.display = 'block';
-        }
-        
-        // Se as abas estiverem minimizadas, expandir
-        if (tabsContainer.classList.contains('minimized')) {
-          expandTabs();
+      });
+      
+      // Carregar eventos iniciais
+      loadEvents();
+    }
+    
+    // Adicionar origem
+    function addOrigin() {
+      var input = document.getElementById('origin-input');
+      var address = input.value;
+      
+      if (!address) {
+        alert('Por favor, digite um endereço de origem válido.');
+        return;
+      }
+      
+      // Verificar se já existe uma origem
+      var existingOrigin = locations.find(location => location.isOrigin);
+      
+      if (existingOrigin) {
+        // Substituir origem existente
+        removeMarker(existingOrigin.id);
+        locations = locations.filter(location => !location.isOrigin);
+      }
+      
+      // Geocodificar endereço
+      geocodeAddress(address, true);
+    }
+    
+    // Adicionar destino
+    function addDestination() {
+      var input = document.getElementById('destination-input');
+      var address = input.value;
+      
+      if (!address) {
+        alert('Por favor, digite um endereço de destino válido.');
+        return;
+      }
+      
+      // Geocodificar endereço
+      geocodeAddress(address, false);
+    }
+    
+    // Geocodificar endereço
+    function geocodeAddress(address, isOrigin) {
+      var geocoder = new google.maps.Geocoder();
+      
+      geocoder.geocode({'address': address}, function(results, status) {
+        if (status === 'OK') {
+          var location = results[0];
+          var position = location.geometry.location;
+          var formattedAddress = location.formatted_address;
+          var zipCode = '';
+          
+          // Extrair CEP se disponível
+          for (var i = 0; i < location.address_components.length; i++) {
+            var component = location.address_components[i];
+            if (component.types.includes('postal_code')) {
+              zipCode = component.long_name;
+              break;
+            }
+          }
+          
+          // Criar ID único
+          var id = new Date().getTime();
+          
+          // Criar novo local
+          var newLocation = {
+            id: id,
+            name: formattedAddress.split(',')[0],
+            address: formattedAddress,
+            zipCode: zipCode,
+            latitude: position.lat(),
+            longitude: position.lng(),
+            isOrigin: isOrigin
+          };
+          
+          // Adicionar à lista de locais
+          locations.push(newLocation);
+          
+          // Adicionar marcador ao mapa
+          addMarker(newLocation);
+          
+          // Limpar campo de entrada
+          if (isOrigin) {
+            document.getElementById('origin-input').value = '';
+          } else {
+            document.getElementById('destination-input').value = '';
+          }
+          
+          // Atualizar UI
+          updateLocationList();
+        } else {
+          alert('Erro ao geocodificar endereço: ' + status);
         }
       });
-    });
-  }
+    }
+    
+    // Adicionar marcador ao mapa
+    function addMarker(location) {
+      var position = {lat: location.latitude, lng: location.longitude};
+      var marker = new google.maps.Marker({
+        position: position,
+        map: map,
+        title: location.name,
+        animation: google.maps.Animation.DROP,
+        icon: location.isOrigin ? 'http://maps.google.com/mapfiles/ms/icons/green-dot.png' : 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+      });
+      
+      // Info window com informações do local
+      var infoContent = '<div><strong>' + location.name + '</strong><br>' + 
+                         location.address + '<br>' +
+                         (location.zipCode ? 'CEP: ' + location.zipCode : '') + 
+                         '</div>';
+      
+      var infoWindow = new google.maps.InfoWindow({
+        content: infoContent
+      });
+      
+      // Abrir info window ao clicar no marcador
+      marker.addListener('click', function() {
+        infoWindow.open(map, marker);
+      });
+      
+      // Armazenar marcador com ID correspondente
+      markers.push({
+        id: location.id,
+        marker: marker
+      });
+      
+      // Centralizar e ajustar o zoom
+      map.setCenter(position);
+      if (markers.length === 1) {
+        map.setZoom(12);
+      }
+    }
+    
+    // Remover marcador
+    function removeMarker(id) {
+      var markerIndex = markers.findIndex(m => m.id === id);
+      if (markerIndex !== -1) {
+        markers[markerIndex].marker.setMap(null);
+        markers.splice(markerIndex, 1);
+      }
+    }
+    
+    // Atualizar lista de localizações na UI
+    function updateLocationList() {
+      var container = document.getElementById('location-list');
+      container.innerHTML = '';
+      
+      locations.forEach(function(location) {
+        var item = document.createElement('div');
+        item.className = 'location-item';
+        item.innerHTML = '<strong>' + location.name + '</strong>' +
+                         (location.isOrigin ? ' (Origem)' : '') +
+                         '<br>' + location.address + 
+                         (location.zipCode ? '<br>CEP: ' + location.zipCode : '') +
+                         '<button class="remove-button" style="width: auto; margin-left: 10px;" onclick="removeLocation(' + location.id + ')">Remover</button>';
+        container.appendChild(item);
+      });
+    }
+    
+    // Remover localização
+    function removeLocation(id) {
+      removeMarker(id);
+      locations = locations.filter(location => location.id !== id);
+      updateLocationList();
+    }
+    
+    // Visualizar rota
+    function visualizeRoute() {
+      var origin = locations.find(location => location.isOrigin);
+      if (!origin) {
+        alert('Por favor, adicione uma origem para a rota.');
+        return;
+      }
+      
+      var destinations = locations.filter(location => !location.isOrigin);
+      if (destinations.length === 0) {
+        alert('Por favor, adicione pelo menos um destino para a rota.');
+        return;
+      }
+      
+      // Configurar restrições de rota
+      var avoidTolls = document.getElementById('avoid-tolls').checked;
+      var avoidHighways = document.getElementById('avoid-highways').checked;
+      var avoidFerries = document.getElementById('avoid-ferries').checked;
+      
+      var request = {
+        origin: {lat: origin.latitude, lng: origin.longitude},
+        destination: {lat: origin.latitude, lng: origin.longitude}, // Volta para origem
+        waypoints: destinations.map(function(dest) {
+          return {
+            location: {lat: dest.latitude, lng: dest.longitude},
+            stopover: true
+          };
+        }),
+        optimizeWaypoints: false, // Não otimizar neste momento
+        travelMode: google.maps.TravelMode.DRIVING,
+        avoidTolls: avoidTolls,
+        avoidHighways: avoidHighways,
+        avoidFerries: avoidFerries
+      };
+      
+      directionsService.route(request, function(result, status) {
+        if (status === 'OK') {
+          directionsRenderer.setDirections(result);
+          
+          // Calcular distância e tempo total
+          var legs = result.routes[0].legs;
+          var totalDistance = 0;
+          var totalDuration = 0;
+          
+          for (var i = 0; i < legs.length; i++) {
+            totalDistance += legs[i].distance.value;
+            totalDuration += legs[i].duration.value;
+          }
+          
+          // Converter para formatos legíveis
+          var distanceInKm = (totalDistance / 1000).toFixed(2);
+          var durationInHours = Math.floor(totalDuration / 3600);
+          var durationInMinutes = Math.floor((totalDuration % 3600) / 60);
+          
+          // Atualizar informações da rota
+          var routeInfo = document.getElementById('route-info');
+          routeInfo.innerHTML = '<p><strong>Distância total:</strong> ' + distanceInKm + ' km</p>' +
+                               '<p><strong>Tempo estimado:</strong> ' + durationInHours + 'h ' + durationInMinutes + 'min</p>' +
+                               '<p><strong>Paradas:</strong> ' + destinations.length + '</p>';
+          
+          // Ativar aba de informações
+          openTab('bottom-info');
+          
+          // Carregar eventos para cidades na rota
+          loadEventsForRoute(result);
+        } else {
+          alert('Não foi possível calcular a rota: ' + status);
+        }
+      });
+    }
+    
+    // Otimizar rota
+    function optimizeRoute() {
+      var origin = locations.find(location => location.isOrigin);
+      if (!origin) {
+        alert('Por favor, adicione uma origem para a rota.');
+        return;
+      }
+      
+      var destinations = locations.filter(location => !location.isOrigin);
+      if (destinations.length === 0) {
+        alert('Por favor, adicione pelo menos um destino para a rota.');
+        return;
+      }
+      
+      // Configurar restrições de rota
+      var avoidTolls = document.getElementById('avoid-tolls').checked;
+      var avoidHighways = document.getElementById('avoid-highways').checked;
+      var avoidFerries = document.getElementById('avoid-ferries').checked;
+      
+      var request = {
+        origin: {lat: origin.latitude, lng: origin.longitude},
+        destination: {lat: origin.latitude, lng: origin.longitude}, // Volta para origem
+        waypoints: destinations.map(function(dest) {
+          return {
+            location: {lat: dest.latitude, lng: dest.longitude},
+            stopover: true
+          };
+        }),
+        optimizeWaypoints: true, // Otimizar ordem dos waypoints
+        travelMode: google.maps.TravelMode.DRIVING,
+        avoidTolls: avoidTolls,
+        avoidHighways: avoidHighways,
+        avoidFerries: avoidFerries
+      };
+      
+      directionsService.route(request, function(result, status) {
+        if (status === 'OK') {
+          directionsRenderer.setDirections(result);
+          
+          // Obter ordem otimizada
+          var waypointOrder = result.routes[0].waypoint_order;
+          
+          // Reordenar localizações
+          var orderedDestinations = [];
+          for (var i = 0; i < waypointOrder.length; i++) {
+            orderedDestinations.push(destinations[waypointOrder[i]]);
+          }
+          
+          // Atualizar localizações
+          locations = [origin].concat(orderedDestinations);
+          
+          // Calcular distância e tempo total
+          var legs = result.routes[0].legs;
+          var totalDistance = 0;
+          var totalDuration = 0;
+          
+          for (var i = 0; i < legs.length; i++) {
+            totalDistance += legs[i].distance.value;
+            totalDuration += legs[i].duration.value;
+          }
+          
+          // Converter para formatos legíveis
+          var distanceInKm = (totalDistance / 1000).toFixed(2);
+          var durationInHours = Math.floor(totalDuration / 3600);
+          var durationInMinutes = Math.floor((totalDuration % 3600) / 60);
+          
+          // Atualizar informações da rota
+          var routeInfo = document.getElementById('route-info');
+          routeInfo.innerHTML = '<p><strong>Rota Otimizada</strong></p>' +
+                               '<p><strong>Distância total:</strong> ' + distanceInKm + ' km</p>' +
+                               '<p><strong>Tempo estimado:</strong> ' + durationInHours + 'h ' + durationInMinutes + 'min</p>' +
+                               '<p><strong>Paradas:</strong> ' + destinations.length + '</p>' +
+                               '<p><strong>Sequência otimizada:</strong></p>' +
+                               '<ol><li>' + origin.name + ' (Origem)</li>' +
+                                   orderedDestinations.map(dest => '<li>' + dest.name + '</li>').join('') +
+                               '<li>' + origin.name + ' (Retorno)</li></ol>';
+          
+          // Ativar aba de informações
+          openTab('bottom-info');
+          
+          // Carregar eventos para cidades na rota
+          loadEventsForRoute(result);
+        } else {
+          alert('Não foi possível otimizar a rota: ' + status);
+        }
+      });
+    }
+    
+    // Abrir aba
+    function openTab(tabId) {
+      // Esconder todos os conteúdos de abas
+      var contents = document.querySelectorAll('.bottom-tab-content');
+      contents.forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // Mostrar o conteúdo da aba selecionada
+      document.getElementById(tabId).classList.add('active');
+      
+      // Atualizar botão ativo
+      var buttons = document.querySelectorAll('.bottom-tab-button');
+      buttons.forEach(button => {
+        button.classList.remove('active');
+        var buttonTabId = button.getAttribute('onclick').match(/'([^']+)'/)[1];
+        if (buttonTabId === tabId) {
+          button.classList.add('active');
+        }
+      });
+    }
+    
+    // Alternar estado das abas (minimizar/expandir)
+    function toggleTabs() {
+      var tabsContainer = document.getElementById('bottom-tabs');
+      var button = document.getElementById('toggle-tabs-button');
+      
+      if (tabsContainer.classList.contains('expanded')) {
+        tabsContainer.classList.remove('expanded');
+        button.textContent = '▼';
+      } else {
+        tabsContainer.classList.add('expanded');
+        button.textContent = '▲';
+      }
+    }
+    
+    // Exportar rota
+    function exportRoute() {
+      if (locations.length === 0) {
+        alert('Não há localizações para exportar.');
+        return;
+      }
+      
+      var data = JSON.stringify(locations, null, 2);
+      var blob = new Blob([data], {type: 'application/json'});
+      var url = URL.createObjectURL(blob);
+      
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'rota_moveis_bonafe_' + new Date().toISOString().split('T')[0] + '.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    
+    // Importar rota
+    function importRoute(event) {
+      var file = event.target.files[0];
+      if (!file) return;
+      
+      var reader = new FileReader();
+      
+      reader.onload = function(e) {
+        try {
+          var importedLocations = JSON.parse(e.target.result);
+          
+          // Validar dados importados
+          if (!Array.isArray(importedLocations) || importedLocations.length === 0) {
+            throw new Error('Formato de arquivo inválido.');
+          }
+          
+          // Limpar localizações existentes
+          locations.forEach(location => {
+            removeMarker(location.id);
+          });
+          
+          locations = [];
+          
+          // Adicionar novas localizações
+          importedLocations.forEach(location => {
+            // Garantir que tenha um ID único
+            location.id = location.id || new Date().getTime() + Math.floor(Math.random() * 1000);
+            locations.push(location);
+            addMarker(location);
+          });
+          
+          // Atualizar UI
+          updateLocationList();
+          
+          alert('Rota importada com sucesso!');
+        } catch (error) {
+          alert('Erro ao importar rota: ' + error.message);
+        }
+      };
+      
+      reader.readAsText(file);
+    }
+    
+    // Aplicar restrições
+    function applyRestrictions() {
+      // Se houver uma rota visível, recalcular
+      if (locations.length > 1) {
+        visualizeRoute();
+      } else {
+        alert('Adicione localizações para aplicar restrições à rota.');
+      }
+    }
+    
+    // Carregar eventos
+    function loadEvents() {
+      // Dados de exemplo para eventos
+      var eventsData = [
+        {
+          city: "Dois Córregos",
+          title: "Aniversário da Cidade",
+          date: "03/02/2025",
+          endDate: "03/02/2025",
+          description: "Aniversário de fundação de Dois Córregos em 04/02/1883"
+        },
+        {
+          city: "Piedade",
+          title: "Aniversário da Cidade",
+          date: "20/05/2025",
+          endDate: "20/05/2025",
+          description: "Aniversário de fundação de Piedade em 20/05/1842"
+        },
+        {
+          city: "Ribeirão Preto",
+          title: "Aniversário da Cidade",
+          date: "19/06/2025",
+          endDate: "19/06/2025",
+          description: "Aniversário de fundação de Ribeirão Preto em 19/06/1856"
+        }
+      ];
+      
+      window.globalEvents = eventsData;
+    }
+    
+    // Filtrar eventos
+    function filterEvents() {
+      var startDate = document.getElementById('event-start-date').value;
+      var endDate = document.getElementById('event-end-date').value;
+      
+      if (locations.length <= 1) {
+        alert('Adicione localizações para visualizar eventos nas cidades da rota.');
+        return;
+      }
+      
+      // Se não houver uma rota calculada, calcular agora
+      if (!directionsRenderer.getDirections()) {
+        visualizeRoute();
+        return;
+      }
+      
+      // Obter cidades na rota
+      var routeCities = [];
+      var cityNames = new Set(); // Para evitar duplicatas
+      
+      // Adicionar origem
+      var origin = locations.find(location => location.isOrigin);
+      if (origin) {
+        var originCity = origin.name.split(',')[0].trim();
+        routeCities.push(originCity);
+        cityNames.add(originCity);
+      }
+      
+      // Adicionar destinos
+      locations.filter(location => !location.isOrigin).forEach(location => {
+        var destCity = location.name.split(',')[0].trim();
+        if (!cityNames.has(destCity)) {
+          routeCities.push(destCity);
+          cityNames.add(destCity);
+        }
+      });
+      
+      // Normalizar nomes das cidades para comparação
+      function normalizeCityName(name) {
+        return name.toLowerCase()
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remover acentos
+          .replace(/[^\w\s]/g, ''); // Remover caracteres especiais
+      }
+      
+      // Converter datas para comparação
+      function parseDate(dateStr) {
+        if (!dateStr) return null;
+        
+        // Se estiver no formato dd/mm/yyyy
+        if (dateStr.includes('/')) {
+          var parts = dateStr.split('/');
+          return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+        }
+        
+        // Se estiver no formato yyyy-mm-dd (input date)
+        return new Date(dateStr);
+      }
+      
+      var startDateObj = parseDate(startDate);
+      var endDateObj = parseDate(endDate);
+      
+      // Se as datas não forem especificadas, usar o ano atual
+      if (!startDateObj) {
+        startDateObj = new Date(new Date().getFullYear(), 0, 1); // 1º de janeiro
+      }
+      
+      if (!endDateObj) {
+        endDateObj = new Date(new Date().getFullYear(), 11, 31); // 31 de dezembro
+      }
+      
+      // Filtrar eventos
+      var filteredEvents = [];
+      if (window.globalEvents) {
+        window.globalEvents.forEach(event => {
+          // Verificar se a cidade está na rota
+          var eventCity = event.city;
+          var inRoute = routeCities.some(city => {
+            return normalizeCityName(city) === normalizeCityName(eventCity);
+          });
+          
+          if (inRoute) {
+            // Verificar se o evento está dentro da faixa de datas
+            var eventDate = parseDate(event.date);
+            var eventEndDate = parseDate(event.endDate || event.date);
+            
+            if (eventDate >= startDateObj && eventEndDate <= endDateObj) {
+              filteredEvents.push(event);
+            }
+          }
+        });
+      }
+      
+      // Mostrar eventos filtrados
+      displayEvents(filteredEvents, routeCities);
+      
+      // Mostrar aba de eventos
+      openTab('bottom-events');
+    }
+    
+    // Carregar eventos para a rota atual
+    function loadEventsForRoute(routeResult) {
+      if (!routeResult) return;
+      
+      // Obter cidades na rota
+      var routeCities = [];
+      var cityNames = new Set(); // Para evitar duplicatas
+      
+      // Adicionar origem
+      var origin = locations.find(location => location.isOrigin);
+      if (origin) {
+        var originCity = origin.name.split(',')[0].trim();
+        routeCities.push(originCity);
+        cityNames.add(originCity);
+      }
+      
+      // Adicionar destinos
+      locations.filter(location => !location.isOrigin).forEach(location => {
+        var destCity = location.name.split(',')[0].trim();
+        if (!cityNames.has(destCity)) {
+          routeCities.push(destCity);
+          cityNames.add(destCity);
+        }
+      });
+      
+      // Obter datas do filtro
+      var startDate = document.getElementById('event-start-date').value;
+      var endDate = document.getElementById('event-end-date').value;
+      
+      // Converter datas para comparação
+      function parseDate(dateStr) {
+        if (!dateStr) return null;
+        
+        // Se estiver no formato dd/mm/yyyy
+        if (dateStr.includes('/')) {
+          var parts = dateStr.split('/');
+          return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+        }
+        
+        // Se estiver no formato yyyy-mm-dd (input date)
+        return new Date(dateStr);
+      }
+      
+      var startDateObj = parseDate(startDate);
+      var endDateObj = parseDate(endDate);
+      
+      // Se as datas não forem especificadas, usar o ano atual
+      if (!startDateObj) {
+        startDateObj = new Date(new Date().getFullYear(), 0, 1); // 1º de janeiro
+      }
+      
+      if (!endDateObj) {
+        endDateObj = new Date(new Date().getFullYear(), 11, 31); // 31 de dezembro
+      }
+      
+      // Normalizar nomes das cidades para comparação
+      function normalizeCityName(name) {
+        return name.toLowerCase()
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remover acentos
+          .replace(/[^\w\s]/g, ''); // Remover caracteres especiais
+      }
+      
+      // Filtrar eventos
+      var filteredEvents = [];
+      if (window.globalEvents) {
+        window.globalEvents.forEach(event => {
+          // Verificar se a cidade está na rota
+          var eventCity = event.city;
+          var inRoute = routeCities.some(city => {
+            return normalizeCityName(city) === normalizeCityName(eventCity);
+          });
+          
+          if (inRoute) {
+            // Verificar se o evento está dentro da faixa de datas
+            var eventDate = parseDate(event.date);
+            var eventEndDate = parseDate(event.endDate || event.date);
+            
+            if (eventDate >= startDateObj && eventEndDate <= endDateObj) {
+              filteredEvents.push(event);
+            }
+          }
+        });
+      }
+      
+      // Mostrar eventos filtrados
+      displayEvents(filteredEvents, routeCities);
+    }
+    
+    // Exibir eventos na interface
+    function displayEvents(events, routeCities) {
+      var container = document.getElementById('event-list');
+      container.innerHTML = '';
+      
+      if (events.length === 0) {
+        container.innerHTML = '<div class="message">Nenhum evento encontrado para as cidades na rota dentro do período selecionado.</div>';
+        return;
+      }
+      
+      // Ordenar eventos por data
+      events.sort(function(a, b) {
+        var dateA = new Date(a.date.split('/').reverse().join('-'));
+        var dateB = new Date(b.date.split('/').reverse().join('-'));
+        return dateA - dateB;
+      });
+      
+      // Exibir lista de cidades na rota
+      var citiesText = routeCities.join(', ');
+      container.innerHTML = '<div class="message success">Eventos filtrados para as cidades: ' + citiesText + '</div>';
+      
+      // Adicionar cada evento
+      events.forEach(function(event) {
+        var item = document.createElement('div');
+        item.className = 'event-item';
+        
+        var dateRange = event.date;
+        if (event.endDate && event.endDate !== event.date) {
+          dateRange += ' a ' + event.endDate;
+        }
+        
+        item.innerHTML = '<div class="event-date">' + event.city + ' | ' + dateRange + '</div>' +
+                        '<div class="event-title">' + event.title + '</div>' +
+                        '<div class="event-description">' + event.description + '</div>';
+        
+        container.appendChild(item);
+      });
+    }
+    
+    // Inicializar o mapa quando o script for carregado
+    google.maps.event.addDomListener(window, 'load', initMap);
+  </script>
   
-  function expandTabs() {
-    var tabsContainer = document.querySelector('.bottom-tabs-container');
-    if (!tabsContainer) return;
-    
-    // Remover classe minimizada
-    tabsContainer.classList.remove('minimized');
-    
-    // Aplicar estilos expandidos
-    tabsContainer.style.position = 'fixed';
-    tabsContainer.style.top = '0';
-    tabsContainer.style.left = '380px';
-    tabsContainer.style.right = '0';
-    tabsContainer.style.bottom = '0';
-    tabsContainer.style.width = 'calc(100% - 380px)';
-    tabsContainer.style.height = '100vh';
-    tabsContainer.style.zIndex = '9999';
-    tabsContainer.style.backgroundColor = 'white';
-    tabsContainer.style.borderLeft = '3px solid #ffc107';
-    tabsContainer.style.boxShadow = '0 0 20px rgba(0,0,0,0.15)';
-    
-    // Ajustar para telas menores
-    if (window.innerWidth <= 768) {
-      tabsContainer.style.left = '320px';
-      tabsContainer.style.width = 'calc(100% - 320px)';
-    }
-    
-    // Ocultar o mapa
-    var mapContainer = document.querySelector('.map-container');
-    if (mapContainer) {
-      mapContainer.style.visibility = 'hidden';
-    }
-  }
-  
-  function minimizeTabs() {
-    var tabsContainer = document.querySelector('.bottom-tabs-container');
-    if (!tabsContainer) return;
-    
-    // Adicionar classe minimizada
-    tabsContainer.classList.add('minimized');
-    
-    // Restaurar estilos originais
-    tabsContainer.style.position = 'absolute';
-    tabsContainer.style.top = 'auto';
-    tabsContainer.style.left = '380px';
-    tabsContainer.style.right = '0';
-    tabsContainer.style.bottom = '0';
-    tabsContainer.style.height = '60px';
-    tabsContainer.style.width = 'calc(100% - 380px)';
-    tabsContainer.style.zIndex = '100';
-    tabsContainer.style.backgroundColor = '#f9f9f9';
-    tabsContainer.style.borderLeft = 'none';
-    tabsContainer.style.boxShadow = 'none';
-    
-    // Ajustar para telas menores
-    if (window.innerWidth <= 768) {
-      tabsContainer.style.left = '320px';
-      tabsContainer.style.width = 'calc(100% - 320px)';
-    }
-    
-    // Mostrar o mapa novamente
-    var mapContainer = document.querySelector('.map-container');
-    if (mapContainer) {
-      mapContainer.style.visibility = 'visible';
-    }
-  }
-})();
-&lt;/script&gt;
-</div>
-    </div>
-    
-    <div class="step">
-        <h3>Passo 3: Salvar as alterações</h3>
-        <p>Após adicionar o script, clique no botão "Commit changes" para salvar as alterações.</p>
-    </div>
-    
-    <div class="warning">
-        <p>Esta solução é mais simples e direta que as anteriores. Ela:</p>
-        <ul>
-            <li>Esconde todos os conteúdos de abas</li>
-            <li>Mostra apenas o conteúdo da aba ativa</li>
-            <li>Verifica constantemente se mais de uma aba está visível e corrige</li>
-            <li>Substitui todos os manipuladores de eventos para garantir o comportamento correto</li>
-        </ul>
-    </div>
-    
-    <h2>Por que isto funciona?</h2>
-    <p>Esta solução:
-        <ul>
-            <li>Usa código JavaScript puro sem dependências</li>
-            <li>Remove todos os manipuladores de eventos existentes</li>
-            <li>Força o estado correto mesmo que outros scripts interfiram</li>
-            <li>Verifica periodicamente para garantir que o problema não retorne</li>
-        </ul>
-    </p>
+  <!-- Script de correção direta para GitHub Pages -->
+  <script src="direct-github-fix.js"></script>
 </body>
 </html>
