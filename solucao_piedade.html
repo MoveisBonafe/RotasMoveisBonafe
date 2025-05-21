@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Correção para Piedade</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #e67700;
+            border-bottom: 2px solid #ffd43b;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2b8a3e;
+            margin-top: 30px;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .instruction {
+            background-color: #fff3bf;
+            padding: 15px;
+            border-left: 4px solid #fcc419;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Solução para o problema da cidade de Piedade</h1>
+    
+    <div class="instruction">
+        <p><strong>Problema identificado:</strong> A cidade de Piedade está aparecendo com informações duplicadas e datas incorretas:</p>
+        <ul>
+            <li>Data incorreta: <code>Piedade | 18/03/2025</code></li>
+            <li>Descrição incorreta: <code>Aniversário de fundação de Piedade em 19/03/1842</code></li>
+            <li>Dados corretos: data <code>20/05/2025</code> e fundação em <code>20/05/1842</code></li>
+        </ul>
+    </div>
+    
+    <h2>Solução Implementada</h2>
+    
+    <p>Criamos um script específico que corrige as datas incorretas e remove as entradas duplicadas. Este script:</p>
+    
+    <ol>
+        <li>Corrige a data de aniversário de Piedade para 20/05/2025</li>
+        <li>Corrige a descrição para "Aniversário de fundação de Piedade em 20/05/1842"</li>
+        <li>Remove entradas duplicadas da cidade</li>
+        <li>Corrige os dados no modelo global (JavaScript) e nos elementos do DOM</li>
+    </ol>
+    
+    <h2>Como usar a solução</h2>
+    
+    <div class="instruction">
+        <p>Para implementar esta solução, você precisa:</p>
+        <ol>
+            <li>Copiar o arquivo <code>city-events-fix.js</code> para seu repositório</li>
+            <li>Adicionar a seguinte linha ao final de seu arquivo <code>index.html</code>, logo antes da tag <code>&lt;/body&gt;</code>:
+            <pre>&lt;script src="city-events-fix.js"&gt;&lt;/script&gt;</pre>
+            </li>
+        </ol>
+    </div>
+    
+    <h2>Solução Permanente</h2>
+    
+    <p>Para uma solução mais permanente, também corrigimos os dados na fonte, removendo entradas duplicadas de Piedade no arquivo <code>docs/city-events-data.js</code> e garantindo que todas as instâncias usem a data correta <code>20/05/2025</code>.</p>
+    
+    <p>Isso deve resolver tanto o problema de duplicação quanto o problema da data incorreta.</p>
+</body>
+</html>
