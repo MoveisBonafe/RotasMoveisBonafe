@@ -46,11 +46,14 @@
     sidebar.style.boxShadow = '2px 0 10px rgba(0,0,0,0.1)';
     sidebar.style.background = '#f8f9fa';
     
-    // Ajustar o container do mapa
-    mapContainer.style.flex = '1';
-    mapContainer.style.height = '100vh';
-    mapContainer.style.width = 'calc(100% - 300px)';
-    mapContainer.style.marginLeft = '300px';
+    // Ajustar o container do mapa para ocupar toda a largura disponível
+    mapContainer.style.position = 'fixed';
+    mapContainer.style.top = '0';
+    mapContainer.style.left = '300px';
+    mapContainer.style.right = '0';
+    mapContainer.style.bottom = '60px'; // Espaço para as abas inferiores
+    mapContainer.style.width = 'auto';
+    mapContainer.style.height = 'auto';
     
     // Ajustar o div do mapa para ocupar todo o espaço
     mapDiv.style.height = '100%';
@@ -67,36 +70,69 @@
       bottomTabs.style.background = 'rgba(248, 249, 250, 0.95)';
     }
     
-    // Se conseguirmos acessar a API do Google Maps, tentar recentrar o mapa
+    // Se conseguirmos acessar a API do Google Maps, ajustar configurações
     if (window.google && window.google.maps && window.map) {
       try {
-        console.log("[MapaCorrecao] Reconhecido objeto Google Maps - forçando atualização");
+        console.log("[MapaCorrecao] Reconhecido objeto Google Maps - ajustando configurações");
         
         // Salvar o centro atual
         const centro = window.map.getCenter();
+        
+        // Habilitar o Pegman (Street View)
+        window.map.setOptions({
+          streetViewControl: true,
+          streetViewControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_BOTTOM
+          }
+        });
+        
+        // Esconder outros controles que não precisamos
+        window.map.setOptions({
+          fullscreenControl: false,
+          mapTypeControl: false,
+          zoomControl: true,
+          zoomControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_CENTER
+          }
+        });
         
         // Trigger de redimensionamento para recalcular o layout
         google.maps.event.trigger(window.map, 'resize');
         
         // Restaurar centro
         window.map.setCenter(centro);
+        
+        console.log("[MapaCorrecao] Pegman (Street View) adicionado ao mapa");
       } catch (e) {
-        console.log("[MapaCorrecao] Erro ao recentralizar:", e);
+        console.log("[MapaCorrecao] Erro ao configurar o mapa:", e);
       }
     }
     
     // Solução para remover ou ocultar divs estranhos gerados pelo Google Maps
-    const divsEstranhos = document.querySelectorAll('div[style*="width: 256px; height: 256px"], div[style*="position: absolute"]');
-    divsEstranhos.forEach(div => {
-      // Se estiverem fora do container do mapa, remover completamente
-      if (div.parentNode && 
-          !div.closest('.map-container') && 
-          !div.closest('#map') &&
-          div.style.position === 'absolute') {
-        console.log("[MapaCorrecao] Removendo div estranho do Google Maps fora do container");
-        div.parentNode.removeChild(div);
-      }
-    });
+    setTimeout(function() {
+      const divsEstranhos = document.querySelectorAll('div[style*="width: 256px; height: 256px"], div[style*="position: absolute"]');
+      divsEstranhos.forEach(div => {
+        // Se estiverem fora do container do mapa, remover completamente
+        if (div.parentNode && 
+            !div.closest('.map-container') && 
+            !div.closest('#map') &&
+            div.style.position === 'absolute') {
+          console.log("[MapaCorrecao] Removendo div estranho do Google Maps fora do container");
+          div.parentNode.removeChild(div);
+        }
+      });
+      
+      // Também remover divs com valores negativos de left e top
+      const divsNegativos = document.querySelectorAll('div[style*="left: -"]');
+      divsNegativos.forEach(div => {
+        if (div.parentNode && 
+            !div.closest('.map-container') && 
+            !div.closest('#map')) {
+          console.log("[MapaCorrecao] Removendo div com posição negativa");
+          div.parentNode.removeChild(div);
+        }
+      });
+    }, 500);
     
     // Garantir que o mapa permaneça fixo e estável
     const body = document.body;
