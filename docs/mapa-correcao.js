@@ -29,7 +29,7 @@
     // Ajustar o layout principal com CSS inline para garantir aplicação
     container.style.display = 'flex';
     container.style.height = '100vh';
-    container.style.width = '120%';
+    container.style.width = '100%';
     container.style.overflow = 'hidden';
     
     // Ajustar a sidebar
