@@ -29,7 +29,7 @@
     // Ajustar o layout principal com CSS inline para garantir aplicação
     container.style.display = 'flex';
     container.style.height = '100vh';
-    container.style.width = '100%';
+    container.style.width = '120%';
     container.style.overflow = 'hidden';
     
     // Ajustar a sidebar
@@ -48,8 +48,8 @@
     // Ajustar o container do mapa
     mapContainer.style.flex = '1';
     mapContainer.style.height = '100vh';
-    mapContainer.style.width = 'calc(100% - 100px)';
-    mapContainer.style.marginLeft = '100px';
+    mapContainer.style.width = 'calc(100% - 300px)';
+    mapContainer.style.marginLeft = '300px';
     
     // Ajustar o div do mapa para ocupar todo o espaço
     mapDiv.style.height = '100%';
