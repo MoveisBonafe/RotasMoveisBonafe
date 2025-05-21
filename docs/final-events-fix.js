@@ -228,7 +228,26 @@
     // Normalizar nome da cidade para busca
     const cidadeNormalizada = normalizarCidade(cidade);
     
-    // Verificar em ambos estados (SP e MG)
+    // 1. PRIMEIRO: VERIFICAR NAS CORREÇÕES OFICIAIS (MÁXIMA PRIORIDADE)
+    if (window.aniversariosCidades.correcoes) {
+      for (const [nomeCidade, info] of Object.entries(window.aniversariosCidades.correcoes)) {
+        if (normalizarCidade(nomeCidade) === cidadeNormalizada ||
+            cidadeNormalizada.includes(normalizarCidade(nomeCidade)) ||
+            normalizarCidade(nomeCidade).includes(cidadeNormalizada)) {
+          
+          console.log(`[EventosFix] Usando correção oficial para ${cidade}: ${info.dia}/${info.mes}`);
+          
+          // Retornar a correção oficial
+          return {
+            cidade: nomeCidade,
+            dia: info.dia,
+            mes: info.mes
+          };
+        }
+      }
+    }
+    
+    // 2. VERIFICAR EM AMBOS ESTADOS (SP E MG)
     const estados = ['SP', 'MG'];
     
     for (const estado of estados) {
@@ -259,7 +278,7 @@
       }
     }
     
-    // Se não encontrou na lista oficial, tentar no dicionário de datas de fundação
+    // 3. SE NÃO ENCONTROU, TENTAR NO DICIONÁRIO DE DATAS DE FUNDAÇÃO
     for (const [cidadeFundacao, data] of Object.entries(DATAS_FUNDACAO)) {
       if (normalizarCidade(cidadeFundacao) === cidadeNormalizada ||
           cidadeNormalizada.includes(normalizarCidade(cidadeFundacao)) ||

@@ -7,6 +7,11 @@
 // Dados de aniversários de cidades por estado e data
 const aniversariosCidades = {
   // São Paulo - organizado por mês e dia
+  // Correções oficiais (prioridade)
+  'correcoes': {
+    'Ribeirão Preto': { dia: '19', mes: '06' }
+  },
+  
   'SP': {
     '01': { // Janeiro
       '01': ['Uru'],
