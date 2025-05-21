@@ -32,7 +32,116 @@
     // Também corrigir elementos visuais
     corrigirElementosVisuais();
     
+    // Garantir que apenas eventos de cidades no percurso atual sejam exibidos
+    filtrarEventosPorPercurso();
+    
     console.log("[DataIntegrity] Verificação de integridade concluída");
+  }
+  
+  // Função para garantir que apenas eventos de cidades no percurso atual sejam exibidos
+  function filtrarEventosPorPercurso() {
+    console.log("[DataIntegrity] Filtrando eventos por percurso...");
+    
+    // Tentar encontrar o contêiner de eventos
+    const eventosContainer = document.querySelector('.event-list');
+    if (!eventosContainer) {
+      console.log("[DataIntegrity] Container de eventos não encontrado");
+      return;
+    }
+    
+    // Encontrar todas as cidades no percurso atual
+    const cidadesNoPercurso = obterCidadesNoPercurso();
+    console.log("[DataIntegrity] Cidades no percurso atual: ", cidadesNoPercurso);
+    
+    // Encontrar todos os eventos exibidos
+    const eventosExibidos = eventosContainer.querySelectorAll('.event-item');
+    console.log("[DataIntegrity] Total de eventos exibidos: " + eventosExibidos.length);
+    
+    // Verificar cada evento
+    eventosExibidos.forEach(eventoElement => {
+      const textoEvento = eventoElement.textContent || '';
+      let cidadeEvento = "";
+      
+      // Tentar extrair o nome da cidade do evento
+      const elementoCidade = eventoElement.querySelector('.event-date');
+      if (elementoCidade) {
+        const textoCidade = elementoCidade.textContent || '';
+        // Extrair a cidade (geralmente está antes do '|')
+        const match = textoCidade.match(/^([^|]+)\s*\|/);
+        if (match) {
+          cidadeEvento = match[1].trim();
+        }
+      }
+      
+      // Se não conseguiu extrair pelo formato padrão, tenta outros elementos
+      if (!cidadeEvento) {
+        // Tentar extrair da descrição ou título
+        const tituloElement = eventoElement.querySelector('.event-title');
+        if (tituloElement) {
+          const textoTitulo = tituloElement.textContent || '';
+          // Procurar por padrões como "Aniversário de [Cidade]"
+          const matchTitulo = textoTitulo.match(/Anivers[áa]rio\s+d[aeo]\s+(.+)/i);
+          if (matchTitulo) {
+            cidadeEvento = matchTitulo[1].trim();
+          }
+        }
+      }
+      
+      // Normalizar o nome da cidade
+      cidadeEvento = normalizarNomeCidade(cidadeEvento);
+      
+      // Verificar se a cidade está no percurso
+      const estaNaRota = cidadesNoPercurso.some(cidade => 
+        normalizarNomeCidade(cidade) === cidadeEvento
+      );
+      
+      // Atualizar a visibilidade do evento
+      if (estaNaRota) {
+        eventoElement.style.display = '';
+        console.log(`[DataIntegrity] Mostrando evento para ${cidadeEvento} (está no percurso)`);
+      } else {
+        eventoElement.style.display = 'none';
+        console.log(`[DataIntegrity] Ocultando evento para ${cidadeEvento} (não está no percurso)`);
+      }
+    });
+  }
+  
+  // Função para obter as cidades no percurso atual
+  function obterCidadesNoPercurso() {
+    const cidadesNoPercurso = [];
+    
+    // Verificar título do percurso para extrair origem e destino
+    const percursoElement = document.querySelector('.restrictions-list div[style*="background-color: rgb(255, 193, 7)"] span');
+    if (percursoElement) {
+      const textoPecurso = percursoElement.textContent || '';
+      const cidadesPecurso = textoPecurso.split('→').map(c => c.trim());
+      cidadesNoPercurso.push(...cidadesPecurso);
+    }
+    
+    // Verificar cidades listadas como parte do percurso
+    document.querySelectorAll('.city-in-route').forEach(element => {
+      const textoCidade = element.previousElementSibling?.previousElementSibling?.querySelector('span')?.textContent;
+      if (textoCidade) {
+        cidadesNoPercurso.push(textoCidade.trim());
+      }
+    });
+    
+    // Se não encontrou nenhuma cidade pelo método acima, tentar outra abordagem
+    if (cidadesNoPercurso.length === 0) {
+      // Tentar obter cidades de marcadores no mapa ou lista de locais
+      const pontosElement = document.querySelector('#locationList');
+      if (pontosElement) {
+        const textoPontos = pontosElement.textContent || '';
+        // Extrair nomes de cidades de forma genérica
+        const cidadesMatches = textoPontos.match(/([A-ZÀ-Ú][a-zà-ú]+(\s+[A-ZÀ-Ú][a-zà-ú]+)*)/g);
+        if (cidadesMatches) {
+          cidadesNoPercurso.push(...cidadesMatches);
+        }
+      }
+    }
+    
+    // Remover duplicatas
+    return [...new Set(cidadesNoPercurso)];
   }
   
   // Verifica e corrige inconsistências na estrutura window.mockData
