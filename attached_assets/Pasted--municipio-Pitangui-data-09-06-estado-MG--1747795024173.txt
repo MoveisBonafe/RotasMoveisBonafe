@@ -1,0 +1,3043 @@
+    {
+"municipio": "Pitangui",
+      "data": "09/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Adamantina",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cachoeira Paulista",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cordeirópolis",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Coroados",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Guaratinguetá",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itaí",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Junquerirópolis",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Macatuba",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Martinópolis",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Mirassolândia",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ocauçu",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Paraibuna",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Rancharia",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santo Antônio da Alegria",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santo Antônio de Posse",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Suzanápolis",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Taiúva",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Urânia",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Uru",
+      "data": "10/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Rio Espera",
+      "data": "11/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Santo Antônio do Amparo",
+      "data": "12/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Pradópolis",
+      "data": "13/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Caetanópolis",
+      "data": "13/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Mantena",
+      "data": "13/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Balbinos",
+      "data": "14/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Piquete",
+      "data": "15/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Bariri",
+      "data": "16/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Piracaia",
+      "data": "16/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São Manuel",
+      "data": "17/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ribeirão Preto",
+      "data": "19/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Analândia",
+      "data": "21/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cedral",
+      "data": "21/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Iacri",
+      "data": "21/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Jacupiranga",
+      "data": "23/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Álvares Florence",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Américo de Campos",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Atibaia",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Clementina",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Gastão Vidigal",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ibaté",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Joanópolis",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "José Bonifácio",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Lucélia",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Mirandópolis",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Populina",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Rio Claro",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santa Albertina",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santa Fé do Sul",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São João da Boa Vista",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São João das Duas Pontes",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São João do Pau D'Alho",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Salto de Pirapora",
+      "data": "24/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Lavrinhas",
+      "data": "27/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Regente Feijó",
+      "data": "28/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Lucianópolis",
+      "data": "29/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Monte Azul Paulista",
+      "data": "29/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Morungaba",
+      "data": "29/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Nova Canaã Paulista",
+      "data": "29/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Paulicéia",
+      "data": "29/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Guarujá",
+      "data": "30/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Assis",
+      "data": "01/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Águas da Prata",
+      "data": "02/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ibitinga",
+      "data": "04/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Fernandópolis",
+      "data": "05/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Bananal",
+      "data": "10/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Bariri",
+      "data": "10/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pindamonhangaba",
+      "data": "10/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Rio das Pedras",
+      "data": "10/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santa Izabel",
+      "data": "10/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Andradina",
+      "data": "11/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Campinas",
+      "data": "14/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Jaboticabal",
+      "data": "16/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Bastos",
+      "data": "18/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Turiúba",
+      "data": "19/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Boa Esperança do Sul",
+      "data": "22/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itatinga",
+      "data": "24/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Alto Alegre",
+      "data": "24/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Águas de São Pedro",
+      "data": "25/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Areias",
+      "data": "26/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Sumaré",
+      "data": "26/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Agudos",
+      "data": "27/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Jardinópolis",
+      "data": "27/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pitangueiras",
+      "data": "27/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São José dos Campos",
+      "data": "27/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São Caetano do Sul",
+      "data": "28/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Porto Ferreira",
+      "data": "29/07",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Bauru",
+      "data": "01/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Piracicaba",
+      "data": "01/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Aguaí",
+      "data": "06/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Floreal",
+      "data": "06/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Monte Alegre do Sul",
+      "data": "06/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pedranópolis",
+      "data": "06/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pirapora do Bom Jesus",
+      "data": "06/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pirassununga",
+      "data": "06/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ribeirão Bonito",
+      "data": "06/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Turmalina",
+      "data": "06/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Mesópolis",
+      "data": "06/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ponta Linda",
+      "data": "06/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Alvilândia",
+      "data": "08/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Votuporanga",
+      "data": "08/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Socorro",
+      "data": "09/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Castilho",
+      "data": "10/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pereira Barreto",
+      "data": "11/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Tatuí",
+      "data": "11/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cananéia",
+      "data": "12/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Natividade da Serra",
+      "data": "13/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Apiaí",
+      "data": "14/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Jaú",
+      "data": "15/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Paraíso",
+      "data": "15/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Sorocaba",
+      "data": "15/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cristais Paulista",
+      "data": "16/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pedregulho",
+      "data": "16/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santa Gertrudes",
+      "data": "16/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São Bento do Sapucaí",
+      "data": "16/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São Roque",
+      "data": "16/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Taquaritinga",
+      "data": "16/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Taquarituba",
+      "data": "16/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cajuru",
+      "data": "18/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Guarani D'Oeste",
+      "data": "18/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Rincão",
+      "data": "20/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São Bernardo do Campo",
+      "data": "20/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Tambaú",
+      "data": "20/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Araraquara",
+      "data": "22/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Brodowski",
+      "data": "22/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Inúbia Paulista",
+      "data": "22/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Buritama",
+      "data": "24/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Rubiácea",
+      "data": "24/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Barretos",
+      "data": "25/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Americana",
+      "data": "27/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itobi",
+      "data": "27/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Matão",
+      "data": "27/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itararé",
+      "data": "28/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Tupi Paulista",
+      "data": "28/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Leme",
+      "data": "29/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Mineiros do Tietê",
+      "data": "29/08",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Mogi das Cruzes",
+      "data": "01/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Presidente Venceslau",
+      "data": "02/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ilhabela",
+      "data": "03/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santa Rosa do Viterbo",
+      "data": "04/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Boituva",
+      "data": "05/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ribeirão Branco",
+      "data": "05/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Buritizal",
+      "data": "06/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Descalvado",
+      "data": "06/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itaquaquecetuba",
+      "data": "06/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Mirassol",
+      "data": "06/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Nipoã",
+      "data": "06/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Nuporanga",
+      "data": "09/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Sud Mennucci",
+      "data": "10/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itapuí",
+      "data": "11/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Marabá Paulista",
+      "data": "11/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Jaguariúna",
+      "data": "12/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Presidente Prudente",
+      "data": "14/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Avaré",
+      "data": "15/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Guará",
+      "data": "15/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Limeira",
+      "data": "15/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Nova Odessa",
+      "data": "15/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Euclides da Cunha Paulista",
+      "data": "15/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Paranapuã",
+      "data": "17/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pompéia",
+      "data": "17/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Guararema",
+      "data": "19/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ipaussu",
+      "data": "20/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itapeva",
+      "data": "20/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Guariba",
+      "data": "21/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pedrinhas Paulista",
+      "data": "21/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Nuporanga",
+      "data": "22/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Serra Negra",
+      "data": "23/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Urupês",
+      "data": "24/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Vargem Grande do Sul",
+      "data": "26/09",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cruzeiro",
+      "data": "02/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Rubinéia",
+      "data": "03/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Magda",
+      "data": "03/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Capela do Alto",
+      "data": "04/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Bernardino de Campos",
+      "data": "09/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cerqueira César",
+      "data": "10/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cosmorama",
+      "data": "10/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Laranjal Paulista",
+      "data": "10/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Nova Aliança",
+      "data": "12/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Presidente Bernardes",
+      "data": "12/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Rinópolis",
+      "data": "12/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Três Fronteiras",
+      "data": "12/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Tupã",
+      "data": "12/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Guaraçaí",
+      "data": "12/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Porto Feliz",
+      "data": "13/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ferraz de Vasconcelos",
+      "data": "14/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ilha Solteira",
+      "data": "15/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pontal",
+      "data": "18/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Igaraçu do Tietê",
+      "data": "19/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Dolcinópolis",
+      "data": "19/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itápolis",
+      "data": "20/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Nova Guataporanga",
+      "data": "20/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ribeira",
+      "data": "20/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Tarumã",
+      "data": "20/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Mogi Mirim",
+      "data": "22/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itapira",
+      "data": "24/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Timburi",
+      "data": "24/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Casa Branca",
+      "data": "25/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Flórida Paulista",
+      "data": "25/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Penápolis",
+      "data": "25/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cândido Mota",
+      "data": "26/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Bom Sucesso do Itararé",
+      "data": "27/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Holambra",
+      "data": "27/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Macedônia",
+      "data": "27/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Mairinque",
+      "data": "27/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Marapuama",
+      "data": "27/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santa Maria da Serra",
+      "data": "27/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Torre de Pedra",
+      "data": "27/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Novo Horizonte",
+      "data": "28/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São Simão",
+      "data": "28/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ubatuba",
+      "data": "28/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pedreira",
+      "data": "31/10",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itatiba",
+      "data": "01/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Taciba",
+      "data": "01/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Gabriel Monteiro",
+      "data": "03/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São Carlos",
+      "data": "04/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São Sebastião da Grama",
+      "data": "04/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itapetininga",
+      "data": "05/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pilar do Sul",
+      "data": "05/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Rosana",
+      "data": "05/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Guatapará",
+      "data": "05/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Guaimbê",
+      "data": "08/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Piacatu",
+      "data": "08/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Lorena",
+      "data": "14/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santana do Parnaíba",
+      "data": "14/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Serra Azul",
+      "data": "14/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Águas de Lindóia",
+      "data": "16/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Bálsamo",
+      "data": "17/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santo Anastácio",
+      "data": "19/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itaóca",
+      "data": "19/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Auriflama",
+      "data": "20/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Álvaro de Carvalho",
+      "data": "22/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Monte Castelo",
+      "data": "22/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Tremembé",
+      "data": "26/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Tabapuã",
+      "data": "27/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Franca",
+      "data": "28/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Mirante do Paranapanema",
+      "data": "29/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Adolfo",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Álvares Machado",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Bilac",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cosmópolis",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Echaporã",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Elias Fausto",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Franco da Rocha",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "General Salgado",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Guaraci",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Guarantã",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Guapiaçu",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Herculândia",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ibirarema",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Irapuã",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Lutécia",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Manduri",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Miracatu",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Oriente",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Paulo de Faria",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Quintana",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Sales",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Lavínia",
+      "data": "30/11",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Mongaguá",
+      "data": "07/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Diadema",
+      "data": "08/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Mauá",
+      "data": "08/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Indaiatuba",
+      "data": "09/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Duartina",
+      "data": "11/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ibirá",
+      "data": "12/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Belo Horizonte",
+      "data": "12/12",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Anhumas",
+      "data": "13/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Guaiçara",
+      "data": "13/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ourinhos",
+      "data": "13/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Palmeira D'Oeste",
+      "data": "13/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Caieiras",
+      "data": "14/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Jundiaí",
+      "data": "14/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Bragança Paulista",
+      "data": "15/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Aparecida",
+      "data": "17/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Sete Barras",
+      "data": "18/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Maracaí",
+      "data": "19/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Bofete",
+      "data": "21/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Lagoinha",
+      "data": "23/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Alfredo Marcondes",
+      "data": "25/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cabrália",
+      "data": "25/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Júlio Mesquita",
+      "data": "25/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Rifaina",
+      "data": "25/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Espírito Santo do Pinhal",
+      "data": "27/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Salto Grande",
+      "data": "27/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Tapiratiba",
+      "data": "27/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Avanhandava",
+      "data": "29/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Barrinha",
+      "data": "30/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Caiabu",
+      "data": "30/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Charqueada",
+      "data": "30/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Divinolândia",
+      "data": "30/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Florínea",
+      "data": "30/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Glicério",
+      "data": "30/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Icem",
+      "data": "30/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Igaratá",
+      "data": "30/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Lupércio",
+      "data": "30/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Nova Europa",
+      "data": "30/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pariquera-Açu",
+      "data": "30/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Platina",
+      "data": "30/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Riversul",
+      "data": "30/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Altair",
+      "data": "31/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Sandovalina",
+      "data": "31/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Taquarivaí",
+      "data": "31/12",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Minas Gerais (Estado)",
+      "data": "02/12",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Ibirité",
+      "data": "01/03",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Divinópolis",
+      "data": "10/01",
+      "estado": "MG"
+    }
+  ]
+}{
+  "municipios": [
+    {
+      "municipio": "Uru",
+      "data": "01/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Morro Agudo",
+      "data": "06/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Dirce Reis",
+      "data": "06/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Teodoro Sampaio",
+      "data": "07/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Iaras",
+      "data": "09/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Motuca",
+      "data": "09/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Borebi",
+      "data": "09/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Embaúba",
+      "data": "09/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Iporanga",
+      "data": "12/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Miguelópolis",
+      "data": "14/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Quatá",
+      "data": "16/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Praia Grande",
+      "data": "19/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Braúna",
+      "data": "20/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cardoso",
+      "data": "20/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itaju",
+      "data": "20/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Parisi",
+      "data": "20/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Piraju",
+      "data": "20/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Sabino",
+      "data": "20/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santa Cruz do Rio Pardo",
+      "data": "20/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São Vicente",
+      "data": "22/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São Paulo",
+      "data": "25/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Buri",
+      "data": "25/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Estrela D'Oeste",
+      "data": "25/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Vera Cruz",
+      "data": "25/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santos",
+      "data": "26/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santo Antônio do Pinhal",
+      "data": "26/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Barbosa",
+      "data": "30/01",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itu",
+      "data": "02/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Dois Córregos",
+      "data": "03/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cajamar",
+      "data": "18/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cândido Rodrigues",
+      "data": "18/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cássia dos Coqueiros",
+      "data": "18/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Colômbia",
+      "data": "18/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Embu",
+      "data": "18/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itapevi",
+      "data": "18/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Luís Antônio",
+      "data": "18/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Luiziânia",
+      "data": "18/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pardinho",
+      "data": "18/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Peruíbe",
+      "data": "18/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Salmorão",
+      "data": "18/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Sarutaiá",
+      "data": "18/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Taguaí",
+      "data": "18/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Bady Bassitt",
+      "data": "18/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Osasco",
+      "data": "19/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Severínia",
+      "data": "19/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Taboão da Serra",
+      "data": "19/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Tapiraí",
+      "data": "19/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São Pedro",
+      "data": "20/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Mira Estrela",
+      "data": "21/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Restinga",
+      "data": "22/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Salesópolis",
+      "data": "22/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Sebastianópolis do Sul",
+      "data": "22/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Silveiras",
+      "data": "22/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Paulínia",
+      "data": "28/02",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Olímpia",
+      "data": "02/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Queluz",
+      "data": "04/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ilha Comprida",
+      "data": "05/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Lourdes",
+      "data": "05/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itaporanga",
+      "data": "06/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pirangi",
+      "data": "07/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Tietê",
+      "data": "08/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Altinópolis",
+      "data": "09/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São José do Barreiro",
+      "data": "09/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Campos Novos Paulista",
+      "data": "10/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Eldorado",
+      "data": "10/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Monte Aprazível",
+      "data": "10/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Patrocínio Paulista",
+      "data": "10/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Angatuba",
+      "data": "11/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itapirapuã Paulista",
+      "data": "12/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Nova Campinas",
+      "data": "12/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Sarapuí",
+      "data": "13/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Batatais",
+      "data": "14/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Guareí",
+      "data": "16/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São Sebastião",
+      "data": "16/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Indiana",
+      "data": "17/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Jaborandi",
+      "data": "18/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Arandu",
+      "data": "19/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Aspásia",
+      "data": "19/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Barra Bonita",
+      "data": "19/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Caiuá",
+      "data": "19/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Corumbataí",
+      "data": "19/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cravinhos",
+      "data": "19/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Flora Rica",
+      "data": "19/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "João Ramalho",
+      "data": "19/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Meridiano",
+      "data": "19/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Panorama",
+      "data": "19/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ribeirão Pires",
+      "data": "19/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São José do Rio Pardo",
+      "data": "19/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São José do Rio Preto",
+      "data": "19/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Taiaçu",
+      "data": "19/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Piquerobi",
+      "data": "20/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Américo Brasiliense",
+      "data": "21/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Barão de Antonina",
+      "data": "21/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Barra do Turvo",
+      "data": "21/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Biritiba Mirim",
+      "data": "21/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Borborema",
+      "data": "21/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Coronel Macedo",
+      "data": "21/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Dumont",
+      "data": "21/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Estrela do Norte",
+      "data": "21/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Francisco Morato",
+      "data": "21/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Aparecida D'Oeste",
+      "data": "22/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Nova Granada",
+      "data": "22/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Onda Verde",
+      "data": "22/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santa Adélia",
+      "data": "22/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ouro Verde",
+      "data": "23/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Viradouro",
+      "data": "23/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Araras",
+      "data": "24/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cabreúva",
+      "data": "24/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ibiúna",
+      "data": "24/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Monte Mor",
+      "data": "24/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Getulina",
+      "data": "25/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itirapina",
+      "data": "25/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Barueri",
+      "data": "26/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Carapicuíba",
+      "data": "26/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ipuã",
+      "data": "26/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Poá",
+      "data": "26/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Riolândia",
+      "data": "26/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santo Antônio do Jardim",
+      "data": "26/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Terra Roxa",
+      "data": "26/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Bento de Abreu",
+      "data": "27/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itapuã",
+      "data": "27/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Presidente Epitácio",
+      "data": "27/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Dobrada",
+      "data": "28/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Embu-Guaçu",
+      "data": "28/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Guzolândia",
+      "data": "28/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Juquitiba",
+      "data": "28/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Queiroz",
+      "data": "28/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Uchôa",
+      "data": "28/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Campo Limpo Paulista",
+      "data": "29/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pirajuí",
+      "data": "29/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Jambeiro",
+      "data": "30/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Orlândia",
+      "data": "30/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Borá",
+      "data": "31/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Fartura",
+      "data": "31/03",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Arealva",
+      "data": "01/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São Miguel Arcanjo",
+      "data": "01/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Alumínio",
+      "data": "02/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Capão Bonito",
+      "data": "02/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cotia",
+      "data": "02/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pacaembu",
+      "data": "02/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pongaí",
+      "data": "02/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Suzano",
+      "data": "02/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ubirajara",
+      "data": "02/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Vinhedo",
+      "data": "02/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cerquilho",
+      "data": "03/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Jacareí",
+      "data": "03/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Planalto",
+      "data": "03/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Reginópolis",
+      "data": "03/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São José da Bela Vista",
+      "data": "03/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Aramina",
+      "data": "04/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cruzália",
+      "data": "04/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itajobi",
+      "data": "04/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Jaci",
+      "data": "04/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Marília",
+      "data": "04/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Mococa",
+      "data": "05/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pedra Bela",
+      "data": "06/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Araçoiaba da Serra",
+      "data": "07/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Jeriquara",
+      "data": "07/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Óleo",
+      "data": "07/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ribeirão Corrente",
+      "data": "07/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Torrinha",
+      "data": "07/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Amparo",
+      "data": "08/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santo André",
+      "data": "08/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pontes Gestal",
+      "data": "08/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Conchal",
+      "data": "09/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cubatão",
+      "data": "09/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itariri",
+      "data": "09/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Mogi-Guaçu",
+      "data": "09/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pedro de Toledo",
+      "data": "09/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pirapozinho",
+      "data": "09/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ariranha",
+      "data": "10/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Artur Nogueira",
+      "data": "10/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Juquiá",
+      "data": "10/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Serrana",
+      "data": "10/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cafelândia",
+      "data": "11/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Botucatu",
+      "data": "14/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Caçapava",
+      "data": "14/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Catanduva",
+      "data": "14/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Gália",
+      "data": "14/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Anhembi",
+      "data": "15/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Iacanga",
+      "data": "15/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Jales",
+      "data": "15/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Jarinu",
+      "data": "17/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Caraguatatuba",
+      "data": "20/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cunha",
+      "data": "20/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Paranapanema",
+      "data": "20/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Águas de Santa Bárbara",
+      "data": "20/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Colina",
+      "data": "21/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Lins",
+      "data": "21/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itanhaém",
+      "data": "22/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Oscar Bressane",
+      "data": "24/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Itaberá",
+      "data": "25/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Tejupá",
+      "data": "25/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Monteiro Lobato",
+      "data": "26/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santo Expedito",
+      "data": "26/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Tabatinga",
+      "data": "26/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Lençóis Paulista",
+      "data": "28/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Campos do Jordão",
+      "data": "29/04",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Muritinga do Sul",
+      "data": "01/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Promissão",
+      "data": "01/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Guapira",
+      "data": "02/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Macaubal",
+      "data": "02/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Areiópolis",
+      "data": "03/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Bebedouro",
+      "data": "03/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Brotas",
+      "data": "03/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Catiguá",
+      "data": "03/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cesário Lange",
+      "data": "03/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Iracemápolis",
+      "data": "03/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pinhalzinho",
+      "data": "03/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Poloni",
+      "data": "03/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Redenção da Serra",
+      "data": "03/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Rio Grande da Serra",
+      "data": "03/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santa Cruz da Conceição",
+      "data": "03/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santa Cruz das Palmeiras",
+      "data": "03/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santópolis do Aguapeí",
+      "data": "03/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São Francisco",
+      "data": "03/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Valentim Gentil",
+      "data": "03/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Garça",
+      "data": "05/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Irapuru",
+      "data": "06/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Boracéia",
+      "data": "07/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pedralva",
+      "data": "07/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Itapecerica da Serra",
+      "data": "08/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santo Antônio do Aracanguá",
+      "data": "08/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São Luíz do Paraitinga",
+      "data": "08/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Indiaporã",
+      "data": "12/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cambuquira",
+      "data": "12/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Cajobi",
+      "data": "13/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cristina",
+      "data": "13/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Passos",
+      "data": "14/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Monte Alto",
+      "data": "15/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Muriaé",
+      "data": "16/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "São João Nepomuceno",
+      "data": "16/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Carvalhópolis",
+      "data": "17/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Guaíra",
+      "data": "18/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Araçariguama",
+      "data": "19/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Arapeí",
+      "data": "19/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Barra do Chapéu",
+      "data": "19/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Bertioga",
+      "data": "19/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Canitar",
+      "data": "19/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Dourado",
+      "data": "19/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Estiva Gerbi",
+      "data": "19/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Novais",
+      "data": "19/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Hortolândia",
+      "data": "19/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Potim",
+      "data": "19/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Ribeirão Grande",
+      "data": "19/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Saltinho",
+      "data": "19/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Tuiuti",
+      "data": "19/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Piedade",
+      "data": "20/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Tombos",
+      "data": "21/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Bom Jesus dos Perdões",
+      "data": "22/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cássia dos Coqueiros",
+      "data": "22/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Fernandópolis",
+      "data": "22/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Iguarapava",
+      "data": "22/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Neves Paulista",
+      "data": "22/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pederneiras",
+      "data": "22/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santa Branca",
+      "data": "22/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Sales de Oliveira",
+      "data": "22/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santa Rita D'Oeste",
+      "data": "22/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Santa Rita do Passa Quatro",
+      "data": "22/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Brasilândia de Minas",
+      "data": "22/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Medina",
+      "data": "22/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Santa Rita de Jacutinga",
+      "data": "22/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Santa Rita do Sapucaí",
+      "data": "22/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Bocaina",
+      "data": "23/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Cambuí",
+      "data": "24/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Palma",
+      "data": "24/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Patos de Minas",
+      "data": "24/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Patrocínio do Muriaé",
+      "data": "24/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Prados",
+      "data": "24/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Valinhos",
+      "data": "28/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São Pedro do Turvo",
+      "data": "29/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Palestina",
+      "data": "30/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "São Joaquim da Barra",
+      "data": "30/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Valparaíso",
+      "data": "30/05",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Descoberto",
+      "data": "30/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "São Félix de Minas",
+      "data": "30/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Juiz de Fora",
+      "data": "31/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Lamim",
+      "data": "31/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Santa Vitória",
+      "data": "31/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "São Gonçalo do Sapucaí",
+      "data": "31/05",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Antônio Dias",
+      "data": "01/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Bom Despacho",
+      "data": "01/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Cachoeira de Minas",
+      "data": "01/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Coração de Jesus",
+      "data": "01/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Divinópolis",
+      "data": "01/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Guaxupé",
+      "data": "01/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Maria da Fé",
+      "data": "01/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Mercês",
+      "data": "01/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Paraopeba",
+      "data": "01/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Pedra Azul",
+      "data": "01/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Pequi",
+      "data": "01/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Perdões",
+      "data": "01/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Pirapora",
+      "data": "01/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Rio Casca",
+      "data": "01/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Tupaciguara",
+      "data": "01/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Porangaba",
+      "data": "04/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Resende Costa",
+      "data": "02/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Osvaldo Cruz",
+      "data": "06/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Capitão Enéas",
+      "data": "03/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Cristais",
+      "data": "04/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Formiga",
+      "data": "06/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Lagoa Dourada",
+      "data": "06/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Arujá",
+      "data": "08/06",
+      "estado": "SP"
+    },
+    {
+      "municipio": "Pitangui",
+      "data": "09/06",
+      "estado": "MG"
+    },

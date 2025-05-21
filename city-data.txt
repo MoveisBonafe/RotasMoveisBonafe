@@ -1,0 +1,10 @@
+    {
+"municipio": "Pitangui",
+      "data": "09/06",
+      "estado": "MG"
+    },
+    {
+      "municipio": "Adamantina",
+      "data": "10/06",
+      "estado": "SP"
+    }

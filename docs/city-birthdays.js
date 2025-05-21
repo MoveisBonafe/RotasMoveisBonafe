@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Aniversários de todas as cidades de São Paulo e Minas Gerais
         const cityBirthdays = [
             // Piedade é a mais importante, garantir que está presente
-            { id: 10001, cityName: "Piedade", name: "Aniversário da Cidade", startDate: "2025-08-25", endDate: "2025-08-25", isHoliday: true, description: "Aniversário de fundação de Piedade em 25/08/1842", restrictionLevel: "low" },
+            { id: 10001, cityName: "Piedade", name: "Aniversário da Cidade", startDate: "2025-05-20", endDate: "2025-05-20", isHoliday: true, description: "Aniversário de fundação de Piedade em 20/05", restrictionLevel: "low" },
             
             // São Paulo - Janeiro
             { id: 10002, cityName: "Uru", name: "Aniversário da Cidade", startDate: "2025-01-01", endDate: "2025-01-01", isHoliday: true, description: "Aniversário de fundação de Uru", restrictionLevel: "low" },
