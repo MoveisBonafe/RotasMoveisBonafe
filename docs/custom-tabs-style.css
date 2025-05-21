@@ -1,0 +1,49 @@
+/**
+ * Estilos personalizados para as abas no GitHub Pages
+ */
+
+/* Botões de aba */
+.bottom-tab-btn {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 20px;
+  border: none;
+  background-color: #f8f9fa;
+  color: #495057;
+  border-radius: 4px 4px 0 0;
+  margin: 0 3px;
+}
+
+/* Botão de aba ativo */
+.bottom-tab-btn.active {
+  background-color: #ffc107;
+  color: #000;
+  font-weight: 600;
+}
+
+/* Ajuste para container de abas */
+.bottom-tabs-container {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+
+/* Mostrar apenas conteúdo da aba ativa */
+.bottom-tab-content {
+  display: none;
+}
+
+.bottom-tab-content.active-content {
+  display: block;
+}
+
+/* Estilo dos botões primários (iguais aos botões da sidebar) */
+#visualizar, #otimizar {
+  background-color: #ffc107;
+  color: #000;
+  font-weight: 600;
+  border: none;
+  border-radius: 24px;
+  padding: 12px 24px;
+  margin: 5px;
+}
