@@ -1,132 +1,505 @@
-<!-- 
-SOLUÇÃO DEFINITIVA PARA O PROBLEMA DAS ABAS
+<!--
+SOLUÇÃO FINAL APRIMORADA - Otimizador de Rotas Móveis Bonafé
+Esta solução corrige:
+1. Conteúdo não preenchendo toda a área disponível
+2. Estilo dos botões das abas inferiores para corresponder aos botões "Otimizar" e "Visualizar"
+3. Problema das abas mostrando todas juntas
 
-COMO USAR:
-1. No GitHub, vá até o repositório e edite o arquivo 'docs/index.html'
-2. Procure a tag <body> (início do corpo da página)
-3. Adicione este script logo após a tag <body>
-4. Salve as alterações
+INSTRUÇÕES:
+1. Adicione este conteúdo ao final do arquivo docs/index.html, logo antes da tag </body>
 -->
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Aplicar a correção das abas após um pequeno atraso
-  setTimeout(fixTabs, 300);
-  
-  // Continuar verificando para garantir que a solução se mantenha
-  setInterval(fixTabs, 1000);
-});
-
-function fixTabs() {
-  // Selecionar os elementos das abas
-  const tabButtons = document.querySelectorAll('.bottom-tab-btn');
-  const tabContents = document.querySelectorAll('.bottom-tab-content');
-  const tabsContainer = document.querySelector('.bottom-tabs-container');
-  
-  if (!tabButtons.length || !tabContents.length) return;
-  
-  // Ocultar todos os conteúdos de abas
-  tabContents.forEach(content => {
-    content.style.display = 'none';
-  });
-  
-  // Verificar se algum botão está ativo
-  const activeButton = document.querySelector('.bottom-tab-btn.active');
-  
-  // Se houver um botão ativo, mostrar apenas o conteúdo correspondente
-  if (activeButton) {
-    const tabId = activeButton.getAttribute('data-tab');
-    const activeContent = document.getElementById(tabId + '-content');
+/**
+ * Solução final completa para o Otimizador de Rotas Móveis Bonafé
+ * Corrige o preenchimento do conteúdo e o estilo dos botões
+ * v1.1.0 (2025-05-21)
+ */
+(function() {
+    // Inicializar quando o DOM estiver pronto
+    document.addEventListener('DOMContentLoaded', initialize);
     
-    if (activeContent) {
-      activeContent.style.display = 'block';
-    }
-  }
-  
-  // Substituir os eventos de clique nos botões
-  tabButtons.forEach(button => {
-    // Remover eventos existentes
-    const newButton = button.cloneNode(true);
-    if (button.parentNode) {
-      button.parentNode.replaceChild(newButton, button);
+    // Também inicializar quando todo o conteúdo estiver carregado
+    window.addEventListener('load', initialize);
+    
+    // Configuração principal
+    function initialize() {
+        console.log("[SolucaoFinal] Inicializando correções completas...");
+        
+        // 1. Aplicar correções iniciais
+        applyCoreStyles();
+        fixTabBehavior();
+        styleButtons();
+        
+        // 2. Verificar e forçar o preenchimento do conteúdo
+        forceContentExpansion();
+        
+        // 3. Continuar verificando em intervalos regulares
+        setInterval(forceContentExpansion, 500);
+        setInterval(styleButtons, 1000);
+        
+        // 4. Observar mudanças no DOM
+        observeDOMChanges();
+        
+        console.log("[SolucaoFinal] Inicialização completa");
     }
     
-    // Adicionar novo evento
-    newButton.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      
-      const tabId = this.getAttribute('data-tab');
-      const isActive = this.classList.contains('active');
-      const isExpanded = !tabsContainer.classList.contains('minimized');
-      
-      // Se já estiver ativo e expandido, minimizar
-      if (isActive && isExpanded) {
-        tabsContainer.classList.add('minimized');
+    /**
+     * Aplicar estilos fundamentais via CSS
+     */
+    function applyCoreStyles() {
+        if (document.getElementById('bonafe-solution-styles')) return;
         
-        // Redefinir estilos
-        tabsContainer.style.position = 'absolute';
-        tabsContainer.style.top = 'auto';
-        tabsContainer.style.left = '380px';
-        tabsContainer.style.right = '0';
-        tabsContainer.style.bottom = '0';
-        tabsContainer.style.height = '60px';
-        tabsContainer.style.width = 'calc(100% - 380px)';
-        tabsContainer.style.zIndex = '100';
-        tabsContainer.style.backgroundColor = '#f9f9f9';
-        tabsContainer.style.borderLeft = 'none';
-        tabsContainer.style.boxShadow = 'none';
+        // Criar elemento de estilo
+        const style = document.createElement('style');
+        style.id = 'bonafe-solution-styles';
+        style.innerHTML = `
+            /* Estrutura base das abas */
+            .bottom-tabs-container:not(.minimized) {
+                display: flex !important;
+                flex-direction: column !important;
+                height: 100vh !important;
+                width: calc(100% - 380px) !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 380px !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                z-index: 9999 !important;
+                background-color: #ffffff !important;
+                box-shadow: -5px 0 15px rgba(0,0,0,0.1) !important;
+                overflow: hidden !important;
+            }
+            
+            /* Nav das abas */
+            .bottom-tabs-nav {
+                flex-shrink: 0 !important;
+                height: 60px !important;
+                width: 100% !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-around !important;
+                background-color: #f8f9fa !important;
+                border-bottom: 1px solid #dee2e6 !important;
+                padding: 0 20px !important;
+            }
+            
+            /* Botões estilizados (como Otimizar/Visualizar) */
+            .bottom-tab-btn {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 8px 16px !important;
+                background-color: #f8f9fa !important;
+                color: #212529 !important;
+                border: 1px solid #dee2e6 !important;
+                border-radius: 6px !important;
+                font-weight: 500 !important;
+                cursor: pointer !important;
+                transition: all 0.2s ease-in-out !important;
+                min-width: 120px !important;
+                text-align: center !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+            }
+            
+            .bottom-tab-btn:hover {
+                background-color: #f1f3f5 !important;
+                border-color: #ced4da !important;
+                box-shadow: 0 3px 6px rgba(0,0,0,0.1) !important;
+            }
+            
+            .bottom-tab-btn.active {
+                background-color: #ffc107 !important;
+                border-color: #ffc107 !important;
+                color: #212529 !important;
+                box-shadow: 0 3px 6px rgba(0,0,0,0.1) !important;
+            }
+            
+            /* Conteúdo expandido */
+            .bottom-tabs-container:not(.minimized) .bottom-tab-content {
+                display: none !important;
+            }
+            
+            .bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content {
+                display: flex !important;
+                flex-direction: column !important;
+                flex: 1 !important;
+                width: 100% !important;
+                height: calc(100vh - 60px) !important;
+                overflow-y: auto !important;
+                padding: 20px !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Expandir todos os elementos filhos */
+            .bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content > * {
+                width: 100% !important;
+                margin-bottom: 15px !important;
+            }
+            
+            /* Elementos específicos */
+            .bottom-tabs-container:not(.minimized) .eventos-content,
+            .bottom-tabs-container:not(.minimized) .restrições-content,
+            .bottom-tabs-container:not(.minimized) .info-content {
+                width: 100% !important;
+                min-height: 80vh !important;
+                padding: 15px !important;
+                border-radius: 8px !important;
+                background-color: #ffffff !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+            }
+            
+            /* Adicionar mais espaço no final para permitir rolagem completa */
+            .bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content:after {
+                content: "";
+                display: block;
+                min-height: 150px;
+                width: 100%;
+            }
+            
+            /* Estilo compatível com os botões Otimizar/Visualizar */
+            .btn-primary, .btn-warning, .btn-otimizar, .btn-visualizar,
+            button[onclick*="otimizar"], button[onclick*="visualizar"] {
+                background-color: #ffc107 !important;
+                color: #212529 !important;
+                border-color: #ffc107 !important;
+                font-weight: 500 !important;
+                border-radius: 6px !important;
+                padding: 8px 16px !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+                transition: all 0.2s ease-in-out !important;
+            }
+            
+            .btn-primary:hover, .btn-warning:hover, .btn-otimizar:hover, .btn-visualizar:hover,
+            button[onclick*="otimizar"]:hover, button[onclick*="visualizar"]:hover {
+                background-color: #ffca2c !important;
+                border-color: #ffca2c !important;
+                box-shadow: 0 3px 6px rgba(0,0,0,0.1) !important;
+            }
+        `;
         
-        // Mostrar o mapa
-        const mapContainer = document.querySelector('.map-container');
-        if (mapContainer) {
-          mapContainer.style.visibility = 'visible';
+        document.head.appendChild(style);
+        console.log("[SolucaoFinal] Estilos fundamentais aplicados");
+    }
+    
+    /**
+     * Corrigir o comportamento das abas para mostrar apenas uma por vez
+     */
+    function fixTabBehavior() {
+        // Obter todos os botões de abas
+        const tabButtons = document.querySelectorAll('.bottom-tab-btn');
+        
+        // Se não houver botões, tentar novamente mais tarde
+        if (!tabButtons.length) {
+            console.warn("[SolucaoFinal] Botões de abas não encontrados, tentando novamente...");
+            setTimeout(fixTabBehavior, 500);
+            return;
         }
         
-        return;
-      }
-      
-      // Desativar todos os botões
-      tabButtons.forEach(btn => btn.classList.remove('active'));
-      
-      // Ativar este botão
-      this.classList.add('active');
-      
-      // Ocultar todos os conteúdos
-      tabContents.forEach(content => {
-        content.style.display = 'none';
-      });
-      
-      // Mostrar apenas o conteúdo correspondente
-      const content = document.getElementById(tabId + '-content');
-      if (content) {
-        content.style.display = 'block';
-      }
-      
-      // Se estiver minimizado, expandir
-      if (tabsContainer.classList.contains('minimized')) {
-        tabsContainer.classList.remove('minimized');
+        // Remover manipuladores de eventos existentes
+        tabButtons.forEach(btn => {
+            // Pular se já processado
+            if (btn.dataset.processed === 'true') return;
+            
+            // Marcar como processado
+            btn.dataset.processed = 'true';
+            
+            // Clonar para remover eventos existentes
+            const clone = btn.cloneNode(true);
+            if (btn.parentNode) btn.parentNode.replaceChild(clone, btn);
+            
+            // Adicionar novo manipulador
+            clone.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Obter elementos e estado atual
+                const tabsContainer = document.querySelector('.bottom-tabs-container');
+                const isActive = this.classList.contains('active');
+                const isExpanded = tabsContainer && !tabsContainer.classList.contains('minimized');
+                
+                // Se já estiver ativa e expandida, minimizar
+                if (isActive && isExpanded) {
+                    minimizeTabs();
+                    return;
+                }
+                
+                // Desativar todos os botões
+                document.querySelectorAll('.bottom-tab-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                
+                // Ativar este botão
+                this.classList.add('active');
+                
+                // Esconder todos os conteúdos
+                document.querySelectorAll('.bottom-tab-content').forEach(content => {
+                    content.style.display = 'none';
+                    content.classList.remove('active-content');
+                });
+                
+                // Mostrar apenas o conteúdo desta aba
+                const tabId = this.getAttribute('data-tab');
+                const content = document.getElementById(tabId + '-content');
+                if (content) {
+                    content.style.display = 'block';
+                    content.classList.add('active-content');
+                    
+                    // Forçar o preenchimento
+                    setTimeout(forceContentExpansion, 50);
+                }
+                
+                // Expandir se minimizado
+                if (tabsContainer && tabsContainer.classList.contains('minimized')) {
+                    expandTabs();
+                }
+            });
+        });
         
-        // Aplicar estilos de tela cheia
-        tabsContainer.style.position = 'fixed';
-        tabsContainer.style.top = '0';
-        tabsContainer.style.left = '380px';
-        tabsContainer.style.right = '0';
-        tabsContainer.style.bottom = '0';
-        tabsContainer.style.width = 'calc(100% - 380px)';
-        tabsContainer.style.height = '100vh';
-        tabsContainer.style.zIndex = '9999';
-        tabsContainer.style.backgroundColor = 'white';
-        tabsContainer.style.borderLeft = '2px solid #ffc107';
-        tabsContainer.style.boxShadow = '-5px 0px 15px rgba(0,0,0,0.1)';
+        console.log("[SolucaoFinal] Comportamento das abas corrigido");
+    }
+    
+    /**
+     * Expandir as abas para tela cheia
+     */
+    function expandTabs() {
+        const container = document.querySelector('.bottom-tabs-container');
+        if (!container) return;
+        
+        // Remover classe minizada
+        container.classList.remove('minimized');
+        
+        // Aplicar estilo expandido
+        const styles = {
+            position: 'fixed',
+            top: '0',
+            left: '380px',
+            right: '0',
+            bottom: '0',
+            width: 'calc(100% - 380px)',
+            height: '100vh',
+            zIndex: '9999',
+            backgroundColor: '#ffffff',
+            boxShadow: '-5px 0 15px rgba(0,0,0,0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden'
+        };
+        
+        // Aplicar todos os estilos
+        Object.assign(container.style, styles);
+        
+        // Ajustar para telas menores
+        if (window.innerWidth <= 768) {
+            container.style.left = '320px';
+            container.style.width = 'calc(100% - 320px)';
+        }
         
         // Ocultar o mapa
         const mapContainer = document.querySelector('.map-container');
         if (mapContainer) {
-          mapContainer.style.visibility = 'hidden';
+            mapContainer.style.visibility = 'hidden';
         }
-      }
-    });
-  });
-}
+        
+        // Forçar o preenchimento do conteúdo
+        setTimeout(forceContentExpansion, 50);
+    }
+    
+    /**
+     * Minimizar as abas
+     */
+    function minimizeTabs() {
+        const container = document.querySelector('.bottom-tabs-container');
+        if (!container) return;
+        
+        // Adicionar classe minimizada
+        container.classList.add('minimized');
+        
+        // Aplicar estilo minimizado
+        const styles = {
+            position: 'absolute',
+            top: 'auto',
+            left: '380px',
+            right: '0',
+            bottom: '0',
+            height: '60px',
+            width: 'calc(100% - 380px)',
+            zIndex: '100',
+            backgroundColor: '#f8f9fa',
+            boxShadow: 'none',
+            display: 'block',
+            overflow: 'hidden'
+        };
+        
+        // Aplicar todos os estilos
+        Object.assign(container.style, styles);
+        
+        // Ajustar para telas menores
+        if (window.innerWidth <= 768) {
+            container.style.left = '320px';
+            container.style.width = 'calc(100% - 320px)';
+        }
+        
+        // Mostrar o mapa
+        const mapContainer = document.querySelector('.map-container');
+        if (mapContainer) {
+            mapContainer.style.visibility = 'visible';
+        }
+    }
+    
+    /**
+     * Forçar o preenchimento total do conteúdo
+     */
+    function forceContentExpansion() {
+        // Verificar se o container está expandido
+        const container = document.querySelector('.bottom-tabs-container');
+        if (!container || container.classList.contains('minimized')) return;
+        
+        // Obter o conteúdo ativo
+        const activeContent = document.querySelector('.bottom-tab-content.active-content');
+        if (!activeContent) return;
+        
+        // Aplicar estilos para preencher todo o espaço
+        const contentStyles = {
+            display: 'flex',
+            flexDirection: 'column',
+            flex: '1',
+            width: '100%',
+            height: 'calc(100vh - 60px)',
+            padding: '20px',
+            boxSizing: 'border-box',
+            overflowY: 'auto',
+            backgroundColor: '#fafafa',
+            position: 'relative'
+        };
+        
+        // Aplicar os estilos ao conteúdo ativo
+        Object.assign(activeContent.style, contentStyles);
+        
+        // Ajustar todos os elementos filhos para ocupar toda a largura
+        Array.from(activeContent.children).forEach(child => {
+            if (child.tagName !== 'SCRIPT' && child.tagName !== 'STYLE') {
+                child.style.width = '100%';
+                child.style.marginBottom = '15px';
+                
+                // Garantir que os contêineres tenham altura suficiente
+                if (child.classList.contains('container') || 
+                    child.classList.contains('card') || 
+                    child.classList.contains('row')) {
+                    child.style.minHeight = '150px';
+                }
+            }
+        });
+        
+        // Procurar elementos específicos para ajustar
+        const eventsList = activeContent.querySelector('.eventos-list, [id*="eventos"], [class*="eventos"]');
+        if (eventsList) {
+            eventsList.style.minHeight = '70vh';
+            eventsList.style.width = '100%';
+        }
+        
+        const restrictionsList = activeContent.querySelector('.restrições-list, [id*="restrições"], [class*="restricoes"]');
+        if (restrictionsList) {
+            restrictionsList.style.minHeight = '70vh';
+            restrictionsList.style.width = '100%';
+        }
+        
+        const reportSection = activeContent.querySelector('.route-info, [id*="relatório"], [class*="relatorio"]');
+        if (reportSection) {
+            reportSection.style.minHeight = '70vh';
+            reportSection.style.width = '100%';
+        }
+        
+        // Adicionar um elemento de espaçamento se ainda não existir
+        if (!activeContent.querySelector('.space-filler')) {
+            const spacer = document.createElement('div');
+            spacer.className = 'space-filler';
+            spacer.style.width = '100%';
+            spacer.style.height = '100px';
+            spacer.style.margin = '30px 0';
+            activeContent.appendChild(spacer);
+        }
+    }
+    
+    /**
+     * Ajustar o estilo dos botões para combinar com os botões "Otimizar" e "Visualizar"
+     */
+    function styleButtons() {
+        // Estilizar botões de abas
+        const tabButtons = document.querySelectorAll('.bottom-tab-btn');
+        tabButtons.forEach(btn => {
+            // Estilo base
+            btn.style.backgroundColor = btn.classList.contains('active') ? '#ffc107' : '#f8f9fa';
+            btn.style.color = '#212529';
+            btn.style.border = btn.classList.contains('active') ? '1px solid #ffc107' : '1px solid #dee2e6';
+            btn.style.borderRadius = '6px';
+            btn.style.padding = '8px 16px';
+            btn.style.fontWeight = '500';
+            btn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+            btn.style.minWidth = '120px';
+            btn.style.textAlign = 'center';
+            btn.style.margin = '0 5px';
+            btn.style.transition = 'all 0.2s ease-in-out';
+            btn.style.cursor = 'pointer';
+        });
+        
+        // Estilizar botões Otimizar e Visualizar
+        const actionButtons = document.querySelectorAll('.btn-otimizar, .btn-visualizar, button[onclick*="otimizar"], button[onclick*="visualizar"]');
+        actionButtons.forEach(btn => {
+            btn.style.backgroundColor = '#ffc107';
+            btn.style.color = '#212529';
+            btn.style.border = '1px solid #ffc107';
+            btn.style.borderRadius = '6px';
+            btn.style.padding = '8px 16px';
+            btn.style.fontWeight = '500';
+            btn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+            btn.style.transition = 'all 0.2s ease-in-out';
+        });
+    }
+    
+    /**
+     * Observar mudanças no DOM para reajustar quando necessário
+     */
+    function observeDOMChanges() {
+        // Evitar duplicação
+        if (window.bonafeObserver) return;
+        
+        // Criar observador
+        const observer = new MutationObserver(mutations => {
+            let needsUpdate = false;
+            
+            mutations.forEach(mutation => {
+                // Verificar mudanças nos elementos relevantes
+                if (mutation.target.classList && 
+                    (mutation.target.classList.contains('bottom-tabs-container') || 
+                     mutation.target.classList.contains('bottom-tab-content'))) {
+                    needsUpdate = true;
+                }
+            });
+            
+            if (needsUpdate) {
+                forceContentExpansion();
+                styleButtons();
+            }
+        });
+        
+        // Iniciar observação
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['style', 'class']
+        });
+        
+        // Salvar referência
+        window.bonafeObserver = observer;
+        
+        console.log("[SolucaoFinal] Observador de mudanças DOM configurado");
+    }
+    
+    // Executar se o documento já estiver carregado
+    if (document.readyState !== 'loading') {
+        initialize();
+    }
+})();
 </script>
