@@ -11,6 +11,8 @@
   setTimeout(inicializarCorrecoes, 500);
   // E novamente após alguns segundos para garantir que tudo está carregado
   setTimeout(inicializarCorrecoes, 2000);
+  // Mais uma vez após um intervalo maior para garantir que o Google Maps tenha carregado completamente
+  setTimeout(inicializarCorrecoes, 5000);
   
   // CONSTANTES
   const DATAS_ANIVERSARIO = {
@@ -91,8 +93,12 @@
       /* Esconder botão fullscreen e outros controles indesejados */
       .gm-fullscreen-control,
       .gm-svpc,
-      .gmnoprint {
+      .gmnoprint,
+      .gm-style-cc,
+      .gm-style > div:not(#map) > div:nth-child(2) {
         display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
       }
       
       /* Garantir que os botões na aba inferior sejam arredondados */
