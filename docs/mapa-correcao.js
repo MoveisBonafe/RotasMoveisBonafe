@@ -45,15 +45,25 @@
     sidebar.style.boxShadow = '2px 0 10px rgba(0,0,0,0.1)';
     sidebar.style.background = '#f8f9fa';
     
-    // Ajustar o container do mapa
+    // Ajustar o container do mapa para ocupar 100% da largura
     mapContainer.style.flex = '1';
     mapContainer.style.height = '100vh';
     mapContainer.style.width = 'calc(100% - 300px)';
     mapContainer.style.marginLeft = '300px';
+    mapContainer.style.position = 'absolute';
+    mapContainer.style.left = '0';
+    mapContainer.style.right = '0';
+    mapContainer.style.top = '0';
+    mapContainer.style.bottom = '0';
     
-    // Ajustar o div do mapa para ocupar todo o espaço
+    // Ajustar o div do mapa para ocupar todo o espaço disponível
     mapDiv.style.height = '100%';
     mapDiv.style.width = '100%';
+    mapDiv.style.position = 'absolute';
+    mapDiv.style.left = '300px';
+    mapDiv.style.right = '0';
+    mapDiv.style.top = '0';
+    mapDiv.style.bottom = '60px';  // Deixar espaço para as abas inferiores
     
     // Ajustar as abas inferiores para não cobrir o mapa
     const bottomTabs = document.querySelector('.bottom-tabs');
@@ -66,13 +76,21 @@
       bottomTabs.style.background = 'rgba(248, 249, 250, 0.95)';
     }
     
-    // Se conseguirmos acessar a API do Google Maps, tentar recentrar o mapa
+    // Se conseguirmos acessar a API do Google Maps, ajustar e recentrar o mapa
     if (window.google && window.google.maps && window.map) {
       try {
         console.log("[MapaCorrecao] Reconhecido objeto Google Maps - forçando atualização");
         
         // Salvar o centro atual
         const centro = window.map.getCenter();
+        
+        // Habilitar o Street View (pegman)
+        window.map.setOptions({
+          streetViewControl: true,
+          fullscreenControl: false,
+          mapTypeControl: false,
+          zoomControl: true
+        });
         
         // Trigger de redimensionamento para recalcular o layout
         google.maps.event.trigger(window.map, 'resize');
@@ -85,17 +103,49 @@
     }
     
     // Solução para remover ou ocultar divs estranhos gerados pelo Google Maps
-    const divsEstranhos = document.querySelectorAll('div[style*="width: 256px; height: 256px"], div[style*="position: absolute"]');
+    // Modificado para preservar os controles do Street View
+    const divsEstranhos = document.querySelectorAll('div[style*="width: 256px; height: 256px"]');
     divsEstranhos.forEach(div => {
       // Se estiverem fora do container do mapa, remover completamente
+      // Mas preservar elementos que podem conter o pegman/controles
       if (div.parentNode && 
           !div.closest('.map-container') && 
           !div.closest('#map') &&
+          !div.querySelector('.gm-svpc') && // Não remover div que contém o pegman
+          !div.className.includes('gmnoprint') && // Preservar controles do mapa
           div.style.position === 'absolute') {
         console.log("[MapaCorrecao] Removendo div estranho do Google Maps fora do container");
         div.parentNode.removeChild(div);
       }
     });
+    
+    // Garantir que os controles do Street View fiquem visíveis
+    const streetViewControls = document.querySelectorAll('.gm-svpc, [title*="Pegman"], [title*="Street View"]');
+    streetViewControls.forEach(control => {
+      if (control) {
+        control.style.display = 'block';
+        control.style.visibility = 'visible';
+        control.style.opacity = '1';
+        console.log("[MapaCorrecao] Control do Street View encontrado e tornando visível");
+      }
+    });
+    
+    // Método alternativo: adicionar o Pegman manualmente se não for encontrado
+    setTimeout(() => {
+      if (document.querySelectorAll('.gm-svpc').length === 0 && window.google && window.google.maps && window.map) {
+        try {
+          console.log("[MapaCorrecao] Adicionando Pegman manualmente");
+          window.map.setOptions({
+            streetViewControl: true,
+            streetViewControlOptions: {
+              position: google.maps.ControlPosition.RIGHT_TOP
+            }
+          });
+        } catch (e) {
+          console.log("[MapaCorrecao] Erro ao adicionar Pegman manualmente:", e);
+        }
+      }
+    }, 2000);
     
     // Garantir que o mapa permaneça fixo e estável
     const body = document.body;
