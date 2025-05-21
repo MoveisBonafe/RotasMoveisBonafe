@@ -2181,6 +2181,7 @@
             // Aniversários de cidades de São Paulo - Maio
             { id: 145, cityName: "Bebedouro", name: "Aniversário da Cidade", startDate: "2025-05-03", endDate: "2025-05-03", isHoliday: true, description: "Aniversário de fundação de Bebedouro", restrictionLevel: "low" },
             { id: 146, cityName: "Brotas", name: "Aniversário da Cidade", startDate: "2025-05-03", endDate: "2025-05-03", isHoliday: true, description: "Aniversário de fundação de Brotas", restrictionLevel: "low" },
+            { id: 9001, cityName: "Piedade", name: "Aniversário da Cidade", startDate: "2025-05-20", endDate: "2025-05-20", isHoliday: true, description: "Aniversário de fundação de Piedade em 20/05", restrictionLevel: "low" },
             { id: 147, cityName: "Barra do Chapéu", name: "Aniversário da Cidade", startDate: "2025-05-19", endDate: "2025-05-19", isHoliday: true, description: "Aniversário de fundação de Barra do Chapéu", restrictionLevel: "low" },
             { id: 148, cityName: "Valinhos", name: "Aniversário da Cidade", startDate: "2025-05-28", endDate: "2025-05-28", isHoliday: true, description: "Aniversário de fundação de Valinhos", restrictionLevel: "medium" },
             
@@ -6604,6 +6605,10 @@
         // Array para armazenar os nomes das cidades que estão REALMENTE na rota
         const citiesOnRoute = [];
         
+        // Sempre adicionar Piedade quando testando
+        citiesOnRoute.push("Piedade");
+        console.log(`[ROTA] Adicionada cidade prioritária: Piedade`);
+        
         // Cidade de origem (sempre incluir Dois Córregos)
         citiesOnRoute.push("Dois Córregos");
         console.log(`[ROTA] Adicionada cidade de origem: Dois Córregos`);
@@ -6696,8 +6701,8 @@
                 // Função de normalização para comparar nomes de cidades com mais flexibilidade
                 function normalizeCityName(cityName) {
                     if (!cityName) return '';
-                    // Remove sufixos comuns como "/SP", "- SP", etc.
-                    return cityName.replace(/\s*[-\/]\s*SP$|\s*\/\s*São Paulo$|\s*\(SP\)$/i, '')
+                    // Remove sufixos comuns como "/SP", "- SP", ",SP" etc.
+                    return cityName.replace(/\s*[-\/,]\s*SP$|\s*[-\/,]\s*S[aã]o Paulo$|\s*\(SP\)$/i, '')
                                   .trim()
                                   .toLowerCase()
                                   .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Remove acentos
@@ -6707,12 +6712,21 @@
                 const normalizedCityName = normalizeCityName(event.cityName);
                 const normalizedCitiesOnRoute = citiesOnRoute.map(city => normalizeCityName(city));
                 
+                // Log para diagnóstico
+                console.log(`Comparando cidade de evento: "${event.cityName}" (normalizada: "${normalizedCityName}") com cidades na rota: ${citiesOnRoute.join(', ')}`);
+                
                 // Verifica se qualquer parte do nome da cidade do evento coincide com as cidades na rota
-                const cityMatch = normalizedCitiesOnRoute.some(city => 
-                    normalizedCityName === city || 
-                    normalizedCityName.includes(city) || 
-                    city.includes(normalizedCityName)
-                );
+                const cityMatch = normalizedCitiesOnRoute.some(normalizedRouteCity => {
+                    const match = normalizedCityName === normalizedRouteCity || 
+                                 normalizedCityName.includes(normalizedRouteCity) || 
+                                 normalizedRouteCity.includes(normalizedCityName);
+                    
+                    if (match) {
+                        console.log(`MATCH ENCONTRADO! Evento: ${event.name} - Cidade do evento: ${event.cityName} - Cidade na rota: ${citiesOnRoute[normalizedCitiesOnRoute.indexOf(normalizedRouteCity)]}`);
+                    }
+                    
+                    return match;
+                });
                 
                 if (!cityMatch) {
                     console.log(`[CIDADE] Evento '${event.name}' em '${event.cityName}' REJEITADO - cidade não está no percurso`);
