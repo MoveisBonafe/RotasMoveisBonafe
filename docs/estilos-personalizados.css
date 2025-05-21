@@ -1,0 +1,56 @@
+/**
+ * Estilos personalizados para o site Móveis Bonafé
+ * - Botões com cor amarela
+ * - Fundo branco para a aba inferior
+ * - Remoção de controles desnecessários do mapa
+ */
+
+/* Estilo para todos os botões */
+button, 
+.button, 
+.btn,
+input[type="button"],
+input[type="submit"],
+.bottom-tab-button,
+.tab-button {
+  background: linear-gradient(45deg, #FFD700, #FFA500) !important;
+  color: #333 !important;
+  font-weight: bold !important;
+  border-radius: 50px !important;
+  border: none !important;
+  padding: 10px 20px !important;
+  margin: 5px !important;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
+}
+
+/* Estilo específico para o botão Otimizar */
+#optimize-button {
+  background: linear-gradient(45deg, #FFD700, #FFA500) !important;
+  color: #333 !important;
+}
+
+/* Remover botões de zoom e controles do mapa */
+.gm-control-active,
+.gm-bundled-control,
+.gm-bundled-control-on-bottom,
+.gmnoprint,
+.gm-fullscreen-control,
+.gm-svpc {
+  display: none !important;
+}
+
+/* Fundo branco para a aba inferior de relatório */
+.bottom-tabs {
+  background-color: #FFFFFF !important;
+}
+
+.bottom-tab-content,
+#bottom-info {
+  background-color: #FFFFFF !important;
+}
+
+/* Destaque para o título */
+.sidebar h2 {
+  color: #FFA500 !important;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1) !important;
+}
