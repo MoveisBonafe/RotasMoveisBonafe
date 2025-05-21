@@ -18,7 +18,6 @@
   setInterval(function() {
     aplicarCoresAmarelas();
     removerBotoesIndesejados();
-    estilizarBotoesEspecificos();
   }, 2000);
   
   // CONSTANTES
