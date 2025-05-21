@@ -14,12 +14,6 @@
   // Mais uma vez após um intervalo maior para garantir que o Google Maps tenha carregado completamente
   setTimeout(inicializarCorrecoes, 5000);
   
-  // Continuar verificando periodicamente para garantir que botões novos também sejam arredondados
-  setInterval(function() {
-    aplicarCoresAmarelas();
-    removerBotoesIndesejados();
-  }, 2000);
-  
   // CONSTANTES
   const DATAS_ANIVERSARIO = {
     "Piedade": "20/05/1842",
@@ -74,38 +68,6 @@
         cursor: pointer !important;
         transition: all 0.3s ease !important;
         box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
-      }
-      
-      /* Garantir que os botões da aba inferior realmente fiquem arredondados */
-      .bottom-tab-buttons button,
-      .bottom-tabs button,
-      #bottom-tabs button,
-      .bottom-tab-button,
-      button[onclick*="openTab"],
-      button[onclick*="open"],
-      .bottom-tab-buttons > button,
-      .tab-button {
-        border-radius: 50px !important;
-        border-top-left-radius: 50px !important;
-        border-top-right-radius: 50px !important;
-        border-bottom-left-radius: 50px !important;
-        border-bottom-right-radius: 50px !important;
-        overflow: hidden !important;
-        margin: 5px !important;
-        padding: 10px 20px !important;
-      }
-      
-      /* Ajuste para area de importação */
-      .import-area,
-      .dropzone,
-      input[type="file"],
-      #import-file,
-      input[accept*=".json"],
-      input[accept*=".csv"],
-      input[accept*=".txt"] {
-        max-height: 120px !important;
-        overflow: hidden !important;
-        margin-bottom: 10px !important;
       }
       
       /* Efeito hover */
@@ -215,45 +177,11 @@
     }
     
     // Garantir que os botões da aba inferior estejam arredondados
-    const botoesAba = document.querySelectorAll('.bottom-tab-button, #bottom-tabs button, .bottom-tabs button');
+    const botoesAba = document.querySelectorAll('.bottom-tab-button');
     botoesAba.forEach(botao => {
       botao.style.borderRadius = '50px';
       botao.style.margin = '5px';
       botao.style.padding = '10px 20px';
-      botao.classList.add('botao-arredondado');
-    });
-    
-    // Diminuir área dos inputs de importação
-    const inputsImportacao = document.querySelectorAll('input[type="file"], #import-file');
-    inputsImportacao.forEach(input => {
-      if (input.parentNode) {
-        input.style.maxHeight = '120px';
-        input.style.marginBottom = '10px';
-        input.style.overflow = 'hidden';
-        
-        // Envolver o input file em um contêiner para estilização avançada
-        if (!input.hasAttribute('data-estilizado')) {
-          input.setAttribute('data-estilizado', 'true');
-          
-          // Criar container para o input
-          const container = document.createElement('div');
-          container.className = 'import-container';
-          container.style.maxHeight = '120px';
-          container.style.overflow = 'hidden';
-          container.style.marginBottom = '10px';
-          container.style.border = '1px dashed #FFA500';
-          container.style.borderRadius = '10px';
-          container.style.padding = '10px';
-          container.style.backgroundColor = '#FFF8E1';
-          
-          // Mover o input para o novo container
-          const parent = input.parentNode;
-          parent.insertBefore(container, input);
-          container.appendChild(input);
-          
-          console.log("[SolucaoCompleta] Input de importação estilizado");
-        }
-      }
     });
   }
   
