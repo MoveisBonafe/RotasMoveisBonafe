@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
-  // Adicionar localização com geocodificação precisa
+  // Adicionar localização com geocodificação precisa e verificação de aniversário
   function addLocationWithGeocoding() {
     const locationInput = document.getElementById('location-search-input');
     if (!locationInput) return;
@@ -252,6 +252,24 @@ document.addEventListener('DOMContentLoaded', function() {
     if (cepMatch) {
       // Se houver CEP no texto, usar para geocodificação
       geocode = geocodeCEP(cepMatch[0]);
+      
+      // Se a API dos Correios estiver disponível, usar para obter dados mais precisos
+      if (window.CorreiosService) {
+        window.CorreiosService.searchAddressByCEP(cepMatch[0])
+          .then(addressData => {
+            if (addressData.success) {
+              console.log(`🌎 Endereço completo obtido para CEP ${cepMatch[0]}:`, addressData);
+              
+              // Verificar aniversário da cidade encontrada na API
+              if (addressData.city && window.CityCalendarService) {
+                checkCityAnniversary(addressData.city);
+              }
+            }
+          })
+          .catch(error => {
+            console.error(`Erro ao obter dados do CEP ${cepMatch[0]}:`, error);
+          });
+      }
     } else {
       // Se não houver CEP, fazer busca por nome da cidade
       geocode = findCityByName(address);
@@ -271,6 +289,9 @@ document.addEventListener('DOMContentLoaded', function() {
       isOrigin: false
     };
     
+    // Verificar aniversário da cidade
+    checkCityAnniversary(geocode.city);
+    
     // Adicionar ao array de locais
     if (window.locations) {
       window.locations.push(location);
@@ -284,6 +305,72 @@ document.addEventListener('DOMContentLoaded', function() {
     if (autocompleteList) {
       autocompleteList.remove();
     }
+  }
+  
+  // Função para verificar e adicionar aniversário da cidade aos eventos
+  function checkCityAnniversary(cityName) {
+    if (!cityName || cityName === "Localização Aproximada") return;
+    
+    console.log(`🔍 Verificando aniversário para: ${cityName}`);
+    
+    if (!window.CityCalendarService) {
+      console.warn('⚠️ Serviço de calendário não disponível para verificar aniversário de', cityName);
+      return;
+    }
+    
+    // Inicializar a API do Google Calendar se necessário
+    if (!window.gapi || !window.gapi.client) {
+      console.log('🔄 Inicializando Google Calendar API');
+      window.CityCalendarService.initGoogleCalendarAPI('AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U')
+        .then(success => {
+          if (success) {
+            fetchAndAddCityAnniversary(cityName);
+          } else {
+            console.warn('❌ Falha ao inicializar Google Calendar API');
+          }
+        })
+        .catch(error => {
+          console.error('🚫 Erro ao inicializar Google Calendar API:', error);
+        });
+    } else {
+      fetchAndAddCityAnniversary(cityName);
+    }
+  }
+  
+  // Função para buscar e adicionar aniversário da cidade aos eventos
+  function fetchAndAddCityAnniversary(cityName) {
+    // Verificar se já existe um evento de aniversário para esta cidade
+    const existingEvent = window.mockData?.cityEvents?.find(event => 
+      event.cityName === cityName && event.name === 'Aniversário da Cidade'
+    );
+    
+    if (existingEvent) {
+      console.log(`📅 Aniversário de ${cityName} já está cadastrado:`, existingEvent);
+      return;
+    }
+    
+    // Buscar o aniversário via Google Calendar
+    window.CityCalendarService.fetchCityAnniversary(cityName)
+      .then(anniversaryData => {
+        console.log(`📅 Dados de aniversário para ${cityName}:`, anniversaryData);
+        
+        if (anniversaryData.success) {
+          // Criar o evento de aniversário no formato do sistema
+          const event = window.CityCalendarService.createCityAnniversaryEvent(anniversaryData);
+          
+          if (event && window.mockData && window.mockData.cityEvents) {
+            // Adicionar o evento à lista
+            window.mockData.cityEvents.push(event);
+            console.log(`✅ Evento de aniversário adicionado para ${cityName}`);
+            console.log('📋 Lista atualizada de eventos:', window.mockData.cityEvents);
+          }
+        } else {
+          console.warn(`⚠️ Aniversário não encontrado para ${cityName}`);
+        }
+      })
+      .catch(error => {
+        console.error(`❌ Erro ao buscar aniversário de ${cityName}:`, error);
+      });
   }
   
   // Função para encontrar cidade pelo nome
