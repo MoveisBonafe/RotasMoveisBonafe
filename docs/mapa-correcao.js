@@ -37,6 +37,7 @@
     sidebar.style.minWidth = '300px';
     sidebar.style.height = '100vh';
     sidebar.style.overflowY = 'auto';
+    sidebar.style.overflowX = 'auto';
     sidebar.style.position = 'fixed';
     sidebar.style.left = '0';
     sidebar.style.top = '0';
