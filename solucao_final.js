@@ -1,26 +1,3 @@
-<!-- 
-SOLUÇÃO COMPLETA PARA OS PROBLEMAS DO SITE MÓVEIS BONAFÉ
-
-Este arquivo contém duas soluções:
-
-1. CORREÇÃO PARA ABAS INFERIORES:
-   - Impede que todas as abas apareçam ao mesmo tempo
-   - Garante que apenas a aba ativa seja mostrada
-   - Faz o conteúdo preencher todo o espaço disponível
-
-2. CORREÇÃO PARA DATAS DE CIDADES:
-   - Corrige a data de Piedade para 20/05/1840
-   - Corrige a data de Ribeirão Preto para 19/06/1856
-   - Remove a div com a data incorreta e destaca a descrição
-
-INSTRUÇÕES:
-1. Copie o conteúdo entre as tags <script></script> abaixo
-2. Cole este código no seu arquivo index.html, logo antes da tag </body>
-3. Não é necessário criar um arquivo separado, basta inserir o script diretamente
-
--->
-
-<script>
 /**
  * Solução completa para o site de Rotas Móveis Bonafé
  * Este script corrige dois problemas principais:
@@ -202,4 +179,3 @@ INSTRUÇÕES:
     });
   }
 })();
-</script>
