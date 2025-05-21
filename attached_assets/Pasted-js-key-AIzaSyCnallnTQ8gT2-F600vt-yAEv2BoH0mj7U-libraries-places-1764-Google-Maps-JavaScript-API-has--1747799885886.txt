@@ -1,0 +1,1442 @@
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1764 Google Maps JavaScript API has been loaded directly without loading=async. This can result in suboptimal performance. For best-practice loading patterns please see https://goo.gle/js-api-loading
+rga @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1764
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:14
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1789 
+            
+            
+           GET https://maps.googleapis.com/maps/api/mapsjs/gen_204?csp_test=true net::ERR_BLOCKED_BY_CLIENT
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1789
+oga @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1773
+rga @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1765
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:14
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+fix-github.js:495 Uncaught SyntaxError: Unexpected end of input (at fix-github.js:495:4)
+layout-fix.js?v=20250515182715:11 [LayoutFix] Iniciando correção de layout automática
+sidebar-stabilizer.js:94 [Sidebar Stabilizer] Estilos críticos aplicados
+RotasMoveisBonafe/:1717 [TABS-FIX] Inicializando correção das abas
+RotasMoveisBonafe/:1727 [TABS-FIX] Inicialização concluída
+RotasMoveisBonafe/:2921 DOM carregado - inicializando aplicação
+RotasMoveisBonafe/:6772 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:6773 Mostrando eventos para rota com IDs: [1]
+RotasMoveisBonafe/:6774 Datas de filtro (string): undefined undefined
+RotasMoveisBonafe/:6798 Eventos disponíveis: (111) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, …]
+RotasMoveisBonafe/:6812 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:6828 [ROTA] Adicionada cidade prioritária: Piedade
+RotasMoveisBonafe/:6832 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:6866 [ROTA] Cidades encontradas no percurso (2): Piedade, Dois Córregos
+RotasMoveisBonafe/:6868 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: (2) ['Piedade', 'Dois Córregos']
+RotasMoveisBonafe/:6871 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:6872 Filtrando eventos para cidades: Piedade, Dois Córregos
+RotasMoveisBonafe/:6873 Filtro de data: sem data inicial a sem data final
+RotasMoveisBonafe/:6877 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: undefined undefined
+RotasMoveisBonafe/:6899 [FILTRO] Usando data de início padrão: 2025-01-01
+RotasMoveisBonafe/:6904 [FILTRO] Usando data de fim padrão: 2025-12-31
+RotasMoveisBonafe/:6908 [DATA] Filtro FINAL: 2025-01-01 até 2025-12-31
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Festival de Verão - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Festival de Verão' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:6984 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '03/02/2025', eventEnd: '03/02/2025', filterStart: '31/12/2024', filterEnd: '30/12/2025', …}
+RotasMoveisBonafe/:7049 [ACEITO] Evento 'Aniversário da Cidade' (03/02/2025) está dentro do período de filtro: 31/12/2024 a 30/12/2025
+RotasMoveisBonafe/:7072 [FINAL] Evento 'Aniversário da Cidade' em 'Dois Córregos' - INCLUÍDO NA LISTA FINAL
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Campinas" (normalizada: "campinas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Carlos" (normalizada: "sao carlos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '31/12/2024', filterEnd: '30/12/2025', …}
+RotasMoveisBonafe/:7049 [ACEITO] Evento 'Aniversário da Cidade' (18/03/2025) está dentro do período de filtro: 31/12/2024 a 30/12/2025
+RotasMoveisBonafe/:7072 [FINAL] Evento 'Aniversário da Cidade' em 'Piedade' - INCLUÍDO NA LISTA FINAL
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Uru" (normalizada: "uru") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Uru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Morro Agudo" (normalizada: "morro agudo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Morro Agudo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Dirce Reis" (normalizada: "dirce reis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Dirce Reis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Teodoro Sampaio" (normalizada: "teodoro sampaio") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Teodoro Sampaio' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Iaras" (normalizada: "iaras") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Iaras' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Motuca" (normalizada: "motuca") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Motuca' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Borebi" (normalizada: "borebi") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Borebi' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Embaúba" (normalizada: "embauba") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Embaúba' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Iporanga" (normalizada: "iporanga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Iporanga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Miguelópolis" (normalizada: "miguelopolis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Miguelópolis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Quatá" (normalizada: "quata") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Quatá' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Praia Grande" (normalizada: "praia grande") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Praia Grande' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Braúna" (normalizada: "brauna") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Braúna' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cardoso" (normalizada: "cardoso") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cardoso' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itaju" (normalizada: "itaju") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itaju' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Parisi" (normalizada: "parisi") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Parisi' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piraju" (normalizada: "piraju") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Piraju' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Sabino" (normalizada: "sabino") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Sabino' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Santa Cruz do Rio Pardo" (normalizada: "santa cruz do rio pardo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Santa Cruz do Rio Pardo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Vicente" (normalizada: "sao vicente") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Vicente' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Buri" (normalizada: "buri") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Buri' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Estrela D'Oeste" (normalizada: "estrela d'oeste") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Estrela D'Oeste' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Vera Cruz" (normalizada: "vera cruz") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Vera Cruz' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Santos" (normalizada: "santos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Santos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Santo Antônio do Pinhal" (normalizada: "santo antonio do pinhal") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Santo Antônio do Pinhal' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Barbosa" (normalizada: "barbosa") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Barbosa' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itu" (normalizada: "itu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cajamar" (normalizada: "cajamar") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cajamar' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cândido Rodrigues" (normalizada: "candido rodrigues") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cândido Rodrigues' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Osasco" (normalizada: "osasco") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Osasco' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Severínia" (normalizada: "severinia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Severínia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Pedro" (normalizada: "sao pedro") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Pedro' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Paulínia" (normalizada: "paulinia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Paulínia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Olímpia" (normalizada: "olimpia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Olímpia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itaporanga" (normalizada: "itaporanga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itaporanga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Tietê" (normalizada: "tiete") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Tietê' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Batatais" (normalizada: "batatais") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Batatais' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '31/12/2024', filterEnd: '30/12/2025', …}
+RotasMoveisBonafe/:7049 [ACEITO] Evento 'Aniversário da Cidade' (18/03/2025) está dentro do período de filtro: 31/12/2024 a 30/12/2025
+RotasMoveisBonafe/:7072 [FINAL] Evento 'Aniversário da Cidade' em 'Piedade' - INCLUÍDO NA LISTA FINAL
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Araras" (normalizada: "araras") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Araras' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cabreúva" (normalizada: "cabreuva") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cabreúva' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Mococa" (normalizada: "mococa") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Mococa' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Marília" (normalizada: "marilia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Marília' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Campos do Jordão" (normalizada: "campos do jordao") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Campos do Jordão' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bebedouro" (normalizada: "bebedouro") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Bebedouro' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Brotas" (normalizada: "brotas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Brotas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Piedade): 19/05/2025-19/05/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '19/05/2025', eventEnd: '19/05/2025', filterStart: '31/12/2024', filterEnd: '30/12/2025', …}
+RotasMoveisBonafe/:7049 [ACEITO] Evento 'Aniversário da Cidade' (19/05/2025) está dentro do período de filtro: 31/12/2024 a 30/12/2025
+RotasMoveisBonafe/:7072 [FINAL] Evento 'Aniversário da Cidade' em 'Piedade' - INCLUÍDO NA LISTA FINAL
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Barra do Chapéu" (normalizada: "barra do chapeu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Barra do Chapéu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Valinhos" (normalizada: "valinhos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Valinhos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Rio Claro" (normalizada: "rio claro") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Rio Claro' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Guarujá" (normalizada: "guaruja") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Guarujá' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Assis" (normalizada: "assis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Assis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Campinas" (normalizada: "campinas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São José dos Campos" (normalizada: "sao jose dos campos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São José dos Campos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Caetano do Sul" (normalizada: "sao caetano do sul") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Caetano do Sul' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piracicaba" (normalizada: "piracicaba") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Piracicaba' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Votuporanga" (normalizada: "votuporanga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Votuporanga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Sorocaba" (normalizada: "sorocaba") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Sorocaba' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Roque" (normalizada: "sao roque") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Roque' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Bernardo do Campo" (normalizada: "sao bernardo do campo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Bernardo do Campo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Araraquara" (normalizada: "araraquara") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Araraquara' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Barretos" (normalizada: "barretos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Barretos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Mogi das Cruzes" (normalizada: "mogi das cruzes") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Mogi das Cruzes' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Branco" (normalizada: "ribeirao branco") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Branco' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Limeira" (normalizada: "limeira") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Limeira' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Presidente Prudente" (normalizada: "presidente prudente") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Presidente Prudente' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itapeva" (normalizada: "itapeva") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itapeva' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itapira" (normalizada: "itapira") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itapira' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Franca" (normalizada: "franca") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Franca' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Carlos" (normalizada: "sao carlos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jundiaí" (normalizada: "jundiai") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Jundiaí' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Indaiatuba" (normalizada: "indaiatuba") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Indaiatuba' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Diadema" (normalizada: "diadema") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Diadema' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Mauá" (normalizada: "maua") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Mauá' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Belo Horizonte" (normalizada: "belo horizonte") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Belo Horizonte' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Juiz de Fora" (normalizada: "juiz de fora") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Juiz de Fora' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Uberlândia" (normalizada: "uberlandia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Uberlândia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Divinópolis" (normalizada: "divinopolis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Divinópolis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Muriaé" (normalizada: "muriae") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Muriaé' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Passos" (normalizada: "passos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Passos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Patos de Minas" (normalizada: "patos de minas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Patos de Minas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Formiga" (normalizada: "formiga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Formiga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ibirité" (normalizada: "ibirite") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ibirité' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cristina" (normalizada: "cristina") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cristina' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Pedralva" (normalizada: "pedralva") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Pedralva' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cambuquira" (normalizada: "cambuquira") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cambuquira' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Carvalhópolis" (normalizada: "carvalhopolis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Carvalhópolis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Tombos" (normalizada: "tombos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Tombos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Brasilândia de Minas" (normalizada: "brasilandia de minas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Brasilândia de Minas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Medina" (normalizada: "medina") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Medina' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cambuí" (normalizada: "cambui") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cambuí' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Guaxupé" (normalizada: "guaxupe") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Guaxupé' REJEITADO - cidade não está no percurso
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1679 As of February 21st, 2024, google.maps.Marker is deprecated. Please use google.maps.marker.AdvancedMarkerElement instead. At this time, google.maps.Marker is not scheduled to be discontinued, but google.maps.marker.AdvancedMarkerElement is recommended over google.maps.Marker. While google.maps.Marker will continue to receive bug fixes for any major regressions, existing bugs in google.maps.Marker will not be addressed. At least 12 months notice will be given before support is discontinued. Please see https://developers.google.com/maps/deprecations for additional details and https://developers.google.com/maps/documentation/javascript/advanced-markers/migration for the migration guide.
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1679
+addEventMarker @ RotasMoveisBonafe/:7153
+(anônimo) @ RotasMoveisBonafe/:7134
+showEventsForCitiesOnRoute @ RotasMoveisBonafe/:7103
+showInitialTabsContent @ RotasMoveisBonafe/:3707
+(anônimo) @ RotasMoveisBonafe/:2930
+RotasMoveisBonafe/:7185 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:7186 Mostrando restrições de caminhões para rota com IDs: [1]
+RotasMoveisBonafe/:7189 Timestamp: 2025-05-21T03:57:10.799Z
+RotasMoveisBonafe/:7195 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:7195
+showInitialTabsContent @ RotasMoveisBonafe/:3710
+(anônimo) @ RotasMoveisBonafe/:2930
+RotasMoveisBonafe/:7232 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:7259 Cidades detectadas na rota: [{…}]
+RotasMoveisBonafe/:7352 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+RotasMoveisBonafe/:2937 Google Maps API disponível
+RotasMoveisBonafe/:3099 Inicializando campos de data...
+RotasMoveisBonafe/:3156 Data inicial definida: 2025-05-21
+RotasMoveisBonafe/:3161 Data final definida: 2025-05-28
+RotasMoveisBonafe/:3164 Datas inicializadas: de 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:3190 Redimensionando mapa
+RotasMoveisBonafe/:3250 Inicializando DirectionsRenderer...
+RotasMoveisBonafe/:3262 DirectionsRenderer inicializado com sucesso
+RotasMoveisBonafe/:9118 Tooltip personalizado criado com sucesso
+RotasMoveisBonafe/:8894 ==========================================
+RotasMoveisBonafe/:8895 FILTRO DE EVENTOS POR DATA SOLICITADO
+RotasMoveisBonafe/:8896 ==========================================
+RotasMoveisBonafe/:8982 Datas finais para filtragem: 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:8996 Sem rota, mostrando apenas para origem
+RotasMoveisBonafe/:9023 Usando apenas a origem para eventos: [1]
+RotasMoveisBonafe/:9027 Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas: 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6772 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:6773 Mostrando eventos para rota com IDs: [1]
+RotasMoveisBonafe/:6774 Datas de filtro (string): 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6798 Eventos disponíveis: (111) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, …]
+RotasMoveisBonafe/:6812 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:6828 [ROTA] Adicionada cidade prioritária: Piedade
+RotasMoveisBonafe/:6832 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:6866 [ROTA] Cidades encontradas no percurso (2): Piedade, Dois Córregos
+RotasMoveisBonafe/:6868 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: (2) ['Piedade', 'Dois Córregos']
+RotasMoveisBonafe/:6871 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:6872 Filtrando eventos para cidades: Piedade, Dois Córregos
+RotasMoveisBonafe/:6873 Filtro de data: 2025-05-21 a 2025-05-28
+RotasMoveisBonafe/:6877 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6908 [DATA] Filtro FINAL: 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Festival de Verão - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Festival de Verão' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:6984 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '03/02/2025', eventEnd: '03/02/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (03/02/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Campinas" (normalizada: "campinas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Carlos" (normalizada: "sao carlos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (18/03/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Uru" (normalizada: "uru") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Uru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Morro Agudo" (normalizada: "morro agudo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Morro Agudo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Dirce Reis" (normalizada: "dirce reis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Dirce Reis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Teodoro Sampaio" (normalizada: "teodoro sampaio") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Teodoro Sampaio' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Iaras" (normalizada: "iaras") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Iaras' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Motuca" (normalizada: "motuca") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Motuca' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Borebi" (normalizada: "borebi") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Borebi' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Embaúba" (normalizada: "embauba") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Embaúba' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Iporanga" (normalizada: "iporanga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Iporanga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Miguelópolis" (normalizada: "miguelopolis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Miguelópolis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Quatá" (normalizada: "quata") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Quatá' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Praia Grande" (normalizada: "praia grande") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Praia Grande' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Braúna" (normalizada: "brauna") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Braúna' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cardoso" (normalizada: "cardoso") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cardoso' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itaju" (normalizada: "itaju") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itaju' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Parisi" (normalizada: "parisi") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Parisi' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piraju" (normalizada: "piraju") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Piraju' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Sabino" (normalizada: "sabino") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Sabino' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Santa Cruz do Rio Pardo" (normalizada: "santa cruz do rio pardo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Santa Cruz do Rio Pardo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Vicente" (normalizada: "sao vicente") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Vicente' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Buri" (normalizada: "buri") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Buri' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Estrela D'Oeste" (normalizada: "estrela d'oeste") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Estrela D'Oeste' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Vera Cruz" (normalizada: "vera cruz") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Vera Cruz' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Santos" (normalizada: "santos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Santos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Santo Antônio do Pinhal" (normalizada: "santo antonio do pinhal") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Santo Antônio do Pinhal' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Barbosa" (normalizada: "barbosa") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Barbosa' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itu" (normalizada: "itu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cajamar" (normalizada: "cajamar") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cajamar' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cândido Rodrigues" (normalizada: "candido rodrigues") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cândido Rodrigues' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Osasco" (normalizada: "osasco") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Osasco' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Severínia" (normalizada: "severinia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Severínia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Pedro" (normalizada: "sao pedro") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Pedro' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Paulínia" (normalizada: "paulinia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Paulínia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Olímpia" (normalizada: "olimpia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Olímpia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itaporanga" (normalizada: "itaporanga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itaporanga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Tietê" (normalizada: "tiete") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Tietê' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Batatais" (normalizada: "batatais") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Batatais' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (18/03/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Araras" (normalizada: "araras") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Araras' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cabreúva" (normalizada: "cabreuva") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cabreúva' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Mococa" (normalizada: "mococa") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Mococa' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Marília" (normalizada: "marilia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Marília' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Campos do Jordão" (normalizada: "campos do jordao") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Campos do Jordão' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bebedouro" (normalizada: "bebedouro") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Bebedouro' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Brotas" (normalizada: "brotas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Brotas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Piedade): 19/05/2025-19/05/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '19/05/2025', eventEnd: '19/05/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (19/05/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Barra do Chapéu" (normalizada: "barra do chapeu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Barra do Chapéu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Valinhos" (normalizada: "valinhos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Valinhos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Rio Claro" (normalizada: "rio claro") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Rio Claro' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Guarujá" (normalizada: "guaruja") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Guarujá' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Assis" (normalizada: "assis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Assis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Campinas" (normalizada: "campinas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São José dos Campos" (normalizada: "sao jose dos campos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São José dos Campos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Caetano do Sul" (normalizada: "sao caetano do sul") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Caetano do Sul' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piracicaba" (normalizada: "piracicaba") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Piracicaba' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Votuporanga" (normalizada: "votuporanga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Votuporanga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Sorocaba" (normalizada: "sorocaba") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Sorocaba' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Roque" (normalizada: "sao roque") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Roque' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Bernardo do Campo" (normalizada: "sao bernardo do campo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Bernardo do Campo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Araraquara" (normalizada: "araraquara") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Araraquara' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Barretos" (normalizada: "barretos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Barretos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Mogi das Cruzes" (normalizada: "mogi das cruzes") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Mogi das Cruzes' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Branco" (normalizada: "ribeirao branco") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Branco' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Limeira" (normalizada: "limeira") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Limeira' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Presidente Prudente" (normalizada: "presidente prudente") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Presidente Prudente' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itapeva" (normalizada: "itapeva") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itapeva' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itapira" (normalizada: "itapira") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itapira' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Franca" (normalizada: "franca") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Franca' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Carlos" (normalizada: "sao carlos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jundiaí" (normalizada: "jundiai") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Jundiaí' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Indaiatuba" (normalizada: "indaiatuba") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Indaiatuba' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Diadema" (normalizada: "diadema") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Diadema' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Mauá" (normalizada: "maua") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Mauá' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Belo Horizonte" (normalizada: "belo horizonte") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Belo Horizonte' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Juiz de Fora" (normalizada: "juiz de fora") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Juiz de Fora' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Uberlândia" (normalizada: "uberlandia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Uberlândia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Divinópolis" (normalizada: "divinopolis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Divinópolis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Muriaé" (normalizada: "muriae") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Muriaé' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Passos" (normalizada: "passos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Passos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Patos de Minas" (normalizada: "patos de minas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Patos de Minas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Formiga" (normalizada: "formiga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Formiga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ibirité" (normalizada: "ibirite") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ibirité' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cristina" (normalizada: "cristina") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cristina' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Pedralva" (normalizada: "pedralva") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Pedralva' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cambuquira" (normalizada: "cambuquira") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cambuquira' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Carvalhópolis" (normalizada: "carvalhopolis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Carvalhópolis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Tombos" (normalizada: "tombos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Tombos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Brasilândia de Minas" (normalizada: "brasilandia de minas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Brasilândia de Minas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Medina" (normalizada: "medina") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Medina' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cambuí" (normalizada: "cambui") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cambuí' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Guaxupé" (normalizada: "guaxupe") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Guaxupé' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7185 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:7186 Mostrando restrições de caminhões para rota com IDs: [1]
+RotasMoveisBonafe/:7189 Timestamp: 2025-05-21T03:57:10.819Z
+RotasMoveisBonafe/:7195 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:7195
+filterEventsByDate @ RotasMoveisBonafe/:9032
+initMap @ RotasMoveisBonafe/:3090
+(anônimo) @ RotasMoveisBonafe/:2942
+RotasMoveisBonafe/:7232 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:7259 Cidades detectadas na rota: [{…}]
+RotasMoveisBonafe/:7352 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+RotasMoveisBonafe/:3502 Inicializando autocomplete para busca de endereços...
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:82 As of March 1st, 2025, google.maps.places.Autocomplete is not available to new customers. Please use google.maps.places.PlaceAutocompleteElement instead. At this time, google.maps.places.Autocomplete is not scheduled to be discontinued, but google.maps.places.PlaceAutocompleteElement is recommended over google.maps.places.Autocomplete. While google.maps.places.Autocomplete will continue to receive bug fixes for any major regressions, existing bugs in google.maps.places.Autocomplete will not be addressed. At least 12 months notice will be given before support is discontinued. Please see https://developers.google.com/maps/legacy for additional details and https://developers.google.com/maps/documentation/javascript/places-migration-overview for the migration guide.
+nB @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:82
+initAutocomplete @ RotasMoveisBonafe/:3524
+(anônimo) @ RotasMoveisBonafe/:2943
+RotasMoveisBonafe/:3525 Autocomplete inicializado com sucesso
+RotasMoveisBonafe/:3592 Inicializando sistema de navegação para tabs inferiores
+RotasMoveisBonafe/:3810 Inicializando abas inferiores com modo FULLSCREEN...
+RotasMoveisBonafe/:3878 Abas inferiores inicializadas com sucesso
+RotasMoveisBonafe/:2949 Detectado GitHub Pages - aplicando ajustes especiais de layout
+RotasMoveisBonafe/:4809 Criando novo marcador para Dois Córregos (ID: 1)
+RotasMoveisBonafe/:5825 Verificando se Dois Córregos e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5846 Mesma cidade encontrada nos endereços: dois córregos
+RotasMoveisBonafe/:4896 Configurando marcador para Dois Córregos - Mesma cidade da origem: true
+RotasMoveisBonafe/:2990 Datas definidas automaticamente: de 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:8894 ==========================================
+RotasMoveisBonafe/:8895 FILTRO DE EVENTOS POR DATA SOLICITADO
+RotasMoveisBonafe/:8896 ==========================================
+RotasMoveisBonafe/:8982 Datas finais para filtragem: 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:8988 Usando rota otimizada atual: [1]
+RotasMoveisBonafe/:9027 Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas: 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6772 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:6773 Mostrando eventos para rota com IDs: [1]
+RotasMoveisBonafe/:6774 Datas de filtro (string): 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6798 Eventos disponíveis: (111) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, …]
+RotasMoveisBonafe/:6812 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:6828 [ROTA] Adicionada cidade prioritária: Piedade
+RotasMoveisBonafe/:6832 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:6866 [ROTA] Cidades encontradas no percurso (2): Piedade, Dois Córregos
+RotasMoveisBonafe/:6868 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: (2) ['Piedade', 'Dois Córregos']
+RotasMoveisBonafe/:6871 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:6872 Filtrando eventos para cidades: Piedade, Dois Córregos
+RotasMoveisBonafe/:6873 Filtro de data: 2025-05-21 a 2025-05-28
+RotasMoveisBonafe/:6877 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6908 [DATA] Filtro FINAL: 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Festival de Verão - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Festival de Verão' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:6984 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '03/02/2025', eventEnd: '03/02/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (03/02/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Campinas" (normalizada: "campinas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Carlos" (normalizada: "sao carlos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (18/03/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Uru" (normalizada: "uru") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Uru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Morro Agudo" (normalizada: "morro agudo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Morro Agudo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Dirce Reis" (normalizada: "dirce reis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Dirce Reis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Teodoro Sampaio" (normalizada: "teodoro sampaio") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Teodoro Sampaio' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Iaras" (normalizada: "iaras") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Iaras' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Motuca" (normalizada: "motuca") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Motuca' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Borebi" (normalizada: "borebi") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Borebi' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Embaúba" (normalizada: "embauba") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Embaúba' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Iporanga" (normalizada: "iporanga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Iporanga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Miguelópolis" (normalizada: "miguelopolis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Miguelópolis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Quatá" (normalizada: "quata") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Quatá' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Praia Grande" (normalizada: "praia grande") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Praia Grande' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Braúna" (normalizada: "brauna") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Braúna' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cardoso" (normalizada: "cardoso") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cardoso' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itaju" (normalizada: "itaju") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itaju' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Parisi" (normalizada: "parisi") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Parisi' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piraju" (normalizada: "piraju") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Piraju' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Sabino" (normalizada: "sabino") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Sabino' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Santa Cruz do Rio Pardo" (normalizada: "santa cruz do rio pardo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Santa Cruz do Rio Pardo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Vicente" (normalizada: "sao vicente") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Vicente' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Buri" (normalizada: "buri") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Buri' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Estrela D'Oeste" (normalizada: "estrela d'oeste") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Estrela D'Oeste' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Vera Cruz" (normalizada: "vera cruz") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Vera Cruz' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Santos" (normalizada: "santos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Santos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Santo Antônio do Pinhal" (normalizada: "santo antonio do pinhal") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Santo Antônio do Pinhal' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Barbosa" (normalizada: "barbosa") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Barbosa' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itu" (normalizada: "itu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cajamar" (normalizada: "cajamar") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cajamar' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cândido Rodrigues" (normalizada: "candido rodrigues") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cândido Rodrigues' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Osasco" (normalizada: "osasco") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Osasco' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Severínia" (normalizada: "severinia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Severínia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Pedro" (normalizada: "sao pedro") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Pedro' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Paulínia" (normalizada: "paulinia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Paulínia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Olímpia" (normalizada: "olimpia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Olímpia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itaporanga" (normalizada: "itaporanga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itaporanga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Tietê" (normalizada: "tiete") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Tietê' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Batatais" (normalizada: "batatais") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Batatais' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (18/03/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Araras" (normalizada: "araras") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Araras' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cabreúva" (normalizada: "cabreuva") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cabreúva' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Mococa" (normalizada: "mococa") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Mococa' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Marília" (normalizada: "marilia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Marília' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Campos do Jordão" (normalizada: "campos do jordao") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Campos do Jordão' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bebedouro" (normalizada: "bebedouro") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Bebedouro' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Brotas" (normalizada: "brotas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Brotas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Piedade): 19/05/2025-19/05/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '19/05/2025', eventEnd: '19/05/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (19/05/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Barra do Chapéu" (normalizada: "barra do chapeu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Barra do Chapéu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Valinhos" (normalizada: "valinhos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Valinhos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Rio Claro" (normalizada: "rio claro") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Rio Claro' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Guarujá" (normalizada: "guaruja") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Guarujá' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Assis" (normalizada: "assis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Assis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Campinas" (normalizada: "campinas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São José dos Campos" (normalizada: "sao jose dos campos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São José dos Campos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Caetano do Sul" (normalizada: "sao caetano do sul") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Caetano do Sul' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piracicaba" (normalizada: "piracicaba") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Piracicaba' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Votuporanga" (normalizada: "votuporanga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Votuporanga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Sorocaba" (normalizada: "sorocaba") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Sorocaba' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Roque" (normalizada: "sao roque") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Roque' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Bernardo do Campo" (normalizada: "sao bernardo do campo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Bernardo do Campo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Araraquara" (normalizada: "araraquara") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Araraquara' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Barretos" (normalizada: "barretos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Barretos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Mogi das Cruzes" (normalizada: "mogi das cruzes") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Mogi das Cruzes' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Branco" (normalizada: "ribeirao branco") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Branco' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Limeira" (normalizada: "limeira") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Limeira' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Presidente Prudente" (normalizada: "presidente prudente") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Presidente Prudente' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itapeva" (normalizada: "itapeva") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itapeva' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itapira" (normalizada: "itapira") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itapira' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Franca" (normalizada: "franca") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Franca' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Carlos" (normalizada: "sao carlos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jundiaí" (normalizada: "jundiai") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Jundiaí' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Indaiatuba" (normalizada: "indaiatuba") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Indaiatuba' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Diadema" (normalizada: "diadema") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Diadema' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Mauá" (normalizada: "maua") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Mauá' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Belo Horizonte" (normalizada: "belo horizonte") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Belo Horizonte' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Juiz de Fora" (normalizada: "juiz de fora") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Juiz de Fora' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Uberlândia" (normalizada: "uberlandia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Uberlândia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Divinópolis" (normalizada: "divinopolis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Divinópolis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Muriaé" (normalizada: "muriae") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Muriaé' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Passos" (normalizada: "passos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Passos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Patos de Minas" (normalizada: "patos de minas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Patos de Minas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Formiga" (normalizada: "formiga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Formiga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ibirité" (normalizada: "ibirite") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ibirité' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cristina" (normalizada: "cristina") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cristina' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Pedralva" (normalizada: "pedralva") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Pedralva' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cambuquira" (normalizada: "cambuquira") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cambuquira' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Carvalhópolis" (normalizada: "carvalhopolis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Carvalhópolis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Tombos" (normalizada: "tombos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Tombos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Brasilândia de Minas" (normalizada: "brasilandia de minas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Brasilândia de Minas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Medina" (normalizada: "medina") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Medina' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cambuí" (normalizada: "cambui") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cambuí' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Guaxupé" (normalizada: "guaxupe") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Guaxupé' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7185 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:7186 Mostrando restrições de caminhões para rota com IDs: [1]
+RotasMoveisBonafe/:7189 Timestamp: 2025-05-21T03:57:10.831Z
+RotasMoveisBonafe/:7195 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:7195
+filterEventsByDate @ RotasMoveisBonafe/:9032
+(anônimo) @ RotasMoveisBonafe/:2996
+RotasMoveisBonafe/:7232 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:7259 Cidades detectadas na rota: [{…}]
+RotasMoveisBonafe/:7352 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+RotasMoveisBonafe/:2999 Campos de data inicializados com datas atuais e eventos/restrições para origem configurados
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:35 [LayoutFix] Inicialização completa
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+fullscreen-tabs.js:18 [FullscreenTabs] Inicializando sistema de abas em tela cheia
+fullscreen-tabs.js:41 [FullscreenTabs] Inicialização concluída com sucesso
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+map-controls.js:271 Map enhancements applied successfully
+VM14695 tabs-fix.js:15 [TabsFix] Aplicando correção definitiva para abas
+VM14695 tabs-fix.js:105 [TabsFix] Ocultando todos os conteúdos de abas
+VM14695 tabs-fix.js:48 [TabsFix] Correção aplicada com sucesso
+VM14711 tabs-fix.js:15 [TabsFix] Aplicando correção definitiva para abas
+VM14711 tabs-fix.js:105 [TabsFix] Ocultando todos os conteúdos de abas
+VM14711 tabs-fix.js:48 [TabsFix] Correção aplicada com sucesso
+tabs-fix.js:15 [TabsFix] Aplicando correção definitiva para abas
+tabs-fix.js:105 [TabsFix] Ocultando todos os conteúdos de abas
+tabs-fix.js:48 [TabsFix] Correção aplicada com sucesso
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+map-controls.js:271 Map enhancements applied successfully
+RotasMoveisBonafe/:8894 ==========================================
+RotasMoveisBonafe/:8895 FILTRO DE EVENTOS POR DATA SOLICITADO
+RotasMoveisBonafe/:8896 ==========================================
+RotasMoveisBonafe/:8982 Datas finais para filtragem: 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:8988 Usando rota otimizada atual: [1]
+RotasMoveisBonafe/:9027 Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas: 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6772 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:6773 Mostrando eventos para rota com IDs: [1]
+RotasMoveisBonafe/:6774 Datas de filtro (string): 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6798 Eventos disponíveis: (111) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, …]
+RotasMoveisBonafe/:6812 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:6828 [ROTA] Adicionada cidade prioritária: Piedade
+RotasMoveisBonafe/:6832 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:6866 [ROTA] Cidades encontradas no percurso (2): Piedade, Dois Córregos
+RotasMoveisBonafe/:6868 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: (2) ['Piedade', 'Dois Córregos']
+RotasMoveisBonafe/:6871 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:6872 Filtrando eventos para cidades: Piedade, Dois Córregos
+RotasMoveisBonafe/:6873 Filtro de data: 2025-05-21 a 2025-05-28
+RotasMoveisBonafe/:6877 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6908 [DATA] Filtro FINAL: 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Festival de Verão - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Festival de Verão' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:6984 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '03/02/2025', eventEnd: '03/02/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (03/02/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Campinas" (normalizada: "campinas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Carlos" (normalizada: "sao carlos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (18/03/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Uru" (normalizada: "uru") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Uru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Morro Agudo" (normalizada: "morro agudo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Morro Agudo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Dirce Reis" (normalizada: "dirce reis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Dirce Reis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Teodoro Sampaio" (normalizada: "teodoro sampaio") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Teodoro Sampaio' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Iaras" (normalizada: "iaras") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Iaras' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Motuca" (normalizada: "motuca") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Motuca' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Borebi" (normalizada: "borebi") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Borebi' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Embaúba" (normalizada: "embauba") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Embaúba' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Iporanga" (normalizada: "iporanga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Iporanga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Miguelópolis" (normalizada: "miguelopolis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Miguelópolis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Quatá" (normalizada: "quata") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Quatá' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Praia Grande" (normalizada: "praia grande") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Praia Grande' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Braúna" (normalizada: "brauna") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Braúna' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cardoso" (normalizada: "cardoso") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cardoso' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itaju" (normalizada: "itaju") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itaju' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Parisi" (normalizada: "parisi") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Parisi' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piraju" (normalizada: "piraju") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Piraju' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Sabino" (normalizada: "sabino") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Sabino' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Santa Cruz do Rio Pardo" (normalizada: "santa cruz do rio pardo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Santa Cruz do Rio Pardo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Vicente" (normalizada: "sao vicente") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Vicente' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Buri" (normalizada: "buri") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Buri' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Estrela D'Oeste" (normalizada: "estrela d'oeste") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Estrela D'Oeste' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Vera Cruz" (normalizada: "vera cruz") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Vera Cruz' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Santos" (normalizada: "santos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Santos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Santo Antônio do Pinhal" (normalizada: "santo antonio do pinhal") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Santo Antônio do Pinhal' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Barbosa" (normalizada: "barbosa") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Barbosa' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itu" (normalizada: "itu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cajamar" (normalizada: "cajamar") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cajamar' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cândido Rodrigues" (normalizada: "candido rodrigues") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cândido Rodrigues' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Osasco" (normalizada: "osasco") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Osasco' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Severínia" (normalizada: "severinia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Severínia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Pedro" (normalizada: "sao pedro") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Pedro' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Paulínia" (normalizada: "paulinia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Paulínia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Olímpia" (normalizada: "olimpia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Olímpia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itaporanga" (normalizada: "itaporanga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itaporanga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Tietê" (normalizada: "tiete") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Tietê' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Batatais" (normalizada: "batatais") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Batatais' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (18/03/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Araras" (normalizada: "araras") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Araras' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cabreúva" (normalizada: "cabreuva") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cabreúva' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Mococa" (normalizada: "mococa") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Mococa' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Marília" (normalizada: "marilia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Marília' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Campos do Jordão" (normalizada: "campos do jordao") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Campos do Jordão' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bebedouro" (normalizada: "bebedouro") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Bebedouro' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Brotas" (normalizada: "brotas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Brotas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Piedade): 19/05/2025-19/05/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '19/05/2025', eventEnd: '19/05/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (19/05/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Barra do Chapéu" (normalizada: "barra do chapeu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Barra do Chapéu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Valinhos" (normalizada: "valinhos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Valinhos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Rio Claro" (normalizada: "rio claro") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Rio Claro' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Guarujá" (normalizada: "guaruja") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Guarujá' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Assis" (normalizada: "assis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Assis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Campinas" (normalizada: "campinas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São José dos Campos" (normalizada: "sao jose dos campos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São José dos Campos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Caetano do Sul" (normalizada: "sao caetano do sul") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Caetano do Sul' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piracicaba" (normalizada: "piracicaba") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Piracicaba' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Votuporanga" (normalizada: "votuporanga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Votuporanga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Sorocaba" (normalizada: "sorocaba") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Sorocaba' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Roque" (normalizada: "sao roque") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Roque' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Bernardo do Campo" (normalizada: "sao bernardo do campo") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Bernardo do Campo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Araraquara" (normalizada: "araraquara") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Araraquara' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Barretos" (normalizada: "barretos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Barretos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Mogi das Cruzes" (normalizada: "mogi das cruzes") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Mogi das Cruzes' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Branco" (normalizada: "ribeirao branco") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Branco' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Limeira" (normalizada: "limeira") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Limeira' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Presidente Prudente" (normalizada: "presidente prudente") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Presidente Prudente' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itapeva" (normalizada: "itapeva") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itapeva' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itapira" (normalizada: "itapira") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itapira' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Franca" (normalizada: "franca") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Franca' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Carlos" (normalizada: "sao carlos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jundiaí" (normalizada: "jundiai") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Jundiaí' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Indaiatuba" (normalizada: "indaiatuba") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Indaiatuba' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Diadema" (normalizada: "diadema") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Diadema' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Mauá" (normalizada: "maua") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Mauá' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Belo Horizonte" (normalizada: "belo horizonte") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Belo Horizonte' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Juiz de Fora" (normalizada: "juiz de fora") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Juiz de Fora' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Uberlândia" (normalizada: "uberlandia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Uberlândia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Divinópolis" (normalizada: "divinopolis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Divinópolis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Muriaé" (normalizada: "muriae") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Muriaé' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Passos" (normalizada: "passos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Passos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Patos de Minas" (normalizada: "patos de minas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Patos de Minas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Formiga" (normalizada: "formiga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Formiga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ibirité" (normalizada: "ibirite") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ibirité' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cristina" (normalizada: "cristina") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cristina' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Pedralva" (normalizada: "pedralva") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Pedralva' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cambuquira" (normalizada: "cambuquira") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cambuquira' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Carvalhópolis" (normalizada: "carvalhopolis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Carvalhópolis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Tombos" (normalizada: "tombos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Tombos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Brasilândia de Minas" (normalizada: "brasilandia de minas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Brasilândia de Minas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Medina" (normalizada: "medina") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Medina' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cambuí" (normalizada: "cambui") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cambuí' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Guaxupé" (normalizada: "guaxupe") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Guaxupé' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7185 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:7186 Mostrando restrições de caminhões para rota com IDs: [1]
+RotasMoveisBonafe/:7189 Timestamp: 2025-05-21T03:57:11.315Z
+RotasMoveisBonafe/:7195 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:7195
+filterEventsByDate @ RotasMoveisBonafe/:9032
+setTimeout
+initDatePickers @ RotasMoveisBonafe/:3178
+initMap @ RotasMoveisBonafe/:3087
+(anônimo) @ RotasMoveisBonafe/:2942
+RotasMoveisBonafe/:7232 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:7259 Cidades detectadas na rota: [{…}]
+RotasMoveisBonafe/:7352 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+RotasMoveisBonafe/:2966 Ajustes de layout para GitHub Pages aplicados
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+smooth-animation.js:16 [SmoothAnimations] Inicializando animações suaves
+smooth-animation.js:23 [SmoothAnimations] Adicionadas transições ao container de abas
+smooth-animation.js:54 [SmoothAnimations] Configurações de animação aplicadas com sucesso
+city-birthdays.js:11 Iniciando carregamento de aniversários das cidades...
+city-birthdays.js:15 Definindo mockData...
+city-birthdays.js:21 Criando array cityEvents...
+city-birthdays.js:27 Dados de aniversários encontrados, adicionando...
+city-birthdays.js:29 26 eventos de aniversários adicionados!
+city-birthdays.js:47 Configuração de aniversários concluída.
+geocode-fix.js:108 Enhanced file upload with accurate geocoding
+geocode-fix.js:415 Geocoding fixes applied successfully
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+RotasMoveisBonafe/:3896 Botões de contador encontrados: 4
+4RotasMoveisBonafe/:3904 Evento de clique adicionado ao botão de contador
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:1675 [TabsInitCheck] Verificando visibilidade de abas...
+6layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:2858 Notificação [info]: Processando arquivo...
+RotasMoveisBonafe/:4222 Detectado Ribeirão Branco no nome: Ribeirao Branco-kelly Cristina Fernandes Santos  - Me
+RotasMoveisBonafe/:2858 Notificação [success]: Arquivo processado com sucesso!
+geocode-fix.js:101 [Violation] 'load' handler took 1193ms
+2layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:4809 Criando novo marcador para Itaporanga-e C Luz Moveis - Me (ID: 2)
+RotasMoveisBonafe/:5825 Verificando se Itaporanga-e C Luz Moveis - Me e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5873 Não estão na mesma cidade
+RotasMoveisBonafe/:4882 Obtendo região para cidade: "Itaporanga"
+RotasMoveisBonafe/:4557 Cidade Itaporanga pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4649 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4896 Configurando marcador para Itaporanga-e C Luz Moveis - Me - Mesma cidade da origem: false
+RotasMoveisBonafe/:4557 Cidade Itaporanga pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4649 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4557 Cidade Itaporanga pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4649 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4649 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:5023 Contador de locais atualizado: 1 destinos
+RotasMoveisBonafe/:4809 Criando novo marcador para Barra Do Chapeu-jaziel Mariano Almeida (ID: 3)
+RotasMoveisBonafe/:5825 Verificando se Barra Do Chapeu-jaziel Mariano Almeida e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5873 Não estão na mesma cidade
+RotasMoveisBonafe/:4882 Obtendo região para cidade: "Barra Do Chapeu-jaziel Mariano Almeida"
+RotasMoveisBonafe/:4557 Cidade Barra Do Chapeu-jaziel Mariano Almeida pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4649 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4896 Configurando marcador para Barra Do Chapeu-jaziel Mariano Almeida - Mesma cidade da origem: false
+RotasMoveisBonafe/:4557 Cidade Barra Do Chapeu-jaziel Mariano Almeida pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4649 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4557 Cidade Itaporanga pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4649 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4557 Cidade Barra Do Chapeu-jaziel Mariano Almeida pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4649 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4649 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:5023 Contador de locais atualizado: 2 destinos
+RotasMoveisBonafe/:4809 Criando novo marcador para Ribeirão Branco (ID: 4)
+RotasMoveisBonafe/:5825 Verificando se Ribeirão Branco e Dois Córregos estão na mesma cidade
+RotasMoveisBonafe/:5873 Não estão na mesma cidade
+RotasMoveisBonafe/:4882 Obtendo região para cidade: "Ribeirão Branco"
+RotasMoveisBonafe/:4506 Classificação manual forçada: Ribeirão Branco pertence à região de Sorocaba
+RotasMoveisBonafe/:4649 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4896 Configurando marcador para Ribeirão Branco - Mesma cidade da origem: false
+RotasMoveisBonafe/:4506 Classificação manual forçada: Ribeirão Branco pertence à região de Sorocaba
+RotasMoveisBonafe/:4649 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4557 Cidade Itaporanga pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4649 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4557 Cidade Barra Do Chapeu-jaziel Mariano Almeida pertence à região Sorocaba (cor: #33A8FF)
+RotasMoveisBonafe/:4649 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4506 Classificação manual forçada: Ribeirão Branco pertence à região de Sorocaba
+RotasMoveisBonafe/:4649 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:4649 Aplicando cor azul claro (#33A8FF) para contador de Sorocaba
+RotasMoveisBonafe/:5023 Contador de locais atualizado: 3 destinos
+3layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:9618 Convertendo coordenadas para Itaporanga-e C Luz Moveis - Me: latitude/longitude -> lat/lng
+RotasMoveisBonafe/:9618 Convertendo coordenadas para Barra Do Chapeu-jaziel Mariano Almeida: latitude/longitude -> lat/lng
+RotasMoveisBonafe/:9618 Convertendo coordenadas para Ribeirão Branco: latitude/longitude -> lat/lng
+RotasMoveisBonafe/:9642 Pontos válidos para rota: 4
+RotasMoveisBonafe/:9661 Coordenadas da origem (Dois Córregos): -22.3673 -48.3822
+RotasMoveisBonafe/:9676 Coordenadas de Itaporanga-e C Luz Moveis - Me: -23.7157176 -49.4872858
+RotasMoveisBonafe/:9676 Coordenadas de Barra Do Chapeu-jaziel Mariano Almeida: -24.4483828 -49.0817124
+RotasMoveisBonafe/:9676 Coordenadas de Ribeirão Branco: -24.2646731 -48.7593128
+RotasMoveisBonafe/:9760 Distância de 0 para 1: 187.79 km
+RotasMoveisBonafe/:9760 Distância de 1 para 2: 91.28 km
+RotasMoveisBonafe/:9760 Distância de 2 para 3: 38.52 km
+RotasMoveisBonafe/:9881 Mostrando eventos e restrições para cidades: (4) [1, 2, 3, 4]
+RotasMoveisBonafe/:6772 =================== NOVA EXECUÇÃO ===================
+RotasMoveisBonafe/:6773 Mostrando eventos para rota com IDs: (4) [1, 2, 3, 4]
+RotasMoveisBonafe/:6774 Datas de filtro (string): 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6798 Eventos disponíveis: (111) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, …]
+RotasMoveisBonafe/:6812 Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+RotasMoveisBonafe/:6812 Localização encontrada para ID 2: {id: 2, name: 'Itaporanga-e C Luz Moveis - Me', address: 'Itaporanga-e C Luz Moveis - Me, 18480000, Brasil', zipCode: '18480000', latitude: -23.7157176, …}
+RotasMoveisBonafe/:6812 Localização encontrada para ID 3: {id: 3, name: 'Barra Do Chapeu-jaziel Mariano Almeida', address: 'Barra Do Chapeu-jaziel Mariano Almeida, 18325000, Brasil', zipCode: '18325000', latitude: -24.4483828, …}
+RotasMoveisBonafe/:6812 Localização encontrada para ID 4: {id: 4, name: 'Ribeirão Branco', address: 'Ribeirão Branco, 18430000, Brasil', zipCode: '18430000', latitude: -24.2646731, …}
+RotasMoveisBonafe/:6828 [ROTA] Adicionada cidade prioritária: Piedade
+RotasMoveisBonafe/:6832 [ROTA] Adicionada cidade de origem: Dois Córregos
+RotasMoveisBonafe/:6861 [ROTA] Adicionado local como possível cidade: Itaporanga-e C Luz Moveis - Me
+RotasMoveisBonafe/:6861 [ROTA] Adicionado local como possível cidade: Barra Do Chapeu-jaziel Mariano Almeida
+RotasMoveisBonafe/:6854 [ROTA] Adicionada cidade conhecida: Ribeirão Branco
+RotasMoveisBonafe/:6866 [ROTA] Cidades encontradas no percurso (5): Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6868 APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: (5) ['Piedade', 'Dois Córregos', 'Itaporanga-e C Luz Moveis - Me', 'Barra Do Chapeu-jaziel Mariano Almeida', 'Ribeirão Branco']
+RotasMoveisBonafe/:6871 NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+RotasMoveisBonafe/:6872 Filtrando eventos para cidades: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6873 Filtro de data: 2025-05-21 a 2025-05-28
+RotasMoveisBonafe/:6877 [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-21 2025-05-28
+RotasMoveisBonafe/:6908 [DATA] Filtro FINAL: 2025-05-21 até 2025-05-28
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Festival de Verão - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Festival de Verão' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+RotasMoveisBonafe/:6984 [FESTIVAL] Festival de Verão excluído quando há filtro de data
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '03/02/2025', eventEnd: '03/02/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (03/02/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Campinas" (normalizada: "campinas") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Carlos" (normalizada: "sao carlos") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (18/03/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Uru" (normalizada: "uru") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Uru' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Morro Agudo" (normalizada: "morro agudo") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Morro Agudo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Dirce Reis" (normalizada: "dirce reis") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Dirce Reis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Teodoro Sampaio" (normalizada: "teodoro sampaio") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Teodoro Sampaio' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Iaras" (normalizada: "iaras") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Iaras' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Motuca" (normalizada: "motuca") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Motuca' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Borebi" (normalizada: "borebi") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Borebi' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Embaúba" (normalizada: "embauba") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Embaúba' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Iporanga" (normalizada: "iporanga") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Iporanga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Miguelópolis" (normalizada: "miguelopolis") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Miguelópolis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Quatá" (normalizada: "quata") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Quatá' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Praia Grande" (normalizada: "praia grande") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Praia Grande' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Braúna" (normalizada: "brauna") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Braúna' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cardoso" (normalizada: "cardoso") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cardoso' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itaju" (normalizada: "itaju") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itaju' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Parisi" (normalizada: "parisi") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Parisi' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piraju" (normalizada: "piraju") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Piraju' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Sabino" (normalizada: "sabino") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Sabino' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Santa Cruz do Rio Pardo" (normalizada: "santa cruz do rio pardo") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Santa Cruz do Rio Pardo' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Vicente" (normalizada: "sao vicente") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Vicente' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Buri" (normalizada: "buri") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Buri' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Estrela D'Oeste" (normalizada: "estrela d'oeste") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Estrela D'Oeste' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Vera Cruz" (normalizada: "vera cruz") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Vera Cruz' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Santos" (normalizada: "santos") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Santos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Santo Antônio do Pinhal" (normalizada: "santo antonio do pinhal") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Santo Antônio do Pinhal' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Barbosa" (normalizada: "barbosa") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Barbosa' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itu" (normalizada: "itu") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Itu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cajamar" (normalizada: "cajamar") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cajamar' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cândido Rodrigues" (normalizada: "candido rodrigues") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cândido Rodrigues' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Osasco" (normalizada: "osasco") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Osasco' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Severínia" (normalizada: "severinia") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Severínia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "São Pedro" (normalizada: "sao pedro") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'São Pedro' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Paulínia" (normalizada: "paulinia") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Paulínia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Olímpia" (normalizada: "olimpia") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Olímpia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Itaporanga" (normalizada: "itaporanga") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Itaporanga - Cidade na rota: Itaporanga-e C Luz Moveis - Me
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Itaporanga' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Itaporanga): 05/03/2025-05/03/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '05/03/2025', eventEnd: '05/03/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (05/03/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Tietê" (normalizada: "tiete") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Tietê' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Batatais" (normalizada: "batatais") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Batatais' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (18/03/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Araras" (normalizada: "araras") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Araras' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Cabreúva" (normalizada: "cabreuva") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Cabreúva' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Mococa" (normalizada: "mococa") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Mococa' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Marília" (normalizada: "marilia") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Marília' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Campos do Jordão" (normalizada: "campos do jordao") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Campos do Jordão' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Bebedouro" (normalizada: "bebedouro") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Bebedouro' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Brotas" (normalizada: "brotas") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Brotas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Piedade): 19/05/2025-19/05/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '19/05/2025', eventEnd: '19/05/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (19/05/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Barra do Chapéu" (normalizada: "barra do chapeu") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6943 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Barra do Chapéu - Cidade na rota: Barra Do Chapeu-jaziel Mariano Almeida
+RotasMoveisBonafe/:6954 [CIDADE] Evento 'Aniversário da Cidade' em 'Barra do Chapéu' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:6978 [EVENTO] Aniversário da Cidade (Barra do Chapéu): 18/05/2025-18/05/2025
+RotasMoveisBonafe/:7035 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/05/2025', eventEnd: '18/05/2025', filterStart: '20/05/2025', filterEnd: '27/05/2025', …}
+RotasMoveisBonafe/:7052 [REJEITADO] Evento 'Aniversário da Cidade' (18/05/2025) está fora do período de filtro: 20/05/2025 a 27/05/2025
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Valinhos" (normalizada: "valinhos") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Valinhos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Rio Claro" (normalizada: "rio claro") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Evento 'Aniversário da Cidade' em 'Rio Claro' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:6934 Comparando cidade de evento: "Guarujá" (normalizada: "guaruja") com cidades na rota: Piedade, Dois Córregos, Itaporanga-e C Luz Moveis - Me, Barra Do Chapeu-jaziel Mariano Almeida, Ribeirão Branco
+RotasMoveisBonafe/:6950 [CIDADE] Ev

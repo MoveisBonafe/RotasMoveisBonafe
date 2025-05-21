@@ -1,0 +1,178 @@
+/**
+ * SOLUÇÃO FINAL - CORREÇÃO PARA ABAS NO GITHUB PAGES
+ * 
+ * Instruções:
+ * 1. Acesse o repositório no GitHub e vá até o arquivo docs/index.html
+ * 2. Procure a seção de estilos (geralmente dentro da tag <head>)
+ * 3. Adicione este CSS no final da seção de estilos:
+ */
+
+<style id="emergency-tab-fix">
+/* CSS EMERGENCIAL - CORRIGE ABAS MOSTRANDO TODAS JUNTAS */
+/* Este estilo tem prioridade máxima e força o comportamento correto */
+
+/* Esconder todos os conteúdos de abas por padrão */
+.bottom-tab-content {
+  display: none !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Mostrar apenas o conteúdo para botões ativos */
+.bottom-tab-btn.active + .bottom-tab-content,
+#eventos-tab-content.active-content,
+#restrições-tab-content.active-content,
+#info-tab-content.active-content {
+  display: block !important;
+  visibility: visible !important;
+  position: relative !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  height: auto !important;
+  width: 100% !important;
+  overflow: auto !important;
+}
+
+/* Remover qualquer estilo que mostre todas as abas juntas */
+.bottom-tabs-container:not(.minimized) .bottom-tab-content:not(.active-content) {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Forçar a exibição do conteúdo ativo */
+.bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content {
+  display: block !important;
+  visibility: visible !important;
+  height: calc(100% - 60px) !important;
+  width: 100% !important;
+  overflow-y: auto !important;
+}
+
+/* Garantir estrutura de layout correta */
+.bottom-tabs-container:not(.minimized) {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.bottom-tabs-nav {
+  flex-shrink: 0 !important;
+}
+</style>
+
+/**
+ * 4. Em seguida, adicione este script no final do arquivo, antes da tag </body>
+ */
+
+<script id="tabs-emergency-fix">
+// SCRIPT DE EMERGÊNCIA PARA CORRIGIR AS ABAS
+(function() {
+  // Executar imediatamente e em intervalos regulares
+  fixTabs();
+  setInterval(fixTabs, 500);
+  
+  function fixTabs() {
+    // Esconder todas as abas primeiro
+    var allContents = document.querySelectorAll('.bottom-tab-content');
+    allContents.forEach(function(content) {
+      content.style.display = 'none';
+      content.classList.remove('active-content');
+    });
+    
+    // Mostrar apenas a aba do botão ativo
+    var activeButton = document.querySelector('.bottom-tab-btn.active');
+    if (activeButton) {
+      var tabId = activeButton.getAttribute('data-tab');
+      var activeContent = document.getElementById(tabId + '-content');
+      if (activeContent) {
+        activeContent.style.display = 'block';
+        activeContent.classList.add('active-content');
+      }
+    }
+    
+    // Reconfigurando os eventos de clique dos botões
+    var tabButtons = document.querySelectorAll('.bottom-tab-btn');
+    tabButtons.forEach(function(btn) {
+      // Pular se já processado
+      if (btn.dataset.processed === 'true') return;
+      
+      // Marcar como processado
+      btn.dataset.processed = 'true';
+      
+      // Clonar para remover eventos existentes
+      var clone = btn.cloneNode(true);
+      if (btn.parentNode) btn.parentNode.replaceChild(clone, btn);
+      
+      // Adicionar evento de clique
+      clone.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Obter container e verificar estado
+        var tabsContainer = document.querySelector('.bottom-tabs-container');
+        var isActive = this.classList.contains('active');
+        var isExpanded = !tabsContainer.classList.contains('minimized');
+        
+        // Se ativa e expandida, minimizar
+        if (isActive && isExpanded) {
+          minimizeTabs();
+          return;
+        }
+        
+        // Desativar todas as abas
+        tabButtons.forEach(function(b) {
+          b.classList.remove('active');
+        });
+        
+        // Ativar esta aba
+        this.classList.add('active');
+        
+        // Esconder todos os conteúdos
+        allContents.forEach(function(content) {
+          content.style.display = 'none';
+          content.classList.remove('active-content');
+        });
+        
+        // Mostrar conteúdo desta aba
+        var tabId = this.getAttribute('data-tab');
+        var content = document.getElementById(tabId + '-content');
+        if (content) {
+          content.style.display = 'block';
+          content.classList.add('active-content');
+        }
+        
+        // Expandir se minimizado
+        if (!isExpanded) {
+          expandTabs();
+        }
+      });
+    });
+  }
+  
+  function minimizeTabs() {
+    var container = document.querySelector('.bottom-tabs-container');
+    if (!container) return;
+    
+    container.classList.add('minimized');
+    
+    // Mostrar mapa
+    var mapContainer = document.querySelector('.map-container');
+    if (mapContainer) mapContainer.style.visibility = 'visible';
+  }
+  
+  function expandTabs() {
+    var container = document.querySelector('.bottom-tabs-container');
+    if (!container) return;
+    
+    container.classList.remove('minimized');
+    
+    // Ocultar mapa
+    var mapContainer = document.querySelector('.map-container');
+    if (mapContainer) mapContainer.style.visibility = 'hidden';
+  }
+})();
+</script>
