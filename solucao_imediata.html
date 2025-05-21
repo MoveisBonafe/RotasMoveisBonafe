@@ -1,222 +1,387 @@
-<!-- 
-INSTRUÇÕES: 
-1. Copie todo o conteúdo deste script
-2. No GitHub, edite seu arquivo docs/index.html 
-3. Cole este código logo após a tag <body> (nas primeiras linhas do body)
+<!--
+SOLUÇÃO IMEDIATA PARA GITHUB PAGES
+
+INSTRUÇÕES:
+1. Vá para o seu repositório no GitHub
+2. Acesse o arquivo docs/index.html
+3. Cole esse código exatamente antes da tag </body>
+4. Salve as mudanças
+
+Esse código usa uma técnica mais direta e força as alterações para corrigir:
+- Problema das abas mostrando todas juntas
+- Conteúdo não preenchendo toda a área disponível
+- Estilo dos botões para corresponder ao "Otimizar" e "Visualizar"
 -->
 
-<!-- INÍCIO DO CÓDIGO -->
 <script>
-// Script de correção para garantir que apenas uma aba seja exibida por vez
+// Correção imediata para o GitHub Pages - fix-all.js
+// Esta é uma versão direta e simplificada que garante funcionar no ambiente GitHub
+
+// Executar imediatamente
 (function() {
-  // Executar imediatamente
-  fixTabs();
-  
-  // Executar novamente após o carregamento completo
-  window.addEventListener('load', function() {
-    setTimeout(fixTabs, 500);
-    setTimeout(fixTabs, 1000);
-    setTimeout(fixTabs, 2000);
+    // Executar quando o DOM estiver pronto e novamente quando tudo estiver carregado
+    document.addEventListener('DOMContentLoaded', aplicarCorrecoes);
+    window.addEventListener('load', aplicarCorrecoes);
     
-    // Continuar verificando periodicamente
-    setInterval(fixTabs, 3000);
-  });
-  
-  function fixTabs() {
-    // Obter todos os conteúdos de abas
-    var contents = document.querySelectorAll('.bottom-tab-content');
-    var tabButtons = document.querySelectorAll('.bottom-tab-btn');
-    
-    // Esconder todos os conteúdos primeiro
-    contents.forEach(function(content) {
-      content.style.display = 'none';
-    });
-    
-    // Verificar qual botão está ativo
-    var activeButton = null;
-    tabButtons.forEach(function(button) {
-      if (button.classList.contains('active')) {
-        activeButton = button;
-      }
-    });
-    
-    // Se houver um botão ativo, mostrar apenas o conteúdo correspondente
-    if (activeButton) {
-      var tabId = activeButton.getAttribute('data-tab');
-      var activeContent = document.getElementById(tabId + '-content');
-      if (activeContent) {
-        activeContent.style.display = 'block';
-      }
+    // Se já estiver carregado, executar agora
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        setTimeout(aplicarCorrecoes, 100);
     }
     
-    // Adicionar CSS crítico para garantir comportamento correto
-    var style = document.createElement('style');
-    style.textContent = `
-      /* CSS de correção para as abas */
-      .bottom-tab-content { 
-        display: none !important; 
-      }
-      
-      /* Quando uma aba está ativa e tem estilo display block, sobrescrever o CSS acima */
-      .bottom-tab-content[style*="display: block"] { 
-        display: block !important; 
-      }
-      
-      /* Container não-minimizado deve ser flexbox */
-      .bottom-tabs-container:not(.minimized) {
-        display: flex !important;
-        flex-direction: column !important;
-      }
-    `;
-    
-    // Substituir versão anterior se existir
-    var oldStyle = document.getElementById('tabs-critical-css');
-    if (oldStyle) {
-      oldStyle.remove();
+    // Função principal que aplica todas as correções
+    function aplicarCorrecoes() {
+        console.log('[Correção Imediata] Aplicando correções para abas e conteúdo');
+        
+        // 1. Injetar CSS crítico
+        injetarCSS();
+        
+        // 2. Consertar comportamento das abas
+        setTimeout(corrigirAbas, 200);
+        
+        // 3. Agendar verificações periódicas para garantir aplicação
+        setTimeout(corrigirAbas, 500);
+        setTimeout(corrigirAbas, 1000);
+        setTimeout(corrigirAbas, 2000);
+        
+        // 4. Verificar continuamente a cada 3 segundos
+        setInterval(corrigirAbas, 3000);
     }
     
-    // Adicionar novo estilo
-    style.id = 'tabs-critical-css';
-    document.head.appendChild(style);
-    
-    // Substituir os manipuladores de eventos nos botões
-    replaceButtonHandlers();
-  }
-  
-  function replaceButtonHandlers() {
-    var tabButtons = document.querySelectorAll('.bottom-tab-btn');
-    
-    tabButtons.forEach(function(button) {
-      // Pular se já processamos este botão
-      if (button.dataset.processed === 'true') {
-        return;
-      }
-      
-      // Marcar como processado
-      button.dataset.processed = 'true';
-      
-      // Clonar para remover manipuladores existentes
-      var clone = button.cloneNode(true);
-      if (button.parentNode) {
-        button.parentNode.replaceChild(clone, button);
-      }
-      
-      // Adicionar novo manipulador
-      clone.addEventListener('click', function(e) {
-        // Impedir comportamento padrão
-        e.preventDefault();
-        e.stopPropagation();
+    // Injetar CSS necessário diretamente
+    function injetarCSS() {
+        // Evitar duplicação
+        if (document.getElementById('correcao-css')) return;
         
-        // Obter referências importantes
-        var tabId = this.getAttribute('data-tab');
-        var tabsContainer = document.querySelector('.bottom-tabs-container');
-        var isMinimized = tabsContainer.classList.contains('minimized');
-        var isActive = this.classList.contains('active');
+        // Criar tag de estilo
+        const style = document.createElement('style');
+        style.id = 'correcao-css';
+        style.textContent = `
+            /* ===== CORREÇÃO IMEDIATA CSS ===== */
+            
+            /* Estrutura principal */
+            .bottom-tabs-container:not(.minimized) {
+                display: flex !important;
+                flex-direction: column !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 380px !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                width: calc(100% - 380px) !important;
+                height: 100vh !important;
+                z-index: 9999 !important;
+                background: white !important;
+                border-left: 1px solid #ddd !important;
+                box-shadow: -2px 0 10px rgba(0,0,0,0.1) !important;
+                overflow: hidden !important;
+            }
+            
+            /* Barra de navegação */
+            .bottom-tabs-nav {
+                display: flex !important;
+                justify-content: space-around !important;
+                align-items: center !important;
+                width: 100% !important;
+                height: 60px !important;
+                background: #f8f9fa !important;
+                border-bottom: 1px solid #ddd !important;
+                flex-shrink: 0 !important;
+            }
+            
+            /* Estilo dos botões (como Otimizar/Visualizar) */
+            .bottom-tab-btn {
+                padding: 8px 16px !important;
+                background-color: #f8f9fa !important;
+                color: #333 !important;
+                border: 1px solid #ddd !important;
+                border-radius: 6px !important;
+                font-weight: 500 !important;
+                cursor: pointer !important;
+                min-width: 120px !important;
+                text-align: center !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+                transition: all 0.2s !important;
+                margin: 0 5px !important;
+            }
+            
+            .bottom-tab-btn:hover {
+                background-color: #fff !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+            }
+            
+            .bottom-tab-btn.active {
+                background-color: #ffc107 !important;
+                border-color: #ffc107 !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+            }
+            
+            /* Esconder todos os conteúdos por padrão */
+            .bottom-tab-content {
+                display: none !important;
+            }
+            
+            /* Mostrar apenas o conteúdo ativo */
+            .bottom-tab-content.active-content {
+                display: flex !important;
+                flex-direction: column !important;
+                width: 100% !important;
+                height: calc(100vh - 60px) !important;
+                overflow-y: auto !important;
+                padding: 20px !important;
+                box-sizing: border-box !important;
+                flex: 1 !important;
+                background-color: #fafafa !important;
+            }
+            
+            /* Garantir que os conteúdos preencham o espaço */
+            .bottom-tab-content.active-content > * {
+                width: 100% !important;
+                margin-bottom: 15px !important;
+                min-height: 50px !important;
+            }
+            
+            /* Adicionar espaço no final para rolagem */
+            .bottom-tab-content.active-content:after {
+                content: "";
+                display: block;
+                min-height: 200px !important;
+                width: 100% !important;
+            }
+            
+            /* Botões de ação (Otimizar, Visualizar) */
+            #otimizar, #visualizar,
+            button[onclick*="otimizar"], button[onclick*="visualizar"],
+            .btn-warning, .btn-primary {
+                background-color: #ffc107 !important;
+                color: #212529 !important;
+                border-color: #ffc107 !important;
+                font-weight: 500 !important;
+                border-radius: 6px !important;
+                padding: 8px 16px !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+            }
+        `;
         
-        // Desativar todos os botões e esconder conteúdos
-        document.querySelectorAll('.bottom-tab-btn').forEach(function(btn) {
-          btn.classList.remove('active');
+        // Adicionar à página
+        document.head.appendChild(style);
+        console.log('[Correção Imediata] CSS crítico injetado');
+    }
+    
+    // Corrigir as abas e garantir comportamento correto
+    function corrigirAbas() {
+        // Atualizar todos os botões de aba
+        const botoes = document.querySelectorAll('.bottom-tab-btn');
+        if (!botoes.length) {
+            console.warn('[Correção Imediata] Botões de aba não encontrados, tentando novamente...');
+            return;
+        }
+        
+        // Processar cada botão
+        botoes.forEach(botao => {
+            // Pular se já processado
+            if (botao.dataset.corrigido) return;
+            
+            // Marcar como processado
+            botao.dataset.corrigido = 'true';
+            
+            // Remover eventos originais clonando
+            const clone = botao.cloneNode(true);
+            botao.parentNode.replaceChild(clone, botao);
+            
+            // Adicionar novo evento de clique
+            clone.addEventListener('click', function(e) {
+                // Prevenir comportamento padrão
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Verificar estado atual
+                const container = document.querySelector('.bottom-tabs-container');
+                const isActive = this.classList.contains('active');
+                const isExpanded = container && !container.classList.contains('minimized');
+                
+                // Se já estiver ativo e expandido, minimizar
+                if (isActive && isExpanded) {
+                    minimizarAbas();
+                    return;
+                }
+                
+                // Caso contrário, ativar esta aba
+                
+                // 1. Desativar todos os botões
+                document.querySelectorAll('.bottom-tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // 2. Ativar este botão
+                this.classList.add('active');
+                
+                // 3. Esconder todos os conteúdos
+                document.querySelectorAll('.bottom-tab-content').forEach(conteudo => {
+                    conteudo.style.display = 'none';
+                    conteudo.classList.remove('active-content');
+                });
+                
+                // 4. Mostrar o conteúdo desta aba
+                const tabId = this.getAttribute('data-tab');
+                if (tabId) {
+                    const conteudo = document.getElementById(tabId + '-content');
+                    if (conteudo) {
+                        conteudo.style.display = 'block';
+                        conteudo.classList.add('active-content');
+                        forcarExpansaoConteudo(conteudo);
+                    }
+                }
+                
+                // 5. Expandir se estiver minimizado
+                if (container && container.classList.contains('minimized')) {
+                    expandirAbas();
+                }
+            });
         });
         
-        document.querySelectorAll('.bottom-tab-content').forEach(function(content) {
-          content.style.display = 'none';
+        // Verificar se há uma aba ativa
+        const botaoAtivo = document.querySelector('.bottom-tab-btn.active');
+        if (botaoAtivo) {
+            // Garantir que apenas o conteúdo correspondente esteja visível
+            const tabId = botaoAtivo.getAttribute('data-tab');
+            if (tabId) {
+                // Esconder todos
+                document.querySelectorAll('.bottom-tab-content').forEach(conteudo => {
+                    conteudo.style.display = 'none';
+                    conteudo.classList.remove('active-content');
+                });
+                
+                // Mostrar apenas o ativo
+                const conteudoAtivo = document.getElementById(tabId + '-content');
+                if (conteudoAtivo) {
+                    conteudoAtivo.style.display = 'block';
+                    conteudoAtivo.classList.add('active-content');
+                    forcarExpansaoConteudo(conteudoAtivo);
+                }
+            }
+        }
+    }
+    
+    // Forçar o conteúdo a preencher todo o espaço disponível
+    function forcarExpansaoConteudo(elemento) {
+        if (!elemento) return;
+        
+        // Aplicar estilos essenciais
+        elemento.style.display = 'flex';
+        elemento.style.flexDirection = 'column';
+        elemento.style.width = '100%';
+        elemento.style.height = 'calc(100vh - 60px)';
+        elemento.style.overflowY = 'auto';
+        elemento.style.padding = '20px';
+        elemento.style.boxSizing = 'border-box';
+        
+        // Forçar que todos os elementos filhos preencham horizontalmente
+        Array.from(elemento.children).forEach(filho => {
+            if (filho.tagName !== 'SCRIPT' && filho.tagName !== 'STYLE') {
+                filho.style.width = '100%';
+                filho.style.marginBottom = '15px';
+                
+                // Se for um contêiner, garantir altura mínima
+                if (filho.classList.contains('container') || 
+                    filho.classList.contains('row') || 
+                    filho.classList.contains('card')) {
+                    filho.style.minHeight = '100px';
+                }
+            }
         });
         
-        // Se estava ativo e expandido, apenas minimizar
-        if (isActive && !isMinimized) {
-          minimizeTabs();
-          return;
+        // Adicionar espaçador no final se não existir
+        if (!elemento.querySelector('.espaco-final')) {
+            const espaco = document.createElement('div');
+            espaco.className = 'espaco-final';
+            espaco.style.width = '100%';
+            espaco.style.height = '200px';
+            elemento.appendChild(espaco);
+        }
+    }
+    
+    // Expandir as abas para tela cheia
+    function expandirAbas() {
+        const container = document.querySelector('.bottom-tabs-container');
+        if (!container) return;
+        
+        // Remover classe minimizada
+        container.classList.remove('minimized');
+        
+        // Aplicar estilo expandido
+        Object.assign(container.style, {
+            position: 'fixed',
+            top: '0',
+            left: '380px',
+            right: '0',
+            bottom: '0',
+            width: 'calc(100% - 380px)',
+            height: '100vh',
+            zIndex: '9999',
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: 'white',
+            boxShadow: '-2px 0 10px rgba(0,0,0,0.1)',
+            borderLeft: '1px solid #ddd',
+            overflow: 'hidden'
+        });
+        
+        // Ajustar para telas menores
+        if (window.innerWidth <= 768) {
+            container.style.left = '320px';
+            container.style.width = 'calc(100% - 320px)';
         }
         
-        // Ativar este botão
-        this.classList.add('active');
-        
-        // Mostrar conteúdo correspondente
-        var content = document.getElementById(tabId + '-content');
-        if (content) {
-          content.style.display = 'block';
+        // Ocultar mapa
+        const mapa = document.querySelector('.map-container');
+        if (mapa) {
+            mapa.style.visibility = 'hidden';
         }
         
-        // Expandir se necessário
-        if (isMinimized) {
-          expandTabs();
+        // Forçar expansão do conteúdo ativo
+        const conteudoAtivo = container.querySelector('.bottom-tab-content.active-content');
+        if (conteudoAtivo) {
+            forcarExpansaoConteudo(conteudoAtivo);
         }
-      });
-    });
-  }
-  
-  function expandTabs() {
-    var container = document.querySelector('.bottom-tabs-container');
-    if (!container) return;
-    
-    // Remover classe minimizada
-    container.classList.remove('minimized');
-    
-    // Aplicar estilos expandidos
-    Object.assign(container.style, {
-      position: 'fixed',
-      top: '0',
-      left: '380px',
-      right: '0',
-      bottom: '0',
-      width: 'calc(100% - 380px)',
-      height: '100vh',
-      zIndex: '9999',
-      backgroundColor: 'white',
-      borderLeft: '3px solid #ffc107',
-      boxShadow: '0 0 20px rgba(0,0,0,0.15)',
-      display: 'flex',
-      flexDirection: 'column'
-    });
-    
-    // Ajustar para telas menores
-    if (window.innerWidth <= 768) {
-      container.style.left = '320px';
-      container.style.width = 'calc(100% - 320px)';
     }
     
-    // Esconder o mapa
-    var mapContainer = document.querySelector('.map-container');
-    if (mapContainer) {
-      mapContainer.style.visibility = 'hidden';
+    // Minimizar as abas
+    function minimizarAbas() {
+        const container = document.querySelector('.bottom-tabs-container');
+        if (!container) return;
+        
+        // Adicionar classe minimizada
+        container.classList.add('minimized');
+        
+        // Aplicar estilo minimizado
+        Object.assign(container.style, {
+            position: 'absolute',
+            top: 'auto',
+            left: '380px',
+            right: '0',
+            bottom: '0',
+            height: '60px',
+            width: 'calc(100% - 380px)',
+            zIndex: '100',
+            display: 'block',
+            flexDirection: 'unset',
+            backgroundColor: '#f8f9fa',
+            boxShadow: 'none',
+            borderLeft: 'none',
+            overflow: 'hidden'
+        });
+        
+        // Ajustar para telas menores
+        if (window.innerWidth <= 768) {
+            container.style.left = '320px';
+            container.style.width = 'calc(100% - 320px)';
+        }
+        
+        // Mostrar mapa
+        const mapa = document.querySelector('.map-container');
+        if (mapa) {
+            mapa.style.visibility = 'visible';
+        }
     }
-  }
-  
-  function minimizeTabs() {
-    var container = document.querySelector('.bottom-tabs-container');
-    if (!container) return;
-    
-    // Adicionar classe minimizada
-    container.classList.add('minimized');
-    
-    // Aplicar estilos minimizados
-    Object.assign(container.style, {
-      position: 'absolute',
-      top: 'auto',
-      left: '380px',
-      right: '0',
-      bottom: '0',
-      height: '60px',
-      width: 'calc(100% - 380px)',
-      zIndex: '100',
-      backgroundColor: '#f9f9f9',
-      borderLeft: 'none',
-      boxShadow: 'none',
-      display: 'block'
-    });
-    
-    // Ajustar para telas menores
-    if (window.innerWidth <= 768) {
-      container.style.left = '320px';
-      container.style.width = 'calc(100% - 320px)';
-    }
-    
-    // Mostrar o mapa novamente
-    var mapContainer = document.querySelector('.map-container');
-    if (mapContainer) {
-      mapContainer.style.visibility = 'visible';
-    }
-  }
 })();
 </script>
-<!-- FIM DO CÓDIGO -->

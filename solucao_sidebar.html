@@ -1,177 +1,316 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Correção da Sidebar - Otimizador de Rotas</title>
-    <style>
-        /* Reset básico */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+<!--
+SOLUÇÃO EMERGENCIAL PARA GITHUB PAGES
+Esta é uma correção simplificada para aplicação direta
+
+INSTRUÇÕES:
+1. Copie todo este código
+2. Vá para o repositório do GitHub
+3. Edite o arquivo 'docs/index.html'
+4. Cole este código EXATAMENTE antes da tag </body>
+5. Salve as mudanças (commit)
+-->
+
+<script>
+// CORREÇÃO EMERGENCIAL PARA GITHUB PAGES
+// Aborda: abas visíveis simultaneamente, conteúdo não preenchendo a área, botões não estilizados
+
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('Aplicando correção emergencial');
+  
+  // Injetar estilo fixo
+  const style = document.createElement('style');
+  style.id = 'fix-emergency-styles';
+  style.textContent = `
+    /* ESTILOS DE CORREÇÃO DE EMERGÊNCIA */
+    
+    /* Estrutura das abas quando expandidas */
+    .bottom-tabs-container:not(.minimized) {
+      position: fixed !important;
+      top: 0 !important;
+      left: 380px !important;
+      right: 0 !important;
+      width: calc(100% - 380px) !important;
+      height: 100vh !important;
+      z-index: 99999 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      background: white !important;
+      box-shadow: -2px 0 15px rgba(0,0,0,0.1) !important;
+    }
+    
+    /* Esconder todos os conteúdos */
+    .bottom-tab-content {
+      display: none !important;
+    }
+    
+    /* Mostrar apenas conteúdo ativo */
+    .bottom-tab-content.active-content {
+      display: flex !important;
+      flex-direction: column !important;
+      width: 100% !important;
+      height: calc(100vh - 60px) !important;
+      padding: 20px !important;
+      box-sizing: border-box !important;
+      overflow-y: auto !important;
+      background: #fafafa !important;
+    }
+    
+    /* Garantir que os elementos dentro preencham o espaço */
+    .bottom-tab-content.active-content > * {
+      width: 100% !important;
+      margin-bottom: 15px !important;
+    }
+    
+    /* Barra de botões na parte superior */
+    .bottom-tabs-nav {
+      flex-shrink: 0 !important;
+      height: 60px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-around !important;
+      background: #f8f9fa !important;
+      border-bottom: 1px solid #e0e0e0 !important;
+      width: 100% !important;
+      padding: 0 20px !important;
+    }
+    
+    /* Estilo dos botões para ficarem como os botões Otimizar/Visualizar */
+    .bottom-tab-btn {
+      padding: 8px 16px !important;
+      background-color: #f8f9fa !important;
+      color: #333 !important;
+      border: 1px solid #ddd !important;
+      border-radius: 6px !important;
+      font-weight: 500 !important;
+      cursor: pointer !important;
+      transition: all 0.2s !important;
+      min-width: 120px !important;
+      text-align: center !important;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+      margin: 0 5px !important;
+    }
+    
+    .bottom-tab-btn:hover {
+      background-color: #f1f3f5 !important;
+      border-color: #ced4da !important;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1) !important;
+    }
+    
+    .bottom-tab-btn.active {
+      background-color: #ffc107 !important;
+      border-color: #ffc107 !important;
+      color: #212529 !important;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+    }
+    
+    /* Adicionar espaço no final */
+    .bottom-tab-content.active-content:after {
+      content: "";
+      display: block;
+      height: 150px !important;
+      width: 100% !important;
+    }
+  `;
+  
+  document.head.appendChild(style);
+  
+  // Função principal de correção
+  function fixTabs() {
+    console.log('Fixando abas...');
+    
+    // 1. Encontrar os botões das abas
+    const tabButtons = document.querySelectorAll('.bottom-tab-btn');
+    if (!tabButtons.length) {
+      console.log('Botões não encontrados, tentando novamente...');
+      setTimeout(fixTabs, 500);
+      return;
+    }
+    
+    // 2. Remover eventos existentes e adicionar novos
+    tabButtons.forEach(function(btn) {
+      if (btn.dataset.fixed === 'true') return;
+      
+      // Clonar para remover eventos
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+      newBtn.dataset.fixed = 'true';
+      
+      // Adicionar novo evento de clique
+      newBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Estado atual
+        const container = document.querySelector('.bottom-tabs-container');
+        const isActive = this.classList.contains('active');
+        const isExpanded = container && !container.classList.contains('minimized');
+        
+        // Se já ativo e expandido, minimizar
+        if (isActive && isExpanded) {
+          minimizeTabs();
+          return;
         }
         
-        html, body {
-            height: 100%;
-            overflow: hidden;
-            font-family: Arial, sans-serif;
+        // Ativar esta aba
+        document.querySelectorAll('.bottom-tab-btn').forEach(function(b) {
+          b.classList.remove('active');
+        });
+        
+        this.classList.add('active');
+        
+        // Esconder todos os conteúdos
+        document.querySelectorAll('.bottom-tab-content').forEach(function(content) {
+          content.style.display = 'none';
+          content.classList.remove('active-content');
+        });
+        
+        // Mostrar apenas o conteúdo desta aba
+        const tabId = this.getAttribute('data-tab');
+        const content = document.getElementById(tabId + '-content');
+        
+        if (content) {
+          content.style.display = 'block';
+          content.classList.add('active-content');
+          expandContent(content);
         }
         
-        /* Container principal absolutamente posicionado */
-        .container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            display: flex;
+        // Expandir se minimizado
+        if (container && container.classList.contains('minimized')) {
+          expandTabs();
         }
-        
-        /* Sidebar com altura fixa até a barra inferior */
-        .sidebar {
-            width: 380px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 60px; /* Altura da barra inferior */
-            background-color: #f8f9fa;
-            padding: 20px;
-            overflow-y: auto;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-            z-index: 10;
-        }
-        
-        /* Conteúdo principal (mapa) alinhado à direita da sidebar */
-        .content {
-            position: absolute;
-            top: 0;
-            left: 380px; /* Largura da sidebar */
-            right: 0;
-            bottom: 60px; /* Altura da barra inferior */
-            background-color: #e9ecef; /* Cor simulando o mapa */
-            overflow: hidden;
-        }
-        
-        /* Barra inferior fixa */
-        .bottom-bar {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background-color: #f1f3f5;
-            border-top: 1px solid #dee2e6;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 20;
-        }
-        
-        /* Botões na barra inferior */
-        .tab-button {
-            padding: 8px 16px;
-            background-color: #ffc107;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        /* Conteúdo de exemplo para a sidebar */
-        .sidebar-header {
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .sidebar-content div {
-            margin-bottom: 15px;
-        }
-        
-        input, button {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-        }
-        
-        button.action {
-            background-color: #ffc107;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            padding: 10px;
-        }
-        
-        /* Responsividade para telas menores */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 320px;
-            }
-            
-            .content {
-                left: 320px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h2>Otimizador de Rotas Móveis Bonafé</h2>
-            </div>
-            
-            <div class="sidebar-content">
-                <div>
-                    <label>Filtrar eventos por data:</label>
-                    <div style="display: flex; gap: 8px;">
-                        <input type="date" value="2025-05-15">
-                        <input type="date" value="2025-05-22">
-                    </div>
-                </div>
-                
-                <div>
-                    <label>Origem:</label>
-                    <input type="text" value="Dois Córregos, SP" readonly>
-                </div>
-                
-                <div>
-                    <label>Adicionar local:</label>
-                    <input type="text" placeholder="Digite um endereço">
-                </div>
-                
-                <div style="margin: 20px 0; padding: 15px; border: 2px dashed #ddd; text-align: center;">
-                    Arraste arquivos de CEP aqui
-                </div>
-                
-                <div>
-                    <label>Locais adicionados:</label>
-                    <div style="min-height: 150px; padding: 10px; background-color: #f5f5f5; border-radius: 4px;">
-                        <p style="color: #888; font-style: italic;">Nenhum local adicionado ainda</p>
-                    </div>
-                </div>
-                
-                <button class="action" style="margin-top: 20px;">Otimizar Rota</button>
-            </div>
-        </div>
-        
-        <!-- Conteúdo principal (simulando o mapa) -->
-        <div class="content">
-            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
-                <h3>Área do mapa</h3>
-                <p>Este é um exemplo de layout corrigido onde a sidebar vai exatamente até a barra inferior</p>
-            </div>
-        </div>
-        
-        <!-- Barra inferior fixa -->
-        <div class="bottom-bar">
-            <button class="tab-button">Eventos na Rota</button>
-            <button class="tab-button">Restrições de Tráfego</button>
-            <button class="tab-button">Relatório da Rota</button>
-        </div>
-    </div>
-</body>
-</html>
+      });
+    });
+    
+    // 3. Garantir que apenas o conteúdo ativo esteja visível
+    const activeBtn = document.querySelector('.bottom-tab-btn.active');
+    if (activeBtn) {
+      const tabId = activeBtn.getAttribute('data-tab');
+      const activeContent = document.getElementById(tabId + '-content');
+      
+      document.querySelectorAll('.bottom-tab-content').forEach(function(content) {
+        content.style.display = 'none';
+        content.classList.remove('active-content');
+      });
+      
+      if (activeContent) {
+        activeContent.style.display = 'block';
+        activeContent.classList.add('active-content');
+        expandContent(activeContent);
+      }
+    }
+  }
+  
+  // Expandir conteúdo para preencher todo o espaço
+  function expandContent(content) {
+    if (!content) return;
+    
+    content.style.display = 'flex';
+    content.style.flexDirection = 'column';
+    content.style.width = '100%';
+    content.style.height = 'calc(100vh - 60px)';
+    content.style.padding = '20px';
+    content.style.boxSizing = 'border-box';
+    content.style.overflowY = 'auto';
+    
+    // Forçar elementos internos a expandir
+    Array.from(content.children).forEach(function(child) {
+      if (child.tagName !== 'SCRIPT' && child.tagName !== 'STYLE') {
+        child.style.width = '100%';
+        child.style.marginBottom = '15px';
+      }
+    });
+    
+    // Adicionar espaçador
+    if (!content.querySelector('.spacer')) {
+      const spacer = document.createElement('div');
+      spacer.className = 'spacer';
+      spacer.style.height = '150px';
+      spacer.style.width = '100%';
+      content.appendChild(spacer);
+    }
+  }
+  
+  // Expandir abas para modo tela cheia
+  function expandTabs() {
+    const container = document.querySelector('.bottom-tabs-container');
+    if (!container) return;
+    
+    container.classList.remove('minimized');
+    
+    container.style.position = 'fixed';
+    container.style.top = '0';
+    container.style.left = '380px';
+    container.style.right = '0';
+    container.style.bottom = '0';
+    container.style.width = 'calc(100% - 380px)';
+    container.style.height = '100vh';
+    container.style.zIndex = '9999';
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    container.style.background = 'white';
+    container.style.boxShadow = '-2px 0 15px rgba(0,0,0,0.1)';
+    
+    // Telas menores
+    if (window.innerWidth <= 768) {
+      container.style.left = '320px';
+      container.style.width = 'calc(100% - 320px)';
+    }
+    
+    // Ocultar mapa
+    const map = document.querySelector('.map-container');
+    if (map) map.style.visibility = 'hidden';
+    
+    // Expandir conteúdo ativo
+    const activeContent = container.querySelector('.bottom-tab-content.active-content');
+    if (activeContent) expandContent(activeContent);
+  }
+  
+  // Minimizar abas
+  function minimizeTabs() {
+    const container = document.querySelector('.bottom-tabs-container');
+    if (!container) return;
+    
+    container.classList.add('minimized');
+    
+    container.style.position = 'absolute';
+    container.style.top = 'auto';
+    container.style.left = '380px';
+    container.style.right = '0';
+    container.style.bottom = '0';
+    container.style.height = '60px';
+    container.style.width = 'calc(100% - 380px)';
+    container.style.zIndex = '100';
+    container.style.display = 'block';
+    container.style.background = '#f8f9fa';
+    container.style.boxShadow = 'none';
+    
+    // Telas menores
+    if (window.innerWidth <= 768) {
+      container.style.left = '320px';
+      container.style.width = 'calc(100% - 320px)';
+    }
+    
+    // Mostrar mapa
+    const map = document.querySelector('.map-container');
+    if (map) map.style.visibility = 'visible';
+  }
+  
+  // Iniciar correção
+  fixTabs();
+  
+  // Continuar verificando
+  setInterval(fixTabs, 2000);
+});
+
+// Executar novamente quando página estiver carregada
+window.addEventListener('load', function() {
+  // Dar um tempo para outros scripts terminarem
+  setTimeout(function() {
+    // Forçar verificação das abas
+    var event = new Event('fixTabs');
+    document.dispatchEvent(event);
+    
+    console.log('Verificação final das abas aplicada');
+  }, 1000);
+});
+</script>

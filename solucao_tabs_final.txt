@@ -1,178 +1,323 @@
 /**
- * SOLUÇÃO FINAL - CORREÇÃO PARA ABAS NO GITHUB PAGES
- * 
- * Instruções:
- * 1. Acesse o repositório no GitHub e vá até o arquivo docs/index.html
- * 2. Procure a seção de estilos (geralmente dentro da tag <head>)
- * 3. Adicione este CSS no final da seção de estilos:
+ * Solução super simplificada para as abas inferiores
+ *
+ * Esta solução usa JavaScript puro sem dependências e métodos antigos que 
+ * funcionam em praticamente todos os navegadores.
+ *
+ * Como usar:
+ * 1. Copie todo este código
+ * 2. Cole no final do arquivo docs/index.html antes de </body>
  */
 
-<style id="emergency-tab-fix">
-/* CSS EMERGENCIAL - CORRIGE ABAS MOSTRANDO TODAS JUNTAS */
-/* Este estilo tem prioridade máxima e força o comportamento correto */
-
-/* Esconder todos os conteúdos de abas por padrão */
-.bottom-tab-content {
-  display: none !important;
-  visibility: hidden !important;
-  position: absolute !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  height: 0 !important;
-  width: 0 !important;
-  overflow: hidden !important;
-}
-
-/* Mostrar apenas o conteúdo para botões ativos */
-.bottom-tab-btn.active + .bottom-tab-content,
-#eventos-tab-content.active-content,
-#restrições-tab-content.active-content,
-#info-tab-content.active-content {
-  display: block !important;
-  visibility: visible !important;
-  position: relative !important;
-  opacity: 1 !important;
-  pointer-events: auto !important;
-  height: auto !important;
-  width: 100% !important;
-  overflow: auto !important;
-}
-
-/* Remover qualquer estilo que mostre todas as abas juntas */
-.bottom-tabs-container:not(.minimized) .bottom-tab-content:not(.active-content) {
-  display: none !important;
-  visibility: hidden !important;
-}
-
-/* Forçar a exibição do conteúdo ativo */
-.bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content {
-  display: block !important;
-  visibility: visible !important;
-  height: calc(100% - 60px) !important;
-  width: 100% !important;
-  overflow-y: auto !important;
-}
-
-/* Garantir estrutura de layout correta */
-.bottom-tabs-container:not(.minimized) {
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-.bottom-tabs-nav {
-  flex-shrink: 0 !important;
-}
-</style>
-
-/**
- * 4. Em seguida, adicione este script no final do arquivo, antes da tag </body>
- */
-
-<script id="tabs-emergency-fix">
-// SCRIPT DE EMERGÊNCIA PARA CORRIGIR AS ABAS
+<script>
+/* CORREÇÃO FINAL PARA ABAS E CONTEÚDO */
 (function() {
-  // Executar imediatamente e em intervalos regulares
-  fixTabs();
-  setInterval(fixTabs, 500);
+  // Executar quando o documento estiver pronto
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', iniciar);
+  } else {
+    iniciar();
+  }
   
-  function fixTabs() {
-    // Esconder todas as abas primeiro
-    var allContents = document.querySelectorAll('.bottom-tab-content');
-    allContents.forEach(function(content) {
-      content.style.display = 'none';
-      content.classList.remove('active-content');
-    });
+  // Função principal
+  function iniciar() {
+    console.log('Aplicando correção final para abas e conteúdo');
     
-    // Mostrar apenas a aba do botão ativo
-    var activeButton = document.querySelector('.bottom-tab-btn.active');
-    if (activeButton) {
-      var tabId = activeButton.getAttribute('data-tab');
-      var activeContent = document.getElementById(tabId + '-content');
-      if (activeContent) {
-        activeContent.style.display = 'block';
-        activeContent.classList.add('active-content');
+    // 1. Injetar CSS essencial
+    var style = document.createElement('style');
+    style.textContent = `
+      /* CSS crítico para corrigir o layout */
+      .bottom-tabs-container:not(.minimized) {
+        position: fixed !important;
+        top: 0 !important;
+        left: 380px !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: calc(100% - 380px) !important;
+        height: 100vh !important;
+        z-index: 9999 !important;
+        background: white !important;
+        display: flex !important;
+        flex-direction: column !important;
+        box-shadow: -2px 0 10px rgba(0,0,0,0.1) !important;
       }
-    }
+      
+      .bottom-tabs-nav {
+        flex-shrink: 0 !important;
+        height: 60px !important;
+        border-bottom: 1px solid #ddd !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-around !important;
+        background: #f8f9fa !important;
+        padding: 0 20px !important;
+      }
+      
+      .bottom-tab-btn {
+        padding: 8px 16px !important;
+        background-color: #f8f9fa !important;
+        color: #333 !important;
+        border: 1px solid #ddd !important;
+        border-radius: 6px !important;
+        font-weight: 500 !important;
+        cursor: pointer !important;
+        min-width: 120px !important;
+        text-align: center !important;
+        margin: 0 5px !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+      }
+      
+      .bottom-tab-btn.active {
+        background-color: #ffc107 !important;
+        border-color: #ffc107 !important;
+        color: #212529 !important;
+      }
+      
+      .bottom-tab-content {
+        display: none !important;
+      }
+      
+      .bottom-tab-content.active-content {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        height: calc(100vh - 60px) !important;
+        overflow-y: auto !important;
+        padding: 20px !important;
+        box-sizing: border-box !important;
+      }
+      
+      .bottom-tab-content.active-content > * {
+        width: 100% !important;
+        margin-bottom: 15px !important;
+      }
+    `;
     
-    // Reconfigurando os eventos de clique dos botões
-    var tabButtons = document.querySelectorAll('.bottom-tab-btn');
-    tabButtons.forEach(function(btn) {
+    document.head.appendChild(style);
+    
+    // 2. Substituir todos os eventos dos botões
+    var botoes = document.querySelectorAll('.bottom-tab-btn');
+    for (var i = 0; i < botoes.length; i++) {
+      var botao = botoes[i];
+      
       // Pular se já processado
-      if (btn.dataset.processed === 'true') return;
+      if (botao.getAttribute('data-processado') === 'sim') continue;
       
-      // Marcar como processado
-      btn.dataset.processed = 'true';
-      
-      // Clonar para remover eventos existentes
-      var clone = btn.cloneNode(true);
-      if (btn.parentNode) btn.parentNode.replaceChild(clone, btn);
+      // Clonar para remover eventos antigos
+      var clone = botao.cloneNode(true);
+      botao.parentNode.replaceChild(clone, botao);
+      clone.setAttribute('data-processado', 'sim');
       
       // Adicionar evento de clique
       clone.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
         
-        // Obter container e verificar estado
-        var tabsContainer = document.querySelector('.bottom-tabs-container');
-        var isActive = this.classList.contains('active');
-        var isExpanded = !tabsContainer.classList.contains('minimized');
+        // Estado atual
+        var container = document.querySelector('.bottom-tabs-container');
+        var estaAtivo = this.classList.contains('active');
+        var estaExpandido = container && !container.classList.contains('minimized');
         
-        // Se ativa e expandida, minimizar
-        if (isActive && isExpanded) {
-          minimizeTabs();
+        // Se já ativo e expandido, minimizar
+        if (estaAtivo && estaExpandido) {
+          minimizarAbas();
           return;
         }
         
-        // Desativar todas as abas
-        tabButtons.forEach(function(b) {
-          b.classList.remove('active');
-        });
+        // 1. Desativar todos os botões
+        var todosBotoes = document.querySelectorAll('.bottom-tab-btn');
+        for (var j = 0; j < todosBotoes.length; j++) {
+          todosBotoes[j].classList.remove('active');
+        }
         
-        // Ativar esta aba
+        // 2. Ativar este botão
         this.classList.add('active');
         
-        // Esconder todos os conteúdos
-        allContents.forEach(function(content) {
-          content.style.display = 'none';
-          content.classList.remove('active-content');
-        });
-        
-        // Mostrar conteúdo desta aba
-        var tabId = this.getAttribute('data-tab');
-        var content = document.getElementById(tabId + '-content');
-        if (content) {
-          content.style.display = 'block';
-          content.classList.add('active-content');
+        // 3. Esconder todos os conteúdos
+        var todosConteudos = document.querySelectorAll('.bottom-tab-content');
+        for (var k = 0; k < todosConteudos.length; k++) {
+          todosConteudos[k].style.display = 'none';
+          todosConteudos[k].classList.remove('active-content');
         }
         
-        // Expandir se minimizado
-        if (!isExpanded) {
-          expandTabs();
+        // 4. Mostrar apenas o conteúdo desta aba
+        var idTab = this.getAttribute('data-tab');
+        var conteudo = document.getElementById(idTab + '-content');
+        if (conteudo) {
+          conteudo.style.display = 'block';
+          conteudo.classList.add('active-content');
+          
+          // Expandir o conteúdo
+          expandirConteudo(conteudo);
+        }
+        
+        // 5. Expandir se minimizado
+        if (container && container.classList.contains('minimized')) {
+          expandirAbas();
         }
       });
-    });
+    }
+    
+    // Verificar se há uma aba ativa
+    var botaoAtivo = document.querySelector('.bottom-tab-btn.active');
+    if (botaoAtivo) {
+      var idTab = botaoAtivo.getAttribute('data-tab');
+      var conteudoAtivo = document.getElementById(idTab + '-content');
+      
+      // Esconder todos
+      var todosConteudos = document.querySelectorAll('.bottom-tab-content');
+      for (var k = 0; k < todosConteudos.length; k++) {
+        todosConteudos[k].style.display = 'none';
+        todosConteudos[k].classList.remove('active-content');
+      }
+      
+      // Mostrar apenas o ativo
+      if (conteudoAtivo) {
+        conteudoAtivo.style.display = 'block';
+        conteudoAtivo.classList.add('active-content');
+        expandirConteudo(conteudoAtivo);
+      }
+    }
+    
+    // 3. Continuar verificando
+    setInterval(verificarAbas, 2000);
   }
   
-  function minimizeTabs() {
+  // Verificar e corrigir abas
+  function verificarAbas() {
     var container = document.querySelector('.bottom-tabs-container');
     if (!container) return;
     
-    container.classList.add('minimized');
+    // Verificar se deve estar expandido ou minimizado
+    var expandido = !container.classList.contains('minimized');
     
-    // Mostrar mapa
-    var mapContainer = document.querySelector('.map-container');
-    if (mapContainer) mapContainer.style.visibility = 'visible';
+    if (expandido) {
+      // Verificar se há apenas um conteúdo visível
+      var conteudosVisiveis = document.querySelectorAll('.bottom-tab-content.active-content');
+      if (conteudosVisiveis.length !== 1) {
+        // Corrigir: mostrar apenas o conteúdo da aba ativa
+        var botaoAtivo = document.querySelector('.bottom-tab-btn.active');
+        if (botaoAtivo) {
+          // Esconder todos
+          var todosConteudos = document.querySelectorAll('.bottom-tab-content');
+          for (var i = 0; i < todosConteudos.length; i++) {
+            todosConteudos[i].style.display = 'none';
+            todosConteudos[i].classList.remove('active-content');
+          }
+          
+          // Mostrar apenas o ativo
+          var idTab = botaoAtivo.getAttribute('data-tab');
+          var conteudoAtivo = document.getElementById(idTab + '-content');
+          if (conteudoAtivo) {
+            conteudoAtivo.style.display = 'block';
+            conteudoAtivo.classList.add('active-content');
+            expandirConteudo(conteudoAtivo);
+          }
+        }
+      }
+    }
   }
   
-  function expandTabs() {
+  // Expandir o conteúdo para preencher todo o espaço
+  function expandirConteudo(elemento) {
+    if (!elemento) return;
+    
+    // Aplicar estilos
+    elemento.style.display = 'flex';
+    elemento.style.flexDirection = 'column';
+    elemento.style.width = '100%';
+    elemento.style.height = 'calc(100vh - 60px)';
+    elemento.style.padding = '20px';
+    elemento.style.boxSizing = 'border-box';
+    elemento.style.overflow = 'auto';
+    
+    // Expandir filhos
+    var filhos = elemento.children;
+    for (var i = 0; i < filhos.length; i++) {
+      var filho = filhos[i];
+      if (filho.tagName !== 'SCRIPT' && filho.tagName !== 'STYLE') {
+        filho.style.width = '100%';
+        filho.style.marginBottom = '15px';
+      }
+    }
+    
+    // Adicionar espaçador se não existir
+    if (!elemento.querySelector('.espaco-final')) {
+      var espaco = document.createElement('div');
+      espaco.className = 'espaco-final';
+      espaco.style.width = '100%';
+      espaco.style.height = '200px';
+      elemento.appendChild(espaco);
+    }
+  }
+  
+  // Expandir as abas para tela cheia
+  function expandirAbas() {
     var container = document.querySelector('.bottom-tabs-container');
     if (!container) return;
     
+    // Remover classe minimizada
     container.classList.remove('minimized');
     
-    // Ocultar mapa
-    var mapContainer = document.querySelector('.map-container');
-    if (mapContainer) mapContainer.style.visibility = 'hidden';
+    // Aplicar estilo expandido
+    container.style.position = 'fixed';
+    container.style.top = '0';
+    container.style.left = '380px';
+    container.style.right = '0';
+    container.style.bottom = '0';
+    container.style.width = 'calc(100% - 380px)';
+    container.style.height = '100vh';
+    container.style.zIndex = '9999';
+    container.style.background = 'white';
+    container.style.boxShadow = '-2px 0 10px rgba(0,0,0,0.1)';
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    
+    // Ajustar para telas menores
+    if (window.innerWidth <= 768) {
+      container.style.left = '320px';
+      container.style.width = 'calc(100% - 320px)';
+    }
+    
+    // Esconder mapa
+    var mapa = document.querySelector('.map-container');
+    if (mapa) mapa.style.visibility = 'hidden';
+    
+    // Expandir conteúdo ativo
+    var conteudoAtivo = document.querySelector('.bottom-tab-content.active-content');
+    if (conteudoAtivo) expandirConteudo(conteudoAtivo);
+  }
+  
+  // Minimizar as abas
+  function minimizarAbas() {
+    var container = document.querySelector('.bottom-tabs-container');
+    if (!container) return;
+    
+    // Adicionar classe minimizada
+    container.classList.add('minimized');
+    
+    // Aplicar estilo minimizado
+    container.style.position = 'absolute';
+    container.style.top = 'auto';
+    container.style.left = '380px';
+    container.style.right = '0';
+    container.style.bottom = '0';
+    container.style.height = '60px';
+    container.style.width = 'calc(100% - 380px)';
+    container.style.zIndex = '100';
+    container.style.display = 'block';
+    container.style.background = '#f8f9fa';
+    container.style.boxShadow = 'none';
+    
+    // Ajustar para telas menores
+    if (window.innerWidth <= 768) {
+      container.style.left = '320px';
+      container.style.width = 'calc(100% - 320px)';
+    }
+    
+    // Mostrar mapa
+    var mapa = document.querySelector('.map-container');
+    if (mapa) mapa.style.visibility = 'visible';
   }
 })();
 </script>
