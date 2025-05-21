@@ -13,41 +13,96 @@ document.addEventListener('DOMContentLoaded', function() {
  * Inicializa o sistema de abas em tela cheia
  */
 function initFullscreenTabs() {
-    // Encontrar os botões de abas inferiores e seus conteúdos
-    const tabButtons = document.querySelectorAll('.bottom-tab-button');
-    const tabContents = document.querySelectorAll('.bottom-tab-content');
+    console.log("Substituindo o sistema de abas original...");
     
-    if (!tabButtons.length || !tabContents.length) {
-        console.warn("Elementos de abas não encontrados. O sistema de abas não será inicializado.");
+    // Substituir completamente o sistema de abas original
+    setupTabs();
+    
+    // Configurar o sistema de expansão/colapso
+    setupToggleButton();
+    
+    console.log("Sistema de abas em tela cheia inicializado");
+}
+
+/**
+ * Configura o novo sistema de abas
+ */
+function setupTabs() {
+    // Encontrar os containers de abas
+    const bottomTabsContainer = document.querySelector('.bottom-tabs-container');
+    if (!bottomTabsContainer) {
+        console.warn("Container de abas inferiores não encontrado");
         return;
     }
     
-    console.log(`Sistema de abas: ${tabButtons.length} botões e ${tabContents.length} painéis de conteúdo encontrados`);
+    // Encontrar os botões de abas e conteúdos (usando os seletores corretos)
+    const tabButtons = bottomTabsContainer.querySelectorAll('.bottom-tab-button');
+    const tabContents = bottomTabsContainer.querySelectorAll('.bottom-tab-content');
     
-    // Esconder todos os conteúdos inicialmente, exceto o ativo
-    const activeTabId = getActiveTabId(tabButtons);
+    if (!tabButtons.length || !tabContents.length) {
+        console.warn(`Elementos de abas não encontrados: ${tabButtons.length} botões, ${tabContents.length} conteúdos`);
+        return;
+    }
+    
+    console.log(`Sistema encontrou ${tabButtons.length} botões e ${tabContents.length} conteúdos de abas`);
+    
+    // Esconder todos os conteúdos inicialmente
     tabContents.forEach(content => {
-        if (content.id !== activeTabId + '-content') {
-            content.style.display = 'none';
-            content.classList.remove('active');
-        } else {
-            content.style.display = 'flex';
-            content.classList.add('active');
-        }
+        content.style.display = 'none';
     });
     
-    // Adicionar listener para cada botão de aba
+    // Mostrar o conteúdo da primeira aba por padrão
+    if (tabContents[0]) {
+        tabContents[0].style.display = 'block';
+        tabContents[0].classList.add('active');
+    }
+    
+    if (tabButtons[0]) {
+        tabButtons[0].classList.add('active');
+    }
+    
+    // Adicionar event listeners para os botões das abas
     tabButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const tabId = button.id.replace('-button', '');
-            activateTab(tabId, tabButtons, tabContents);
+        button.addEventListener('click', function(event) {
+            // Prevenir comportamento padrão (importante para GitHub Pages)
+            event.preventDefault();
+            
+            // Identificar qual aba foi clicada
+            const buttonId = this.id;
+            const targetId = buttonId.replace('-button', '-content');
+            
+            console.log(`Botão de aba clicado: ${buttonId}, conteúdo alvo: ${targetId}`);
+            
+            // Desativar todos os botões e conteúdos
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => {
+                content.style.display = 'none';
+                content.classList.remove('active');
+            });
+            
+            // Ativar o botão e conteúdo clicados
+            this.classList.add('active');
+            
+            // Encontrar e ativar o conteúdo correspondente
+            const targetContent = document.getElementById(targetId);
+            if (targetContent) {
+                targetContent.style.display = 'flex'; // Usando flex para compatibilidade com o layout existente
+                targetContent.classList.add('active');
+                
+                // Adicionar animação
+                targetContent.style.animation = 'none';
+                setTimeout(() => {
+                    targetContent.style.animation = 'fadeInUp 0.3s ease-out';
+                }, 10);
+                
+                console.log(`Ativado conteúdo: ${targetId}`);
+            } else {
+                console.warn(`Conteúdo de destino não encontrado: ${targetId}`);
+            }
         });
     });
     
-    // Adicionar listeners para o botão de expandir/colapsar
-    setupToggleButton();
-    
-    console.log("Sistema de abas inicializado com sucesso");
+    console.log("Listeners para abas configurados com sucesso");
 }
 
 /**

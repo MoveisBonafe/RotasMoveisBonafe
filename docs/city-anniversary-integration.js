@@ -29,6 +29,16 @@ function setupCityAnniversarySystem() {
  * Aprimora o sistema de eventos de cidade com verificação de aniversários
  */
 function enhanceCityEventsSystem() {
+    // Verificar se estamos no GitHub Pages
+    const isGitHubPages = window.location.hostname.includes('github.io') || 
+                          window.location.hostname === 'moveisbonafe.github.io' ||
+                          document.querySelector('meta[name="github-pages"]') !== null;
+                          
+    if (isGitHubPages) {
+        console.log("⚠️ GitHub Pages detectado - Ativando modo especial para verificação de aniversários");
+        window._githubPagesCalendarMode = true;
+    }
+    
     // Monitorar adição de novas cidades
     const originalPushMethod = Array.prototype.push;
     if (window.locations && Array.isArray(window.locations)) {
@@ -51,11 +61,17 @@ function enhanceCityEventsSystem() {
                     }
                 }
                 
-                if (newLocation.name && !cityName) {
+                if (!cityName && newLocation.name) {
                     // Tentar extrair da propriedade name
                     const nameParts = newLocation.name.split(',');
                     if (nameParts.length > 0) {
                         cityName = nameParts[0].trim();
+                    }
+                    
+                    // Para CEPs, tentar extrair nome da cidade entre parênteses
+                    const cityMatch = newLocation.name.match(/CEP:.*\((.*?),/);
+                    if (cityMatch && cityMatch[1]) {
+                        cityName = cityMatch[1].trim();
                     }
                 }
                 
@@ -63,11 +79,64 @@ function enhanceCityEventsSystem() {
                 if (cityName) {
                     console.log(`🔍 Verificando aniversário da cidade: ${cityName}`);
                     checkCityAnniversary(cityName);
+                } else {
+                    console.warn("⚠️ Não foi possível extrair o nome da cidade da localização:", newLocation);
                 }
             }
             
             return result;
         };
+    }
+    
+    // Aplicar o modo GitHub Pages imediatamente se necessário
+    if (isGitHubPages) {
+        // Carregar aniversários das cidades já adicionadas
+        setTimeout(() => {
+            console.log("🔄 Verificando aniversários para cidades já adicionadas (GitHub Pages)");
+            if (window.locations && Array.isArray(window.locations)) {
+                window.locations.forEach(location => {
+                    let cityName = extractCityName(location);
+                    if (cityName) {
+                        checkCityAnniversary(cityName);
+                    }
+                });
+            }
+        }, 2000);
+    }
+    
+    /**
+     * Extrai o nome da cidade de uma localização
+     */
+    function extractCityName(location) {
+        if (!location) return null;
+        
+        let cityName = null;
+        
+        // Tentar extrair do endereço
+        if (location.address) {
+            const addressParts = location.address.split(',');
+            if (addressParts.length > 0) {
+                cityName = addressParts[0].trim();
+                return cityName;
+            }
+        }
+        
+        // Tentar extrair do nome
+        if (location.name) {
+            // Para CEPs, tentar extrair nome da cidade entre parênteses
+            const cityMatch = location.name.match(/CEP:.*\((.*?),/);
+            if (cityMatch && cityMatch[1]) {
+                return cityMatch[1].trim();
+            }
+            
+            // Última tentativa: primeiro componente do nome
+            const nameParts = location.name.split(',');
+            if (nameParts.length > 0) {
+                return nameParts[0].trim();
+            }
+        }
+        
+        return null;
     }
     
     console.log("🔄 Sistema de eventos de cidade aprimorado com verificação automática de aniversários");
