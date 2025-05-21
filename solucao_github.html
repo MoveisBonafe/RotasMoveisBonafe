@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solução para Abas - Móveis Bonafé</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #333;
+        }
+        h1, h2 {
+            color: #ffc107;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .step {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 3px solid #ffc107;
+            border-radius: 3px;
+        }
+        .code-block {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-family: monospace;
+            border: 1px solid #ddd;
+            margin: 15px 0;
+        }
+        .highlight {
+            background: #fffde7;
+            padding: 2px;
+        }
+        .warning {
+            background: #fff8e1;
+            padding: 10px;
+            border-left: 3px solid #ffb300;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Solução para o problema das abas no GitHub Pages</h1>
+    
+    <p>Este documento contém a solução para o problema das abas que estão sendo mostradas todas juntas quando expandidas.</p>
+    
+    <div class="warning">
+        <strong>Importante:</strong> Esta é uma solução direta e simples que substitui qualquer código complexo anterior.
+    </div>
+    
+    <h2>Instruções</h2>
+    
+    <div class="step">
+        <h3>Passo 1: Editar o arquivo index.html no GitHub</h3>
+        <p>Acesse seu repositório no GitHub e edite o arquivo <code>docs/index.html</code>.</p>
+    </div>
+    
+    <div class="step">
+        <h3>Passo 2: Adicionar o script abaixo</h3>
+        <p>Localize a tag <code>&lt;body&gt;</code> e adicione o script a seguir logo após essa tag:</p>
+        
+        <div class="code-block">
+&lt;script&gt;
+// Fix definitivo para o problema das abas mostrando todas juntas
+(function() {
+  // Aplicar assim que a página carregar
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFix);
+  } else {
+    initFix();
+  }
+  
+  // Verificar periodicamente para garantir
+  setInterval(fixAllTabs, 1000);
+  
+  function initFix() {
+    console.log('[TABS-FIX] Inicializando correção das abas');
+    
+    // Aplicar várias vezes para garantir
+    fixAllTabs();
+    setTimeout(fixAllTabs, 500);
+    setTimeout(fixAllTabs, 1000);
+    
+    // Capturar cliques nos botões
+    setupTabButtons();
+    
+    console.log('[TABS-FIX] Inicialização concluída');
+  }
+  
+  function fixAllTabs() {
+    // Capturar elementos
+    var tabContents = document.querySelectorAll('.bottom-tab-content');
+    
+    // Verificar quantos estão visíveis
+    var visibleCount = 0;
+    tabContents.forEach(function(content) {
+      if (window.getComputedStyle(content).display !== 'none') {
+        visibleCount++;
+      }
+    });
+    
+    // Se mais de um estiver visível, corrigir
+    if (visibleCount > 1) {
+      console.warn('[TABS-FIX] ' + visibleCount + ' abas estão visíveis! Corrigindo...');
+      
+      // Esconder todos os conteúdos
+      tabContents.forEach(function(content) {
+        content.style.display = 'none';
+      });
+      
+      // Mostrar apenas o conteúdo da aba ativa, se houver
+      var activeButton = document.querySelector('.bottom-tab-btn.active');
+      if (activeButton) {
+        var tabId = activeButton.getAttribute('data-tab');
+        var activeContent = document.getElementById(tabId + '-content');
+        if (activeContent) {
+          activeContent.style.display = 'block';
+        }
+      }
+    }
+  }
+  
+  function setupTabButtons() {
+    // Capturar todos os botões de aba
+    var tabButtons = document.querySelectorAll('.bottom-tab-btn');
+    var tabsContainer = document.querySelector('.bottom-tabs-container');
+    
+    tabButtons.forEach(function(button) {
+      // Remover qualquer evento existente (clone)
+      var clone = button.cloneNode(true);
+      button.parentNode.replaceChild(clone, button);
+      
+      // Adicionar novo evento de clique
+      clone.addEventListener('click', function(event) {
+        // Impedir eventos padrão
+        event.preventDefault();
+        event.stopPropagation();
+        
+        // Obter ID da aba
+        var tabId = this.getAttribute('data-tab');
+        var isActive = this.classList.contains('active');
+        var isExpanded = !tabsContainer.classList.contains('minimized');
+        
+        // Se a aba já estiver ativa e expandida, minimizar
+        if (isActive && isExpanded) {
+          minimizeTabs();
+          return;
+        }
+        
+        // Desativar todos os botões
+        tabButtons.forEach(function(btn) {
+          btn.classList.remove('active');
+        });
+        
+        // Ativar este botão
+        this.classList.add('active');
+        
+        // Esconder todos os conteúdos
+        var tabContents = document.querySelectorAll('.bottom-tab-content');
+        tabContents.forEach(function(content) {
+          content.style.display = 'none';
+        });
+        
+        // Mostrar apenas o conteúdo selecionado
+        var content = document.getElementById(tabId + '-content');
+        if (content) {
+          content.style.display = 'block';
+        }
+        
+        // Se as abas estiverem minimizadas, expandir
+        if (tabsContainer.classList.contains('minimized')) {
+          expandTabs();
+        }
+      });
+    });
+  }
+  
+  function expandTabs() {
+    var tabsContainer = document.querySelector('.bottom-tabs-container');
+    if (!tabsContainer) return;
+    
+    // Remover classe minimizada
+    tabsContainer.classList.remove('minimized');
+    
+    // Aplicar estilos expandidos
+    tabsContainer.style.position = 'fixed';
+    tabsContainer.style.top = '0';
+    tabsContainer.style.left = '380px';
+    tabsContainer.style.right = '0';
+    tabsContainer.style.bottom = '0';
+    tabsContainer.style.width = 'calc(100% - 380px)';
+    tabsContainer.style.height = '100vh';
+    tabsContainer.style.zIndex = '9999';
+    tabsContainer.style.backgroundColor = 'white';
+    tabsContainer.style.borderLeft = '3px solid #ffc107';
+    tabsContainer.style.boxShadow = '0 0 20px rgba(0,0,0,0.15)';
+    
+    // Ajustar para telas menores
+    if (window.innerWidth <= 768) {
+      tabsContainer.style.left = '320px';
+      tabsContainer.style.width = 'calc(100% - 320px)';
+    }
+    
+    // Ocultar o mapa
+    var mapContainer = document.querySelector('.map-container');
+    if (mapContainer) {
+      mapContainer.style.visibility = 'hidden';
+    }
+  }
+  
+  function minimizeTabs() {
+    var tabsContainer = document.querySelector('.bottom-tabs-container');
+    if (!tabsContainer) return;
+    
+    // Adicionar classe minimizada
+    tabsContainer.classList.add('minimized');
+    
+    // Restaurar estilos originais
+    tabsContainer.style.position = 'absolute';
+    tabsContainer.style.top = 'auto';
+    tabsContainer.style.left = '380px';
+    tabsContainer.style.right = '0';
+    tabsContainer.style.bottom = '0';
+    tabsContainer.style.height = '60px';
+    tabsContainer.style.width = 'calc(100% - 380px)';
+    tabsContainer.style.zIndex = '100';
+    tabsContainer.style.backgroundColor = '#f9f9f9';
+    tabsContainer.style.borderLeft = 'none';
+    tabsContainer.style.boxShadow = 'none';
+    
+    // Ajustar para telas menores
+    if (window.innerWidth <= 768) {
+      tabsContainer.style.left = '320px';
+      tabsContainer.style.width = 'calc(100% - 320px)';
+    }
+    
+    // Mostrar o mapa novamente
+    var mapContainer = document.querySelector('.map-container');
+    if (mapContainer) {
+      mapContainer.style.visibility = 'visible';
+    }
+  }
+})();
+&lt;/script&gt;
+</div>
+    </div>
+    
+    <div class="step">
+        <h3>Passo 3: Salvar as alterações</h3>
+        <p>Após adicionar o script, clique no botão "Commit changes" para salvar as alterações.</p>
+    </div>
+    
+    <div class="warning">
+        <p>Esta solução é mais simples e direta que as anteriores. Ela:</p>
+        <ul>
+            <li>Esconde todos os conteúdos de abas</li>
+            <li>Mostra apenas o conteúdo da aba ativa</li>
+            <li>Verifica constantemente se mais de uma aba está visível e corrige</li>
+            <li>Substitui todos os manipuladores de eventos para garantir o comportamento correto</li>
+        </ul>
+    </div>
+    
+    <h2>Por que isto funciona?</h2>
+    <p>Esta solução:
+        <ul>
+            <li>Usa código JavaScript puro sem dependências</li>
+            <li>Remove todos os manipuladores de eventos existentes</li>
+            <li>Força o estado correto mesmo que outros scripts interfiram</li>
+            <li>Verifica periodicamente para garantir que o problema não retorne</li>
+        </ul>
+    </p>
+</body>
+</html>

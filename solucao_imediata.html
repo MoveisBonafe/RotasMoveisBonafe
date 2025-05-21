@@ -1,0 +1,222 @@
+<!-- 
+INSTRUÇÕES: 
+1. Copie todo o conteúdo deste script
+2. No GitHub, edite seu arquivo docs/index.html 
+3. Cole este código logo após a tag <body> (nas primeiras linhas do body)
+-->
+
+<!-- INÍCIO DO CÓDIGO -->
+<script>
+// Script de correção para garantir que apenas uma aba seja exibida por vez
+(function() {
+  // Executar imediatamente
+  fixTabs();
+  
+  // Executar novamente após o carregamento completo
+  window.addEventListener('load', function() {
+    setTimeout(fixTabs, 500);
+    setTimeout(fixTabs, 1000);
+    setTimeout(fixTabs, 2000);
+    
+    // Continuar verificando periodicamente
+    setInterval(fixTabs, 3000);
+  });
+  
+  function fixTabs() {
+    // Obter todos os conteúdos de abas
+    var contents = document.querySelectorAll('.bottom-tab-content');
+    var tabButtons = document.querySelectorAll('.bottom-tab-btn');
+    
+    // Esconder todos os conteúdos primeiro
+    contents.forEach(function(content) {
+      content.style.display = 'none';
+    });
+    
+    // Verificar qual botão está ativo
+    var activeButton = null;
+    tabButtons.forEach(function(button) {
+      if (button.classList.contains('active')) {
+        activeButton = button;
+      }
+    });
+    
+    // Se houver um botão ativo, mostrar apenas o conteúdo correspondente
+    if (activeButton) {
+      var tabId = activeButton.getAttribute('data-tab');
+      var activeContent = document.getElementById(tabId + '-content');
+      if (activeContent) {
+        activeContent.style.display = 'block';
+      }
+    }
+    
+    // Adicionar CSS crítico para garantir comportamento correto
+    var style = document.createElement('style');
+    style.textContent = `
+      /* CSS de correção para as abas */
+      .bottom-tab-content { 
+        display: none !important; 
+      }
+      
+      /* Quando uma aba está ativa e tem estilo display block, sobrescrever o CSS acima */
+      .bottom-tab-content[style*="display: block"] { 
+        display: block !important; 
+      }
+      
+      /* Container não-minimizado deve ser flexbox */
+      .bottom-tabs-container:not(.minimized) {
+        display: flex !important;
+        flex-direction: column !important;
+      }
+    `;
+    
+    // Substituir versão anterior se existir
+    var oldStyle = document.getElementById('tabs-critical-css');
+    if (oldStyle) {
+      oldStyle.remove();
+    }
+    
+    // Adicionar novo estilo
+    style.id = 'tabs-critical-css';
+    document.head.appendChild(style);
+    
+    // Substituir os manipuladores de eventos nos botões
+    replaceButtonHandlers();
+  }
+  
+  function replaceButtonHandlers() {
+    var tabButtons = document.querySelectorAll('.bottom-tab-btn');
+    
+    tabButtons.forEach(function(button) {
+      // Pular se já processamos este botão
+      if (button.dataset.processed === 'true') {
+        return;
+      }
+      
+      // Marcar como processado
+      button.dataset.processed = 'true';
+      
+      // Clonar para remover manipuladores existentes
+      var clone = button.cloneNode(true);
+      if (button.parentNode) {
+        button.parentNode.replaceChild(clone, button);
+      }
+      
+      // Adicionar novo manipulador
+      clone.addEventListener('click', function(e) {
+        // Impedir comportamento padrão
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Obter referências importantes
+        var tabId = this.getAttribute('data-tab');
+        var tabsContainer = document.querySelector('.bottom-tabs-container');
+        var isMinimized = tabsContainer.classList.contains('minimized');
+        var isActive = this.classList.contains('active');
+        
+        // Desativar todos os botões e esconder conteúdos
+        document.querySelectorAll('.bottom-tab-btn').forEach(function(btn) {
+          btn.classList.remove('active');
+        });
+        
+        document.querySelectorAll('.bottom-tab-content').forEach(function(content) {
+          content.style.display = 'none';
+        });
+        
+        // Se estava ativo e expandido, apenas minimizar
+        if (isActive && !isMinimized) {
+          minimizeTabs();
+          return;
+        }
+        
+        // Ativar este botão
+        this.classList.add('active');
+        
+        // Mostrar conteúdo correspondente
+        var content = document.getElementById(tabId + '-content');
+        if (content) {
+          content.style.display = 'block';
+        }
+        
+        // Expandir se necessário
+        if (isMinimized) {
+          expandTabs();
+        }
+      });
+    });
+  }
+  
+  function expandTabs() {
+    var container = document.querySelector('.bottom-tabs-container');
+    if (!container) return;
+    
+    // Remover classe minimizada
+    container.classList.remove('minimized');
+    
+    // Aplicar estilos expandidos
+    Object.assign(container.style, {
+      position: 'fixed',
+      top: '0',
+      left: '380px',
+      right: '0',
+      bottom: '0',
+      width: 'calc(100% - 380px)',
+      height: '100vh',
+      zIndex: '9999',
+      backgroundColor: 'white',
+      borderLeft: '3px solid #ffc107',
+      boxShadow: '0 0 20px rgba(0,0,0,0.15)',
+      display: 'flex',
+      flexDirection: 'column'
+    });
+    
+    // Ajustar para telas menores
+    if (window.innerWidth <= 768) {
+      container.style.left = '320px';
+      container.style.width = 'calc(100% - 320px)';
+    }
+    
+    // Esconder o mapa
+    var mapContainer = document.querySelector('.map-container');
+    if (mapContainer) {
+      mapContainer.style.visibility = 'hidden';
+    }
+  }
+  
+  function minimizeTabs() {
+    var container = document.querySelector('.bottom-tabs-container');
+    if (!container) return;
+    
+    // Adicionar classe minimizada
+    container.classList.add('minimized');
+    
+    // Aplicar estilos minimizados
+    Object.assign(container.style, {
+      position: 'absolute',
+      top: 'auto',
+      left: '380px',
+      right: '0',
+      bottom: '0',
+      height: '60px',
+      width: 'calc(100% - 380px)',
+      zIndex: '100',
+      backgroundColor: '#f9f9f9',
+      borderLeft: 'none',
+      boxShadow: 'none',
+      display: 'block'
+    });
+    
+    // Ajustar para telas menores
+    if (window.innerWidth <= 768) {
+      container.style.left = '320px';
+      container.style.width = 'calc(100% - 320px)';
+    }
+    
+    // Mostrar o mapa novamente
+    var mapContainer = document.querySelector('.map-container');
+    if (mapContainer) {
+      mapContainer.style.visibility = 'visible';
+    }
+  }
+})();
+</script>
+<!-- FIM DO CÓDIGO -->

@@ -1,0 +1,132 @@
+<!-- 
+SOLUÇÃO DEFINITIVA PARA O PROBLEMA DAS ABAS
+
+COMO USAR:
+1. No GitHub, vá até o repositório e edite o arquivo 'docs/index.html'
+2. Procure a tag <body> (início do corpo da página)
+3. Adicione este script logo após a tag <body>
+4. Salve as alterações
+-->
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Aplicar a correção das abas após um pequeno atraso
+  setTimeout(fixTabs, 300);
+  
+  // Continuar verificando para garantir que a solução se mantenha
+  setInterval(fixTabs, 1000);
+});
+
+function fixTabs() {
+  // Selecionar os elementos das abas
+  const tabButtons = document.querySelectorAll('.bottom-tab-btn');
+  const tabContents = document.querySelectorAll('.bottom-tab-content');
+  const tabsContainer = document.querySelector('.bottom-tabs-container');
+  
+  if (!tabButtons.length || !tabContents.length) return;
+  
+  // Ocultar todos os conteúdos de abas
+  tabContents.forEach(content => {
+    content.style.display = 'none';
+  });
+  
+  // Verificar se algum botão está ativo
+  const activeButton = document.querySelector('.bottom-tab-btn.active');
+  
+  // Se houver um botão ativo, mostrar apenas o conteúdo correspondente
+  if (activeButton) {
+    const tabId = activeButton.getAttribute('data-tab');
+    const activeContent = document.getElementById(tabId + '-content');
+    
+    if (activeContent) {
+      activeContent.style.display = 'block';
+    }
+  }
+  
+  // Substituir os eventos de clique nos botões
+  tabButtons.forEach(button => {
+    // Remover eventos existentes
+    const newButton = button.cloneNode(true);
+    if (button.parentNode) {
+      button.parentNode.replaceChild(newButton, button);
+    }
+    
+    // Adicionar novo evento
+    newButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const tabId = this.getAttribute('data-tab');
+      const isActive = this.classList.contains('active');
+      const isExpanded = !tabsContainer.classList.contains('minimized');
+      
+      // Se já estiver ativo e expandido, minimizar
+      if (isActive && isExpanded) {
+        tabsContainer.classList.add('minimized');
+        
+        // Redefinir estilos
+        tabsContainer.style.position = 'absolute';
+        tabsContainer.style.top = 'auto';
+        tabsContainer.style.left = '380px';
+        tabsContainer.style.right = '0';
+        tabsContainer.style.bottom = '0';
+        tabsContainer.style.height = '60px';
+        tabsContainer.style.width = 'calc(100% - 380px)';
+        tabsContainer.style.zIndex = '100';
+        tabsContainer.style.backgroundColor = '#f9f9f9';
+        tabsContainer.style.borderLeft = 'none';
+        tabsContainer.style.boxShadow = 'none';
+        
+        // Mostrar o mapa
+        const mapContainer = document.querySelector('.map-container');
+        if (mapContainer) {
+          mapContainer.style.visibility = 'visible';
+        }
+        
+        return;
+      }
+      
+      // Desativar todos os botões
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      
+      // Ativar este botão
+      this.classList.add('active');
+      
+      // Ocultar todos os conteúdos
+      tabContents.forEach(content => {
+        content.style.display = 'none';
+      });
+      
+      // Mostrar apenas o conteúdo correspondente
+      const content = document.getElementById(tabId + '-content');
+      if (content) {
+        content.style.display = 'block';
+      }
+      
+      // Se estiver minimizado, expandir
+      if (tabsContainer.classList.contains('minimized')) {
+        tabsContainer.classList.remove('minimized');
+        
+        // Aplicar estilos de tela cheia
+        tabsContainer.style.position = 'fixed';
+        tabsContainer.style.top = '0';
+        tabsContainer.style.left = '380px';
+        tabsContainer.style.right = '0';
+        tabsContainer.style.bottom = '0';
+        tabsContainer.style.width = 'calc(100% - 380px)';
+        tabsContainer.style.height = '100vh';
+        tabsContainer.style.zIndex = '9999';
+        tabsContainer.style.backgroundColor = 'white';
+        tabsContainer.style.borderLeft = '2px solid #ffc107';
+        tabsContainer.style.boxShadow = '-5px 0px 15px rgba(0,0,0,0.1)';
+        
+        // Ocultar o mapa
+        const mapContainer = document.querySelector('.map-container');
+        if (mapContainer) {
+          mapContainer.style.visibility = 'hidden';
+        }
+      }
+    });
+  });
+}
+</script>
