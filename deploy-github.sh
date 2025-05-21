@@ -15,6 +15,9 @@ cd github_build
 # Criar estrutura inicial para a página estática
 mkdir -p assets css js
 
+# Gerar arquivo de eventos de cidades
+node ../update-city-events.js
+
 # Copiar arquivos existentes da pasta docs
 cp -r ../docs/event-icons ./
 cp -r ../docs/tsp.js ./js/
@@ -23,6 +26,7 @@ cp ../docs/fix-github.js ./js/
 cp ../docs/route-optimizer.js ./js/
 cp ../docs/map-controls.js ./js/
 cp ../docs/geocode-fix.js ./js/
+cp ../docs/city-events.js ./js/
 
 # Copiar index.html otimizado
 cp ../docs/index.html ./
