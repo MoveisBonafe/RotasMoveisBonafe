@@ -10434,5 +10434,182 @@
 </script>
 
     <script src="tabs-fix.js"></script>
+<script>
+/**
+ * Solução unificada para preenchimento de todas as abas
+ * Eventos, Restrições e Relatório agora preenchem todo o espaço disponível
+ */
+(function() {
+    // Executar quando o documento estiver carregado
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fixAllTabs);
+    } else {
+        setTimeout(fixAllTabs, 500);
+    }
+    
+    // Função principal para aplicar todas as correções
+    function fixAllTabs() {
+        console.log('[TabsFix] Iniciando correção para todas as abas');
+        
+        // 1. Injetar CSS para todas as abas
+        injectFullTabsCSS();
+        
+        // 2. Aplicar correções específicas para cada aba
+        fixEventosTab();
+        fixRestricoesTab();
+        fixRelatorioTab();
+        
+        // 3. Monitorar alterações e continuar verificando
+        setInterval(checkAllTabsStatus, 1000);
+        
+        // 4. Configurar observador para reagir a mudanças
+        setupTabsObserver();
+    }
+    
+    // Injetar CSS para todas as abas
+    function injectFullTabsCSS() {
+        // Evitar duplicação
+        if (document.getElementById('all-tabs-fix-css')) return;
+        
+        // Criar elemento de estilo
+        const style = document.createElement('style');
+        style.id = 'all-tabs-fix-css';
+        style.textContent = `
+            /* CSS COMUM PARA TODAS AS ABAS */
+            
+            /* Estrutura base quando expandido */
+            .bottom-tabs-container:not(.minimized) {
+                position: fixed !important;
+                top: 0 !important;
+                left: 380px !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                width: calc(100% - 380px) !important;
+                height: 100vh !important;
+                z-index: 9999 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                background: white !important;
+                box-shadow: -2px 0 10px rgba(0,0,0,0.1) !important;
+            }
+            
+            /* Barra de navegação */
+            .bottom-tabs-nav {
+                height: 60px !important;
+                flex-shrink: 0 !important;
+                width: 100% !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-around !important;
+                background: #f8f9fa !important;
+                border-bottom: 1px solid #dee2e6 !important;
+                padding: 0 20px !important;
+            }
+            
+            /* Base para todas as abas */
+            .bottom-tab-content {
+                display: none !important;
+            }
+            
+            .bottom-tab-content.active-content {
+                display: flex !important;
+                flex-direction: column !important;
+                width: 100% !important;
+                height: calc(100vh - 60px) !important;
+                padding: 20px !important;
+                overflow-y: auto !important;
+                background: #fafafa !important;
+                flex: 1 !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Garantir que os elementos filhos preencham o espaço */
+            .bottom-tab-content.active-content > * {
+                width: 100% !important;
+                margin-bottom: 15px !important;
+            }
+            
+            /* Adaptação para telas menores */
+            @media (max-width: 768px) {
+                .bottom-tabs-container:not(.minimized) {
+                    left: 320px !important;
+                    width: calc(100% - 320px) !important;
+                }
+            }
+        `;
+        
+        document.head.appendChild(style);
+        console.log('[TabsFix] CSS para todas as abas injetado');
+    }
+    
+    // Corrigir aba de Eventos
+    function fixEventosTab() {
+        const eventosTab = document.getElementById('bottom-events-content');
+        if (!eventosTab) return;
+        
+        eventosTab.style.display = 'flex';
+        eventosTab.style.flexDirection = 'column';
+        eventosTab.style.height = 'calc(100vh - 60px)';
+        eventosTab.style.overflowY = 'auto';
+    }
+    
+    // Corrigir aba de Restrições
+    function fixRestricoesTab() {
+        const restricoesTab = document.getElementById('bottom-restrictions-content');
+        if (!restricoesTab) return;
+        
+        restricoesTab.style.display = 'flex';
+        restricoesTab.style.flexDirection = 'column';
+        restricoesTab.style.height = 'calc(100vh - 60px)';
+        restricoesTab.style.overflowY = 'auto';
+    }
+    
+    // Corrigir aba de Relatório
+    function fixRelatorioTab() {
+        const relatorioTab = document.getElementById('bottom-report-content');
+        if (!relatorioTab) return;
+        
+        relatorioTab.style.display = 'flex';
+        relatorioTab.style.flexDirection = 'column';
+        relatorioTab.style.height = 'calc(100vh - 60px)';
+        relatorioTab.style.overflowY = 'auto';
+    }
+    
+    // Verificar status de todas as abas
+    function checkAllTabsStatus() {
+        const tabsContainer = document.querySelector('.bottom-tabs-container');
+        if (!tabsContainer || tabsContainer.classList.contains('minimized')) return;
+        
+        const activeTab = document.querySelector('.bottom-tab-content.active-content');
+        if (!activeTab) return;
+        
+        if (activeTab.id === 'bottom-events-content') {
+            fixEventosTab();
+        } else if (activeTab.id === 'bottom-restrictions-content') {
+            fixRestricoesTab();
+        } else if (activeTab.id === 'bottom-report-content') {
+            fixRelatorioTab();
+        }
+    }
+    
+    // Configurar observador
+    function setupTabsObserver() {
+        if (window.allTabsObserver) return;
+        
+        const observer = new MutationObserver(() => {
+            checkAllTabsStatus();
+        });
+        
+        observer.observe(document.body, {
+            attributes: true,
+            childList: true,
+            subtree: true,
+            attributeFilter: ['style', 'class']
+        });
+        
+        window.allTabsObserver = observer;
+    }
+})();
+</script>
 </body>
 </html>
