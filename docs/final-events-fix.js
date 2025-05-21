@@ -1,12 +1,13 @@
 /**
- * IMPLEMENTAÇÃO DEFINITIVA DE EVENTOS DE ANIVERSÁRIOS DE CIDADES
+ * IMPLEMENTAÇÃO DEFINITIVA DE EVENTOS DE ANIVERSÁRIOS E OUTROS EVENTOS NAS CIDADES
  * 
  * Esta solução:
- * 1. Usa APENAS a fonte de dados oficial (estados-aniversarios.js)
+ * 1. Usa APENAS fontes de dados oficiais (estados-aniversarios.js e outros-eventos.js)
  * 2. Exibe somente eventos de cidades presentes na rota
  * 3. Formata as datas de forma consistente e completa
  * 4. Evita completamente duplicatas
  * 5. Trata diferenças de nomenclatura entre cidades na rota e na fonte de dados
+ * 6. Inclui tanto aniversários quanto outros eventos importantes (feiras, exposições, etc)
  */
 
 (function() {
@@ -31,19 +32,19 @@
     "Barbacena": "15/09/1791"
   };
   
-  // Verificação para garantir que temos os dados de aniversários
-  function aguardarDadosAniversarios() {
-    if (window.aniversariosCidades) {
+  // Verificação para garantir que temos os dados carregados
+  function aguardarDadosCarregados() {
+    if (window.aniversariosCidades && window.outrosEventosCidades) {
       aplicarCorrecaoFinal();
     } else {
-      console.log("[EventosFix] Aguardando carregamento dos dados de aniversários...");
-      setTimeout(aguardarDadosAniversarios, 500);
+      console.log("[EventosFix] Aguardando carregamento dos dados...");
+      setTimeout(aguardarDadosCarregados, 500);
     }
   }
   
   // Executar em vários momentos para garantir funcionamento
-  setTimeout(aguardarDadosAniversarios, 500);
-  setTimeout(aguardarDadosAniversarios, 2000);
+  setTimeout(aguardarDadosCarregados, 500);
+  setTimeout(aguardarDadosCarregados, 2000);
   
   // Observar mudanças no DOM
   const observer = new MutationObserver(function() {
@@ -88,65 +89,133 @@
     // 4. Criar um conjunto para acompanhar eventos já criados (evitar duplicatas)
     const cidadesProcessadas = new Set();
     
-    // 5. Para cada cidade na rota, criar um evento se ela tiver aniversário
+    // 5. Para cada cidade na rota, adicionar seus eventos
     cidadesNaRota.forEach(function(cidade) {
       const cidadeNormalizada = normalizarCidade(cidade);
       
-      // Verificar se já processamos esta cidade
-      if (cidadesProcessadas.has(cidadeNormalizada)) {
-        return;
+      // Verificar se já processamos esta cidade para aniversários
+      if (!cidadesProcessadas.has(cidadeNormalizada)) {
+        // Adicionar aniversário da cidade
+        adicionarAniversarioCidade(cidade, containerEventos);
+        
+        // Marcar esta cidade como já processada para aniversários
+        cidadesProcessadas.add(cidadeNormalizada);
       }
       
-      // Buscar informação de aniversário
-      const infoAniversario = buscarAniversarioCidade(cidade);
-      if (!infoAniversario) {
-        console.log(`[EventosFix] Não encontrada data de aniversário para: ${cidade}`);
-        return;
-      }
-      
-      // Marcar esta cidade como já processada
-      cidadesProcessadas.add(cidadeNormalizada);
-      
-      // Criar e adicionar o elemento de evento
-      const eventoElement = criarElementoEvento(
-        cidade, 
-        infoAniversario.dia, 
-        infoAniversario.mes,
-        obterDataFundacao(cidade)
-      );
-      
-      containerEventos.appendChild(eventoElement);
-      console.log(`[EventosFix] Adicionado evento para ${cidade} em ${infoAniversario.dia}/${infoAniversario.mes}`);
+      // Adicionar quaisquer outros eventos desta cidade
+      adicionarOutrosEventos(cidade, containerEventos);
     });
     
     console.log("[EventosFix] Aplicação de correção final concluída com sucesso!");
   }
   
+  // FUNÇÃO PARA ADICIONAR ANIVERSÁRIO DE CIDADE
+  function adicionarAniversarioCidade(cidade, containerEventos) {
+    // Buscar informação de aniversário
+    const infoAniversario = buscarAniversarioCidade(cidade);
+    if (!infoAniversario) {
+      console.log(`[EventosFix] Não encontrada data de aniversário para: ${cidade}`);
+      return;
+    }
+    
+    // Criar e adicionar o elemento de evento
+    const eventoElement = criarElementoEvento(
+      "Aniversário da Cidade",
+      cidade, 
+      infoAniversario.dia, 
+      infoAniversario.mes,
+      obterDataFundacao(cidade),
+      "Feriado",
+      "Baixo"
+    );
+    
+    containerEventos.appendChild(eventoElement);
+    console.log(`[EventosFix] Adicionado aniversário para ${cidade} em ${infoAniversario.dia}/${infoAniversario.mes}`);
+  }
+  
+  // FUNÇÃO PARA ADICIONAR OUTROS EVENTOS DE UMA CIDADE
+  function adicionarOutrosEventos(cidade, containerEventos) {
+    // Verificar se temos outros eventos para esta cidade
+    if (!window.outrosEventosCidades) return;
+    
+    // Normalizar nome da cidade para busca
+    const cidadeNormalizada = normalizarCidade(cidade);
+    
+    // Procurar em todas as cidades com eventos
+    for (const [nomeCidade, eventos] of Object.entries(window.outrosEventosCidades)) {
+      const cidadeEventosNormalizada = normalizarCidade(nomeCidade);
+      
+      // Verificar se esta cidade corresponde à que estamos procurando
+      if (cidadeEventosNormalizada === cidadeNormalizada || 
+          cidadeNormalizada.includes(cidadeEventosNormalizada) || 
+          cidadeEventosNormalizada.includes(cidadeNormalizada)) {
+        
+        // Adicionar cada evento desta cidade
+        eventos.forEach(function(evento) {
+          // Extrair dados do evento
+          const dataParts = evento.data.split('/');
+          const dia = dataParts[0];
+          const mes = dataParts[1];
+          
+          // Criar elemento de evento
+          const eventoElement = criarElementoEvento(
+            evento.titulo,
+            nomeCidade,
+            dia,
+            mes,
+            null,
+            evento.tipo,
+            evento.impacto,
+            evento.descricao
+          );
+          
+          containerEventos.appendChild(eventoElement);
+          console.log(`[EventosFix] Adicionado evento ${evento.titulo} para ${nomeCidade}`);
+        });
+        
+        // Já encontramos e adicionamos os eventos, sair do loop
+        break;
+      }
+    }
+  }
+  
   // FUNÇÃO PARA CRIAR ELEMENTO DE EVENTO
-  function criarElementoEvento(cidade, dia, mes, dataFundacao) {
+  function criarElementoEvento(titulo, cidade, dia, mes, dataFundacao, tipo, impacto, descricaoCustom) {
     // Criar elemento principal
     const eventoElement = document.createElement('div');
     eventoElement.className = 'event-item';
     
-    // Ano fixo para todos os eventos futuros
+    // Ano fixo para todos os eventos futuros - data oficial
     const ano = 2025;
+    
+    // Formatar data para o padrão da cidade
+    const dataEventoFormatada = `${dia}/${mes}/${ano}`;
     
     // Determinar o texto da descrição
     let descricaoTexto = '';
-    if (dataFundacao) {
+    if (descricaoCustom) {
+      // Se foi fornecida uma descrição personalizada, usá-la
+      descricaoTexto = descricaoCustom;
+    } else if (dataFundacao) {
+      // Para aniversários de cidade com data de fundação
       descricaoTexto = `Aniversário de fundação de ${cidade} em ${dataFundacao}`;
     } else {
+      // Para aniversários de cidade sem data de fundação
       descricaoTexto = `Aniversário da cidade de ${cidade}`;
     }
     
-    // Construir HTML interno
+    // Limpar tipo e impacto para valores padrão se não fornecidos
+    tipo = tipo || "Evento";
+    impacto = impacto || "Baixo";
+    
+    // Construir HTML interno - a data do evento no .event-date agora é consistente com a data real de aniversário
     eventoElement.innerHTML = `
-      <div class="event-title">Aniversário da Cidade
-        <div class="event-date">${cidade} | ${dia}/${mes}/${ano}</div>
+      <div class="event-title">${titulo}
+        <div class="event-date">${cidade} | ${dataEventoFormatada}</div>
       </div>
       <div class="event-type">
-        <span class="event-badge feriado">Feriado</span>
-        <span class="event-badge baixo">Baixo</span>
+        <span class="event-badge ${tipo.toLowerCase()}">${tipo}</span>
+        <span class="event-badge ${impacto.toLowerCase()}">${impacto}</span>
       </div>
       <div class="event-description">${descricaoTexto}</div>
     `;
