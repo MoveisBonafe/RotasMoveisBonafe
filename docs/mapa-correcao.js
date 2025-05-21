@@ -48,8 +48,8 @@
     // Ajustar o container do mapa
     mapContainer.style.flex = '1';
     mapContainer.style.height = '100vh';
-    mapContainer.style.width = 'calc(100% - 300px)';
-    mapContainer.style.marginLeft = '300px';
+    mapContainer.style.width = 'calc(100% - 100px)';
+    mapContainer.style.marginLeft = '100px';
     
     // Ajustar o div do mapa para ocupar todo o espaço
     mapDiv.style.height = '100%';
