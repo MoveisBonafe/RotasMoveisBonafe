@@ -35,14 +35,66 @@
     adicionarEstilosAmarelos();
     aplicarCoresAmarelas();
     
-    // 2. Remover botões indesejados
+    // 2. Ajustar estrutura do mapa para centralizar
+    ajustarEstruturaMapa();
+    
+    // 3. Remover botões indesejados
     removerBotoesIndesejados();
     
-    // 3. Corrigir datas das cidades
+    // 4. Corrigir datas das cidades
     corrigirDatasAniversario();
     
-    // 4. Filtrar eventos para mostrar apenas cidades na rota
+    // 5. Filtrar eventos para mostrar apenas cidades na rota
     filtrarEventosPorCidadesRota();
+  }
+  
+  // AJUSTAR ESTRUTURA DO MAPA
+  function ajustarEstruturaMapa() {
+    console.log("[SolucaoCompleta] Ajustando estrutura do mapa para centralizar");
+    
+    // Verificar se o mapa existe
+    const mapContainer = document.querySelector('.map-container');
+    const mapDiv = document.getElementById('map');
+    
+    if (!mapContainer || !mapDiv) {
+      console.log("[SolucaoCompleta] Não foi possível encontrar o container do mapa");
+      return;
+    }
+    
+    // Aplicar estilos diretamente no mapa para garantir centralização
+    mapDiv.style.width = '100%';
+    mapDiv.style.height = '100%';
+    mapDiv.style.borderRadius = '10px';
+    
+    // Ajustar o container do mapa
+    mapContainer.style.position = 'fixed';
+    mapContainer.style.top = '10px';
+    mapContainer.style.left = '310px';
+    mapContainer.style.right = '10px'; 
+    mapContainer.style.bottom = '70px';
+    mapContainer.style.padding = '0';
+    mapContainer.style.margin = '0';
+    mapContainer.style.boxShadow = '0 0 10px rgba(0,0,0,0.1)';
+    mapContainer.style.borderRadius = '10px';
+    mapContainer.style.overflow = 'hidden';
+    
+    // Verificar se precisamos recarregar o mapa
+    if (window.google && window.google.maps) {
+      try {
+        // Tentar forçar o mapa a se ajustar
+        const center = window.map ? window.map.getCenter() : null;
+        if (center) {
+          // Trigger resize para o mapa se ajustar
+          google.maps.event.trigger(window.map, 'resize');
+          // Restaurar o centro
+          window.map.setCenter(center);
+        }
+      } catch (e) {
+        console.log("[SolucaoCompleta] Não foi possível reajustar o mapa:", e);
+      }
+    }
+    
+    console.log("[SolucaoCompleta] Mapa centralizado com sucesso");
   }
   
   // ADICIONAR ESTILOS AMARELOS
@@ -83,12 +135,22 @@
       .map-container {
         flex: 1 !important;
         height: calc(100vh - 60px) !important;
-        margin-left: 300px !important;
-        position: relative !important;
+        position: fixed !important;
+        left: 300px !important;
+        right: 0 !important;
+        top: 0 !important;
+        bottom: 60px !important;
         overflow: hidden !important;
-        box-shadow: inset 0 0 10px rgba(0,0,0,0.1) !important;
+        padding: 10px !important;
+      }
+      
+      /* Estilo interno para o mapa */
+      .map-inner {
+        width: 100% !important;
+        height: 100% !important;
         border-radius: 10px !important;
-        margin: 10px 10px 70px 310px !important;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1) !important;
+        overflow: hidden !important;
       }
       
       #map {
