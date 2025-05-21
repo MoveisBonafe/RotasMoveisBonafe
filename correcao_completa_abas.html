@@ -1,0 +1,309 @@
+<!--
+SOLUÇÃO DEFINITIVA PARA TODOS OS PROBLEMAS DAS ABAS
+Esta solução deve ser adicionada APÓS todos os outros scripts
+no final do arquivo docs/index.html, antes de </body>
+-->
+
+<script>
+// CORREÇÃO FINAL PARA ABAS DO GITHUB PAGES
+// Esta solução resolve conflitos com outros scripts e força 
+// o preenchimento completo do espaço disponível em todas as abas
+
+// Executar quando o documento estiver completamente carregado
+window.addEventListener('load', function() {
+  console.log('Aplicando solução definitiva para preenchimento das abas');
+  
+  // Adicionar CSS direto com !important em todas as propriedades críticas
+  var css = document.createElement('style');
+  css.id = 'correcao-final-css';
+  css.innerHTML = `
+    /* Estrutura base quando expandido - prioridade máxima */
+    .bottom-tabs-container:not(.minimized) {
+      position: fixed !important;
+      top: 0 !important;
+      left: 380px !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: calc(100% - 380px) !important;
+      height: 100vh !important;
+      z-index: 99999 !important;
+      background: white !important;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+    }
+    
+    /* Garantir que apenas uma aba está visível */
+    .bottom-tab-content {
+      display: none !important;
+    }
+    
+    /* Fazer o conteúdo ativo preencher todo o espaço */
+    .bottom-tab-content.active-content {
+      display: flex !important;
+      flex-direction: column !important;
+      flex: 1 !important;
+      width: 100% !important;
+      height: calc(100vh - 60px) !important;
+      overflow-y: auto !important;
+      padding: 20px !important;
+      background: #fafafa !important;
+    }
+    
+    /* Garantir que elementos filhos preencham a largura */
+    .bottom-tab-content.active-content > * {
+      width: 100% !important;
+      margin-bottom: 15px !important;
+    }
+    
+    /* CORREÇÕES ESPECÍFICAS PARA CADA ABA */
+    
+    /* ABA DE EVENTOS */
+    #eventos-tab-content,
+    #eventos-content,
+    [id*="eventos-content"] {
+      min-height: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    
+    .event-list, 
+    .eventos-list,
+    [class*="event-list"],
+    [class*="eventos-list"] {
+      flex-grow: 1 !important;
+      min-height: 70vh !important;
+      padding: 15px !important;
+      background: white !important;
+      border-radius: 8px !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
+    }
+    
+    /* ABA DE RESTRIÇÕES */
+    #restricoes-tab-content,
+    #restrições-tab-content,
+    #bottom-restrictions-content,
+    [id*="restricoes"],
+    [id*="restrições"] {
+      min-height: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    
+    .restrictions-container,
+    .restrições-container,
+    .restricoes-container,
+    [class*="restrictions"],
+    [class*="restrições"],
+    [class*="restricoes"] {
+      flex-grow: 1 !important;
+      min-height: 70vh !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    
+    .restrictions-list,
+    .restrições-list,
+    .restricoes-list,
+    [class*="restrictions-list"],
+    [class*="restrições-list"],
+    [class*="restricoes-list"] {
+      flex-grow: 1 !important;
+      min-height: 70vh !important;
+      width: 100% !important;
+    }
+    
+    /* ABA DE RELATÓRIO */
+    #relatorio-tab-content,
+    #relatório-tab-content,
+    #bottom-info-content,
+    [id*="relatorio"],
+    [id*="relatório"],
+    [id*="info-content"] {
+      min-height: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    
+    .report-container,
+    .route-info,
+    .relatorio-container,
+    .relatório-container,
+    [class*="report"],
+    [class*="relatorio"],
+    [class*="relatório"] {
+      flex-grow: 1 !important;
+      min-height: 70vh !important;
+      padding: 15px !important;
+      background: white !important;
+      border-radius: 8px !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
+    }
+    
+    /* Estilo dos botões igual aos de Otimizar/Visualizar */
+    .bottom-tab-btn {
+      background-color: #f8f9fa !important;
+      color: #333 !important;
+      border: 1px solid #ddd !important;
+      border-radius: 6px !important;
+      padding: 8px 16px !important;
+      font-weight: 500 !important;
+      min-width: 120px !important;
+      text-align: center !important;
+      margin: 0 5px !important;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+      transition: all 0.2s !important;
+    }
+    
+    .bottom-tab-btn.active {
+      background-color: #ffc107 !important;
+      border-color: #ffc107 !important;
+      color: #212529 !important;
+    }
+    
+    /* Adaptar para telas menores */
+    @media (max-width: 768px) {
+      .bottom-tabs-container:not(.minimized) {
+        left: 320px !important;
+        width: calc(100% - 320px) !important;
+      }
+    }
+  `;
+  
+  // Remover versão anterior se existir
+  var existingStyle = document.getElementById('correcao-final-css');
+  if (existingStyle) {
+    existingStyle.parentNode.removeChild(existingStyle);
+  }
+  
+  // Adicionar novo estilo
+  document.head.appendChild(css);
+  
+  // Função para forçar preenchimento correto
+  function aplicarCorrecao() {
+    // Verificar se o container está expandido
+    var container = document.querySelector('.bottom-tabs-container');
+    if (!container || container.classList.contains('minimized')) return;
+    
+    // Encontrar o conteúdo ativo
+    var conteudoAtivo = document.querySelector('.bottom-tab-content.active-content');
+    if (!conteudoAtivo) return;
+    
+    // Aplicar estilos diretamente com alta prioridade
+    conteudoAtivo.style.setProperty('display', 'flex', 'important');
+    conteudoAtivo.style.setProperty('flex-direction', 'column', 'important');
+    conteudoAtivo.style.setProperty('width', '100%', 'important');
+    conteudoAtivo.style.setProperty('height', 'calc(100vh - 60px)', 'important');
+    conteudoAtivo.style.setProperty('overflow-y', 'auto', 'important');
+    conteudoAtivo.style.setProperty('padding', '20px', 'important');
+    conteudoAtivo.style.setProperty('background-color', '#fafafa', 'important');
+    
+    // Forçar todos os filhos diretos a preencherem a largura
+    Array.from(conteudoAtivo.children).forEach(function(filho) {
+      if (filho.tagName !== 'SCRIPT' && filho.tagName !== 'STYLE') {
+        filho.style.setProperty('width', '100%', 'important');
+        filho.style.setProperty('margin-bottom', '15px', 'important');
+      }
+    });
+    
+    // Identificar conteúdo específico de cada aba
+    
+    // Aba de Eventos
+    if (conteudoAtivo.id === 'eventos-tab-content' || 
+        conteudoAtivo.id === 'eventos-content' || 
+        conteudoAtivo.id.includes('eventos')) {
+      
+      var eventosList = conteudoAtivo.querySelector('.event-list, .eventos-list, [class*="event-list"], [class*="eventos-list"]');
+      if (eventosList) {
+        eventosList.style.setProperty('flex-grow', '1', 'important');
+        eventosList.style.setProperty('min-height', '70vh', 'important');
+        eventosList.style.setProperty('width', '100%', 'important');
+      }
+    }
+    
+    // Aba de Restrições
+    if (conteudoAtivo.id === 'restricoes-tab-content' || 
+        conteudoAtivo.id === 'restrições-tab-content' || 
+        conteudoAtivo.id === 'bottom-restrictions-content' ||
+        conteudoAtivo.id.includes('restricoes') ||
+        conteudoAtivo.id.includes('restrições')) {
+      
+      var restrictionsContainer = conteudoAtivo.querySelector('.restrictions-container, .restrições-container, .restricoes-container, [class*="restrictions"], [class*="restrições"], [class*="restricoes"]');
+      if (restrictionsContainer) {
+        restrictionsContainer.style.setProperty('flex-grow', '1', 'important');
+        restrictionsContainer.style.setProperty('min-height', '70vh', 'important');
+        restrictionsContainer.style.setProperty('width', '100%', 'important');
+        restrictionsContainer.style.setProperty('display', 'flex', 'important');
+        restrictionsContainer.style.setProperty('flex-direction', 'column', 'important');
+      }
+      
+      var restrictionsList = conteudoAtivo.querySelector('.restrictions-list, .restrições-list, .restricoes-list, [class*="restrictions-list"], [class*="restrições-list"], [class*="restricoes-list"]');
+      if (restrictionsList) {
+        restrictionsList.style.setProperty('flex-grow', '1', 'important');
+        restrictionsList.style.setProperty('min-height', '70vh', 'important');
+        restrictionsList.style.setProperty('width', '100%', 'important');
+      }
+    }
+    
+    // Aba de Relatório
+    if (conteudoAtivo.id === 'relatorio-tab-content' || 
+        conteudoAtivo.id === 'relatório-tab-content' || 
+        conteudoAtivo.id === 'bottom-info-content' ||
+        conteudoAtivo.id.includes('relatorio') || 
+        conteudoAtivo.id.includes('relatório') ||
+        conteudoAtivo.id.includes('info')) {
+      
+      var reportContainer = conteudoAtivo.querySelector('.report-container, .route-info, .relatorio-container, .relatório-container, [class*="report"], [class*="relatorio"], [class*="relatório"]');
+      if (reportContainer) {
+        reportContainer.style.setProperty('flex-grow', '1', 'important');
+        reportContainer.style.setProperty('min-height', '70vh', 'important');
+        reportContainer.style.setProperty('width', '100%', 'important');
+      }
+    }
+    
+    // Forçar redesenho do DOM
+    conteudoAtivo.style.setProperty('display', 'none', 'important');
+    setTimeout(function() {
+      conteudoAtivo.style.setProperty('display', 'flex', 'important');
+    }, 10);
+  }
+  
+  // Aplicar correção imediatamente
+  aplicarCorrecao();
+  
+  // Aplicar várias vezes para garantir
+  setTimeout(aplicarCorrecao, 1000);
+  setTimeout(aplicarCorrecao, 2000);
+  setTimeout(aplicarCorrecao, 3000);
+  
+  // Continuar verificando
+  setInterval(aplicarCorrecao, 5000);
+  
+  // Interceptar qualquer clique nos botões de tabs
+  document.body.addEventListener('click', function(e) {
+    if (e.target.classList.contains('bottom-tab-btn') || 
+        e.target.closest('.bottom-tab-btn')) {
+      // Dar tempo para que a aba se torne ativa e então aplicar a correção
+      setTimeout(aplicarCorrecao, 100);
+      setTimeout(aplicarCorrecao, 500);
+    }
+  }, true);
+  
+  // Adicionar botão de força 
+  var forcaBtn = document.createElement('button');
+  forcaBtn.textContent = 'Forçar Layout';
+  forcaBtn.style.position = 'fixed';
+  forcaBtn.style.bottom = '100px';
+  forcaBtn.style.right = '20px';
+  forcaBtn.style.zIndex = '100000';
+  forcaBtn.style.backgroundColor = '#ffc107';
+  forcaBtn.style.border = 'none';
+  forcaBtn.style.borderRadius = '4px';
+  forcaBtn.style.padding = '8px 12px';
+  forcaBtn.style.cursor = 'pointer';
+  forcaBtn.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+  forcaBtn.onclick = aplicarCorrecao;
+  
+  document.body.appendChild(forcaBtn);
+});
+</script>
