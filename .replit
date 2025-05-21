@@ -9,7 +9,8 @@ packages = ["curl", "imagemagick", "zip"]
 [deployment]
 deploymentTarget = "static"
 publicDir = "dist"
-run = ["sh", "-c", "npm run dev"]
+run = ["sh", "-c", "npx serve -s docs"]
+build = ["sh", "-c", "npm run build"]
 
 
 [[deployment.rewrites]]
@@ -48,3 +49,12 @@ author = "agent"
 task = "shell.exec"
 args = "npm run dev"
 waitForPort = 5000
+
+[[workflows.workflow]]
+name = "Start Dev Server"
+author = 42457226
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
