@@ -2,6 +2,7 @@
  * Correção de estilos para as abas inferiores no GitHub Pages
  * Garante que apenas o conteúdo da aba selecionada seja mostrado
  * Adiciona animações suaves para melhorar a experiência do usuário
+ * @version 1.2.0
  */
 
 /* Ocultar todas as abas por padrão */
@@ -21,11 +22,24 @@
   
   /* Animação de expansão e contração */
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  
+  /* Adicionar efeito de elevação para destacar do fundo */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15) !important;
+  
+  /* Adicionar borda com estilo moderno */
+  border-left: 3px solid #ffc107 !important;
+  border-radius: 0 0 0 5px !important;
 }
 
 .bottom-tabs-container.minimized {
   /* Também aplicar transição quando minimizar */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  
+  /* Garantir que não tenha sombra em estado minimizado */
+  box-shadow: none !important;
+  
+  /* Remover borda quando minimizado */
+  border-left: none !important;
 }
 
 .bottom-tabs-nav {
@@ -35,6 +49,10 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   /* Adicionando transição suave */
   transition: all 0.25s ease-out;
+  /* Adicionar um leve gradiente de fundo */
+  background: linear-gradient(to bottom, #ffffff, #f9f9f9) !important;
+  /* Adicionar borda sutil */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07) !important;
 }
 
 /* Garantir que o conteúdo active ocupe todo o espaço disponível */
@@ -46,6 +64,27 @@
   
   /* Animações de entrada */
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-out !important;
+  
+  /* Adicionar padding para separar do topo */
+  padding-top: 10px !important;
+  
+  /* Estilizar scrollbar para ficar mais moderna */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 193, 7, 0.5) #f5f5f5;
+}
+
+/* Personalização da scrollbar para Webkit (Chrome, Safari) */
+.bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+.bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 193, 7, 0.5);
+  border-radius: 10px;
 }
 
 /* Estilizar botões das abas para animações mais atraentes */
@@ -53,10 +92,19 @@
   transition: all 0.25s ease-out !important;
   position: relative;
   overflow: hidden;
+  /* Melhorar a aparência dos botões */
+  border-radius: 0 !important;
+  margin: 0 4px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.3px !important;
+  /* Adicionar efeito vidro para parecer mais moderno */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .bottom-tab-btn:hover {
   transform: translateY(-2px);
+  background-color: rgba(255, 193, 7, 0.1) !important;
 }
 
 .bottom-tab-btn:active {
@@ -65,6 +113,9 @@
 
 .bottom-tab-btn.active {
   position: relative;
+  background-color: rgba(255, 193, 7, 0.15) !important;
+  color: #000 !important;
+  font-weight: 600 !important;
 }
 
 /* Adicionar uma linha indicadora animada abaixo do botão ativo */
@@ -108,4 +159,48 @@
   height: 200px;
   opacity: 1;
   transition: width 0.6s ease-out, height 0.6s ease-out, opacity 0s;
+}
+
+/* Animação para itens dentro das abas */
+.animated-item {
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+/* Melhorar a aparência dos cards dentro do conteúdo */
+.bottom-tab-content .card {
+  border-radius: 8px !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+  overflow: hidden !important;
+}
+
+.bottom-tab-content .card:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Adicionar efeito nos botões dentro do conteúdo */
+.bottom-tab-content .btn {
+  transition: all 0.25s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+  transform: translateZ(0) !important;
+}
+
+.bottom-tab-content .btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Adicionar efeito de pulsação nos botões importantes */
+.bottom-tab-content .btn-primary, 
+.bottom-tab-content .btn-success {
+  animation: subtle-pulse 2s infinite;
+}
+
+@keyframes subtle-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
 }
