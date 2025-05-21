@@ -1,0 +1,158 @@
+<!--
+CORREÇÃO DIRETA PARA O GITHUB PAGES
+Esta solução utiliza uma abordagem extremamente simples sem conflitos
+Cole este conteúdo no final de docs/index.html antes do </body>
+-->
+
+<script type="text/javascript">
+// Correção direta para o GitHub Pages - versão sem conflitos
+document.addEventListener('DOMContentLoaded', function() {
+  // Injetar CSS diretamente no documento sem observadores complexos
+  var correcaoCSS = `
+    /* CORRECAO DIRETA - Estilos simples e diretos para as abas */
+    
+    /* Quando expandido, abas ocupam toda a área disponível */
+    .bottom-tabs-container:not(.minimized) {
+      position: fixed !important;
+      top: 0 !important;
+      left: 380px !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: calc(100% - 380px) !important;
+      height: 100vh !important;
+      z-index: 9999 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      background: white !important;
+    }
+    
+    /* Apenas conteúdo ativo é visível */
+    .bottom-tab-content {
+      display: none !important;
+    }
+    
+    /* Conteúdo ativo preenche todo o espaço */
+    .bottom-tab-content.active-content {
+      display: flex !important;
+      flex-direction: column !important;
+      width: 100% !important;
+      height: calc(100vh - 60px) !important;
+      flex: 1 !important;
+      padding: 20px !important;
+      overflow-y: auto !important;
+      background: #fafafa !important;
+    }
+    
+    /* Todos os elementos filhos ocupam 100% da largura */
+    .bottom-tab-content.active-content > * {
+      width: 100% !important;
+    }
+    
+    /* Botões estilizados como Otimizar/Visualizar */
+    .bottom-tab-btn {
+      padding: 8px 16px !important;
+      background-color: #f8f9fa !important;
+      color: #333 !important;
+      border: 1px solid #ddd !important;
+      border-radius: 6px !important;
+      font-weight: 500 !important;
+      transition: all 0.2s !important;
+      min-width: 120px !important;
+      text-align: center !important;
+      margin: 0 5px !important;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+    }
+    
+    .bottom-tab-btn.active {
+      background-color: #ffc107 !important;
+      border-color: #ffc107 !important;
+      color: #212529 !important;
+    }
+  `;
+  
+  // Adicionar o CSS ao documento
+  var style = document.createElement('style');
+  style.textContent = correcaoCSS;
+  document.head.appendChild(style);
+  
+  // Função simples para aplicar estilos inline diretamente nos elementos
+  function aplicarEstilosNasAbas() {
+    console.log('Aplicando estilos diretos nas abas');
+    
+    // Encontrar conteúdo ativo
+    var conteudoAtivo = document.querySelector('.bottom-tab-content.active-content');
+    if (conteudoAtivo) {
+      // Aplicar estilos diretos para garantir preenchimento
+      conteudoAtivo.style.display = 'flex';
+      conteudoAtivo.style.flexDirection = 'column';
+      conteudoAtivo.style.width = '100%';
+      conteudoAtivo.style.height = 'calc(100vh - 60px)';
+      conteudoAtivo.style.overflow = 'auto';
+      conteudoAtivo.style.padding = '20px';
+      
+      // Adicionar classe especial
+      conteudoAtivo.classList.add('correcao-aplicada');
+      
+      // Forçar todos os filhos a preencher a largura
+      var filhos = conteudoAtivo.children;
+      for (var i = 0; i < filhos.length; i++) {
+        if (filhos[i].tagName !== 'SCRIPT' && filhos[i].tagName !== 'STYLE') {
+          filhos[i].style.width = '100%';
+          filhos[i].style.marginBottom = '15px';
+        }
+      }
+    }
+  }
+  
+  // Repetir várias vezes para garantir que seja aplicado
+  setTimeout(aplicarEstilosNasAbas, 500);
+  setTimeout(aplicarEstilosNasAbas, 1000);
+  setTimeout(aplicarEstilosNasAbas, 2000);
+  
+  // Adicionar um botão não-intrusivo para forçar a atualização
+  var btnAtualizar = document.createElement('button');
+  btnAtualizar.textContent = 'Atualizar Layout';
+  btnAtualizar.style.position = 'fixed';
+  btnAtualizar.style.bottom = '80px';
+  btnAtualizar.style.right = '20px';
+  btnAtualizar.style.zIndex = '99999';
+  btnAtualizar.style.padding = '8px 12px';
+  btnAtualizar.style.backgroundColor = '#ffc107';
+  btnAtualizar.style.border = 'none';
+  btnAtualizar.style.borderRadius = '4px';
+  btnAtualizar.style.cursor = 'pointer';
+  btnAtualizar.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+  btnAtualizar.onclick = aplicarEstilosNasAbas;
+  
+  document.body.appendChild(btnAtualizar);
+});
+
+// Também executar quando a página estiver totalmente carregada
+window.addEventListener('load', function() {
+  // Forçar correção após o carregamento completo
+  setTimeout(function() {
+    // Verificar se há algum conteúdo ativo
+    var conteudoAtivo = document.querySelector('.bottom-tab-content.active-content');
+    if (conteudoAtivo) {
+      // Aplicar estilos diretos
+      conteudoAtivo.style.display = 'flex';
+      conteudoAtivo.style.flexDirection = 'column';
+      conteudoAtivo.style.width = '100%';
+      conteudoAtivo.style.height = 'calc(100vh - 60px)';
+      conteudoAtivo.style.overflow = 'auto';
+      conteudoAtivo.style.padding = '20px';
+      
+      // Forçar todos os filhos a preencher a largura
+      var filhos = conteudoAtivo.children;
+      for (var i = 0; i < filhos.length; i++) {
+        if (filhos[i].tagName !== 'SCRIPT' && filhos[i].tagName !== 'STYLE') {
+          filhos[i].style.width = '100%';
+          filhos[i].style.marginBottom = '15px';
+        }
+      }
+      
+      console.log('Correção final aplicada');
+    }
+  }, 2000);
+});
+</script>
