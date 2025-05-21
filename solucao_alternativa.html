@@ -2,95 +2,229 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Exemplo de Correção - Abas e Datas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajuste de Layout - Solução Alternativa</title>
     <style>
-        /* Estilos para simular o problema */
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        .bottom-tabs-container { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: #f1f1f1; }
-        .bottom-tabs-container:not(.minimized) { position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100vh; }
-        .bottom-tab-btn { display: inline-block; padding: 10px 20px; cursor: pointer; }
-        .bottom-tab-btn.active { background: #ffcc00; }
-        
-        /* Este é o estilo problemático que faz todas as abas aparecerem */
-        .bottom-tabs-container:not(.minimized) .bottom-tab-content {
-            display: block !important; /* Este é o problema - todas as abas visíveis */
+        /* Reset e estilos básicos */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
         
-        .event-item { margin: 10px 0; padding: 10px; border: 1px solid #ddd; }
-        .event-date { font-weight: bold; }
-        .event-description { color: #666; }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+        
+        /* Container principal */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Área de conteúdo principal */
+        .main-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 60px; /* Altura da barra inferior */
+            display: flex;
+            overflow: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 380px;
+            height: 100%;
+            background-color: #f8f9fa;
+            padding: 20px;
+            overflow-y: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 10;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        /* Área do mapa */
+        .map-area {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 380px; /* Largura da sidebar */
+            overflow: hidden;
+            background-color: #e9ecef; /* Cor para simular o mapa */
+        }
+        
+        /* Barra inferior */
+        .bottom-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: #f1f3f5;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid #dee2e6;
+            z-index: 20;
+        }
+        
+        /* Conteúdo da sidebar */
+        .sidebar-header {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 15px;
+        }
+        
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin: 0;
+        }
+        
+        .app-title-highlight {
+            color: #ffc107;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #ffc107;
+            color: #212529;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background-color: #e0a800;
+        }
+        
+        /* Tabs na barra inferior */
+        .bottom-tab {
+            padding: 8px 16px;
+            background-color: #ffc107;
+            color: #212529;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        /* Media query para telas menores */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 320px;
+            }
+            
+            .map-area {
+                left: 320px;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Teste de Correção</h1>
-    
-    <!-- Container de abas - simulando o problema -->
-    <div class="bottom-tabs-container">
-        <!-- Botões das abas -->
-        <div class="bottom-tab-btns">
-            <button class="bottom-tab-btn active" data-target="bottom-events-content">Eventos</button>
-            <button class="bottom-tab-btn" data-target="bottom-restrictions-content">Restrições</button>
-            <button class="bottom-tab-btn" data-target="bottom-report-content">Relatório</button>
-            <button onclick="toggleTabs()">Expandir/Minimizar</button>
-        </div>
-        
-        <!-- Conteúdo das abas - todas visíveis ao mesmo tempo -->
-        <div id="bottom-events-content" class="bottom-tab-content active-content">
-            <h2>Eventos nas cidades da rota:</h2>
-            
-            <div class="event-item">
-                <div class="event-date">Piedade | 19/05/2025</div>
-                <div class="event-description">Aniversário de fundação de Piedade em 20/05</div>
+    <div class="app-container">
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h2 class="app-title">
+                        <span>Otimizador de Rotas</span>
+                        <span class="app-title-highlight">Móveis Bonafé</span>
+                    </h2>
+                </div>
+                
+                <div class="form-group">
+                    <label>Filtrar eventos por data:</label>
+                    <div style="display: flex; gap: 10px; margin-top: 5px;">
+                        <input type="date" class="form-control" value="2025-05-15">
+                        <input type="date" class="form-control" value="2025-05-22">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Origem:</label>
+                    <input type="text" class="form-control" value="Dois Córregos, SP" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>Adicionar local:</label>
+                    <input type="text" class="form-control" placeholder="Digite um endereço">
+                </div>
+                
+                <div style="margin: 20px 0; padding: 20px 0; border-top: 1px solid #dee2e6; border-bottom: 1px solid #dee2e6;">
+                    <p>Importar CEPs via arquivo</p>
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100px; border: 2px dashed #ced4da; border-radius: 4px; margin-top: 10px;">
+                        <span>Arraste seu arquivo aqui</span>
+                    </div>
+                </div>
+                
+                <h3 style="margin: 20px 0 10px; font-size: 1.1rem;">Locais adicionados:</h3>
+                <div style="height: 150px; background-color: #f1f3f5; border-radius: 4px; padding: 10px; overflow-y: auto;">
+                    <p style="color: #6c757d; font-style: italic;">Nenhum local adicionado</p>
+                </div>
+                
+                <button class="btn" style="width: 100%; margin-top: 20px;">Otimizar Rota</button>
             </div>
             
-            <div class="event-item">
-                <div class="event-date">Ribeirão Preto | 04/06/2025</div>
-                <div class="event-description">Aniversário de fundação de Ribeirão Preto em 19/06</div>
+            <!-- Área do mapa -->
+            <div class="map-area">
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                    <h3>Área do Mapa</h3>
+                    <p>Esta é uma simulação visual do layout corrigido</p>
+                </div>
             </div>
         </div>
         
-        <div id="bottom-restrictions-content" class="bottom-tab-content">
-            <h2>Restrições de circulação</h2>
-            <p>Este conteúdo não deveria aparecer quando outra aba está selecionada</p>
-        </div>
-        
-        <div id="bottom-report-content" class="bottom-tab-content">
-            <h2>Relatório da rota</h2>
-            <p>Este conteúdo não deveria aparecer quando outra aba está selecionada</p>
+        <!-- Barra inferior -->
+        <div class="bottom-bar">
+            <button class="bottom-tab">Eventos na Rota</button>
+            <button class="bottom-tab">Restrições de Tráfego</button>
+            <button class="bottom-tab">Relatório da Rota</button>
         </div>
     </div>
     
-    <!-- Script para alternar entre expandido/minimizado -->
     <script>
-        function toggleTabs() {
-            const container = document.querySelector('.bottom-tabs-container');
-            container.classList.toggle('minimized');
-        }
-        
-        // Adicionar comportamento de clique nos botões de aba
-        document.querySelectorAll('.bottom-tab-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                // Remover classe ativa de todos os botões
-                document.querySelectorAll('.bottom-tab-btn').forEach(function(b) {
-                    b.classList.remove('active');
-                });
-                
-                // Adicionar classe ativa ao botão clicado
-                this.classList.add('active');
-                
-                // Remover classe ativa de todos os conteúdos
-                document.querySelectorAll('.bottom-tab-content').forEach(function(content) {
-                    content.classList.remove('active-content');
-                });
-                
-                // Adicionar classe ativa ao conteúdo correspondente
-                const targetId = this.getAttribute('data-target');
-                document.getElementById(targetId).classList.add('active-content');
+        // Código apenas para demonstração
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Demo de layout carregada');
+            
+            // Simulação de redimensionamento responsivo
+            window.addEventListener('resize', function() {
+                console.log('Janela redimensionada');
             });
         });
     </script>
-    
-    <!-- ADICIONE ESTE SCRIPT PARA CORRIGIR OS PROBLEMAS -->
-    <script src="solucao_completa.js"></script>
 </body>
 </html>
