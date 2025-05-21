@@ -1,6 +1,10 @@
 // Script para corrigir problemas com a versão GitHub Pages
 window.locationOrder = []; // Array para armazenar a ordem das localizações
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize locationOrder if not exists
+    if (!window.locationOrder) {
+        window.locationOrder = [];
+    }
   // Ajustar tamanho do mapa e da sidebar
   const fixLayout = function() {
     const sidebar = document.querySelector('.sidebar');

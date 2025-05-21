@@ -51,6 +51,26 @@ function updateAllCityEvents() {
     });
 }
 
+const cityBirthdayEvents = [
+    // ===== SÃO PAULO =====
+    // Janeiro
+    { city: "Uru", event: "Aniversário da Cidade", eventType: "Feriado", importance: "Baixo", startDate: "01/01/2025", endDate: "01/01/2025", description: "Aniversário de fundação de Uru em 01/01" },
+    { city: "Morro Agudo", event: "Aniversário da Cidade", eventType: "Feriado", importance: "Baixo", startDate: "06/01/2025", endDate: "06/01/2025", description: "Aniversário de fundação de Morro Agudo em 06/01" }
+];
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof window.allCityEvents === 'undefined') {
+        window.allCityEvents = cityBirthdayEvents;
+    } else {
+        const existingEvents = new Set(window.allCityEvents.map(e => `${e.city}-${e.event}`));
+        cityBirthdayEvents.forEach(newEvent => {
+            if (!existingEvents.has(`${newEvent.city}-${newEvent.event}`)) {
+                window.allCityEvents.push(newEvent);
+            }
+        });
+    }
+});
+
 document.addEventListener('DOMContentLoaded', () => setTimeout(updateAllCityEvents, 1000));
 if (document.readyState !== 'loading') {
     setTimeout(updateAllCityEvents, 1000);
