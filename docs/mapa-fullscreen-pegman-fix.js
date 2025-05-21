@@ -23,27 +23,28 @@
   
   /**
    * Ajusta o layout do mapa para preencher toda a área disponível
+   * mantendo a interface centralizada
    */
   function ajustarMapaTelaCheia() {
-    console.log("[MapaFullscreenPegmanFix] Ajustando mapa para ocupar tela cheia");
+    console.log("[MapaFullscreenPegmanFix] Ajustando mapa com interface centralizada");
     
     // 1. Ajustar o container do mapa
     const mapaContainer = document.querySelector('.map-container, #map-container');
     if (mapaContainer) {
       // Definir estilos para o container preencher toda a área disponível
-      mapaContainer.style.position = 'absolute';
-      mapaContainer.style.top = '0';
-      mapaContainer.style.left = '300px'; // Manter espaço para sidebar
-      mapaContainer.style.right = '0';
-      mapaContainer.style.bottom = '0';
-      mapaContainer.style.height = '100vh';
-      mapaContainer.style.width = 'calc(100% - 300px)';
-      mapaContainer.style.margin = '0';
-      mapaContainer.style.padding = '0';
+      // mas mantendo a interface centralizada como antes
+      mapaContainer.style.position = 'relative';
+      mapaContainer.style.margin = '0 auto';
+      mapaContainer.style.marginLeft = '300px'; // Manter espaço para sidebar
+      mapaContainer.style.height = 'calc(100vh - 40px)'; // Deixar um pequeno espaço
+      mapaContainer.style.width = 'calc(100% - 320px)'; // Um pouco menor para não estourar
+      mapaContainer.style.maxWidth = '1200px'; // Limitar largura máxima
       mapaContainer.style.zIndex = '1';
       mapaContainer.style.overflow = 'hidden';
+      mapaContainer.style.borderRadius = '10px'; // Arredondar bordas do mapa
+      mapaContainer.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
       
-      console.log("[MapaFullscreenPegmanFix] Container do mapa ajustado");
+      console.log("[MapaFullscreenPegmanFix] Container do mapa ajustado centralizadamente");
     }
     
     // 2. Ajustar o elemento do mapa diretamente
@@ -51,29 +52,29 @@
     if (mapa) {
       mapa.style.height = '100%';
       mapa.style.width = '100%';
-      mapa.style.position = 'absolute';
-      mapa.style.top = '0';
-      mapa.style.left = '0';
-      mapa.style.right = '0';
-      mapa.style.bottom = '0';
+      mapa.style.position = 'relative';
       mapa.style.margin = '0';
       mapa.style.padding = '0';
+      mapa.style.borderRadius = '10px'; // Arredondar bordas para combinar com o container
       
-      console.log("[MapaFullscreenPegmanFix] Elemento do mapa ajustado");
+      console.log("[MapaFullscreenPegmanFix] Elemento do mapa ajustado de forma centralizada");
     }
     
     // 3. Ajustar a posição das abas inferiores
     const abasInferiores = document.querySelector('.bottom-tabs, #bottom-tabs');
     if (abasInferiores) {
-      abasInferiores.style.position = 'fixed';
-      abasInferiores.style.bottom = '0';
-      abasInferiores.style.left = '300px'; // Alinhar com a sidebar
-      abasInferiores.style.right = '0';
+      // Ajustar para manter centralizado como o mapa
+      abasInferiores.style.position = 'relative';
+      abasInferiores.style.marginLeft = '300px'; // Alinhar com a sidebar
+      abasInferiores.style.width = 'calc(100% - 320px)'; // Mesma largura do mapa
+      abasInferiores.style.maxWidth = '1200px'; // Limitar largura máxima
       abasInferiores.style.zIndex = '100';
       abasInferiores.style.borderTopLeftRadius = '25px';
       abasInferiores.style.borderTopRightRadius = '25px';
+      abasInferiores.style.margin = '0 auto'; // Centralizar
+      abasInferiores.style.boxShadow = '0 -4px 10px rgba(0,0,0,0.1)';
       
-      console.log("[MapaFullscreenPegmanFix] Abas inferiores reposicionadas");
+      console.log("[MapaFullscreenPegmanFix] Abas inferiores reposicionadas de forma centralizada");
     }
     
     // 4. Ajustar a barra lateral
@@ -240,19 +241,19 @@
       const estilos = document.createElement('style');
       estilos.id = 'mapa-fullscreen-css';
       estilos.textContent = `
-        /* Estilos para mapa em tela cheia */
+        /* Estilos para layout centralizado */
         html, body {
           height: 100%;
           margin: 0;
           padding: 0;
-          overflow: hidden;
+          overflow-x: hidden;
         }
         
         /* Container principal */
         .container {
           display: flex;
-          height: 100vh;
-          overflow: hidden;
+          min-height: 100vh;
+          position: relative;
         }
         
         /* Sidebar */
@@ -269,34 +270,34 @@
         
         /* Container do mapa */
         .map-container, #map-container {
-          position: absolute !important;
-          top: 0 !important;
-          left: 300px !important;
-          right: 0 !important;
-          bottom: 0 !important;
-          height: 100vh !important;
-          width: calc(100% - 300px) !important;
-          margin: 0 !important;
-          padding: 0 !important;
+          position: relative !important;
+          margin-left: 300px !important;
+          margin-right: auto !important;
+          width: calc(100% - 320px) !important;
+          max-width: 1200px !important;
+          height: calc(100vh - 40px) !important;
           z-index: 1 !important;
+          border-radius: 10px !important;
+          overflow: hidden !important;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
         }
         
         /* Elemento do mapa */
         #map {
           height: 100% !important;
           width: 100% !important;
-          position: absolute !important;
-          top: 0 !important;
-          left: 0 !important;
+          position: relative !important;
           margin: 0 !important;
+          border-radius: 10px !important;
         }
         
         /* Abas inferiores */
         .bottom-tabs, #bottom-tabs {
-          position: fixed !important;
-          bottom: 0 !important;
-          left: 300px !important;
-          right: 0 !important;
+          position: relative !important;
+          margin-left: 300px !important;
+          margin-right: auto !important;
+          width: calc(100% - 320px) !important;
+          max-width: 1200px !important;
           z-index: 100 !important;
           border-top-left-radius: 25px !important;
           border-top-right-radius: 25px !important;
@@ -304,29 +305,40 @@
         }
         
         /* Pegman personalizado */
-        .pegman-container {
+        .pegman-container, .gm-svpc {
           position: absolute !important;
-          bottom: 120px !important;
-          right: 10px !important;
+          top: 20px !important;
+          right: 20px !important;
           z-index: 1000 !important;
           background-color: #FFF8E1 !important;
           border: 2px solid #FFA500 !important;
           border-radius: 50% !important;
-          padding: 2px !important;
+          padding: 3px !important;
           box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
           cursor: pointer !important;
           transition: all 0.3s ease !important;
+          display: block !important;
+          visibility: visible !important;
         }
         
-        .pegman-container:hover {
+        .pegman-container:hover, .gm-svpc:hover {
           transform: scale(1.1) !important;
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4) !important;
         }
         
-        /* Remover espaços desnecessários */
-        .gm-style {
-          width: 100% !important;
-          height: 100% !important;
+        /* Ajustes para botões arredondados */
+        .bottom-tab-button {
+          border-radius: 50px !important;
+          margin: 5px !important;
+          padding: 10px 20px !important;
+          background: linear-gradient(45deg, #FFD700, #FFA500) !important;
+        }
+        
+        /* Fazer controles do Google Maps aparecerem */
+        .gmnoprint, .gm-style-cc, .gm-svpc, .gm-control-active {
+          display: block !important;
+          visibility: visible !important;
+          opacity: 1 !important;
         }
       `;
       document.head.appendChild(estilos);
