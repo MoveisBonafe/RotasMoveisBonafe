@@ -5,25 +5,25 @@
  * Atualizado em: 21/05/2025
  */
 
-// Executar quando o documento estiver pronto
-document.addEventListener('DOMContentLoaded', function() {
+// Esperar que o script principal tenha executado e mockData esteja disponível
+window.addEventListener('load', function() {
     console.log("Carregando aniversários das cidades para o GitHub Pages...");
+    
+    // Garantir que o mockData esteja definido
+    if (typeof window.mockData === 'undefined') {
+        console.log("Inicializando mockData globalmente...");
+        window.mockData = window.mockData || {};
+    }
+    
+    // Garantir que cityEvents esteja sempre disponível
+    if (!window.mockData.cityEvents) {
+        console.log("Inicializando cityEvents...");
+        window.mockData.cityEvents = [];
+    }
     
     // Função para adicionar aniversários das cidades
     function addCityBirthdays() {
-        // Verificar se mockData existe
-        if (!window.mockData) {
-            console.error("mockData não encontrado! Criando objeto...");
-            window.mockData = {
-                cityEvents: []
-            };
-        }
-        
-        // Verificar se cityEvents existe
-        if (!window.mockData.cityEvents) {
-            console.log("cityEvents não encontrado! Criando array...");
-            window.mockData.cityEvents = [];
-        }
+        console.log("Executando função de adicionar aniversários...");
         
         // Aniversários prioritários de cidades de São Paulo e Minas Gerais
         const cityBirthdays = [
@@ -84,23 +84,40 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("Total de eventos agora:", window.mockData.cityEvents.length);
     }
     
-    // Tentar várias vezes, pode ser que a página ainda não tenha carregado completamente
-    let attempts = 0;
-    const maxAttempts = 5;
+    // Adicionar os aniversários diretamente
+    addCityBirthdays();
     
-    function tryAddBirthdays() {
-        attempts++;
+    // Verificar se foram adicionados
+    console.log("Status após adicionar eventos:");
+    console.log("mockData disponível:", typeof window.mockData !== 'undefined');
+    console.log("cityEvents disponível:", window.mockData && Array.isArray(window.mockData.cityEvents));
+    console.log("Número de eventos:", window.mockData && window.mockData.cityEvents ? window.mockData.cityEvents.length : 0);
+    
+    // Adicionar método global para forçar a adição quando a página estiver totalmente carregada
+    window.addCityBirthdaysManually = function() {
+        console.log("Executando adição manual de aniversários...");
         
-        if (window.mockData) {
-            addCityBirthdays();
-        } else if (attempts < maxAttempts) {
-            console.log(`Tentativa ${attempts}/${maxAttempts} - mockData ainda não disponível. Tentando novamente em 1s...`);
-            setTimeout(tryAddBirthdays, 1000);
-        } else {
-            console.error("Falha ao adicionar aniversários: mockData não disponível após várias tentativas");
+        // Garantir que mockData exista
+        if (typeof window.mockData === 'undefined') {
+            window.mockData = {};
         }
-    }
+        
+        // Garantir que cityEvents exista
+        if (!window.mockData.cityEvents) {
+            window.mockData.cityEvents = [];
+        }
+        
+        // Chamar a função principal
+        addCityBirthdays();
+        
+        return "Aniversários adicionados manualmente com sucesso!";
+    };
     
-    // Iniciar as tentativas
-    tryAddBirthdays();
+    // Se após 3 segundos não tivermos eventos, tentar novamente
+    setTimeout(function() {
+        if (!window.mockData || !window.mockData.cityEvents || window.mockData.cityEvents.length < 20) {
+            console.log("Tentando adicionar eventos novamente após 3 segundos...");
+            window.addCityBirthdaysManually();
+        }
+    }, 3000);
 });
