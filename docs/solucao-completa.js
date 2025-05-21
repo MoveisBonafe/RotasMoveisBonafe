@@ -90,8 +90,16 @@
       
       /* Esconder botão fullscreen e outros controles indesejados */
       .gm-fullscreen-control,
-      .gm-svpc {
+      .gm-svpc,
+      .gmnoprint {
         display: none !important;
+      }
+      
+      /* Garantir que os botões na aba inferior sejam arredondados */
+      .bottom-tab-button {
+        border-radius: 50px !important;
+        margin: 5px !important;
+        padding: 10px 20px !important;
       }
       
       /* Destacar título */
@@ -126,7 +134,9 @@
         if (window.map && typeof window.map.setOptions === 'function') {
           window.map.setOptions({
             fullscreenControl: false,
-            streetViewControl: false
+            streetViewControl: false,
+            zoomControl: false,
+            mapTypeControl: false
           });
           console.log("[SolucaoCompleta] Configurações do mapa ajustadas via API");
         }
@@ -134,15 +144,39 @@
         console.log("[SolucaoCompleta] Não foi possível configurar o mapa via API:", e);
       }
       
-      // Esconder via DOM
-      const controles = document.querySelectorAll('.gm-fullscreen-control, button[title*="Desfazer"]');
-      controles.forEach(controle => {
-        if (controle && controle.parentNode) {
-          controle.style.display = 'none';
-          console.log("[SolucaoCompleta] Controle ocultado via DOM");
-        }
-      });
+      // Função para verificar e remover controles do mapa periodicamente
+      function verificarERemoverControles() {
+        // Esconder via DOM todos os controles
+        const controles = document.querySelectorAll('.gm-fullscreen-control, button[title*="Desfazer"], .gmnoprint, .gm-control-active, .gm-style-cc');
+        controles.forEach(controle => {
+          if (controle && controle.parentNode) {
+            controle.style.display = 'none';
+            console.log("[SolucaoCompleta] Controle ocultado via DOM");
+          }
+        });
+        
+        // Encontrar div de controles do mapa e remover completamente
+        const divControles = document.querySelectorAll('div[jsaction], div[aria-label*="Controls"]');
+        divControles.forEach(div => {
+          if (div.className && div.className.includes('gmnoprint') && div.parentNode) {
+            div.parentNode.removeChild(div);
+            console.log("[SolucaoCompleta] Div de controles removido");
+          }
+        });
+      }
+      
+      // Executar imediatamente e também periodicamente
+      verificarERemoverControles();
+      setInterval(verificarERemoverControles, 1000);
     }
+    
+    // Garantir que os botões da aba inferior estejam arredondados
+    const botoesAba = document.querySelectorAll('.bottom-tab-button');
+    botoesAba.forEach(botao => {
+      botao.style.borderRadius = '50px';
+      botao.style.margin = '5px';
+      botao.style.padding = '10px 20px';
+    });
   }
   
   // CORRIGIR DATAS DE ANIVERSÁRIO
