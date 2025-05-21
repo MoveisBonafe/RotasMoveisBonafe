@@ -106,14 +106,12 @@
       'Piedade': {
         dataIncorreta: '19/05/2025',
         dataCorreta: '20/05/2025',
-        descricao: 'Aniversário de fundação de Piedade em 20/05/1840',
-        removerData: true
+        descricao: 'Aniversário de fundação de Piedade em 20/05'
       },
       'Ribeirão Preto': {
         dataIncorreta: '04/06/2025', // ou qualquer outra data incorreta
         dataCorreta: '19/06/2025',
-        descricao: 'Aniversário de fundação de Ribeirão Preto em 19/06/1856',
-        removerData: true
+        descricao: 'Aniversário de fundação de Ribeirão Preto em 19/06'
       }
     };
     
@@ -133,23 +131,29 @@
           const dateElement = item.querySelector('.event-date');
           const descElement = item.querySelector('.event-description');
           
-          // Se tiver a configuração para remover o elemento de data, escondê-lo
-          if (dateElement && correcoes[cidade].removerData) {
-            // Esconder o elemento em vez de removê-lo para preservar a estrutura
-            dateElement.style.display = 'none';
-            console.log(`[Correção] Elemento de data ocultado para: ${cidade}`);
+          if (dateElement) {
+            const dateText = dateElement.textContent || dateElement.innerText;
+            // Se contiver a data incorreta ou não tiver a data correta
+            if (dateText.includes(correcoes[cidade].dataIncorreta) || 
+                !dateText.includes(correcoes[cidade].dataCorreta)) {
+              // Extrair a formatação atual: "Cidade | Data"
+              const parts = dateText.split('|');
+              if (parts.length > 0) {
+                const cidadeTexto = parts[0].trim();
+                // Aplicar a correção mantendo o formato
+                dateElement.textContent = `${cidadeTexto} | ${correcoes[cidade].dataCorreta}`;
+                console.log(`[Correção] Data corrigida para: ${cidadeTexto} | ${correcoes[cidade].dataCorreta}`);
+              }
+            }
           }
           
-          // Corrigir a descrição para incluir a data completa
+          // Corrigir também a descrição se necessário
           if (descElement) {
-            descElement.textContent = correcoes[cidade].descricao;
-            console.log(`[Correção] Descrição corrigida para: ${correcoes[cidade].descricao}`);
-            
-            // Aumentar o tamanho e destacar a descrição já que é a única informação visível
-            descElement.style.fontSize = '1.1em';
-            descElement.style.fontWeight = 'bold';
-            descElement.style.color = '#e91e63';
-            descElement.style.marginTop = '10px';
+            const descText = descElement.textContent || descElement.innerText;
+            if (!descText.includes(correcoes[cidade].descricao)) {
+              descElement.textContent = correcoes[cidade].descricao;
+              console.log(`[Correção] Descrição corrigida para: ${correcoes[cidade].descricao}`);
+            }
           }
         }
       });

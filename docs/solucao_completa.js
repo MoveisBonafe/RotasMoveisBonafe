@@ -45,13 +45,27 @@
         
         /* Mostrar apenas a aba ativa */
         .bottom-tab-content.active-content {
-          display: flex !important;
-          flex-direction: column !important;
+          display: block !important; /* Alterado para block em vez de flex */
           width: 100% !important;
           height: calc(100vh - 60px) !important;
           overflow-y: auto !important;
           padding: 20px !important;
           box-sizing: border-box !important;
+        }
+        
+        /* Garantir que os itens não desapareçam ao passar o mouse */
+        .event-item:hover, 
+        .restriction-item:hover, 
+        .report-item:hover,
+        .bottom-tab-content:hover * {
+          opacity: 1 !important;
+          visibility: visible !important;
+        }
+        
+        /* Estabilizar todos os elementos dentro das abas */
+        .bottom-tab-content * {
+          transition: none !important;
+          animation: none !important;
         }
       `;
       document.head.appendChild(style);
@@ -76,9 +90,16 @@
         const targetId = activeBtn.getAttribute('data-target');
         const targetContent = document.getElementById(targetId);
         if (targetContent) {
-          targetContent.style.display = 'flex';
+          targetContent.style.display = 'block'; // Alterado para block
           targetContent.classList.add('active-content');
           console.log("[Correção] Aba ativa definida para: " + targetId);
+          
+          // Garantir que todos os elementos dentro sejam estáveis
+          const allItems = targetContent.querySelectorAll('*');
+          allItems.forEach(function(item) {
+            item.style.opacity = '1';
+            item.style.visibility = 'visible';
+          });
         }
       } else {
         // Se nenhum botão estiver ativo, ativar o primeiro
@@ -88,7 +109,7 @@
           firstBtn.classList.add('active');
           const firstTab = document.getElementById(firstTabId);
           if (firstTab) {
-            firstTab.style.display = 'flex';
+            firstTab.style.display = 'block'; // Alterado para block
             firstTab.classList.add('active-content');
             console.log("[Correção] Primeira aba ativada: " + firstTabId);
           }
@@ -106,14 +127,38 @@
       'Piedade': {
         dataIncorreta: '19/05/2025',
         dataCorreta: '20/05/2025',
-        descricao: 'Aniversário de fundação de Piedade em 20/05/1840',
-        removerData: true
+        // Preservar o ano da fundação na descrição (ou extrair do texto atual)
+        getDescricao: function(textoAtual) {
+          // Verificar se existe um texto atual para extrair o ano
+          if (textoAtual && textoAtual.match(/fundação de Piedade em \d{2}\/\d{2}\/\d{4}/)) {
+            // Manter o formato atual, mas corrigir a data
+            return textoAtual.replace(/\d{2}\/\d{2}\/\d{4}/, '20/05/1857');
+          } else if (textoAtual && textoAtual.match(/fundação de Piedade em \d{2}\/\d{2}/)) {
+            // Se a descrição tem a data mas sem ano, adicionar o ano
+            return textoAtual.replace(/\d{2}\/\d{2}/, '20/05/1857');
+          } else {
+            // Se não existir ou não tiver o formato esperado, usar padrão completo
+            return 'Aniversário de fundação de Piedade em 20/05/1857';
+          }
+        }
       },
       'Ribeirão Preto': {
         dataIncorreta: '04/06/2025', // ou qualquer outra data incorreta
         dataCorreta: '19/06/2025',
-        descricao: 'Aniversário de fundação de Ribeirão Preto em 19/06/1856',
-        removerData: true
+        // Preservar o ano da fundação na descrição (ou extrair do texto atual)
+        getDescricao: function(textoAtual) {
+          // Verificar se existe um texto atual para extrair o ano
+          if (textoAtual && textoAtual.match(/fundação de Ribeirão Preto em \d{2}\/\d{2}\/\d{4}/)) {
+            // Manter o formato atual, mas corrigir a data
+            return textoAtual.replace(/\d{2}\/\d{2}\/\d{4}/, '19/06/1856');
+          } else if (textoAtual && textoAtual.match(/fundação de Ribeirão Preto em \d{2}\/\d{2}/)) {
+            // Se a descrição tem a data mas sem ano, adicionar o ano
+            return textoAtual.replace(/\d{2}\/\d{2}/, '19/06/1856');
+          } else {
+            // Se não existir ou não tiver o formato esperado, usar padrão completo
+            return 'Aniversário de fundação de Ribeirão Preto em 19/06/1856';
+          }
+        }
       }
     };
     
@@ -133,23 +178,31 @@
           const dateElement = item.querySelector('.event-date');
           const descElement = item.querySelector('.event-description');
           
-          // Se tiver a configuração para remover o elemento de data, escondê-lo
-          if (dateElement && correcoes[cidade].removerData) {
-            // Esconder o elemento em vez de removê-lo para preservar a estrutura
-            dateElement.style.display = 'none';
-            console.log(`[Correção] Elemento de data ocultado para: ${cidade}`);
+          if (dateElement) {
+            const dateText = dateElement.textContent || dateElement.innerText;
+            // Se contiver a data incorreta ou não tiver a data correta
+            if (dateText.includes(correcoes[cidade].dataIncorreta) || 
+                !dateText.includes(correcoes[cidade].dataCorreta)) {
+              // Extrair a formatação atual: "Cidade | Data"
+              const parts = dateText.split('|');
+              if (parts.length > 0) {
+                const cidadeTexto = parts[0].trim();
+                // Aplicar a correção mantendo o formato
+                dateElement.textContent = `${cidadeTexto} | ${correcoes[cidade].dataCorreta}`;
+                console.log(`[Correção] Data corrigida para: ${cidadeTexto} | ${correcoes[cidade].dataCorreta}`);
+              }
+            }
           }
           
-          // Corrigir a descrição para incluir a data completa
+          // Corrigir também a descrição se necessário
           if (descElement) {
-            descElement.textContent = correcoes[cidade].descricao;
-            console.log(`[Correção] Descrição corrigida para: ${correcoes[cidade].descricao}`);
-            
-            // Aumentar o tamanho e destacar a descrição já que é a única informação visível
-            descElement.style.fontSize = '1.1em';
-            descElement.style.fontWeight = 'bold';
-            descElement.style.color = '#e91e63';
-            descElement.style.marginTop = '10px';
+            const descText = descElement.textContent || descElement.innerText;
+            // Usar a função getDescricao para preservar o ano da fundação
+            const descricaoCorrigida = correcoes[cidade].getDescricao(descText);
+            if (descText !== descricaoCorrigida) {
+              descElement.textContent = descricaoCorrigida;
+              console.log(`[Correção] Descrição corrigida para: ${descricaoCorrigida}`);
+            }
           }
         }
       });
