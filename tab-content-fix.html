@@ -1,0 +1,160 @@
+<!--
+INSTRUÇÕES:
+
+1. Acesse seu repositório no GitHub
+2. Navegue até o arquivo docs/index.html
+3. Adicione este script antes da tag </body>
+4. Isso vai garantir que o conteúdo ocupe todo o espaço disponível nas abas
+-->
+
+<script>
+/**
+ * Correção final para fazer o conteúdo ocupar todo o espaço disponível
+ */
+(function() {
+    // Executar ao carregar a página
+    window.addEventListener('load', fixTabContent);
+    
+    // Executar a correção
+    function fixTabContent() {
+        console.log("[TabContentFix] Aplicando correção para preencher todo o espaço");
+        
+        // 1. Injetar CSS para forçar o preenchimento completo
+        addFullScreenCSS();
+        
+        // 2. Ajustar containers dinamicamente
+        adjustActiveTabContent();
+        
+        // 3. Inicializar observador de alterações
+        initChangeObserver();
+        
+        // 4. Verificar periodicamente
+        setInterval(adjustActiveTabContent, 1000);
+    }
+    
+    // Adicionar CSS para preencher o espaço
+    function addFullScreenCSS() {
+        // Evitar duplicação
+        if (document.getElementById('tab-content-fix-style')) return;
+        
+        const style = document.createElement('style');
+        style.id = 'tab-content-fix-style';
+        style.textContent = `
+            /* CSS para garantir preenchimento total do espaço */
+            .bottom-tabs-container:not(.minimized) {
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            
+            .bottom-tabs-nav {
+                flex-shrink: 0 !important;
+            }
+            
+            .bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content {
+                display: flex !important;
+                flex-direction: column !important;
+                flex: 1 !important;
+                width: 100% !important;
+                height: calc(100vh - 60px) !important;
+                overflow-y: auto !important;
+                padding: 20px !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Forçar altura mínima para garantir preenchimento */
+            .bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content > div {
+                min-height: 70vh !important;
+                width: 100% !important;
+            }
+            
+            /* Expandir cards e elementos interativos */
+            .bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content .card,
+            .bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content .list-group,
+            .bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content .container-fluid,
+            .bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content form {
+                width: 100% !important;
+                margin-bottom: 15px !important;
+            }
+            
+            /* Adicionar uma área extra no final para permitir rolagem */
+            .bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content:after {
+                content: "";
+                display: block;
+                min-height: 50px;
+            }
+        `;
+        
+        document.head.appendChild(style);
+        console.log("[TabContentFix] CSS para preenchimento adicionado");
+    }
+    
+    // Ajustar o conteúdo da aba ativa
+    function adjustActiveTabContent() {
+        // Verificar se o container está expandido
+        const container = document.querySelector('.bottom-tabs-container');
+        if (!container || container.classList.contains('minimized')) return;
+        
+        // Obter o conteúdo ativo
+        const activeContent = document.querySelector('.bottom-tab-content.active-content');
+        if (!activeContent) return;
+        
+        // Ajustar o conteúdo para preencher todo o espaço
+        activeContent.style.height = 'calc(100vh - 60px)';
+        activeContent.style.width = '100%';
+        activeContent.style.display = 'flex';
+        activeContent.style.flexDirection = 'column';
+        activeContent.style.overflow = 'auto';
+        
+        // Forçar os filhos diretos a expandir horizontalmente
+        Array.from(activeContent.children).forEach(child => {
+            if (child.tagName !== 'SCRIPT' && child.tagName !== 'STYLE') {
+                child.style.width = '100%';
+            }
+        });
+        
+        // Adicionar um espaçador se necessário para permitir rolagem
+        if (!activeContent.querySelector('.space-filler')) {
+            const spacer = document.createElement('div');
+            spacer.className = 'space-filler';
+            spacer.style.height = '50px';
+            spacer.style.width = '100%';
+            activeContent.appendChild(spacer);
+        }
+        
+        console.log("[TabContentFix] Conteúdo ajustado para preencher o espaço");
+    }
+    
+    // Observar mudanças para reagir quando necessário
+    function initChangeObserver() {
+        if (window.tabContentObserver) return;
+        
+        // Criar observador
+        const observer = new MutationObserver(mutations => {
+            let shouldUpdate = false;
+            
+            mutations.forEach(mutation => {
+                // Verificar mudanças relevantes (classe, estilo ou visibilidade)
+                if (mutation.target.classList && 
+                    (mutation.target.classList.contains('bottom-tab-content') || 
+                     mutation.target.classList.contains('bottom-tabs-container'))) {
+                    shouldUpdate = true;
+                }
+            });
+            
+            if (shouldUpdate) {
+                adjustActiveTabContent();
+            }
+        });
+        
+        // Iniciar observador
+        observer.observe(document.body, {
+            attributes: true,
+            childList: true,
+            subtree: true,
+            attributeFilter: ['class', 'style']
+        });
+        
+        window.tabContentObserver = observer;
+    }
+})();
+</script>

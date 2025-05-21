@@ -1,0 +1,290 @@
+<!--
+SOLUÇÃO COMPLETA PARA O GITHUB PAGES
+Esta solução corrige os seguintes problemas:
+1. Abas mostrando todas juntas
+2. Conteúdo não preenchendo toda a área disponível
+
+COMO USAR:
+1. Acesse seu repositório no GitHub
+2. Edite o arquivo docs/index.html
+3. Adicione este script logo antes da tag </body>
+-->
+
+<script>
+/**
+ * Solução completa para os problemas das abas
+ * - Corrige o problema das abas mostrando todas juntas
+ * - Faz com que o conteúdo preencha toda a área disponível
+ */
+(function() {
+    // Inicializar assim que possível
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+    
+    // Também executar quando a página estiver totalmente carregada
+    window.addEventListener('load', init);
+    
+    // Função principal de inicialização
+    function init() {
+        console.log("[Solução] Aplicando correções para abas e conteúdo");
+        
+        // Aplicar as correções
+        fixTabs();
+        fixFullScreenContent();
+        
+        // Continuar verificando periodicamente
+        setInterval(fixTabs, 1000);
+        setInterval(fixFullScreenContent, 1000);
+    }
+    
+    // PARTE 1: CORRIGIR ABAS MOSTRANDO TODAS JUNTAS
+    function fixTabs() {
+        // 1. Esconder todos os conteúdos de abas
+        const tabContents = document.querySelectorAll('.bottom-tab-content');
+        tabContents.forEach(content => {
+            content.style.display = 'none';
+            content.classList.remove('active-content');
+        });
+        
+        // 2. Mostrar apenas o conteúdo da aba ativa
+        const activeButton = document.querySelector('.bottom-tab-btn.active');
+        if (activeButton) {
+            const tabId = activeButton.getAttribute('data-tab');
+            const activeContent = document.getElementById(tabId + '-content');
+            if (activeContent) {
+                activeContent.style.display = 'block';
+                activeContent.classList.add('active-content');
+            }
+        }
+        
+        // 3. Substituir todos os manipuladores de eventos dos botões
+        const tabButtons = document.querySelectorAll('.bottom-tab-btn');
+        tabButtons.forEach(btn => {
+            // Pular se já processado
+            if (btn.dataset.processed === 'true') return;
+            
+            // Marcar como processado
+            btn.dataset.processed = 'true';
+            
+            // Criar clone para remover eventos existentes
+            const clone = btn.cloneNode(true);
+            if (btn.parentNode) btn.parentNode.replaceChild(clone, btn);
+            
+            // Adicionar novo manipulador de eventos
+            clone.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Obter elementos e estado atual
+                const tabsContainer = document.querySelector('.bottom-tabs-container');
+                const isActive = this.classList.contains('active');
+                const isExpanded = !tabsContainer.classList.contains('minimized');
+                
+                // Se já estiver ativa e expandida, minimizar
+                if (isActive && isExpanded) {
+                    minimizeTabs();
+                    return;
+                }
+                
+                // Desativar todos os botões
+                document.querySelectorAll('.bottom-tab-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                
+                // Ativar este botão
+                this.classList.add('active');
+                
+                // Esconder todos os conteúdos
+                document.querySelectorAll('.bottom-tab-content').forEach(content => {
+                    content.style.display = 'none';
+                    content.classList.remove('active-content');
+                });
+                
+                // Mostrar apenas o conteúdo desta aba
+                const tabId = this.getAttribute('data-tab');
+                const content = document.getElementById(tabId + '-content');
+                if (content) {
+                    content.style.display = 'block';
+                    content.classList.add('active-content');
+                    
+                    // Aplicar ajustes de tela cheia
+                    fixFullScreenContent();
+                }
+                
+                // Expandir se minimizado
+                if (tabsContainer.classList.contains('minimized')) {
+                    expandTabs();
+                }
+            });
+        });
+    }
+    
+    // PARTE 2: CORRIGIR CONTEÚDO NÃO PREENCHENDO TODA A ÁREA
+    function fixFullScreenContent() {
+        // Verificar se o container está expandido
+        const container = document.querySelector('.bottom-tabs-container');
+        if (!container || container.classList.contains('minimized')) return;
+        
+        // Obter o conteúdo ativo
+        const activeContent = document.querySelector('.bottom-tab-content.active-content');
+        if (!activeContent) return;
+        
+        // Aplicar estilos para preencher todo o espaço
+        activeContent.style.display = 'flex';
+        activeContent.style.flexDirection = 'column';
+        activeContent.style.height = 'calc(100vh - 60px)';
+        activeContent.style.width = '100%';
+        activeContent.style.padding = '20px';
+        activeContent.style.boxSizing = 'border-box';
+        activeContent.style.overflowY = 'auto';
+        
+        // Forçar os elementos internos a expandirem
+        Array.from(activeContent.children).forEach(child => {
+            if (child.tagName !== 'SCRIPT' && child.tagName !== 'STYLE') {
+                child.style.width = '100%';
+                
+                // Elementos específicos que podem precisar de mais altura
+                if (child.classList.contains('event-list') || 
+                    child.classList.contains('restrictions-list') ||
+                    child.classList.contains('route-report')) {
+                    child.style.minHeight = '60vh';
+                }
+            }
+        });
+        
+        // Garantir que haja conteúdo suficiente para rolar
+        if (!activeContent.querySelector('.spacer-element')) {
+            const spacer = document.createElement('div');
+            spacer.className = 'spacer-element';
+            spacer.style.height = '100px';
+            spacer.style.width = '100%';
+            activeContent.appendChild(spacer);
+        }
+    }
+    
+    // Função para expandir as abas
+    function expandTabs() {
+        const container = document.querySelector('.bottom-tabs-container');
+        if (!container) return;
+        
+        // Remover classe
+        container.classList.remove('minimized');
+        
+        // Aplicar estilo expandido
+        container.style.position = 'fixed';
+        container.style.top = '0';
+        container.style.left = '380px';
+        container.style.right = '0';
+        container.style.bottom = '0';
+        container.style.width = 'calc(100% - 380px)';
+        container.style.height = '100vh';
+        container.style.zIndex = '9999';
+        container.style.backgroundColor = 'white';
+        container.style.borderLeft = '3px solid #ffc107';
+        container.style.boxShadow = '0 0 20px rgba(0,0,0,0.15)';
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+        
+        // Ajustar para telas menores
+        if (window.innerWidth <= 768) {
+            container.style.left = '320px';
+            container.style.width = 'calc(100% - 320px)';
+        }
+        
+        // Ocultar o mapa
+        const mapContainer = document.querySelector('.map-container');
+        if (mapContainer) {
+            mapContainer.style.visibility = 'hidden';
+        }
+    }
+    
+    // Função para minimizar as abas
+    function minimizeTabs() {
+        const container = document.querySelector('.bottom-tabs-container');
+        if (!container) return;
+        
+        // Adicionar classe
+        container.classList.add('minimized');
+        
+        // Aplicar estilo minimizado
+        container.style.position = 'absolute';
+        container.style.top = 'auto';
+        container.style.left = '380px';
+        container.style.right = '0';
+        container.style.bottom = '0';
+        container.style.height = '60px';
+        container.style.width = 'calc(100% - 380px)';
+        container.style.zIndex = '100';
+        container.style.backgroundColor = '#f9f9f9';
+        container.style.borderLeft = 'none';
+        container.style.boxShadow = 'none';
+        container.style.display = 'block';
+        
+        // Ajustar para telas menores
+        if (window.innerWidth <= 768) {
+            container.style.left = '320px';
+            container.style.width = 'calc(100% - 320px)';
+        }
+        
+        // Mostrar o mapa
+        const mapContainer = document.querySelector('.map-container');
+        if (mapContainer) {
+            mapContainer.style.visibility = 'visible';
+        }
+    }
+    
+    // Adicionar CSS essencial para garantir que tudo funcione corretamente
+    (function addEssentialCSS() {
+        const style = document.createElement('style');
+        style.id = 'essential-tabs-fix-css';
+        style.textContent = `
+            /* Garantir que apenas uma aba seja visível */
+            .bottom-tab-content {
+                display: none !important;
+            }
+            
+            .bottom-tab-content.active-content {
+                display: block !important;
+            }
+            
+            /* Estrutura correta quando expandido */
+            .bottom-tabs-container:not(.minimized) {
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            
+            .bottom-tabs-nav {
+                flex-shrink: 0 !important;
+            }
+            
+            /* Estilo do conteúdo quando expandido */
+            .bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content {
+                flex: 1 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                width: 100% !important;
+                height: calc(100vh - 60px) !important;
+                padding: 20px !important;
+                overflow-y: auto !important;
+            }
+            
+            /* Garantir que os elementos filhos preencham o espaço */
+            .bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content > * {
+                width: 100% !important;
+            }
+            
+            /* Adicionar espaço no final para permitir rolagem */
+            .bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content:after {
+                content: "";
+                display: block;
+                height: 100px;
+            }
+        `;
+        
+        document.head.appendChild(style);
+    })();
+})();
+</script>
