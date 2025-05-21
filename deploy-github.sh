@@ -20,13 +20,13 @@ node ../update-city-events.js
 
 # Copiar arquivos existentes da pasta docs
 cp -r ../docs/event-icons ./
-cp -r ../docs/tsp.js ./js/
+cp -r ../docs/tsp.js ./
 cp ../docs/404.html ./
-cp ../docs/fix-github.js ./js/
-cp ../docs/route-optimizer.js ./js/
-cp ../docs/map-controls.js ./js/
-cp ../docs/geocode-fix.js ./js/
-cp ../docs/city-birthdays.js ./js/
+cp ../docs/fix-github.js ./
+cp ../docs/route-optimizer.js ./
+cp ../docs/map-controls.js ./
+cp ../docs/geocode-fix.js ./
+cp ../docs/city-birthdays.js ./
 
 # Copiar index.html otimizado
 cp ../docs/index.html ./

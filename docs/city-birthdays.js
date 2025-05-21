@@ -29,6 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const cityBirthdays = [
             // Cidades prioritárias - datas corretas verificadas
             { id: 10001, cityName: "Piedade", name: "Aniversário da Cidade", startDate: "2025-05-20", endDate: "2025-05-20", isHoliday: true, description: "Aniversário de fundação de Piedade em 20/05", restrictionLevel: "low" },
+            // Versão alternativa para garantir match - algumas implementações usam variações dos nomes de cidades
+            { id: 20001, cityName: "Piedade/SP", name: "Aniversário da Cidade", startDate: "2025-05-20", endDate: "2025-05-20", isHoliday: true, description: "Aniversário de fundação de Piedade em 20/05", restrictionLevel: "low" },
+            { id: 20002, cityName: "Piedade - SP", name: "Aniversário da Cidade", startDate: "2025-05-20", endDate: "2025-05-20", isHoliday: true, description: "Aniversário de fundação de Piedade em 20/05", restrictionLevel: "low" },
             { id: 10002, cityName: "Barra do Chapéu", name: "Aniversário da Cidade", startDate: "2025-05-19", endDate: "2025-05-19", isHoliday: true, description: "Aniversário de fundação de Barra do Chapéu em 19/05", restrictionLevel: "low" },
             { id: 10003, cityName: "Ribeirão Branco", name: "Aniversário da Cidade", startDate: "2025-09-05", endDate: "2025-09-05", isHoliday: true, description: "Aniversário de fundação de Ribeirão Branco em 05/09", restrictionLevel: "low" },
             { id: 10004, cityName: "Itaporanga", name: "Aniversário da Cidade", startDate: "2025-03-06", endDate: "2025-03-06", isHoliday: true, description: "Aniversário de fundação de Itaporanga em 06/03", restrictionLevel: "low" },
