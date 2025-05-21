@@ -2181,7 +2181,7 @@
             // Aniversários de cidades de São Paulo - Maio
             { id: 145, cityName: "Bebedouro", name: "Aniversário da Cidade", startDate: "2025-05-03", endDate: "2025-05-03", isHoliday: true, description: "Aniversário de fundação de Bebedouro", restrictionLevel: "low" },
             { id: 146, cityName: "Brotas", name: "Aniversário da Cidade", startDate: "2025-05-03", endDate: "2025-05-03", isHoliday: true, description: "Aniversário de fundação de Brotas", restrictionLevel: "low" },
-            { id: 9001, cityName: "Piedade", name: "Aniversário da Cidade", startDate: "2025-05-20", endDate: "2025-05-20", isHoliday: true, description: "Aniversário de fundação de Piedade em 20/05", restrictionLevel: "low" },
+            { id: 9001, cityName: "Piedade", name: "Aniversário da Cidade", startDate: "2025-05-20", endDate: "2025-05-20", isHoliday: true, description: "Aniversário de fundação de Piedade em 20/05", restrictionLevel: "low", formattedDate: "20/05/2025" },
             { id: 147, cityName: "Barra do Chapéu", name: "Aniversário da Cidade", startDate: "2025-05-19", endDate: "2025-05-19", isHoliday: true, description: "Aniversário de fundação de Barra do Chapéu", restrictionLevel: "low" },
             { id: 148, cityName: "Valinhos", name: "Aniversário da Cidade", startDate: "2025-05-28", endDate: "2025-05-28", isHoliday: true, description: "Aniversário de fundação de Valinhos", restrictionLevel: "medium" },
             
@@ -6868,8 +6868,21 @@
         // Ordenar eventos por data
         eventsOnRoute.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
         
-        // Adicionar cada evento à lista
+        // Remover duplicatas de eventos (mesmo evento, mesma cidade, mesma data)
+        const uniqueEventsMap = {};
+        
         eventsOnRoute.forEach(event => {
+            const eventKey = `${event.cityName}-${event.name}-${event.startDate}`;
+            if (!uniqueEventsMap[eventKey]) {
+                uniqueEventsMap[eventKey] = event;
+            }
+        });
+        
+        // Converter mapa de eventos únicos de volta para array
+        const uniqueEvents = Object.values(uniqueEventsMap);
+        
+        // Adicionar cada evento único à lista
+        uniqueEvents.forEach(event => {
             const eventItem = document.createElement('div');
             eventItem.className = 'event-item';
             
@@ -6890,7 +6903,7 @@
                     <span class="event-type ${eventTypeClass}">${event.isHoliday ? 'Feriado' : 'Evento'}</span>
                     <span class="restriction-level ${event.restrictionLevel}">${event.restrictionLevel === 'high' ? 'Alto' : (event.restrictionLevel === 'medium' ? 'Médio' : 'Baixo')}</span>
                 </div>
-                <div class="event-date">${event.cityName} | ${event.name.includes("Aniversário") ? extrairDataFundacao(event.description) : dateText}</div>
+                <div class="event-date">${event.cityName} | ${formattedStartDate}</div>
                 <div class="event-description">${event.description}</div>
             `;
             
