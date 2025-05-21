@@ -63,6 +63,46 @@
     
     // 3. Corrigir exibição de eventos
     corrigirEventos();
+    
+    // 4. Remover botões desnecessários
+    removerBotoesIndesejados();
+  }
+  
+  // Remove botões desnecessários do mapa
+  function removerBotoesIndesejados() {
+    console.log("[DirectFix] Removendo botões desnecessários");
+    
+    // Função para verificar e remover elementos periodicamente
+    function verificarERemover() {
+      // Remover botão de tela cheia do mapa
+      const fullscreenControls = document.querySelectorAll('.gm-fullscreen-control');
+      fullscreenControls.forEach(control => {
+        if (control && control.parentNode) {
+          control.parentNode.removeChild(control);
+        }
+      });
+      
+      // Remover botão de desfazer último no mapa
+      const undoButtons = document.querySelectorAll('button[title*="Desfazer"]');
+      undoButtons.forEach(button => {
+        if (button && button.parentNode) {
+          button.parentNode.removeChild(button);
+        }
+      });
+      
+      // Remover botões com texto "Desfazer" no texto
+      document.querySelectorAll('button').forEach(button => {
+        if (button.textContent.includes('Desfazer') && button.parentNode) {
+          button.parentNode.removeChild(button);
+        }
+      });
+    }
+    
+    // Executar imediatamente
+    verificarERemover();
+    
+    // Executar periodicamente para garantir que novos botões também sejam removidos
+    setInterval(verificarERemover, 1000);
   }
   
   // CORREÇÃO DE EVENTOS
@@ -373,22 +413,30 @@
         background: linear-gradient(45deg, #FF5722, #FF9500) !important;
       }
       
-      /* Botão de visualizar */
-      .botao-gh-visualizar {
-        background: linear-gradient(45deg, #2196F3, #03A9F4) !important;
+      /* Todos os botões na cor amarela Móveis Bonafé */
+      .botao-gh-padronizado,
+      .botao-gh-visualizar,
+      .botao-gh-otimizar,
+      .botao-gh-tab,
+      .bottom-tab-button,
+      .tab-button {
+        background: linear-gradient(45deg, #FFD700, #FFA500) !important;
       }
       
-      .botao-gh-visualizar:hover {
-        background: linear-gradient(45deg, #03A9F4, #2196F3) !important;
+      .botao-gh-padronizado:hover,
+      .botao-gh-visualizar:hover,
+      .botao-gh-otimizar:hover,
+      .botao-gh-tab:hover,
+      .bottom-tab-button:hover,
+      .tab-button:hover {
+        background: linear-gradient(45deg, #FFA500, #FFD700) !important;
       }
       
-      /* Botão de otimizar */
-      .botao-gh-otimizar {
-        background: linear-gradient(45deg, #4CAF50, #8BC34A) !important;
-      }
-      
-      .botao-gh-otimizar:hover {
-        background: linear-gradient(45deg, #8BC34A, #4CAF50) !important;
+      /* Botão ativo em tom mais forte */
+      .botao-gh-tab-ativo,
+      .bottom-tab-button.active,
+      .tab-button.active {
+        background: linear-gradient(45deg, #FF8C00, #FFA500) !important;
       }
       
       /* Botões de abas */
