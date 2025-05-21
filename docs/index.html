@@ -34,8 +34,16 @@
                 background-color: #FFFFFF !important;
             }
             
-            .gm-bundled-control, .gmnoprint, .gm-fullscreen-control {
+            /* Remover apenas controles específicos, mantendo o Pegman (Street View) */
+            .gm-fullscreen-control,
+            .gm-bundled-control .gmnoprint:not(.gm-svpc),
+            .gm-bundled-control-on-bottom .gmnoprint:not(.gm-svpc) {
                 display: none !important;
+            }
+            
+            /* Garantir que o Pegman (Street View) fique visível */
+            .gm-svpc {
+                display: block !important;
             }
             
             /* Estilo para abas em modo tela cheia */
