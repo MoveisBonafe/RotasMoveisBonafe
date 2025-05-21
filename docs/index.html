@@ -6618,7 +6618,10 @@
                     "Americana", "Sorocaba", "Limeira", "Rio Claro", "Mineiros do Tietê",
                     "Barra Bonita", "Igaraçu do Tietê", "Macatuba", "Pederneiras", "Bocaina",
                     "Brotas", "Torrinha", "Itirapina", "São Manuel", "Lençóis Paulista",
-                    "Agudos", "Marília", "Ourinhos", "Assis", "Presidente Prudente"
+                    "Agudos", "Marília", "Ourinhos", "Assis", "Presidente Prudente",
+                    "Piedade", "Barra do Chapéu", "Ribeirão Branco", "Itaporanga", "Batatais",
+                    "Belo Horizonte", "Pitangui", "Osasco", "Santos", "Itu", "Uru", "Morro Agudo",
+                    "Dirce Reis", "Araras"
                 ];
                 
                 // Se o nome exato da localização é uma cidade conhecida
@@ -6689,11 +6692,33 @@
             
             try {
                 // PARTE 1: VERIFICAÇÃO DE CIDADE - Evento deve estar em uma cidade do percurso
-                const cityMatch = citiesOnRoute.includes(event.cityName);
+                // Função de normalização para comparar nomes de cidades com mais flexibilidade
+                function normalizeCityName(cityName) {
+                    if (!cityName) return '';
+                    // Remove sufixos comuns como "/SP", "- SP", etc.
+                    return cityName.replace(/\s*[-\/]\s*SP$|\s*\/\s*São Paulo$|\s*\(SP\)$/i, '')
+                                  .trim()
+                                  .toLowerCase()
+                                  .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Remove acentos
+                }
+                
+                // Versão normalizada dos nomes de cidades para comparação
+                const normalizedCityName = normalizeCityName(event.cityName);
+                const normalizedCitiesOnRoute = citiesOnRoute.map(city => normalizeCityName(city));
+                
+                // Verifica se qualquer parte do nome da cidade do evento coincide com as cidades na rota
+                const cityMatch = normalizedCitiesOnRoute.some(city => 
+                    normalizedCityName === city || 
+                    normalizedCityName.includes(city) || 
+                    city.includes(normalizedCityName)
+                );
+                
                 if (!cityMatch) {
                     console.log(`[CIDADE] Evento '${event.name}' em '${event.cityName}' REJEITADO - cidade não está no percurso`);
                     return; // Pular para o próximo evento
                 }
+                
+                console.log(`[CIDADE] Evento '${event.name}' em '${event.cityName}' ACEITO - cidade encontrada no percurso!`);
                 
                 // PARTE 2: AJUSTAR DATAS DO EVENTO PARA O ANO ATUAL
                 // Evento especial: Festival de Verão

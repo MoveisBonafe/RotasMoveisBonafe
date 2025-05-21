@@ -34,6 +34,15 @@ cp ../docs/index.html ./
 # Adicionar uma meta tag para forçar recarregamento
 sed -i 's/<head>/<head>\n  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" \/>\n  <meta http-equiv="Pragma" content="no-cache" \/>\n  <meta http-equiv="Expires" content="0" \/>/' index.html
 
+# Verificar se o script de aniversários das cidades foi copiado corretamente
+if [ ! -f ./city-birthdays.js ]; then
+  echo "ALERTA: city-birthdays.js não foi copiado! Copiando novamente..."
+  cp ../docs/city-birthdays.js ./
+fi
+
+echo "Verificando arquivos de eventos..."
+ls -la | grep -i birth
+
 # Verificar se precisamos corrigir caminhos
 if [[ -f ../fix-github-paths.js ]]; then
   echo "Executando correção de caminhos..."
