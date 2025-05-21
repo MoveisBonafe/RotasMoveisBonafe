@@ -1,0 +1,159 @@
+<!--
+CORREÇÃO PARA EVENTOS NO GITHUB PAGES
+Esta é uma correção simples que garante que os eventos só sejam exibidos
+quando a cidade realmente estiver no percurso.
+
+COMO USAR:
+1. Copie este código
+2. Cole ao final do arquivo docs/index.html antes da tag </body>
+-->
+
+<script>
+// Correção para filtro de eventos
+(function() {
+  // Executar quando a página estiver carregada
+  window.addEventListener('load', function() {
+    console.log('Aplicando correção para filtro de eventos');
+    
+    // Verificar eventos a cada 2 segundos
+    setInterval(verificarEventos, 2000);
+    
+    // Também verificar quando houver mudanças na lista de locais
+    observarMudancasLocais();
+    
+    // Verificação inicial
+    setTimeout(verificarEventos, 1000);
+  });
+  
+  // Função principal para verificar eventos
+  function verificarEventos() {
+    // 1. Verificar se há locais adicionados
+    const locaisAdicionados = document.querySelectorAll('.location-item');
+    
+    if (!locaisAdicionados.length) {
+      // Sem locais, limpar eventos
+      console.log('Sem locais adicionados, ocultando eventos');
+      limparListaEventos();
+      return;
+    }
+    
+    // 2. Extrair nomes das cidades dos locais
+    const cidadesNaRota = [];
+    locaisAdicionados.forEach(function(item) {
+      const textoLocal = item.textContent || '';
+      // Extrair nome da cidade (tudo antes da vírgula ou traço)
+      const matchCidade = textoLocal.match(/([A-Za-zÀ-ÖØ-öø-ÿ\s\-']+)(?:,|\s-)/);
+      if (matchCidade && matchCidade[1]) {
+        cidadesNaRota.push(matchCidade[1].trim());
+      }
+    });
+    
+    if (!cidadesNaRota.length) {
+      console.log('Não foi possível identificar cidades na rota');
+      limparListaEventos();
+      return;
+    }
+    
+    console.log('Cidades na rota:', cidadesNaRota);
+    
+    // 3. Verificar eventos exibidos
+    const eventosMostrados = document.querySelectorAll('.event-item');
+    
+    eventosMostrados.forEach(function(evento) {
+      const cidadeEvento = obterCidadeDoEvento(evento);
+      
+      if (!cidadeEvento) return;
+      
+      // Verificar se a cidade do evento está na rota
+      const cidadeNaRota = cidadesNaRota.some(function(cidade) {
+        return compararCidades(cidadeEvento, cidade);
+      });
+      
+      if (!cidadeNaRota) {
+        // Se a cidade não estiver na rota, ocultar o evento
+        evento.style.display = 'none';
+      } else {
+        evento.style.display = 'block';
+      }
+    });
+    
+    // 4. Verificar se todos os eventos estão ocultos
+    const eventosVisiveis = Array.from(eventosMostrados).filter(function(e) {
+      return e.style.display !== 'none';
+    });
+    
+    if (eventosMostrados.length > 0 && eventosVisiveis.length === 0) {
+      // Se todos estiverem ocultos, mostrar mensagem de "nenhum evento"
+      mostrarMensagemSemEventos();
+    }
+  }
+  
+  // Extrair cidade de um elemento de evento
+  function obterCidadeDoEvento(eventoElement) {
+    const cidadeElement = eventoElement.querySelector('.event-city');
+    if (!cidadeElement) return null;
+    
+    const textoCidade = cidadeElement.textContent || '';
+    // Extrair tudo antes do |
+    const match = textoCidade.split('|')[0];
+    return match ? match.trim() : null;
+  }
+  
+  // Comparar nomes de cidades (ignorando acentos, case, etc)
+  function compararCidades(cidade1, cidade2) {
+    if (!cidade1 || !cidade2) return false;
+    
+    const norm1 = normalizarCidade(cidade1);
+    const norm2 = normalizarCidade(cidade2);
+    
+    return norm1 === norm2 || norm1.includes(norm2) || norm2.includes(norm1);
+  }
+  
+  // Normalizar nome de cidade para comparação
+  function normalizarCidade(nome) {
+    return nome
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // remover acentos
+      .replace(/[^\w\s]/g, '')         // remover caracteres especiais
+      .replace(/\s+/g, ' ')            // normalizar espaços
+      .trim();
+  }
+  
+  // Limpar lista de eventos
+  function limparListaEventos() {
+    const listaEventos = document.querySelector('.event-list, .eventos-list');
+    if (listaEventos) {
+      // Verificar se já tem a mensagem
+      if (!listaEventos.querySelector('.no-events-message')) {
+        listaEventos.innerHTML = '<p class="no-events-message">Nenhum evento encontrado para as cidades do percurso.</p>';
+      }
+    }
+  }
+  
+  // Mostrar mensagem de nenhum evento
+  function mostrarMensagemSemEventos() {
+    const listaEventos = document.querySelector('.event-list, .eventos-list');
+    if (listaEventos) {
+      // Verificar se já tem a mensagem
+      if (!listaEventos.querySelector('.no-events-message')) {
+        listaEventos.innerHTML = '<p class="no-events-message">Nenhum evento encontrado para as cidades do percurso.</p>';
+      }
+    }
+  }
+  
+  // Observar mudanças na lista de locais
+  function observarMudancasLocais() {
+    const locaisList = document.querySelector('#locations-list');
+    
+    if (locaisList) {
+      const observer = new MutationObserver(function() {
+        console.log('Mudanças na lista de locais detectadas');
+        verificarEventos();
+      });
+      
+      observer.observe(locaisList, { childList: true, subtree: true });
+    }
+  }
+})();
+</script>
