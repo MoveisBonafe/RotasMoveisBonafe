@@ -11081,6 +11081,52 @@
 
 <!-- Script para adicionar o Pegman (Street View) ao mapa -->
 <script src="fix-pegman.js"></script>
+<!-- Script para corrigir velocidade - Velocidade fixa 90 km/h -->
+<script src="fixador.js"></script>
+<!-- Script de emergência embutido para garantir velocidade -->
+<script>
+// Cálculo de Emergência - Executa mesmo se os scripts externos falharem
+document.addEventListener('DOMContentLoaded', function() {
+  // Repetir verificação periodicamente
+  const intervalId = setInterval(function() {
+    try {
+      // Encontrar elemento de informações
+      const infoElement = document.getElementById('route-info');
+      if (!infoElement) return;
+      
+      // Extrair distância atual
+      const conteudo = infoElement.innerHTML;
+      const matchDistancia = conteudo.match(/Distância total:<\/strong>\s*(\d+[.,]\d+)\s*km/i);
+      if (!matchDistancia) return;
+      
+      // Calcular tempo com velocidade de 90 km/h
+      const distanciaKm = parseFloat(matchDistancia[1].replace(',', '.'));
+      const tempoHoras = distanciaKm / 90;
+      const horasInt = Math.floor(tempoHoras);
+      const minutosInt = Math.round((tempoHoras - horasInt) * 60);
+      
+      // Substituir o tempo no HTML
+      const novoConteudo = conteudo.replace(
+        /Tempo estimado:<\/strong>\s*(\d+)h\s*(\d+)min/i,
+        `Tempo estimado:</strong> ${horasInt}h ${minutosInt}min`
+      );
+      
+      // Atualizar o HTML se necessário
+      if (novoConteudo !== conteudo) {
+        infoElement.innerHTML = novoConteudo;
+        console.log("[EmergenciaVelocidade] Tempo corrigido para velocidade 90 km/h");
+      }
+    } catch (erro) {
+      console.log("[EmergenciaVelocidade] Erro: " + erro.message);
+    }
+  }, 1000); // Verificar a cada segundo
+  
+  // Parar após 10 minutos para não consumir recursos indefinidamente
+  setTimeout(function() {
+    clearInterval(intervalId);
+  }, 600000);
+});
+</script>
 <!-- Script de cálculo automático direto no HTML para garantir funcionamento -->
 <script>
 /**
