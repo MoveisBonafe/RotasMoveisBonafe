@@ -1,0 +1,306 @@
+<!-- 
+SOLUÇÃO HTML DIRETA 
+
+Este arquivo contém os trechos de HTML que devem ser inseridos
+diretamente no index.html do GitHub Pages para modificar as
+rotas alternativas e adicionar o painel de informações.
+
+INSTRUÇÕES:
+1. Abra o arquivo docs/index.html no GitHub
+2. Localize as seções descritas abaixo
+3. Substitua o código original pelo código fornecido aqui
+-->
+
+<!-- 
+SEÇÃO 1: ESTILO CSS
+Inserir no <head> do documento, antes do fechamento </head>
+-->
+
+<style id="solucao-direta-estilo">
+  /* Ocultar elementos de tempo e distância das rotas alternativas */
+  .route-alternative .route-distance,
+  .route-alternative .route-time,
+  div.card.mb-2 .route-distance,
+  div.card.mb-2 .route-time,
+  div[class*="distance"],
+  div[class*="time"],
+  span[class*="distance"],
+  span[class*="time"] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    pointer-events: none !important;
+  }
+  
+  /* Estilizar rotas alternativas */
+  .route-alternative,
+  .card.mb-2 {
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    border-radius: 6px !important;
+    padding: 10px !important;
+    margin-bottom: 8px !important;
+  }
+  
+  /* Centralizar título */
+  .route-alternative h5,
+  .card.mb-2 .card-title {
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 5px 0 !important;
+  }
+  
+  /* Efeito hover nas rotas */
+  .route-alternative:hover,
+  .card.mb-2:hover {
+    background-color: #f5f9ff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+  }
+  
+  /* Rota selecionada */
+  .rota-selecionada {
+    background-color: #fff9e6 !important;
+    border-color: #ffd966 !important;
+    box-shadow: 0 0 0 2px rgba(255,217,102,0.5) !important;
+  }
+  
+  /* Container de informações */
+  #container-info-direto {
+    display: flex !important;
+    align-items: center !important;
+    margin: 15px 0 !important;
+    padding: 5px !important;
+    background-color: #f8f9fa !important;
+    border-radius: 8px !important;
+  }
+  
+  /* Painel de informações */
+  #painel-info-direto {
+    margin-left: 15px !important;
+    padding: 8px 12px !important;
+    background-color: white !important;
+    border-radius: 6px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+    font-size: 14px !important;
+    color: #555 !important;
+  }
+  
+  /* Botão Visualizar */
+  #visualize-button {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+    font-weight: bold !important;
+    padding: 8px 15px !important;
+    border-radius: 4px !important;
+    border: none !important;
+    min-width: 120px !important;
+  }
+  
+  /* Animação para atualização */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .animado {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+</style>
+
+<!-- 
+SEÇÃO 2: NOVO TEMPLATE PARA ROTAS ALTERNATIVAS
+Substituir o conteúdo da div com classe "route-alternative-box"
+ou o container que contém as rotas alternativas
+-->
+
+<div class="route-alternative-box">
+  <h5>Rotas Alternativas</h5>
+  <p class="text-muted" style="text-align: center; font-style: italic; font-size: 13px; margin: 10px 0;">
+    Selecione uma rota e clique em Visualizar para ver detalhes.
+  </p>
+  
+  <!-- Esta parte é apenas um template para referência -->
+  <!-- Cada rota alternativa ficará assim, mas os dados serão dinâmicos -->
+  <div class="route-alternative" onclick="selecionarRota(this)" 
+       data-distancia="XX km" data-tempo="XX min">
+    <h5>Opção X</h5>
+    <!-- Informações de distância e tempo estão ocultas pelo CSS -->
+    <div class="route-distance" style="display: none;">XX km</div>
+    <div class="route-time" style="display: none;">XX min</div>
+  </div>
+  
+  <!-- Container para o botão Visualizar e informações -->
+  <div id="container-info-direto">
+    <button id="visualize-button" class="btn btn-primary" onclick="visualizarRota()">
+      Visualizar
+    </button>
+    <div id="painel-info-direto">
+      <div class="info-distancia" style="margin-bottom: 6px; display: flex; align-items: center;">
+        <i class="fa fa-road" style="margin-right: 5px;"></i>
+        <span>Selecione uma rota</span>
+      </div>
+      <div class="info-tempo" style="display: flex; align-items: center;">
+        <i class="fa fa-clock" style="margin-right: 5px;"></i>
+        <span>Selecione uma rota</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 
+SEÇÃO 3: JAVASCRIPT PARA CONTROLE DAS ROTAS
+Adicionar no final do documento, antes do fechamento </body>
+-->
+
+<script>
+  // Função para selecionar uma rota
+  function selecionarRota(elemento) {
+    // Remover seleção de todas as rotas
+    document.querySelectorAll('.route-alternative, .card.mb-2').forEach(function(rota) {
+      rota.classList.remove('rota-selecionada');
+      rota.style.backgroundColor = '';
+      rota.style.borderColor = '';
+      rota.style.boxShadow = '';
+    });
+    
+    // Adicionar seleção à rota clicada
+    elemento.classList.add('rota-selecionada');
+    elemento.style.backgroundColor = '#fff9e6';
+    elemento.style.borderColor = '#ffd966';
+    elemento.style.boxShadow = '0 0 0 2px rgba(255,217,102,0.5)';
+    
+    // Atualizar informações no painel
+    atualizarInformacoesPainel(
+      elemento.getAttribute('data-distancia'),
+      elemento.getAttribute('data-tempo')
+    );
+  }
+  
+  // Função para atualizar o painel de informações
+  function atualizarInformacoesPainel(distancia, tempo) {
+    if (!distancia || !tempo) return;
+    
+    const distanciaEl = document.querySelector('#painel-info-direto .info-distancia');
+    const tempoEl = document.querySelector('#painel-info-direto .info-tempo');
+    
+    if (distanciaEl && tempoEl) {
+      // Atualizar conteúdo
+      distanciaEl.innerHTML = `
+        <i class="fa fa-road" style="margin-right: 5px;"></i>
+        <span>${distancia}</span>
+      `;
+      
+      tempoEl.innerHTML = `
+        <i class="fa fa-clock" style="margin-right: 5px;"></i>
+        <span>${tempo}</span>
+      `;
+      
+      // Adicionar animação
+      distanciaEl.classList.add('animado');
+      tempoEl.classList.add('animado');
+      
+      // Remover classe após animação
+      setTimeout(function() {
+        distanciaEl.classList.remove('animado');
+        tempoEl.classList.remove('animado');
+      }, 500);
+    }
+  }
+  
+  // Função para o botão Visualizar
+  function visualizarRota() {
+    // Esta função deve manter o comportamento original
+    // Apenas adicionamos isso para garantir que os dados sejam atualizados
+    const rotaSelecionada = document.querySelector('.rota-selecionada');
+    if (rotaSelecionada) {
+      atualizarInformacoesPainel(
+        rotaSelecionada.getAttribute('data-distancia'),
+        rotaSelecionada.getAttribute('data-tempo')
+      );
+    }
+  }
+  
+  // Quando o documento estiver pronto
+  document.addEventListener('DOMContentLoaded', function() {
+    // Garantir que o Font Awesome esteja carregado
+    if (!document.querySelector('link[href*="font-awesome"]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css';
+      document.head.appendChild(link);
+    }
+    
+    // Selecionar a primeira rota automaticamente
+    const primeiraRota = document.querySelector('.route-alternative, .card.mb-2');
+    if (primeiraRota) {
+      selecionarRota(primeiraRota);
+    }
+  });
+</script>
+
+<!-- 
+SEÇÃO 4: SCRIPT DE INICIALIZAÇÃO
+Este script deve ser executado após o carregamento da página
+para extrair e salvar as informações das rotas já existentes.
+-->
+
+<script>
+  // Executar quando a página carregar
+  window.addEventListener('load', function() {
+    // Encontrar todas as rotas alternativas
+    const rotas = document.querySelectorAll('.route-alternative, .card.mb-2');
+    
+    // Processar cada rota
+    rotas.forEach(function(rota) {
+      // Extrair informações de distância e tempo
+      let distancia = '';
+      let tempo = '';
+      
+      // Buscar elementos específicos
+      const distanciaEl = rota.querySelector('.route-distance, [class*="distance"]');
+      const tempoEl = rota.querySelector('.route-time, [class*="time"]');
+      
+      if (distanciaEl) {
+        distancia = distanciaEl.textContent.trim();
+      }
+      
+      if (tempoEl) {
+        tempo = tempoEl.textContent.trim();
+      }
+      
+      // Se não encontrou por classe, buscar por texto
+      if (!distancia || !tempo) {
+        const texto = rota.textContent || '';
+        
+        // Extrair com regex
+        const matchDistancia = texto.match(/(\d+[.,]?\d*\s*km)/i);
+        const matchTempo = texto.match(/(\d+\s*min|\d+\s*hora[s]?)/i);
+        
+        if (matchDistancia && !distancia) {
+          distancia = matchDistancia[0];
+        }
+        
+        if (matchTempo && !tempo) {
+          tempo = matchTempo[0];
+        }
+      }
+      
+      // Salvar informações na rota
+      if (distancia) {
+        rota.setAttribute('data-distancia', distancia);
+      }
+      
+      if (tempo) {
+        rota.setAttribute('data-tempo', tempo);
+      }
+      
+      // Adicionar evento de clique se ainda não tiver
+      if (!rota.hasAttribute('onclick')) {
+        rota.setAttribute('onclick', 'selecionarRota(this)');
+      }
+    });
+  });
+</script>
