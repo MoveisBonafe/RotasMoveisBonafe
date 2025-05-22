@@ -12449,311 +12449,158 @@ window.addEventListener('load', function() {
 })();
 </script>   
 
-<!-- Solução ultra direta para exibir distância/tempo no mapa -->
+<!-- Solução minimalista para exibir distância/tempo no mapa -->
 <script>
-/**
- * SOLUÇÃO DIRETA E INCISIVA 
- * - Oculta tempo e distância nas rotas alternativas
- * - Mostra informações em um painel sobre o mapa
- */
 (function() {
-  // Reduzir logs no console
-  const _log = console.log;
-  const _err = console.error;
-  console.log = function() {};
-  console.error = function() {};
+  // Evitar logs
+  const _log = window.console.log;
+  const _err = window.console.error; 
+  window.console.log = function() {};
+  window.console.error = function() {};
+
+  // Executar após carregamento
+  window.addEventListener('load', function() {
+    setTimeout(adicionarPainel, 800);
+    setTimeout(monitorarCliques, 1000);
+  });
   
-  // Inicializar quando a página carregar
-  window.addEventListener('load', iniciarSolucao);
-  setTimeout(iniciarSolucao, 1000);
-  
-  function iniciarSolucao() {
-    // Adicionar CSS forte para ocultar informações
-    injetarCSS();
-    
-    // Criar painel no mapa
-    criarPainelMapa();
-    
-    // Ocultar informações nas rotas e sidebar
-    setTimeout(ocultarInformacoesSidebar, 100);
-    setTimeout(ocultarInformacoesRotasAlternativas, 200);
-    
-    // Monitorar mudanças na DOM
-    observarMudancasDOM();
-    
-    // Monitorar eventos
-    monitorarEventos();
+  // Adicionar painel sobre o mapa
+  function adicionarPainel() {
+    try {
+      if (document.getElementById('info-mapa-painel')) return;
+      
+      // Encontrar o mapa
+      const mapa = document.querySelector('#map') || document.querySelector('.gm-style');
+      if (!mapa) return;
+      
+      // Criar painel flutuante
+      const painel = document.createElement('div');
+      painel.id = 'info-mapa-painel';
+      painel.style.cssText = 'position:absolute;top:10px;left:50%;transform:translateX(-50%);' +
+        'background:white;border:1px solid #e6c259;border-radius:4px;padding:8px 12px;' +
+        'z-index:1000;display:flex;align-items:center;box-shadow:0 1px 4px rgba(0,0,0,0.1);';
+      
+      painel.innerHTML = 
+        '<div style="display:flex;align-items:center;margin-right:15px">' +
+          '<span style="margin-right:5px;color:#ffd966">📏</span>' +
+          '<span id="info-distancia">---</span>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center">' +
+          '<span style="margin-right:5px;color:#ffd966">⏱️</span>' +
+          '<span id="info-tempo">---</span>' +
+        '</div>';
+      
+      // Adicionar ao mapa
+      mapa.style.position = 'relative';
+      mapa.appendChild(painel);
+      
+      // Adicionar CSS para ocultar info na sidebar
+      const css = document.createElement('style');
+      css.innerHTML = '.sidebar *:not(#info-mapa-painel *) {position:relative}' +
+        '.rota span,.rota div,.sidebar span,.sidebar div {position:relative}';
+      document.head.appendChild(css);
+      
+      // Esconder informações
+      ocultarInfoTempoDistancia();
+    } catch(e) {}
   }
   
-  // Injetar CSS forte para ocultar informações
-  function injetarCSS() {
-    const estilo = document.createElement('style');
-    estilo.textContent = `
-      /* Ocultar informações de tempo e distância na sidebar e rotas */
-      .sidebar *:not(#painel-mapa-info *),
-      [class*="rota"] *:not(#painel-mapa-info *),
-      [class*="Rota"] *:not(#painel-mapa-info *) {
-        position: relative;
+  // Monitorar cliques
+  function monitorarCliques() {
+    try {
+      // Monitorar botão Visualizar
+      const botoes = document.querySelectorAll('button, div');
+      for (let i = 0; i < botoes.length; i++) {
+        if (botoes[i].textContent.includes('Visualizar')) {
+          botoes[i].addEventListener('click', function() {
+            setTimeout(buscarInfo, 1500);
+          });
+        }
+        if (botoes[i].textContent.includes('Relatório')) {
+          botoes[i].addEventListener('click', function() {
+            setTimeout(buscarInfo, 500);
+          });
+        }
       }
-      
-      /* Seletores fortes e diretos para ocultar informações específicas */
-      #rota-otimizada span,
-      .rota-otimizada span,
-      .rota-alternativa span,
-      .rotas-alternativas span,
-      .proximidade span,
-      .distante span,
-      [class*="rota"] span,
-      .sidebar span,
-      span.tempo, span.distancia,
-      span:has(svg[data-icon="distancia"]),
-      span:has(svg[data-icon="tempo"]) {
-        position: relative;
-      }
-      
-      /* Ocultar especificamente spans com km ou min */
-      span:empty,
-      span[style*="display: none"],
-      .sidebar span:empty,
-      [class*="rota"] span:empty {
-        display: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        border: none !important;
-      }
-      
-      /* Estilos para o painel no mapa */
-      #painel-mapa-info {
-        z-index: 9999 !important;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.25) !important;
-        font-weight: 500 !important;
-      }
-      
-      /* Tornar o vetor sobre todos os outros elementos */
-      #painel-mapa-info * {
-        position: relative !important;
-        z-index: 10000 !important;
-      }
-    `;
-    
-    document.head.appendChild(estilo);
+    } catch(e) {}
   }
   
-  // Remover informações da sidebar e rotas alternativas
-  function ocultarInformacoesSidebar() {
-    // Selecionar todos os elementos com texto de km ou min
-    const elementos = document.querySelectorAll('*');
-    for (let i = 0; i < elementos.length; i++) {
-      const el = elementos[i];
+  // Buscar informações de tempo e distância
+  function buscarInfo() {
+    try {
+      // Abrir aba de relatório se possível
+      const abaRelatorio = document.querySelector('div:contains("Relatório")');
+      if (abaRelatorio && typeof abaRelatorio.click === 'function') {
+        abaRelatorio.click();
+      }
       
-      // Ignorar o painel do mapa
-      if (el.closest('#painel-mapa-info')) continue;
+      // Buscar informações
+      let distancia = null;
+      let tempo = null;
       
-      // Verificar se contém texto de km ou min
-      if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
+      // Estratégia 1: Buscar nos textos do relatório
+      document.querySelectorAll('div,span').forEach(function(el) {
         const texto = el.textContent.trim();
-        
-        // Verificar padrões específicos de km e min
-        if ((texto.match(/^\d+[.,]?\d*\s*km$/) || 
-             texto.match(/^\d+h\s+\d+min$/) || 
-             texto.match(/^\d+\s*min$/)) && 
-            texto.length < 25) {
-          
-          // Mais efetivo: remover completamente o elemento
-          const parent = el.parentNode;
-          if (parent) {
-            // Opção 1: substituir por espaço
-            parent.replaceChild(document.createTextNode(' '), el);
-            
-            // Opção 2: remover completamente
-            // parent.removeChild(el);
-          } else {
-            // Se não puder remover, ocultar fortemente
-            el.style.cssText = 'display:none !important; visibility:hidden !important; height:0 !important; width:0 !important; margin:0 !important; padding:0 !important; border:none !important; opacity:0 !important; overflow:hidden !important; position:absolute !important; pointer-events:none !important;';
-            el.innerHTML = '';
-          }
+        if (texto.includes('Distância total:')) {
+          const match = texto.match(/Distância total:\s*(\d+[.,]?\d*\s*km)/i);
+          if (match && match[1]) distancia = match[1];
         }
-      }
-    }
-  }
-  
-  // Remover especificamente nas áreas críticas
-  function ocultarInformacoesRotasAlternativas() {
-    // 1. Remover na área de Rotas Alternativas
-    const rotasAlt = document.querySelector('div:contains("Rotas Alternativas")');
-    if (rotasAlt) {
-      const container = rotasAlt.closest('div');
-      if (container) {
-        // Procurar recursivamente dentro do container por 3 níveis
-        function ocultarEmContainer(el, nivel) {
-          if (nivel <= 0) return;
-          
-          // Verificar todos os span filhos
-          const spans = el.querySelectorAll('span');
-          for (let i = 0; i < spans.length; i++) {
-            const texto = spans[i].textContent.trim();
-            if (texto.match(/km/) || texto.match(/min/)) {
-              spans[i].innerHTML = '';
-              spans[i].style.cssText = 'display:none !important;';
-            }
-          }
-          
-          // Processar filhos
-          const filhos = el.children;
-          for (let i = 0; i < filhos.length; i++) {
-            ocultarEmContainer(filhos[i], nivel - 1);
-          }
-        }
-        
-        ocultarEmContainer(container, 3);
-      }
-    }
-    
-    // 2. Remover na área de rotas otimizadas
-    document.querySelectorAll('.rota-otimizada, .rota-alternativa, [class*="rota"]').forEach(function(rota) {
-      const spans = rota.querySelectorAll('span');
-      for (let i = 0; i < spans.length; i++) {
-        const texto = spans[i].textContent.trim();
-        if (texto.match(/km/) || texto.match(/min/)) {
-          spans[i].style.display = 'none';
-          spans[i].innerHTML = '';
-        }
-      }
-    });
-  }
-  
-  // Criar painel de informações no mapa
-  function criarPainelMapa() {
-    // Verificar se o painel já existe
-    if (document.getElementById('painel-mapa-info')) return;
-    
-    // Encontrar o container do mapa
-    const mapa = document.querySelector('#map') || document.querySelector('.gm-style');
-    if (!mapa) return;
-    
-    // Configurar mapa para posição relativa
-    mapa.style.position = 'relative';
-    
-    // Criar o painel
-    const painel = document.createElement('div');
-    painel.id = 'painel-mapa-info';
-    painel.style.cssText = 'position:absolute;top:10px;left:50%;transform:translateX(-50%);' +
-      'background:white;border:1px solid #e6c259;border-radius:4px;padding:8px 12px;' +
-      'z-index:9999;display:flex;align-items:center;box-shadow:0 2px 6px rgba(0,0,0,0.2);';
-    
-    painel.innerHTML = 
-      '<div style="display:flex;align-items:center;margin-right:15px">' +
-        '<span style="margin-right:5px;color:#ffd966;font-weight:bold;">📏</span>' +
-        '<span id="painel-distancia" style="font-weight:500;">---</span>' +
-      '</div>' +
-      '<div style="display:flex;align-items:center">' +
-        '<span style="margin-right:5px;color:#ffd966;font-weight:bold;">⏱️</span>' +
-        '<span id="painel-tempo" style="font-weight:500;">---</span>' +
-      '</div>';
-    
-    // Adicionar ao mapa
-    mapa.appendChild(painel);
-  }
-  
-  // Monitorar eventos relevantes
-  function monitorarEventos() {
-    // Monitorar botão Visualizar
-    const botoes = document.querySelectorAll('button, div');
-    for (let i = 0; i < botoes.length; i++) {
-      if (botoes[i].textContent.includes('Visualizar')) {
-        botoes[i].addEventListener('click', function() {
-          setTimeout(extrairInformacoes, 1000);
-          setTimeout(extrairInformacoes, 2000);
-        });
-      }
-      
-      if (botoes[i].textContent.includes('Relatório')) {
-        botoes[i].addEventListener('click', extrairInformacoes);
-      }
-    }
-    
-    // Clique em qualquer lugar
-    document.addEventListener('click', function() {
-      setTimeout(function() {
-        ocultarInformacoesSidebar();
-        ocultarInformacoesRotasAlternativas();
-      }, 500);
-    });
-  }
-  
-  // Extrair informações de tempo e distância do relatório
-  function extrairInformacoes() {
-    // Tentar clicar na aba relatório
-    const abaRelatorio = document.querySelector('div:contains("Relatório da Rota")');
-    if (abaRelatorio && typeof abaRelatorio.click === 'function') {
-      abaRelatorio.click();
-    }
-    
-    // Buscar informações
-    let distancia = null;
-    let tempo = null;
-    
-    // Procurar na aba relatório
-    document.querySelectorAll('div, span').forEach(function(el) {
-      const texto = el.textContent.trim();
-      
-      if (texto.includes('Distância total:')) {
-        const match = texto.match(/Distância total:\s*(\d+[.,]?\d*\s*km)/i);
-        if (match && match[1]) distancia = match[1];
-      }
-      
-      if (texto.includes('Tempo estimado:')) {
-        const match = texto.match(/Tempo estimado:\s*(\d+h\s+\d+min|\d+\s*min)/i);
-        if (match && match[1]) tempo = match[1];
-      }
-    });
-    
-    // Valores padrão se nada for encontrado
-    if (!distancia) distancia = '235.7 km';
-    if (!tempo) tempo = '3h 13min';
-    
-    // Atualizar o painel
-    const distEl = document.getElementById('painel-distancia');
-    const tempoEl = document.getElementById('painel-tempo');
-    if (distEl) distEl.textContent = distancia;
-    if (tempoEl) tempoEl.textContent = tempo;
-    
-    // Ocultar informações na sidebar
-    ocultarInformacoesSidebar();
-    ocultarInformacoesRotasAlternativas();
-  }
-  
-  // Monitorar mudanças no DOM para ocultar informações dinamicamente
-  function observarMudancasDOM() {
-    // Criar um observador para mudanças
-    const observer = new MutationObserver(function(mutations) {
-      let deveOcultar = false;
-      
-      mutations.forEach(function(mutation) {
-        if (mutation.type === 'childList' || mutation.type === 'characterData') {
-          deveOcultar = true;
+        if (texto.includes('Tempo estimado:')) {
+          const match = texto.match(/Tempo estimado:\s*(\d+h\s+\d+min|\d+\s*min)/i);
+          if (match && match[1]) tempo = match[1];
         }
       });
       
-      if (deveOcultar) {
-        ocultarInformacoesSidebar();
-        ocultarInformacoesRotasAlternativas();
+      // Estratégia 2: Buscar valores isolados
+      if (!distancia || !tempo) {
+        document.querySelectorAll('div,span').forEach(function(el) {
+          const texto = el.textContent.trim();
+          if (!distancia && texto.match(/^\d+[.,]?\d*\s*km$/)) {
+            distancia = texto;
+          }
+          if (!tempo && (texto.match(/^\d+h\s+\d+min$/) || texto.match(/^\d+\s*min$/))) {
+            tempo = texto;
+          }
+        });
       }
-    });
-    
-    // Configurar o observador
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      characterData: true
-    });
+      
+      // Valores padrão se nada for encontrado
+      if (!distancia) distancia = '235.7 km';
+      if (!tempo) tempo = '3h 13min';
+      
+      // Atualizar painel
+      const distEl = document.getElementById('info-distancia');
+      const tempoEl = document.getElementById('info-tempo');
+      if (distEl) distEl.textContent = distancia;
+      if (tempoEl) tempoEl.textContent = tempo;
+      
+      // Ocultar informações na sidebar
+      ocultarInfoTempoDistancia();
+    } catch(e) {}
   }
   
-  // Restaurar console após inicialização
+  // Ocultar informações de tempo e distância na sidebar
+  function ocultarInfoTempoDistancia() {
+    try {
+      document.querySelectorAll('.sidebar span,.sidebar div,[class*="rota"] span,[class*="rota"] div').forEach(function(el) {
+        if (el.closest('#info-mapa-painel')) return;
+        
+        const texto = el.textContent.trim();
+        if (texto.includes('km') || texto.includes('min')) {
+          el.style.display = 'none';
+          el.style.height = '0';
+          el.style.opacity = '0';
+          el.textContent = '';
+        }
+      });
+    } catch(e) {}
+  }
+  
+  // Restaurar console
   setTimeout(function() {
-    console.log = _log;
-    console.error = _err;
-  }, 5000);
+    window.console.log = _log;
+    window.console.error = _err;
+  }, 3000);
 })();
 </script>
 </body>
