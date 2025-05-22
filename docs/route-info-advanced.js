@@ -156,27 +156,63 @@
           console.log(`🚀 [RouteInfoAdvanced] Botão ${buttonId} clicado`);
           atualizarStatusBusca('🔄');
           
-          // Buscar com intervalos escalonados
-          setTimeout(() => buscarInformacoesRota(), 500);
+          // Buscar mais rapidamente
+          setTimeout(() => buscarInformacoesRota(), 200);
+          setTimeout(() => buscarInformacoesRota(), 800);
           setTimeout(() => buscarInformacoesRota(), 1500);
-          setTimeout(() => buscarInformacoesRota(), 3000);
-          setTimeout(() => buscarInformacoesRota(), 5000);
+          setTimeout(() => buscarInformacoesRota(), 2500);
         });
       }
     });
     
-    // Monitorar mudanças nas abas
+    // Monitorar mudanças nas abas - especialmente aba de relatórios
     const observarAbas = () => {
       const abas = document.querySelectorAll('[data-tab], .tab-button, .bottom-tab-button');
       abas.forEach(aba => {
         aba.addEventListener('click', () => {
-          console.log("🚀 [RouteInfoAdvanced] Aba clicada, verificando conteúdo...");
-          setTimeout(() => buscarInformacoesRota(), 300);
+          console.log("🚀 [RouteInfoAdvanced] Aba clicada:", aba.textContent);
+          
+          // Se for a aba de relatórios, buscar mais rápido
+          if (aba.textContent && aba.textContent.toLowerCase().includes('relatório')) {
+            setTimeout(() => buscarInformacoesRota(), 100);
+            setTimeout(() => buscarInformacoesRota(), 500);
+          } else {
+            setTimeout(() => buscarInformacoesRota(), 300);
+          }
         });
       });
     };
     
+    // Monitorar mudanças nos botões de rotas alternativas
+    const observarRotasAlternativas = () => {
+      const botoes = document.querySelectorAll('button, .btn, input[type="button"]');
+      botoes.forEach(botao => {
+        if (botao.textContent && (
+          botao.textContent.includes('Proximidade') || 
+          botao.textContent.includes('Alternativa') ||
+          botao.textContent.includes('Otimizada')
+        )) {
+          botao.addEventListener('click', () => {
+            console.log("🚀 [RouteInfoAdvanced] Rota alternativa selecionada:", botao.textContent);
+            atualizarStatusBusca('🔄');
+            
+            // Limpar valores antigos e buscar novos
+            atualizarDisplay(null, null);
+            setTimeout(() => buscarInformacoesRota(), 300);
+            setTimeout(() => buscarInformacoesRota(), 1000);
+          });
+        }
+      });
+    };
+    
     setTimeout(observarAbas, 1000);
+    setTimeout(observarRotasAlternativas, 1500);
+    
+    // Re-executar periodicamente para capturar novos botões
+    setInterval(() => {
+      observarAbas();
+      observarRotasAlternativas();
+    }, 5000);
   }
   
   function iniciarObservadorDOM() {
@@ -237,10 +273,17 @@
     let distancia = null;
     let tempo = null;
     
-    // Estratégia 1: Buscar em elementos específicos conhecidos
+    // Primeiro verificar se estamos na rota "Proximidade à origem" que pode ter tempo fixo
+    const rotaProximidade = verificarRotaProximidade();
+    if (rotaProximidade) {
+      console.log("🚀 [RouteInfoAdvanced] Detectada rota 'Proximidade à origem', buscando dados específicos...");
+    }
+    
+    // Estratégias de busca em ordem de prioridade
     const estrategias = [
       buscarEmResumoRota,
       buscarEmRelatorioRota,
+      buscarEmRotasAlternativas,
       buscarEmTabelasEListas,
       buscarComExpressoesRegulares,
       buscarEmElementosVisuais,
@@ -269,6 +312,71 @@
     
     // Atualizar o display
     atualizarDisplay(distancia, tempo);
+  }
+  
+  function verificarRotaProximidade() {
+    // Verificar se a rota "Proximidade à origem" está selecionada
+    const elementos = document.querySelectorAll('*');
+    for (const elemento of elementos) {
+      const texto = elemento.textContent;
+      if (texto && texto.includes('Proximidade à origem')) {
+        const parent = elemento.closest('div, section, article');
+        if (parent && parent.classList.contains('active') || 
+            window.getComputedStyle(parent).backgroundColor !== 'transparent') {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
+  function buscarEmRotasAlternativas() {
+    // Buscar especificamente nas seções de rotas alternativas
+    const seletores = [
+      '.route-alternative',
+      '.rota-alternativa', 
+      '.alternative-route',
+      '.proximidade-origem',
+      '[data-route="alternative"]',
+      '[data-route="proximidade"]'
+    ];
+    
+    for (const seletor of seletores) {
+      const elementos = document.querySelectorAll(seletor);
+      for (const elemento of elementos) {
+        // Verificar se este elemento está ativo/selecionado
+        if (elemento.classList.contains('active') || 
+            elemento.classList.contains('selected') ||
+            window.getComputedStyle(elemento).backgroundColor !== 'transparent') {
+          
+          const texto = elemento.textContent;
+          const resultado = extrairValoresDoTexto(texto);
+          if (resultado.distancia || resultado.tempo) {
+            return resultado;
+          }
+        }
+      }
+    }
+    
+    // Buscar pela rota atualmente visível na sidebar
+    const sidebar = document.querySelector('.sidebar, #sidebar');
+    if (sidebar) {
+      const rotasVisiveis = sidebar.querySelectorAll('div, section');
+      for (const rota of rotasVisiveis) {
+        const estilo = window.getComputedStyle(rota);
+        if (estilo.display !== 'none' && estilo.visibility !== 'hidden') {
+          const texto = rota.textContent;
+          if (texto.includes('km') || texto.includes('min')) {
+            const resultado = extrairValoresDoTexto(texto);
+            if (resultado.distancia || resultado.tempo) {
+              return resultado;
+            }
+          }
+        }
+      }
+    }
+    
+    return { distancia: null, tempo: null };
   }
   
   function buscarEmResumoRota() {
