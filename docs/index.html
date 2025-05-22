@@ -1,6 +1,100 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<style id="solucao-direta-estilo">
+  /* Ocultar elementos de tempo e distância das rotas alternativas */
+  .route-alternative .route-distance,
+  .route-alternative .route-time,
+  div.card.mb-2 .route-distance,
+  div.card.mb-2 .route-time,
+  div[class*="distance"],
+  div[class*="time"],
+  span[class*="distance"],
+  span[class*="time"] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    pointer-events: none !important;
+  }
+  
+  /* Estilizar rotas alternativas */
+  .route-alternative,
+  .card.mb-2 {
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    border-radius: 6px !important;
+    padding: 10px !important;
+    margin-bottom: 8px !important;
+  }
+  
+  /* Centralizar título */
+  .route-alternative h5,
+  .card.mb-2 .card-title {
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 5px 0 !important;
+  }
+  
+  /* Efeito hover nas rotas */
+  .route-alternative:hover,
+  .card.mb-2:hover {
+    background-color: #f5f9ff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+  }
+  
+  /* Rota selecionada */
+  .rota-selecionada {
+    background-color: #fff9e6 !important;
+    border-color: #ffd966 !important;
+    box-shadow: 0 0 0 2px rgba(255,217,102,0.5) !important;
+  }
+  
+  /* Container de informações */
+  #container-info-direto {
+    display: flex !important;
+    align-items: center !important;
+    margin: 15px 0 !important;
+    padding: 5px !important;
+    background-color: #f8f9fa !important;
+    border-radius: 8px !important;
+  }
+  
+  /* Painel de informações */
+  #painel-info-direto {
+    margin-left: 15px !important;
+    padding: 8px 12px !important;
+    background-color: white !important;
+    border-radius: 6px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+    font-size: 14px !important;
+    color: #555 !important;
+  }
+  
+  /* Botão Visualizar */
+  #visualize-button {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+    font-weight: bold !important;
+    padding: 8px 15px !important;
+    border-radius: 4px !important;
+    border: none !important;
+    min-width: 120px !important;
+  }
+  
+  /* Animação para atualização */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .animado {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+</style>
+    
     <!-- Script crítico para estabilização imediata da sidebar -->
     <script>
     (function() {
@@ -11591,5 +11685,477 @@ window.addEventListener('load', function() {
   }
 })();
 </script>
+<script>
+// Solução para remover informações de tempo/distância das rotas alternativas
+(function() {
+  console.log("🛠️ Iniciando modificação das rotas alternativas");
+  
+  // Executar quando o DOM estiver pronto
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', iniciar);
+  } else {
+    iniciar();
+  }
+  
+  // Backup com window.onload
+  window.addEventListener('load', iniciar);
+  
+  // Também tentar em intervalos
+  setTimeout(iniciar, 500);
+  setTimeout(iniciar, 1000);
+  setTimeout(iniciar, 2000);
+  
+  // Função principal
+  function iniciar() {
+    // 1. Adicionar CSS necessário
+    adicionarCSS();
+    
+    // 2. Modificar rotas alternativas
+    modificarRotasAlternativas();
+    
+    // 3. Adicionar painel de informações ao botão Visualizar
+    adicionarPainelDeInformacoes();
+    
+    // 4. Observar mudanças na DOM para reagir a atualizações
+    observarDOM();
+  }
+  
+  // Adicionar CSS
+  function adicionarCSS() {
+    if (document.getElementById('css-rotas-alternativas')) return;
+    
+    const estilo = document.createElement('style');
+    estilo.id = 'css-rotas-alternativas';
+    estilo.textContent = `
+      /* Ocultar elementos de tempo e distância das rotas alternativas */
+      .route-alternative .route-distance,
+      .route-alternative .route-time,
+      div.card.mb-2 .route-distance,
+      div.card.mb-2 .route-time,
+      div[class*="distance"],
+      div[class*="time"],
+      span[class*="distance"],
+      span[class*="time"] {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        pointer-events: none !important;
+      }
+      
+      /* Estilizar rotas alternativas */
+      .route-alternative,
+      .card.mb-2 {
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        border-radius: 6px !important;
+        padding: 10px !important;
+        margin-bottom: 8px !important;
+      }
+      
+      /* Centralizar título */
+      .route-alternative h5,
+      .card.mb-2 .card-title {
+        text-align: center !important;
+        margin: 0 !important;
+        padding: 5px 0 !important;
+      }
+      
+      /* Efeito hover nas rotas */
+      .route-alternative:hover,
+      .card.mb-2:hover {
+        background-color: #f5f9ff !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+      }
+      
+      /* Rota selecionada */
+      .rota-selecionada {
+        background-color: #fff9e6 !important;
+        border-color: #ffd966 !important;
+        box-shadow: 0 0 0 2px rgba(255,217,102,0.5) !important;
+      }
+      
+      /* Container de informações */
+      #container-info-direto {
+        display: flex !important;
+        align-items: center !important;
+        margin: 15px 0 !important;
+        padding: 5px !important;
+        background-color: #f8f9fa !important;
+        border-radius: 8px !important;
+      }
+      
+      /* Painel de informações */
+      #painel-info-direto {
+        margin-left: 15px !important;
+        padding: 8px 12px !important;
+        background-color: white !important;
+        border-radius: 6px !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+        font-size: 14px !important;
+        color: #555 !important;
+      }
+      
+      /* Botão Visualizar */
+      #visualize-button {
+        background-color: #ffc107 !important;
+        color: #212529 !important;
+        font-weight: bold !important;
+        padding: 8px 15px !important;
+        border-radius: 4px !important;
+        border: none !important;
+        min-width: 120px !important;
+      }
+      
+      /* Animação para atualização */
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-3px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .animado {
+        animation: fadeIn 0.3s ease-out forwards;
+      }
+    `;
+    
+    document.head.appendChild(estilo);
+    console.log("🛠️ CSS adicionado");
+  }
+  
+  // Encontrar e modificar rotas alternativas
+  function modificarRotasAlternativas() {
+    // Tentativa 1: Buscar pela classe específica
+    let rotas = document.querySelectorAll('.route-alternative');
+    
+    // Tentativa 2: Buscar por cards dentro da seção de rotas
+    if (!rotas || rotas.length === 0) {
+      // Encontrar o contêiner de rotas alternativas
+      const containerRotas = document.querySelector('.route-alternative-box') || 
+                           document.querySelector('.alternative-routes-container');
+      
+      if (containerRotas) {
+        rotas = containerRotas.querySelectorAll('.card, div.mb-2');
+      }
+    }
+    
+    // Tentativa 3: Procurar qualquer elemento que possa ser uma rota
+    if (!rotas || rotas.length === 0) {
+      // Encontrar título "Rotas Alternativas"
+      const todosElementos = document.querySelectorAll('*');
+      let tituloRotas = null;
+      
+      for (let i = 0; i < todosElementos.length; i++) {
+        if (todosElementos[i].textContent && 
+            todosElementos[i].textContent.trim() === 'Rotas Alternativas') {
+          tituloRotas = todosElementos[i];
+          break;
+        }
+      }
+      
+      if (tituloRotas) {
+        // Subir na hierarquia para encontrar o container
+        let container = tituloRotas;
+        for (let i = 0; i < 3; i++) {
+          if (container.parentElement) {
+            container = container.parentElement;
+          }
+        }
+        
+        // Procurar por possíveis rotas neste container
+        const candidatos = container.querySelectorAll('div');
+        
+        rotas = Array.from(candidatos).filter(el => {
+          const texto = el.textContent || '';
+          return texto.includes('km') && texto.includes('min') && 
+                 texto.length < 500; // Não muito grande
+        });
+      }
+    }
+    
+    if (rotas && rotas.length > 0) {
+      console.log("🛠️ Encontradas " + rotas.length + " rotas alternativas");
+      
+      // Processar cada rota
+      rotas.forEach(function(rota) {
+        if (rota.hasAttribute('data-processado')) return;
+        
+        // Marcar como processada
+        rota.setAttribute('data-processado', 'true');
+        
+        // Extrair informações
+        extrairInformacoes(rota);
+        
+        // Adicionar eventos de interação
+        rota.addEventListener('click', function() {
+          // Remover seleção das outras rotas
+          rotas.forEach(r => {
+            r.style.backgroundColor = '';
+            r.style.borderColor = '';
+            r.style.boxShadow = '';
+            r.classList.remove('rota-selecionada');
+          });
+          
+          // Adicionar seleção a esta rota
+          this.style.backgroundColor = '#fff9e6';
+          this.style.borderColor = '#ffd966'; 
+          this.style.boxShadow = '0 0 0 2px rgba(255,217,102,0.5)';
+          this.classList.add('rota-selecionada');
+          
+          // Atualizar painel de informações
+          atualizarPainelInformacoes(
+            this.getAttribute('data-distancia'),
+            this.getAttribute('data-tempo')
+          );
+        });
+        
+        // Efeito de hover
+        rota.addEventListener('mouseenter', function() {
+          if (!this.classList.contains('rota-selecionada')) {
+            this.style.backgroundColor = '#f5f9ff';
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+          }
+        });
+        
+        rota.addEventListener('mouseleave', function() {
+          if (!this.classList.contains('rota-selecionada')) {
+            this.style.backgroundColor = '';
+            this.style.transform = '';
+            this.style.boxShadow = '';
+          }
+        });
+      });
+      
+      // Selecionar primeira rota
+      if (rotas.length > 0) {
+        rotas[0].click();
+      }
+      
+      return true;
+    } else {
+      console.log("🛠️ Nenhuma rota alternativa encontrada");
+      return false;
+    }
+  }
+  
+  // Extrair informações de distância e tempo
+  function extrairInformacoes(rota) {
+    let distancia = '';
+    let tempo = '';
+    
+    // Método 1: Buscar elementos específicos
+    const distanciaEl = rota.querySelector('.route-distance, [class*="distance"]');
+    const tempoEl = rota.querySelector('.route-time, [class*="time"]');
+    
+    if (distanciaEl) {
+      distancia = distanciaEl.textContent.trim();
+      console.log("🛠️ Distância encontrada por classe:", distancia);
+    }
+    
+    if (tempoEl) {
+      tempo = tempoEl.textContent.trim();
+      console.log("🛠️ Tempo encontrado por classe:", tempo);
+    }
+    
+    // Método 2: Buscar por conteúdo de texto
+    if (!distancia || !tempo) {
+      const elementos = rota.querySelectorAll('*');
+      
+      for (let i = 0; i < elementos.length; i++) {
+        const texto = elementos[i].textContent.trim();
+        
+        if (texto.includes('km') && !distancia) {
+          distancia = texto;
+          console.log("🛠️ Distância encontrada por texto:", distancia);
+        }
+        
+        if ((texto.includes('min') || texto.includes('hora')) && !tempo) {
+          tempo = texto;
+          console.log("🛠️ Tempo encontrado por texto:", tempo);
+        }
+      }
+    }
+    
+    // Método 3: Extrair do texto completo
+    if (!distancia || !tempo) {
+      const textoCompleto = rota.textContent || '';
+      
+      const matchDistancia = textoCompleto.match(/(\d+[.,]?\d*\s*km)/i);
+      const matchTempo = textoCompleto.match(/(\d+\s*min|\d+\s*hora[s]?)/i);
+      
+      if (matchDistancia && !distancia) {
+        distancia = matchDistancia[0];
+        console.log("🛠️ Distância extraída por regex:", distancia);
+      }
+      
+      if (matchTempo && !tempo) {
+        tempo = matchTempo[0];
+        console.log("🛠️ Tempo extraído por regex:", tempo);
+      }
+    }
+    
+    // Salvar informações
+    rota.setAttribute('data-distancia', distancia || 'Distância indisponível');
+    rota.setAttribute('data-tempo', tempo || 'Tempo indisponível');
+  }
+  
+  // Adicionar painel de informações ao botão Visualizar
+  function adicionarPainelDeInformacoes() {
+    // Verificar se já existe
+    if (document.getElementById('container-info-direto')) return;
+    
+    // Encontrar botão visualizar
+    const botaoVisualizar = document.getElementById('visualize-button') ||
+                           document.querySelector('button.btn-primary:contains("Visualizar")');
+    
+    if (!botaoVisualizar) {
+      // Tentar encontrar por texto
+      const todosBotoes = document.querySelectorAll('button');
+      for (let i = 0; i < todosBotoes.length; i++) {
+        if (todosBotoes[i].textContent && 
+            todosBotoes[i].textContent.includes('Visualizar')) {
+          botaoVisualizar = todosBotoes[i];
+          break;
+        }
+      }
+      
+      if (!botaoVisualizar) {
+        console.log("🛠️ Botão Visualizar não encontrado");
+        return false;
+      }
+    }
+    
+    console.log("🛠️ Botão Visualizar encontrado, criando painel");
+    
+    // Estilizar botão
+    botaoVisualizar.style.backgroundColor = '#ffc107';
+    botaoVisualizar.style.color = '#212529';
+    botaoVisualizar.style.fontWeight = 'bold';
+    botaoVisualizar.style.padding = '8px 15px';
+    botaoVisualizar.style.borderRadius = '4px';
+    botaoVisualizar.style.border = 'none';
+    botaoVisualizar.style.minWidth = '120px';
+    
+    // Criar container
+    const container = document.createElement('div');
+    container.id = 'container-info-direto';
+    container.style.display = 'flex';
+    container.style.alignItems = 'center';
+    container.style.margin = '15px 0';
+    container.style.padding = '5px';
+    container.style.backgroundColor = '#f8f9fa';
+    container.style.borderRadius = '8px';
+    
+    // Mover botão para container
+    const parent = botaoVisualizar.parentNode;
+    parent.removeChild(botaoVisualizar);
+    container.appendChild(botaoVisualizar);
+    
+    // Criar painel
+    const painel = document.createElement('div');
+    painel.id = 'painel-info-direto';
+    painel.style.marginLeft = '15px';
+    painel.style.padding = '8px 12px';
+    painel.style.backgroundColor = 'white';
+    painel.style.borderRadius = '6px';
+    painel.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+    painel.style.fontSize = '14px';
+    painel.style.color = '#555';
+    
+    // Adicionar conteúdo
+    painel.innerHTML = `
+      <div class="info-distancia" style="margin-bottom: 6px; display: flex; align-items: center;">
+        <i class="fa fa-road" style="margin-right: 5px;"></i>
+        <span>Selecione uma rota</span>
+      </div>
+      <div class="info-tempo" style="display: flex; align-items: center;">
+        <i class="fa fa-clock" style="margin-right: 5px;"></i>
+        <span>Selecione uma rota</span>
+      </div>
+    `;
+    
+    // Adicionar ao container
+    container.appendChild(painel);
+    
+    // Adicionar container ao DOM
+    parent.appendChild(container);
+    
+    // Garantir Font Awesome
+    if (!document.querySelector('link[href*="font-awesome"]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css';
+      document.head.appendChild(link);
+    }
+    
+    // Interceptar clique no botão
+    const clickOriginal = botaoVisualizar.onclick;
+    botaoVisualizar.onclick = function(event) {
+      // Executar comportamento original
+      if (clickOriginal) {
+        clickOriginal.call(this, event);
+      }
+      
+      // Atualizar informações
+      const rotaSelecionada = document.querySelector('.rota-selecionada');
+      if (rotaSelecionada) {
+        atualizarPainelInformacoes(
+          rotaSelecionada.getAttribute('data-distancia'),
+          rotaSelecionada.getAttribute('data-tempo')
+        );
+      }
+    };
+    
+    return true;
+  }
+  
+  // Atualizar informações no painel
+  function atualizarPainelInformacoes(distancia, tempo) {
+    if (!distancia || !tempo) return;
+    
+    const distanciaEl = document.querySelector('#painel-info-direto .info-distancia');
+    const tempoEl = document.querySelector('#painel-info-direto .info-tempo');
+    
+    if (distanciaEl && tempoEl) {
+      distanciaEl.innerHTML = `
+        <i class="fa fa-road" style="margin-right: 5px;"></i>
+        <span>${distancia}</span>
+      `;
+      
+      tempoEl.innerHTML = `
+        <i class="fa fa-clock" style="margin-right: 5px;"></i>
+        <span>${tempo}</span>
+      `;
+      
+      // Animação
+      distanciaEl.classList.add('animado');
+      tempoEl.classList.add('animado');
+      
+      setTimeout(function() {
+        distanciaEl.classList.remove('animado');
+        tempoEl.classList.remove('animado');
+      }, 500);
+    }
+  }
+  
+  // Observar mudanças na DOM
+  function observarDOM() {
+    const observer = new MutationObserver(function(mutations) {
+      // Quando houver mudanças, verificar se precisamos aplicar modificações
+      modificarRotasAlternativas();
+      adicionarPainelDeInformacoes();
+    });
+    
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+    
+    console.log("🛠️ Observer configurado");
+  }
+})();
+</script>   
 </body>
 </html>
