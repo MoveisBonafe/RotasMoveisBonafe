@@ -1,0 +1,1410 @@
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1764 Google Maps JavaScript API has been loaded directly without loading=async. This can result in suboptimal performance. For best-practice loading patterns please see https://goo.gle/js-api-loading
+rga @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1764
+google.maps.Load @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:14
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+fix-all.js:8 [AutoFix] Iniciando correções automáticas...
+js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1789 
+            
+            
+           GET https://maps.googleapis.com/maps/api/mapsjs/gen_204?csp_test=true net::ERR_BLOCKED_BY_CLIENT
+_.H.send @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1789
+oga @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1773
+rga @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1765
+google.maps.Load @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:14
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+(anônimo) @ js?key=AIzaSyCnallnTQ8gT2_F600vt-yAEv2BoH0mj7U&libraries=places:1998
+layout-fix.js?v=20250515182715:11 [LayoutFix] Iniciando correção de layout automática
+sidebar-stabilizer.js:94 [Sidebar Stabilizer] Estilos críticos aplicados
+fix-pegman.js:7 🚶‍♂️ [PegmanFix] Inicializando ajustes para adicionar Pegman
+detectar-rotas.js:8 🔎 [DetectorRotas] Inicializando
+painel-info.js:8 📊 [PainelInfo] Inicializando
+RotasMoveisBonafe/:11360 🚀 INICIANDO CÁLCULO SUPER DIRETO
+RotasMoveisBonafe/:11507 [CalculoDireto] Iniciando - Versão 2.0 (Embutida)
+RotasMoveisBonafe/:11692 🛠️ Iniciando modificação das rotas alternativas
+ [TABS-FIX] Inicializando correção das abas
+ [TABS-FIX] Inicialização concluída
+ Layout ajustado - sidebar e mapa aumentados
+ Iniciando correção para eventos de Piedade...
+ DOM carregado - inicializando aplicação
+ =================== NOVA EXECUÇÃO ===================
+ Mostrando eventos para rota com IDs: [1]
+ Datas de filtro (string): undefined undefined
+ Eventos disponíveis: (111) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, …]
+ Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+ [ROTA] Adicionada cidade prioritária: Piedade
+ [ROTA] Adicionada cidade de origem: Dois Córregos
+ [ROTA] Cidades encontradas no percurso (2): Piedade, Dois Córregos
+ APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: (2) ['Piedade', 'Dois Córregos']
+ NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+ Filtrando eventos para cidades: Piedade, Dois Córregos
+ Filtro de data: sem data inicial a sem data final
+ [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: undefined undefined
+ [FILTRO] Usando data de início padrão: 2025-01-01
+ [FILTRO] Usando data de fim padrão: 2025-12-31
+ [DATA] Filtro FINAL: 2025-01-01 até 2025-12-31
+ Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Festival de Verão - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+ [CIDADE] Evento 'Festival de Verão' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+ [FESTIVAL] Festival de Verão excluído quando há filtro de data
+ Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+ [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '03/02/2025', eventEnd: '03/02/2025', filterStart: '31/12/2024', filterEnd: '30/12/2025', …}
+ [ACEITO] Evento 'Aniversário da Cidade' (03/02/2025) está dentro do período de filtro: 31/12/2024 a 30/12/2025
+ [FINAL] Evento 'Aniversário da Cidade' em 'Dois Córregos' - INCLUÍDO NA LISTA FINAL
+ Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Campinas" (normalizada: "campinas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Carlos" (normalizada: "sao carlos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+ [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '31/12/2024', filterEnd: '30/12/2025', …}
+ [ACEITO] Evento 'Aniversário da Cidade' (18/03/2025) está dentro do período de filtro: 31/12/2024 a 30/12/2025
+ [FINAL] Evento 'Aniversário da Cidade' em 'Piedade' - INCLUÍDO NA LISTA FINAL
+ Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Uru" (normalizada: "uru") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Uru' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Morro Agudo" (normalizada: "morro agudo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Morro Agudo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Dirce Reis" (normalizada: "dirce reis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Dirce Reis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Teodoro Sampaio" (normalizada: "teodoro sampaio") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Teodoro Sampaio' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Iaras" (normalizada: "iaras") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Iaras' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Motuca" (normalizada: "motuca") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Motuca' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Borebi" (normalizada: "borebi") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Borebi' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Embaúba" (normalizada: "embauba") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Embaúba' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Iporanga" (normalizada: "iporanga") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Iporanga' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Miguelópolis" (normalizada: "miguelopolis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Miguelópolis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Quatá" (normalizada: "quata") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Quatá' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Praia Grande" (normalizada: "praia grande") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Praia Grande' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Braúna" (normalizada: "brauna") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Braúna' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cardoso" (normalizada: "cardoso") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cardoso' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itaju" (normalizada: "itaju") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itaju' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Parisi" (normalizada: "parisi") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Parisi' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piraju" (normalizada: "piraju") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piraju' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Sabino" (normalizada: "sabino") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Sabino' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Santa Cruz do Rio Pardo" (normalizada: "santa cruz do rio pardo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Santa Cruz do Rio Pardo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Vicente" (normalizada: "sao vicente") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Vicente' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Buri" (normalizada: "buri") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Buri' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Estrela D'Oeste" (normalizada: "estrela d'oeste") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Estrela D'Oeste' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Vera Cruz" (normalizada: "vera cruz") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Vera Cruz' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Santos" (normalizada: "santos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Santos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Santo Antônio do Pinhal" (normalizada: "santo antonio do pinhal") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Santo Antônio do Pinhal' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Barbosa" (normalizada: "barbosa") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Barbosa' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itu" (normalizada: "itu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cajamar" (normalizada: "cajamar") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cajamar' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cândido Rodrigues" (normalizada: "candido rodrigues") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cândido Rodrigues' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Osasco" (normalizada: "osasco") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Osasco' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Severínia" (normalizada: "severinia") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Severínia' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Pedro" (normalizada: "sao pedro") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Pedro' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Paulínia" (normalizada: "paulinia") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Paulínia' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Olímpia" (normalizada: "olimpia") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Olímpia' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itaporanga" (normalizada: "itaporanga") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itaporanga' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Tietê" (normalizada: "tiete") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Tietê' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Batatais" (normalizada: "batatais") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Batatais' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+ [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '31/12/2024', filterEnd: '30/12/2025', …}
+ [ACEITO] Evento 'Aniversário da Cidade' (18/03/2025) está dentro do período de filtro: 31/12/2024 a 30/12/2025
+ [FINAL] Evento 'Aniversário da Cidade' em 'Piedade' - INCLUÍDO NA LISTA FINAL
+ Comparando cidade de evento: "Araras" (normalizada: "araras") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Araras' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cabreúva" (normalizada: "cabreuva") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cabreúva' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Mococa" (normalizada: "mococa") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Mococa' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Marília" (normalizada: "marilia") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Marília' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Campos do Jordão" (normalizada: "campos do jordao") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Campos do Jordão' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Bebedouro" (normalizada: "bebedouro") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Bebedouro' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Brotas" (normalizada: "brotas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Brotas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Aniversário da Cidade (Piedade): 19/05/2025-19/05/2025
+ [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '19/05/2025', eventEnd: '19/05/2025', filterStart: '31/12/2024', filterEnd: '30/12/2025', …}
+ [ACEITO] Evento 'Aniversário da Cidade' (19/05/2025) está dentro do período de filtro: 31/12/2024 a 30/12/2025
+ [FINAL] Evento 'Aniversário da Cidade' em 'Piedade' - INCLUÍDO NA LISTA FINAL
+ Comparando cidade de evento: "Barra do Chapéu" (normalizada: "barra do chapeu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Barra do Chapéu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Valinhos" (normalizada: "valinhos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Valinhos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Rio Claro" (normalizada: "rio claro") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Rio Claro' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Guarujá" (normalizada: "guaruja") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Guarujá' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Assis" (normalizada: "assis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Assis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Campinas" (normalizada: "campinas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São José dos Campos" (normalizada: "sao jose dos campos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São José dos Campos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Caetano do Sul" (normalizada: "sao caetano do sul") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Caetano do Sul' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piracicaba" (normalizada: "piracicaba") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piracicaba' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Votuporanga" (normalizada: "votuporanga") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Votuporanga' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Sorocaba" (normalizada: "sorocaba") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Sorocaba' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Roque" (normalizada: "sao roque") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Roque' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Bernardo do Campo" (normalizada: "sao bernardo do campo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Bernardo do Campo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Araraquara" (normalizada: "araraquara") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Araraquara' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Barretos" (normalizada: "barretos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Barretos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Mogi das Cruzes" (normalizada: "mogi das cruzes") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Mogi das Cruzes' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Branco" (normalizada: "ribeirao branco") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Branco' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Limeira" (normalizada: "limeira") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Limeira' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Presidente Prudente" (normalizada: "presidente prudente") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Presidente Prudente' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itapeva" (normalizada: "itapeva") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itapeva' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itapira" (normalizada: "itapira") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itapira' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Franca" (normalizada: "franca") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Franca' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Carlos" (normalizada: "sao carlos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Jundiaí" (normalizada: "jundiai") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Jundiaí' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Indaiatuba" (normalizada: "indaiatuba") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Indaiatuba' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Diadema" (normalizada: "diadema") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Diadema' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Mauá" (normalizada: "maua") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Mauá' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Belo Horizonte" (normalizada: "belo horizonte") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Belo Horizonte' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Juiz de Fora" (normalizada: "juiz de fora") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Juiz de Fora' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Uberlândia" (normalizada: "uberlandia") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Uberlândia' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Divinópolis" (normalizada: "divinopolis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Divinópolis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Muriaé" (normalizada: "muriae") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Muriaé' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Passos" (normalizada: "passos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Passos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Patos de Minas" (normalizada: "patos de minas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Patos de Minas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Formiga" (normalizada: "formiga") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Formiga' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ibirité" (normalizada: "ibirite") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Ibirité' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cristina" (normalizada: "cristina") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cristina' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Pedralva" (normalizada: "pedralva") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Pedralva' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cambuquira" (normalizada: "cambuquira") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cambuquira' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Carvalhópolis" (normalizada: "carvalhopolis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Carvalhópolis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Tombos" (normalizada: "tombos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Tombos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Brasilândia de Minas" (normalizada: "brasilandia de minas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Brasilândia de Minas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Medina" (normalizada: "medina") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Medina' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cambuí" (normalizada: "cambui") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cambuí' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Guaxupé" (normalizada: "guaxupe") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Guaxupé' REJEITADO - cidade não está no percurso
+ As of February 21st, 2024, google.maps.Marker is deprecated. Please use google.maps.marker.AdvancedMarkerElement instead. At this time, google.maps.Marker is not scheduled to be discontinued, but google.maps.marker.AdvancedMarkerElement is recommended over google.maps.Marker. While google.maps.Marker will continue to receive bug fixes for any major regressions, existing bugs in google.maps.Marker will not be addressed. At least 12 months notice will be given before support is discontinued. Please see https://developers.google.com/maps/deprecations for additional details and https://developers.google.com/maps/documentation/javascript/advanced-markers/migration for the migration guide.
+_.kl @ js:1679
+addEventMarker @ RotasMoveisBonafe/:7271
+(anônimo) @ RotasMoveisBonafe/:7252
+showEventsForCitiesOnRoute @ RotasMoveisBonafe/:7221
+showInitialTabsContent @ RotasMoveisBonafe/:3825
+(anônimo) @ RotasMoveisBonafe/:3048
+ DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+ Mostrando restrições de caminhões para rota com IDs: [1]
+ Timestamp: 2025-05-22T03:52:09.109Z
+ GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:7313
+showInitialTabsContent @ RotasMoveisBonafe/:3828
+(anônimo) @ RotasMoveisBonafe/:3048
+ Usando pathIds como fallback para identificar cidades
+ Cidades detectadas na rota: [{…}]
+ GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+ Google Maps API disponível
+ Inicializando campos de data...
+ Data inicial definida: 2025-05-22
+ Data final definida: 2025-05-29
+ Datas inicializadas: de 2025-05-22 até 2025-05-29
+ Redimensionando mapa
+ Inicializando DirectionsRenderer...
+ DirectionsRenderer inicializado com sucesso
+ Tooltip personalizado criado com sucesso
+ ==========================================
+ FILTRO DE EVENTOS POR DATA SOLICITADO
+ ==========================================
+ Datas finais para filtragem: 2025-05-22 até 2025-05-29
+ Sem rota, mostrando apenas para origem
+ Usando apenas a origem para eventos: [1]
+ Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas: 2025-05-22 2025-05-29
+ =================== NOVA EXECUÇÃO ===================
+ Mostrando eventos para rota com IDs: [1]
+ Datas de filtro (string): 2025-05-22 2025-05-29
+ Eventos disponíveis: (111) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, …]
+ Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+ [ROTA] Adicionada cidade prioritária: Piedade
+ [ROTA] Adicionada cidade de origem: Dois Córregos
+ [ROTA] Cidades encontradas no percurso (2): Piedade, Dois Córregos
+ APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: (2) ['Piedade', 'Dois Córregos']
+ NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+ Filtrando eventos para cidades: Piedade, Dois Córregos
+ Filtro de data: 2025-05-22 a 2025-05-29
+ [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-22 2025-05-29
+ [DATA] Filtro FINAL: 2025-05-22 até 2025-05-29
+ Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Festival de Verão - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+ [CIDADE] Evento 'Festival de Verão' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+ [FESTIVAL] Festival de Verão excluído quando há filtro de data
+ Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+ [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '03/02/2025', eventEnd: '03/02/2025', filterStart: '21/05/2025', filterEnd: '28/05/2025', …}
+ [REJEITADO] Evento 'Aniversário da Cidade' (03/02/2025) está fora do período de filtro: 21/05/2025 a 28/05/2025
+ Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Campinas" (normalizada: "campinas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Carlos" (normalizada: "sao carlos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+ [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '21/05/2025', filterEnd: '28/05/2025', …}
+ [REJEITADO] Evento 'Aniversário da Cidade' (18/03/2025) está fora do período de filtro: 21/05/2025 a 28/05/2025
+ Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Uru" (normalizada: "uru") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Uru' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Morro Agudo" (normalizada: "morro agudo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Morro Agudo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Dirce Reis" (normalizada: "dirce reis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Dirce Reis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Teodoro Sampaio" (normalizada: "teodoro sampaio") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Teodoro Sampaio' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Iaras" (normalizada: "iaras") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Iaras' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Motuca" (normalizada: "motuca") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Motuca' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Borebi" (normalizada: "borebi") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Borebi' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Embaúba" (normalizada: "embauba") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Embaúba' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Iporanga" (normalizada: "iporanga") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Iporanga' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Miguelópolis" (normalizada: "miguelopolis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Miguelópolis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Quatá" (normalizada: "quata") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Quatá' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Praia Grande" (normalizada: "praia grande") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Praia Grande' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Braúna" (normalizada: "brauna") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Braúna' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cardoso" (normalizada: "cardoso") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cardoso' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itaju" (normalizada: "itaju") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itaju' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Parisi" (normalizada: "parisi") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Parisi' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piraju" (normalizada: "piraju") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piraju' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Sabino" (normalizada: "sabino") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Sabino' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Santa Cruz do Rio Pardo" (normalizada: "santa cruz do rio pardo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Santa Cruz do Rio Pardo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Vicente" (normalizada: "sao vicente") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Vicente' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Buri" (normalizada: "buri") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Buri' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Estrela D'Oeste" (normalizada: "estrela d'oeste") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Estrela D'Oeste' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Vera Cruz" (normalizada: "vera cruz") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Vera Cruz' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Santos" (normalizada: "santos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Santos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Santo Antônio do Pinhal" (normalizada: "santo antonio do pinhal") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Santo Antônio do Pinhal' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Barbosa" (normalizada: "barbosa") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Barbosa' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itu" (normalizada: "itu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cajamar" (normalizada: "cajamar") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cajamar' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cândido Rodrigues" (normalizada: "candido rodrigues") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cândido Rodrigues' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Osasco" (normalizada: "osasco") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Osasco' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Severínia" (normalizada: "severinia") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Severínia' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Pedro" (normalizada: "sao pedro") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Pedro' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Paulínia" (normalizada: "paulinia") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Paulínia' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Olímpia" (normalizada: "olimpia") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Olímpia' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itaporanga" (normalizada: "itaporanga") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itaporanga' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Tietê" (normalizada: "tiete") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Tietê' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Batatais" (normalizada: "batatais") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Batatais' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+ [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '21/05/2025', filterEnd: '28/05/2025', …}
+ [REJEITADO] Evento 'Aniversário da Cidade' (18/03/2025) está fora do período de filtro: 21/05/2025 a 28/05/2025
+ Comparando cidade de evento: "Araras" (normalizada: "araras") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Araras' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cabreúva" (normalizada: "cabreuva") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cabreúva' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Mococa" (normalizada: "mococa") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Mococa' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Marília" (normalizada: "marilia") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Marília' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Campos do Jordão" (normalizada: "campos do jordao") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Campos do Jordão' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Bebedouro" (normalizada: "bebedouro") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Bebedouro' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Brotas" (normalizada: "brotas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Brotas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Aniversário da Cidade (Piedade): 19/05/2025-19/05/2025
+ [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '19/05/2025', eventEnd: '19/05/2025', filterStart: '21/05/2025', filterEnd: '28/05/2025', …}
+ [REJEITADO] Evento 'Aniversário da Cidade' (19/05/2025) está fora do período de filtro: 21/05/2025 a 28/05/2025
+ Comparando cidade de evento: "Barra do Chapéu" (normalizada: "barra do chapeu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Barra do Chapéu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Valinhos" (normalizada: "valinhos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Valinhos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Rio Claro" (normalizada: "rio claro") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Rio Claro' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Guarujá" (normalizada: "guaruja") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Guarujá' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Assis" (normalizada: "assis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Assis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Campinas" (normalizada: "campinas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São José dos Campos" (normalizada: "sao jose dos campos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São José dos Campos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Caetano do Sul" (normalizada: "sao caetano do sul") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Caetano do Sul' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piracicaba" (normalizada: "piracicaba") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piracicaba' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Votuporanga" (normalizada: "votuporanga") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Votuporanga' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Sorocaba" (normalizada: "sorocaba") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Sorocaba' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Roque" (normalizada: "sao roque") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Roque' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Bernardo do Campo" (normalizada: "sao bernardo do campo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Bernardo do Campo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Araraquara" (normalizada: "araraquara") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Araraquara' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Barretos" (normalizada: "barretos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Barretos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Mogi das Cruzes" (normalizada: "mogi das cruzes") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Mogi das Cruzes' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Branco" (normalizada: "ribeirao branco") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Branco' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Limeira" (normalizada: "limeira") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Limeira' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Presidente Prudente" (normalizada: "presidente prudente") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Presidente Prudente' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itapeva" (normalizada: "itapeva") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itapeva' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itapira" (normalizada: "itapira") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itapira' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Franca" (normalizada: "franca") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Franca' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Carlos" (normalizada: "sao carlos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Jundiaí" (normalizada: "jundiai") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Jundiaí' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Indaiatuba" (normalizada: "indaiatuba") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Indaiatuba' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Diadema" (normalizada: "diadema") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Diadema' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Mauá" (normalizada: "maua") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Mauá' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Belo Horizonte" (normalizada: "belo horizonte") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Belo Horizonte' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Juiz de Fora" (normalizada: "juiz de fora") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Juiz de Fora' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Uberlândia" (normalizada: "uberlandia") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Uberlândia' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Divinópolis" (normalizada: "divinopolis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Divinópolis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Muriaé" (normalizada: "muriae") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Muriaé' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Passos" (normalizada: "passos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Passos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Patos de Minas" (normalizada: "patos de minas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Patos de Minas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Formiga" (normalizada: "formiga") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Formiga' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ibirité" (normalizada: "ibirite") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Ibirité' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cristina" (normalizada: "cristina") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cristina' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Pedralva" (normalizada: "pedralva") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Pedralva' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cambuquira" (normalizada: "cambuquira") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cambuquira' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Carvalhópolis" (normalizada: "carvalhopolis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Carvalhópolis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Tombos" (normalizada: "tombos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Tombos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Brasilândia de Minas" (normalizada: "brasilandia de minas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Brasilândia de Minas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Medina" (normalizada: "medina") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Medina' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cambuí" (normalizada: "cambui") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cambuí' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Guaxupé" (normalizada: "guaxupe") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Guaxupé' REJEITADO - cidade não está no percurso
+ DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+ Mostrando restrições de caminhões para rota com IDs: [1]
+ Timestamp: 2025-05-22T03:52:09.129Z
+ GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:7313
+filterEventsByDate @ RotasMoveisBonafe/:9150
+initMap @ RotasMoveisBonafe/:3208
+(anônimo) @ RotasMoveisBonafe/:3060
+ Usando pathIds como fallback para identificar cidades
+ Cidades detectadas na rota: [{…}]
+ GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+ Inicializando autocomplete para busca de endereços...
+ As of March 1st, 2025, google.maps.places.Autocomplete is not available to new customers. Please use google.maps.places.PlaceAutocompleteElement instead. At this time, google.maps.places.Autocomplete is not scheduled to be discontinued, but google.maps.places.PlaceAutocompleteElement is recommended over google.maps.places.Autocomplete. While google.maps.places.Autocomplete will continue to receive bug fixes for any major regressions, existing bugs in google.maps.places.Autocomplete will not be addressed. At least 12 months notice will be given before support is discontinued. Please see https://developers.google.com/maps/legacy for additional details and https://developers.google.com/maps/documentation/javascript/places-migration-overview for the migration guide.
+nB @ js:82
+initAutocomplete @ RotasMoveisBonafe/:3642
+(anônimo) @ RotasMoveisBonafe/:3061
+ Autocomplete inicializado com sucesso
+ Inicializando sistema de navegação para tabs inferiores
+ Inicializando abas inferiores com modo FULLSCREEN...
+ Abas inferiores inicializadas com sucesso
+ Detectado GitHub Pages - aplicando ajustes especiais de layout
+ Criando novo marcador para Dois Córregos (ID: 1)
+ Verificando se Dois Córregos e Dois Córregos estão na mesma cidade
+ Mesma cidade encontrada nos endereços: dois córregos
+ Configurando marcador para Dois Córregos - Mesma cidade da origem: true
+ Datas definidas automaticamente: de 2025-05-22 até 2025-05-29
+ ==========================================
+ FILTRO DE EVENTOS POR DATA SOLICITADO
+ ==========================================
+ Datas finais para filtragem: 2025-05-22 até 2025-05-29
+ Usando rota otimizada atual: [1]
+ Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas: 2025-05-22 2025-05-29
+ =================== NOVA EXECUÇÃO ===================
+ Mostrando eventos para rota com IDs: [1]
+ Datas de filtro (string): 2025-05-22 2025-05-29
+ Eventos disponíveis: (111) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, …]
+ Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+ [ROTA] Adicionada cidade prioritária: Piedade
+ [ROTA] Adicionada cidade de origem: Dois Córregos
+ [ROTA] Cidades encontradas no percurso (2): Piedade, Dois Córregos
+ APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: (2) ['Piedade', 'Dois Córregos']
+ NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+ Filtrando eventos para cidades: Piedade, Dois Córregos
+ Filtro de data: 2025-05-22 a 2025-05-29
+ [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-22 2025-05-29
+ [DATA] Filtro FINAL: 2025-05-22 até 2025-05-29
+ Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Festival de Verão - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+ [CIDADE] Evento 'Festival de Verão' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+ [FESTIVAL] Festival de Verão excluído quando há filtro de data
+ Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+ [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '03/02/2025', eventEnd: '03/02/2025', filterStart: '21/05/2025', filterEnd: '28/05/2025', …}
+ [REJEITADO] Evento 'Aniversário da Cidade' (03/02/2025) está fora do período de filtro: 21/05/2025 a 28/05/2025
+ Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Campinas" (normalizada: "campinas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Carlos" (normalizada: "sao carlos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+ [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '21/05/2025', filterEnd: '28/05/2025', …}
+ [REJEITADO] Evento 'Aniversário da Cidade' (18/03/2025) está fora do período de filtro: 21/05/2025 a 28/05/2025
+ Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Uru" (normalizada: "uru") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Uru' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Morro Agudo" (normalizada: "morro agudo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Morro Agudo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Dirce Reis" (normalizada: "dirce reis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Dirce Reis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Teodoro Sampaio" (normalizada: "teodoro sampaio") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Teodoro Sampaio' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Iaras" (normalizada: "iaras") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Iaras' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Motuca" (normalizada: "motuca") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Motuca' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Borebi" (normalizada: "borebi") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Borebi' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Embaúba" (normalizada: "embauba") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Embaúba' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Iporanga" (normalizada: "iporanga") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Iporanga' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Miguelópolis" (normalizada: "miguelopolis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Miguelópolis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Quatá" (normalizada: "quata") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Quatá' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Praia Grande" (normalizada: "praia grande") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Praia Grande' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Braúna" (normalizada: "brauna") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Braúna' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cardoso" (normalizada: "cardoso") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cardoso' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itaju" (normalizada: "itaju") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itaju' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Parisi" (normalizada: "parisi") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Parisi' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piraju" (normalizada: "piraju") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piraju' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Sabino" (normalizada: "sabino") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Sabino' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Santa Cruz do Rio Pardo" (normalizada: "santa cruz do rio pardo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Santa Cruz do Rio Pardo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Vicente" (normalizada: "sao vicente") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Vicente' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Buri" (normalizada: "buri") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Buri' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Estrela D'Oeste" (normalizada: "estrela d'oeste") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Estrela D'Oeste' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Vera Cruz" (normalizada: "vera cruz") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Vera Cruz' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Santos" (normalizada: "santos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Santos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Santo Antônio do Pinhal" (normalizada: "santo antonio do pinhal") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Santo Antônio do Pinhal' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Barbosa" (normalizada: "barbosa") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Barbosa' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Itu" (normalizada: "itu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Itu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Cajamar" (normalizada: "cajamar") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Cajamar' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Cândido Rodrigues" (normalizada: "candido rodrigues") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Cândido Rodrigues' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Osasco" (normalizada: "osasco") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Osasco' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Severínia" (normalizada: "severinia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Severínia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "São Pedro" (normalizada: "sao pedro") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'São Pedro' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Paulínia" (normalizada: "paulinia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Paulínia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Olímpia" (normalizada: "olimpia") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Olímpia' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Itaporanga" (normalizada: "itaporanga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Itaporanga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Tietê" (normalizada: "tiete") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Tietê' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Batatais" (normalizada: "batatais") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Batatais' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7061 MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+RotasMoveisBonafe/:7072 [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+RotasMoveisBonafe/:7096 [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+RotasMoveisBonafe/:7153 [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '21/05/2025', filterEnd: '28/05/2025', …}
+RotasMoveisBonafe/:7170 [REJEITADO] Evento 'Aniversário da Cidade' (18/03/2025) está fora do período de filtro: 21/05/2025 a 28/05/2025
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Araras" (normalizada: "araras") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Araras' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Cabreúva" (normalizada: "cabreuva") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Cabreúva' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Mococa" (normalizada: "mococa") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Mococa' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Marília" (normalizada: "marilia") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Marília' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Campos do Jordão" (normalizada: "campos do jordao") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Campos do Jordão' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Bebedouro" (normalizada: "bebedouro") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Bebedouro' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Brotas" (normalizada: "brotas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Brotas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Aniversário da Cidade (Piedade): 19/05/2025-19/05/2025
+ [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '19/05/2025', eventEnd: '19/05/2025', filterStart: '21/05/2025', filterEnd: '28/05/2025', …}
+ [REJEITADO] Evento 'Aniversário da Cidade' (19/05/2025) está fora do período de filtro: 21/05/2025 a 28/05/2025
+ Comparando cidade de evento: "Barra do Chapéu" (normalizada: "barra do chapeu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Barra do Chapéu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Valinhos" (normalizada: "valinhos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Valinhos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Rio Claro" (normalizada: "rio claro") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Rio Claro' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Guarujá" (normalizada: "guaruja") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Guarujá' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Assis" (normalizada: "assis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Assis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Campinas" (normalizada: "campinas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São José dos Campos" (normalizada: "sao jose dos campos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São José dos Campos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Caetano do Sul" (normalizada: "sao caetano do sul") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Caetano do Sul' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piracicaba" (normalizada: "piracicaba") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piracicaba' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Votuporanga" (normalizada: "votuporanga") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Votuporanga' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Sorocaba" (normalizada: "sorocaba") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Sorocaba' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Roque" (normalizada: "sao roque") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Roque' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Bernardo do Campo" (normalizada: "sao bernardo do campo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Bernardo do Campo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Araraquara" (normalizada: "araraquara") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Araraquara' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Barretos" (normalizada: "barretos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Barretos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Mogi das Cruzes" (normalizada: "mogi das cruzes") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Mogi das Cruzes' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Branco" (normalizada: "ribeirao branco") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Branco' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Limeira" (normalizada: "limeira") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Limeira' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Presidente Prudente" (normalizada: "presidente prudente") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Presidente Prudente' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itapeva" (normalizada: "itapeva") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itapeva' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itapira" (normalizada: "itapira") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itapira' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Franca" (normalizada: "franca") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Franca' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Carlos" (normalizada: "sao carlos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Jundiaí" (normalizada: "jundiai") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Jundiaí' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Indaiatuba" (normalizada: "indaiatuba") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Indaiatuba' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Diadema" (normalizada: "diadema") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Diadema' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Mauá" (normalizada: "maua") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Mauá' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Belo Horizonte" (normalizada: "belo horizonte") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Belo Horizonte' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Juiz de Fora" (normalizada: "juiz de fora") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Juiz de Fora' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Uberlândia" (normalizada: "uberlandia") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Uberlândia' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Divinópolis" (normalizada: "divinopolis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Divinópolis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Muriaé" (normalizada: "muriae") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Muriaé' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Passos" (normalizada: "passos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Passos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Patos de Minas" (normalizada: "patos de minas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Patos de Minas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Formiga" (normalizada: "formiga") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Formiga' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ibirité" (normalizada: "ibirite") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Ibirité' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cristina" (normalizada: "cristina") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cristina' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Pedralva" (normalizada: "pedralva") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Pedralva' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cambuquira" (normalizada: "cambuquira") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cambuquira' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Carvalhópolis" (normalizada: "carvalhopolis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Carvalhópolis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Tombos" (normalizada: "tombos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Tombos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Brasilândia de Minas" (normalizada: "brasilandia de minas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Brasilândia de Minas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Medina" (normalizada: "medina") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Medina' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cambuí" (normalizada: "cambui") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cambuí' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Guaxupé" (normalizada: "guaxupe") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Guaxupé' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7303 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:7304 Mostrando restrições de caminhões para rota com IDs: [1]
+RotasMoveisBonafe/:7307 Timestamp: 2025-05-22T03:52:09.143Z
+RotasMoveisBonafe/:7313 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:7313
+filterEventsByDate @ RotasMoveisBonafe/:9150
+(anônimo) @ RotasMoveisBonafe/:3114
+RotasMoveisBonafe/:7350 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:7377 Cidades detectadas na rota: [{…}]
+RotasMoveisBonafe/:7470 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+RotasMoveisBonafe/:3117 Campos de data inicializados com datas atuais e eventos/restrições para origem configurados
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+layout-fix.js?v=20250515182715:35 [LayoutFix] Inicialização completa
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+RotasMoveisBonafe/:10381 [TABS-FIX] Inicializando correção das abas
+RotasMoveisBonafe/:10391 [TABS-FIX] Inicialização concluída
+RotasMoveisBonafe/:10566 [TabsFix] Iniciando correção para todas as abas
+RotasMoveisBonafe/:10656 [TabsFix] CSS para todas as abas injetado
+RotasMoveisBonafe/:10747 [CorrecaoDatas] Iniciando correção das datas de cidades
+RotasMoveisBonafe/:11825 🛠️ CSS adicionado
+RotasMoveisBonafe/:11939 🛠️ Nenhuma rota alternativa encontrada
+RotasMoveisBonafe/:12012 Uncaught SyntaxError: Failed to execute 'querySelector' on 'Document': 'button.btn-primary:contains("Visualizar")' is not a valid selector.
+    at adicionarPainelDeInformacoes (RotasMoveisBonafe/:12012:37)
+    at HTMLDocument.iniciar (RotasMoveisBonafe/:11718:5)
+adicionarPainelDeInformacoes @ RotasMoveisBonafe/:12012
+iniciar @ RotasMoveisBonafe/:11718
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 1 de 12
+detectar-rotas.js:99 🔎 [DetectorRotas] CSS adicionado
+detectar-rotas.js:52 🔎 [DetectorRotas] Nenhuma rota alternativa encontrada ainda
+detectar-rotas.js:276 🔎 [DetectorRotas] Observer configurado
+painel-info.js:34 📊 [PainelInfo] Tentativa 1 de 10
+painel-info.js:105 📊 [PainelInfo] CSS adicionado
+painel-info.js:119 📊 [PainelInfo] Botão Visualizar não encontrado
+painel-info.js:137 📊 [PainelInfo] Botão Visualizar encontrado por texto
+painel-info.js:138 Uncaught TypeError: Assignment to constant variable.
+    at criarPainel (painel-info.js:138:23)
+    at iniciar (painel-info.js:46:23)
+criarPainel @ painel-info.js:138
+iniciar @ painel-info.js:46
+setTimeout
+(anônimo) @ painel-info.js:19
+(anônimo) @ painel-info.js:235
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 2 de 12
+detectar-rotas.js:52 🔎 [DetectorRotas] Nenhuma rota alternativa encontrada ainda
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 3 de 12
+detectar-rotas.js:52 🔎 [DetectorRotas] Nenhuma rota alternativa encontrada ainda
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 4 de 12
+detectar-rotas.js:52 🔎 [DetectorRotas] Nenhuma rota alternativa encontrada ainda
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 5 de 12
+detectar-rotas.js:52 🔎 [DetectorRotas] Nenhuma rota alternativa encontrada ainda
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+fullscreen-tabs.js:18 [FullscreenTabs] Inicializando sistema de abas em tela cheia
+fullscreen-tabs.js:41 [FullscreenTabs] Inicialização concluída com sucesso
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 6 de 12
+detectar-rotas.js:52 🔎 [DetectorRotas] Nenhuma rota alternativa encontrada ainda
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 7 de 12
+detectar-rotas.js:52 🔎 [DetectorRotas] Nenhuma rota alternativa encontrada ainda
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 8 de 12
+detectar-rotas.js:52 🔎 [DetectorRotas] Nenhuma rota alternativa encontrada ainda
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 9 de 12
+detectar-rotas.js:52 🔎 [DetectorRotas] Nenhuma rota alternativa encontrada ainda
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 10 de 12
+detectar-rotas.js:52 🔎 [DetectorRotas] Nenhuma rota alternativa encontrada ainda
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 11 de 12
+detectar-rotas.js:52 🔎 [DetectorRotas] Nenhuma rota alternativa encontrada ainda
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 12 de 12
+detectar-rotas.js:52 🔎 [DetectorRotas] Nenhuma rota alternativa encontrada ainda
+36detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 13 de 12
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+fix-pegman.js:16 🚶‍♂️ [PegmanFix] Tentando ajustar o mapa
+fix-pegman.js:36 🚶‍♂️ [PegmanFix] Encontrados elementos do mapa, mas não o objeto do mapa
+fix-pegman.js:39 🚶‍♂️ [PegmanFix] Objeto do mapa não encontrado
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 13 de 12
+painel-info.js:34 📊 [PainelInfo] Tentativa 2 de 10
+painel-info.js:119 📊 [PainelInfo] Botão Visualizar não encontrado
+painel-info.js:137 📊 [PainelInfo] Botão Visualizar encontrado por texto
+painel-info.js:138 Uncaught TypeError: Assignment to constant variable.
+    at criarPainel (painel-info.js:138:23)
+    at iniciar (painel-info.js:46:23)
+criarPainel @ painel-info.js:138
+iniciar @ painel-info.js:46
+RotasMoveisBonafe/:11187 📱 Iniciando modificação das rotas alternativas
+RotasMoveisBonafe/:11372 🚀 Sistema de cálculo iniciado
+RotasMoveisBonafe/:11524 [CalculoDireto] Configurando sistema de cálculo
+RotasMoveisBonafe/:11541 [CalculoDireto] Sistema configurado
+RotasMoveisBonafe/:11939 🛠️ Nenhuma rota alternativa encontrada
+RotasMoveisBonafe/:12012 Uncaught SyntaxError: Failed to execute 'querySelector' on 'Document': 'button.btn-primary:contains("Visualizar")' is not a valid selector.
+    at adicionarPainelDeInformacoes (RotasMoveisBonafe/:12012:37)
+    at iniciar (RotasMoveisBonafe/:11718:5)
+adicionarPainelDeInformacoes @ RotasMoveisBonafe/:12012
+iniciar @ RotasMoveisBonafe/:11718
+map-controls.js:271 Map enhancements applied successfully
+VM25124 tabs-fix.js:15 [TabsFix] Aplicando correção definitiva para abas
+VM25124 tabs-fix.js:105 [TabsFix] Ocultando todos os conteúdos de abas
+VM25124 tabs-fix.js:48 [TabsFix] Correção aplicada com sucesso
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 13 de 12
+VM25134 tabs-fix.js:15 [TabsFix] Aplicando correção definitiva para abas
+VM25134 tabs-fix.js:105 [TabsFix] Ocultando todos os conteúdos de abas
+VM25134 tabs-fix.js:48 [TabsFix] Correção aplicada com sucesso
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 13 de 12
+tabs-fix.js:15 [TabsFix] Aplicando correção definitiva para abas
+tabs-fix.js:105 [TabsFix] Ocultando todos os conteúdos de abas
+tabs-fix.js:48 [TabsFix] Correção aplicada com sucesso
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 13 de 12
+ [Sidebar Stabilizer] Sidebar estabilizada
+ [Sidebar Stabilizer] Mapa posicionado corretamente
+ [Sidebar Stabilizer] Abas inferiores posicionadas
+ [Sidebar Stabilizer] Layout estabilizado com sucesso
+ 🔎 [DetectorRotas] Tentativa 13 de 12
+ 📊 [PainelInfo] Tentativa 3 de 10
+ 📊 [PainelInfo] Botão Visualizar não encontrado
+ 📊 [PainelInfo] Botão Visualizar encontrado por texto
+painel-info.js:138 Uncaught 
+criarPainel @ painel-info.js:138
+iniciar @ painel-info.js:46
+setTimeout
+(anônimo) @ painel-info.js:24
+(anônimo) @ painel-info.js:23
+(anônimo) @ painel-info.js:235
+ 🛠️ Nenhuma rota alternativa encontrada
+RotasMoveisBonafe/:12012 Uncaught 
+adicionarPainelDeInformacoes @ RotasMoveisBonafe/:12012
+iniciar @ RotasMoveisBonafe/:11718
+setTimeout
+(anônimo) @ RotasMoveisBonafe/:11705
+(anônimo) @ RotasMoveisBonafe/:12159
+ Map enhancements applied successfully
+ ==========================================
+ FILTRO DE EVENTOS POR DATA SOLICITADO
+ ==========================================
+ Datas finais para filtragem: 2025-05-22 até 2025-05-29
+ Usando rota otimizada atual: [1]
+ Chamando showEventsForCitiesOnRoute de filterEventsByDate com datas: 2025-05-22 2025-05-29
+ =================== NOVA EXECUÇÃO ===================
+ Mostrando eventos para rota com IDs: [1]
+ Datas de filtro (string): 2025-05-22 2025-05-29
+ Eventos disponíveis: (111) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, …]
+ Localização encontrada para ID 1: {id: 1, name: 'Dois Córregos', address: 'Dois Córregos, SP, Brasil', zipCode: '17300-000', latitude: -22.3673, …}
+ [ROTA] Adicionada cidade prioritária: Piedade
+ [ROTA] Adicionada cidade de origem: Dois Córregos
+ [ROTA] Cidades encontradas no percurso (2): Piedade, Dois Córregos
+ APENAS ESTAS CIDADES ESTÃO NA ROTA REAL: (2) ['Piedade', 'Dois Córregos']
+ NOVA IMPLEMENTAÇÃO: Filtragem estrita de eventos por cidade e data
+ Filtrando eventos para cidades: Piedade, Dois Córregos
+ Filtro de data: 2025-05-22 a 2025-05-29
+ [CORREÇÃO DE FILTRO] Usando datas exatamente como informadas pelo usuário: 2025-05-22 2025-05-29
+ [DATA] Filtro FINAL: 2025-05-22 até 2025-05-29
+ Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Festival de Verão - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+ [CIDADE] Evento 'Festival de Verão' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Festival de Verão (Dois Córregos): 31/12/2024-30/12/2025
+ [FESTIVAL] Festival de Verão excluído quando há filtro de data
+ Comparando cidade de evento: "Dois Córregos" (normalizada: "dois corregos") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Dois Córregos - Cidade na rota: Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Dois Córregos' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Aniversário da Cidade (Dois Córregos): 03/02/2025-03/02/2025
+ [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '03/02/2025', eventEnd: '03/02/2025', filterStart: '21/05/2025', filterEnd: '28/05/2025', …}
+ [REJEITADO] Evento 'Aniversário da Cidade' (03/02/2025) está fora do período de filtro: 21/05/2025 a 28/05/2025
+ Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Paulo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Campinas" (normalizada: "campinas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Carlos" (normalizada: "sao carlos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+ [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '21/05/2025', filterEnd: '28/05/2025', …}
+ [REJEITADO] Evento 'Aniversário da Cidade' (18/03/2025) está fora do período de filtro: 21/05/2025 a 28/05/2025
+ Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Festa do Rodeio' em 'Jaú' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Festival de Inverno' em 'Botucatu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Exposição Agropecuária' em 'Bauru' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Agrishow' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Paulo" (normalizada: "sao paulo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Virada Cultural' em 'São Paulo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Feira Tecnológica' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Uru" (normalizada: "uru") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Uru' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Morro Agudo" (normalizada: "morro agudo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Morro Agudo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Dirce Reis" (normalizada: "dirce reis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Dirce Reis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Teodoro Sampaio" (normalizada: "teodoro sampaio") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Teodoro Sampaio' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Iaras" (normalizada: "iaras") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Iaras' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Motuca" (normalizada: "motuca") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Motuca' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Borebi" (normalizada: "borebi") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Borebi' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Embaúba" (normalizada: "embauba") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Embaúba' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Iporanga" (normalizada: "iporanga") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Iporanga' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Miguelópolis" (normalizada: "miguelopolis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Miguelópolis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Quatá" (normalizada: "quata") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Quatá' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Praia Grande" (normalizada: "praia grande") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Praia Grande' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Braúna" (normalizada: "brauna") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Braúna' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cardoso" (normalizada: "cardoso") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cardoso' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itaju" (normalizada: "itaju") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itaju' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Parisi" (normalizada: "parisi") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Parisi' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piraju" (normalizada: "piraju") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piraju' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Sabino" (normalizada: "sabino") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Sabino' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Santa Cruz do Rio Pardo" (normalizada: "santa cruz do rio pardo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Santa Cruz do Rio Pardo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Vicente" (normalizada: "sao vicente") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Vicente' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Buri" (normalizada: "buri") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Buri' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Estrela D'Oeste" (normalizada: "estrela d'oeste") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Estrela D'Oeste' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Vera Cruz" (normalizada: "vera cruz") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Vera Cruz' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Santos" (normalizada: "santos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Santos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Santo Antônio do Pinhal" (normalizada: "santo antonio do pinhal") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Santo Antônio do Pinhal' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Barbosa" (normalizada: "barbosa") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Barbosa' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itu" (normalizada: "itu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cajamar" (normalizada: "cajamar") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cajamar' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cândido Rodrigues" (normalizada: "candido rodrigues") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cândido Rodrigues' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Osasco" (normalizada: "osasco") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Osasco' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Severínia" (normalizada: "severinia") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Severínia' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Pedro" (normalizada: "sao pedro") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Pedro' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Paulínia" (normalizada: "paulinia") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Paulínia' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Olímpia" (normalizada: "olimpia") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Olímpia' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itaporanga" (normalizada: "itaporanga") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itaporanga' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Tietê" (normalizada: "tiete") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Tietê' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Batatais" (normalizada: "batatais") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Batatais' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Aniversário da Cidade (Piedade): 18/03/2025-18/03/2025
+ [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '18/03/2025', eventEnd: '18/03/2025', filterStart: '21/05/2025', filterEnd: '28/05/2025', …}
+ [REJEITADO] Evento 'Aniversário da Cidade' (18/03/2025) está fora do período de filtro: 21/05/2025 a 28/05/2025
+ Comparando cidade de evento: "Araras" (normalizada: "araras") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Araras' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Cabreúva" (normalizada: "cabreuva") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Cabreúva' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Botucatu" (normalizada: "botucatu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Botucatu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Mococa" (normalizada: "mococa") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Mococa' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Marília" (normalizada: "marilia") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Marília' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Campos do Jordão" (normalizada: "campos do jordao") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Campos do Jordão' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Bebedouro" (normalizada: "bebedouro") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Bebedouro' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Brotas" (normalizada: "brotas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Brotas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piedade" (normalizada: "piedade") com cidades na rota: Piedade, Dois Córregos
+ MATCH ENCONTRADO! Evento: Aniversário da Cidade - Cidade do evento: Piedade - Cidade na rota: Piedade
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piedade' ACEITO - cidade encontrada no percurso!
+ [EVENTO] Aniversário da Cidade (Piedade): 19/05/2025-19/05/2025
+ [VERIFICAÇÃO DE DATA] {evento: 'Aniversário da Cidade', eventStart: '19/05/2025', eventEnd: '19/05/2025', filterStart: '21/05/2025', filterEnd: '28/05/2025', …}
+ [REJEITADO] Evento 'Aniversário da Cidade' (19/05/2025) está fora do período de filtro: 21/05/2025 a 28/05/2025
+ Comparando cidade de evento: "Barra do Chapéu" (normalizada: "barra do chapeu") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Barra do Chapéu' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Valinhos" (normalizada: "valinhos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Valinhos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Preto" (normalizada: "ribeirao preto") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Preto' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Rio Claro" (normalizada: "rio claro") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Rio Claro' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Guarujá" (normalizada: "guaruja") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Guarujá' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Assis" (normalizada: "assis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Assis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Campinas" (normalizada: "campinas") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Campinas' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São José dos Campos" (normalizada: "sao jose dos campos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São José dos Campos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Caetano do Sul" (normalizada: "sao caetano do sul") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Caetano do Sul' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Bauru" (normalizada: "bauru") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Bauru' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Piracicaba" (normalizada: "piracicaba") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Piracicaba' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Votuporanga" (normalizada: "votuporanga") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Votuporanga' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Jaú" (normalizada: "jau") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Jaú' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Sorocaba" (normalizada: "sorocaba") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Sorocaba' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Roque" (normalizada: "sao roque") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Roque' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Bernardo do Campo" (normalizada: "sao bernardo do campo") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Bernardo do Campo' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Araraquara" (normalizada: "araraquara") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Araraquara' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Barretos" (normalizada: "barretos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Barretos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Mogi das Cruzes" (normalizada: "mogi das cruzes") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Mogi das Cruzes' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Ribeirão Branco" (normalizada: "ribeirao branco") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Ribeirão Branco' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Limeira" (normalizada: "limeira") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Limeira' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Presidente Prudente" (normalizada: "presidente prudente") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Presidente Prudente' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itapeva" (normalizada: "itapeva") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itapeva' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Itapira" (normalizada: "itapira") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Itapira' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Franca" (normalizada: "franca") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Franca' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "São Carlos" (normalizada: "sao carlos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'São Carlos' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Jundiaí" (normalizada: "jundiai") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Jundiaí' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Indaiatuba" (normalizada: "indaiatuba") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Indaiatuba' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Diadema" (normalizada: "diadema") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Diadema' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Mauá" (normalizada: "maua") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Mauá' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Belo Horizonte" (normalizada: "belo horizonte") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Belo Horizonte' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Juiz de Fora" (normalizada: "juiz de fora") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Juiz de Fora' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Uberlândia" (normalizada: "uberlandia") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Uberlândia' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Divinópolis" (normalizada: "divinopolis") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Divinópolis' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Muriaé" (normalizada: "muriae") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Muriaé' REJEITADO - cidade não está no percurso
+ Comparando cidade de evento: "Passos" (normalizada: "passos") com cidades na rota: Piedade, Dois Córregos
+ [CIDADE] Evento 'Aniversário da Cidade' em 'Passos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Patos de Minas" (normalizada: "patos de minas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Patos de Minas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Formiga" (normalizada: "formiga") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Formiga' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Ibirité" (normalizada: "ibirite") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Ibirité' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Cristina" (normalizada: "cristina") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Cristina' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Pedralva" (normalizada: "pedralva") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Pedralva' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Cambuquira" (normalizada: "cambuquira") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Cambuquira' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Carvalhópolis" (normalizada: "carvalhopolis") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Carvalhópolis' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Tombos" (normalizada: "tombos") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Tombos' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Brasilândia de Minas" (normalizada: "brasilandia de minas") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Brasilândia de Minas' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Medina" (normalizada: "medina") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Medina' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Cambuí" (normalizada: "cambui") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Cambuí' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7052 Comparando cidade de evento: "Guaxupé" (normalizada: "guaxupe") com cidades na rota: Piedade, Dois Córregos
+RotasMoveisBonafe/:7068 [CIDADE] Evento 'Aniversário da Cidade' em 'Guaxupé' REJEITADO - cidade não está no percurso
+RotasMoveisBonafe/:7303 DEBUG: Acionando função para mostrar restrições de caminhões das cidades do percurso
+RotasMoveisBonafe/:7304 Mostrando restrições de caminhões para rota com IDs: [1]
+RotasMoveisBonafe/:7307 Timestamp: 2025-05-22T03:52:09.622Z
+RotasMoveisBonafe/:7313 GITHUB PAGES DETECTADO - Usando método adaptado para mostrar cidades na rota
+showTruckRestrictionsForCitiesOnRoute @ RotasMoveisBonafe/:7313
+filterEventsByDate @ RotasMoveisBonafe/:9150
+setTimeout
+initDatePickers @ RotasMoveisBonafe/:3296
+initMap @ RotasMoveisBonafe/:3205
+(anônimo) @ RotasMoveisBonafe/:3060
+RotasMoveisBonafe/:7350 Usando pathIds como fallback para identificar cidades
+RotasMoveisBonafe/:7377 Cidades detectadas na rota: [{…}]
+RotasMoveisBonafe/:7470 GitHub Pages: Exibindo 1 restrições para cidades na rota atual
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 13 de 12
+RotasMoveisBonafe/:3084 Ajustes de layout para GitHub Pages aplicados
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+smooth-animation.js:16 [SmoothAnimations] Inicializando animações suaves
+smooth-animation.js:23 [SmoothAnimations] Adicionadas transições ao container de abas
+smooth-animation.js:54 [SmoothAnimations] Configurações de animação aplicadas com sucesso
+21detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 13 de 12
+RotasMoveisBonafe/:11191 📱 Verificando rotas alternativas...
+geocode-fix.js:108 Enhanced file upload with accurate geocoding
+geocode-fix.js:415 Geocoding fixes applied successfully
+3detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 13 de 12
+sidebar-stabilizer.js:119 [Sidebar Stabilizer] Sidebar estabilizada
+sidebar-stabilizer.js:133 [Sidebar Stabilizer] Mapa posicionado corretamente
+sidebar-stabilizer.js:146 [Sidebar Stabilizer] Abas inferiores posicionadas
+sidebar-stabilizer.js:149 [Sidebar Stabilizer] Layout estabilizado com sucesso
+fix-pegman.js:16 🚶‍♂️ [PegmanFix] Tentando ajustar o mapa
+fix-pegman.js:36 🚶‍♂️ [PegmanFix] Encontrados elementos do mapa, mas não o objeto do mapa
+fix-pegman.js:39 🚶‍♂️ [PegmanFix] Objeto do mapa não encontrado
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 13 de 12
+painel-info.js:34 📊 [PainelInfo] Tentativa 4 de 10
+painel-info.js:119 📊 [PainelInfo] Botão Visualizar não encontrado
+painel-info.js:137 📊 [PainelInfo] Botão Visualizar encontrado por texto
+painel-info.js:138 Uncaught TypeError: Assignment to constant variable.
+    at criarPainel (painel-info.js:138:23)
+    at iniciar (painel-info.js:46:23)
+criarPainel @ painel-info.js:138
+iniciar @ painel-info.js:46
+setTimeout
+(anônimo) @ painel-info.js:24
+(anônimo) @ painel-info.js:23
+(anônimo) @ painel-info.js:235
+RotasMoveisBonafe/:11372 🚀 Sistema de cálculo iniciado
+RotasMoveisBonafe/:11939 🛠️ Nenhuma rota alternativa encontrada
+RotasMoveisBonafe/:12012 Uncaught SyntaxError: Failed to execute 'querySelector' on 'Document': 'button.btn-primary:contains("Visualizar")' is not a valid selector.
+    at adicionarPainelDeInformacoes (RotasMoveisBonafe/:12012:37)
+    at iniciar (RotasMoveisBonafe/:11718:5)
+adicionarPainelDeInformacoes @ RotasMoveisBonafe/:12012
+iniciar @ RotasMoveisBonafe/:11718
+setTimeout
+(anônimo) @ RotasMoveisBonafe/:11706
+(anônimo) @ RotasMoveisBonafe/:12159
+RotasMoveisBonafe/:4014 Botões de contador encontrados: 4
+4RotasMoveisBonafe/:4022 Evento de clique adicionado ao botão de contador
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:1793 [TabsInitCheck] Verificando visibilidade de abas...
+RotasMoveisBonafe/:10747 [CorrecaoDatas] Iniciando correção das datas de cidades
+2RotasMoveisBonafe/:11191 📱 Verificando rotas alternativas...
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 13 de 12
+painel-info.js:34 📊 [PainelInfo] Tentativa 5 de 10
+painel-info.js:119 📊 [PainelInfo] Botão Visualizar não encontrado
+painel-info.js:137 📊 [PainelInfo] Botão Visualizar encontrado por texto
+painel-info.js:138 Uncaught TypeError: Assignment to constant variable.
+    at criarPainel (painel-info.js:138:23)
+    at iniciar (painel-info.js:46:23)
+criarPainel @ painel-info.js:138
+iniciar @ painel-info.js:46
+setTimeout
+(anônimo) @ painel-info.js:24
+(anônimo) @ painel-info.js:23
+(anônimo) @ painel-info.js:235
+RotasMoveisBonafe/:11524 [CalculoDireto] Configurando sistema de cálculo
+RotasMoveisBonafe/:11541 [CalculoDireto] Sistema configurado
+RotasMoveisBonafe/:11939 🛠️ Nenhuma rota alternativa encontrada
+RotasMoveisBonafe/:12012 Uncaught SyntaxError: Failed to execute 'querySelector' on 'Document': 'button.btn-primary:contains("Visualizar")' is not a valid selector.
+    at adicionarPainelDeInformacoes (RotasMoveisBonafe/:12012:37)
+    at iniciar (RotasMoveisBonafe/:11718:5)
+adicionarPainelDeInformacoes @ RotasMoveisBonafe/:12012
+iniciar @ RotasMoveisBonafe/:11718
+setTimeout
+(anônimo) @ RotasMoveisBonafe/:11707
+(anônimo) @ RotasMoveisBonafe/:12159
+2layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+2RotasMoveisBonafe/:11191 📱 Verificando rotas alternativas...
+fix-pegman.js:16 🚶‍♂️ [PegmanFix] Tentando ajustar o mapa
+fix-pegman.js:36 🚶‍♂️ [PegmanFix] Encontrados elementos do mapa, mas não o objeto do mapa
+fix-pegman.js:39 🚶‍♂️ [PegmanFix] Objeto do mapa não encontrado
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 13 de 12
+painel-info.js:34 📊 [PainelInfo] Tentativa 6 de 10
+painel-info.js:119 📊 [PainelInfo] Botão Visualizar não encontrado
+painel-info.js:137 📊 [PainelInfo] Botão Visualizar encontrado por texto
+painel-info.js:138 Uncaught TypeError: Assignment to constant variable.
+    at criarPainel (painel-info.js:138:23)
+    at iniciar (painel-info.js:46:23)
+criarPainel @ painel-info.js:138
+iniciar @ painel-info.js:46
+setTimeout
+(anônimo) @ painel-info.js:24
+(anônimo) @ painel-info.js:23
+(anônimo) @ painel-info.js:235
+RotasMoveisBonafe/:11372 🚀 Sistema de cálculo iniciado
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+3RotasMoveisBonafe/:11191 📱 Verificando rotas alternativas...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+3RotasMoveisBonafe/:11191 📱 Verificando rotas alternativas...
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 13 de 12
+painel-info.js:34 📊 [PainelInfo] Tentativa 7 de 10
+painel-info.js:119 📊 [PainelInfo] Botão Visualizar não encontrado
+painel-info.js:137 📊 [PainelInfo] Botão Visualizar encontrado por texto
+painel-info.js:138 Uncaught TypeError: Assignment to constant variable.
+    at criarPainel (painel-info.js:138:23)
+    at iniciar (painel-info.js:46:23)
+criarPainel @ painel-info.js:138
+iniciar @ painel-info.js:46
+setTimeout
+(anônimo) @ painel-info.js:24
+(anônimo) @ painel-info.js:23
+(anônimo) @ painel-info.js:235
+RotasMoveisBonafe/:11524 [CalculoDireto] Configurando sistema de cálculo
+RotasMoveisBonafe/:11541 [CalculoDireto] Sistema configurado
+2layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+3RotasMoveisBonafe/:11191 📱 Verificando rotas alternativas...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+3RotasMoveisBonafe/:11191 📱 Verificando rotas alternativas...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:11191 📱 Verificando rotas alternativas...
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 13 de 12
+2RotasMoveisBonafe/:11191 📱 Verificando rotas alternativas...
+detectar-rotas.js:30 🔎 [DetectorRotas] Tentativa 13 de 12
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+3RotasMoveisBonafe/:11191 📱 Verificando rotas alternativas...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+3RotasMoveisBonafe/:11191 📱 Verificando rotas alternativas...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+3RotasMoveisBonafe/:11191 📱 Verificando rotas alternativas...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+3RotasMoveisBonafe/:11191 📱 Verificando rotas alternativas...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+3RotasMoveisBonafe/:11191 📱 Verificando rotas alternativas...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+3RotasMoveisBonafe/:11191 📱 Verificando rotas alternativas...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+3RotasMoveisBonafe/:11191 📱 Verificando rotas alternativas...
+layout-fix.js?v=20250515182715:56 [LayoutFix] Aplicando correções...
+RotasMoveisBonafe/:11191 📱 Verificando rotas alternativas...

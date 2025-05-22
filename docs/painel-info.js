@@ -113,29 +113,42 @@
     }
     
     // Encontrar botão Visualizar
-    const botaoVisualizar = document.getElementById('visualize-button');
+    let botaoVisualizar = document.getElementById('visualize-button');
     
     if (!botaoVisualizar) {
-      console.log("📊 [PainelInfo] Botão Visualizar não encontrado");
+      console.log("📊 [PainelInfo] Botão Visualizar não encontrado pelo ID");
       
-      // Tentar qualquer botão que possa ser o Visualizar
+      // Tentar várias estratégias para encontrar o botão
+      
+      // Estratégia 1: Qualquer botão que contenha o texto "Visualizar"
       const botoes = document.querySelectorAll('button');
-      let botaoEncontrado = null;
-      
       for (let i = 0; i < botoes.length; i++) {
         const texto = botoes[i].textContent || '';
         if (texto.includes('Visualizar')) {
-          botaoEncontrado = botoes[i];
+          botaoVisualizar = botoes[i];
+          console.log("📊 [PainelInfo] Botão Visualizar encontrado pelo texto");
           break;
         }
       }
       
-      if (!botaoEncontrado) {
-        return false;
+      // Estratégia 2: Buscar em elementos div ou a que possam ser botões
+      if (!botaoVisualizar) {
+        const elementos = document.querySelectorAll('div, a, span');
+        for (let i = 0; i < elementos.length; i++) {
+          const texto = elementos[i].textContent || '';
+          if (texto.trim() === 'Visualizar') {
+            botaoVisualizar = elementos[i];
+            console.log("📊 [PainelInfo] Elemento 'Visualizar' encontrado");
+            break;
+          }
+        }
       }
       
-      console.log("📊 [PainelInfo] Botão Visualizar encontrado por texto");
-      botaoVisualizar = botaoEncontrado;
+      // Ainda não encontrou
+      if (!botaoVisualizar) {
+        console.log("📊 [PainelInfo] Não foi possível encontrar o botão Visualizar");
+        return false;
+      }
     }
     
     console.log("📊 [PainelInfo] Criando painel");
@@ -144,10 +157,19 @@
     const container = document.createElement('div');
     container.id = 'container-info-rotas';
     
-    // Mover botão para container
-    const parent = botaoVisualizar.parentNode;
-    parent.removeChild(botaoVisualizar);
-    container.appendChild(botaoVisualizar);
+    // Mover botão para container ou colocar container próximo do botão
+    let parent = botaoVisualizar.parentNode;
+    
+    // Se não conseguir remover, apenas inserir o container ao lado
+    try {
+      parent.removeChild(botaoVisualizar);
+      container.appendChild(botaoVisualizar);
+    } catch (e) {
+      console.log("📊 [PainelInfo] Não foi possível mover o botão, inserindo container ao lado");
+      // Não mexer no botão, apenas inserir container após
+      parent = botaoVisualizar.parentNode;
+      container.appendChild(document.createElement('div')); // Placeholder para o botão
+    }
     
     // Criar painel
     const painel = document.createElement('div');
@@ -177,23 +199,36 @@
       document.head.appendChild(link);
     }
     
-    // Interceptar clique no botão
-    const clickOriginal = botaoVisualizar.onclick;
-    botaoVisualizar.onclick = function(event) {
-      // Executar comportamento original
-      if (clickOriginal) {
-        clickOriginal.call(this, event);
-      }
-      
-      // Atualizar informações
-      const rotaSelecionada = document.querySelector('.rota-selecionada');
-      if (rotaSelecionada) {
-        atualizarPainel(
-          rotaSelecionada.getAttribute('data-distancia'),
-          rotaSelecionada.getAttribute('data-tempo')
-        );
-      }
-    };
+    // Interceptar clique no botão com tratamento de erros
+    try {
+      const clickOriginal = botaoVisualizar.onclick;
+      botaoVisualizar.addEventListener('click', function(event) {
+        // Executar comportamento original se possível
+        if (clickOriginal && typeof clickOriginal === 'function') {
+          try {
+            clickOriginal.call(this, event);
+          } catch (e) {
+            console.log("📊 [PainelInfo] Erro ao executar comportamento original do botão:", e);
+          }
+        }
+        
+        // Atualizar informações
+        setTimeout(function() {
+          const rotaSelecionada = document.querySelector('.rota-selecionada');
+          if (rotaSelecionada) {
+            atualizarPainel(
+              rotaSelecionada.getAttribute('data-distancia'),
+              rotaSelecionada.getAttribute('data-tempo')
+            );
+          } else {
+            console.log("📊 [PainelInfo] Nenhuma rota selecionada para exibir no painel");
+          }
+        }, 500); // Pequeno atraso para dar tempo de processar a rota
+      });
+      console.log("📊 [PainelInfo] Evento de clique adicionado ao botão Visualizar");
+    } catch (e) {
+      console.log("📊 [PainelInfo] Não foi possível adicionar evento de clique ao botão:", e);
+    }
     
     return true;
   }
