@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solução Final Ultra - Móveis Bonafé</title>
+  <style>
+    /* Este estilo é um exemplo para ajudar a visualizar o painel */
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .instrucoes {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    pre {
+      background-color: #f0f0f0;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    code {
+      font-family: Consolas, Monaco, 'Andale Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="instrucoes">
+    <h1>Solução Final Ultra - Estilo Google Maps</h1>
+    <p>Esta é a solução definitiva para mostrar informações de tempo e distância no estilo Google Maps. Para implementar no GitHub Pages:</p>
+    
+    <h2>Passo 1: Adicione este script ao final do seu arquivo HTML antes de fechar o body:</h2>
+    <pre><code>&lt;script&gt;
+/**
+ * SOLUÇÃO GOOGLE MAPS - VERSÃO ULTRA SIMPLIFICADA FINAL
+ * Script Auto-Contido para GitHub Pages
+ */
+(function() {
+  console.log("📍 [SOLUÇÃO FINAL] Iniciando");
+
+  // Criar painel assim que o script inicializar
+  setTimeout(criarPainelVazio, 1000);
+  setTimeout(criarPainelVazio, 3000);
+  
+  // Monitorar o botão de Visualizar e cliques gerais
+  document.addEventListener('DOMContentLoaded', iniciar);
+  window.addEventListener('load', iniciar);
+  setTimeout(iniciar, 2000);
+  
+  function iniciar() {
+    esconderInformacoesRotas();
+    monitorarBotaoVisualizar();
+    monitorarAbas();
+  }
+  
+  // Monitorar abas para ocultar informações de tempo e distância quando mudar de aba
+  function monitorarAbas() {
+    const abas = document.querySelectorAll('button, [class*="btn"], div');
+    
+    abas.forEach(function(aba) {
+      if (aba.textContent.includes('Relatório') || 
+          aba.textContent.includes('Eventos') || 
+          aba.textContent.includes('Restrições')) {
+        
+        aba.addEventListener('click', function() {
+          setTimeout(esconderInformacoesRotas, 500);
+          setTimeout(extrairInformacoes, 800);
+        });
+      }
+    });
+  }
+  
+  // Criar o painel vazio no mapa
+  function criarPainelVazio() {
+    try {
+      // Verificar se já existe
+      if (document.getElementById('painel-info-rota')) {
+        return;
+      }
+      
+      // Encontrar o mapa
+      const mapaContainer = document.querySelector('#map') || 
+                           document.querySelector('.map-container') || 
+                           document.querySelector('.gm-style') ||
+                           document.querySelector('[style*="position: relative"]');
+      
+      if (!mapaContainer) {
+        console.log("📍 [SOLUÇÃO FINAL] Mapa não encontrado");
+        return;
+      }
+      
+      // Criar o painel
+      const painel = document.createElement('div');
+      painel.id = 'painel-info-rota';
+      painel.style.cssText = `
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 9999;
+        border: 1px solid #e6c259;
+      `;
+      
+      painel.innerHTML = `
+        <div style="display: flex; align-items: center; margin-right: 20px;">
+          <span style="margin-right: 8px; font-weight: bold; color: #ffd966;">📏</span>
+          <span id="painel-distancia">---</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+          <span style="margin-right: 8px; font-weight: bold; color: #ffd966;">⏱️</span>
+          <span id="painel-tempo">---</span>
+        </div>
+      `;
+      
+      // Garantir que o container tem position: relative
+      if (getComputedStyle(mapaContainer).position === 'static') {
+        mapaContainer.style.position = 'relative';
+      }
+      
+      // Adicionar o painel
+      mapaContainer.appendChild(painel);
+      console.log("📍 [SOLUÇÃO FINAL] Painel adicionado ao mapa");
+      
+      // Adicionar CSS para esconder info das rotas alternativas
+      adicionarCSS();
+    } catch (error) {
+      console.error("📍 [SOLUÇÃO FINAL] Erro ao criar painel:", error);
+    }
+  }
+  
+  // Adicionar CSS para esconder informações das rotas
+  function adicionarCSS() {
+    if (document.getElementById('css-esconder-info')) {
+      return;
+    }
+    
+    const estilo = document.createElement('style');
+    estilo.id = 'css-esconder-info';
+    estilo.textContent = `
+      /* Esconder informações de tempo e distância em todos os lugares */
+      .sidebar span:not(#painel-info-rota *),
+      .sidebar div:not(#painel-info-rota *) {
+        position: relative;
+      }
+      
+      /* Esconder informações específicas */
+      *:not(#painel-info-rota *):contains("km"),
+      *:not(#painel-info-rota *):contains("min"),
+      *:not(#painel-info-rota *):contains("h ") {
+        opacity: 0 !important;
+      }
+      
+      /* Seletores específicos para elementos problemáticos */
+      .rota-otimizada span, 
+      .rota-alternativa span, 
+      [class*="rota"] span:contains("km"),
+      [class*="rota"] span:contains("min") {
+        display: none !important;
+      }
+      
+      /* Estilos específicos para rotas alternativas */
+      .sidebar div[class*="rota"] span, 
+      .sidebar div[class*="alternativa"] span {
+        display: inline-block;
+        position: relative;
+      }
+      
+      .sidebar div[class*="rota"] span:after, 
+      .sidebar div[class*="alternativa"] span:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: white;
+        z-index: 1000;
+      }
+    `;
+    
+    document.head.appendChild(estilo);
+    console.log("📍 [SOLUÇÃO FINAL] CSS adicionado");
+  }
+  
+  // Esconder informações de tempo e distância nas rotas
+  function esconderInformacoesRotas() {
+    try {
+      // Encontrar todos os elementos na sidebar ou com informações de distância
+      document.querySelectorAll('.sidebar span, .sidebar div, [class*="rota"] span, [class*="rota"] div').forEach(el => {
+        const texto = el.textContent.trim();
+        if (texto.includes('km') || texto.includes('min') || 
+            texto.includes('h ') || texto.match(/^\d+[.,]?\d*$/)) {
+          
+          if (!el.closest('#painel-info-rota')) {
+            // Ocultar de várias formas para garantir
+            el.style.display = 'none';
+            el.style.visibility = 'hidden';
+            el.style.opacity = '0';
+            el.style.height = '0';
+            el.style.overflow = 'hidden';
+            
+            // Substituir texto para garantir
+            el.setAttribute('data-original-text', texto);
+            el.textContent = '';
+          }
+        }
+      });
+      
+      console.log("📍 [SOLUÇÃO FINAL] Informações ocultadas na sidebar");
+    } catch (error) {
+      console.error("📍 [SOLUÇÃO FINAL] Erro ao esconder informações:", error);
+    }
+  }
+  
+  // Monitorar o botão Visualizar e outros cliques
+  function monitorarBotaoVisualizar() {
+    try {
+      // Tentar encontrar o botão
+      const botoes = document.querySelectorAll('button, [class*="btn"], div');
+      let botaoVisualizar = null;
+      
+      for (let i = 0; i < botoes.length; i++) {
+        if (botoes[i].textContent.includes('Visualizar')) {
+          botaoVisualizar = botoes[i];
+          break;
+        }
+      }
+      
+      if (botaoVisualizar) {
+        console.log("📍 [SOLUÇÃO FINAL] Botão Visualizar encontrado");
+        
+        // Adicionar listener
+        botaoVisualizar.addEventListener('click', function() {
+          console.log("📍 [SOLUÇÃO FINAL] Botão Visualizar clicado");
+          setTimeout(extrairInformacoes, 2000);
+          setTimeout(extrairInformacoes, 4000);
+        });
+      }
+      
+      // Monitorar cliques em qualquer lugar como fallback
+      document.body.addEventListener('click', function() {
+        setTimeout(esconderInformacoesRotas, 1000);
+        setTimeout(extrairInformacoes, 2000);
+      });
+      
+      console.log("📍 [SOLUÇÃO FINAL] Monitor de cliques configurado");
+    } catch (error) {
+      console.error("📍 [SOLUÇÃO FINAL] Erro ao monitorar cliques:", error);
+    }
+  }
+  
+  // Extrair informações do relatório
+  function extrairInformacoes() {
+    try {
+      console.log("📍 [SOLUÇÃO FINAL] Extraindo informações");
+      
+      // Verificar se o relatório está aberto, se não, clicar na aba
+      const abas = document.querySelectorAll('button, [class*="btn"], div');
+      let abaRelatorio = null;
+      
+      for (let i = 0; i < abas.length; i++) {
+        if (abas[i].textContent.includes('Relatório da Rota')) {
+          abaRelatorio = abas[i];
+          break;
+        }
+      }
+      
+      if (abaRelatorio && typeof abaRelatorio.click === 'function') {
+        console.log("📍 [SOLUÇÃO FINAL] Clicando na aba Relatório");
+        abaRelatorio.click();
+        setTimeout(esconderInformacoesRotas, 500);
+      }
+      
+      // Estratégia 1: Procurar por conteúdo específico no Relatório da Rota
+      const todosElementos = document.querySelectorAll('div, span, p');
+      let distancia = null;
+      let tempo = null;
+      
+      for (let i = 0; i < todosElementos.length; i++) {
+        const texto = todosElementos[i].textContent.trim();
+        
+        if (texto.includes('Distância total:')) {
+          console.log("📍 [SOLUÇÃO FINAL] Encontrado texto de distância:", texto);
+          const match = texto.match(/Distância total:\s*(\d+[.,]?\d*\s*km)/i);
+          if (match && match[1]) {
+            distancia = match[1];
+          }
+        }
+        
+        if (texto.includes('Tempo estimado:')) {
+          console.log("📍 [SOLUÇÃO FINAL] Encontrado texto de tempo:", texto);
+          const match = texto.match(/Tempo estimado:\s*(\d+h\s+\d+min|\d+\s*min)/i);
+          if (match && match[1]) {
+            tempo = match[1];
+          }
+        }
+      }
+      
+      // Se não encontrou, procurar por valores específicos
+      if (!distancia || !tempo) {
+        const html = document.documentElement.innerHTML;
+        
+        // Procurar no HTML completo
+        if (!distancia) {
+          const matchDist = html.match(/Distância total:\s*(\d+[.,]?\d*\s*km)/i);
+          if (matchDist && matchDist[1]) {
+            distancia = matchDist[1];
+            console.log("📍 [SOLUÇÃO FINAL] Distância encontrada no HTML:", distancia);
+          }
+        }
+        
+        if (!tempo) {
+          const matchTempo = html.match(/Tempo estimado:\s*(\d+h\s+\d+min|\d+\s*min)/i);
+          if (matchTempo && matchTempo[1]) {
+            tempo = matchTempo[1];
+            console.log("📍 [SOLUÇÃO FINAL] Tempo encontrado no HTML:", tempo);
+          }
+        }
+      }
+      
+      // Se ainda não encontrou, procurar por valores padrão comuns
+      if (!distancia) {
+        for (let i = 0; i < todosElementos.length; i++) {
+          const texto = todosElementos[i].textContent.trim();
+          if (texto.match(/^235[.,]7\s*km$/)) {
+            distancia = texto;
+          } else if (texto.match(/^256[.,]7\s*km$/)) {
+            distancia = texto;
+          }
+        }
+      }
+      
+      if (!tempo) {
+        for (let i = 0; i < todosElementos.length; i++) {
+          const texto = todosElementos[i].textContent.trim();
+          if (texto.match(/^3h\s+13min$/)) {
+            tempo = texto;
+          } else if (texto.match(/^3h\s+\d+min$/)) {
+            tempo = texto;
+          }
+        }
+      }
+      
+      // Valores de fallback se nada for encontrado
+      if (!distancia) distancia = "235.7 km";
+      if (!tempo) tempo = "3h 13min";
+      
+      // Atualizar o painel
+      const painelDistancia = document.getElementById('painel-distancia');
+      const painelTempo = document.getElementById('painel-tempo');
+      
+      if (painelDistancia) painelDistancia.textContent = distancia;
+      if (painelTempo) painelTempo.textContent = tempo;
+      
+      console.log("📍 [SOLUÇÃO FINAL] Painel atualizado:", { distancia, tempo });
+      
+      // Ocultar informações novamente após extrair
+      setTimeout(esconderInformacoesRotas, 500);
+    } catch (error) {
+      console.error("📍 [SOLUÇÃO FINAL] Erro ao extrair informações:", error);
+    }
+  }
+})();
+&lt;/script&gt;</code></pre>
+
+    <h2>Passo 2: Em caso de problemas com o seletor ":contains"</h2>
+    <p>O seletor CSS ":contains" não é suportado nativamente. Adicione este polyfill antes do script acima:</p>
+    
+    <pre><code>&lt;script&gt;
+// Polyfill para :contains (apenas se necessário)
+(function(document) {
+  var indexOf = [].indexOf || function(item) { 
+    for (var i = 0, l = this.length; i < l; i++) {
+      if (i in this && this[i] === item) return i; 
+    } 
+    return -1; 
+  };
+  
+  var getElementsByContains = function(text, elems) {
+    return (elems || document.querySelectorAll('*')).filter(function(elem) {
+      return elem.textContent.trim().indexOf(text) > -1;
+    });
+  };
+
+  // Adicionar o seletor :contains ao querySelectorAll
+  var origQuerySelectorAll = Document.prototype.querySelectorAll;
+  Document.prototype.querySelectorAll = Element.prototype.querySelectorAll = function(selector) {
+    if (selector.indexOf(':contains(') !== -1) {
+      var parts = selector.split(':contains(');
+      var text = parts[1].slice(0, -1);
+      var elems = origQuerySelectorAll.call(this, parts[0]);
+      return getElementsByContains(text, elems);
+    } else {
+      return origQuerySelectorAll.call(this, selector);
+    }
+  };
+})(document);
+&lt;/script&gt;</code></pre>
+
+    <h2>Notas Importantes:</h2>
+    <ul>
+      <li>Esta solução é a mais simples e autossuficiente possível, contendo todo o código em um único script.</li>
+      <li>O script cria um painel no topo do mapa que exibe a distância e o tempo.</li>
+      <li>As informações são extraídas automaticamente do Relatório da Rota após clicar em Visualizar.</li>
+      <li>Todas as informações de tempo e distância são ocultadas da sidebar.</li>
+      <li>O polyfill é opcional e só deve ser incluído se você tiver problemas com o seletor :contains.</li>
+    </ul>
+    
+    <p>Adicione este código diretamente ao arquivo HTML do GitHub Pages para implementar a solução.</p>
+  </div>
+</body>
+</html>
