@@ -1,4 +1,73 @@
-/**
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solução Final - Móveis Bonafé</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1, h2 {
+      color: #333;
+      border-bottom: 2px solid #ffd966;
+      padding-bottom: 10px;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    code {
+      font-family: Consolas, Monaco, 'Andale Mono', monospace;
+      font-size: 14px;
+    }
+    .important {
+      background-color: #fff9e6;
+      border-left: 4px solid #ffd966;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    .code-section {
+      margin: 20px 0;
+    }
+    .steps {
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+    }
+    .steps ol {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Solução Final para Rotas Alternativas</h1>
+  
+  <div class="important">
+    <strong>Objetivo:</strong> Ocultar informações de distância e tempo das rotas alternativas e mostrar essas informações em um painel elegante ao lado do botão Visualizar.
+  </div>
+  
+  <h2>1. Script Minimalista</h2>
+  
+  <div class="steps">
+    <p>Instruções para implementação:</p>
+    <ol>
+      <li>Copie o código abaixo</li>
+      <li>Crie um arquivo chamado <code>solucao-minima.js</code> no GitHub</li>
+      <li>Cole o código no arquivo</li>
+      <li>Referencie o script no HTML com <code>&lt;script src="solucao-minima.js"&gt;&lt;/script&gt;</code></li>
+    </ol>
+  </div>
+  
+  <div class="code-section">
+    <pre><code>/**
  * SOLUÇÃO MÍNIMA PARA GITHUB PAGES
  * 
  * Esta é uma versão ultra simplificada que:
@@ -284,4 +353,192 @@
     
     console.log(`🛠️ [Solução Mínima] Informações atualizadas: ${distanciaTexto}, ${tempoTexto}`);
   }
-})();
+})();</code></pre>
+  </div>
+  
+  <h2>2. Script para Preservar o Pegman</h2>
+  
+  <div class="steps">
+    <p>Este script mantém o Pegman (Street View) visível no mapa:</p>
+    <ol>
+      <li>Crie um arquivo chamado <code>fix-pegman.js</code> no GitHub</li>
+      <li>Cole o código abaixo</li>
+      <li>Referencie o script no HTML com <code>&lt;script src="fix-pegman.js"&gt;&lt;/script&gt;</code></li>
+    </ol>
+  </div>
+  
+  <div class="code-section">
+    <pre><code>/**
+ * CORREÇÃO DO PEGMAN (STREET VIEW)
+ * 
+ * Este script garante que o ícone do Pegman (Street View) seja mantido no mapa
+ * enquanto remove outros controles desnecessários.
+ */
+(function() {
+  console.log("🚶‍♂️ [PegmanFix] Inicializando ajustes para adicionar Pegman");
+  
+  // Variáveis para controle
+  let tentativas = 0;
+  const MAX_TENTATIVAS = 10;
+  let ajustesAplicados = false;
+  
+  // Executar quando a página carrega
+  window.addEventListener('load', iniciar);
+  
+  // Também tentar imediatamente
+  setTimeout(iniciar, 100);
+  
+  // E em intervalos
+  const intervalos = [1000, 2000, 3000, 5000, 8000];
+  intervalos.forEach(tempo => {
+    setTimeout(iniciar, tempo);
+  });
+  
+  // Função principal
+  function iniciar() {
+    if (ajustesAplicados || tentativas >= MAX_TENTATIVAS) {
+      return;
+    }
+    
+    tentativas++;
+    console.log("🚶‍♂️ [PegmanFix] Tentando ajustar o mapa");
+    
+    // Verificar se o mapa do Google está carregado
+    if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+      console.log("🚶‍♂️ [PegmanFix] API do Google Maps ainda não carregada");
+      return;
+    }
+    
+    // Tentar encontrar o objeto do mapa
+    const mapElements = document.querySelectorAll('.gm-style');
+    if (mapElements.length === 0) {
+      console.log("🚶‍♂️ [PegmanFix] Elementos do mapa não encontrados");
+      return;
+    }
+    
+    console.log(`🚶‍♂️ [PegmanFix] Encontrados ${mapElements.length} elementos do mapa, mas não o objeto do mapa`);
+    
+    // Como não temos acesso direto ao objeto do mapa, vamos usar uma abordagem alternativa
+    // Adicionar CSS para garantir que o Pegman seja visível e outros controles sejam escondidos
+    adicionarCSS();
+    
+    // Tentar outras abordagens baseadas no DOM
+    setTimeout(ajustarControlesMapa, 1000);
+    
+    ajustesAplicados = true;
+  }
+  
+  // Adicionar CSS para controlar os elementos do mapa
+  function adicionarCSS() {
+    if (document.getElementById('css-pegman-fix')) {
+      return;
+    }
+    
+    const estilo = document.createElement('style');
+    estilo.id = 'css-pegman-fix';
+    estilo.textContent = `
+      /* Manter o Pegman (Street View) */
+      .gm-svpc {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+      
+      /* Esconder botões de edição e fullscreen */
+      .gm-style-mtc,
+      .gm-fullscreen-control {
+        display: none !important;
+      }
+      
+      /* Estilizar o botão do Pegman para destacá-lo */
+      .gm-svpc {
+        background-color: #fff !important;
+        border-radius: 4px !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+        cursor: grab !important;
+      }
+      
+      /* Deixar o mapa com controles mínimos */
+      .gmnoprint:not(.gm-bundled-control) {
+        display: none !important;
+      }
+      
+      /* Manter apenas os controles essenciais */
+      .gm-bundled-control .gmnoprint {
+        display: block !important;
+      }
+    `;
+    
+    document.head.appendChild(estilo);
+    console.log("🚶‍♂️ [PegmanFix] CSS para o Pegman adicionado");
+  }
+  
+  // Tentar ajustar os controles do mapa pelo DOM
+  function ajustarControlesMapa() {
+    // Verificar se o Pegman está visível
+    const pegman = document.querySelector('.gm-svpc');
+    if (pegman) {
+      console.log("🚶‍♂️ [PegmanFix] Pegman encontrado e ajustado");
+      
+      // Garantir que seja visível
+      pegman.style.display = 'block';
+      pegman.style.visibility = 'visible';
+      pegman.style.opacity = '1';
+      
+      // Adicionar uma borda amarela suave para destacar
+      pegman.style.borderColor = '#ffd966';
+    } else {
+      console.log("🚶‍♂️ [PegmanFix] Pegman não encontrado no DOM");
+    }
+    
+    // Esconder botões de fullscreen
+    const fullscreenBtn = document.querySelector('.gm-fullscreen-control');
+    if (fullscreenBtn) {
+      fullscreenBtn.style.display = 'none';
+      console.log("🚶‍♂️ [PegmanFix] Botão de tela cheia escondido");
+    }
+    
+    // Aplicar cor amarela do Móveis Bonafé nos botões
+    const botoes = document.querySelectorAll('.gm-control-active');
+    botoes.forEach(botao => {
+      botao.style.backgroundColor = '#ffd966';
+      botao.style.borderColor = '#e6c259';
+    });
+    
+    console.log("🚶‍♂️ [PegmanFix] Ajustes nos controles do mapa aplicados");
+  }
+})();</code></pre>
+  </div>
+  
+  <h2>3. Como Implementar</h2>
+  
+  <div class="steps">
+    <p>Para implementar esta solução no GitHub Pages:</p>
+    <ol>
+      <li>Faça upload dos arquivos <code>solucao-minima.js</code> e <code>fix-pegman.js</code> para a raiz do repositório</li>
+      <li>Edite o arquivo <code>index.html</code> para incluir os scripts no final do body:</li>
+    </ol>
+  </div>
+  
+  <div class="code-section">
+    <pre><code>&lt;!-- Script para adicionar o Pegman (Street View) ao mapa --&gt;
+&lt;script src="fix-pegman.js"&gt;&lt;/script&gt;
+
+&lt;!-- Solução mínima para rotas alternativas --&gt;
+&lt;script src="solucao-minima.js"&gt;&lt;/script&gt;</code></pre>
+  </div>
+  
+  <div class="important">
+    <p><strong>Importante:</strong> Esta solução foi otimizada para ser o mais simples e robusta possível, minimizando conflitos com outros scripts já existentes no sistema.</p>
+  </div>
+  
+  <h2>4. Resultado Esperado</h2>
+  
+  <ul>
+    <li>As informações de distância e tempo serão ocultadas nas rotas alternativas</li>
+    <li>Um painel elegante aparecerá ao lado do botão Visualizar com estas informações</li>
+    <li>O Pegman (Street View) permanecerá visível no mapa</li>
+    <li>Os botões terão a cor amarela da identidade visual da Móveis Bonafé</li>
+  </ul>
+</body>
+</html>
