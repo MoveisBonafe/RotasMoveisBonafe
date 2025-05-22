@@ -11085,8 +11085,182 @@
 <!-- Solução final com máxima compatibilidade para GitHub Pages -->
 <script src="fix-direto-final.js"></script>
 
-<!-- Script ULTRA SIMPLIFICADO embutido diretamente no HTML -->
+<!-- Script MODIFICAÇÃO DIRETA DAS ROTAS ALTERNATIVAS -->
 <script>
+// Script para modificar rotas alternativas diretamente
+document.addEventListener("DOMContentLoaded", function() {
+  console.log("📱 Iniciando modificação das rotas alternativas");
+  
+  // Função principal
+  function modificarRotasAlternativas() {
+    console.log("📱 Verificando rotas alternativas...");
+    
+    // Encontrar todas as rotas alternativas
+    const rotas = document.querySelectorAll('.route-alternative');
+    if (rotas.length > 0) {
+      console.log("📱 Encontradas " + rotas.length + " rotas alternativas");
+      
+      // Processar cada rota
+      rotas.forEach(function(rota) {
+        // Ocultar elementos de distância e tempo
+        const distancias = rota.querySelectorAll('.route-distance');
+        const tempos = rota.querySelectorAll('.route-time');
+        
+        // Salvar informações antes de ocultar
+        if (distancias.length > 0 && tempos.length > 0) {
+          rota.setAttribute('data-distancia', distancias[0].textContent);
+          rota.setAttribute('data-tempo', tempos[0].textContent);
+        }
+        
+        // Ocultar elementos
+        distancias.forEach(function(d) { 
+          d.style.display = 'none'; 
+          d.style.visibility = 'hidden';
+        });
+        
+        tempos.forEach(function(t) { 
+          t.style.display = 'none'; 
+          t.style.visibility = 'hidden';
+        });
+        
+        // Estilizar a rota alternativa
+        rota.style.cursor = 'pointer';
+        rota.style.transition = 'all 0.2s';
+        
+        // Adicionar evento de clique para selecionar
+        rota.addEventListener('click', function() {
+          // Remover seleção anterior
+          document.querySelectorAll('.route-alternative').forEach(function(r) {
+            r.style.backgroundColor = '';
+            r.style.borderColor = '';
+          });
+          
+          // Adicionar seleção
+          this.style.backgroundColor = '#fffbeb';
+          this.style.borderColor = '#ffd966';
+          
+          // Atualizar informações junto ao botão
+          atualizarInfoBotao(this.getAttribute('data-distancia'), 
+                            this.getAttribute('data-tempo'));
+        });
+      });
+      
+      // Modificar texto explicativo
+      const textoExplicativo = document.querySelector('.route-alternative-box p.text-muted');
+      if (textoExplicativo) {
+        textoExplicativo.textContent = 'Selecione uma rota e clique em Visualizar para ver detalhes.';
+        textoExplicativo.style.fontStyle = 'italic';
+        textoExplicativo.style.fontSize = '13px';
+        textoExplicativo.style.textAlign = 'center';
+      }
+      
+      // Modificar botão Visualizar
+      modificarBotaoVisualizar();
+    } else {
+      // Tentar novamente em breve
+      setTimeout(modificarRotasAlternativas, 1000);
+    }
+  }
+  
+  // Modificar o botão Visualizar para mostrar informações
+  function modificarBotaoVisualizar() {
+    const botao = document.getElementById('visualize-button');
+    if (!botao) return;
+    
+    // Melhorar aparência do botão
+    botao.style.backgroundColor = '#ffc107';
+    botao.style.color = '#212529';
+    botao.style.fontWeight = 'bold';
+    botao.style.padding = '8px 15px';
+    botao.style.borderRadius = '4px';
+    botao.style.minWidth = '120px';
+    
+    // Criar container para botão e informações
+    const container = document.createElement('div');
+    container.style.display = 'flex';
+    container.style.alignItems = 'center';
+    container.style.margin = '10px 0';
+    container.style.padding = '5px';
+    container.style.backgroundColor = '#f5f5f5';
+    container.style.borderRadius = '6px';
+    
+    // Mover botão para container
+    const parent = botao.parentNode;
+    parent.removeChild(botao);
+    container.appendChild(botao);
+    
+    // Adicionar área para informações
+    const infoArea = document.createElement('div');
+    infoArea.id = 'rota-info-area';
+    infoArea.style.marginLeft = '12px';
+    infoArea.style.padding = '8px 12px';
+    infoArea.style.backgroundColor = 'white';
+    infoArea.style.borderRadius = '4px';
+    infoArea.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+    infoArea.style.fontSize = '14px';
+    infoArea.style.color = '#555';
+    
+    // Adicionar elementos para distância e tempo
+    infoArea.innerHTML = `
+      <div id="info-distancia" style="margin-bottom: 5px;">
+        <i class="fa fa-road" style="margin-right: 5px;"></i>
+        <span>Selecione uma rota</span>
+      </div>
+      <div id="info-tempo">
+        <i class="fa fa-clock" style="margin-right: 5px;"></i>
+        <span>Selecione uma rota</span>
+      </div>
+    `;
+    
+    // Adicionar ao container
+    container.appendChild(infoArea);
+    
+    // Adicionar container ao DOM
+    parent.appendChild(container);
+    
+    // Adicionar Font Awesome se necessário
+    if (!document.querySelector('link[href*="font-awesome"]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css';
+      document.head.appendChild(link);
+    }
+  }
+  
+  // Atualizar informações no botão
+  function atualizarInfoBotao(distancia, tempo) {
+    const distanciaEl = document.getElementById('info-distancia');
+    const tempoEl = document.getElementById('info-tempo');
+    
+    if (distanciaEl && tempoEl && distancia && tempo) {
+      distanciaEl.innerHTML = `<i class="fa fa-road" style="margin-right: 5px;"></i> ${distancia}`;
+      tempoEl.innerHTML = `<i class="fa fa-clock" style="margin-right: 5px;"></i> ${tempo}`;
+    }
+  }
+  
+  // Iniciar após um momento
+  setTimeout(modificarRotasAlternativas, 500);
+  setTimeout(modificarRotasAlternativas, 1500);
+  setTimeout(modificarRotasAlternativas, 3000);
+  
+  // Também monitorar alterações no DOM
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.type === 'childList' && 
+          document.querySelector('.route-alternative')) {
+        modificarRotasAlternativas();
+      }
+    });
+  });
+  
+  // Começar a observar o documento
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+});
+
+// Script original para cálculo com velocidade constante
 (function() {
   console.log("🚀 INICIANDO CÁLCULO SUPER DIRETO");
   
