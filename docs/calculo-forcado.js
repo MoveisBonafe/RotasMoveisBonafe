@@ -5,7 +5,15 @@
  * ignorando os cálculos inconsistentes do Google Maps para garantir comparações justas.
  */
 (function() {
-  console.log("⚙️ [CalculoForcado] Inicializando sistema de cálculos forçados");
+  // Registrar execução para verificação posterior
+  window.calculoForcadoExecutado = true;
+  
+  // Garantir que o script seja executado tanto localmente quanto no GitHub Pages
+  console.log("⚙️ [CalculoForcado] Inicializando sistema de cálculos forçados - VERSÃO GITHUB");
+  
+  // Alertar no console a versão e data de execução para debug
+  console.log("⚙️ [CalculoForcado] Data de execução:", new Date().toISOString());
+  console.log("⚙️ [CalculoForcado] URL atual:", window.location.href);
   
   // Guardar referências do Google Maps
   let directionsService = null;

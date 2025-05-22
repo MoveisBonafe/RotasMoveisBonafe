@@ -11081,7 +11081,60 @@
 
 <!-- Script para adicionar o Pegman (Street View) ao mapa -->
 <script src="fix-pegman.js"></script>
+<!-- Script para depuração no GitHub Pages -->
+<script src="debug-github.js"></script>
 <!-- Script para cálculos consistentes com velocidade média fixa -->
 <script src="calculo-forcado.js"></script>
+<!-- Script para forçar velocidade (secundário) -->
+<script>
+  // Script de emergência para garantir execução no GitHub Pages
+  // Será executado se o arquivo principal falhar
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      console.log("[CalculoEmergencia] Verificando se o cálculo forçado foi carregado");
+      
+      // Verificar se o cálculo principal foi executado
+      if (!window.calculoForcadoExecutado) {
+        console.log("[CalculoEmergencia] Aplicando correção secundária");
+        
+        // Interceptar botões
+        const botaoOtimizar = document.getElementById('optimize-button');
+        if (botaoOtimizar) {
+          const clickOriginal = botaoOtimizar.onclick;
+          botaoOtimizar.onclick = function(event) {
+            // Executar o comportamento original
+            if (clickOriginal) clickOriginal.call(this, event);
+            
+            // Aplicar nossa correção
+            setTimeout(function() {
+              const infoRota = document.getElementById('route-info');
+              if (infoRota && infoRota.innerHTML.includes('Rota Otimizada')) {
+                console.log("[CalculoEmergencia] Corrigindo valores de tempo/distância");
+                
+                // Extrair distância atual
+                const matchDistancia = infoRota.innerHTML.match(/Distância total:<\/strong>\s*(\d+[.,]\d+)\s*km/i);
+                if (matchDistancia) {
+                  // Calcular tempo com velocidade média de 90 km/h
+                  const distanciaKm = parseFloat(matchDistancia[1].replace(',', '.'));
+                  const tempoHoras = distanciaKm / 90;
+                  const horasInt = Math.floor(tempoHoras);
+                  const minutosInt = Math.round((tempoHoras - horasInt) * 60);
+                  
+                  // Substituir o tempo no HTML
+                  const novoHTML = infoRota.innerHTML.replace(
+                    /Tempo estimado:<\/strong>\s*(\d+)h\s*(\d+)min/i,
+                    `Tempo estimado:</strong> ${horasInt}h ${minutosInt}min (velocidade média 90 km/h)`
+                  );
+                  
+                  infoRota.innerHTML = novoHTML;
+                }
+              }
+            }, 1000);
+          };
+        }
+      }
+    }, 5000);
+  });
+</script>
 </body>
 </html>
