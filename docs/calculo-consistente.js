@@ -1,26 +1,40 @@
 /**
  * Calculador Consistente de Rotas
  * 
- * Este script padroniza os cálculos de tempo e distância entre rotas alternativas,
- * mantendo valores consistentes para facilitar a comparação.
+ * Este script garante consistência nos cálculos de distância e tempo entre rotas,
+ * usando o mesmo método de cálculo da rota normal para a otimizada.
+ * 
+ * O problema: O Google Maps usa algoritmos diferentes para calcular rotas,
+ * resultando em valores inconsistentes mesmo para os mesmos pontos.
+ * 
+ * Solução: Capturamos o cálculo da rota normal (que é o mais preciso segundo o cliente)
+ * e usamos esse mesmo cálculo para a rota otimizada, garantindo comparações justas.
  */
 (function() {
   console.log("📊 [CalculoConsistente] Iniciando padronização dos cálculos");
   
-  // Armazenar os valores da primeira rota calculada
+  // Armazenar os valores da primeira rota calculada (não otimizada)
   let valorPadrao = {
     distancia: null,    // Distância em km
     tempo: null,        // Tempo em minutos
     paradas: null,      // Número de paradas
-    calculado: false    // Flag para verificar se já calculamos
+    calculado: false,   // Flag para verificar se já calculamos
+    rotaOriginal: []    // Ordem original dos pontos
   };
+  
+  // Armazenar os pares de distância entre pontos (para recálculo)
+  let matrizDistancias = {};
   
   // Valores da última rota otimizada
   let valorOtimizado = {
     distancia: null,
     tempo: null,
-    calculado: false
+    calculado: false,
+    rotaOtimizada: []   // Ordem otimizada dos pontos
   };
+  
+  // Flag para indicar se estamos interceptando o cálculo de rota
+  let interceptandoCalculo = false;
   
   // Executar quando a página estiver carregada
   window.addEventListener('load', iniciar);
