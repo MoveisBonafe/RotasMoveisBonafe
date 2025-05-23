@@ -231,20 +231,43 @@
     
     // Monitorar botões de rotas alternativas
     const observarRotasAlternativas = () => {
+      // Observar os cards de rota alternativa na sidebar
+      const routeCards = document.querySelectorAll('.route-option-card');
+      routeCards.forEach(card => {
+        card.addEventListener('click', () => {
+          console.log("🎯 [RouteInterceptor] Card de rota alternativa clicado - limpeza imediata");
+          
+          // Resetar valores imediatamente
+          ultimaDistancia = '--';
+          ultimoTempo = '--';
+          atualizarMostrador();
+          
+          // Limpar mapa ANTES da nova rota
+          limparMapaCompletamente();
+          
+          // Aguardar e limpar novamente para garantir
+          setTimeout(limparMapaCompletamente, 100);
+          setTimeout(limparMapaCompletamente, 500);
+        });
+      });
+      
+      // Também observar botões tradicionais
       const botoes = document.querySelectorAll('button, .btn');
       botoes.forEach(botao => {
         const texto = botao.textContent || '';
         if (texto.includes('Proximidade') || texto.includes('Alternativa') || texto.includes('Otimizada')) {
           botao.addEventListener('click', () => {
-            console.log("🎯 [RouteInterceptor] Rota alternativa clicada - limpando");
+            console.log("🎯 [RouteInterceptor] Botão de rota alternativa clicado - limpeza imediata");
             
             // Resetar valores
             ultimaDistancia = '--';
             ultimoTempo = '--';
             atualizarMostrador();
             
-            // Limpar mapa
-            setTimeout(limparMapaCompletamente, 300);
+            // Limpar mapa múltiplas vezes para garantir
+            limparMapaCompletamente();
+            setTimeout(limparMapaCompletamente, 100);
+            setTimeout(limparMapaCompletamente, 400);
           });
         }
       });
@@ -261,29 +284,54 @@
       // Método 1: Limpar via DirectionsRenderer se disponível
       if (window.map && window.map.directionsRenderer) {
         window.map.directionsRenderer.setDirections({routes: []});
-        console.log("🎯 [RouteInterceptor] DirectionsRenderer limpo");
+        window.map.directionsRenderer.setMap(null);
+        
+        // Recriar DirectionsRenderer limpo
+        window.map.directionsRenderer = new google.maps.DirectionsRenderer({
+          map: window.map,
+          draggable: true,
+          suppressMarkers: false
+        });
+        console.log("🎯 [RouteInterceptor] DirectionsRenderer recriado limpo");
       }
       
-      // Método 2: Remover elementos SVG de rota
-      const svgs = document.querySelectorAll('svg');
-      svgs.forEach(svg => {
-        const paths = svg.querySelectorAll('path[stroke]');
-        if (paths.length > 0) {
-          paths.forEach(path => {
-            if (path.getAttribute('stroke') && path.getAttribute('stroke') !== 'none') {
-              path.remove();
-            }
-          });
-        }
-      });
+      // Método 2: Limpar polylines principais
+      if (window.mainPolyline) {
+        window.mainPolyline.setMap(null);
+        window.mainPolyline = null;
+        console.log("🎯 [RouteInterceptor] Polyline principal removida");
+      }
       
-      // Método 3: Limpar polylines duplicadas
+      // Método 3: Limpar todas as polylines registradas
       if (window.map && window.map.polylines) {
         window.map.polylines.forEach(polyline => {
           polyline.setMap(null);
         });
         window.map.polylines = [];
+        console.log("🎯 [RouteInterceptor] Todas as polylines limpas");
       }
+      
+      // Método 4: Limpar polylines globais
+      if (window.polylines && Array.isArray(window.polylines)) {
+        window.polylines.forEach(polyline => {
+          if (polyline && polyline.setMap) {
+            polyline.setMap(null);
+          }
+        });
+        window.polylines = [];
+        console.log("🎯 [RouteInterceptor] Polylines globais limpas");
+      }
+      
+      // Método 5: Remover elementos SVG de rota duplicados
+      const svgs = document.querySelectorAll('svg');
+      svgs.forEach(svg => {
+        const paths = svg.querySelectorAll('path[stroke]');
+        if (paths.length > 1) { // Se há mais de um path, remover os extras
+          for (let i = 1; i < paths.length; i++) {
+            paths[i].remove();
+          }
+        }
+      });
       
       console.log("🎯 [RouteInterceptor] Limpeza completa do mapa finalizada");
       
