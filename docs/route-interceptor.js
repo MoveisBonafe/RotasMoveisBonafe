@@ -242,12 +242,18 @@
           ultimoTempo = '--';
           atualizarMostrador();
           
-          // Limpar mapa ANTES da nova rota
+          // Limpar mapa IMEDIATAMENTE
           limparMapaCompletamente();
           
-          // Aguardar e limpar novamente para garantir
-          setTimeout(limparMapaCompletamente, 100);
-          setTimeout(limparMapaCompletamente, 500);
+          // Aguardar e limpar múltiplas vezes para garantir limpeza total
+          setTimeout(limparMapaCompletamente, 50);
+          setTimeout(limparMapaCompletamente, 150);
+          setTimeout(limparMapaCompletamente, 300);
+          
+          // Bloquear temporariamente para evitar sobreposição
+          setTimeout(() => {
+            console.log("🎯 [RouteInterceptor] Mapa limpo - pronto para nova rota");
+          }, 600);
         });
       });
       
@@ -279,20 +285,28 @@
   
   function limparMapaCompletamente() {
     try {
-      console.log("🎯 [RouteInterceptor] Iniciando limpeza completa do mapa");
+      console.log("🎯 [RouteInterceptor] Iniciando limpeza TOTAL do mapa");
       
-      // Método 1: Limpar via DirectionsRenderer se disponível
+      // Método 1: Destruir TODOS os DirectionsRenderer
       if (window.map && window.map.directionsRenderer) {
         window.map.directionsRenderer.setDirections({routes: []});
         window.map.directionsRenderer.setMap(null);
-        
-        // Recriar DirectionsRenderer limpo
-        window.map.directionsRenderer = new google.maps.DirectionsRenderer({
-          map: window.map,
-          draggable: true,
-          suppressMarkers: false
-        });
-        console.log("🎯 [RouteInterceptor] DirectionsRenderer recriado limpo");
+        window.map.directionsRenderer = null;
+        console.log("🎯 [RouteInterceptor] DirectionsRenderer principal destruído");
+      }
+      
+      // Método 1.1: Limpar qualquer DirectionsRenderer adicional
+      if (window.directionsRenderer) {
+        window.directionsRenderer.setDirections({routes: []});
+        window.directionsRenderer.setMap(null);
+        window.directionsRenderer = null;
+        console.log("🎯 [RouteInterceptor] DirectionsRenderer global destruído");
+      }
+      
+      // Método 1.2: Limpar DirectionsService
+      if (window.directionsService) {
+        window.directionsService = null;
+        console.log("🎯 [RouteInterceptor] DirectionsService limpo");
       }
       
       // Método 2: Limpar polylines principais
@@ -322,18 +336,39 @@
         console.log("🎯 [RouteInterceptor] Polylines globais limpas");
       }
       
-      // Método 5: Remover elementos SVG de rota duplicados
+      // Método 5: Parar TODAS as animações em curso
+      if (window.animationInProgress) {
+        window.animationInProgress = false;
+        console.log("🎯 [RouteInterceptor] Animações paradas");
+      }
+      
+      // Método 6: Limpar qualquer timeout de animação
+      if (window.animationTimeouts) {
+        window.animationTimeouts.forEach(timeout => clearTimeout(timeout));
+        window.animationTimeouts = [];
+      }
+      
+      // Método 7: Remover TODOS os elementos SVG de rota (não só duplicados)
       const svgs = document.querySelectorAll('svg');
       svgs.forEach(svg => {
         const paths = svg.querySelectorAll('path[stroke]');
-        if (paths.length > 1) { // Se há mais de um path, remover os extras
-          for (let i = 1; i < paths.length; i++) {
-            paths[i].remove();
+        paths.forEach(path => {
+          if (path.getAttribute('stroke') && 
+              path.getAttribute('stroke') !== 'none' && 
+              path.getAttribute('stroke') !== '#000000') {
+            path.remove();
+            console.log("🎯 [RouteInterceptor] SVG de rota removido");
           }
-        }
+        });
       });
       
-      console.log("🎯 [RouteInterceptor] Limpeza completa do mapa finalizada");
+      // Método 8: Forçar limpeza de todos os overlays do mapa
+      if (window.map && window.map.overlayMapTypes) {
+        window.map.overlayMapTypes.clear();
+        console.log("🎯 [RouteInterceptor] Overlays do mapa limpos");
+      }
+      
+      console.log("🎯 [RouteInterceptor] Limpeza TOTAL finalizada - mapa completamente limpo");
       
     } catch (e) {
       console.log("🎯 [RouteInterceptor] Erro na limpeza:", e);
