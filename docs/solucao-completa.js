@@ -35,66 +35,14 @@
     adicionarEstilosAmarelos();
     aplicarCoresAmarelas();
     
-    // 2. Ajustar estrutura do mapa para centralizar
-    ajustarEstruturaMapa();
-    
-    // 3. Remover botões indesejados
+    // 2. Remover botões indesejados
     removerBotoesIndesejados();
     
-    // 4. Corrigir datas das cidades
+    // 3. Corrigir datas das cidades
     corrigirDatasAniversario();
     
-    // 5. Filtrar eventos para mostrar apenas cidades na rota
+    // 4. Filtrar eventos para mostrar apenas cidades na rota
     filtrarEventosPorCidadesRota();
-  }
-  
-  // AJUSTAR ESTRUTURA DO MAPA
-  function ajustarEstruturaMapa() {
-    console.log("[SolucaoCompleta] Ajustando estrutura do mapa para centralizar");
-    
-    // Verificar se o mapa existe
-    const mapContainer = document.querySelector('.map-container');
-    const mapDiv = document.getElementById('map');
-    
-    if (!mapContainer || !mapDiv) {
-      console.log("[SolucaoCompleta] Não foi possível encontrar o container do mapa");
-      return;
-    }
-    
-    // Aplicar estilos diretamente no mapa para garantir centralização
-    mapDiv.style.width = '100%';
-    mapDiv.style.height = '100%';
-    mapDiv.style.borderRadius = '10px';
-    
-    // Ajustar o container do mapa
-    mapContainer.style.position = 'fixed';
-    mapContainer.style.top = '10px';
-    mapContainer.style.left = '310px';
-    mapContainer.style.right = '10px'; 
-    mapContainer.style.bottom = '70px';
-    mapContainer.style.padding = '0';
-    mapContainer.style.margin = '0';
-    mapContainer.style.boxShadow = '0 0 10px rgba(0,0,0,0.1)';
-    mapContainer.style.borderRadius = '10px';
-    mapContainer.style.overflow = 'hidden';
-    
-    // Verificar se precisamos recarregar o mapa
-    if (window.google && window.google.maps) {
-      try {
-        // Tentar forçar o mapa a se ajustar
-        const center = window.map ? window.map.getCenter() : null;
-        if (center) {
-          // Trigger resize para o mapa se ajustar
-          google.maps.event.trigger(window.map, 'resize');
-          // Restaurar o centro
-          window.map.setCenter(center);
-        }
-      } catch (e) {
-        console.log("[SolucaoCompleta] Não foi possível reajustar o mapa:", e);
-      }
-    }
-    
-    console.log("[SolucaoCompleta] Mapa centralizado com sucesso");
   }
   
   // ADICIONAR ESTILOS AMARELOS
@@ -104,86 +52,6 @@
     const estilo = document.createElement('style');
     estilo.id = 'estilos-amarelos-bonafe';
     estilo.textContent = `
-      /* Melhorar layout do mapa para ocupar corretamente toda a tela */
-      html, body {
-        height: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow: hidden !important;
-      }
-      
-      .container {
-        display: flex !important;
-        height: 100vh !important;
-        width: 100% !important;
-        overflow: hidden !important;
-      }
-      
-      .sidebar {
-        width: 300px !important;
-        min-width: 300px !important;
-        height: 100vh !important;
-        overflow-y: auto !important;
-        position: fixed !important;
-        left: 0 !important;
-        top: 0 !important;
-        z-index: 1000 !important;
-        padding: 15px !important;
-        box-shadow: 2px 0 10px rgba(0,0,0,0.1) !important;
-      }
-      
-      .map-container {
-        flex: 1 !important;
-        height: calc(100vh - 60px) !important;
-        position: fixed !important;
-        left: 300px !important;
-        right: 0 !important;
-        top: 0 !important;
-        bottom: 60px !important;
-        overflow: hidden !important;
-        padding: 10px !important;
-      }
-      
-      /* Estilo interno para o mapa */
-      .map-inner {
-        width: 100% !important;
-        height: 100% !important;
-        border-radius: 10px !important;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1) !important;
-        overflow: hidden !important;
-      }
-      
-      #map {
-        height: 100% !important;
-        width: 100% !important;
-        border-radius: 10px !important;
-      }
-      
-      /* Ajuste para bottom tabs não cobrir o mapa e ficar melhor posicionado */
-      .bottom-tabs {
-        position: fixed !important;
-        bottom: 0 !important;
-        left: 300px !important;
-        right: 0 !important;
-        background: rgba(248, 249, 250, 0.95) !important;
-        z-index: 500 !important;
-        padding: 10px 15px !important;
-        border-top: 1px solid rgba(0,0,0,0.1) !important;
-        max-height: 50vh !important;
-        overflow-y: auto !important;
-      }
-      
-      /* Quando as abas estão minimizadas */
-      .bottom-tabs:not(.expanded) {
-        max-height: none !important;
-        height: auto !important;
-      }
-      
-      /* Adicionar padding ao conteúdo para não ficar escondido pelas abas */
-      .map-container {
-        padding-bottom: 60px !important;
-      }
-      
       /* Botões em amarelo */
       button, 
       .button, 
@@ -267,30 +135,19 @@
     // Esconder controles do Google Maps
     const mapDiv = document.getElementById('map');
     if (mapDiv) {
-      // Tentar obter qualquer instância de mapa disponível
+      // Se temos acesso direto ao objeto map no escopo global
       try {
-        // Verificar várias formas de acessar o mapa
-        const mapInstance = window.map || 
-                            window.googleMap || 
-                            (window.google && window.google.maps && window.google.maps.Map) || 
-                            null;
-                            
-        if (mapInstance) {
-          // Se encontrarmos qualquer referência ao mapa, tentar configurar
-          try {
-            mapInstance.setOptions({
-              fullscreenControl: false,
-              streetViewControl: false,
-              zoomControl: false,
-              mapTypeControl: false
-            });
-            console.log("[SolucaoCompleta] Configurações do mapa ajustadas via API");
-          } catch (configError) {
-            console.log("[SolucaoCompleta] Não foi possível configurar o mapa:", configError);
-          }
+        if (window.map && typeof window.map.setOptions === 'function') {
+          window.map.setOptions({
+            fullscreenControl: false,
+            streetViewControl: false,
+            zoomControl: false,
+            mapTypeControl: false
+          });
+          console.log("[SolucaoCompleta] Configurações do mapa ajustadas via API");
         }
       } catch (e) {
-        console.log("[SolucaoCompleta] Não foi possível acessar o mapa:", e);
+        console.log("[SolucaoCompleta] Não foi possível configurar o mapa via API:", e);
       }
       
       // Função para verificar e remover controles do mapa periodicamente
