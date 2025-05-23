@@ -304,17 +304,37 @@ export function generateAlternativeRoutes(locations: Location[], returnToOrigin:
     totalDistance: geoDistance,
     estimatedTime: geoTime
   });
+
+  // Estratégia 4: Reverse Order (ordem inversa dos destinos)
+  if (locations.length > 2) {
+    const reverseRoute = reverseOrderTSP(locations, originIndex, returnToOrigin);
+    const reverseLocations = reverseRoute.map(index => locations[index]);
+    const reverseDistance = calculateRouteDistance(reverseLocations);
+    const reverseTime = estimateRouteTime(reverseLocations);
+    alternatives.push({
+      route: reverseLocations,
+      strategy: "Rota Inversa",
+      totalDistance: reverseDistance,
+      estimatedTime: reverseTime
+    });
+  }
   
   // Log detalhado para debug
   console.log("=== CÁLCULO DE ROTAS ALTERNATIVAS ===");
   console.log(`Rota 1 (Eficiente): ${(nearestDistance/1000).toFixed(2)}km, ${nearestTime.toFixed(0)}min`);
   console.log(`Rota 2 (Distância): ${(farthestDistance/1000).toFixed(2)}km, ${farthestTime.toFixed(0)}min`);
   console.log(`Rota 3 (Geográfica): ${(geoDistance/1000).toFixed(2)}km, ${geoTime.toFixed(0)}min`);
+  if (alternatives.length > 3) {
+    console.log(`Rota 4 (Inversa): ${(alternatives[3].totalDistance/1000).toFixed(2)}km, ${alternatives[3].estimatedTime.toFixed(0)}min`);
+  }
   
-  // Remover rotas duplicadas (mesma sequência)
+  // Remover apenas rotas realmente idênticas (mesma sequência E mesma distância)
   const uniqueAlternatives = alternatives.filter((alt, index, self) => {
-    const routeKey = alt.route.map(loc => loc.id).join('-');
-    return self.findIndex(other => other.route.map(loc => loc.id).join('-') === routeKey) === index;
+    const routeKey = `${alt.route.map(loc => loc.id).join('-')}-${alt.totalDistance.toFixed(0)}`;
+    return self.findIndex(other => {
+      const otherKey = `${other.route.map(loc => loc.id).join('-')}-${other.totalDistance.toFixed(0)}`;
+      return otherKey === routeKey;
+    }) === index;
   });
   
   // Ordenar por distância total (mais eficiente primeiro)
@@ -403,6 +423,41 @@ function geographicalTSP(locations: Location[], startIndex: number, returnToOrig
   if (returnToOrigin) route.push(startIndex);
   
   console.log(`[Geographical] Sequência final:`, route.map(i => locations[i].name));
+  return route;
+}
+
+/**
+ * Reverse Order TSP Algorithm - inverte a ordem dos destinos
+ * Estratégia: visita os destinos na ordem inversa à adição
+ */
+function reverseOrderTSP(locations: Location[], startIndex: number, returnToOrigin: boolean): number[] {
+  const numLocations = locations.length;
+  if (numLocations <= 1) return [startIndex];
+  
+  const route: number[] = [startIndex];
+  
+  // Pegar todos os índices exceto a origem e inverter a ordem
+  const destinationIndices = [];
+  for (let i = 0; i < numLocations; i++) {
+    if (i !== startIndex) {
+      destinationIndices.push(i);
+    }
+  }
+  
+  // Inverter a ordem dos destinos
+  destinationIndices.reverse();
+  
+  console.log(`[ReverseOrder] Iniciando com ${locations[startIndex].name}`);
+  console.log(`[ReverseOrder] Ordem inversa dos destinos:`, destinationIndices.map(i => locations[i].name));
+  
+  // Adicionar à rota na ordem invertida
+  destinationIndices.forEach(index => {
+    route.push(index);
+  });
+  
+  if (returnToOrigin) route.push(startIndex);
+  
+  console.log(`[ReverseOrder] Sequência final:`, route.map(i => locations[i].name));
   return route;
 }
 
