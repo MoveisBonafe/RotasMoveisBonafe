@@ -8128,11 +8128,26 @@
             }
             
             try {
-                // 3. Rota alternativa - Distante à Origem (se tiver 3+ destinos)
+                // 3. Rota Mais Eficiente (Nearest Neighbor)
+                console.log("Gerando rota: Mais Eficiente...");
+                const efficientRoute = solveNearestNeighborTSP(origin, destinations, includeOriginReturn);
+                alternativeRoutes.push(efficientRoute);
+                
+                // 4. Rota por Distância (Farthest First)
+                console.log("Gerando rota: Por Distância...");
+                const distanceRoute = solveFarthestFirstTSP(origin, destinations, includeOriginReturn);
+                alternativeRoutes.push(distanceRoute);
+                
+                // 5. Rota Geográfica (Norte-Sul)
+                console.log("Gerando rota: Geográfica...");
+                const geoRoute = solveGeographicalTSP(origin, destinations, includeOriginReturn);
+                alternativeRoutes.push(geoRoute);
+                
+                // 6. Rota Inversa (se tiver 3+ destinos)
                 if (destinations.length >= 3) {
-                    console.log("Gerando rota alternativa 2: Distante à Origem...");
-                    const distantOriginRoute = solveDistantToOriginTSP(origin, destinations, includeOriginReturn);
-                    alternativeRoutes.push(distantOriginRoute);
+                    console.log("Gerando rota: Inversa...");
+                    const reverseRoute = solveReverseTSP(origin, destinations, includeOriginReturn);
+                    alternativeRoutes.push(reverseRoute);
                     
                     // Adicionar opção ao select da sidebar
                     const alternativeSidebar = document.getElementById('alternative-routes-sidebar');
@@ -8502,6 +8517,196 @@
                 estimatedTime: 0,
                 name: "Distante à origem (erro)"
             };
+        }
+    }
+
+    // Algoritmo TSP - Nearest Neighbor (Mais Eficiente)
+    function solveNearestNeighborTSP(origin, destinations, includeOriginReturn) {
+        try {
+            const path = [origin.id];
+            let totalDistance = 0;
+            let currentLocation = origin;
+            const unvisited = [...destinations];
+            
+            while (unvisited.length > 0) {
+                let nearestIndex = 0;
+                let nearestDistance = calculateDistance(
+                    currentLocation.latitude, currentLocation.longitude,
+                    unvisited[0].latitude, unvisited[0].longitude
+                );
+                
+                for (let i = 1; i < unvisited.length; i++) {
+                    const distance = calculateDistance(
+                        currentLocation.latitude, currentLocation.longitude,
+                        unvisited[i].latitude, unvisited[i].longitude
+                    );
+                    if (distance < nearestDistance) {
+                        nearestDistance = distance;
+                        nearestIndex = i;
+                    }
+                }
+                
+                const nearestDestination = unvisited[nearestIndex];
+                path.push(nearestDestination.id);
+                totalDistance += nearestDistance;
+                currentLocation = nearestDestination;
+                unvisited.splice(nearestIndex, 1);
+            }
+            
+            if (includeOriginReturn) {
+                path.push(origin.id);
+                totalDistance += calculateDistance(
+                    currentLocation.latitude, currentLocation.longitude,
+                    origin.latitude, origin.longitude
+                );
+            }
+            
+            return {
+                path: path,
+                distance: totalDistance,
+                estimatedTime: calculateTravelTime(totalDistance),
+                name: "Rota Mais Eficiente"
+            };
+        } catch (error) {
+            console.error("Erro no algoritmo Nearest Neighbor:", error);
+            return { path: [origin.id], distance: 0, estimatedTime: 0, name: "Erro" };
+        }
+    }
+
+    // Algoritmo TSP - Farthest First (Por Distância)
+    function solveFarthestFirstTSP(origin, destinations, includeOriginReturn) {
+        try {
+            const path = [origin.id];
+            let totalDistance = 0;
+            let currentLocation = origin;
+            const unvisited = [...destinations];
+            
+            while (unvisited.length > 0) {
+                let farthestIndex = 0;
+                let farthestDistance = calculateDistance(
+                    currentLocation.latitude, currentLocation.longitude,
+                    unvisited[0].latitude, unvisited[0].longitude
+                );
+                
+                for (let i = 1; i < unvisited.length; i++) {
+                    const distance = calculateDistance(
+                        currentLocation.latitude, currentLocation.longitude,
+                        unvisited[i].latitude, unvisited[i].longitude
+                    );
+                    if (distance > farthestDistance) {
+                        farthestDistance = distance;
+                        farthestIndex = i;
+                    }
+                }
+                
+                const farthestDestination = unvisited[farthestIndex];
+                path.push(farthestDestination.id);
+                totalDistance += farthestDistance;
+                currentLocation = farthestDestination;
+                unvisited.splice(farthestIndex, 1);
+            }
+            
+            if (includeOriginReturn) {
+                path.push(origin.id);
+                totalDistance += calculateDistance(
+                    currentLocation.latitude, currentLocation.longitude,
+                    origin.latitude, origin.longitude
+                );
+            }
+            
+            return {
+                path: path,
+                distance: totalDistance,
+                estimatedTime: calculateTravelTime(totalDistance),
+                name: "Rota por Distância"
+            };
+        } catch (error) {
+            console.error("Erro no algoritmo Farthest First:", error);
+            return { path: [origin.id], distance: 0, estimatedTime: 0, name: "Erro" };
+        }
+    }
+
+    // Algoritmo TSP - Geográfico (Norte-Sul)
+    function solveGeographicalTSP(origin, destinations, includeOriginReturn) {
+        try {
+            const sortedDestinations = [...destinations].sort((a, b) => {
+                // Ordenar por latitude (norte para sul) e depois por longitude
+                if (Math.abs(a.latitude - b.latitude) > 0.001) {
+                    return b.latitude - a.latitude; // Norte primeiro
+                }
+                return a.longitude - b.longitude; // Oeste para leste
+            });
+            
+            const path = [origin.id];
+            let totalDistance = 0;
+            let currentLocation = origin;
+            
+            for (const dest of sortedDestinations) {
+                path.push(dest.id);
+                const distance = calculateDistance(
+                    currentLocation.latitude, currentLocation.longitude,
+                    dest.latitude, dest.longitude
+                );
+                totalDistance += distance;
+                currentLocation = dest;
+            }
+            
+            if (includeOriginReturn) {
+                path.push(origin.id);
+                totalDistance += calculateDistance(
+                    currentLocation.latitude, currentLocation.longitude,
+                    origin.latitude, origin.longitude
+                );
+            }
+            
+            return {
+                path: path,
+                distance: totalDistance,
+                estimatedTime: calculateTravelTime(totalDistance),
+                name: "Rota Geográfica"
+            };
+        } catch (error) {
+            console.error("Erro no algoritmo Geográfico:", error);
+            return { path: [origin.id], distance: 0, estimatedTime: 0, name: "Erro" };
+        }
+    }
+
+    // Algoritmo TSP - Inverso
+    function solveReverseTSP(origin, destinations, includeOriginReturn) {
+        try {
+            const reversedDestinations = [...destinations].reverse();
+            
+            const path = [origin.id];
+            let totalDistance = 0;
+            let currentLocation = origin;
+            
+            for (const dest of reversedDestinations) {
+                path.push(dest.id);
+                const distance = calculateDistance(
+                    currentLocation.latitude, currentLocation.longitude,
+                    dest.latitude, dest.longitude
+                );
+                totalDistance += distance;
+                currentLocation = dest;
+            }
+            
+            if (includeOriginReturn) {
+                path.push(origin.id);
+                totalDistance += calculateDistance(
+                    currentLocation.latitude, currentLocation.longitude,
+                    origin.latitude, origin.longitude
+                );
+            }
+            
+            return {
+                path: path,
+                distance: totalDistance,
+                estimatedTime: calculateTravelTime(totalDistance),
+                name: "Rota Inversa"
+            };
+        } catch (error) {
+            console.error("Erro no algoritmo Inverso:", error);
+            return { path: [origin.id], distance: 0, estimatedTime: 0, name: "Erro" };
         }
     }
 
