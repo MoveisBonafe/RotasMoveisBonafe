@@ -16,36 +16,6 @@
                 .map-container, .bottom-tabs-container { left: 320px !important; width: calc(100% - 320px) !important; }
             }
             
-            /* Estilos personalizados para Móveis Bonafé */
-            button, .button, .btn, input[type="button"], input[type="submit"], .bottom-tab-button {
-                background: linear-gradient(45deg, #FFD700, #FFA500) !important;
-                color: #333 !important;
-                font-weight: bold !important;
-                border-radius: 50px !important;
-                border: none !important;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
-            }
-            
-            #optimize-button {
-                background: linear-gradient(45deg, #FFD700, #FFA500) !important;
-            }
-            
-            .bottom-tabs, .bottom-tab-content, #bottom-info {
-                background-color: #FFFFFF !important;
-            }
-            
-            /* Remover apenas controles específicos, mantendo o Pegman (Street View) */
-            .gm-fullscreen-control,
-            .gm-bundled-control .gmnoprint:not(.gm-svpc),
-            .gm-bundled-control-on-bottom .gmnoprint:not(.gm-svpc) {
-                display: none !important;
-            }
-            
-            /* Garantir que o Pegman (Street View) fique visível */
-            .gm-svpc {
-                display: block !important;
-            }
-            
             /* Estilo para abas em modo tela cheia */
             .bottom-tabs-container:not(.minimized) {
                 position: fixed !important;
@@ -61,6 +31,12 @@
                 box-shadow: -5px 0px 15px rgba(0,0,0,0.1) !important;
             }
             
+            .bottom-tabs-container:not(.minimized) .bottom-tab-content {
+                display: block !important;
+                height: calc(100vh - 60px) !important;
+                overflow-y: auto !important;
+                padding: 20px !important;
+            }
             
             /* Botão ativo nas abas */
             .bottom-tab-btn.active {
@@ -509,42 +485,43 @@
             font-size: 14px;
         }
         
-        /* Estilo minimalista para rotas alternativas */
+        /* Estilo para o cartão de rotas alternativas */
         .route-option-card {
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            padding: 8px 12px;
-            margin-bottom: 6px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
             background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             cursor: pointer;
-            transition: all 0.15s ease;
-            font-size: 14px;
+            transition: all 0.2s ease;
         }
         .route-option-card:hover {
-            border-color: #FFD700;
-            background-color: #fffbf0;
+            border-color: #ffc107;
+            box-shadow: 0 3px 6px rgba(255, 193, 7, 0.2);
+            transform: translateY(-2px);
         }
         .route-option-card.selected {
-            border-color: #FFD700;
+            border-color: #ffab00;
             background-color: #fff8e1;
-            font-weight: 600;
         }
         
-        /* Seção minimalista de rotas alternativas */
+        /* Estilo para a seção de rotas alternativas na sidebar */
         .alternative-routes-section {
-            margin-top: 8px;
-            margin-bottom: 15px;
-            padding: 12px;
-            background-color: #fafafa;
-            border-radius: 6px;
-            border: 1px solid #e0e0e0;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
         }
         
         .alternative-routes-section h5 {
-            margin: 0 0 10px 0;
-            font-size: 15px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 16px;
             font-weight: 600;
-            color: #333;
+            color: #495057;
         }
         .pac-container {
             z-index: 9999; /* Garantir que as sugestões apareçam acima de outros elementos */
@@ -1719,194 +1696,8 @@
     </script>
     <!-- Estilos para correção das abas e animações -->
     <link rel="stylesheet" href="styles-fix.css">
-    <!-- Estilos para correção das abas e animações -->
-    <link rel="stylesheet" href="styles-fix.css">
 </head>
 <body>
-<script>
-// Fix definitivo para o problema das abas mostrando todas juntas
-(function() {
-  // Aplicar assim que a página carregar
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initFix);
-  } else {
-    initFix();
-  }
-  
-  // Verificar periodicamente para garantir
-  setInterval(fixAllTabs, 1000);
-  
-  function initFix() {
-    console.log('[TABS-FIX] Inicializando correção das abas');
-    
-    // Aplicar várias vezes para garantir
-    fixAllTabs();
-    setTimeout(fixAllTabs, 500);
-    setTimeout(fixAllTabs, 1000);
-    
-    // Capturar cliques nos botões
-    setupTabButtons();
-    
-    console.log('[TABS-FIX] Inicialização concluída');
-  }
-  
-  function fixAllTabs() {
-    // Capturar elementos
-    var tabContents = document.querySelectorAll('.bottom-tab-content');
-    
-    // Verificar quantos estão visíveis
-    var visibleCount = 0;
-    tabContents.forEach(function(content) {
-      if (window.getComputedStyle(content).display !== 'none') {
-        visibleCount++;
-      }
-    });
-    
-    // Se mais de um estiver visível, corrigir
-    if (visibleCount > 1) {
-      console.warn('[TABS-FIX] ' + visibleCount + ' abas estão visíveis! Corrigindo...');
-      
-      // Esconder todos os conteúdos
-      tabContents.forEach(function(content) {
-        content.style.display = 'none';
-      });
-      
-      // Mostrar apenas o conteúdo da aba ativa, se houver
-      var activeButton = document.querySelector('.bottom-tab-btn.active');
-      if (activeButton) {
-        var tabId = activeButton.getAttribute('data-tab');
-        var activeContent = document.getElementById(tabId + '-content');
-        if (activeContent) {
-          activeContent.style.display = 'block';
-        }
-      }
-    }
-  }
-  
-  function setupTabButtons() {
-    // Capturar todos os botões de aba
-    var tabButtons = document.querySelectorAll('.bottom-tab-btn');
-    var tabsContainer = document.querySelector('.bottom-tabs-container');
-    
-    tabButtons.forEach(function(button) {
-      // Remover qualquer evento existente (clone)
-      var clone = button.cloneNode(true);
-      button.parentNode.replaceChild(clone, button);
-      
-      // Adicionar novo evento de clique
-      clone.addEventListener('click', function(event) {
-        // Impedir eventos padrão
-        event.preventDefault();
-        event.stopPropagation();
-        
-        // Obter ID da aba
-        var tabId = this.getAttribute('data-tab');
-        var isActive = this.classList.contains('active');
-        var isExpanded = !tabsContainer.classList.contains('minimized');
-        
-        // Se a aba já estiver ativa e expandida, minimizar
-        if (isActive && isExpanded) {
-          minimizeTabs();
-          return;
-        }
-        
-        // Desativar todos os botões
-        tabButtons.forEach(function(btn) {
-          btn.classList.remove('active');
-        });
-        
-        // Ativar este botão
-        this.classList.add('active');
-        
-        // Esconder todos os conteúdos
-        var tabContents = document.querySelectorAll('.bottom-tab-content');
-        tabContents.forEach(function(content) {
-          content.style.display = 'none';
-        });
-        
-        // Mostrar apenas o conteúdo selecionado
-        var content = document.getElementById(tabId + '-content');
-        if (content) {
-          content.style.display = 'block';
-        }
-        
-        // Se as abas estiverem minimizadas, expandir
-        if (tabsContainer.classList.contains('minimized')) {
-          expandTabs();
-        }
-      });
-    });
-  }
-  
-  function expandTabs() {
-    var tabsContainer = document.querySelector('.bottom-tabs-container');
-    if (!tabsContainer) return;
-    
-    // Remover classe minimizada
-    tabsContainer.classList.remove('minimized');
-    
-    // Aplicar estilos expandidos
-    tabsContainer.style.position = 'fixed';
-    tabsContainer.style.top = '0';
-    tabsContainer.style.left = '380px';
-    tabsContainer.style.right = '0';
-    tabsContainer.style.bottom = '0';
-    tabsContainer.style.width = 'calc(100% - 380px)';
-    tabsContainer.style.height = '100vh';
-    tabsContainer.style.zIndex = '9999';
-    tabsContainer.style.backgroundColor = 'white';
-    tabsContainer.style.borderLeft = '3px solid #ffc107';
-    tabsContainer.style.boxShadow = '0 0 20px rgba(0,0,0,0.15)';
-    
-    // Ajustar para telas menores
-    if (window.innerWidth <= 768) {
-      tabsContainer.style.left = '320px';
-      tabsContainer.style.width = 'calc(100% - 320px)';
-    }
-    
-    // Ocultar o mapa
-    var mapContainer = document.querySelector('.map-container');
-    if (mapContainer) {
-      mapContainer.style.visibility = 'hidden';
-    }
-  }
-  
-  function minimizeTabs() {
-    var tabsContainer = document.querySelector('.bottom-tabs-container');
-    if (!tabsContainer) return;
-    
-    // Adicionar classe minimizada
-    tabsContainer.classList.add('minimized');
-    
-    // Restaurar estilos originais
-    tabsContainer.style.position = 'absolute';
-    tabsContainer.style.top = 'auto';
-    tabsContainer.style.left = '380px';
-    tabsContainer.style.right = '0';
-    tabsContainer.style.bottom = '0';
-    tabsContainer.style.height = '60px';
-    tabsContainer.style.width = 'calc(100% - 380px)';
-    tabsContainer.style.zIndex = '100';
-    tabsContainer.style.backgroundColor = '#f9f9f9';
-    tabsContainer.style.borderLeft = 'none';
-    tabsContainer.style.boxShadow = 'none';
-    
-    // Ajustar para telas menores
-    if (window.innerWidth <= 768) {
-      tabsContainer.style.left = '320px';
-      tabsContainer.style.width = 'calc(100% - 320px)';
-    }
-    
-    // Mostrar o mapa novamente
-    var mapContainer = document.querySelector('.map-container');
-    if (mapContainer) {
-      mapContainer.style.visibility = 'visible';
-    }
-  }
-})();
-</script>
-
-<!-- O resto do seu conteúdo HTML continua abaixo -->
     <div class="app-container">
         <div class="main-content-area">
             <!-- Sidebar para controles e informações -->
@@ -2160,44 +1951,50 @@
                     <!-- Seleção de Rota Alternativa na sidebar (redesenhada) -->
                     <div id="route-alternatives-sidebar" class="alternative-routes-section" style="display: none;">
                         <h5>Rotas Alternativas</h5>
+                        <p class="text-muted small mb-3">Escolha a melhor opção para seu trajeto:</p>
                         
                         <div id="route-options-container">
-                            <!-- Cards minimalistas -->
+                            <!-- Cards gerados dinamicamente -->
                             <div class="route-option-card selected" data-route="0" id="route-card-0">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span>🎯 Rota Original</span>
-                                    <small class="text-muted">Ordem adicionada</small>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong>Rota Otimizada</strong>
+                                    <span class="badge bg-primary">Recomendada</span>
+                                </div>
+                                <div class="text-muted small" id="route-0-details">
+                                    <span class="me-2"><i class="bi bi-truck"></i> Distância total</span>
+                                    <span><i class="bi bi-clock"></i> Tempo estimado</span>
                                 </div>
                             </div>
                             
                             <div class="route-option-card" data-route="1" id="route-card-1" style="display: none;">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span>⚡ Rota Otimizada</span>
-                                    <small class="text-muted">Menor distância</small>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong>Proximidade à Origem</strong>
+                                </div>
+                                <div class="text-muted small" id="route-1-details">
+                                    <span class="me-2"><i class="bi bi-truck"></i> Distância total</span>
+                                    <span><i class="bi bi-clock"></i> Tempo estimado</span>
                                 </div>
                             </div>
                             
                             <div class="route-option-card" data-route="2" id="route-card-2" style="display: none;">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span>📍 Proximidade à Origem</span>
-                                    <small class="text-muted">Pontos próximos primeiro</small>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong>Distante à Origem</strong>
                                 </div>
-                            </div>
-                            
-                            <div class="route-option-card" data-route="3" id="route-card-3" style="display: none;">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span>🔄 Distante à Origem</span>
-                                    <small class="text-muted">Pontos distantes primeiro</small>
+                                <div class="text-muted small" id="route-2-details">
+                                    <span class="me-2"><i class="bi bi-truck"></i> Distância total</span>
+                                    <span><i class="bi bi-clock"></i> Tempo estimado</span>
                                 </div>
                             </div>
                         </div>
                         
+                        <small class="text-muted d-block mt-3" style="font-size: 0.75rem;">
+                            Cada rota usa um algoritmo diferente com trade-offs entre distância e tempo.
+                        </small>
+                        
                         <!-- Seletor escondido para compatibilidade com código existente -->
                         <select id="alternative-routes-sidebar" class="d-none">
-                            <option value="0">Rota Original</option>
-                            <option value="1">Rota Otimizada</option>
-                            <option value="2">Proximidade à Origem</option>
-                            <option value="3">Distante à Origem</option>
+                            <option value="0">Rota Otimizada (Padrão)</option>
+                            <!-- Opções de rotas alternativas serão adicionadas dinamicamente -->
                         </select>
                     </div>
                 </div>
@@ -2299,10 +2096,10 @@
     <script src="map-controls.js"></script>
     <script src="route-optimizer.js"></script>
     <script src="tsp.js"></script>
-    <script src="city-events-complete.js"></script>
-    <script src="fix-all.js"></script>
+    <script src="fix-github.js"></script>
     <script src="fix-map-controls.js"></script>
-    <script src="fix-github-corrected.js"></script>
+    <script src="city-events-data.js"></script>
+    <script src="city-birthdays.js"></script>
     
     <script>
     // Dados de amostra para a aplicação standalone
@@ -8019,10 +7816,7 @@
                             
                             if (!isNaN(lat1) && !isNaN(lng1) && !isNaN(lat2) && !isNaN(lng2)) {
                                 // Usar Haversine para calcular distância em linha reta
-                                const straightDist = calculateHaversineDistance(lat1, lng1, lat2, lng2);
-                                // Aplicar fator de correção inteligente baseado na distância
-                                const correctionFactor = straightDist > 100 ? 1.15 : (straightDist > 50 ? 1.1 : 1.05);
-                                const segmentDist = straightDist * correctionFactor;
+                                const segmentDist = calculateHaversineDistance(lat1, lng1, lat2, lng2) * 1.4;
                                 estimatedDistance += segmentDist;
                                 console.log(`Distância estimada do TSP entre ${p1.name || 'Ponto ' + i} e ${p2.name || 'Ponto ' + (i+1)}: ${segmentDist.toFixed(2)} km`);
                             }
@@ -9800,10 +9594,8 @@
                         const lng2 = parseFloat(loc2.lng !== undefined ? loc2.lng : loc2.longitude);
                         
                         if (!isNaN(lat1) && !isNaN(lng1) && !isNaN(lat2) && !isNaN(lng2)) {
-                            // Calcular distância entre pontos consecutivos com fator inteligente
-                            const straightDist = calculateHaversineDistance(lat1, lng1, lat2, lng2);
-                            const correctionFactor = straightDist > 100 ? 1.15 : (straightDist > 50 ? 1.1 : 1.05);
-                            const segmentDist = straightDist * correctionFactor;
+                            // Calcular distância entre pontos consecutivos
+                            const segmentDist = calculateHaversineDistance(lat1, lng1, lat2, lng2) * 1.4;
                             estimatedDistance += segmentDist;
                             console.log(`Distância estimada entre ${loc1.name} e ${loc2.name}: ${segmentDist.toFixed(2)} km`);
                         }
@@ -9981,9 +9773,7 @@
                             const lng2 = parseFloat(loc2.lng !== undefined ? loc2.lng : loc2.longitude);
                             
                             if (!isNaN(lat1) && !isNaN(lng1) && !isNaN(lat2) && !isNaN(lng2)) {
-                                const straightDist = calculateHaversineDistance(lat1, lng1, lat2, lng2);
-                                const correctionFactor = straightDist > 100 ? 1.15 : (straightDist > 50 ? 1.1 : 1.05);
-                                const segmentDist = straightDist * correctionFactor;
+                                const segmentDist = calculateHaversineDistance(lat1, lng1, lat2, lng2) * 1.4;
                                 estimatedDistance += segmentDist;
                                 console.log(`Distância estimada entre ${loc1.name} e ${loc2.name}: ${segmentDist.toFixed(2)} km`);
                             }
@@ -10268,820 +10058,5 @@
     <script src="tabs-fix.js"></script>
     <!-- Scripts para animações e correções das abas -->
     <script src="tabs-fix.js"></script>
-    <!-- Scripts para animações e correções das abas -->
-
-<script>
-// Fix definitivo para o problema das abas mostrando todas juntas
-(function() {
-  // Aplicar assim que a página carregar
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initFix);
-  } else {
-    initFix();
-  }
-  
-  // Verificar periodicamente para garantir
-  setInterval(fixAllTabs, 1000);
-  
-  function initFix() {
-    console.log('[TABS-FIX] Inicializando correção das abas');
-    
-    // Aplicar várias vezes para garantir
-    fixAllTabs();
-    setTimeout(fixAllTabs, 500);
-    setTimeout(fixAllTabs, 1000);
-    
-    // Capturar cliques nos botões
-    setupTabButtons();
-    
-    console.log('[TABS-FIX] Inicialização concluída');
-  }
-  
-  function fixAllTabs() {
-    // Capturar elementos
-    var tabContents = document.querySelectorAll('.bottom-tab-content');
-    
-    // Verificar quantos estão visíveis
-    var visibleCount = 0;
-    tabContents.forEach(function(content) {
-      if (window.getComputedStyle(content).display !== 'none') {
-        visibleCount++;
-      }
-    });
-    
-    // Se mais de um estiver visível, corrigir
-    if (visibleCount > 1) {
-      console.warn('[TABS-FIX] ' + visibleCount + ' abas estão visíveis! Corrigindo...');
-      
-      // Esconder todos os conteúdos
-      tabContents.forEach(function(content) {
-        content.style.display = 'none';
-      });
-      
-      // Mostrar apenas o conteúdo da aba ativa, se houver
-      var activeButton = document.querySelector('.bottom-tab-btn.active');
-      if (activeButton) {
-        var tabId = activeButton.getAttribute('data-tab');
-        var activeContent = document.getElementById(tabId + '-content');
-        if (activeContent) {
-          activeContent.style.display = 'block';
-        }
-      }
-    }
-  }
-  
-  function setupTabButtons() {
-    // Capturar todos os botões de aba
-    var tabButtons = document.querySelectorAll('.bottom-tab-btn');
-    var tabsContainer = document.querySelector('.bottom-tabs-container');
-    
-    tabButtons.forEach(function(button) {
-      // Remover qualquer evento existente (clone)
-      var clone = button.cloneNode(true);
-      button.parentNode.replaceChild(clone, button);
-      
-      // Adicionar novo evento de clique
-      clone.addEventListener('click', function(event) {
-        // Impedir eventos padrão
-        event.preventDefault();
-        event.stopPropagation();
-        
-        // Obter ID da aba
-        var tabId = this.getAttribute('data-tab');
-        var isActive = this.classList.contains('active');
-        var isExpanded = !tabsContainer.classList.contains('minimized');
-        
-        // Se a aba já estiver ativa e expandida, minimizar
-        if (isActive && isExpanded) {
-          minimizeTabs();
-          return;
-        }
-        
-        // Desativar todos os botões
-        tabButtons.forEach(function(btn) {
-          btn.classList.remove('active');
-        });
-        
-        // Ativar este botão
-        this.classList.add('active');
-        
-        // Esconder todos os conteúdos
-        var tabContents = document.querySelectorAll('.bottom-tab-content');
-        tabContents.forEach(function(content) {
-          content.style.display = 'none';
-        });
-        
-        // Mostrar apenas o conteúdo selecionado
-        var content = document.getElementById(tabId + '-content');
-        if (content) {
-          content.style.display = 'block';
-        }
-        
-        // Se as abas estiverem minimizadas, expandir
-        if (tabsContainer.classList.contains('minimized')) {
-          expandTabs();
-        }
-      });
-    });
-  }
-  
-  function expandTabs() {
-    var tabsContainer = document.querySelector('.bottom-tabs-container');
-    if (!tabsContainer) return;
-    
-    // Remover classe minimizada
-    tabsContainer.classList.remove('minimized');
-    
-    // Aplicar estilos expandidos
-    tabsContainer.style.position = 'fixed';
-    tabsContainer.style.top = '0';
-    tabsContainer.style.left = '380px';
-    tabsContainer.style.right = '0';
-    tabsContainer.style.bottom = '0';
-    tabsContainer.style.width = 'calc(100% - 380px)';
-    tabsContainer.style.height = '100vh';
-    tabsContainer.style.zIndex = '9999';
-    tabsContainer.style.backgroundColor = 'white';
-    tabsContainer.style.borderLeft = '3px solid #ffc107';
-    tabsContainer.style.boxShadow = '0 0 20px rgba(0,0,0,0.15)';
-    
-    // Ajustar para telas menores
-    if (window.innerWidth <= 768) {
-      tabsContainer.style.left = '320px';
-      tabsContainer.style.width = 'calc(100% - 320px)';
-    }
-    
-    // Ocultar o mapa
-    var mapContainer = document.querySelector('.map-container');
-    if (mapContainer) {
-      mapContainer.style.visibility = 'hidden';
-    }
-  }
-  
-  function minimizeTabs() {
-    var tabsContainer = document.querySelector('.bottom-tabs-container');
-    if (!tabsContainer) return;
-    
-    // Adicionar classe minimizada
-    tabsContainer.classList.add('minimized');
-    
-    // Restaurar estilos originais
-    tabsContainer.style.position = 'absolute';
-    tabsContainer.style.top = 'auto';
-    tabsContainer.style.left = '380px';
-    tabsContainer.style.right = '0';
-    tabsContainer.style.bottom = '0';
-    tabsContainer.style.height = '60px';
-    tabsContainer.style.width = 'calc(100% - 380px)';
-    tabsContainer.style.zIndex = '100';
-    tabsContainer.style.backgroundColor = '#f9f9f9';
-    tabsContainer.style.borderLeft = 'none';
-    tabsContainer.style.boxShadow = 'none';
-    
-    // Ajustar para telas menores
-    if (window.innerWidth <= 768) {
-      tabsContainer.style.left = '320px';
-      tabsContainer.style.width = 'calc(100% - 320px)';
-    }
-    
-    // Mostrar o mapa novamente
-    var mapContainer = document.querySelector('.map-container');
-    if (mapContainer) {
-      mapContainer.style.visibility = 'visible';
-    }
-  }
-})();
-</script>
-
-    <script src="tabs-fix.js"></script>
-<script>
-/**
- * Solução unificada para preenchimento de todas as abas
- * Eventos, Restrições e Relatório agora preenchem todo o espaço disponível
- */
-(function() {
-    // Executar quando o documento estiver carregado
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', fixAllTabs);
-    } else {
-        setTimeout(fixAllTabs, 500);
-    }
-    
-    // Função principal para aplicar todas as correções
-    function fixAllTabs() {
-        console.log('[TabsFix] Iniciando correção para todas as abas');
-        
-        // 1. Injetar CSS para todas as abas
-        injectFullTabsCSS();
-        
-        // 2. Aplicar correções específicas para cada aba
-        fixEventosTab();
-        fixRestricoesTab();
-        fixRelatorioTab();
-        
-        // 3. Monitorar alterações e continuar verificando
-        setInterval(checkAllTabsStatus, 1000);
-        
-        // 4. Configurar observador para reagir a mudanças
-        setupTabsObserver();
-    }
-    
-    // Injetar CSS para todas as abas
-    function injectFullTabsCSS() {
-        // Evitar duplicação
-        if (document.getElementById('all-tabs-fix-css')) return;
-        
-        // Criar elemento de estilo
-        const style = document.createElement('style');
-        style.id = 'all-tabs-fix-css';
-        style.textContent = `
-            /* CSS COMUM PARA TODAS AS ABAS */
-            
-            /* Estrutura base quando expandido */
-            .bottom-tabs-container:not(.minimized) {
-                position: fixed !important;
-                top: 0 !important;
-                left: 380px !important;
-                right: 0 !important;
-                bottom: 0 !important;
-                width: calc(100% - 380px) !important;
-                height: 100vh !important;
-                z-index: 9999 !important;
-                display: flex !important;
-                flex-direction: column !important;
-                background: white !important;
-                box-shadow: -2px 0 10px rgba(0,0,0,0.1) !important;
-            }
-            
-            /* Barra de navegação */
-            .bottom-tabs-nav {
-                height: 60px !important;
-                flex-shrink: 0 !important;
-                width: 100% !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: space-around !important;
-                background: #f8f9fa !important;
-                border-bottom: 1px solid #dee2e6 !important;
-                padding: 0 20px !important;
-            }
-            
-            /* Base para todas as abas */
-            .bottom-tab-content {
-                display: none !important;
-            }
-            
-            .bottom-tab-content.active-content {
-                display: flex !important;
-                flex-direction: column !important;
-                width: 100% !important;
-                height: calc(100vh - 60px) !important;
-                padding: 20px !important;
-                overflow-y: auto !important;
-                background: #fafafa !important;
-                flex: 1 !important;
-                box-sizing: border-box !important;
-            }
-            
-            /* Garantir que os elementos filhos preencham o espaço */
-            .bottom-tab-content.active-content > * {
-                width: 100% !important;
-                margin-bottom: 15px !important;
-            }
-            
-            /* Adaptação para telas menores */
-            @media (max-width: 768px) {
-                .bottom-tabs-container:not(.minimized) {
-                    left: 320px !important;
-                    width: calc(100% - 320px) !important;
-                }
-            }
-        `;
-        
-        document.head.appendChild(style);
-        console.log('[TabsFix] CSS para todas as abas injetado');
-    }
-    
-    // Corrigir aba de Eventos
-    function fixEventosTab() {
-        const eventosTab = document.getElementById('bottom-events-content');
-        if (!eventosTab) return;
-        
-        eventosTab.style.display = 'flex';
-        eventosTab.style.flexDirection = 'column';
-        eventosTab.style.height = 'calc(100vh - 60px)';
-        eventosTab.style.overflowY = 'auto';
-    }
-    
-    // Corrigir aba de Restrições
-    function fixRestricoesTab() {
-        const restricoesTab = document.getElementById('bottom-restrictions-content');
-        if (!restricoesTab) return;
-        
-        restricoesTab.style.display = 'flex';
-        restricoesTab.style.flexDirection = 'column';
-        restricoesTab.style.height = 'calc(100vh - 60px)';
-        restricoesTab.style.overflowY = 'auto';
-    }
-    
-    // Corrigir aba de Relatório
-    function fixRelatorioTab() {
-        const relatorioTab = document.getElementById('bottom-report-content');
-        if (!relatorioTab) return;
-        
-        relatorioTab.style.display = 'flex';
-        relatorioTab.style.flexDirection = 'column';
-        relatorioTab.style.height = 'calc(100vh - 60px)';
-        relatorioTab.style.overflowY = 'auto';
-    }
-    
-    // Verificar status de todas as abas
-    function checkAllTabsStatus() {
-        const tabsContainer = document.querySelector('.bottom-tabs-container');
-        if (!tabsContainer || tabsContainer.classList.contains('minimized')) return;
-        
-        const activeTab = document.querySelector('.bottom-tab-content.active-content');
-        if (!activeTab) return;
-        
-        if (activeTab.id === 'bottom-events-content') {
-            fixEventosTab();
-        } else if (activeTab.id === 'bottom-restrictions-content') {
-            fixRestricoesTab();
-        } else if (activeTab.id === 'bottom-report-content') {
-            fixRelatorioTab();
-        }
-    }
-    
-    // Configurar observador
-    function setupTabsObserver() {
-        if (window.allTabsObserver) return;
-        
-        const observer = new MutationObserver(() => {
-            checkAllTabsStatus();
-        });
-        
-        observer.observe(document.body, {
-            attributes: true,
-            childList: true,
-            subtree: true,
-            attributeFilter: ['style', 'class']
-        });
-        
-        window.allTabsObserver = observer;
-    }
-})();
-/**
- * Correção para datas de aniversário de cidades
- * Garante que a data exibida é a mesma da descrição
- */
-
-(function() {
-  // Executar quando o documento estiver pronto
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', corrigirDatas);
-  } else {
-    setTimeout(corrigirDatas, 500);
-  }
-  
-  // Executar também quando a página estiver completamente carregada
-  window.addEventListener('load', function() {
-    setTimeout(corrigirDatas, 1000);
-  });
-  
-  // Função principal para corrigir as datas
-  function corrigirDatas() {
-    console.log('[CorrecaoDatas] Iniciando correção das datas de cidades');
-    
-    // Corrigir datas específicas com valores conhecidos
-    const correcoesDatas = {
-      'Piedade': '20/05/2025',
-      'Ribeirão Preto': '19/06/2025'
-    };
-    
-    // 1. Corrigir com base na descrição
-    corrigirComBaseNaDescricao();
-    
-    // 2. Aplicar correções específicas
-    aplicarCorrecoesEspecificas(correcoesDatas);
-    
-    // Continuar verificando periodicamente
-    setTimeout(corrigirComBaseNaDescricao, 2000);
-    setTimeout(function() {
-      aplicarCorrecoesEspecificas(correcoesDatas);
-    }, 3000);
-  }
-  
-  // Corrigir datas com base nas descrições
-  function corrigirComBaseNaDescricao() {
-    // Encontrar todos os elementos de evento
-    const eventItems = document.querySelectorAll('.event-item, .evento-item');
-    
-    eventItems.forEach(function(item) {
-      // Obter elementos de data e descrição
-      const dateElem = item.querySelector('.event-date');
-      const descElem = item.querySelector('.event-description');
-      
-      if (!dateElem || !descElem) return;
-      
-      // Extrair informações
-      const dateText = dateElem.textContent;
-      const descText = descElem.textContent;
-      
-      // Analisar o texto da descrição para extrair a data correta
-      const foundationMatch = descText.match(/fundação de .+ em (\d{2}\/\d{2})(?:\/\d{4})?/i);
-      
-      if (foundationMatch) {
-        // Extrair a data de fundação
-        const foundationDate = foundationMatch[1];
-        
-        // Extrair a cidade da exibição atual
-        const cityMatch = dateText.match(/([^|]+)\s*\|/);
-        
-        if (cityMatch) {
-          const city = cityMatch[1].trim();
-          const year = new Date().getFullYear() + 1; // próximo ano
-          
-          // Criar a nova data corrigida
-          const correctedDate = `${city} | ${foundationDate}/${year}`;
-          
-          // Atualizar o texto apenas se for diferente
-          if (dateText.trim() !== correctedDate) {
-            console.log(`[CorrecaoDatas] Corrigindo data de "${dateText}" para "${correctedDate}"`);
-            dateElem.textContent = correctedDate;
-          }
-        }
-      }
-    });
-  }
-  
-  // Aplicar correções específicas para cidades conhecidas
-  function aplicarCorrecoesEspecificas(correcoes) {
-    // Encontrar todos os elementos de data de evento
-    const dateElements = document.querySelectorAll('.event-date');
-    
-    dateElements.forEach(function(elem) {
-      const text = elem.textContent;
-      
-      // Verificar cada cidade na lista de correções
-      Object.keys(correcoes).forEach(function(cidade) {
-        // Se o texto contém o nome da cidade
-        if (text.includes(cidade)) {
-          // Extrair a cidade da exibição atual
-          const cityMatch = text.match(/([^|]+)\s*\|/);
-          
-          if (cityMatch) {
-            const city = cityMatch[1].trim();
-            const correctDate = correcoes[cidade];
-            
-            // Criar a nova data corrigida
-            const correctedDate = `${city} | ${correctDate}`;
-            
-            // Atualizar o texto apenas se for diferente
-            if (text.trim() !== correctedDate) {
-              console.log(`[CorrecaoDatas] Correção específica: alterando "${text}" para "${correctedDate}"`);
-              elem.textContent = correctedDate;
-            }
-          }
-        }
-      });
-    });
-  }
-  
-  // Observar mudanças no DOM para reagir quando novos eventos forem adicionados
-  function observarMudancas() {
-    // Criar um observador para reagir a novas adições de eventos
-    const observer = new MutationObserver(function(mutations) {
-      // Verificar se novos eventos foram adicionados
-      for (let mutation of mutations) {
-        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-          // Procurar por novos elementos de evento
-          let foundEvents = false;
-          
-          // Verificar cada nó adicionado
-          for (let node of mutation.addedNodes) {
-            if (node.nodeType === 1 && // é um elemento
-               (node.classList.contains('event-item') || 
-                node.classList.contains('evento-item') ||
-                node.querySelector('.event-item, .evento-item'))) {
-              foundEvents = true;
-              break;
-            }
-          }
-          
-          // Se encontrou novos eventos, aplicar correções
-          if (foundEvents) {
-            setTimeout(corrigirDatas, 100);
-          }
-        }
-      }
-    });
-    
-    // Observar o documento inteiro para novos eventos
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-  }
-  
-  // Iniciar observação após correção inicial
-  setTimeout(observarMudancas, 2000);
-})();
-</script>
-<!-- Correção para datas de cidades e preenchimento de abas -->
-<script>
-// Correção para as datas de aniversário de cidades
-(function() {
-  // Executar quando a página estiver carregada
-  window.addEventListener('load', function() {
-    // Aplicar correções após um breve atraso
-    setTimeout(corrigirDatas, 1000);
-    setTimeout(corrigirDatas, 3000);
-  });
-  
-  function corrigirDatas() {
-    // Correções específicas para cidades
-    const correcoes = {
-      'Piedade': '20/05/2025',
-      'Ribeirão Preto': '19/06/2025'
-    };
-    
-    // Encontrar todos os elementos de data
-    const dateElements = document.querySelectorAll('.event-date');
-    
-    dateElements.forEach(function(elem) {
-      const texto = elem.textContent;
-      
-      // Verificar cada cidade na lista de correções
-      Object.keys(correcoes).forEach(function(cidade) {
-        if (texto.includes(cidade)) {
-          // Extrair a cidade
-          const cidadeMatch = texto.match(/([^|]+)\s*\|/);
-          
-          if (cidadeMatch) {
-            const cidadeNome = cidadeMatch[1].trim();
-            const dataCorreta = correcoes[cidade];
-            
-            // Atualizar o texto
-            elem.textContent = `${cidadeNome} | ${dataCorreta}`;
-            console.log(`Data corrigida: ${cidadeNome} para ${dataCorreta}`);
-          }
-        }
-      });
-    });
-  }
-})();
-
-// Correção para o preenchimento das abas
-(function() {
-  // Executar quando a página estiver carregada
-  window.addEventListener('load', function() {
-    // Aplicar estilos de preenchimento completo
-    const style = document.createElement('style');
-    style.textContent = `
-      /* Ocultar todas as abas por padrão */
-      .bottom-tab-content {
-        display: none !important;
-      }
-      
-      /* Mostrar apenas a aba ativa */
-      .bottom-tab-content.active-content {
-        display: flex !important;
-        flex-direction: column !important;
-        width: 100% !important;
-        height: calc(100vh - 60px) !important;
-        overflow-y: auto !important;
-        padding: 20px !important;
-        box-sizing: border-box !important;
-      }
-      
-      /* Garantir que os elementos internos preencham o espaço */
-      .bottom-tab-content.active-content > * {
-        width: 100% !important;
-        margin-bottom: 15px !important;
-      }
-      
-      /* Fazer conteúdos específicos ocuparem mais espaço */
-      .restrictions-container, .event-list, .route-info {
-        flex-grow: 1 !important;
-        min-height: 70vh !important;
-        width: 100% !important;
-      }
-    `;
-    document.head.appendChild(style);
-    
-    // Função para ajustar as abas
-    function ajustarAbas() {
-      // Verificar se o container está expandido
-      const container = document.querySelector('.bottom-tabs-container');
-      if (!container || container.classList.contains('minimized')) return;
-      
-      // Encontrar conteúdo ativo
-      const conteudoAtivo = document.querySelector('.bottom-tab-content.active-content');
-      if (!conteudoAtivo) return;
-      
-      // Aplicar estilos de preenchimento
-      conteudoAtivo.style.display = 'flex';
-      conteudoAtivo.style.flexDirection = 'column';
-      conteudoAtivo.style.width = '100%';
-      conteudoAtivo.style.height = 'calc(100vh - 60px)';
-      conteudoAtivo.style.overflowY = 'auto';
-      
-      // Procurar elementos específicos para cada aba
-      const restricoes = conteudoAtivo.querySelector('.restrictions-container, .restrictions-list');
-      const eventos = conteudoAtivo.querySelector('.event-list, .eventos-list');
-      const relatorio = conteudoAtivo.querySelector('.route-info, .report-container');
-      
-      // Expandir elementos específicos
-      if (restricoes) {
-        restricoes.style.flexGrow = '1';
-        restricoes.style.minHeight = '70vh';
-        restricoes.style.width = '100%';
-      }
-      
-      if (eventos) {
-        eventos.style.flexGrow = '1';
-        eventos.style.minHeight = '70vh';
-        eventos.style.width = '100%';
-      }
-      
-      if (relatorio) {
-        relatorio.style.flexGrow = '1';
-        relatorio.style.minHeight = '70vh';
-        relatorio.style.width = '100%';
-      }
-    }
-    
-    // Aplicar várias vezes para garantir
-    setTimeout(ajustarAbas, 500);
-    setTimeout(ajustarAbas, 1500);
-    setTimeout(ajustarAbas, 3000);
-    
-    // Continuar verificando periodicamente
-    setInterval(ajustarAbas, 5000);
-    
-    // Adicionar listener para cliques nos botões das abas
-    document.addEventListener('click', function(e) {
-      if (e.target.classList.contains('bottom-tab-btn') || 
-          e.target.closest('.bottom-tab-btn')) {
-        setTimeout(ajustarAbas, 200);
-      }
-    }, true);
-  });
-})();
-</script>
-
-    /* Adicionar este novo estilo */
-.bottom-tabs-container:not(.minimized) .bottom-tab-content.active-content {
-    display: flex !important; /* Mostrar apenas a aba ativa */
-    flex-direction: column !important;
-}
-
-    <!-- Correção para datas de cidades e preenchimento de abas -->
-<script>
-// Correção para as datas de aniversário de cidades
-(function() {
-  // Executar quando a página estiver carregada
-  window.addEventListener('load', function() {
-    // Aplicar correções após um breve atraso
-    setTimeout(corrigirDatas, 1000);
-    setTimeout(corrigirDatas, 3000);
-  });
-  
-  function corrigirDatas() {
-    // Correções específicas para cidades
-    const correcoes = {
-      'Piedade': '20/05/2025',
-      'Ribeirão Preto': '19/06/2025'
-    };
-    
-    // Encontrar todos os elementos de data
-    const dateElements = document.querySelectorAll('.event-date');
-    
-    dateElements.forEach(function(elem) {
-      const texto = elem.textContent;
-      
-      // Verificar cada cidade na lista de correções
-      Object.keys(correcoes).forEach(function(cidade) {
-        if (texto.includes(cidade)) {
-          // Extrair a cidade
-          const cidadeMatch = texto.match(/([^|]+)\s*\|/);
-          
-          if (cidadeMatch) {
-            const cidadeNome = cidadeMatch[1].trim();
-            const dataCorreta = correcoes[cidade];
-            
-            // Atualizar o texto
-            elem.textContent = `${cidadeNome} | ${dataCorreta}`;
-            console.log(`Data corrigida: ${cidadeNome} para ${dataCorreta}`);
-          }
-        }
-      });
-    });
-  }
-})();
-
-// Correção para o preenchimento das abas
-(function() {
-  // Executar quando a página estiver carregada
-  window.addEventListener('load', function() {
-    // Aplicar estilos de preenchimento completo
-    const style = document.createElement('style');
-    style.textContent = `
-      /* Ocultar todas as abas por padrão */
-      .bottom-tab-content {
-        display: none !important;
-      }
-      
-      /* Mostrar apenas a aba ativa */
-      .bottom-tab-content.active-content {
-        display: flex !important;
-        flex-direction: column !important;
-        width: 100% !important;
-        height: calc(100vh - 60px) !important;
-        overflow-y: auto !important;
-        padding: 20px !important;
-        box-sizing: border-box !important;
-      }
-      
-      /* Garantir que os elementos internos preencham o espaço */
-      .bottom-tab-content.active-content > * {
-        width: 100% !important;
-        margin-bottom: 15px !important;
-      }
-      
-      /* Fazer conteúdos específicos ocuparem mais espaço */
-      .restrictions-container, .event-list, .route-info {
-        flex-grow: 1 !important;
-        min-height: 70vh !important;
-        width: 100% !important;
-      }
-    `;
-    document.head.appendChild(style);
-    
-    // Função para ajustar as abas
-    function ajustarAbas() {
-      // Verificar se o container está expandido
-      const container = document.querySelector('.bottom-tabs-container');
-      if (!container || container.classList.contains('minimized')) return;
-      
-      // Encontrar conteúdo ativo
-      const conteudoAtivo = document.querySelector('.bottom-tab-content.active-content');
-      if (!conteudoAtivo) return;
-      
-      // Aplicar estilos de preenchimento
-      conteudoAtivo.style.display = 'flex';
-      conteudoAtivo.style.flexDirection = 'column';
-      conteudoAtivo.style.width = '100%';
-      conteudoAtivo.style.height = 'calc(100vh - 60px)';
-      conteudoAtivo.style.overflowY = 'auto';
-      
-      // Procurar elementos específicos para cada aba
-      const restricoes = conteudoAtivo.querySelector('.restrictions-container, .restrictions-list');
-      const eventos = conteudoAtivo.querySelector('.event-list, .eventos-list');
-      const relatorio = conteudoAtivo.querySelector('.route-info, .report-container');
-      
-      // Expandir elementos específicos
-      if (restricoes) {
-        restricoes.style.flexGrow = '1';
-        restricoes.style.minHeight = '70vh';
-        restricoes.style.width = '100%';
-      }
-      
-      if (eventos) {
-        eventos.style.flexGrow = '1';
-        eventos.style.minHeight = '70vh';
-        eventos.style.width = '100%';
-      }
-      
-      if (relatorio) {
-        relatorio.style.flexGrow = '1';
-        relatorio.style.minHeight = '70vh';
-        relatorio.style.width = '100%';
-      }
-    }
-    
-    // Aplicar várias vezes para garantir
-    setTimeout(ajustarAbas, 500);
-    setTimeout(ajustarAbas, 1500);
-    setTimeout(ajustarAbas, 3000);
-    
-    // Continuar verificando periodicamente
-    setInterval(ajustarAbas, 5000);
-    
-    // Adicionar listener para cliques nos botões das abas
-    document.addEventListener('click', function(e) {
-      if (e.target.classList.contains('bottom-tab-btn') || 
-          e.target.closest('.bottom-tab-btn')) {
-        setTimeout(ajustarAbas, 200);
-      }
-    }, true);
-  });
-})();
-</script>
-
-<!-- Script para adicionar o Pegman (Street View) ao mapa -->
-<script src="fix-pegman.js"></script>
-<!-- Interceptador de informações de rota com limpeza automática -->
-<script src="route-interceptor.js"></script>
 </body>
 </html>

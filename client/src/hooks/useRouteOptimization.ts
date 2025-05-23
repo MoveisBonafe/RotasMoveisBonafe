@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { Location, VehicleType, PointOfInterest, RouteInfo } from "@/lib/types";
-import { createOptimizedRoute, generateAlternativeRoutes } from "@/lib/tspSolver";
+import { createOptimizedRoute } from "@/lib/tspSolver";
 import { calculateRouteCosts } from "@/lib/costCalculator";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -9,12 +9,6 @@ export function useRouteOptimization() {
   const [optimizedRoute, setOptimizedRoute] = useState<Location[]>([]);
   const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null);
   const [poisAlongRoute, setPoisAlongRoute] = useState<PointOfInterest[]>([]);
-  const [alternativeRoutes, setAlternativeRoutes] = useState<Array<{
-    route: Location[];
-    strategy: string;
-    totalDistance: number;
-    estimatedTime: number;
-  }>>([]);
 
   // Mutation for calculating route
   const calculateRouteMutation = useMutation({
@@ -39,42 +33,20 @@ export function useRouteOptimization() {
     // Add origin to locations for optimization
     const allLocations = [origin, ...locations];
     
-    // Generate multiple alternative routes
-    const alternatives = generateAlternativeRoutes(allLocations, false);
-    setAlternativeRoutes(alternatives);
-    
-    // Use the most efficient route (first in the list)
-    const optimizedLocations = alternatives.length > 0 ? alternatives[0].route : allLocations;
+    // Run TSP algorithm to optimize the route (não retorna ao ponto de origem)
+    const optimizedLocations = createOptimizedRoute(allLocations, false); // false = não voltar ao ponto de origem
     setOptimizedRoute(optimizedLocations);
     
-    console.log(`Geradas ${alternatives.length} rotas alternativas:`);
-    alternatives.forEach((alt, i) => {
-      console.log(`${i + 1}. ${alt.strategy}: ${(alt.totalDistance/1000).toFixed(2)}km, ${alt.estimatedTime.toFixed(0)}min`);
-    });
-    
-    // Calcular distância real da rota otimizada selecionada
-    let totalDistance = 0;
-    let totalDuration = 0;
-    
-    if (alternatives.length > 0) {
-      // Usar as métricas da rota mais eficiente (primeira na lista)
-      const selectedRoute = alternatives[0];
-      totalDistance = selectedRoute.totalDistance;
-      totalDuration = selectedRoute.estimatedTime * 60; // Converter minutos para segundos
+    // Usar as métricas reais se disponíveis, ou valores padrão como fallback
+    const totalDistance = realMetrics && realMetrics.totalDistance > 0 
+      ? realMetrics.totalDistance 
+      : 145000; // 145km em metros (fallback)
       
-      console.log(`Usando métricas da rota otimizada (${selectedRoute.strategy}): ${totalDistance/1000}km, ${totalDuration/60} min`);
-    } else {
-      // Fallback apenas se não conseguir gerar alternativas
-      totalDistance = realMetrics && realMetrics.totalDistance > 0 
-        ? realMetrics.totalDistance 
-        : 145000;
-        
-      totalDuration = realMetrics && realMetrics.totalDuration > 0
-        ? realMetrics.totalDuration
-        : 8100;
-        
-      console.log(`Usando métricas de fallback: ${totalDistance/1000}km, ${totalDuration/60} min`);
-    }
+    const totalDuration = realMetrics && realMetrics.totalDuration > 0
+      ? realMetrics.totalDuration
+      : 8100; // 2h 15min em segundos (fallback)
+      
+    console.log(`Usando métricas da rota: ${totalDistance/1000}km, ${totalDuration/60} min`);
     
     // Filtrar POIs que estão ao longo da rota
     console.log("POIs disponíveis para filtrar:", pois);
@@ -182,8 +154,11 @@ export function useRouteOptimization() {
     
     setRouteInfo(routeInfoData);
     
-    // Retornar as informações da rota
-    return routeInfoData;
+    // IMPORTANTE: Retornar também os POIs filtrados ao longo da rota
+    return {
+      ...routeInfoData,
+      poisAlongRoute // Adicionado aqui para ter acesso aos POIs no componente Home
+    };
   }, []);
 
   // Optimize route using server API (for real distance calculations)
@@ -210,7 +185,6 @@ export function useRouteOptimization() {
     optimizedRoute,
     routeInfo,
     poisAlongRoute,
-    alternativeRoutes,
     optimizeRouteLocally,
     optimizeRoute,
     isCalculating: calculateRouteMutation.isPending

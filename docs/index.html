@@ -509,42 +509,43 @@
             font-size: 14px;
         }
         
-        /* Estilo minimalista para rotas alternativas */
+        /* Estilo para o cartão de rotas alternativas */
         .route-option-card {
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            padding: 8px 12px;
-            margin-bottom: 6px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
             background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             cursor: pointer;
-            transition: all 0.15s ease;
-            font-size: 14px;
+            transition: all 0.2s ease;
         }
         .route-option-card:hover {
-            border-color: #FFD700;
-            background-color: #fffbf0;
+            border-color: #ffc107;
+            box-shadow: 0 3px 6px rgba(255, 193, 7, 0.2);
+            transform: translateY(-2px);
         }
         .route-option-card.selected {
-            border-color: #FFD700;
+            border-color: #ffab00;
             background-color: #fff8e1;
-            font-weight: 600;
         }
         
-        /* Seção minimalista de rotas alternativas */
+        /* Estilo para a seção de rotas alternativas na sidebar */
         .alternative-routes-section {
-            margin-top: 8px;
-            margin-bottom: 15px;
-            padding: 12px;
-            background-color: #fafafa;
-            border-radius: 6px;
-            border: 1px solid #e0e0e0;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
         }
         
         .alternative-routes-section h5 {
-            margin: 0 0 10px 0;
-            font-size: 15px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 16px;
             font-weight: 600;
-            color: #333;
+            color: #495057;
         }
         .pac-container {
             z-index: 9999; /* Garantir que as sugestões apareçam acima de outros elementos */
@@ -1721,8 +1722,6 @@
     <link rel="stylesheet" href="styles-fix.css">
     <!-- Estilos para correção das abas e animações -->
     <link rel="stylesheet" href="styles-fix.css">
-    <!-- Estilos para correção das abas e animações -->
-    <link rel="stylesheet" href="styles-fix.css">
 </head>
 <body>
 <script>
@@ -2162,44 +2161,50 @@
                     <!-- Seleção de Rota Alternativa na sidebar (redesenhada) -->
                     <div id="route-alternatives-sidebar" class="alternative-routes-section" style="display: none;">
                         <h5>Rotas Alternativas</h5>
+                        <p class="text-muted small mb-3">Escolha a melhor opção para seu trajeto:</p>
                         
                         <div id="route-options-container">
-                            <!-- Cards minimalistas -->
+                            <!-- Cards gerados dinamicamente -->
                             <div class="route-option-card selected" data-route="0" id="route-card-0">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span>🎯 Rota Original</span>
-                                    <small class="text-muted">Ordem adicionada</small>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong>Rota Otimizada</strong>
+                                    <span class="badge bg-primary">Recomendada</span>
+                                </div>
+                                <div class="text-muted small" id="route-0-details">
+                                    <span class="me-2"><i class="bi bi-truck"></i> Distância total</span>
+                                    <span><i class="bi bi-clock"></i> Tempo estimado</span>
                                 </div>
                             </div>
                             
                             <div class="route-option-card" data-route="1" id="route-card-1" style="display: none;">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span>⚡ Rota Otimizada</span>
-                                    <small class="text-muted">Menor distância</small>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong>Proximidade à Origem</strong>
+                                </div>
+                                <div class="text-muted small" id="route-1-details">
+                                    <span class="me-2"><i class="bi bi-truck"></i> Distância total</span>
+                                    <span><i class="bi bi-clock"></i> Tempo estimado</span>
                                 </div>
                             </div>
                             
                             <div class="route-option-card" data-route="2" id="route-card-2" style="display: none;">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span>📍 Proximidade à Origem</span>
-                                    <small class="text-muted">Pontos próximos primeiro</small>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong>Distante à Origem</strong>
                                 </div>
-                            </div>
-                            
-                            <div class="route-option-card" data-route="3" id="route-card-3" style="display: none;">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span>🔄 Distante à Origem</span>
-                                    <small class="text-muted">Pontos distantes primeiro</small>
+                                <div class="text-muted small" id="route-2-details">
+                                    <span class="me-2"><i class="bi bi-truck"></i> Distância total</span>
+                                    <span><i class="bi bi-clock"></i> Tempo estimado</span>
                                 </div>
                             </div>
                         </div>
                         
+                        <small class="text-muted d-block mt-3" style="font-size: 0.75rem;">
+                            Cada rota usa um algoritmo diferente com trade-offs entre distância e tempo.
+                        </small>
+                        
                         <!-- Seletor escondido para compatibilidade com código existente -->
                         <select id="alternative-routes-sidebar" class="d-none">
-                            <option value="0">Rota Original</option>
-                            <option value="1">Rota Otimizada</option>
-                            <option value="2">Proximidade à Origem</option>
-                            <option value="3">Distante à Origem</option>
+                            <option value="0">Rota Otimizada (Padrão)</option>
+                            <!-- Opções de rotas alternativas serão adicionadas dinamicamente -->
                         </select>
                     </div>
                 </div>
@@ -8021,10 +8026,7 @@
                             
                             if (!isNaN(lat1) && !isNaN(lng1) && !isNaN(lat2) && !isNaN(lng2)) {
                                 // Usar Haversine para calcular distância em linha reta
-                                const straightDist = calculateHaversineDistance(lat1, lng1, lat2, lng2);
-                                // Aplicar fator de correção inteligente baseado na distância
-                                const correctionFactor = straightDist > 100 ? 1.15 : (straightDist > 50 ? 1.1 : 1.05);
-                                const segmentDist = straightDist * correctionFactor;
+                                const segmentDist = calculateHaversineDistance(lat1, lng1, lat2, lng2) * 1.4;
                                 estimatedDistance += segmentDist;
                                 console.log(`Distância estimada do TSP entre ${p1.name || 'Ponto ' + i} e ${p2.name || 'Ponto ' + (i+1)}: ${segmentDist.toFixed(2)} km`);
                             }
@@ -8128,26 +8130,11 @@
             }
             
             try {
-                // 3. Rota Mais Eficiente (Nearest Neighbor)
-                console.log("Gerando rota: Mais Eficiente...");
-                const efficientRoute = solveNearestNeighborTSP(origin, destinations, includeOriginReturn);
-                alternativeRoutes.push(efficientRoute);
-                
-                // 4. Rota por Distância (Farthest First)
-                console.log("Gerando rota: Por Distância...");
-                const distanceRoute = solveFarthestFirstTSP(origin, destinations, includeOriginReturn);
-                alternativeRoutes.push(distanceRoute);
-                
-                // 5. Rota Geográfica (Norte-Sul)
-                console.log("Gerando rota: Geográfica...");
-                const geoRoute = solveGeographicalTSP(origin, destinations, includeOriginReturn);
-                alternativeRoutes.push(geoRoute);
-                
-                // 6. Rota Inversa (se tiver 3+ destinos)
+                // 3. Rota alternativa - Distante à Origem (se tiver 3+ destinos)
                 if (destinations.length >= 3) {
-                    console.log("Gerando rota: Inversa...");
-                    const reverseRoute = solveReverseTSP(origin, destinations, includeOriginReturn);
-                    alternativeRoutes.push(reverseRoute);
+                    console.log("Gerando rota alternativa 2: Distante à Origem...");
+                    const distantOriginRoute = solveDistantToOriginTSP(origin, destinations, includeOriginReturn);
+                    alternativeRoutes.push(distantOriginRoute);
                     
                     // Adicionar opção ao select da sidebar
                     const alternativeSidebar = document.getElementById('alternative-routes-sidebar');
@@ -8517,196 +8504,6 @@
                 estimatedTime: 0,
                 name: "Distante à origem (erro)"
             };
-        }
-    }
-
-    // Algoritmo TSP - Nearest Neighbor (Mais Eficiente)
-    function solveNearestNeighborTSP(origin, destinations, includeOriginReturn) {
-        try {
-            const path = [origin.id];
-            let totalDistance = 0;
-            let currentLocation = origin;
-            const unvisited = [...destinations];
-            
-            while (unvisited.length > 0) {
-                let nearestIndex = 0;
-                let nearestDistance = calculateDistance(
-                    currentLocation.latitude, currentLocation.longitude,
-                    unvisited[0].latitude, unvisited[0].longitude
-                );
-                
-                for (let i = 1; i < unvisited.length; i++) {
-                    const distance = calculateDistance(
-                        currentLocation.latitude, currentLocation.longitude,
-                        unvisited[i].latitude, unvisited[i].longitude
-                    );
-                    if (distance < nearestDistance) {
-                        nearestDistance = distance;
-                        nearestIndex = i;
-                    }
-                }
-                
-                const nearestDestination = unvisited[nearestIndex];
-                path.push(nearestDestination.id);
-                totalDistance += nearestDistance;
-                currentLocation = nearestDestination;
-                unvisited.splice(nearestIndex, 1);
-            }
-            
-            if (includeOriginReturn) {
-                path.push(origin.id);
-                totalDistance += calculateDistance(
-                    currentLocation.latitude, currentLocation.longitude,
-                    origin.latitude, origin.longitude
-                );
-            }
-            
-            return {
-                path: path,
-                distance: totalDistance,
-                estimatedTime: calculateTravelTime(totalDistance),
-                name: "Rota Mais Eficiente"
-            };
-        } catch (error) {
-            console.error("Erro no algoritmo Nearest Neighbor:", error);
-            return { path: [origin.id], distance: 0, estimatedTime: 0, name: "Erro" };
-        }
-    }
-
-    // Algoritmo TSP - Farthest First (Por Distância)
-    function solveFarthestFirstTSP(origin, destinations, includeOriginReturn) {
-        try {
-            const path = [origin.id];
-            let totalDistance = 0;
-            let currentLocation = origin;
-            const unvisited = [...destinations];
-            
-            while (unvisited.length > 0) {
-                let farthestIndex = 0;
-                let farthestDistance = calculateDistance(
-                    currentLocation.latitude, currentLocation.longitude,
-                    unvisited[0].latitude, unvisited[0].longitude
-                );
-                
-                for (let i = 1; i < unvisited.length; i++) {
-                    const distance = calculateDistance(
-                        currentLocation.latitude, currentLocation.longitude,
-                        unvisited[i].latitude, unvisited[i].longitude
-                    );
-                    if (distance > farthestDistance) {
-                        farthestDistance = distance;
-                        farthestIndex = i;
-                    }
-                }
-                
-                const farthestDestination = unvisited[farthestIndex];
-                path.push(farthestDestination.id);
-                totalDistance += farthestDistance;
-                currentLocation = farthestDestination;
-                unvisited.splice(farthestIndex, 1);
-            }
-            
-            if (includeOriginReturn) {
-                path.push(origin.id);
-                totalDistance += calculateDistance(
-                    currentLocation.latitude, currentLocation.longitude,
-                    origin.latitude, origin.longitude
-                );
-            }
-            
-            return {
-                path: path,
-                distance: totalDistance,
-                estimatedTime: calculateTravelTime(totalDistance),
-                name: "Rota por Distância"
-            };
-        } catch (error) {
-            console.error("Erro no algoritmo Farthest First:", error);
-            return { path: [origin.id], distance: 0, estimatedTime: 0, name: "Erro" };
-        }
-    }
-
-    // Algoritmo TSP - Geográfico (Norte-Sul)
-    function solveGeographicalTSP(origin, destinations, includeOriginReturn) {
-        try {
-            const sortedDestinations = [...destinations].sort((a, b) => {
-                // Ordenar por latitude (norte para sul) e depois por longitude
-                if (Math.abs(a.latitude - b.latitude) > 0.001) {
-                    return b.latitude - a.latitude; // Norte primeiro
-                }
-                return a.longitude - b.longitude; // Oeste para leste
-            });
-            
-            const path = [origin.id];
-            let totalDistance = 0;
-            let currentLocation = origin;
-            
-            for (const dest of sortedDestinations) {
-                path.push(dest.id);
-                const distance = calculateDistance(
-                    currentLocation.latitude, currentLocation.longitude,
-                    dest.latitude, dest.longitude
-                );
-                totalDistance += distance;
-                currentLocation = dest;
-            }
-            
-            if (includeOriginReturn) {
-                path.push(origin.id);
-                totalDistance += calculateDistance(
-                    currentLocation.latitude, currentLocation.longitude,
-                    origin.latitude, origin.longitude
-                );
-            }
-            
-            return {
-                path: path,
-                distance: totalDistance,
-                estimatedTime: calculateTravelTime(totalDistance),
-                name: "Rota Geográfica"
-            };
-        } catch (error) {
-            console.error("Erro no algoritmo Geográfico:", error);
-            return { path: [origin.id], distance: 0, estimatedTime: 0, name: "Erro" };
-        }
-    }
-
-    // Algoritmo TSP - Inverso
-    function solveReverseTSP(origin, destinations, includeOriginReturn) {
-        try {
-            const reversedDestinations = [...destinations].reverse();
-            
-            const path = [origin.id];
-            let totalDistance = 0;
-            let currentLocation = origin;
-            
-            for (const dest of reversedDestinations) {
-                path.push(dest.id);
-                const distance = calculateDistance(
-                    currentLocation.latitude, currentLocation.longitude,
-                    dest.latitude, dest.longitude
-                );
-                totalDistance += distance;
-                currentLocation = dest;
-            }
-            
-            if (includeOriginReturn) {
-                path.push(origin.id);
-                totalDistance += calculateDistance(
-                    currentLocation.latitude, currentLocation.longitude,
-                    origin.latitude, origin.longitude
-                );
-            }
-            
-            return {
-                path: path,
-                distance: totalDistance,
-                estimatedTime: calculateTravelTime(totalDistance),
-                name: "Rota Inversa"
-            };
-        } catch (error) {
-            console.error("Erro no algoritmo Inverso:", error);
-            return { path: [origin.id], distance: 0, estimatedTime: 0, name: "Erro" };
         }
     }
 
@@ -10007,10 +9804,8 @@
                         const lng2 = parseFloat(loc2.lng !== undefined ? loc2.lng : loc2.longitude);
                         
                         if (!isNaN(lat1) && !isNaN(lng1) && !isNaN(lat2) && !isNaN(lng2)) {
-                            // Calcular distância entre pontos consecutivos com fator inteligente
-                            const straightDist = calculateHaversineDistance(lat1, lng1, lat2, lng2);
-                            const correctionFactor = straightDist > 100 ? 1.15 : (straightDist > 50 ? 1.1 : 1.05);
-                            const segmentDist = straightDist * correctionFactor;
+                            // Calcular distância entre pontos consecutivos
+                            const segmentDist = calculateHaversineDistance(lat1, lng1, lat2, lng2) * 1.4;
                             estimatedDistance += segmentDist;
                             console.log(`Distância estimada entre ${loc1.name} e ${loc2.name}: ${segmentDist.toFixed(2)} km`);
                         }
@@ -10188,9 +9983,7 @@
                             const lng2 = parseFloat(loc2.lng !== undefined ? loc2.lng : loc2.longitude);
                             
                             if (!isNaN(lat1) && !isNaN(lng1) && !isNaN(lat2) && !isNaN(lng2)) {
-                                const straightDist = calculateHaversineDistance(lat1, lng1, lat2, lng2);
-                                const correctionFactor = straightDist > 100 ? 1.15 : (straightDist > 50 ? 1.1 : 1.05);
-                                const segmentDist = straightDist * correctionFactor;
+                                const segmentDist = calculateHaversineDistance(lat1, lng1, lat2, lng2) * 1.4;
                                 estimatedDistance += segmentDist;
                                 console.log(`Distância estimada entre ${loc1.name} e ${loc2.name}: ${segmentDist.toFixed(2)} km`);
                             }
@@ -11288,19 +11081,5 @@
 
 <!-- Script para adicionar o Pegman (Street View) ao mapa -->
 <script src="fix-pegman.js"></script>
-<!-- Ultimate Route Cleaner - Solução definitiva para duplicatas -->
-<script src="ultimate-route-cleaner.js"></script>
-<!-- Smart Route Cleaning Visualizer -->
-<script src="smart-route-visualizer.js"></script>
-<!-- Limpador visual direto de rotas duplicadas -->
-<script src="route-dom-cleaner.js"></script>
-<!-- Gerenciador único de rotas - Evita múltiplos DirectionsRenderer -->
-<script src="route-manager.js"></script>
-<!-- Bloqueador definitivo de rotas duplicadas -->
-<script src="route-blocker.js"></script>
-<!-- Interceptador de informações de rota com limpeza automática -->
-<script src="route-interceptor.js"></script>
-    <!-- Scripts para animações e correções das abas -->
-    <script src="tabs-fix.js"></script>
 </body>
 </html>
