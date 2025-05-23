@@ -259,6 +259,17 @@ export default function Sidebar({
         calculatedRoute={calculatedRoute}
       />
 
+      {/* Route Alternatives - aparece apenas após calcular rota */}
+      {routeAlternatives.length > 0 && (
+        <div className="px-4">
+          <RouteAlternatives
+            routes={routeAlternatives}
+            selectedRoute={selectedRoute}
+            onRouteSelect={handleRouteSelection}
+          />
+        </div>
+      )}
+
       {/* Botão de calcular rota após a lista de destinos */}
       <div className="p-4 border-t border-gray-200">
         <button 
