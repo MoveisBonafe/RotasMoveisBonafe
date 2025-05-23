@@ -2156,43 +2156,254 @@
                     .optimize-ready {
                         animation: pulseButton 1.5s infinite ease-in-out;
                     }
+                    
+                    /* Estilos minimalistas para rotas alternativas */
+                    #route-alternatives-sidebar {
+                        background: linear-gradient(135deg, #f8f9fa, #e9ecef) !important;
+                        border-radius: 16px !important;
+                        padding: 20px !important;
+                        margin: 16px 0 !important;
+                        border: none !important;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+                    }
+                    
+                    /* Ocultar completamente informações de tempo e distância */
+                    .route-option-card span:contains("km"),
+                    .route-option-card span:contains("min"),
+                    .route-option-card span:contains("h "),
+                    .route-option-card .bi-truck,
+                    .route-option-card .bi-clock,
+                    #route-0-details,
+                    #route-1-details,
+                    #route-2-details,
+                    .route-option-card .text-muted.small {
+                        display: none !important;
+                    }
+                    
+                    /* Efeitos hover para os cards */
+                    .route-option-card:hover {
+                        transform: translateX(8px) !important;
+                        box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+                    }
+                    
+                    /* Estados selecionados com cores específicas */
+                    .route-option-card.selected[data-route="0"] {
+                        background: linear-gradient(135deg, #28a745, #20c997) !important;
+                        color: white !important;
+                    }
+                    
+                    .route-option-card.selected[data-route="1"] {
+                        background: linear-gradient(135deg, #fd7e14, #ffc107) !important;
+                        color: white !important;
+                    }
+                    
+                    .route-option-card.selected[data-route="2"] {
+                        background: linear-gradient(135deg, #6f42c1, #e83e8c) !important;
+                        color: white !important;
+                    }
+                    
+                    .route-option-card.selected strong {
+                        color: white !important;
+                    }
+                    
+                    .route-option-card.selected .badge {
+                        background: rgba(255,255,255,0.2) !important;
+                        color: white !important;
+                    }
                     </style>
                     
-                    <!-- Seleção de Rota Alternativa na sidebar (redesenhada) -->
+                    <script>
+                    // Script automático para layout minimalista das rotas alternativas
+                    (function() {
+                        'use strict';
+                        
+                        console.log('🎨 Layout Minimalista: Iniciando...');
+                        
+                        // Função para remover informações de tempo e distância
+                        function removeTimeDistanceInfo() {
+                            // Remover elementos específicos por ID
+                            const elementsToHide = [
+                                '#route-0-details', '#route-1-details', '#route-2-details'
+                            ];
+                            
+                            elementsToHide.forEach(selector => {
+                                const element = document.querySelector(selector);
+                                if (element) {
+                                    element.style.display = 'none';
+                                    console.log('🎨 Ocultado:', selector);
+                                }
+                            });
+                            
+                            // Remover textos que contêm km, min, h
+                            const allElements = document.querySelectorAll('.route-option-card *');
+                            allElements.forEach(element => {
+                                const text = element.textContent || '';
+                                if (text.match(/\d+[\.,]?\d*\s*km/) || 
+                                    text.match(/\d+\s*min/) || 
+                                    text.match(/\d+h\s*\d*min?/)) {
+                                    element.style.display = 'none';
+                                    console.log('🎨 Texto removido:', text.trim());
+                                }
+                            });
+                        }
+                        
+                        // Aplicar mudanças imediatamente
+                        function applyMinimalistDesign() {
+                            removeTimeDistanceInfo();
+                            
+                            // Garantir que os cards tenham o estilo correto
+                            const cards = document.querySelectorAll('.route-option-card');
+                            cards.forEach((card, index) => {
+                                // Aplicar estilos hover dinâmicos
+                                card.addEventListener('mouseenter', function() {
+                                    if (!this.classList.contains('selected')) {
+                                        this.style.transform = 'translateX(8px)';
+                                        this.style.boxShadow = '0 4px 16px rgba(0,0,0,0.12)';
+                                    }
+                                });
+                                
+                                card.addEventListener('mouseleave', function() {
+                                    if (!this.classList.contains('selected')) {
+                                        this.style.transform = 'translateX(0)';
+                                        this.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+                                    }
+                                });
+                            });
+                        }
+                        
+                        // Observer para detectar mudanças no DOM
+                        const observer = new MutationObserver((mutations) => {
+                            let shouldReapply = false;
+                            
+                            mutations.forEach((mutation) => {
+                                if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                                    const target = mutation.target;
+                                    if (target.closest && target.closest('#route-alternatives-sidebar')) {
+                                        shouldReapply = true;
+                                    }
+                                }
+                            });
+                            
+                            if (shouldReapply) {
+                                console.log('🎨 Detectadas mudanças, reaplicando design...');
+                                setTimeout(applyMinimalistDesign, 100);
+                            }
+                        });
+                        
+                        // Configurar observer
+                        observer.observe(document.body, {
+                            childList: true,
+                            subtree: true,
+                            characterData: true
+                        });
+                        
+                        // Aplicar design quando a página carregar
+                        if (document.readyState === 'loading') {
+                            document.addEventListener('DOMContentLoaded', () => {
+                                setTimeout(applyMinimalistDesign, 500);
+                            });
+                        } else {
+                            setTimeout(applyMinimalistDesign, 500);
+                        }
+                        
+                        // Verificação periódica para garantir que funcione
+                        setInterval(() => {
+                            const routeCards = document.querySelectorAll('.route-option-card');
+                            if (routeCards.length > 0) {
+                                let hasTimeDistance = false;
+                                routeCards.forEach(card => {
+                                    const text = card.textContent || '';
+                                    if (text.match(/\d+[\.,]?\d*\s*km/) || text.match(/\d+\s*min/)) {
+                                        hasTimeDistance = true;
+                                    }
+                                });
+                                
+                                if (hasTimeDistance) {
+                                    console.log('🎨 Detectado tempo/distância, removendo...');
+                                    applyMinimalistDesign();
+                                }
+                            }
+                        }, 2000);
+                        
+                        console.log('🎨 Layout Minimalista: Configurado com sucesso!');
+                    })();
+                    </script>
+                    
+                    <!-- Seleção de Rota Alternativa na sidebar (layout minimalista) -->
                     <div id="route-alternatives-sidebar" class="alternative-routes-section" style="display: none;">
-                        <h5>Rotas Alternativas</h5>
-                        <p class="text-muted small mb-3">Escolha a melhor opção para seu trajeto:</p>
+                        <h5 style="font-size: 18px; font-weight: 700; color: #495057; margin-bottom: 8px;">Rotas Alternativas</h5>
+                        <p class="text-muted small mb-3" style="color: #6c757d; font-size: 14px; margin-bottom: 16px;">Escolha a melhor opção para seu trajeto</p>
                         
                         <div id="route-options-container">
-                            <!-- Cards gerados dinamicamente -->
-                            <div class="route-option-card selected" data-route="0" id="route-card-0">
+                            <!-- Cards gerados dinamicamente com design minimalista -->
+                            <div class="route-option-card selected" data-route="0" id="route-card-0" style="
+                                background: linear-gradient(135deg, #f0fff4, #ffffff);
+                                border: none;
+                                border-left: 4px solid #28a745;
+                                border-radius: 12px;
+                                padding: 16px;
+                                margin-bottom: 12px;
+                                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                                transition: all 0.3s ease;
+                                cursor: pointer;
+                                transform: translateX(4px);
+                                box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+                            ">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <strong>Rota Otimizada</strong>
-                                    <span class="badge bg-primary">Recomendada</span>
+                                    <div style="display: flex; align-items: center;">
+                                        <div style="width: 12px; height: 12px; border-radius: 50%; background: #28a745; margin-right: 12px;"></div>
+                                        <strong style="font-size: 14px; color: #495057;">Rota Otimizada</strong>
+                                    </div>
+                                    <span class="badge bg-primary" style="background: rgba(0,123,255,0.1) !important; color: #007bff !important; border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 600;">Recomendada</span>
                                 </div>
-                                <div class="text-muted small" id="route-0-details">
-                                    <span class="me-2"><i class="bi bi-truck"></i> Distância total</span>
-                                    <span><i class="bi bi-clock"></i> Tempo estimado</span>
+                                <div style="color: #6c757d; font-size: 13px; margin-top: 8px;">
+                                    Melhor combinação de eficiência e praticidade
                                 </div>
                             </div>
                             
-                            <div class="route-option-card" data-route="1" id="route-card-1" style="display: none;">
+                            <div class="route-option-card" data-route="1" id="route-card-1" style="
+                                display: none;
+                                background: linear-gradient(135deg, #fff8f0, #ffffff);
+                                border: none;
+                                border-left: 4px solid #fd7e14;
+                                border-radius: 12px;
+                                padding: 16px;
+                                margin-bottom: 12px;
+                                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                                transition: all 0.3s ease;
+                                cursor: pointer;
+                            ">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <strong>Proximidade à Origem</strong>
+                                    <div style="display: flex; align-items: center;">
+                                        <div style="width: 12px; height: 12px; border-radius: 50%; background: #fd7e14; margin-right: 12px;"></div>
+                                        <strong style="font-size: 14px; color: #495057;">Proximidade à Origem</strong>
+                                    </div>
                                 </div>
-                                <div class="text-muted small" id="route-1-details">
-                                    <span class="me-2"><i class="bi bi-truck"></i> Distância total</span>
-                                    <span><i class="bi bi-clock"></i> Tempo estimado</span>
+                                <div style="color: #6c757d; font-size: 13px; margin-top: 8px;">
+                                    Prioriza destinos mais próximos primeiro
                                 </div>
                             </div>
                             
-                            <div class="route-option-card" data-route="2" id="route-card-2" style="display: none;">
+                            <div class="route-option-card" data-route="2" id="route-card-2" style="
+                                display: none;
+                                background: linear-gradient(135deg, #f8f4ff, #ffffff);
+                                border: none;
+                                border-left: 4px solid #6f42c1;
+                                border-radius: 12px;
+                                padding: 16px;
+                                margin-bottom: 12px;
+                                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                                transition: all 0.3s ease;
+                                cursor: pointer;
+                            ">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <strong>Distante à Origem</strong>
+                                    <div style="display: flex; align-items: center;">
+                                        <div style="width: 12px; height: 12px; border-radius: 50%; background: #6f42c1; margin-right: 12px;"></div>
+                                        <strong style="font-size: 14px; color: #495057;">Distante à Origem</strong>
+                                    </div>
                                 </div>
-                                <div class="text-muted small" id="route-2-details">
-                                    <span class="me-2"><i class="bi bi-truck"></i> Distância total</span>
-                                    <span><i class="bi bi-clock"></i> Tempo estimado</span>
+                                <div style="color: #6c757d; font-size: 13px; margin-top: 8px;">
+                                    Destinos mais distantes primeiro
                                 </div>
                             </div>
                         </div>
