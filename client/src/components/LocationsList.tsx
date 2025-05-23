@@ -40,111 +40,87 @@ export default function LocationsList({
     return (
       <div 
         key={location.id} 
-        className={`bg-white border ${isInRoute ? 'border-green-300' : 'border-gray-200'} rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200`}
+        className={`group bg-white border-l-4 ${isInRoute ? 'border-l-green-500 bg-green-50/30' : 'border-l-blue-500 bg-blue-50/20'} rounded-r-xl shadow-sm hover:shadow-md transition-all duration-300 hover:translate-x-1`}
       >
-        {/* Cabeçalho do card */}
-        <div 
-          className="p-3 cursor-pointer flex items-start justify-between"
-          onClick={() => toggleLocation(location.id)}
-        >
-          <div className="flex items-start flex-1">
-            <div className={`flex items-center justify-center h-8 w-8 rounded-full ${isInRoute ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'} mr-3 flex-shrink-0`}>
-              <div className="font-bold text-sm">{sequenceNumber}</div>
+        {/* Layout minimalista */}
+        <div className="p-4 flex items-center justify-between">
+          <div className="flex items-center flex-1 space-x-3">
+            {/* Número sequencial moderno */}
+            <div className={`flex items-center justify-center h-10 w-10 rounded-full ${isInRoute ? 'bg-green-500 text-white' : 'bg-blue-500 text-white'} font-bold text-sm shadow-md`}>
+              {sequenceNumber}
             </div>
-          
-            <div>
-              <h3 className="text-sm font-medium text-gray-900 truncate max-w-xs">
+            
+            {/* Informações da localização */}
+            <div className="flex-1 min-w-0">
+              <h3 className="text-base font-semibold text-gray-900 truncate">
                 {location.name.startsWith("R.") || location.name.startsWith("Av.") 
                   ? extractCityFromAddress(location.address) 
                   : location.name}
               </h3>
-              <p className="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
+              <p className="text-sm text-gray-600 truncate mt-1">
                 {location.address}
               </p>
             </div>
           </div>
           
-          <div className="flex items-center gap-1">
-            <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                onRemoveLocation(originalIndex);
-              }}
-              className="text-gray-400 hover:text-red-600 p-1 flex items-center justify-center w-7 h-7"
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-              </svg>
-            </button>
-            
+          {/* Botões de ação minimalistas */}
+          <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            {/* Botão de reordenar */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 toggleLocation(location.id);
               }}
-              className="ml-1 text-gray-400 hover:text-gray-600 p-1"
+              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
+              title="Opções"
             >
-              <svg 
-                className={`h-5 w-5 transform transition-transform duration-200 ${expandedLocation === location.id ? 'rotate-180' : ''}`} 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24" 
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+              </svg>
+            </button>
+            
+            {/* Botão remover */}
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemoveLocation(originalIndex);
+              }}
+              className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+              title="Remover"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
             </button>
           </div>
         </div>
         
-        {/* Detalhes expandidos */}
+        {/* Menu expandido minimalista */}
         {expandedLocation === location.id && (
-          <div className="border-t border-gray-200 px-3 py-2 bg-gray-50">
-            <div className="mb-2">
-              <div className="text-xs text-gray-500 mb-1">Coordenadas</div>
-              <div className="text-xs font-mono bg-gray-100 p-1 rounded">
-                {location.lat}, {location.lng}
-              </div>
-            </div>
-            
-            {location.cep && (
-              <div className="mb-2">
-                <div className="text-xs text-gray-500 mb-1">CEP</div>
-                <div className="text-xs font-mono bg-gray-100 p-1 rounded">
-                  {location.cep}
-                </div>
-              </div>
-            )}
-            
-            <div className="flex space-x-2 mt-3">
+          <div className="border-t border-gray-100 px-4 py-3 bg-gray-50/50">
+            <div className="flex space-x-2">
               <button
                 onClick={() => onMoveLocationUp(originalIndex)}
                 disabled={originalIndex === 0}
-                className={`flex-1 py-1 px-2 text-xs rounded ${
+                className={`flex-1 py-2 px-3 text-sm rounded-lg font-medium transition-colors ${
                   originalIndex === 0
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-white text-gray-700 hover:bg-blue-50 hover:text-blue-600 border border-gray-200'
                 }`}
               >
-                <svg className="h-3 w-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7"></path>
-                </svg>
-                Mover acima
+                ↑ Subir
               </button>
               
               <button
                 onClick={() => onMoveLocationDown(originalIndex)}
                 disabled={originalIndex === locations.length - 1}
-                className={`flex-1 py-1 px-2 text-xs rounded ${
+                className={`flex-1 py-2 px-3 text-sm rounded-lg font-medium transition-colors ${
                   originalIndex === locations.length - 1
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-white text-gray-700 hover:bg-blue-50 hover:text-blue-600 border border-gray-200'
                 }`}
               >
-                <svg className="h-3 w-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-                Mover abaixo
+                ↓ Descer
               </button>
             </div>
           </div>
@@ -154,39 +130,43 @@ export default function LocationsList({
   };
   
   return (
-    <div className="flex-1 overflow-auto bg-gray-50 px-4 py-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-gray-700">Destinos</h2>
-        
-        <div className="text-sm text-gray-500 flex items-center">
-          {locations.length} destino{locations.length !== 1 ? 's' : ''}
-          <button 
-            onClick={onAddLocationClick}
-            className="ml-2 p-1 text-blue-600 rounded-full hover:bg-blue-100 focus:outline-none"
-            title="Adicionar destino"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-            </svg>
-          </button>
+    <div className="flex-1 overflow-auto bg-gradient-to-b from-gray-50 to-white px-4 py-6">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-xl font-bold text-gray-800">Destinos</h2>
+          <p className="text-sm text-gray-500 mt-1">
+            {locations.length === 0 ? 'Nenhum destino adicionado' : `${locations.length} destino${locations.length !== 1 ? 's' : ''} na rota`}
+          </p>
         </div>
+        
+        <button 
+          onClick={onAddLocationClick}
+          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-200 flex items-center space-x-2"
+          title="Adicionar destino"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+          <span>Adicionar</span>
+        </button>
       </div>
       
-      {/* Bloco de origem */}
+      {/* Bloco de origem moderno */}
       {origin && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-3">
-          <div className="flex items-start">
-            <div className="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-800 mr-3 flex-shrink-0">
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-4 mb-6 shadow-lg">
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center justify-center h-12 w-12 rounded-full bg-white/20 backdrop-blur-sm">
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
               </svg>
             </div>
             <div className="flex-1">
-              <h3 className="text-sm font-medium text-blue-900">
-                Origem: {origin.name}
+              <h3 className="text-lg font-semibold">
+                {origin.name}
               </h3>
-              <p className="text-xs text-blue-700 mt-1">
-                {origin.address}
+              <p className="text-blue-100 text-sm">
+                Ponto de partida
               </p>
             </div>
           </div>
@@ -195,24 +175,27 @@ export default function LocationsList({
       
       {/* Lista de localizações */}
       {locations.length === 0 ? (
-        <div className="bg-white border border-gray-200 rounded-lg p-6 flex flex-col items-center justify-center text-center">
-          <svg className="h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
-          </svg>
-          <h3 className="text-lg font-medium text-gray-900 mb-1">Nenhum destino adicionado</h3>
-          <p className="text-sm text-gray-500 mb-4">Adicione destinos para calcular a melhor rota</p>
+        <div className="bg-white rounded-2xl p-8 flex flex-col items-center justify-center text-center shadow-sm border border-gray-100">
+          <div className="bg-gray-100 rounded-full p-4 mb-4">
+            <svg className="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Pronto para planejar sua rota</h3>
+          <p className="text-gray-500 mb-6 max-w-sm">Adicione destinos para calcular a melhor sequência de entregas</p>
           <button
             onClick={onAddLocationClick}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-200 flex items-center space-x-2"
           >
-            <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
             </svg>
-            Adicionar destino
+            <span>Adicionar primeiro destino</span>
           </button>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {/* Se temos uma rota calculada, exibimos os locais na ordem da rota otimizada */}
           {calculatedRoute && calculatedRoute.length > 1 ? (
             // Exibir locais na ordem da rota calculada (excluindo a origem)
@@ -229,15 +212,19 @@ export default function LocationsList({
             })
           )}
           
-          {/* Botão adicionar mais */}
+          {/* Botão adicionar mais - design minimalista */}
           <button
             onClick={onAddLocationClick}
-            className="w-full py-2 px-3 bg-white border border-gray-300 border-dashed rounded-lg text-gray-500 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50 flex items-center justify-center transition-colors"
+            className="w-full py-4 px-4 bg-white border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:text-blue-600 hover:border-blue-400 hover:bg-blue-50/50 flex items-center justify-center transition-all duration-200 font-medium group"
           >
-            <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-            </svg>
-            Adicionar outro destino
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-gray-100 group-hover:bg-blue-100 rounded-lg transition-colors">
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+              </div>
+              <span>Adicionar outro destino</span>
+            </div>
           </button>
         </div>
       )}
