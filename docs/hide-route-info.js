@@ -24,59 +24,76 @@
   
   function ocultarInformacoesRotas() {
     try {
-      console.log("🙈 [HideRouteInfo] Iniciando remoção de informações de tempo/distância");
+      // Buscar seções de rotas alternativas
+      const secoes = [
+        document.querySelector('[class*="route"]'),
+        document.querySelector('[class*="alternativ"]'),
+        document.querySelector('[class*="proximidade"]'),
+        document.querySelector('[class*="otimizada"]'),
+        document.querySelector('[class*="distante"]')
+      ].filter(Boolean);
       
-      // Método mais direto: buscar todos os elementos que contêm km, min, h
-      const todosElementos = document.querySelectorAll('*');
-      
-      todosElementos.forEach(elemento => {
-        const texto = elemento.textContent || '';
-        
-        // Verificar se contém informações de tempo/distância
-        if (texto.match(/\d+[\.,]?\d*\s*km/) || 
-            texto.match(/\d+\s*min/) || 
-            texto.match(/\d+h\s*\d+min/)) {
-          
-          // Verificar se está dentro de uma seção de rotas alternativas
-          const container = elemento.closest('div, section, article');
-          if (container) {
-            const containerTexto = container.textContent || '';
-            
-            // Se o container menciona rotas alternativas
-            if (containerTexto.includes('Rota Otimizada') || 
-                containerTexto.includes('Proximidade') || 
-                containerTexto.includes('Distante') ||
-                containerTexto.includes('Rotas Alternativas')) {
-              
-              // Remover completamente o elemento
-              elemento.remove();
-              console.log("🙈 [HideRouteInfo] Removido elemento:", texto.trim());
-            }
-          }
-        }
-      });
-      
-      // Método alternativo: modificar o HTML diretamente
-      const sidebar = document.querySelector('.sidebar, #sidebar');
-      if (sidebar) {
-        let htmlSidebar = sidebar.innerHTML;
-        
-        // Remover todas as ocorrências de tempo e distância dos botões
-        htmlSidebar = htmlSidebar.replace(/📏\s*\d+[\.,]?\d*\s*km/g, '');
-        htmlSidebar = htmlSidebar.replace(/⏱️\s*\d+\s*min/g, '');
-        htmlSidebar = htmlSidebar.replace(/⏱️\s*\d+h\s*\d+min/g, '');
-        htmlSidebar = htmlSidebar.replace(/<[^>]*>\s*\d+[\.,]?\d*\s*km\s*<\/[^>]*>/g, '');
-        htmlSidebar = htmlSidebar.replace(/<[^>]*>\s*\d+\s*min\s*<\/[^>]*>/g, '');
-        htmlSidebar = htmlSidebar.replace(/<[^>]*>\s*\d+h\s*\d+min\s*<\/[^>]*>/g, '');
-        
-        if (htmlSidebar !== sidebar.innerHTML) {
-          sidebar.innerHTML = htmlSidebar;
-          console.log("🙈 [HideRouteInfo] HTML da sidebar limpo");
+      // Se não encontrou seções específicas, buscar em toda a sidebar
+      if (secoes.length === 0) {
+        const sidebar = document.querySelector('.sidebar, #sidebar');
+        if (sidebar) {
+          secoes.push(sidebar);
         }
       }
       
+      secoes.forEach(secao => {
+        // Procurar por texto que contém informações de rota
+        const walker = document.createTreeWalker(
+          secao,
+          NodeFilter.SHOW_TEXT,
+          null,
+          false
+        );
+        
+        const nodosTexto = [];
+        let node;
+        while (node = walker.nextNode()) {
+          nodosTexto.push(node);
+        }
+        
+        nodosTexto.forEach(textoNode => {
+          const texto = textoNode.textContent;
+          const elemento = textoNode.parentElement;
+          
+          // Verificar se é informação de tempo/distância em botões de rota
+          if (elemento && (texto.includes('km') || texto.includes('min') || texto.includes('h '))) {
+            const botaoPai = elemento.closest('button, .btn, .route-option, div[role="button"]');
+            
+            if (botaoPai) {
+              const textoBotao = botaoPai.textContent;
+              
+              // Se é um botão de rota alternativa
+              if (textoBotao.includes('Proximidade') || 
+                  textoBotao.includes('Alternativa') || 
+                  textoBotao.includes('Otimizada') ||
+                  textoBotao.includes('Distante') ||
+                  textoBotao.includes('Rota ')) {
+                
+                // Verificar se o texto é especificamente tempo ou distância
+                if (texto.match(/\d+[\.,]?\d*\s*km/) || 
+                    texto.match(/\d+\s*min/) || 
+                    texto.match(/\d+h\s*\d+min/)) {
+                  
+                  // Ocultar o elemento
+                  elemento.style.visibility = 'hidden';
+                  elemento.style.height = '0px';
+                  elemento.style.overflow = 'hidden';
+                  
+                  console.log("🙈 [HideRouteInfo] Ocultado:", texto.trim());
+                }
+              }
+            }
+          }
+        });
+      });
+      
     } catch (e) {
-      console.log("🙈 [HideRouteInfo] Erro ao remover informações:", e);
+      console.log("🙈 [HideRouteInfo] Erro ao ocultar informações:", e);
     }
   }
   
