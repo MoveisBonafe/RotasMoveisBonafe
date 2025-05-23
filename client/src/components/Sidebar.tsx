@@ -2,7 +2,6 @@ import { useState } from "react";
 import SearchBox from "./SearchBox";
 import LocationsList from "./LocationsList";
 import DateRangeSelector from "./DateRangeSelector";
-import RouteAlternatives from "./RouteAlternatives";
 import { Location, VehicleType, GeocodingResult } from "@/lib/types";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useToast } from "@/hooks/use-toast";
@@ -51,39 +50,6 @@ export default function Sidebar({
 
   // Hook para notificações toast
   const { toast } = useToast();
-
-  // Estado para rotas alternativas
-  const [selectedRoute, setSelectedRoute] = useState<string>("optimized");
-  
-  // Rotas alternativas disponíveis - só aparecem após calcular rota
-  const routeAlternatives = calculatedRoute && calculatedRoute.length > 1 ? [
-    {
-      id: "optimized",
-      name: "Rota Otimizada",
-      description: "Melhor combinação de tempo e distância",
-      type: "optimized" as const,
-      isRecommended: true
-    },
-    {
-      id: "proximity",
-      name: "Proximidade à origem",
-      description: "Prioriza destinos mais próximos primeiro",
-      type: "proximity" as const
-    },
-    {
-      id: "distant",
-      name: "Distante à Origem",
-      description: "Destinos mais distantes primeiro",
-      type: "distant" as const
-    }
-  ] : [];
-
-  // Handler para seleção de rota alternativa
-  const handleRouteSelection = (routeId: string) => {
-    setSelectedRoute(routeId);
-    // Aqui você pode adicionar lógica para recalcular a rota com base na opção selecionada
-    console.log("Rota selecionada:", routeId);
-  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     // Log e limpa mensagens de erro anteriores
@@ -258,17 +224,6 @@ export default function Sidebar({
         onAddLocationClick={onAddLocationClick}
         calculatedRoute={calculatedRoute}
       />
-
-      {/* Route Alternatives - aparece apenas após calcular rota */}
-      {routeAlternatives.length > 0 && (
-        <div className="px-4">
-          <RouteAlternatives
-            routes={routeAlternatives}
-            selectedRoute={selectedRoute}
-            onRouteSelect={handleRouteSelection}
-          />
-        </div>
-      )}
 
       {/* Botão de calcular rota após a lista de destinos */}
       <div className="p-4 border-t border-gray-200">
