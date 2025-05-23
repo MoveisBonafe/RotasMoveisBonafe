@@ -27,10 +27,42 @@
                 componentRestrictions: { country: 'BR' }
               });
               
+              // Restaurar o evento de seleção
+              autocomplete.addListener('place_changed', function() {
+                const place = autocomplete.getPlace();
+                console.log("🔍 [FixSearchField] Local selecionado:", place.name);
+                
+                if (place.geometry) {
+                  // Buscar pela função original de adicionar local
+                  if (window.addLocationFromSearch) {
+                    window.addLocationFromSearch(place);
+                  } else if (window.addLocation) {
+                    window.addLocation(place);
+                  } else {
+                    // Tentar encontrar e executar a função de adicionar
+                    const buttons = document.querySelectorAll('button, .btn');
+                    const addButton = Array.from(buttons).find(btn => 
+                      btn.textContent.includes('Adicionar') || btn.textContent.includes('Add')
+                    );
+                    
+                    if (addButton) {
+                      // Simular clique no botão de adicionar
+                      campo.value = place.formatted_address || place.name;
+                      addButton.click();
+                    }
+                  }
+                  
+                  // Triggerar múltiplos eventos para garantir compatibilidade
+                  ['change', 'input', 'blur', 'keyup'].forEach(eventType => {
+                    campo.dispatchEvent(new Event(eventType, { bubbles: true }));
+                  });
+                }
+              });
+              
               // Marcar como corrigido
               campo.setAttribute('data-autocomplete-fixed', 'true');
               
-              console.log("🔍 [FixSearchField] Autocomplete restaurado com sucesso");
+              console.log("🔍 [FixSearchField] Autocomplete e eventos restaurados");
             } catch (e) {
               console.log("🔍 [FixSearchField] Erro ao recriar autocomplete:", e);
             }
