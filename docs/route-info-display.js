@@ -172,6 +172,38 @@
     let distancia = "--";
     let tempo = "--";
     
+    // NOVA ESTRATÉGIA: Buscar diretamente nos logs do console
+    try {
+      // Capturar informações das mensagens de log que aparecem no console
+      const logMessages = window.console.originalLog || [];
+      if (logMessages && logMessages.length > 0) {
+        const recentLogs = logMessages.slice(-20); // Últimas 20 mensagens
+        
+        recentLogs.forEach(log => {
+          if (typeof log === 'string') {
+            // Buscar distância e tempo nos logs
+            const distMatch = log.match(/Distância.*?(\d+\.?\d*)\s*km/i);
+            if (distMatch && distMatch[1]) {
+              distancia = distMatch[1] + ' km';
+              console.log("📊 [RouteInfo] Distância encontrada nos logs:", distancia);
+            }
+            
+            const timeMatch = log.match(/Tempo.*?(\d+)h\s*(\d+)min/i) || log.match(/Tempo.*?(\d+)\s*min/i);
+            if (timeMatch) {
+              if (timeMatch[2]) {
+                tempo = timeMatch[1] + 'h ' + timeMatch[2] + 'min';
+              } else {
+                tempo = timeMatch[1] + 'min';
+              }
+              console.log("📊 [RouteInfo] Tempo encontrado nos logs:", tempo);
+            }
+          }
+        });
+      }
+    } catch (e) {
+      console.log("📊 [RouteInfo] Erro ao buscar nos logs:", e);
+    }
+    
     // Método 1: Buscar valores no HTML baseado na estrutura da imagem enviada
     try {
       // Verificar o elemento Resumo da Rota na imagem
