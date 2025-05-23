@@ -2179,16 +2179,25 @@
                             
                             <div class="route-option-card" data-route="2" id="route-card-2" style="display: none;">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span>📍 Proximidade</span>
+                                    <span>📍 Proximidade à Origem</span>
                                     <small class="text-muted">Pontos próximos primeiro</small>
+                                </div>
+                            </div>
+                            
+                            <div class="route-option-card" data-route="3" id="route-card-3" style="display: none;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>🔄 Distante à Origem</span>
+                                    <small class="text-muted">Pontos distantes primeiro</small>
                                 </div>
                             </div>
                         </div>
                         
                         <!-- Seletor escondido para compatibilidade com código existente -->
                         <select id="alternative-routes-sidebar" class="d-none">
-                            <option value="0">Rota Otimizada (Padrão)</option>
-                            <!-- Opções de rotas alternativas serão adicionadas dinamicamente -->
+                            <option value="0">Rota Original</option>
+                            <option value="1">Rota Otimizada</option>
+                            <option value="2">Proximidade à Origem</option>
+                            <option value="3">Distante à Origem</option>
                         </select>
                     </div>
                 </div>
