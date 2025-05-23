@@ -228,49 +228,195 @@ export function solveTSP(locations: Location[], startIndex: number = 0, returnTo
 }
 
 /**
- * Create an optimized route from a list of locations
+ * Generate multiple alternative routes using different strategies
+ * 
+ * @param locations Array of locations
+ * @param returnToOrigin Whether to return to the origin point (default: false)
+ * @returns Array of alternative routes with their metrics
+ */
+export function generateAlternativeRoutes(locations: Location[], returnToOrigin: boolean = false): Array<{
+  route: Location[];
+  strategy: string;
+  totalDistance: number;
+  estimatedTime: number;
+}> {
+  if (!locations || locations.length === 0) {
+    console.error("Nenhuma localização fornecida para otimização de rota");
+    return [];
+  }
+  
+  if (locations.length <= 2) {
+    console.log("Apenas origem e um destino, não há necessidade de múltiplas rotas");
+    const route = locations;
+    return [{
+      route,
+      strategy: "Rota Direta",
+      totalDistance: calculateRouteDistance(route),
+      estimatedTime: estimateRouteTime(route)
+    }];
+  }
+  
+  const originIndex = locations.findIndex(loc => loc.isOrigin);
+  if (originIndex === -1) {
+    console.error("Nenhuma localização marcada como origem");
+    return [];
+  }
+  
+  const alternatives: Array<{
+    route: Location[];
+    strategy: string;
+    totalDistance: number;
+    estimatedTime: number;
+  }> = [];
+  
+  // Estratégia 1: Nearest Neighbor (Mais Eficiente)
+  const nearestRoute = nearestNeighborTSP(locations, originIndex, returnToOrigin);
+  const nearestLocations = nearestRoute.map(index => locations[index]);
+  alternatives.push({
+    route: nearestLocations,
+    strategy: "Rota Mais Eficiente",
+    totalDistance: calculateRouteDistance(nearestLocations),
+    estimatedTime: estimateRouteTime(nearestLocations)
+  });
+  
+  // Estratégia 2: Farthest First (Maiores distâncias primeiro)
+  const farthestRoute = farthestFirstTSP(locations, originIndex, returnToOrigin);
+  const farthestLocations = farthestRoute.map(index => locations[index]);
+  alternatives.push({
+    route: farthestLocations,
+    strategy: "Rota por Distância",
+    totalDistance: calculateRouteDistance(farthestLocations),
+    estimatedTime: estimateRouteTime(farthestLocations)
+  });
+  
+  // Estratégia 3: Geographical (Norte-Sul-Leste-Oeste)
+  const geoRoute = geographicalTSP(locations, originIndex, returnToOrigin);
+  const geoLocations = geoRoute.map(index => locations[index]);
+  alternatives.push({
+    route: geoLocations,
+    strategy: "Rota Geográfica",
+    totalDistance: calculateRouteDistance(geoLocations),
+    estimatedTime: estimateRouteTime(geoLocations)
+  });
+  
+  // Remover rotas duplicadas (mesma sequência)
+  const uniqueAlternatives = alternatives.filter((alt, index, self) => {
+    const routeKey = alt.route.map(loc => loc.id).join('-');
+    return self.findIndex(other => other.route.map(loc => loc.id).join('-') === routeKey) === index;
+  });
+  
+  // Ordenar por distância total (mais eficiente primeiro)
+  uniqueAlternatives.sort((a, b) => a.totalDistance - b.totalDistance);
+  
+  console.log(`Geradas ${uniqueAlternatives.length} rotas alternativas únicas`);
+  uniqueAlternatives.forEach((alt, i) => {
+    console.log(`Rota ${i + 1} (${alt.strategy}): ${alt.totalDistance.toFixed(2)}m, ${alt.estimatedTime.toFixed(0)}min`);
+  });
+  
+  return uniqueAlternatives;
+}
+
+/**
+ * Farthest First TSP Algorithm - prioritiza destinos mais distantes primeiro
+ */
+function farthestFirstTSP(locations: Location[], startIndex: number, returnToOrigin: boolean): number[] {
+  const numLocations = locations.length;
+  if (numLocations <= 1) return [startIndex];
+  
+  const distanceMatrix = createDistanceMatrix(locations);
+  const route: number[] = [startIndex];
+  const visited = new Set<number>([startIndex]);
+  
+  while (route.length < numLocations) {
+    const currentLocation = route[route.length - 1];
+    let farthestLocation = -1;
+    let maxDistance = -1;
+    
+    for (let i = 0; i < numLocations; i++) {
+      if (!visited.has(i)) {
+        const distance = distanceMatrix[currentLocation][i];
+        if (distance > maxDistance) {
+          farthestLocation = i;
+          maxDistance = distance;
+        }
+      }
+    }
+    
+    if (farthestLocation !== -1) {
+      route.push(farthestLocation);
+      visited.add(farthestLocation);
+    }
+  }
+  
+  if (returnToOrigin) route.push(startIndex);
+  return route;
+}
+
+/**
+ * Geographical TSP Algorithm - organiza por posição geográfica (norte-sul, leste-oeste)
+ */
+function geographicalTSP(locations: Location[], startIndex: number, returnToOrigin: boolean): number[] {
+  const numLocations = locations.length;
+  if (numLocations <= 1) return [startIndex];
+  
+  const route: number[] = [startIndex];
+  const unvisited = locations
+    .map((loc, index) => ({ ...loc, index }))
+    .filter((_, index) => index !== startIndex);
+  
+  // Ordenar por latitude (norte para sul) e depois longitude (oeste para leste)
+  unvisited.sort((a, b) => {
+    const latDiff = parseFloat(b.lat) - parseFloat(a.lat); // Norte primeiro
+    if (Math.abs(latDiff) > 0.01) return latDiff;
+    return parseFloat(a.lng) - parseFloat(b.lng); // Oeste primeiro se latitudes similares
+  });
+  
+  // Adicionar à rota na ordem geográfica
+  unvisited.forEach(loc => route.push(loc.index));
+  
+  if (returnToOrigin) route.push(startIndex);
+  return route;
+}
+
+/**
+ * Calculate total distance of a route
+ */
+function calculateRouteDistance(route: Location[]): number {
+  if (route.length < 2) return 0;
+  
+  let totalDistance = 0;
+  for (let i = 0; i < route.length - 1; i++) {
+    totalDistance += calculateDistance(route[i], route[i + 1]);
+  }
+  return totalDistance;
+}
+
+/**
+ * Estimate route time in minutes
+ */
+function estimateRouteTime(route: Location[]): number {
+  const distance = calculateRouteDistance(route);
+  const avgSpeedKmh = 60; // 60 km/h média
+  const distanceKm = distance / 1000;
+  return (distanceKm / avgSpeedKmh) * 60; // Converter para minutos
+}
+
+/**
+ * Create an optimized route from a list of locations (mantém compatibilidade)
  * 
  * @param locations Array of locations
  * @param returnToOrigin Whether to return to the origin point (default: false)
  * @returns Optimized route as an array of locations
  */
 export function createOptimizedRoute(locations: Location[], returnToOrigin: boolean = false): Location[] {
-  if (!locations || locations.length === 0) {
-    console.error("Nenhuma localização fornecida para otimização de rota");
-    return [];
-  }
+  const alternatives = generateAlternativeRoutes(locations, returnToOrigin);
   
-  // Verificamos se temos localizações suficientes para otimizar
-  if (locations.length <= 2) {
-    console.log("Apenas origem e um destino, não há necessidade de otimização");
+  if (alternatives.length === 0) {
+    console.error("Não foi possível gerar rotas alternativas");
     return locations;
   }
   
-  // Log para depuração
-  console.log(`Otimizando rota com ${locations.length} pontos:`, 
-    locations.map(loc => ({ name: loc.name, isOrigin: loc.isOrigin })));
-  
-  // Find the origin index (should be 0, but let's be safe)
-  const originIndex = locations.findIndex(loc => loc.isOrigin);
-  
-  if (originIndex === -1) {
-    console.error("Nenhuma localização marcada como origem");
-    return locations;
-  }
-  
-  console.log(`Origem encontrada no índice ${originIndex}: ${locations[originIndex].name}`);
-  
-  // Solve the TSP
-  const optimalIndices = solveTSP(locations, originIndex, returnToOrigin);
-  
-  // Log para depuração
-  console.log("Índices otimizados:", optimalIndices);
-  
-  // Map indices back to locations
-  const optimizedRoute = optimalIndices.map(index => locations[index]);
-  
-  // Adiciona informação ao log
-  console.log("Rota otimizada:", optimizedRoute.map(loc => loc.name).join(" -> "));
-  
-  return optimizedRoute;
+  // Retorna a rota mais eficiente (primeira na lista ordenada)
+  console.log(`Rota otimizada selecionada: ${alternatives[0].strategy}`);
+  return alternatives[0].route;
 }
