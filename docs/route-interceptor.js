@@ -236,12 +236,15 @@
         const texto = botao.textContent || '';
         if (texto.includes('Proximidade') || texto.includes('Alternativa') || texto.includes('Otimizada')) {
           botao.addEventListener('click', () => {
-            console.log("🎯 [RouteInterceptor] Rota alternativa clicada - limpando");
+            console.log("🎯 [RouteInterceptor] Rota alternativa clicada - ocultando tempo/distância");
             
-            // Resetar valores
+            // Resetar valores no mostrador
             ultimaDistancia = '--';
             ultimoTempo = '--';
             atualizarMostrador();
+            
+            // Ocultar tempo e distância dos botões de rotas alternativas
+            ocultarTempoDistanciaBotoes();
             
             // Limpar mapa
             setTimeout(limparMapaCompletamente, 300);
@@ -250,8 +253,41 @@
       });
     };
     
+    // Função para ocultar tempo e distância dos botões
+    const ocultarTempoDistanciaBotoes = () => {
+      setTimeout(() => {
+        // Procurar por elementos que mostram tempo e distância nos botões
+        const elementosComTempo = document.querySelectorAll('*');
+        elementosComTempo.forEach(el => {
+          const texto = el.textContent || '';
+          
+          // Se o elemento contém informações de tempo/distância em botões de rota
+          if ((texto.includes('km') || texto.includes('min') || texto.includes('h ')) && 
+              (el.closest('button') || el.closest('.btn') || el.closest('.route-option'))) {
+            
+            const botaoPai = el.closest('button') || el.closest('.btn') || el.closest('.route-option');
+            const textoBotao = botaoPai ? botaoPai.textContent : '';
+            
+            // Se é um botão de rota alternativa
+            if (textoBotao.includes('Proximidade') || textoBotao.includes('Alternativa') || 
+                textoBotao.includes('Otimizada') || textoBotao.includes('Distante')) {
+              
+              // Ocultar apenas as partes de tempo e distância, manter o nome da rota
+              if (texto.match(/\d+[\.,]?\d*\s*km/) || texto.match(/\d+\s*min/) || texto.match(/\d+h\s*\d+min/)) {
+                el.style.display = 'none';
+                console.log("🎯 [RouteInterceptor] Ocultado tempo/distância do botão:", textoBotao);
+              }
+            }
+          }
+        });
+      }, 100);
+    };
+    
     setTimeout(observarRotasAlternativas, 1500);
     setInterval(observarRotasAlternativas, 3000);
+    
+    // Executar ocultação inicial
+    setTimeout(ocultarTempoDistanciaBotoes, 2000);
   }
   
   function limparMapaCompletamente() {
