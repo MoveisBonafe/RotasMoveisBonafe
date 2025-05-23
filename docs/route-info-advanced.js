@@ -321,8 +321,8 @@
       const texto = elemento.textContent;
       if (texto && texto.includes('Proximidade à origem')) {
         const parent = elemento.closest('div, section, article');
-        if (parent && parent.classList.contains('active') || 
-            window.getComputedStyle(parent).backgroundColor !== 'transparent') {
+        if (parent && (parent.classList.contains('active') || 
+            window.getComputedStyle(parent).backgroundColor !== 'transparent')) {
           return true;
         }
       }

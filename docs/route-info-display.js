@@ -125,9 +125,9 @@
       botaoVisualizar.addEventListener('click', function() {
         console.log("📊 [RouteInfo] Botão Visualizar clicado, aguardando atualização de rota...");
         // Aguardar um momento para que o sistema calcule a rota
-        setTimeout(atualizarInformacoes, 1000);
-        setTimeout(atualizarInformacoes, 2000);
-        setTimeout(atualizarInformacoes, 3000);
+        setTimeout(atualizarInformacoes, 500);
+        setTimeout(atualizarInformacoes, 1200);
+        setTimeout(atualizarInformacoes, 2500);
       });
       console.log("📊 [RouteInfo] Monitoramento do botão Visualizar configurado");
     } else {
@@ -140,12 +140,29 @@
       botaoOtimizar.addEventListener('click', function() {
         console.log("📊 [RouteInfo] Botão Otimizar clicado, aguardando atualização de rota...");
         // Aguardar um momento para que o sistema calcule a rota
-        setTimeout(atualizarInformacoes, 1000);
-        setTimeout(atualizarInformacoes, 2000);
-        setTimeout(atualizarInformacoes, 3000);
+        setTimeout(atualizarInformacoes, 500);
+        setTimeout(atualizarInformacoes, 1200);
+        setTimeout(atualizarInformacoes, 2500);
       });
       console.log("📊 [RouteInfo] Monitoramento do botão Otimizar configurado");
     }
+    
+    // Monitorar aba de relatórios para atualização mais rápida
+    const observarAbas = () => {
+      const abas = document.querySelectorAll('.bottom-tab-btn, [data-tab]');
+      abas.forEach(aba => {
+        aba.addEventListener('click', function() {
+          const textoAba = aba.textContent || '';
+          if (textoAba.toLowerCase().includes('relatório')) {
+            console.log("📊 [RouteInfo] Aba de Relatório clicada, atualizando rapidamente...");
+            setTimeout(atualizarInformacoes, 200);
+            setTimeout(atualizarInformacoes, 800);
+          }
+        });
+      });
+    };
+    
+    setTimeout(observarAbas, 1000);
   }
   
   // Atualizar as informações do mostrador
