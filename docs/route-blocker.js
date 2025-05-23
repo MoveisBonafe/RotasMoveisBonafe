@@ -18,32 +18,37 @@
     const botaoVisualizar = document.getElementById('visualize-button');
     if (botaoVisualizar) {
       const originalClick = botaoVisualizar.onclick;
+      const textoOriginal = botaoVisualizar.textContent;
+      
       botaoVisualizar.onclick = function(e) {
         e.preventDefault();
         
         if (rotaEmAndamento) {
-          console.log("🛡️ [RouteBlocker] Rota já em andamento - bloqueando duplicata");
+          console.log("🛡️ [RouteBlocker] Processo em andamento - bloqueando clique");
           return false;
         }
         
-        console.log("🛡️ [RouteBlocker] Iniciando nova rota - bloqueando outras");
+        console.log("🛡️ [RouteBlocker] Iniciando processo completo - travando botão");
         rotaEmAndamento = true;
         
-        // Limpar tudo antes
+        // Desabilitar botão visualmente
+        this.disabled = true;
+        this.style.opacity = '0.5';
+        this.style.cursor = 'not-allowed';
+        this.textContent = 'Processando...';
+        
+        // Limpar completamente o mapa
         limparCompletamente();
         
-        // Executar função original após limpeza
+        // Aguardar limpeza e executar função original
         setTimeout(() => {
           if (originalClick) {
             originalClick.call(this, e);
           }
           
-          // Liberar após 3 segundos
-          setTimeout(() => {
-            rotaEmAndamento = false;
-            console.log("🛡️ [RouteBlocker] Rota finalizada - liberando para nova");
-          }, 3000);
-        }, 200);
+          // Monitorar finalização do processo
+          monitorarFinalizacao(this, textoOriginal);
+        }, 500);
         
         return false;
       };
@@ -156,6 +161,44 @@
     } catch (e) {
       console.log("🛡️ [RouteBlocker] Erro na limpeza:", e);
     }
+  }
+  
+  function monitorarFinalizacao(botao, textoOriginal) {
+    console.log("🛡️ [RouteBlocker] Monitorando finalização do processo");
+    
+    let tentativas = 0;
+    const maxTentativas = 30; // 15 segundos máximo
+    
+    const verificar = setInterval(() => {
+      tentativas++;
+      
+      // Verificar se a rota foi criada (procurar por elementos visuais no mapa)
+      const rotaCriada = document.querySelectorAll('svg path[stroke]').length > 0 ||
+                        window.map?.directionsRenderer?.getDirections?.()?.routes?.length > 0;
+      
+      // Verificar se a animação terminou
+      const animacaoTerminada = !window.animationInProgress;
+      
+      if (rotaCriada && animacaoTerminada) {
+        console.log("🛡️ [RouteBlocker] Processo finalizado - reabilitando botão");
+        reabilitarBotao(botao, textoOriginal);
+        clearInterval(verificar);
+        rotaEmAndamento = false;
+      } else if (tentativas >= maxTentativas) {
+        console.log("🛡️ [RouteBlocker] Timeout - forçando reabilitação do botão");
+        reabilitarBotao(botao, textoOriginal);
+        clearInterval(verificar);
+        rotaEmAndamento = false;
+      }
+    }, 500);
+  }
+  
+  function reabilitarBotao(botao, textoOriginal) {
+    botao.disabled = false;
+    botao.style.opacity = '1';
+    botao.style.cursor = 'pointer';
+    botao.textContent = textoOriginal;
+    console.log("🛡️ [RouteBlocker] Botão reabilitado");
   }
   
   // Função global para limpeza manual
