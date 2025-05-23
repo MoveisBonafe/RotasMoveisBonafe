@@ -16,31 +16,32 @@
     // Configurar observador para limpar novos botões
     configurarObservador();
     
-    // Executar periodicamente
-    setInterval(limparBotoesRota, 1000);
+    // Executar periodicamente, mas com menos frequência para não interferir
+    setInterval(limparBotoesRota, 3000);
     
     console.log("🧼 [CleanRouteButtons] Sistema de limpeza ativo");
   }
   
   function limparBotoesRota() {
     try {
-      // Buscar especificamente pelos botões de rotas alternativas
-      const seletores = [
-        '*[class*="route"]',
-        '*[class*="alternativ"]', 
-        'div:contains("Rota Otimizada")',
-        'div:contains("Proximidade")',
-        'div:contains("Distante")'
-      ];
+      // Buscar especificamente na seção de rotas alternativas, evitando a área de busca
+      const secaoRotas = document.querySelector('[class*="route"], [class*="alternativ"]');
       
-      // Usar uma abordagem mais direta - buscar na sidebar
-      const sidebar = document.querySelector('.sidebar, #sidebar');
-      if (sidebar) {
-        // Buscar todos os elementos que contêm texto de rota
-        const elementos = sidebar.querySelectorAll('*');
+      if (secaoRotas) {
+        // Buscar apenas elementos que contêm texto de rota alternativa
+        const elementos = secaoRotas.querySelectorAll('*');
         
         elementos.forEach(elemento => {
           const texto = elemento.textContent || '';
+          
+          // IMPORTANTE: Não tocar em elementos de busca/input
+          if (elemento.tagName === 'INPUT' || elemento.tagName === 'TEXTAREA' || 
+              elemento.getAttribute('role') === 'textbox' ||
+              elemento.classList.contains('pac-container') ||
+              elemento.classList.contains('gm-') ||
+              texto.includes('Buscar') || texto.includes('Digite')) {
+            return; // Pular elementos de busca
+          }
           
           // Se é um botão/div de rota alternativa
           if (texto.includes('Rota Otimizada') || 
@@ -53,9 +54,6 @@
           }
         });
       }
-      
-      // Método mais agressivo: usar expressões regulares no HTML
-      limparHTMLCompleto();
       
     } catch (e) {
       console.log("🧼 [CleanRouteButtons] Erro na limpeza:", e);
@@ -96,40 +94,7 @@
     }
   }
   
-  function limparHTMLCompleto() {
-    const sidebar = document.querySelector('.sidebar, #sidebar');
-    if (sidebar) {
-      let html = sidebar.innerHTML;
-      let htmlOriginal = html;
-      
-      // Padrões mais específicos para remover informações de tempo/distância
-      const padroes = [
-        /📏\s*\d+[\.,]?\d*\s*km/g,
-        /⏱️\s*\d+\s*min/g,
-        /⏱️\s*\d+h\s*\d+min/g,
-        /<[^>]*>\s*\d+[\.,]?\d*\s*km\s*<\/[^>]*>/g,
-        /<[^>]*>\s*\d+\s*min\s*<\/[^>]*>/g,
-        /<[^>]*>\s*\d+h\s*\d+min\s*<\/[^>]*>/g,
-        /<span[^>]*>\s*\d+[\.,]?\d*\s*km\s*<\/span>/g,
-        /<span[^>]*>\s*\d+\s*min\s*<\/span>/g,
-        /<div[^>]*>\s*\d+[\.,]?\d*\s*km\s*<\/div>/g,
-        /<div[^>]*>\s*\d+\s*min\s*<\/div>/g
-      ];
-      
-      padroes.forEach(padrao => {
-        html = html.replace(padrao, '');
-      });
-      
-      // Limpar elementos vazios que sobraram
-      html = html.replace(/<span[^>]*>\s*<\/span>/g, '');
-      html = html.replace(/<div[^>]*>\s*<\/div>/g, '');
-      
-      if (html !== htmlOriginal) {
-        sidebar.innerHTML = html;
-        console.log("🧼 [CleanRouteButtons] HTML da sidebar limpo via regex");
-      }
-    }
-  }
+  // Função removida para não interferir com o campo de busca
   
   function configurarObservador() {
     const observer = new MutationObserver((mutations) => {
