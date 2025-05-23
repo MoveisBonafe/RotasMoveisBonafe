@@ -10,15 +10,19 @@
   });
   
   function aplicarLayoutModerno() {
-    // Aplicar CSS moderno para os botões de rota
+    // Aplicar CSS moderno APENAS para a sidebar
     const estilosModernos = `
-      /* Estilos modernos para botões de rotas alternativas */
-      .route-option, 
-      [class*="route"], 
-      [class*="alternativ"], 
-      [class*="proximidade"], 
-      [class*="otimizada"],
-      [class*="distante"] {
+      /* Estilos modernos APENAS para botões de rotas alternativas na SIDEBAR */
+      .sidebar .route-option, 
+      .sidebar [class*="route"], 
+      .sidebar [class*="alternativ"], 
+      .sidebar [class*="proximidade"], 
+      .sidebar [class*="otimizada"],
+      .sidebar [class*="distante"],
+      .sidebar button:contains("Proximidade"),
+      .sidebar button:contains("Otimizada"),
+      .sidebar button:contains("Alternativa"),
+      .sidebar button:contains("Distante") {
         background: linear-gradient(135deg, #f8f9fa, #e9ecef) !important;
         border: 2px solid #FFD700 !important;
         border-radius: 12px !important;
@@ -30,74 +34,82 @@
         position: relative !important;
       }
       
-      .route-option:hover,
-      [class*="route"]:hover,
-      [class*="alternativ"]:hover,
-      [class*="proximidade"]:hover,
-      [class*="otimizada"]:hover,
-      [class*="distante"]:hover {
+      .sidebar .route-option:hover,
+      .sidebar [class*="route"]:hover,
+      .sidebar [class*="alternativ"]:hover,
+      .sidebar [class*="proximidade"]:hover,
+      .sidebar [class*="otimizada"]:hover,
+      .sidebar [class*="distante"]:hover,
+      .sidebar button:hover {
         transform: translateY(-2px) !important;
         box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3) !important;
         border-color: #FFA500 !important;
       }
       
-      .route-option.active,
-      [class*="route"].active,
-      .route-option.selected,
-      [class*="route"].selected {
+      .sidebar .route-option.active,
+      .sidebar [class*="route"].active,
+      .sidebar .route-option.selected,
+      .sidebar [class*="route"].selected,
+      .sidebar button.active,
+      .sidebar button.selected {
         background: linear-gradient(135deg, #FFD700, #FFA500) !important;
         color: #333 !important;
         font-weight: bold !important;
       }
       
-      /* Ocultar informações de tempo e distância */
-      .route-option .time-info,
-      .route-option .distance-info,
-      [class*="route"] .time-info,
-      [class*="route"] .distance-info,
-      .route-option span:contains("km"),
-      .route-option span:contains("min"),
-      [class*="route"] span:contains("km"),
-      [class*="route"] span:contains("min") {
+      /* Ocultar informações de tempo e distância APENAS na sidebar */
+      .sidebar .route-option .time-info,
+      .sidebar .route-option .distance-info,
+      .sidebar [class*="route"] .time-info,
+      .sidebar [class*="route"] .distance-info {
         display: none !important;
       }
       
-      /* Estilo para títulos de rota */
-      .route-title {
+      /* Manter marcador do mapa inalterado */
+      .map-container, 
+      .gm-style, 
+      .gm-style div,
+      .gm-style img,
+      .gmnoprint {
+        /* Preservar estilos originais do mapa */
+      }
+      
+      /* Estilo para títulos de rota APENAS na sidebar */
+      .sidebar .route-title {
         font-size: 14px !important;
         font-weight: 600 !important;
         color: #495057 !important;
         margin-bottom: 4px !important;
       }
       
-      /* Estilo para lista de pontos */
-      .route-points {
+      /* Estilo para lista de pontos APENAS na sidebar */
+      .sidebar .route-points {
         font-size: 12px !important;
         color: #6c757d !important;
         line-height: 1.4 !important;
       }
       
-      /* Ícones para diferentes tipos de rota */
-      .route-option::before,
-      [class*="proximidade"]::before {
+      /* Ícones para diferentes tipos de rota APENAS na sidebar */
+      .sidebar .route-option::before,
+      .sidebar [class*="proximidade"]::before {
         content: "📍" !important;
         margin-right: 8px !important;
         font-size: 16px !important;
       }
       
-      [class*="otimizada"]::before {
+      .sidebar [class*="otimizada"]::before {
         content: "🎯" !important;
         margin-right: 8px !important;
         font-size: 16px !important;
       }
       
-      [class*="distante"]::before {
+      .sidebar [class*="distante"]::before {
         content: "🛣️" !important;
         margin-right: 8px !important;
         font-size: 16px !important;
       }
       
-      [class*="alternativ"]::before {
+      .sidebar [class*="alternativ"]::before {
         content: "🔄" !important;
         margin-right: 8px !important;
         font-size: 16px !important;
