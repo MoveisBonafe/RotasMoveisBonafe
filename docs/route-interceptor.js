@@ -9,12 +9,18 @@
   let ultimoTempo = '--';
   let mostrador = null;
   
-  // Interceptar console.log para capturar informações
+  // Interceptar console.log para capturar informações (preservando funcionalidade original)
   const originalLog = console.log;
   console.log = function(...args) {
+    // Sempre executar o log original primeiro
     originalLog.apply(console, args);
     
+    // Evitar interferir com logs do Google Maps/Places API
     const mensagem = args.join(' ');
+    if (mensagem.includes('Google Maps') || mensagem.includes('Places API') || 
+        mensagem.includes('autocomplete') || mensagem.includes('pac-container')) {
+      return; // Não processar logs do Google
+    }
     
     // Capturar distância calculada
     if (mensagem.includes('Distância total calculada') || mensagem.includes('Distância calculada')) {
