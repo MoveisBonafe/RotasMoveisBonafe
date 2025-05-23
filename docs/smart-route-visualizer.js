@@ -102,13 +102,11 @@
   }
   
   function interceptarVisualizacoes() {
-    // Interceptar botão Visualizar
+    // Apenas observar botões sem interferir no comportamento
     const botaoVisualizar = document.getElementById('visualize-button');
     if (botaoVisualizar) {
-      const originalClick = botaoVisualizar.onclick;
-      
-      botaoVisualizar.onclick = function(e) {
-        console.log("🎨 [SmartVisualizer] Capturando visualização original");
+      botaoVisualizar.addEventListener('click', function() {
+        console.log("🎨 [SmartVisualizer] Observando visualização");
         
         // Mostrar painel
         mostrarPainel();
@@ -117,44 +115,29 @@
         // Capturar informações da rota atual
         capturarRotaOriginal();
         
-        // Executar função original
-        if (originalClick) {
-          originalClick.call(this, e);
-          
-          // Monitorar criação da rota
-          setTimeout(() => {
-            capturarRotaVisualizada();
-            mostrarProcessoLimpeza();
-          }, 1000);
-        }
-        
-        return false;
-      };
+        // Monitorar criação da rota (sem interferir)
+        setTimeout(() => {
+          capturarRotaVisualizada();
+          mostrarProcessoLimpeza();
+        }, 1500);
+      }, true); // useCapture para não interferir
     }
     
-    // Interceptar botão Otimizar
+    // Observar botão Otimizar
     const botaoOtimizar = document.getElementById('optimize-button');
     if (botaoOtimizar) {
-      const originalClick = botaoOtimizar.onclick;
-      
-      botaoOtimizar.onclick = function(e) {
-        console.log("🎨 [SmartVisualizer] Iniciando otimização inteligente");
+      botaoOtimizar.addEventListener('click', function() {
+        console.log("🎨 [SmartVisualizer] Observando otimização");
         
         mostrarPainel();
         atualizarStatus("Otimizando rota...", "#28a745");
         
-        if (originalClick) {
-          originalClick.call(this, e);
-          
-          setTimeout(() => {
-            capturarRotaOtimizada();
-            mostrarComparacao();
-            animarMelhorias();
-          }, 2000);
-        }
-        
-        return false;
-      };
+        setTimeout(() => {
+          capturarRotaOtimizada();
+          mostrarComparacao();
+          animarMelhorias();
+        }, 3000);
+      }, true);
     }
   }
   
