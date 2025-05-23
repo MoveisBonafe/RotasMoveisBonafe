@@ -33,29 +33,39 @@
                 console.log("🔍 [FixSearchField] Local selecionado:", place.name);
                 
                 if (place.geometry) {
-                  // Buscar pela função original de adicionar local
-                  if (window.addLocationFromSearch) {
-                    window.addLocationFromSearch(place);
-                  } else if (window.addLocation) {
-                    window.addLocation(place);
-                  } else {
-                    // Tentar encontrar e executar a função de adicionar
-                    const buttons = document.querySelectorAll('button, .btn');
-                    const addButton = Array.from(buttons).find(btn => 
-                      btn.textContent.includes('Adicionar') || btn.textContent.includes('Add')
-                    );
-                    
-                    if (addButton) {
-                      // Simular clique no botão de adicionar
-                      campo.value = place.formatted_address || place.name;
-                      addButton.click();
-                    }
-                  }
+                  console.log("🔍 [FixSearchField] Adicionando local automaticamente:", place.name);
                   
-                  // Triggerar múltiplos eventos para garantir compatibilidade
-                  ['change', 'input', 'blur', 'keyup'].forEach(eventType => {
-                    campo.dispatchEvent(new Event(eventType, { bubbles: true }));
+                  // Preencher o campo com o endereço selecionado
+                  campo.value = place.formatted_address || place.name;
+                  
+                  // Simular a tecla Enter para adicionar o local
+                  const enterEvent = new KeyboardEvent('keydown', {
+                    key: 'Enter',
+                    code: 'Enter',
+                    keyCode: 13,
+                    which: 13,
+                    bubbles: true
                   });
+                  campo.dispatchEvent(enterEvent);
+                  
+                  // Também simular keyup para garantir
+                  const enterUpEvent = new KeyboardEvent('keyup', {
+                    key: 'Enter',
+                    code: 'Enter',
+                    keyCode: 13,
+                    which: 13,
+                    bubbles: true
+                  });
+                  campo.dispatchEvent(enterUpEvent);
+                  
+                  // Triggerar outros eventos que podem ser necessários
+                  setTimeout(() => {
+                    ['change', 'input', 'blur'].forEach(eventType => {
+                      campo.dispatchEvent(new Event(eventType, { bubbles: true }));
+                    });
+                  }, 100);
+                  
+                  console.log("🔍 [FixSearchField] Eventos de adição enviados");
                 }
               });
               

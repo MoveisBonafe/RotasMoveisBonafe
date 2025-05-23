@@ -24,36 +24,9 @@
   
   function limparBotoesRota() {
     try {
-      // Buscar especificamente na seção de rotas alternativas, evitando a área de busca
-      const secaoRotas = document.querySelector('[class*="route"], [class*="alternativ"]');
-      
-      if (secaoRotas) {
-        // Buscar apenas elementos que contêm texto de rota alternativa
-        const elementos = secaoRotas.querySelectorAll('*');
-        
-        elementos.forEach(elemento => {
-          const texto = elemento.textContent || '';
-          
-          // IMPORTANTE: Não tocar em elementos de busca/input
-          if (elemento.tagName === 'INPUT' || elemento.tagName === 'TEXTAREA' || 
-              elemento.getAttribute('role') === 'textbox' ||
-              elemento.classList.contains('pac-container') ||
-              elemento.classList.contains('gm-') ||
-              texto.includes('Buscar') || texto.includes('Digite')) {
-            return; // Pular elementos de busca
-          }
-          
-          // Se é um botão/div de rota alternativa
-          if (texto.includes('Rota Otimizada') || 
-              texto.includes('Proximidade à origem') || 
-              texto.includes('Distante à Origem') ||
-              texto.includes('Distante à origem')) {
-            
-            // Limpar informações de tempo e distância deste elemento
-            limparInformacoesTempo(elemento);
-          }
-        });
-      }
+      // DESATIVAR temporariamente para não remover as rotas alternativas
+      console.log("🧼 [CleanRouteButtons] Limpeza desativada para preservar rotas alternativas");
+      return;
       
     } catch (e) {
       console.log("🧼 [CleanRouteButtons] Erro na limpeza:", e);
