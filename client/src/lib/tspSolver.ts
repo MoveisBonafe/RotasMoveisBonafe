@@ -274,36 +274,46 @@ export function generateAlternativeRoutes(locations: Location[], returnToOrigin:
   const nearestLocations = nearestRoute.map(index => locations[index]);
   const nearestDistance = calculateRouteDistance(nearestLocations);
   const nearestTime = estimateRouteTime(nearestLocations);
-  alternatives.push({
-    route: nearestLocations,
-    strategy: "Rota Mais Eficiente",
-    totalDistance: nearestDistance,
-    estimatedTime: nearestTime
-  });
+  
+  // Validar se a distância é válida antes de adicionar
+  if (nearestDistance > 0 && !isNaN(nearestDistance)) {
+    alternatives.push({
+      route: nearestLocations,
+      strategy: "Rota Mais Eficiente",
+      totalDistance: nearestDistance,
+      estimatedTime: nearestTime
+    });
+  }
   
   // Estratégia 2: Farthest First (Maiores distâncias primeiro)
   const farthestRoute = farthestFirstTSP(locations, originIndex, returnToOrigin);
   const farthestLocations = farthestRoute.map(index => locations[index]);
   const farthestDistance = calculateRouteDistance(farthestLocations);
   const farthestTime = estimateRouteTime(farthestLocations);
-  alternatives.push({
-    route: farthestLocations,
-    strategy: "Rota por Distância",
-    totalDistance: farthestDistance,
-    estimatedTime: farthestTime
-  });
+  
+  if (farthestDistance > 0 && !isNaN(farthestDistance)) {
+    alternatives.push({
+      route: farthestLocations,
+      strategy: "Rota por Distância",
+      totalDistance: farthestDistance,
+      estimatedTime: farthestTime
+    });
+  }
   
   // Estratégia 3: Geographical (Norte-Sul-Leste-Oeste)
   const geoRoute = geographicalTSP(locations, originIndex, returnToOrigin);
   const geoLocations = geoRoute.map(index => locations[index]);
   const geoDistance = calculateRouteDistance(geoLocations);
   const geoTime = estimateRouteTime(geoLocations);
-  alternatives.push({
-    route: geoLocations,
-    strategy: "Rota Geográfica",
-    totalDistance: geoDistance,
-    estimatedTime: geoTime
-  });
+  
+  if (geoDistance > 0 && !isNaN(geoDistance)) {
+    alternatives.push({
+      route: geoLocations,
+      strategy: "Rota Geográfica",
+      totalDistance: geoDistance,
+      estimatedTime: geoTime
+    });
+  }
 
   // Estratégia 4: Reverse Order (ordem inversa dos destinos)
   if (locations.length > 2) {
@@ -311,12 +321,15 @@ export function generateAlternativeRoutes(locations: Location[], returnToOrigin:
     const reverseLocations = reverseRoute.map(index => locations[index]);
     const reverseDistance = calculateRouteDistance(reverseLocations);
     const reverseTime = estimateRouteTime(reverseLocations);
-    alternatives.push({
-      route: reverseLocations,
-      strategy: "Rota Inversa",
-      totalDistance: reverseDistance,
-      estimatedTime: reverseTime
-    });
+    
+    if (reverseDistance > 0 && !isNaN(reverseDistance)) {
+      alternatives.push({
+        route: reverseLocations,
+        strategy: "Rota Inversa",
+        totalDistance: reverseDistance,
+        estimatedTime: reverseTime
+      });
+    }
   }
   
   // Log detalhado para debug
