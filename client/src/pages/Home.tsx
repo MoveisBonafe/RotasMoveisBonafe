@@ -8,6 +8,7 @@ import DateRangeSelector from "@/components/DateRangeSelector";
 import AddLocationModal from "@/components/AddLocationModal";
 import RouteInfoPanel from "@/components/RouteInfoPanel";
 import FuelSettingsDialog from "@/components/FuelSettingsDialog";
+import AlternativeRoutesPanel from "@/components/AlternativeRoutesPanel";
 import { useRouteOptimization } from "@/hooks/useRouteOptimization";
 import { useToast } from "@/hooks/use-toast";
 
@@ -71,6 +72,7 @@ export default function Home() {
     routeInfo, 
     optimizeRouteLocally, 
     poisAlongRoute,
+    alternativeRoutes,
     isCalculating 
   } = useRouteOptimization();
 

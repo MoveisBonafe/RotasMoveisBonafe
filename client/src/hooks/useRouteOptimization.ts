@@ -197,6 +197,7 @@ export function useRouteOptimization() {
     optimizedRoute,
     routeInfo,
     poisAlongRoute,
+    alternativeRoutes,
     optimizeRouteLocally,
     optimizeRoute,
     isCalculating: calculateRouteMutation.isPending
