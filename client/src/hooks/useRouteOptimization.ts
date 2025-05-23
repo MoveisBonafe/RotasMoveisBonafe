@@ -52,16 +52,29 @@ export function useRouteOptimization() {
       console.log(`${i + 1}. ${alt.strategy}: ${(alt.totalDistance/1000).toFixed(2)}km, ${alt.estimatedTime.toFixed(0)}min`);
     });
     
-    // Usar as métricas reais se disponíveis, ou valores padrão como fallback
-    const totalDistance = realMetrics && realMetrics.totalDistance > 0 
-      ? realMetrics.totalDistance 
-      : 145000; // 145km em metros (fallback)
+    // Calcular distância real da rota otimizada selecionada
+    let totalDistance = 0;
+    let totalDuration = 0;
+    
+    if (alternatives.length > 0) {
+      // Usar as métricas da rota mais eficiente (primeira na lista)
+      const selectedRoute = alternatives[0];
+      totalDistance = selectedRoute.totalDistance;
+      totalDuration = selectedRoute.estimatedTime * 60; // Converter minutos para segundos
       
-    const totalDuration = realMetrics && realMetrics.totalDuration > 0
-      ? realMetrics.totalDuration
-      : 8100; // 2h 15min em segundos (fallback)
-      
-    console.log(`Usando métricas da rota: ${totalDistance/1000}km, ${totalDuration/60} min`);
+      console.log(`Usando métricas da rota otimizada (${selectedRoute.strategy}): ${totalDistance/1000}km, ${totalDuration/60} min`);
+    } else {
+      // Fallback apenas se não conseguir gerar alternativas
+      totalDistance = realMetrics && realMetrics.totalDistance > 0 
+        ? realMetrics.totalDistance 
+        : 145000;
+        
+      totalDuration = realMetrics && realMetrics.totalDuration > 0
+        ? realMetrics.totalDuration
+        : 8100;
+        
+      console.log(`Usando métricas de fallback: ${totalDistance/1000}km, ${totalDuration/60} min`);
+    }
     
     // Filtrar POIs que estão ao longo da rota
     console.log("POIs disponíveis para filtrar:", pois);

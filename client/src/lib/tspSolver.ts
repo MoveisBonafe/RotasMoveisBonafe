@@ -272,32 +272,44 @@ export function generateAlternativeRoutes(locations: Location[], returnToOrigin:
   // Estratégia 1: Nearest Neighbor (Mais Eficiente)
   const nearestRoute = nearestNeighborTSP(locations, originIndex, returnToOrigin);
   const nearestLocations = nearestRoute.map(index => locations[index]);
+  const nearestDistance = calculateRouteDistance(nearestLocations);
+  const nearestTime = estimateRouteTime(nearestLocations);
   alternatives.push({
     route: nearestLocations,
     strategy: "Rota Mais Eficiente",
-    totalDistance: calculateRouteDistance(nearestLocations),
-    estimatedTime: estimateRouteTime(nearestLocations)
+    totalDistance: nearestDistance,
+    estimatedTime: nearestTime
   });
   
   // Estratégia 2: Farthest First (Maiores distâncias primeiro)
   const farthestRoute = farthestFirstTSP(locations, originIndex, returnToOrigin);
   const farthestLocations = farthestRoute.map(index => locations[index]);
+  const farthestDistance = calculateRouteDistance(farthestLocations);
+  const farthestTime = estimateRouteTime(farthestLocations);
   alternatives.push({
     route: farthestLocations,
     strategy: "Rota por Distância",
-    totalDistance: calculateRouteDistance(farthestLocations),
-    estimatedTime: estimateRouteTime(farthestLocations)
+    totalDistance: farthestDistance,
+    estimatedTime: farthestTime
   });
   
   // Estratégia 3: Geographical (Norte-Sul-Leste-Oeste)
   const geoRoute = geographicalTSP(locations, originIndex, returnToOrigin);
   const geoLocations = geoRoute.map(index => locations[index]);
+  const geoDistance = calculateRouteDistance(geoLocations);
+  const geoTime = estimateRouteTime(geoLocations);
   alternatives.push({
     route: geoLocations,
     strategy: "Rota Geográfica",
-    totalDistance: calculateRouteDistance(geoLocations),
-    estimatedTime: estimateRouteTime(geoLocations)
+    totalDistance: geoDistance,
+    estimatedTime: geoTime
   });
+  
+  // Log detalhado para debug
+  console.log("=== CÁLCULO DE ROTAS ALTERNATIVAS ===");
+  console.log(`Rota 1 (Eficiente): ${(nearestDistance/1000).toFixed(2)}km, ${nearestTime.toFixed(0)}min`);
+  console.log(`Rota 2 (Distância): ${(farthestDistance/1000).toFixed(2)}km, ${farthestTime.toFixed(0)}min`);
+  console.log(`Rota 3 (Geográfica): ${(geoDistance/1000).toFixed(2)}km, ${geoTime.toFixed(0)}min`);
   
   // Remover rotas duplicadas (mesma sequência)
   const uniqueAlternatives = alternatives.filter((alt, index, self) => {
@@ -318,6 +330,7 @@ export function generateAlternativeRoutes(locations: Location[], returnToOrigin:
 
 /**
  * Farthest First TSP Algorithm - prioritiza destinos mais distantes primeiro
+ * Estratégia: sempre escolhe o próximo destino mais distante do ponto atual
  */
 function farthestFirstTSP(locations: Location[], startIndex: number, returnToOrigin: boolean): number[] {
   const numLocations = locations.length;
@@ -326,6 +339,8 @@ function farthestFirstTSP(locations: Location[], startIndex: number, returnToOri
   const distanceMatrix = createDistanceMatrix(locations);
   const route: number[] = [startIndex];
   const visited = new Set<number>([startIndex]);
+  
+  console.log(`[FarthestFirst] Iniciando com ${locations[startIndex].name}`);
   
   while (route.length < numLocations) {
     const currentLocation = route[route.length - 1];
@@ -343,17 +358,21 @@ function farthestFirstTSP(locations: Location[], startIndex: number, returnToOri
     }
     
     if (farthestLocation !== -1) {
+      console.log(`[FarthestFirst] De ${locations[currentLocation].name} para ${locations[farthestLocation].name} (${(maxDistance/1000).toFixed(2)}km)`);
       route.push(farthestLocation);
       visited.add(farthestLocation);
     }
   }
   
   if (returnToOrigin) route.push(startIndex);
+  
+  console.log(`[FarthestFirst] Sequência final:`, route.map(i => locations[i].name));
   return route;
 }
 
 /**
  * Geographical TSP Algorithm - organiza por posição geográfica (norte-sul, leste-oeste)
+ * Estratégia: visita locais seguindo um padrão geográfico em zigue-zague
  */
 function geographicalTSP(locations: Location[], startIndex: number, returnToOrigin: boolean): number[] {
   const numLocations = locations.length;
@@ -361,20 +380,29 @@ function geographicalTSP(locations: Location[], startIndex: number, returnToOrig
   
   const route: number[] = [startIndex];
   const unvisited = locations
-    .map((loc, index) => ({ ...loc, index }))
+    .map((loc, index) => ({ ...loc, index, lat: parseFloat(loc.lat), lng: parseFloat(loc.lng) }))
     .filter((_, index) => index !== startIndex);
   
-  // Ordenar por latitude (norte para sul) e depois longitude (oeste para leste)
+  console.log(`[Geographical] Iniciando com ${locations[startIndex].name}`);
+  
+  // Ordenar por latitude (norte para sul) primeiro
   unvisited.sort((a, b) => {
-    const latDiff = parseFloat(b.lat) - parseFloat(a.lat); // Norte primeiro
+    const latDiff = b.lat - a.lat; // Norte primeiro (maior latitude)
     if (Math.abs(latDiff) > 0.01) return latDiff;
-    return parseFloat(a.lng) - parseFloat(b.lng); // Oeste primeiro se latitudes similares
+    return a.lng - b.lng; // Oeste primeiro se latitudes similares (menor longitude)
   });
   
+  console.log(`[Geographical] Ordem geográfica:`, unvisited.map(loc => `${loc.name} (${loc.lat.toFixed(3)}, ${loc.lng.toFixed(3)})`));
+  
   // Adicionar à rota na ordem geográfica
-  unvisited.forEach(loc => route.push(loc.index));
+  unvisited.forEach(loc => {
+    console.log(`[Geographical] Adicionando ${loc.name}`);
+    route.push(loc.index);
+  });
   
   if (returnToOrigin) route.push(startIndex);
+  
+  console.log(`[Geographical] Sequência final:`, route.map(i => locations[i].name));
   return route;
 }
 
