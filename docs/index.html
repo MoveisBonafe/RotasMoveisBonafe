@@ -509,43 +509,42 @@
             font-size: 14px;
         }
         
-        /* Estilo para o cartão de rotas alternativas */
+        /* Estilo minimalista para rotas alternativas */
         .route-option-card {
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 6px;
             background-color: #fff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
+            font-size: 14px;
         }
         .route-option-card:hover {
-            border-color: #ffc107;
-            box-shadow: 0 3px 6px rgba(255, 193, 7, 0.2);
-            transform: translateY(-2px);
+            border-color: #FFD700;
+            background-color: #fffbf0;
         }
         .route-option-card.selected {
-            border-color: #ffab00;
+            border-color: #FFD700;
             background-color: #fff8e1;
+            font-weight: 600;
         }
         
-        /* Estilo para a seção de rotas alternativas na sidebar */
+        /* Seção minimalista de rotas alternativas */
         .alternative-routes-section {
-            margin-top: 5px;
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            padding: 12px;
+            background-color: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
         }
         
         .alternative-routes-section h5 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-size: 16px;
+            margin: 0 0 10px 0;
+            font-size: 15px;
             font-weight: 600;
-            color: #495057;
+            color: #333;
         }
         .pac-container {
             z-index: 9999; /* Garantir que as sugestões apareçam acima de outros elementos */
@@ -2161,45 +2160,30 @@
                     <!-- Seleção de Rota Alternativa na sidebar (redesenhada) -->
                     <div id="route-alternatives-sidebar" class="alternative-routes-section" style="display: none;">
                         <h5>Rotas Alternativas</h5>
-                        <p class="text-muted small mb-3">Escolha a melhor opção para seu trajeto:</p>
                         
                         <div id="route-options-container">
-                            <!-- Cards gerados dinamicamente -->
+                            <!-- Cards minimalistas -->
                             <div class="route-option-card selected" data-route="0" id="route-card-0">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <strong>Rota Otimizada</strong>
-                                    <span class="badge bg-primary">Recomendada</span>
-                                </div>
-                                <div class="text-muted small" id="route-0-details">
-                                    <span class="me-2"><i class="bi bi-truck"></i> Distância total</span>
-                                    <span><i class="bi bi-clock"></i> Tempo estimado</span>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>🎯 Rota Original</span>
+                                    <small class="text-muted">Ordem adicionada</small>
                                 </div>
                             </div>
                             
                             <div class="route-option-card" data-route="1" id="route-card-1" style="display: none;">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <strong>Proximidade à Origem</strong>
-                                </div>
-                                <div class="text-muted small" id="route-1-details">
-                                    <span class="me-2"><i class="bi bi-truck"></i> Distância total</span>
-                                    <span><i class="bi bi-clock"></i> Tempo estimado</span>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>⚡ Rota Otimizada</span>
+                                    <small class="text-muted">Menor distância</small>
                                 </div>
                             </div>
                             
                             <div class="route-option-card" data-route="2" id="route-card-2" style="display: none;">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <strong>Distante à Origem</strong>
-                                </div>
-                                <div class="text-muted small" id="route-2-details">
-                                    <span class="me-2"><i class="bi bi-truck"></i> Distância total</span>
-                                    <span><i class="bi bi-clock"></i> Tempo estimado</span>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>📍 Proximidade</span>
+                                    <small class="text-muted">Pontos próximos primeiro</small>
                                 </div>
                             </div>
                         </div>
-                        
-                        <small class="text-muted d-block mt-3" style="font-size: 0.75rem;">
-                            Cada rota usa um algoritmo diferente com trade-offs entre distância e tempo.
-                        </small>
                         
                         <!-- Seletor escondido para compatibilidade com código existente -->
                         <select id="alternative-routes-sidebar" class="d-none">
