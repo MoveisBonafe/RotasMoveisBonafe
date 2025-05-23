@@ -246,11 +246,11 @@ export function generateAlternativeRoutes(locations: Location[], returnToOrigin:
   }
   
   if (locations.length <= 2) {
-    console.log("Apenas origem e um destino, não há necessidade de múltiplas rotas");
+    console.log("Apenas origem e um destino, gerando rota única otimizada");
     const route = locations;
     return [{
       route,
-      strategy: "Rota Direta",
+      strategy: "Rota Otimizada",
       totalDistance: calculateRouteDistance(route),
       estimatedTime: estimateRouteTime(route)
     }];
