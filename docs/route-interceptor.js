@@ -41,6 +41,16 @@
         atualizarMostrador();
       }
     }
+    
+    // Detectar quando pontos são removidos para zerar o mostrador
+    if (mensagem.includes('removido') || mensagem.includes('excluído') || 
+        mensagem.includes('deleted') || mensagem.includes('Ponto removido') ||
+        mensagem.includes('Local removido') || mensagem.includes('Limpando')) {
+      console.log("🎯 [RouteInterceptor] Detecção de remoção - zerando mostrador");
+      ultimaDistancia = '0 km';
+      ultimoTempo = '0min';
+      atualizarMostrador();
+    }
   };
   
   // Inicializar quando a página carregar
@@ -196,6 +206,28 @@
     
     monitorarBotao('visualize-button', 'Visualizar');
     monitorarBotao('optimize-button', 'Otimizar');
+    
+    // Monitorar mudanças na lista de pontos para detectar remoções
+    const observarListaPontos = () => {
+      const lista = document.querySelector('#locations-list, .locations-list, .pontos-lista');
+      if (lista) {
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (mutation.type === 'childList' && mutation.removedNodes.length > 0) {
+              console.log("🎯 [RouteInterceptor] Ponto removido da lista - zerando mostrador");
+              ultimaDistancia = '0 km';
+              ultimoTempo = '0min';
+              atualizarMostrador();
+            }
+          });
+        });
+        
+        observer.observe(lista, { childList: true, subtree: true });
+        console.log("🎯 [RouteInterceptor] Observer da lista de pontos configurado");
+      }
+    };
+    
+    setTimeout(observarListaPontos, 2000);
     
     // Monitorar botões de rotas alternativas
     const observarRotasAlternativas = () => {
